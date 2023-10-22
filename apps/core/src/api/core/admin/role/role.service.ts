@@ -58,17 +58,19 @@ export class RoleService {
   }
 
   async findById(id: number) {
-    return await this.roleRepository.findOne({
-      include: [
-        {
-          model: Permission,
+    return {
+      result: await this.roleRepository.findOne({
+        include: [
+          {
+            model: Permission,
+          },
+        ],
+        attributes: ['id', 'roleName', 'static_id', 'createdAt', 'updatedAt'],
+        where: {
+          id,
         },
-      ],
-      attributes: ['id', 'roleName', 'static_id', 'createdAt', 'updatedAt'],
-      where: {
-        id,
-      },
-    });
+      }),
+    };
   }
 
   async create(dto: RoleDto) {

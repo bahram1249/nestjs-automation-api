@@ -16,18 +16,26 @@ import { JwtGuard } from '../../auth/guard';
 import { CheckPermission } from 'apps/core/src/util/core/permission/decorator';
 import { PermissionGuard } from 'apps/core/src/util/core/permission/guard';
 import { JsonResponseTransformInterceptor } from 'apps/core/src/util/core/response/interceptor/json-response-transform.interceptor';
-import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiOperation,
+  ApiQuery,
+  ApiTags,
+} from '@nestjs/swagger';
 import { ListFilter } from 'apps/core/src/util/core/query';
 import { UserDto } from './dto';
 
 @ApiTags('Admin-Users')
-@ApiBearerAuth('Authorization')
+@ApiBearerAuth()
 @UseGuards(JwtGuard, PermissionGuard)
 @Controller('/api/core/admin/users')
 @UseInterceptors(JsonResponseTransformInterceptor)
 export class UserController {
   constructor(private service: UserService) {}
   @ApiOperation({ description: 'show all users' })
+  @ApiQuery({
+    type: ListFilter,
+  })
   @CheckPermission({ url: '/api/core/admin/users', method: 'get' })
   @Get('/')
   @HttpCode(HttpStatus.OK)
@@ -40,9 +48,7 @@ export class UserController {
   @Get('/:id')
   @HttpCode(HttpStatus.OK)
   async findById(@Param('id') userId: bigint) {
-    return {
-      result: await this.service.findById(userId),
-    };
+    await this.service.findById(userId);
   }
   @ApiOperation({ description: 'create user by admin' })
   @CheckPermission({ url: '/api/core/admin/users', method: 'post' })

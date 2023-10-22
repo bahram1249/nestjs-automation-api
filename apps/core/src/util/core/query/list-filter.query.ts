@@ -14,7 +14,9 @@ export class ListFilter {
   @ApiProperty({
     minimum: 0,
     required: false,
+    default: 0,
     type: IsNumber,
+    description: 'skip item',
   })
   public offset = 0;
 
@@ -25,6 +27,8 @@ export class ListFilter {
     minimum: 1,
     maximum: 100,
     required: false,
+    default: 10,
+    description: 'how many item returned.',
     type: IsNumber,
   })
   public limit = 10;
@@ -34,6 +38,7 @@ export class ListFilter {
     default: 'id',
     required: false,
     type: IsString,
+    description: 'orderBy field',
   })
   public orderBy?: string = 'id';
 
@@ -43,6 +48,7 @@ export class ListFilter {
     type: IsString,
     enum: SortOrder,
     default: SortOrder.DESC,
+    description: 'sort order',
     required: false,
   })
   public sortOrder?: SortOrder = SortOrder.DESC;

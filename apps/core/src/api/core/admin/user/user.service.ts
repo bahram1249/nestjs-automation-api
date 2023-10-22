@@ -68,30 +68,32 @@ export class UserService {
   }
 
   async findById(id: bigint) {
-    return await this.userRepository.findOne({
-      include: [
-        {
-          model: Role,
+    return {
+      result: await this.userRepository.findOne({
+        include: [
+          {
+            model: Role,
+          },
+        ],
+        attributes: [
+          'id',
+          'firstname',
+          'lastname',
+          'username',
+          'email',
+          'phoneNumber',
+          'mustChangePassword',
+          'lastPasswordChangeDate',
+          'profilePhotoAttachmentId',
+          'static_id',
+          'createdAt',
+          'updatedAt',
+        ],
+        where: {
+          id,
         },
-      ],
-      attributes: [
-        'id',
-        'firstname',
-        'lastname',
-        'username',
-        'email',
-        'phoneNumber',
-        'mustChangePassword',
-        'lastPasswordChangeDate',
-        'profilePhotoAttachmentId',
-        'static_id',
-        'createdAt',
-        'updatedAt',
-      ],
-      where: {
-        id,
-      },
-    });
+      }),
+    };
   }
 
   async create(dto: UserDto) {

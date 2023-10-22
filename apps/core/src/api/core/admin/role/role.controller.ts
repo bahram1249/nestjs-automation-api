@@ -26,7 +26,7 @@ import { RoleDto } from './dto';
 import { RoleService } from './role.service';
 
 @ApiTags('Admin-Role')
-@ApiBearerAuth('Authorization')
+@ApiBearerAuth()
 @UseGuards(JwtGuard, PermissionGuard)
 @Controller('/api/core/admin/roles')
 @UseInterceptors(JsonResponseTransformInterceptor)
@@ -50,9 +50,7 @@ export class RoleController {
   @Get('/:id')
   @HttpCode(HttpStatus.OK)
   async findById(@Param('id') roleId: number) {
-    return {
-      result: await this.service.findById(roleId),
-    };
+    return await this.service.findById(roleId);
   }
   @ApiOperation({ description: 'create role by admin' })
   @CheckPermission({ url: '/api/core/admin/roles', method: 'post' })
