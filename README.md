@@ -66,3 +66,11 @@ $ npm run test:e2e
 # test coverage
 $ npm run test:cov
 ```
+
+## Swagger api doc
+
+Open the api doc url:
+
+```bash
+http://yourhost:port/api
+```
