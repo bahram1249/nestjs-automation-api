@@ -17,6 +17,9 @@ export class PermissionGroup extends Model {
 
   @Column({})
   permissionGroupName: string;
-  @HasMany(() => Permission)
+  @HasMany(() => Permission, {
+    onDelete: 'NO ACTION',
+    onUpdate: 'NO ACTION',
+  })
   permissions: Permission[];
 }

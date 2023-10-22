@@ -19,12 +19,18 @@ export class UserRole extends Model {
   @Column({})
   @ForeignKey(() => User)
   userId: bigint;
-  @BelongsTo(() => User)
+  @BelongsTo(() => User, {
+    onDelete: 'NO ACTION',
+    onUpdate: 'NO ACTION',
+  })
   user: User;
 
   @Column({})
   @ForeignKey(() => Role)
   roleId: number;
-  @BelongsTo(() => Role)
+  @BelongsTo(() => Role, {
+    onDelete: 'NO ACTION',
+    onUpdate: 'NO ACTION',
+  })
   role: Role;
 }

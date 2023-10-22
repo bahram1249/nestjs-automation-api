@@ -20,13 +20,19 @@ export class RolePermission extends Model {
   @ForeignKey(() => Role)
   roleId: number;
 
-  @BelongsTo(() => Role)
+  @BelongsTo(() => Role, {
+    onDelete: 'NO ACTION',
+    onUpdate: 'NO ACTION',
+  })
   role: Role;
 
   @Column({})
   @ForeignKey(() => Permission)
   permissionId: number;
 
-  @BelongsTo(() => Permission)
+  @BelongsTo(() => Permission, {
+    onDelete: 'NO ACTION',
+    onUpdate: 'NO ACTION',
+  })
   permission: Permission;
 }

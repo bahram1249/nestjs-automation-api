@@ -46,12 +46,18 @@ export class Permission extends Model {
   @Column({})
   @ForeignKey(() => PermissionGroup)
   permissionGroupId?: number;
-  @BelongsTo(() => PermissionGroup)
+  @BelongsTo(() => PermissionGroup, {
+    onDelete: 'NO ACTION',
+    onUpdate: 'NO ACTION',
+  })
   permissionGroup?: PermissionGroup;
   // @Column({})
   // menuId: number;
   @Column({})
   visibility?: boolean;
-  @HasMany(() => RolePermission)
+  @HasMany(() => RolePermission, {
+    onDelete: 'NO ACTION',
+    onUpdate: 'NO ACTION',
+  })
   rolePermissions?: RolePermission[];
 }

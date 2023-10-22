@@ -35,9 +35,15 @@ export class Menu extends Model {
   @Column({})
   @ForeignKey(() => Menu)
   subMenuId: number;
-  @HasMany(() => Menu)
+  @HasMany(() => Menu, {
+    onDelete: 'NO ACTION',
+    onUpdate: 'NO ACTION',
+  })
   subMenus: Menu[];
 
-  @HasMany(() => PermissionMenu)
+  @HasMany(() => PermissionMenu, {
+    onDelete: 'NO ACTION',
+    onUpdate: 'NO ACTION',
+  })
   permissionMenus: PermissionMenu[];
 }

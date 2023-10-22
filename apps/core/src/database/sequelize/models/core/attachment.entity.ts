@@ -44,12 +44,18 @@ export class Attachment extends Model {
   @Column({})
   @ForeignKey(() => AttachmentType)
   attachmentTypeId: number;
-  @BelongsTo(() => AttachmentType)
+  @BelongsTo(() => AttachmentType, {
+    onDelete: 'NO ACTION',
+    onUpdate: 'NO ACTION',
+  })
   attachmentType: AttachmentType;
   @Column({})
   @ForeignKey(() => User)
   userId: bigint;
-  @BelongsTo(() => User)
+  @BelongsTo(() => User, {
+    onDelete: 'NO ACTION',
+    onUpdate: 'NO ACTION',
+  })
   user: User;
   @Column({})
   persianDate: string;

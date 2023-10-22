@@ -108,7 +108,10 @@ export class User extends Model {
   })
   @ForeignKey(() => Attachment)
   profilePhotoAttachmentId: bigint;
-  @BelongsTo(() => Attachment)
+  @BelongsTo(() => Attachment, {
+    onDelete: 'NO ACTION',
+    onUpdate: 'NO ACTION',
+  })
   profilePhotoAttachment: Attachment;
   @HasMany(() => UserRole)
   userRoles: UserRole[];
