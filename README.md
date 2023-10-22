@@ -33,10 +33,13 @@ Create a database in your sql server instance with the name of your choose for y
 
 ## Set Authentication variable
 
-in .env file set variable like below:
+In .env file set variable like below:
+
+```bash
 JWT_SECRET=<YourStrongSecret>
 TOKEN_EXPIRATION=48h
 BEARER=Bearer
+```
 
 ## Running the app
 
