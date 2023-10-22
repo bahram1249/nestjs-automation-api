@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Transform } from 'class-transformer';
-import { IsEnum, IsNumber, IsOptional } from 'class-validator';
+import { IsEnum, IsNumber, IsOptional, IsString } from 'class-validator';
 
 export enum SortOrder {
   ASC = 'ASC',
@@ -33,12 +33,14 @@ export class ListFilter {
   @ApiProperty({
     default: 'id',
     required: false,
+    type: IsString,
   })
   public orderBy?: string = 'id';
 
   @IsEnum(SortOrder)
   @IsOptional()
   @ApiProperty({
+    type: IsString,
     enum: SortOrder,
     default: SortOrder.DESC,
     required: false,
@@ -46,7 +48,7 @@ export class ListFilter {
   public sortOrder?: SortOrder = SortOrder.DESC;
 
   @IsOptional()
+  @ApiProperty({ required: false, type: IsString, default: '' })
   @Transform(({ value }) => '%' + value + '%')
-  @ApiProperty({ required: false })
   public search?: string = '%%';
 }

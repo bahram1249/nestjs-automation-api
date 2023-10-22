@@ -37,6 +37,8 @@ export class RoleController {
   @Get('/')
   @ApiQuery({
     type: ListFilter,
+    style: 'deepObject',
+    explode: true,
   })
   @HttpCode(HttpStatus.OK)
   async findAll(@Query() filter: ListFilter) {
