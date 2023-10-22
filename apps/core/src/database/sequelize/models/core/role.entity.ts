@@ -1,6 +1,14 @@
-import { Table, Column, Model, DataType, HasMany } from 'sequelize-typescript';
+import {
+  Table,
+  Column,
+  Model,
+  DataType,
+  HasMany,
+  BelongsToMany,
+} from 'sequelize-typescript';
 import { UserRole } from './userRole.entity';
 import { RolePermission } from './rolePermission.entity';
+import { Permission } from './permission.entity';
 
 @Table
 export class Role extends Model {
@@ -27,4 +35,6 @@ export class Role extends Model {
 
   @HasMany(() => RolePermission)
   rolePermissions: RolePermission[];
+  @BelongsToMany(() => Permission, () => RolePermission)
+  permissions: Permission[];
 }

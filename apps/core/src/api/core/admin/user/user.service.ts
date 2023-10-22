@@ -10,7 +10,7 @@ import { Role } from 'apps/core/src/database/sequelize/models/core/role.entity';
 import { User } from 'apps/core/src/database/sequelize/models/core/user.entity';
 import { QueryFilter } from 'apps/core/src/util/core/mapper/query-filter.mapper';
 import { ListFilter } from 'apps/core/src/util/core/query';
-import { Op, where } from 'sequelize';
+import { Op } from 'sequelize';
 import { UserDto } from './dto';
 import { InjectMapper } from '@automapper/nestjs';
 import { Mapper } from '@automapper/core';
@@ -110,7 +110,7 @@ export class UserService {
       if (user) throw new ForbiddenException('Credentials taken');
     }
 
-    if (dto.roles) {
+    if (dto.roles && (dto.ignoreRole == null || dto.ignoreRole == false)) {
       for (let index = 0; index < dto.roles.length; index++) {
         const roleId = dto.roles[index];
         let role = await this.roleRepository.findOne({
@@ -127,7 +127,7 @@ export class UserService {
     userObj.password = dto.username;
     user = await this.userRepository.create(userObj);
 
-    if (dto.roles) {
+    if (dto.roles && (dto.ignoreRole == null || dto.ignoreRole == false)) {
       for (let index = 0; index < dto.roles.length; index++) {
         const roleId = dto.roles[index];
         const userRole = await this.userRoleRepository.create({
@@ -183,7 +183,10 @@ export class UserService {
       throw new BadRequestException('this username was given by another user!');
     }
 
-    if (userDto.roles) {
+    if (
+      userDto.roles &&
+      (userDto.ignoreRole == null || userDto.ignoreRole == false)
+    ) {
       for (let index = 0; index < userDto.roles.length; index++) {
         const roleId = userDto.roles[index];
         let role = await this.roleRepository.findOne({
@@ -202,20 +205,22 @@ export class UserService {
       },
     });
 
-    // remove all roles of this user
-    await this.userRoleRepository.destroy({
-      where: {
-        userId: userId,
-      },
-    });
+    if (userDto.ignoreRole == null || userDto.ignoreRole == false) {
+      // remove all roles of this user
+      await this.userRoleRepository.destroy({
+        where: {
+          userId: userId,
+        },
+      });
 
-    if (userDto.roles) {
-      for (let index = 0; index < userDto.roles.length; index++) {
-        const roleId = userDto.roles[index];
-        const userRole = await this.userRoleRepository.create({
-          userId: user.id,
-          roleId: roleId,
-        });
+      if (userDto.roles) {
+        for (let index = 0; index < userDto.roles.length; index++) {
+          const roleId = userDto.roles[index];
+          const userRole = await this.userRoleRepository.create({
+            userId: user.id,
+            roleId: roleId,
+          });
+        }
       }
     }
 

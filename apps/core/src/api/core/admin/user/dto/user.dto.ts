@@ -61,4 +61,7 @@ export class UserDto {
   phoneNumber: string;
   @IsOptional()
   roles: number[];
+
+  @IsOptional()
+  ignoreRole?: boolean;
 }

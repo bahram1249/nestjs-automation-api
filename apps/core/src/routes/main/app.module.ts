@@ -13,6 +13,7 @@ import { InjectModel, SequelizeModule } from '@nestjs/sequelize';
 import { Permission } from '../../database/sequelize/models/core/permission.entity';
 import { AutomapperModule } from '@automapper/nestjs';
 import { classes } from '@automapper/classes';
+import { PermissionModule } from '../../util/core/permission/permission.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -35,7 +36,7 @@ import { classes } from '@automapper/classes';
     }),
     CoreRouteModule,
   ],
-  providers: [AppService],
+  providers: [AppService, PermissionModule],
 })
 export class AppModule implements NestModule {
   constructor(

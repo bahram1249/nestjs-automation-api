@@ -29,6 +29,7 @@ async function bootstrap() {
     .setDescription('The cats API description')
     .setVersion('1.0')
     .addTag('Auth')
+    .addTag('Admin-Role')
     .addTag('Admin-Users')
     .build();
   const document = SwaggerModule.createDocument(app, config, {

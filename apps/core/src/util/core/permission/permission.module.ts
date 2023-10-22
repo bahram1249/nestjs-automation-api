@@ -1,4 +1,11 @@
 import { Module } from '@nestjs/common';
+import { appGuardProviders } from './provider';
+import { SequelizeModule } from '@nestjs/sequelize';
+import { User } from 'apps/core/src/database/sequelize/models/core/user.entity';
 
-@Module({})
+@Module({
+  imports: [SequelizeModule.forFeature([User])],
+  providers: [...appGuardProviders],
+  exports: [PermissionModule],
+})
 export class PermissionModule {}
