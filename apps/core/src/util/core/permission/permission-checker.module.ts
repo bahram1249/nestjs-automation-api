@@ -6,6 +6,6 @@ import { User } from 'apps/core/src/database/sequelize/models/core/user.entity';
 @Module({
   imports: [SequelizeModule.forFeature([User])],
   providers: [...appGuardProviders],
-  exports: [PermissionModule],
+  exports: [PermissionCheckerModule],
 })
-export class PermissionModule {}
+export class PermissionCheckerModule {}

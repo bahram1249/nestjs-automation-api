@@ -168,7 +168,7 @@ export class UserService {
     };
   }
 
-  async update(userId: bigint, userDto: UserDto) {
+  async update(userId: bigint, dto: UserDto) {
     // logic validation
     let user = await this.userRepository.findOne({
       where: {
@@ -178,19 +178,16 @@ export class UserService {
     if (!user) throw new NotFoundException('Not Found!');
     user = await this.userRepository.findOne({
       where: {
-        username: userDto.username,
+        username: dto.username,
       },
     });
     if (user != null && user.id != userId) {
       throw new BadRequestException('this username was given by another user!');
     }
 
-    if (
-      userDto.roles &&
-      (userDto.ignoreRole == null || userDto.ignoreRole == false)
-    ) {
-      for (let index = 0; index < userDto.roles.length; index++) {
-        const roleId = userDto.roles[index];
+    if (dto.roles && (dto.ignoreRole == null || dto.ignoreRole == false)) {
+      for (let index = 0; index < dto.roles.length; index++) {
+        const roleId = dto.roles[index];
         let role = await this.roleRepository.findOne({
           where: {
             id: roleId,
@@ -201,13 +198,13 @@ export class UserService {
       }
     }
 
-    await this.userRepository.update(JSON.parse(JSON.stringify(userDto)), {
+    await this.userRepository.update(JSON.parse(JSON.stringify(dto)), {
       where: {
         id: userId,
       },
     });
 
-    if (userDto.ignoreRole == null || userDto.ignoreRole == false) {
+    if (dto.ignoreRole == null || dto.ignoreRole == false) {
       // remove all roles of this user
       await this.userRoleRepository.destroy({
         where: {
@@ -215,9 +212,9 @@ export class UserService {
         },
       });
 
-      if (userDto.roles) {
-        for (let index = 0; index < userDto.roles.length; index++) {
-          const roleId = userDto.roles[index];
+      if (dto.roles) {
+        for (let index = 0; index < dto.roles.length; index++) {
+          const roleId = dto.roles[index];
           const userRole = await this.userRoleRepository.create({
             userId: user.id,
             roleId: roleId,

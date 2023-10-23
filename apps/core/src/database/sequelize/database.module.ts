@@ -57,6 +57,7 @@ const autoLoadModels: boolean = JSON.parse(process.env.DB_AUTO_LOAD_MODELS);
         username: configService.get<string>('DB_USER'),
         password: configService.get<string>('DB_PASS'),
         database: configService.get<string>('DB_NAME_DEVELOPMENT'),
+        //[__dirname + '/models/**/*.entity.ts'],
         models: [
           User,
           Role,

@@ -54,15 +54,15 @@ export class UserController {
   @CheckPermission({ url: '/api/core/admin/users', method: 'post' })
   @Post('/')
   @HttpCode(HttpStatus.CREATED)
-  async create(@Body() userDto: UserDto) {
-    return await this.service.create(userDto);
+  async create(@Body() dto: UserDto) {
+    return await this.service.create(dto);
   }
 
   @ApiOperation({ description: 'update user by admin' })
   @Put('/:id')
   @CheckPermission({ url: '/api/core/admin/users/:id', method: 'put' })
   @HttpCode(HttpStatus.OK)
-  async update(@Param('id') userId: bigint, @Body() userDto: UserDto) {
-    return await this.service.update(userId, userDto);
+  async update(@Param('id') userId: bigint, @Body() dto: UserDto) {
+    return await this.service.update(userId, dto);
   }
 }
