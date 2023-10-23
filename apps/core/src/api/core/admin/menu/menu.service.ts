@@ -19,7 +19,7 @@ export class MenuService {
 
     // search
     options.where = {
-      menuName: {
+      title: {
         [Op.like]: filter.search,
       },
     };
