@@ -39,6 +39,7 @@ export class Menu extends Model {
     onDelete: 'NO ACTION',
     onUpdate: 'NO ACTION',
   })
+  order?: number;
   subMenus: Menu[];
 
   @HasMany(() => PermissionMenu, {

@@ -31,6 +31,7 @@ async function bootstrap() {
     .addTag('Auth')
     .addTag('Admin-Permissions')
     .addTag('Admin-Role')
+    .addTag('Admin-Menu')
     .addTag('Admin-Users')
     .build();
   const document = SwaggerModule.createDocument(app, config, {
