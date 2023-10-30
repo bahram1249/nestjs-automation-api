@@ -20,6 +20,7 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { ListFilter } from 'apps/core/src/util/core/query';
+import { PermissionGetDto } from './dto/PermissionGet.dto';
 
 @ApiTags('Admin-Permissions')
 @ApiBearerAuth()
@@ -30,12 +31,12 @@ export class PermissionController {
   constructor(private service: PermissionService) {}
   @ApiOperation({ description: 'show all permissions' })
   @ApiQuery({
-    type: ListFilter,
+    type: PermissionGetDto,
   })
   @CheckPermission({ permissionSymbol: 'core.admin.permissions.getall' })
   @Get('/')
   @HttpCode(HttpStatus.OK)
-  async findAll(@Query() filter: ListFilter) {
+  async findAll(@Query() filter: PermissionGetDto) {
     return await this.service.findAll(filter);
   }
 
