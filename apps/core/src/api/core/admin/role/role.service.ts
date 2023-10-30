@@ -8,11 +8,11 @@ import {
 import { InjectModel } from '@nestjs/sequelize';
 import { Role } from 'apps/core/src/database/sequelize/models/core/role.entity';
 import { QueryFilter } from 'apps/core/src/util/core/mapper/query-filter.mapper';
-import { ListFilter } from 'apps/core/src/util/core/query';
 import { Op } from 'sequelize';
 import { RoleDto } from './dto';
 import { Permission } from 'apps/core/src/database/sequelize/models/core/permission.entity';
 import { RolePermission } from 'apps/core/src/database/sequelize/models/core/rolePermission.entity';
+import { RoleGetDto } from './dto/role-get.dto';
 
 @Injectable()
 export class RoleService {
@@ -25,7 +25,7 @@ export class RoleService {
     private readonly rolePermissionRepository: typeof RolePermission,
   ) {}
 
-  async findAll(filter: ListFilter) {
+  async findAll(filter: RoleGetDto) {
     let options = QueryFilter.init();
 
     // include
@@ -50,7 +50,11 @@ export class RoleService {
       'createdAt',
       'updatedAt',
     ];
-    options = QueryFilter.toFindAndCountOptions(options, filter);
+    if (filter.ignorePaging != true) {
+      options = QueryFilter.limitOffset(options, filter);
+    }
+
+    options = QueryFilter.order(options, filter);
     return {
       result: await this.roleRepository.findAll(options),
       total: count,

@@ -21,9 +21,9 @@ import {
   ApiQuery,
   ApiTags,
 } from '@nestjs/swagger';
-import { ListFilter } from 'apps/core/src/util/core/query';
 import { RoleDto } from './dto';
 import { RoleService } from './role.service';
+import { RoleGetDto } from './dto/role-get.dto';
 
 @ApiTags('Admin-Role')
 @ApiBearerAuth()
@@ -36,12 +36,12 @@ export class RoleController {
   @CheckPermission({ permissionSymbol: 'core.admin.roles.getall' })
   @Get('/')
   @ApiQuery({
-    type: ListFilter,
+    type: RoleGetDto,
     style: 'deepObject',
     explode: true,
   })
   @HttpCode(HttpStatus.OK)
-  async findAll(@Query() filter: ListFilter) {
+  async findAll(@Query() filter: RoleGetDto) {
     return await this.service.findAll(filter);
   }
 
