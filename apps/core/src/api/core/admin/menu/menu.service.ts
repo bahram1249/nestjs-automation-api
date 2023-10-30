@@ -3,9 +3,8 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { Menu } from 'apps/core/src/database/sequelize/models/core/menu.entity';
 import { QueryFilter } from 'apps/core/src/util/core/mapper/query-filter.mapper';
-import { ListFilter } from 'apps/core/src/util/core/query';
-import { Op } from 'sequelize';
-import { MenuDto } from './dto';
+import { Op, Sequelize } from 'sequelize';
+import { GetMenuDto, MenuDto } from './dto';
 
 @Injectable()
 export class MenuService {
@@ -14,16 +13,32 @@ export class MenuService {
     private readonly menuRepository: typeof Menu,
   ) {}
 
-  async findAll(filter: ListFilter) {
+  async findAll(filter: GetMenuDto) {
     let options = QueryFilter.init();
 
     // search
     options.where = {
-      title: {
-        [Op.like]: filter.search,
-      },
+      [Op.and]: [
+        {
+          title: {
+            [Op.like]: filter.search,
+          },
+        },
+        Sequelize.where(
+          Sequelize.fn('isnull', Sequelize.col('visibility'), 1),
+          {
+            [Op.eq]: 1,
+          },
+        ),
+      ],
     };
-
+    if (filter.onlyParent == true) {
+      options.where[Op.and].push({
+        parentMenuId: {
+          [Op.is]: null,
+        },
+      });
+    }
     const count = await this.menuRepository.count(options);
     options.attributes = [
       'id',
@@ -31,10 +46,17 @@ export class MenuService {
       'url',
       'icon',
       'className',
-      'subMenuId',
+      'parentMenuId',
       'order',
       'createdAt',
       'updatedAt',
+    ];
+    options.include = [
+      {
+        model: Menu,
+        as: 'subMenus',
+        required: false,
+      },
     ];
     options = QueryFilter.toFindAndCountOptions(options, filter);
     return {
@@ -52,13 +74,22 @@ export class MenuService {
           'url',
           'icon',
           'className',
-          'subMenuId',
+          'parentMenuId',
           'order',
           'createdAt',
           'updatedAt',
         ],
         where: {
-          id,
+          [Op.and]: [
+            {
+              id,
+            },
+            {
+              visibility: {
+                [Op.is]: null,
+              },
+            },
+          ],
         },
       }),
     };
@@ -69,13 +100,20 @@ export class MenuService {
     let menu = await this.menuRepository.create(menuObj);
 
     menu = await this.menuRepository.findOne({
+      include: [
+        {
+          model: Menu,
+          as: 'subMenus',
+          required: false,
+        },
+      ],
       attributes: [
         'id',
         'title',
         'url',
         'icon',
         'className',
-        'subMenuId',
+        'parentMenuId',
         'order',
         'createdAt',
         'updatedAt',
@@ -92,8 +130,18 @@ export class MenuService {
   async update(menuId: number, dto: MenuDto) {
     // logic validation
     let menu = await this.menuRepository.findOne({
+      include: [
+        {
+          model: Menu,
+          as: 'subMenus',
+          required: false,
+        },
+      ],
       where: {
         id: menuId,
+        visibility: {
+          [Op.is]: null,
+        },
       },
     });
     if (!menu) throw new NotFoundException('Not Found!');
@@ -105,13 +153,20 @@ export class MenuService {
     });
 
     menu = await this.menuRepository.findOne({
+      include: [
+        {
+          model: Menu,
+          as: 'subMenus',
+          required: false,
+        },
+      ],
       attributes: [
         'id',
         'title',
         'url',
         'icon',
         'className',
-        'subMenuId',
+        'parentMenuId',
         'order',
         'createdAt',
         'updatedAt',

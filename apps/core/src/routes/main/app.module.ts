@@ -14,10 +14,15 @@ import { Permission } from '../../database/sequelize/models/core/permission.enti
 import { AutomapperModule } from '@automapper/nestjs';
 import { classes } from '@automapper/classes';
 import { PermissionCheckerModule } from '../../util/core/permission/permission-checker.module';
+import { ServeStaticModule } from '@nestjs/serve-static';
+import { join } from 'path';
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
+    }),
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '../../../../', 'client/dist'),
     }),
     ClientsModule.register([
       {
@@ -49,36 +54,43 @@ export class AppModule implements NestModule {
   }
   public async setApp(app: INestApplication) {
     this.app = app;
-    const server = app.getHttpServer();
+    // const server = app.getHttpServer();
 
-    const router = server._events.request._router;
+    // const router = server._events.request._router;
 
-    const existingRoutes: [] = router.stack
-      .map((routeObj) => {
-        if (routeObj.route) {
-          return {
-            route: {
-              path: routeObj.route?.path,
-              method: routeObj.route?.stack[0].method,
-            },
-          };
-        }
-      })
-      .filter((item) => item !== undefined);
-    for (var index = 0; index < existingRoutes.length; index++) {
-      var item = existingRoutes[index];
-      let permission = await this.permissionReopsiory.findOne({
-        where: {
-          permissionUrl: item['route']['path'],
-          permissionMethod: item['route']['method'],
-        },
-      });
-      if (!permission) {
-        permission = await this.permissionReopsiory.create({
-          permissionUrl: item['route']['path'],
-          permissionMethod: item['route']['method'],
-        });
-      }
-    }
+    // const stacks = this.app.getHttpAdapter().getInstance()._router.stack;
+    // stacks.forEach((layer) => {
+    //   if (layer.route) {
+    //     console.log(layer.route);
+    //   }
+    // });
+
+    // const existingRoutes: [] = router.stack
+    //   .map((routeObj) => {
+    //     if (routeObj.route) {
+    //       return {
+    //         route: {
+    //           path: routeObj.route?.path,
+    //           method: routeObj.route?.stack[0].method,
+    //         },
+    //       };
+    //     }
+    //   })
+    //   .filter((item) => item !== undefined);
+    // for (var index = 0; index < existingRoutes.length; index++) {
+    //   var item = existingRoutes[index];
+    //   let permission = await this.permissionReopsiory.findOne({
+    //     where: {
+    //       permissionUrl: item['route']['path'],
+    //       permissionMethod: item['route']['method'],
+    //     },
+    //   });
+    //   if (!permission) {
+    //     permission = await this.permissionReopsiory.create({
+    //       permissionUrl: item['route']['path'],
+    //       permissionMethod: item['route']['method'],
+    //     });
+    //   }
+    // }
   }
 }

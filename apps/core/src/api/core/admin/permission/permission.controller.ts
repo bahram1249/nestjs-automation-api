@@ -32,7 +32,7 @@ export class PermissionController {
   @ApiQuery({
     type: ListFilter,
   })
-  @CheckPermission({ url: '/api/core/admin/permissions', method: 'get' })
+  @CheckPermission({ permissionSymbol: 'core.admin.permissions.getall' })
   @Get('/')
   @HttpCode(HttpStatus.OK)
   async findAll(@Query() filter: ListFilter) {
@@ -40,7 +40,7 @@ export class PermissionController {
   }
 
   @ApiOperation({ description: 'show permission by given id' })
-  @CheckPermission({ url: '/api/core/admin/permissions/:id', method: 'get' })
+  @CheckPermission({ permissionSymbol: 'core.admin.permissions.getone' })
   @Get('/:id')
   @HttpCode(HttpStatus.OK)
   async findById(@Param('id') permissionId: number) {

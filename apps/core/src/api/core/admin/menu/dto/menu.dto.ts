@@ -52,7 +52,7 @@ export class MenuDto {
 
   @AutoMap()
   @IsOptional()
-  subMenuId?: number;
+  parentMenuId?: number;
 
   @AutoMap()
   @IsOptional()

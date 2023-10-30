@@ -27,20 +27,14 @@ export class PermissionMenu extends Model {
   })
   id: number;
 
-  @Column({})
+  @Column({ onDelete: 'NO ACTION', onUpdate: 'NO ACTION' })
   @ForeignKey(() => Permission)
   permissionId: number;
-  @BelongsTo(() => Permission, {
-    onDelete: 'NO ACTION',
-    onUpdate: 'NO ACTION',
-  })
+  @BelongsTo(() => Permission)
   permission: Permission;
-  @Column({})
+  @Column({ onDelete: 'NO ACTION', onUpdate: 'NO ACTION' })
   @ForeignKey(() => Menu)
   menuId: number;
-  @BelongsTo(() => Menu, {
-    onDelete: 'NO ACTION',
-    onUpdate: 'NO ACTION',
-  })
+  @BelongsTo(() => Menu)
   menu: Menu;
 }

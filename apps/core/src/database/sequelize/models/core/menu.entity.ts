@@ -5,10 +5,9 @@ import {
   ForeignKey,
   HasMany,
 } from 'sequelize-typescript';
-import { Permission } from './permission.entity';
 import { PermissionMenu } from './permission-menu.entity';
 
-@Table
+@Table({})
 export class Menu extends Model {
   static associate(models) {
     // Menu.hasMany(models.Menu, { as: 'subMenus', foreignKey: 'subMenuId' });
@@ -33,18 +32,19 @@ export class Menu extends Model {
   @Column({})
   className: string;
   @Column({})
-  @ForeignKey(() => Menu)
-  subMenuId: number;
-  @HasMany(() => Menu, {
-    onDelete: 'NO ACTION',
-    onUpdate: 'NO ACTION',
-  })
   order?: number;
-  subMenus: Menu[];
-
-  @HasMany(() => PermissionMenu, {
-    onDelete: 'NO ACTION',
-    onUpdate: 'NO ACTION',
+  @ForeignKey(() => Menu)
+  @Column({ onDelete: 'NO ACTION', onUpdate: 'NO ACTION', allowNull: true })
+  parentMenuId?: number;
+  @HasMany(() => Menu, {
+    foreignKey: 'parentMenuId',
+    as: 'subMenus',
   })
-  permissionMenus: PermissionMenu[];
+  subMenus?: Menu[];
+
+  @Column({})
+  visibility?: boolean;
+
+  @HasMany(() => PermissionMenu)
+  permissionMenus?: PermissionMenu[];
 }

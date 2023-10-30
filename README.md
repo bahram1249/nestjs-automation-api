@@ -31,6 +31,8 @@ DB_SYNCHRONIZE=true
 
 Create a database in your sql server instance with the name of your choose for your DB_NAME
 
+We highly suggest you to disable DB_SYNCHRONIZE and use sql scripts in apps/core/sql
+
 ## Set Authentication variable
 
 In .env file set variable like below:

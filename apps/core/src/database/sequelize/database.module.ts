@@ -14,6 +14,7 @@ import { Attachment } from './models/core/attachment.entity';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { Dialect } from 'sequelize';
 import { PermissionMenu } from './models/core/permission-menu.entity';
+import { PersianDate } from './models/core/view/persiandate.entity';
 
 // let config;
 // switch (process.env.NODE_ENV) {
@@ -76,6 +77,29 @@ const autoLoadModels: boolean = JSON.parse(process.env.DB_AUTO_LOAD_MODELS);
         sync: {
           force: false,
           alter: false,
+        },
+      }),
+      inject: [ConfigService],
+    }),
+    SequelizeModule.forRootAsync({
+      name: 'view',
+      imports: [ConfigModule],
+      useFactory: (configService: ConfigService) => ({
+        dialect: configService.get<Dialect>('DB_DIALECT'),
+        host: configService.get<string>('DB_HOST'),
+        port: configService.get<number>('DB_PORT'),
+        username: configService.get<string>('DB_USER'),
+        password: configService.get<string>('DB_PASS'),
+        database: configService.get<string>('DB_NAME_DEVELOPMENT'),
+        //[__dirname + '/models/**/*.entity.ts'],
+        models: [PersianDate],
+        autoLoadModels: autoLoadModels,
+        synchronize: false,
+        sync: {
+          force: false,
+          alter: {
+            drop: false,
+          },
         },
       }),
       inject: [ConfigService],

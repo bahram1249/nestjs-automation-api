@@ -3,7 +3,7 @@ import { InjectModel } from '@nestjs/sequelize';
 import { Permission } from 'apps/core/src/database/sequelize/models/core/permission.entity';
 import { QueryFilter } from 'apps/core/src/util/core/mapper/query-filter.mapper';
 import { ListFilter } from 'apps/core/src/util/core/query';
-import { Op } from 'sequelize';
+import { Op, Sequelize } from 'sequelize';
 
 @Injectable()
 export class PermissionService {
@@ -17,9 +17,28 @@ export class PermissionService {
 
     // search
     options.where = {
-      permissionname: {
-        [Op.like]: filter.search,
-      },
+      [Op.and]: [
+        {
+          [Op.or]: [
+            {
+              permissionName: {
+                [Op.like]: filter.search,
+              },
+            },
+            {
+              permissionUrl: {
+                [Op.like]: filter.search,
+              },
+            },
+          ],
+        },
+        Sequelize.where(
+          Sequelize.fn('isnull', Sequelize.col('visibility'), 1),
+          {
+            [Op.eq]: 1,
+          },
+        ),
+      ],
     };
 
     const count = await this.permissionRepository.count(options);

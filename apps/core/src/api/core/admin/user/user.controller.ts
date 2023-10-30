@@ -36,7 +36,7 @@ export class UserController {
   @ApiQuery({
     type: ListFilter,
   })
-  @CheckPermission({ url: '/api/core/admin/users', method: 'get' })
+  @CheckPermission({ permissionSymbol: 'core.admin.users.getall' })
   @Get('/')
   @HttpCode(HttpStatus.OK)
   async findAll(@Query() filter: ListFilter) {
@@ -44,14 +44,14 @@ export class UserController {
   }
 
   @ApiOperation({ description: 'show user by given id' })
-  @CheckPermission({ url: '/api/core/admin/users/:id', method: 'get' })
+  @CheckPermission({ permissionSymbol: 'core.admin.users.getone' })
   @Get('/:id')
   @HttpCode(HttpStatus.OK)
   async findById(@Param('id') userId: bigint) {
     await this.service.findById(userId);
   }
   @ApiOperation({ description: 'create user by admin' })
-  @CheckPermission({ url: '/api/core/admin/users', method: 'post' })
+  @CheckPermission({ permissionSymbol: 'core.admin.users.create' })
   @Post('/')
   @HttpCode(HttpStatus.CREATED)
   async create(@Body() dto: UserDto) {
@@ -60,7 +60,7 @@ export class UserController {
 
   @ApiOperation({ description: 'update user by admin' })
   @Put('/:id')
-  @CheckPermission({ url: '/api/core/admin/users/:id', method: 'put' })
+  @CheckPermission({ permissionSymbol: 'core.admin.users.update' })
   @HttpCode(HttpStatus.OK)
   async update(@Param('id') userId: bigint, @Body() dto: UserDto) {
     return await this.service.update(userId, dto);

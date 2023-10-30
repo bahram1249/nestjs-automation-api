@@ -21,8 +21,7 @@ import {
   ApiQuery,
   ApiTags,
 } from '@nestjs/swagger';
-import { ListFilter } from 'apps/core/src/util/core/query';
-import { MenuDto } from './dto';
+import { GetMenuDto, MenuDto } from './dto';
 import { MenuService } from './menu.service';
 
 @ApiTags('Admin-Menu')
@@ -33,27 +32,28 @@ import { MenuService } from './menu.service';
 export class MenuController {
   constructor(private service: MenuService) {}
   @ApiOperation({ description: 'show all menus' })
-  @CheckPermission({ url: '/api/core/admin/menus', method: 'get' })
+  @CheckPermission({ permissionSymbol: 'core.admin.menus.getall' })
   @Get('/')
   @ApiQuery({
-    type: ListFilter,
+    name: 'filter',
+    type: GetMenuDto,
     style: 'deepObject',
     explode: true,
   })
   @HttpCode(HttpStatus.OK)
-  async findAll(@Query() filter: ListFilter) {
+  async findAll(@Query() filter: GetMenuDto) {
     return await this.service.findAll(filter);
   }
 
   @ApiOperation({ description: 'show menu by given id' })
-  @CheckPermission({ url: '/api/core/admin/menus/:id', method: 'get' })
+  @CheckPermission({ permissionSymbol: 'core.admin.menus.getone' })
   @Get('/:id')
   @HttpCode(HttpStatus.OK)
   async findById(@Param('id') menuId: number) {
     return await this.service.findById(menuId);
   }
   @ApiOperation({ description: 'create menu by admin' })
-  @CheckPermission({ url: '/api/core/admin/menus', method: 'post' })
+  @CheckPermission({ permissionSymbol: 'core.admin.menus.create' })
   @Post('/')
   @HttpCode(HttpStatus.CREATED)
   async create(@Body() dto: MenuDto) {
@@ -62,7 +62,7 @@ export class MenuController {
 
   @ApiOperation({ description: 'update menu by admin' })
   @Put('/:id')
-  @CheckPermission({ url: '/api/core/admin/menus/:id', method: 'put' })
+  @CheckPermission({ permissionSymbol: 'core.admin.menus.update' })
   @HttpCode(HttpStatus.OK)
   async update(@Param('id') menuId: number, @Body() dto: MenuDto) {
     return await this.service.update(menuId, dto);

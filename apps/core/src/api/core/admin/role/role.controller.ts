@@ -33,7 +33,7 @@ import { RoleService } from './role.service';
 export class RoleController {
   constructor(private service: RoleService) {}
   @ApiOperation({ description: 'show all roles' })
-  @CheckPermission({ url: '/api/core/admin/roles', method: 'get' })
+  @CheckPermission({ permissionSymbol: 'core.admin.roles.getall' })
   @Get('/')
   @ApiQuery({
     type: ListFilter,
@@ -46,14 +46,14 @@ export class RoleController {
   }
 
   @ApiOperation({ description: 'show role by given id' })
-  @CheckPermission({ url: '/api/core/admin/roles/:id', method: 'get' })
+  @CheckPermission({ permissionSymbol: 'core.admin.roles.getone' })
   @Get('/:id')
   @HttpCode(HttpStatus.OK)
   async findById(@Param('id') roleId: number) {
     return await this.service.findById(roleId);
   }
   @ApiOperation({ description: 'create role by admin' })
-  @CheckPermission({ url: '/api/core/admin/roles', method: 'post' })
+  @CheckPermission({ permissionSymbol: 'core.admin.roles.create' })
   @Post('/')
   @HttpCode(HttpStatus.CREATED)
   async create(@Body() dto: RoleDto) {
@@ -62,7 +62,7 @@ export class RoleController {
 
   @ApiOperation({ description: 'update role by admin' })
   @Put('/:id')
-  @CheckPermission({ url: '/api/core/admin/roles/:id', method: 'put' })
+  @CheckPermission({ permissionSymbol: 'core.admin.roles.update' })
   @HttpCode(HttpStatus.OK)
   async update(@Param('id') roleId: number, @Body() dto: RoleDto) {
     return await this.service.update(roleId, dto);

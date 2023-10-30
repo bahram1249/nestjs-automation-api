@@ -12,11 +12,15 @@ export class PermissionGroup extends Model {
 
   @Column({
     primaryKey: true,
+    autoIncrement: true,
   })
   id: number;
 
   @Column({})
   permissionGroupName: string;
+  @Column({})
+  visiblity?: boolean;
+  order?: number;
   @HasMany(() => Permission, {
     onDelete: 'NO ACTION',
     onUpdate: 'NO ACTION',

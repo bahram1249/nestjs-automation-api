@@ -37,8 +37,7 @@ export class PermissionGuard implements CanActivate {
   ) {
     const permissionFinded = await this.permissionRepository.findOne({
       where: {
-        permissionUrl: permission.url,
-        permissionMethod: permission.method,
+        permissionSymbol: permission.permissionSymbol,
       },
     });
     if (!permissionFinded) {

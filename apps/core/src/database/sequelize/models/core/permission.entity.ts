@@ -32,6 +32,11 @@ export class Permission extends Model {
   @Column({
     allowNull: true,
   })
+  permissionSymbol?: string;
+
+  @Column({
+    allowNull: true,
+  })
   permissionName: string;
   @Column({
     allowNull: true,
@@ -43,21 +48,15 @@ export class Permission extends Model {
     type: DataType.STRING(10),
   })
   permissionMethod: string;
-  @Column({})
+  @Column({ onDelete: 'NO ACTION', onUpdate: 'NO ACTION' })
   @ForeignKey(() => PermissionGroup)
   permissionGroupId?: number;
-  @BelongsTo(() => PermissionGroup, {
-    onDelete: 'NO ACTION',
-    onUpdate: 'NO ACTION',
-  })
+  @BelongsTo(() => PermissionGroup)
   permissionGroup?: PermissionGroup;
   // @Column({})
   // menuId: number;
   @Column({})
   visibility?: boolean;
-  @HasMany(() => RolePermission, {
-    onDelete: 'NO ACTION',
-    onUpdate: 'NO ACTION',
-  })
+  @HasMany(() => RolePermission)
   rolePermissions?: RolePermission[];
 }

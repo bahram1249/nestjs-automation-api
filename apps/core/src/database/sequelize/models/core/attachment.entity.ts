@@ -41,26 +41,20 @@ export class Attachment extends Model {
   path: string;
   @Column({})
   thumbnailPath: string;
-  @Column({})
+  @Column({ onDelete: 'NO ACTION', onUpdate: 'NO ACTION' })
   @ForeignKey(() => AttachmentType)
-  attachmentTypeId: number;
-  @BelongsTo(() => AttachmentType, {
-    onDelete: 'NO ACTION',
-    onUpdate: 'NO ACTION',
-  })
-  attachmentType: AttachmentType;
-  @Column({})
+  attachmentTypeId?: number;
+  @BelongsTo(() => AttachmentType)
+  attachmentType?: AttachmentType;
+  @Column({ onDelete: 'NO ACTION', onUpdate: 'NO ACTION' })
   @ForeignKey(() => User)
-  userId: bigint;
-  @BelongsTo(() => User, {
-    onDelete: 'NO ACTION',
-    onUpdate: 'NO ACTION',
-  })
-  user: User;
+  userId?: bigint;
+  @BelongsTo(() => User)
+  user?: User;
   @Column({})
   persianDate: string;
   @Column({})
   persianMonth: string;
   @Column({})
-  isDeleted: boolean;
+  isDeleted?: boolean;
 }

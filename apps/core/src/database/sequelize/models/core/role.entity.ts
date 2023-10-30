@@ -30,6 +30,12 @@ export class Role extends Model {
   })
   static_id: number;
 
+  @Column({
+    type: DataType.BOOLEAN,
+    allowNull: true,
+  })
+  visibility?: boolean;
+
   @HasMany(() => UserRole)
   userRoles: UserRole[];
 
