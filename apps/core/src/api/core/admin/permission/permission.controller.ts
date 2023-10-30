@@ -19,8 +19,7 @@ import {
   ApiQuery,
   ApiTags,
 } from '@nestjs/swagger';
-import { ListFilter } from 'apps/core/src/util/core/query';
-import { PermissionGetDto } from './dto/PermissionGet.dto';
+import { PermissionGetDto } from './dto';
 
 @ApiTags('Admin-Permissions')
 @ApiBearerAuth()

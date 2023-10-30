@@ -3,9 +3,9 @@ import { InjectModel } from '@nestjs/sequelize';
 import { Permission } from 'apps/core/src/database/sequelize/models/core/permission.entity';
 import { QueryFilter } from 'apps/core/src/util/core/mapper/query-filter.mapper';
 import { Op, Sequelize } from 'sequelize';
-import { PermissionGetDto } from './dto/PermissionGet.dto';
 import { RolePermission } from 'apps/core/src/database/sequelize/models/core/rolePermission.entity';
 import { PermissionGroup } from 'apps/core/src/database/sequelize/models/core/permissionGroup.entity';
+import { PermissionGetDto } from './dto';
 
 @Injectable()
 export class PermissionService {
