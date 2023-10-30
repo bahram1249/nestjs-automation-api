@@ -9,10 +9,9 @@ import { InjectModel } from '@nestjs/sequelize';
 import { Role } from 'apps/core/src/database/sequelize/models/core/role.entity';
 import { QueryFilter } from 'apps/core/src/util/core/mapper/query-filter.mapper';
 import { Op } from 'sequelize';
-import { RoleDto } from './dto';
 import { Permission } from 'apps/core/src/database/sequelize/models/core/permission.entity';
 import { RolePermission } from 'apps/core/src/database/sequelize/models/core/rolePermission.entity';
-import { RoleGetDto } from './dto/role-get.dto';
+import { RoleGetDto, RoleDto } from './dto';
 
 @Injectable()
 export class RoleService {
