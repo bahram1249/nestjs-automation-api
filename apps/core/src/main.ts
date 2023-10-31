@@ -41,6 +41,7 @@ async function bootstrap() {
     .addTag('Admin-Role')
     .addTag('Admin-Menu')
     .addTag('Admin-Users')
+    .addTag('User-Roles')
     .build();
   const document = SwaggerModule.createDocument(app, config, {
     deepScanRoutes: true,
