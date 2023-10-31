@@ -19,7 +19,7 @@ export class PermissionGroup extends Model {
   @Column({})
   permissionGroupName: string;
   @Column({})
-  visiblity?: boolean;
+  visibility?: boolean;
   order?: number;
   @HasMany(() => Permission, { as: 'permissions' })
   permissions: Permission[];
