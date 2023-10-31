@@ -30,7 +30,20 @@ END
 
 GO
 
+IF OBJECT_ID('Migrations', 'U') IS  NULL 
+BEGIN
+	CREATE Table WinstonLogs
+	(
+		id							bigint identity(1,1)					PRIMARY KEY,
+		[level]						nvarchar(250)							NULL,
+		message						nvarchar(1024)							NULL,
+		meta						nvarchar(max)							NULL,
+		createdAt					datetimeoffset							NOT NULL,
+		updatedAt					datetimeoffset							NOT NULL,
+	);
+END
 
+GO
 
 IF NOT EXISTS ((SELECT 1 FROM Migrations WHERE version = 'CORE-Users-v1' 
 					

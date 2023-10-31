@@ -15,6 +15,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { Dialect } from 'sequelize';
 import { PermissionMenu } from './models/core/permission-menu.entity';
 import { PersianDate } from './models/core/view/persiandate.entity';
+import { WinstonLog } from './models/core/winstonlog.entity';
 
 // let config;
 // switch (process.env.NODE_ENV) {
@@ -46,6 +47,7 @@ import { PersianDate } from './models/core/view/persiandate.entity';
 
 const dbSync: boolean = JSON.parse(process.env.DB_SYNCHRONIZE);
 const autoLoadModels: boolean = JSON.parse(process.env.DB_AUTO_LOAD_MODELS);
+const dbLog: boolean = JSON.parse(process.env.DB_LOG);
 
 @Module({
   imports: [
@@ -70,9 +72,10 @@ const autoLoadModels: boolean = JSON.parse(process.env.DB_AUTO_LOAD_MODELS);
           AttachmentType,
           Attachment,
           PermissionMenu,
+          WinstonLog,
         ],
         autoLoadModels: autoLoadModels,
-
+        logging: dbLog,
         synchronize: dbSync,
         sync: {
           force: false,

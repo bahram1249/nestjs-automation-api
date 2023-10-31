@@ -27,6 +27,7 @@ DB_DIALECT=mssql
 DB_NAME_DEVELOPMENT=nest
 DB_AUTO_LOAD_MODELS=true
 DB_SYNCHRONIZE=true
+DB_LOG=false
 ```
 
 Create a database in your sql server instance with the name of your choose for your DB_NAME

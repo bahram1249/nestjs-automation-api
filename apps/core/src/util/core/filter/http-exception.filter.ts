@@ -22,7 +22,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
         : HttpStatus.INTERNAL_SERVER_ERROR;
 
     if (status == HttpStatus.INTERNAL_SERVER_ERROR) {
-      this.logger.error(exception.message, {
+      this.logger.error(exception.message, exception.stack, null, {
         statusCode: status,
         method: request.method,
         path: request.url,
@@ -31,7 +31,6 @@ export class HttpExceptionFilter implements ExceptionFilter {
         stack: exception.stack,
       });
     }
-    console.log(exception);
     response.status(status).json({
       statusCode: status,
       message:

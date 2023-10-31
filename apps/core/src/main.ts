@@ -12,44 +12,7 @@ async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule, {
     bufferLogs: true,
   });
-  const logger = new DBLogger();
-  app.useLogger(logger);
-
-  // app.connectMicroservice<MicroserviceOptions>({
-  //   transport: Transport.REDIS,
-  //   options: {
-  //     host: '127.0.0.1',
-  //     port: 6379,
-  //   },
-  // });
-  app.useGlobalFilters(new HttpExceptionFilter(logger));
-  app.useGlobalPipes(
-    new ValidationPipe({
-      whitelist: true,
-      transform: true,
-    }),
-  );
-
-  const config = new DocumentBuilder()
-    .setTitle('Nestjs Api')
-    .setDescription('The Core API description')
-    .setVersion('1.0')
-    .addBearerAuth()
-    .addTag('Auth')
-    .addTag('Admin-PermissionGroups')
-    .addTag('Admin-Permissions')
-    .addTag('Admin-Role')
-    .addTag('Admin-Menu')
-    .addTag('Admin-Users')
-    .addTag('User-Roles')
-    .build();
-  const document = SwaggerModule.createDocument(app, config, {
-    deepScanRoutes: true,
-  });
-  SwaggerModule.setup('api', app, document);
-
-  await app.startAllMicroservices();
-  await app.listen(5000);
   await app.get(AppModule).setApp(app);
+  await app.listen(5000);
 }
 bootstrap();

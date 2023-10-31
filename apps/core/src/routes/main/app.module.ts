@@ -1,8 +1,10 @@
 import {
   INestApplication,
+  Inject,
   MiddlewareConsumer,
   Module,
   NestModule,
+  ValidationPipe,
 } from '@nestjs/common';
 import { AppService } from './app.service';
 import { ClientsModule, Transport } from '@nestjs/microservices';
@@ -16,6 +18,10 @@ import { classes } from '@automapper/classes';
 import { PermissionCheckerModule } from '../../util/core/permission/permission-checker.module';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
+import { HttpExceptionFilter } from '../../util/core/filter';
+import { DBLogger } from '../../util/core/logger/db-logger.service';
+import { DBLoggerModule } from '../../util/core/logger/db-logger.module';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -36,6 +42,7 @@ import { join } from 'path';
     ]),
     DatabaseModule,
     SequelizeModule.forFeature([Permission]),
+    DBLoggerModule,
     AutomapperModule.forRoot({
       strategyInitializer: classes(),
     }),
@@ -47,6 +54,8 @@ export class AppModule implements NestModule {
   constructor(
     @InjectModel(Permission)
     private readonly permissionReopsiory: typeof Permission,
+    @Inject(DBLogger)
+    private readonly logger: DBLogger,
   ) {}
   app: INestApplication;
   async configure(consumer: MiddlewareConsumer) {
@@ -54,6 +63,42 @@ export class AppModule implements NestModule {
   }
   public async setApp(app: INestApplication) {
     this.app = app;
+
+    app.useLogger(this.logger);
+
+    // app.connectMicroservice<MicroserviceOptions>({
+    //   transport: Transport.REDIS,
+    //   options: {
+    //     host: '127.0.0.1',
+    //     port: 6379,
+    //   },
+    // });
+    app.useGlobalFilters(new HttpExceptionFilter(this.logger));
+
+    app.useGlobalPipes(
+      new ValidationPipe({
+        whitelist: true,
+        transform: true,
+      }),
+    );
+
+    const config = new DocumentBuilder()
+      .setTitle('Nestjs Api')
+      .setDescription('The Core API description')
+      .setVersion('1.0')
+      .addBearerAuth()
+      .addTag('Auth')
+      .addTag('Admin-PermissionGroups')
+      .addTag('Admin-Permissions')
+      .addTag('Admin-Role')
+      .addTag('Admin-Menu')
+      .addTag('Admin-Users')
+      .addTag('User-Roles')
+      .build();
+    const document = SwaggerModule.createDocument(app, config, {
+      deepScanRoutes: true,
+    });
+    SwaggerModule.setup('api', app, document);
     // const server = app.getHttpServer();
 
     // const router = server._events.request._router;
