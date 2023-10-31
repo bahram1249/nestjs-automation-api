@@ -36,6 +36,7 @@ async function bootstrap() {
     .setVersion('1.0')
     .addBearerAuth()
     .addTag('Auth')
+    .addTag('Admin-PermissionGroups')
     .addTag('Admin-Permissions')
     .addTag('Admin-Role')
     .addTag('Admin-Menu')

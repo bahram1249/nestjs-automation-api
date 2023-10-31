@@ -7,6 +7,7 @@ import { MenuModule } from '../../api/core/admin/menu/menu.module';
 import { SequelizeModule } from '@nestjs/sequelize';
 import { User } from '../../database/sequelize/models/core/user.entity';
 import { Permission } from '../../database/sequelize/models/core/permission.entity';
+import { PermissionGroupModule } from '../../api/core/admin/permission-group/permission-group.module';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { Permission } from '../../database/sequelize/models/core/permission.enti
     RoleModule,
     PermissionModule,
     MenuModule,
+    PermissionGroupModule,
   ],
 })
 export class CoreRouteModule {}

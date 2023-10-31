@@ -21,6 +21,6 @@ export class PermissionGroup extends Model {
   @Column({})
   visiblity?: boolean;
   order?: number;
-  @HasMany(() => Permission)
+  @HasMany(() => Permission, { as: 'permissions' })
   permissions: Permission[];
 }
