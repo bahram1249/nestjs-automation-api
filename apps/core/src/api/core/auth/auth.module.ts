@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
-import { JwtStrategy } from './strategy';
+import { JwtStrategy } from '../../../util/core/auth/strategy';
 import { User } from 'apps/core/src/database/sequelize/models/core/user.entity';
 import { SequelizeModule } from '@nestjs/sequelize';
 

@@ -8,7 +8,7 @@ import {
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
-import { JwtGuard } from '../../auth/guard';
+import { JwtGuard } from '../../../../util/core/auth/guard';
 import { CheckPermission } from 'apps/core/src/util/core/permission/decorator';
 import { PermissionGuard } from 'apps/core/src/util/core/permission/guard';
 import { JsonResponseTransformInterceptor } from 'apps/core/src/util/core/response/interceptor/json-response-transform.interceptor';
@@ -19,7 +19,7 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { RoleService } from './role.service';
-import { GetUser } from '../../auth/decorator';
+import { GetUser } from '../../../../util/core/auth/decorator';
 import { User } from 'apps/core/src/database/sequelize/models/core/user.entity';
 import { RoleGetDto } from './dto';
 

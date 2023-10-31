@@ -12,7 +12,7 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { UserService } from './user.service';
-import { JwtGuard } from '../../auth/guard';
+import { JwtGuard } from '../../../../util/core/auth/guard';
 import { CheckPermission } from 'apps/core/src/util/core/permission/decorator';
 import { PermissionGuard } from 'apps/core/src/util/core/permission/guard';
 import { JsonResponseTransformInterceptor } from 'apps/core/src/util/core/response/interceptor/json-response-transform.interceptor';
