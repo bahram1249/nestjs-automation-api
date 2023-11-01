@@ -24,7 +24,10 @@ import { PermissionGetDto } from './dto';
 @ApiTags('Admin-Permissions')
 @ApiBearerAuth()
 @UseGuards(JwtGuard, PermissionGuard)
-@Controller('/api/core/admin/permissions')
+@Controller({
+  path: '/api/core/admin/permissions',
+  version: ['1'],
+})
 @UseInterceptors(JsonResponseTransformInterceptor)
 export class PermissionController {
   constructor(private service: PermissionService) {}

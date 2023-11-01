@@ -45,6 +45,8 @@ END
 
 GO
 
+-- Core Tables
+
 IF NOT EXISTS ((SELECT 1 FROM Migrations WHERE version = 'CORE-Users-v1' 
 					
 			))
@@ -96,6 +98,7 @@ BEGIN
 		id						int									PRIMARY KEY,
 		typeName				nvarchar(256)						NOT NULL,
 		[order]					int									NULL,
+		[settings]				nvarchar(1024)						NULL,
 		[createdAt]				datetimeoffset						NOT NULL,
 		[updatedAt]				datetimeoffset						NOT NULL
 	)

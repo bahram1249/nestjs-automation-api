@@ -25,7 +25,10 @@ import { RoleGetDto } from './dto';
 @ApiTags('User-Roles')
 @ApiBearerAuth()
 @UseGuards(JwtGuard, PermissionGuard)
-@Controller('/api/core/user/roles')
+@Controller({
+  path: '/api/core/user/roles',
+  version: ['1'],
+})
 @UseInterceptors(JsonResponseTransformInterceptor)
 export class RoleController {
   constructor(private service: RoleService) {}

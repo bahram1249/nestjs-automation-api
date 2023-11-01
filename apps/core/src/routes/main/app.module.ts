@@ -5,6 +5,7 @@ import {
   Module,
   NestModule,
   ValidationPipe,
+  VersioningType,
 } from '@nestjs/common';
 import { AppService } from './app.service';
 import { ClientsModule, Transport } from '@nestjs/microservices';
@@ -73,6 +74,9 @@ export class AppModule implements NestModule {
     //     port: 6379,
     //   },
     // });
+    app.enableVersioning({
+      type: VersioningType.URI,
+    });
     app.useGlobalFilters(new HttpExceptionFilter(this.logger));
 
     app.useGlobalPipes(

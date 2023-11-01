@@ -28,7 +28,10 @@ import { UserDto } from './dto';
 @ApiTags('Admin-Users')
 @ApiBearerAuth()
 @UseGuards(JwtGuard, PermissionGuard)
-@Controller('/api/core/admin/users')
+@Controller({
+  path: '/api/core/admin/users',
+  version: ['1'],
+})
 @UseInterceptors(JsonResponseTransformInterceptor)
 export class UserController {
   constructor(private service: UserService) {}

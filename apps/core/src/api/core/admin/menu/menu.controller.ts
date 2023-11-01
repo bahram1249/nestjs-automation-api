@@ -27,7 +27,10 @@ import { MenuService } from './menu.service';
 @ApiTags('Admin-Menu')
 @ApiBearerAuth()
 @UseGuards(JwtGuard, PermissionGuard)
-@Controller('/api/core/admin/menus')
+@Controller({
+  path: '/api/core/admin/menus',
+  version: ['1'],
+})
 @UseInterceptors(JsonResponseTransformInterceptor)
 export class MenuController {
   constructor(private service: MenuService) {}

@@ -12,7 +12,10 @@ import { JsonResponseTransformInterceptor } from 'apps/core/src/util/core/respon
 import { ApiTags } from '@nestjs/swagger';
 
 @ApiTags('Auth')
-@Controller('/api/core/auth')
+@Controller({
+  path: '/api/core/auth',
+  version: ['1'],
+})
 @UseInterceptors(JsonResponseTransformInterceptor)
 export class AuthController {
   constructor(private authService: AuthService) {}
