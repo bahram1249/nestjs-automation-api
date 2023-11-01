@@ -13,6 +13,5 @@ async function bootstrap() {
     bufferLogs: true,
   });
   await app.get(AppModule).setApp(app);
-  await app.listen(5000);
 }
 bootstrap();

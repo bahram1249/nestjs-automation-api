@@ -9,7 +9,7 @@ import {
 } from '@nestjs/common';
 import { AppService } from './app.service';
 import { ClientsModule, Transport } from '@nestjs/microservices';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { DatabaseModule } from '../../database/sequelize/database.module';
 import { CoreRouteModule } from '../core/core-route.module';
 import { InjectModel, SequelizeModule } from '@nestjs/sequelize';
@@ -57,6 +57,8 @@ export class AppModule implements NestModule {
     private readonly permissionReopsiory: typeof Permission,
     @Inject(DBLogger)
     private readonly logger: DBLogger,
+    @Inject(ConfigService)
+    private readonly config: ConfigService,
   ) {}
   app: INestApplication;
   async configure(consumer: MiddlewareConsumer) {
@@ -103,6 +105,7 @@ export class AppModule implements NestModule {
       deepScanRoutes: true,
     });
     SwaggerModule.setup('api', app, document);
+    await app.listen(this.config.get('HOST_PORT'));
     // const server = app.getHttpServer();
 
     // const router = server._events.request._router;

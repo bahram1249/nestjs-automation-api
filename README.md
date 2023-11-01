@@ -42,6 +42,7 @@ In .env file set variable like below:
 JWT_SECRET=<YourStrongSecret>
 TOKEN_EXPIRATION=48h
 BEARER=Bearer
+HOST_PORT=3000
 ```
 
 ## Running the app
