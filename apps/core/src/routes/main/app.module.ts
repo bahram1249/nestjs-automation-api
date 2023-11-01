@@ -24,6 +24,7 @@ import { DBLogger } from '../../util/core/logger/db-logger.service';
 import { DBLoggerModule } from '../../util/core/logger/db-logger.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import helmet from 'helmet';
+import { ThrottlerModule } from '@nestjs/throttler';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -40,6 +41,23 @@ import helmet from 'helmet';
           host: '127.0.0.1',
           port: 6379,
         },
+      },
+    ]),
+    ThrottlerModule.forRoot([
+      {
+        name: 'short',
+        ttl: 1000,
+        limit: 20,
+      },
+      {
+        name: 'medium',
+        ttl: 10000,
+        limit: 40,
+      },
+      {
+        name: 'long',
+        ttl: 60000,
+        limit: 300,
       },
     ]),
     DatabaseModule,
