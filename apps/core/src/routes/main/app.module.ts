@@ -25,6 +25,7 @@ import { DBLoggerModule } from '../../util/core/logger/db-logger.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import helmet from 'helmet';
 import { ThrottlerModule } from '@nestjs/throttler';
+import { DevtoolsModule } from '@nestjs/devtools-integration';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -67,6 +68,9 @@ import { ThrottlerModule } from '@nestjs/throttler';
       strategyInitializer: classes(),
     }),
     CoreRouteModule,
+    DevtoolsModule.register({
+      http: process.env.NODE_ENV !== 'production',
+    }),
   ],
   providers: [AppService, PermissionCheckerModule],
 })
