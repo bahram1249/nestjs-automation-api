@@ -23,6 +23,7 @@ import { HttpExceptionFilter } from '../../util/core/filter';
 import { DBLogger } from '../../util/core/logger/db-logger.service';
 import { DBLoggerModule } from '../../util/core/logger/db-logger.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import helmet from 'helmet';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -87,6 +88,8 @@ export class AppModule implements NestModule {
         transform: true,
       }),
     );
+    app.use(helmet());
+    app.enableCors();
 
     const config = new DocumentBuilder()
       .setTitle('Nestjs Api')

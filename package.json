@@ -38,6 +38,7 @@
     "bcrypt": "^5.1.1",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.0",
+    "helmet": "^7.0.0",
     "ioredis": "^5.3.2",
     "loadash": "^1.0.0",
     "mssql": "^10.0.1",
