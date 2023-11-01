@@ -4,7 +4,6 @@ import {
   ArgumentsHost,
   HttpException,
   HttpStatus,
-  BadRequestException,
 } from '@nestjs/common';
 import { Request, Response } from 'express';
 import { DBLogger } from '../logger/db-logger.service';
@@ -12,7 +11,7 @@ import { DBLogger } from '../logger/db-logger.service';
 @Catch()
 export class HttpExceptionFilter implements ExceptionFilter {
   constructor(private readonly logger: DBLogger) {}
-  catch(exception: HttpException, host: ArgumentsHost) {
+  async catch(exception: HttpException, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
     const response = ctx.getResponse<Response>();
     const request = ctx.getRequest<Request>();
@@ -22,11 +21,12 @@ export class HttpExceptionFilter implements ExceptionFilter {
         : HttpStatus.INTERNAL_SERVER_ERROR;
 
     if (status == HttpStatus.INTERNAL_SERVER_ERROR) {
-      this.logger.error(exception.message, exception.stack, null, {
+      await this.logger.error(exception.message, exception.stack, null, {
         statusCode: status,
         method: request.method,
         path: request.url,
         user: request.user,
+        ip: request.ip,
         timestamp: new Date().toISOString(),
         stack: exception.stack,
       });
