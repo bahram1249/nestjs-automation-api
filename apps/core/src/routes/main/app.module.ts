@@ -14,11 +14,9 @@ import { DatabaseModule } from '../../database/sequelize/database.module';
 import { CoreRouteModule } from '../core/core-route.module';
 import { InjectModel, SequelizeModule } from '@nestjs/sequelize';
 import { Permission } from '../../database/sequelize/models/core/permission.entity';
-import { AutomapperModule } from '@automapper/nestjs';
-import { classes } from '@automapper/classes';
 import { PermissionCheckerModule } from '../../util/core/permission/permission-checker.module';
 import { ServeStaticModule } from '@nestjs/serve-static';
-import { join } from 'path';
+import * as path from 'path';
 import { HttpExceptionFilter } from '../../util/core/filter';
 import { DBLogger } from '../../util/core/logger/db-logger.service';
 import { DBLoggerModule } from '../../util/core/logger/db-logger.module';
@@ -32,7 +30,7 @@ import { DevtoolsModule } from '@nestjs/devtools-integration';
       isGlobal: true,
     }),
     ServeStaticModule.forRoot({
-      rootPath: join(__dirname, '../../../../', 'client/dist'),
+      rootPath: path.join(__dirname, '../../../../', 'client/dist'),
     }),
     ClientsModule.register([
       {
@@ -64,9 +62,9 @@ import { DevtoolsModule } from '@nestjs/devtools-integration';
     DatabaseModule,
     SequelizeModule.forFeature([Permission]),
     DBLoggerModule,
-    AutomapperModule.forRoot({
-      strategyInitializer: classes(),
-    }),
+    // AutomapperModule.forRoot({
+    //   strategyInitializer: classes(),
+    // }),
     CoreRouteModule,
     DevtoolsModule.register({
       http: process.env.NODE_ENV !== 'production',

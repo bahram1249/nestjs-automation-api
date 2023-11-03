@@ -1,4 +1,4 @@
-import { AutoMap } from '@automapper/classes';
+//import { AutoMap } from '@automapper/classes';
 import {
   IsEmail,
   IsNotEmpty,
@@ -17,7 +17,7 @@ export class UserDto {
   @IsNotEmpty({
     message: '',
   })
-  @AutoMap()
+  //@AutoMap()
   firstname: string;
 
   @MinLength(3, {
@@ -29,7 +29,7 @@ export class UserDto {
   @IsNotEmpty({
     message: '',
   })
-  @AutoMap()
+  //@AutoMap()
   lastname: string;
 
   @MinLength(3, {
@@ -41,7 +41,7 @@ export class UserDto {
   @IsNotEmpty({
     message: '',
   })
-  @AutoMap()
+  //@AutoMap()
   username: string;
 
   @IsEmail(
@@ -53,11 +53,11 @@ export class UserDto {
   @IsOptional({
     message: '',
   })
-  @AutoMap()
+  //@AutoMap()
   email: string;
 
   @IsOptional()
-  @AutoMap()
+  //@AutoMap()
   phoneNumber: string;
   @IsOptional()
   roles: number[];

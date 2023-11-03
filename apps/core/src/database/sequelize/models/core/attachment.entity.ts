@@ -57,4 +57,8 @@ export class Attachment extends Model {
   persianMonth: string;
   @Column({})
   isDeleted?: boolean;
+  @Column({})
+  deletedDate?: Date;
+  @Column({})
+  deletedBy?: bigint;
 }

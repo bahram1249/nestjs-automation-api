@@ -1,4 +1,4 @@
-import { AutoMap } from '@automapper/classes';
+//import { AutoMap } from '@automapper/classes';
 import { IsNotEmpty, IsOptional, MaxLength, MinLength } from 'class-validator';
 
 export class MenuDto {
@@ -11,7 +11,7 @@ export class MenuDto {
   @IsNotEmpty({
     message: '',
   })
-  @AutoMap()
+  //@AutoMap()
   title: string;
 
   @MinLength(3, {
@@ -23,7 +23,7 @@ export class MenuDto {
   @IsNotEmpty({
     message: '',
   })
-  @AutoMap()
+  //@AutoMap()
   url: string;
 
   @MinLength(3, {
@@ -35,7 +35,7 @@ export class MenuDto {
   @IsNotEmpty({
     message: '',
   })
-  @AutoMap()
+  //@AutoMap()
   icon: string;
 
   @MinLength(3, {
@@ -47,14 +47,14 @@ export class MenuDto {
   @IsNotEmpty({
     message: '',
   })
-  @AutoMap()
+  //@AutoMap()
   className: string;
 
-  @AutoMap()
+  //@AutoMap()
   @IsOptional()
   parentMenuId?: number;
 
-  @AutoMap()
+  //@AutoMap()
   @IsOptional()
   order?: number;
 }

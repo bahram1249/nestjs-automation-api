@@ -121,7 +121,7 @@ BEGIN
 
 	CREATE TABLE Attachments
 	(
-		id						bigint								PRIMARY KEY,
+		id						bigint  identity(1,1)				PRIMARY KEY,
 		originalFileName		nvarchar(512)						NULL,
 		fileName				nvarchar(512)						NULL,
 		ext						nvarchar(32)						NULL,
@@ -448,6 +448,26 @@ BEGIN
 END
 
 GO
+
+-- profile attachment types
+
+IF NOT EXISTS ((SELECT 1 FROM Migrations WHERE version = 'CORE-AttachmentTypes-Data-v1' 
+			))
+	AND EXISTS (
+		SELECT 1 FROM Settings WHERE 1=1
+		OR ([key] = 'SITE_NAME' AND [value] IN ('SITE_NAME'))
+	)
+BEGIN
+	
+	INSERT INTO AttachmentTypes(id, typeName, createdAt, updatedAt)
+	SELECT 1, N'profile', getdate(), getdate()
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'CORE-AttachmentTypes-Data-v1', GETDATE(), GETDATE()
+END
+
+GO
+
 
 -- auth/admin/users
 IF NOT EXISTS ((SELECT 1 FROM Migrations WHERE version = 'CORE-Permissions-Data-v1' 

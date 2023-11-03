@@ -36,3 +36,9 @@ lerna-debug.log*
 !.vscode/tasks.json
 !.vscode/launch.json
 !.vscode/extensions.json
+
+# temp files
+tmp
+
+# profile photos
+profile

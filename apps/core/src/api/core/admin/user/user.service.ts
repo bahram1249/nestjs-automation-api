@@ -12,8 +12,8 @@ import { QueryFilter } from 'apps/core/src/util/core/mapper/query-filter.mapper'
 import { ListFilter } from 'apps/core/src/util/core/query';
 import { Op } from 'sequelize';
 import { UserDto } from './dto';
-import { InjectMapper } from '@automapper/nestjs';
-import { Mapper } from '@automapper/core';
+// import { InjectMapper } from '@automapper/nestjs';
+// import { Mapper } from '@automapper/core';
 import { UserRole } from 'apps/core/src/database/sequelize/models/core/userRole.entity';
 
 @Injectable()
@@ -25,8 +25,8 @@ export class UserService {
     private readonly roleRepository: typeof Role,
     @InjectModel(UserRole)
     private readonly userRoleRepository: typeof UserRole,
-    @InjectMapper() private readonly classMapper: Mapper,
-  ) {}
+  ) //@InjectMapper() private readonly classMapper: Mapper,
+  {}
 
   async findAll(filter: ListFilter) {
     let options = QueryFilter.init();
