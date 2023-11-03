@@ -43,6 +43,9 @@ JWT_SECRET=<YourStrongSecret>
 TOKEN_EXPIRATION=48h
 BEARER=Bearer
 HOST_PORT=3000
+TEMP_ATTACHMENT="/tmp/attachmentFile"
+PROFILE_PATH_ATTACHMENT="/profile/big"
+PROFILE_PATH_THUMB_ATTACHMENT="/profile/thumb"
 ```
 
 ## Running the app

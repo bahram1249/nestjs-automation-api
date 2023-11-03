@@ -112,22 +112,16 @@ export class AppModule implements NestModule {
     app.enableCors();
 
     const config = new DocumentBuilder()
-      .setTitle('Nestjs Api')
+      .setTitle('Core Api')
       .setDescription('The Core API description')
       .setVersion('1.0')
       .addBearerAuth()
-      .addTag('Auth')
-      .addTag('Admin-PermissionGroups')
-      .addTag('Admin-Permissions')
-      .addTag('Admin-Role')
-      .addTag('Admin-Menu')
-      .addTag('Admin-Users')
-      .addTag('User-Roles')
       .build();
     const document = SwaggerModule.createDocument(app, config, {
+      include: [CoreRouteModule],
       deepScanRoutes: true,
     });
-    SwaggerModule.setup('api', app, document);
+    SwaggerModule.setup('api/core', app, document);
     await app.listen(this.config.get('HOST_PORT'));
     // const server = app.getHttpServer();
 
