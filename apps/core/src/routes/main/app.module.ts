@@ -24,6 +24,7 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import helmet from 'helmet';
 import { ThrottlerModule } from '@nestjs/throttler';
 import { DevtoolsModule } from '@nestjs/devtools-integration';
+import { PCMRouteModule } from '../pcm/pcm-route.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -66,6 +67,7 @@ import { DevtoolsModule } from '@nestjs/devtools-integration';
     //   strategyInitializer: classes(),
     // }),
     CoreRouteModule,
+    PCMRouteModule,
     DevtoolsModule.register({
       http: process.env.NODE_ENV !== 'production',
     }),
@@ -111,17 +113,30 @@ export class AppModule implements NestModule {
     app.use(helmet());
     app.enableCors();
 
-    const config = new DocumentBuilder()
+    const coreConfig = new DocumentBuilder()
       .setTitle('Core Api')
       .setDescription('The Core API description')
       .setVersion('1.0')
       .addBearerAuth()
       .build();
-    const document = SwaggerModule.createDocument(app, config, {
+    const coreDocument = SwaggerModule.createDocument(app, coreConfig, {
       include: [CoreRouteModule],
       deepScanRoutes: true,
     });
-    SwaggerModule.setup('api/core', app, document);
+
+    const pcmConfig = new DocumentBuilder()
+      .setTitle('PCM Api')
+      .setDescription('The PCM API description')
+      .setVersion('1.0')
+      .addBearerAuth()
+      .build();
+    const pcmDocument = SwaggerModule.createDocument(app, pcmConfig, {
+      include: [PCMRouteModule],
+      deepScanRoutes: true,
+    });
+    SwaggerModule.setup('api/core', app, coreDocument);
+    SwaggerModule.setup('api/pcm', app, pcmDocument);
+
     await app.listen(this.config.get('HOST_PORT'));
     // const server = app.getHttpServer();
 
