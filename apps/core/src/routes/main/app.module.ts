@@ -20,7 +20,6 @@ import * as path from 'path';
 import { HttpExceptionFilter } from '../../util/core/filter';
 import { DBLogger } from '../../util/core/logger/db-logger.service';
 import { DBLoggerModule } from '../../util/core/logger/db-logger.module';
-import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import helmet from 'helmet';
 import { ThrottlerModule } from '@nestjs/throttler';
 import { DevtoolsModule } from '@nestjs/devtools-integration';
@@ -113,68 +112,9 @@ export class AppModule implements NestModule {
     app.use(helmet());
     app.enableCors();
 
-    const coreConfig = new DocumentBuilder()
-      .setTitle('Core Api')
-      .setDescription('The Core API description')
-      .setVersion('1.0')
-      .addBearerAuth()
-      .build();
-    const coreDocument = SwaggerModule.createDocument(app, coreConfig, {
-      include: [CoreRouteModule],
-      deepScanRoutes: true,
-    });
-
-    const pcmConfig = new DocumentBuilder()
-      .setTitle('PCM Api')
-      .setDescription('The PCM API description')
-      .setVersion('1.0')
-      .addBearerAuth()
-      .build();
-    const pcmDocument = SwaggerModule.createDocument(app, pcmConfig, {
-      include: [PCMRouteModule],
-      deepScanRoutes: true,
-    });
-    SwaggerModule.setup('api/core', app, coreDocument);
-    SwaggerModule.setup('api/pcm', app, pcmDocument);
+    app.get(CoreRouteModule).setApp(app);
+    app.get(PCMRouteModule).setApp(app);
 
     await app.listen(this.config.get('HOST_PORT'));
-    // const server = app.getHttpServer();
-
-    // const router = server._events.request._router;
-
-    // const stacks = this.app.getHttpAdapter().getInstance()._router.stack;
-    // stacks.forEach((layer) => {
-    //   if (layer.route) {
-    //     console.log(layer.route);
-    //   }
-    // });
-
-    // const existingRoutes: [] = router.stack
-    //   .map((routeObj) => {
-    //     if (routeObj.route) {
-    //       return {
-    //         route: {
-    //           path: routeObj.route?.path,
-    //           method: routeObj.route?.stack[0].method,
-    //         },
-    //       };
-    //     }
-    //   })
-    //   .filter((item) => item !== undefined);
-    // for (var index = 0; index < existingRoutes.length; index++) {
-    //   var item = existingRoutes[index];
-    //   let permission = await this.permissionReopsiory.findOne({
-    //     where: {
-    //       permissionUrl: item['route']['path'],
-    //       permissionMethod: item['route']['method'],
-    //     },
-    //   });
-    //   if (!permission) {
-    //     permission = await this.permissionReopsiory.create({
-    //       permissionUrl: item['route']['path'],
-    //       permissionMethod: item['route']['method'],
-    //     });
-    //   }
-    // }
   }
 }

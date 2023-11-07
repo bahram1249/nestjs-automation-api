@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { INestApplication, Module } from '@nestjs/common';
 import { AuthModule } from '../../api/core/auth/auth.module';
 import { UserModule } from '../../api/core/admin/user/user.module';
 import { RoleModule } from '../../api/core/admin/role/role.module';
@@ -10,6 +10,7 @@ import { User } from '../../database/sequelize/models/core/user.entity';
 import { Permission } from '../../database/sequelize/models/core/permission.entity';
 import { PermissionGroupModule } from '../../api/core/admin/permission-group/permission-group.module';
 import { ProfileModule } from '../../api/core/user/profile/profile.module';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 @Module({
   imports: [
@@ -24,4 +25,18 @@ import { ProfileModule } from '../../api/core/user/profile/profile.module';
     ProfileModule,
   ],
 })
-export class CoreRouteModule {}
+export class CoreRouteModule {
+  setApp(app: INestApplication<any>) {
+    const coreConfig = new DocumentBuilder()
+      .setTitle('Core Api')
+      .setDescription('The Core API description')
+      .setVersion('1.0')
+      .addBearerAuth()
+      .build();
+    const coreDocument = SwaggerModule.createDocument(app, coreConfig, {
+      include: [CoreRouteModule],
+      deepScanRoutes: true,
+    });
+    SwaggerModule.setup('api/core', app, coreDocument);
+  }
+}
