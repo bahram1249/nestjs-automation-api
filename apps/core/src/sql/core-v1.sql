@@ -354,6 +354,436 @@ END
 
 GO
 
+IF NOT EXISTS ((SELECT 1 FROM Migrations WHERE version = 'CORE-PersianDates-v1' 
+			))
+	AND EXISTS (
+		SELECT 1 FROM Settings WHERE 1=1
+		OR ([key] = 'SITE_NAME' AND [value] IN ('SITE_NAME'))
+	)
+BEGIN
+	CREATE TABLE PersianDates (
+
+		GregorianDate						date					PRIMARY KEY,
+		YearMonthDay						varchar(10)				NOT NULL,
+		YearMonth							varchar(7)				NOT NULL,
+		WeekDayName							nvarchar(10)			NOT NULL,
+		WeekDayNumber						tinyint					NOT NULL,
+		DayInMonth							tinyint					NOT NULL,
+		DayInMonthAtLeastTwo				varchar(2)				NOT NULL,
+		MonthNumber							tinyint					NOT NULL,
+		MonthNumberAtLeastTwo				varchar(2)				NOT NULL,
+		PersianMonthName					nvarchar(15)			NOT NULL,
+		YearNumber							smallint				NOT NULL,
+		DayInYearNumber						smallint				NOT NULL,
+		DayNameInMonth						nvarchar(40)			NOT NULL,
+		DayNameInYear						nvarchar(50)			NOT NULL
+	);
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'CORE-PersianDates-v1', GETDATE(), GETDATE()
+END
+
+GO
+
+IF NOT EXISTS ((SELECT 1 FROM Migrations WHERE version = 'CORE-PersianDates-v2' 
+			))
+	AND EXISTS (
+		SELECT 1 FROM Settings WHERE 1=1
+		OR ([key] = 'SITE_NAME' AND [value] IN ('SITE_NAME'))
+	)
+BEGIN
+	
+	EXEC('
+	CREATE FUNCTION [dbo].[SDAT] (@intDate DATETIME , @format as nvarchar(50)) RETURNS NVARCHAR(50)
+
+	BEGIN
+	DECLARE @YY Smallint=year(@intdate),@MM Tinyint=10,@DD Smallint=11,@DDCNT Tinyint,@YYDD Smallint=0,
+			@SHMM NVARCHAR(8),@SHDD NVARCHAR(8)
+	DECLARE @SHDATE NVARCHAR(max)
+
+
+
+	IF @YY < 1000 SET @YY += 2000
+
+	IF (@Format IS NULL) OR NOT LEN(@Format)>0 SET @Format = ''ChandShanbe Rooz MaahHarfi Saal''
+
+	SET @YY -= 622
+
+	IF @YY % 4 = 3 and @yy > 1371 SET @dd = 12
+
+	SET @DD += DATEPART(DY,@intDate) - 1
+
+	WHILE 1 = 1
+	BEGIN
+
+	 SET @DDCNT =
+		CASE
+			WHEN @MM < 7 THEN 31
+			WHEN @YY % 4 < 3 and @MM=12 and @YY > 1370 THEN 29
+			WHEN @YY % 4 <> 2 and @MM=12 and @YY < 1375 THEN 29
+			ELSE 30
+		END
+		IF @DD > @DDCNT
+		BEGIN
+			SET @DD -= @DDCNT
+			SET @MM += 1
+			SET @YYDD += @DDCNT
+		END
+		IF @MM > 12
+		BEGIN
+			SET @MM = 1
+			SET @YY += 1
+			SET @YYDD = 0
+		END
+		IF @MM < 7 AND @DD < 32 BREAK
+		IF @MM BETWEEN 7 AND 11 AND @DD < 31 BREAK
+		IF @MM = 12 AND @YY % 4 < 3 AND @YY > 1370 AND @DD < 30 BREAK
+		IF @MM = 12 AND @YY % 4 <> 2 AND @YY < 1375 AND @DD < 30 BREAK
+		IF @MM = 12 AND @YY % 4 = 2 AND @YY < 1371 AND @DD < 31 BREAK
+		IF @MM = 12 AND @YY % 4 = 3 AND @YY > 1371 AND @DD < 31 BREAK
+
+	END
+
+	 SET @YYDD += @DD
+
+	SET @SHMM =
+		CASE
+			WHEN @MM=1 THEN N''فروردین''
+			WHEN @MM=2 THEN N''اردیبهشت''
+			WHEN @MM=3 THEN N''خرداد''
+			WHEN @MM=4 THEN N''تیر''
+			WHEN @MM=5 THEN N''مرداد''
+			WHEN @MM=6 THEN N''شهریور''
+			WHEN @MM=7 THEN N''مهر''
+			WHEN @MM=8 THEN N''آبان''
+			WHEN @MM=9 THEN N''آذر''
+			WHEN @MM=10 THEN N''دی''
+			WHEN @MM=11 THEN N''بهمن''
+			WHEN @MM=12 THEN N''اسفند''
+		END
+   
+
+	set @SHDD=
+		CASE
+			WHEN DATEPART(dw,@intdate)=7 THEN N''شنبه''
+			WHEN DATEPART(dw,@intdate)=1 THEN N''یکشنبه''
+			WHEN DATEPART(dw,@intdate)=2 THEN N''دوشنبه''
+			WHEN DATEPART(dw,@intdate)=3 THEN N''سه شنبه''
+			WHEN DATEPART(dw,@intdate)=4 THEN N''چهارشنبه''
+			WHEN DATEPART(dw,@intdate)=5 THEN N''پنجشنبه''
+			WHEN DATEPART(dw,@intdate)=6 THEN N''جمعه''
+		END
+	SET @DDCNT=
+		CASE
+			WHEN @SHDD=N''شنبه'' THEN 1
+			WHEN @SHDD=N''یکشنبه'' THEN 2
+			WHEN @SHDD=N''دوشنبه'' THEN 3
+			WHEN @SHDD=N''سه شنبه'' THEN 4
+			WHEN @SHDD=N''چهارشنبه'' THEN 5
+			WHEN @SHDD=N''پنجشنبه'' THEN 6
+			WHEN @SHDD=N''جمعه'' THEN 7
+		END
+
+	IF @MM=10 AND @DD>10 SET @YYDD += 276
+	IF @MM>10 SET @YYDD += 276
+
+	SET @SHDATE =
+	 REPLACE(
+	 REPLACE(
+	 REPLACE(
+	 REPLACE(
+	 REPLACE(
+	 REPLACE(
+	 REPLACE(
+	 REPLACE(
+	 REPLACE(
+	 REPLACE(
+	 REPLACE(@Format,''MaahHarfi'',@SHMM),''SaalRooz'',LTRIM(STR(@YYDD,3))),''ChandShanbeAdadi'',@DDCNT),''ChandShanbe'',
+			 @SHDD),''Rooz2'',REPLACE(STR(@DD,2), '' '', ''0'')),''Maah2'',REPLACE(STR(@MM, 2), '' '', ''0'')),''Saal2'',
+			 SUBSTRING(STR(@YY,4),3,2)),''Saal4'',STR(@YY,4)),''Saal'',LTRIM(STR(@YY,4))),''Maah'',
+			 LTRIM(STR(@MM,2))),''Rooz'',LTRIM(STR(@DD,2)))
+	
+	RETURN @SHDATE
+	END')
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'CORE-PersianDates-v2', GETDATE(), GETDATE()
+END
+
+GO
+
+
+IF NOT EXISTS ((SELECT 1 FROM Migrations WHERE version = 'CORE-PersianDates-v3' 
+			))
+	AND EXISTS (
+		SELECT 1 FROM Settings WHERE 1=1
+		OR ([key] = 'SITE_NAME' AND [value] IN ('SITE_NAME'))
+	)
+BEGIN
+	
+	EXEC('CREATE PROCEDURE PopulatePersianDate @startDate date, @endDate date
+	AS
+	BEGIN
+	
+	IF(@endDate < @startDate)
+		RETURN
+
+	DECLARE @date date;
+	SET @date = @startDate
+
+	WHILE @date <= @endDate
+	BEGIN
+
+
+	INSERT INTO PersianDates 
+	(
+		GregorianDate
+		,WeekDayName
+		,WeekDayNumber
+		,DayInMonth
+		,DayInMonthAtLeastTwo
+		,MonthNumber
+		,MonthNumberAtLeastTwo
+		,PersianMonthName
+		,YearNumber
+		,DayInYearNumber
+		,YearMonthDay
+		,YearMonth
+		,DayNameInMonth
+		,DayNameInYear
+
+	)
+	SELECT 	 @date
+			,dbo.SDAT(@date, ''ChandShanbe'')
+			,Convert(tinyint, dbo.SDAT(@date, ''ChandShanbeAdadi''))
+			,Convert(tinyint, dbo.SDAT(@date, ''Rooz''))
+			,Convert(varchar(2), dbo.SDAT(@date, ''Rooz2''))
+			,Convert(tinyint, dbo.SDAT(@date, ''Maah''))
+			,Convert(varchar(2), dbo.SDAT(@date, ''Maah2''))
+			,Convert(nvarchar(15), dbo.SDAT(@date, ''MaahHarfi''))
+			,Convert(smallint, dbo.SDAT(@date, ''Saal4''))
+			,Convert(smallint, dbo.SDAT(@date, ''SaalRooz''))
+			,dbo.SDAT(@date,''Saal4/Maah2/Rooz2'')
+			,Convert(varchar(7), dbo.SDAT(@date, ''Saal4/Maah2''))
+			, dbo.SDAT(@date, ''ChandShanbe Rooz MaahHarfi'')
+			, dbo.SDAT(@date, ''ChandShanbe Rooz MaahHarfi Saal4'')
+
+
+		SET @date = DATEADD(DAY, 1, @date)
+		END
+	END')
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'CORE-PersianDates-v3', GETDATE(), GETDATE()
+END
+
+GO
+
+IF NOT EXISTS ((SELECT 1 FROM Migrations WHERE version = 'CORE-PersianDates-v4' 
+			))
+	AND EXISTS (
+		SELECT 1 FROM Settings WHERE 1=1
+		OR ([key] = 'SITE_NAME' AND [value] IN ('SITE_NAME'))
+	)
+BEGIN
+	
+	exec PopulatePersianDate '2023-03-20', '2043-03-25'
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'CORE-PersianDates-v4', GETDATE(), GETDATE()
+END
+
+GO
+
+-- tiarara
+
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'PCMPeriodTypes-v1' 
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'SITE_NAME' AND [value] IN ('PeriodContentManagement'))
+		)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'CUSTOMER_NAME' AND [value] IN ('TiyaraRah'))
+		)
+BEGIN
+
+	CREATE TABLE PCMPeriodTypes (
+		id							int						PRIMARY KEY,
+		periodTypeName				nvarchar(256)			NOT NULL,
+		[createdAt]					datetimeoffset			NOT NULL,
+		[updatedAt]					datetimeoffset			NOT NULL
+	);
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'PCMPeriodTypes-v1', GETDATE(), GETDATE()
+END
+
+GO
+
+-- periods
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'PCMPeriods-v1' )
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'SITE_NAME' AND [value] IN ('PeriodContentManagement'))
+		)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'CUSTOMER_NAME' AND [value] IN ('TiyaraRah'))
+		)
+BEGIN
+
+	CREATE TABLE PCMPeriods (
+		id							bigint identity(1,1)	NOT NULL,
+		periodTypeId				int						NOT NULL
+			CONSTRAINT FK_PCMPeriods_PeriodTypeId
+				FOREIGN KEY REFERENCES PCMPeriodTypes(id),
+		startDate					date					NOT NULL,
+		endDate						date					NOT NULL,
+		endDateOffset				date					NOT NULL,
+		[createdAt]					datetimeoffset			NOT NULL,
+		[updatedAt]					datetimeoffset			NOT NULL,
+		PRIMARY KEY(periodTypeId, startDate, endDate)
+	);
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'PCMPeriods-v1', GETDATE(), GETDATE()
+END
+
+GO
+
+-- ages
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'PCMAges-v1' )
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'SITE_NAME' AND [value] IN ('PeriodContentManagement'))
+		)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'CUSTOMER_NAME' AND [value] IN ('TiyaraRah'))
+		)
+BEGIN
+
+
+	CREATE TABLE PCMAges
+	(
+		id						int	identity(1,1)					PRIMARY KEY,
+		ageName					nvarchar(256)						NOT NULL,
+		[minAge]				int									NULL,
+		[maxAge]				int									NULL,
+		[createdAt]				datetimeoffset						NOT NULL,
+		[updatedAt]				datetimeoffset						NOT NULL
+	)
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'PCMAges-v1', GETDATE(), GETDATE()
+END
+
+GO
+
+-- publishes
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'PCMPublishes-v1' )
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'SITE_NAME' AND [value] IN ('PeriodContentManagement'))
+		)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'CUSTOMER_NAME' AND [value] IN ('TiyaraRah'))
+		)
+BEGIN
+
+
+	CREATE TABLE PCMPublishes
+	(
+		id						int									PRIMARY KEY,
+		publishName				nvarchar(256)						NOT NULL,
+		[createdAt]				datetimeoffset						NOT NULL,
+		[updatedAt]				datetimeoffset						NOT NULL
+	)
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'PCMPublishes-v1', GETDATE(), GETDATE()
+END
+
+GO
+
+-- article types
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'PCMArticleTypes-v1' )
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'SITE_NAME' AND [value] IN ('PeriodContentManagement'))
+		)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'CUSTOMER_NAME' AND [value] IN ('TiyaraRah'))
+		)
+BEGIN
+
+
+	CREATE TABLE PCMArticleTypes
+	(
+		id						int									PRIMARY KEY,
+		typeName				nvarchar(256)						NOT NULL,
+		[createdAt]				datetimeoffset						NOT NULL,
+		[updatedAt]				datetimeoffset						NOT NULL
+	)
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'PCMArticleTypes-v1', GETDATE(), GETDATE()
+END
+
+GO
+
+-- article
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'PCMArticles-v1' )
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'SITE_NAME' AND [value] IN ('PeriodContentManagement'))
+		)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'CUSTOMER_NAME' AND [value] IN ('TiyaraRah'))
+		)
+BEGIN
+
+
+	CREATE TABLE PCMArticles
+	(
+		id						bigint identity(1,1)					PRIMARY KEY,
+		title					nvarchar(512)							NULL,
+		userId					bigint									NOT NULL
+			CONSTRAINT FK_TiyaraArticles_UserId
+				FOREIGN KEY REFERENCES Users(id),
+		ageId					int										NOT NULL
+			CONSTRAINT FK_PCMArticles_AgeId
+				FOREIGN KEY REFERENCES PCMAges(id),
+		publishId				int										NOT NULL
+			CONSTRAINT FK_PCMArticles_PublishId
+				FOREIGN KEY REFERENCES PCMPublishes(id),
+		publishDate				datetime								NULL,
+		publishUserId			bigint									NULL
+			CONSTRAINT FK_PCMArticles_PublishUserId
+				FOREIGN KEY REFERENCES Users(id),
+		articleTypeId			int										NOT NULL
+			CONSTRAINT FK_PCMArticles_ArticleTypeId
+				FOREIGN KEY REFERENCES PCMArticleTypes(id),
+		[isDeleted]				bit										NULL,
+		[deletedBy]				bigint									NULL
+			CONSTRAINT FK_PCMArticles_DeletedBy
+				FOREIGN KEY REFERENCES Users(id),
+		[createdAt]				datetimeoffset						NOT NULL,
+		[updatedAt]				datetimeoffset						NOT NULL
+	)
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'PCMArticles-v1', GETDATE(), GETDATE()
+END
+
+GO
+
+
 
 -- Datas
 
@@ -1026,7 +1456,6 @@ END
 
 GO
 
-
 -- auth/admin/permissionGroups
 IF NOT EXISTS ((SELECT 1 FROM Migrations WHERE version = 'CORE-Permissions-Data-v5' 
 			))
@@ -1162,4 +1591,256 @@ END
 
 GO
 
+-- period types
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'PCMPeriodTypes-Data-v1' 
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'SITE_NAME' AND [value] IN ('PeriodContentManagement'))
+		)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'CUSTOMER_NAME' AND [value] IN ('TiyaraRah'))
+		)
+BEGIN
 
+	INSERT INTO PCMPeriodTypes
+	(
+		id
+		,periodTypeName
+		,createdAt
+		,updatedAt
+	)
+	VALUES(1, N'نمایش در یک تاریخ مشخص', getdate(), getdate())
+		,(2, N'نمایش به صورت روزانه', getdate(), getdate())
+		,(3, N'نمایش به صورت هفتگی', getdate(), getdate())
+		,(4, N'نمایش به صورت ماهانه', getdate(), getdate())
+		,(5, N'نمایش به صورت سالانه', getdate(), getdate())
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'PCMPeriodTypes-Data-v1', GETDATE(), GETDATE()
+END
+
+GO
+
+-- daily
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'PCMPeriods-Data-v1' 
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'SITE_NAME' AND [value] IN ('PeriodContentManagement'))
+		)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'CUSTOMER_NAME' AND [value] IN ('TiyaraRah'))
+		)
+BEGIN
+
+	INSERT INTO PCMPeriods(periodTypeId, startDate, endDate, endDateOffset,createdAt, updatedAt)
+	SELECT
+	    2 as periodTypeId
+		,PD1.GregorianDate as startDate
+		,PD1.GregorianDate as endDate
+		,DATEADD(DAY, 1, PD1.GregorianDate) as endDateOffset
+		,getdate()
+		,getdate()
+	FROM PersianDates PD1
+	WHERE PD1.YearNumber >= 1402 
+		AND PD1.GregorianDate >= '2023-03-25'
+		AND PD1.GregorianDate <= '2028-03-25'
+	ORDER BY PD1.GregorianDate ASC
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'PCMPeriods-Data-v1', GETDATE(), GETDATE()
+END
+
+GO
+
+-- weekly
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'PCMPeriods-Data-v2' 
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'SITE_NAME' AND [value] IN ('PeriodContentManagement'))
+		)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'CUSTOMER_NAME' AND [value] IN ('TiyaraRah'))
+		)
+BEGIN
+
+	INSERT INTO PCMPeriods(periodTypeId, startDate, endDate, endDateOffset, createdAt, updatedAt)
+	SELECT
+	    3 as periodTypeId
+		,PD1.GregorianDate as startDate
+		,PD2.GregorianDate as endDate
+		,DATEADD(DAY, 1, PD2.GregorianDate) as endDateOffset
+		,getdate()
+		,getdate()
+	FROM PersianDates PD1
+	LEFT JOIN  PersianDates PD2
+	ON PD1.GregorianDate = DATEADD(day, -6, PD2.GregorianDate)
+	WHERE PD1.YearNumber >= 1402 
+		AND PD1.WeekDayNumber = 1
+		AND PD1.GregorianDate >= '2023-03-25'
+		AND PD1.GregorianDate <= '2028-03-25'
+	ORDER BY PD1.GregorianDate ASC
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'PCMPeriods-Data-v2', GETDATE(), GETDATE()
+END
+
+GO
+
+-- monthly
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'PCMPeriods-Data-v3' 
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'SITE_NAME' AND [value] IN ('PeriodContentManagement'))
+		)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'CUSTOMER_NAME' AND [value] IN ('TiyaraRah'))
+		)
+BEGIN
+
+	INSERT INTO PCMPeriods(periodTypeId, startDate, endDate, endDateOffset, createdAt, updatedAt)
+	SELECT
+	    4 as periodTypeId
+		,MIN(PD1.GregorianDate) as startDate
+		,MAX(PD1.GregorianDate) as endDate
+		,DATEADD(DAY, 1, MAX(PD1.GregorianDate)) as endDateOffset
+		,getdate()
+		,getdate()
+	FROM PersianDates PD1
+	WHERE PD1.YearNumber >= 1402 
+		AND PD1.GregorianDate >= '2023-03-21'
+		AND PD1.GregorianDate <= '2028-04-19'
+	GROUP BY PD1.YearNumber, PD1.YearMonth
+	ORDER BY PD1.YearNumber, PD1.YearMonth ASC
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'PCMPeriods-Data-v3', GETDATE(), GETDATE()
+END
+
+GO
+
+-- yearly
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'PCMPeriods-Data-v4' 
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'SITE_NAME' AND [value] IN ('PeriodContentManagement'))
+		)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'CUSTOMER_NAME' AND [value] IN ('TiyaraRah'))
+		)
+BEGIN
+
+	INSERT INTO PCMPeriods(periodTypeId, startDate, endDate, endDateOffset, createdAt, updatedAt)
+	SELECT
+	    5 as periodTypeId
+		,MIN(PD1.GregorianDate) as startDate
+		,MAX(PD1.GregorianDate) as endDate
+		,DATEADD(DAY, 1, MAX(PD1.GregorianDate)) as endDateOffset
+		,getdate()
+		,getdate()
+	FROM PersianDates PD1
+	WHERE PD1.YearNumber >= 1402 
+		AND PD1.YearNumber <= 1407
+	GROUP BY PD1.YearNumber
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'PCMPeriods-Data-v4', GETDATE(), GETDATE()
+END
+
+GO
+
+-- ages
+--IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'PCMAges-Data-v1' 
+--			)
+--	AND EXISTS (
+--		SELECT 1 FROM Settings 
+--		WHERE ([key] = 'SITE_NAME' AND [value] IN ('PeriodContentManagement'))
+--		)
+--	AND EXISTS (
+--		SELECT 1 FROM Settings 
+--		WHERE ([key] = 'CUSTOMER_NAME' AND [value] IN ('TiyaraRah'))
+--		)
+--BEGIN
+
+--	INSERT INTO PCMAges
+--	(
+--		ageName,
+--		minAge,
+--		maxAge,
+--		createdAt,
+--		updatedAt
+--	)
+--	VALUES(N'', x, y, getdate(), getdate() 
+
+--	INSERT INTO Migrations(version, createdAt, updatedAt)
+--	SELECT 'PCMAges-Data-v1', GETDATE(), GETDATE()
+--END
+
+--GO
+
+-- publishes
+
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'PCMPublishes-Data-v1' 
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'SITE_NAME' AND [value] IN ('PeriodContentManagement'))
+		)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'CUSTOMER_NAME' AND [value] IN ('TiyaraRah'))
+		)
+BEGIN
+
+	INSERT INTO PCMPublishes
+	(
+		id,
+		publishName,
+		createdAt,
+		updatedAt
+	)
+	VALUES(1, N'پیش نویس', getdate(), getdate())
+		,(2, N'منتشر شده', getdate(), getdate())
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'PCMPublishes-Data-v1', GETDATE(), GETDATE()
+END
+
+GO
+
+-- article types
+--IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'PCMArticleTypes-Data-v1' )
+--	AND EXISTS (
+--		SELECT 1 FROM Settings 
+--		WHERE ([key] = 'SITE_NAME' AND [value] IN ('PeriodContentManagement'))
+--		)
+--	AND EXISTS (
+--		SELECT 1 FROM Settings 
+--		WHERE ([key] = 'CUSTOMER_NAME' AND [value] IN ('TiyaraRah'))
+--		)
+--BEGIN
+
+
+--	INSERT INTO PCMArticleTypes
+--	(
+--		id,
+--		typeName,
+--		createdAt,
+--		updatedAt
+--	)
+--	VALUES (1, N'', getdate(), getdate())
+
+--	INSERT INTO Migrations(version, createdAt, updatedAt)
+--	SELECT 'PCMArticleTypes-Data-v1', GETDATE(), GETDATE()
+--END
+
+--GO

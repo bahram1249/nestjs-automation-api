@@ -16,6 +16,12 @@ import { Dialect } from 'sequelize';
 import { PermissionMenu } from './models/core/permission-menu.entity';
 import { PersianDate } from './models/core/view/persiandate.entity';
 import { WinstonLog } from './models/core/winstonlog.entity';
+import { PCMPeriodType } from './models/pcm/pcm-period-type.entity';
+import { PCMPeriod } from './models/pcm/pcm-period.entity';
+import { PCMAge } from './models/pcm/pcm-age.entity';
+import { PCMArticleType } from './models/pcm/pcm-article-type.entity';
+import { PCMPublish } from './models/pcm/pcm-publish.entity';
+import { PCMArticle } from './models/pcm/pcm-article.entity';
 
 // let config;
 // switch (process.env.NODE_ENV) {
@@ -73,6 +79,12 @@ const dbLog: boolean = JSON.parse(process.env.DB_LOG);
           Attachment,
           PermissionMenu,
           WinstonLog,
+          PCMPeriodType,
+          PCMPeriod,
+          PCMAge,
+          PCMArticleType,
+          PCMPublish,
+          PCMArticle,
         ],
         autoLoadModels: autoLoadModels,
         logging: dbLog,
