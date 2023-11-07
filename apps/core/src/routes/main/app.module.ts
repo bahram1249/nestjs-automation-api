@@ -12,7 +12,6 @@ import { ClientsModule, Transport } from '@nestjs/microservices';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { DatabaseModule } from '../../database/sequelize/database.module';
 import { CoreRouteModule } from '../core/core-route.module';
-import { PermissionCheckerModule } from '../../util/core/permission/permission-checker.module';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import * as path from 'path';
 import { HttpExceptionFilter } from '../../util/core/filter';
@@ -68,7 +67,7 @@ import { PCMRouteModule } from '../pcm/pcm-route.module';
       http: process.env.NODE_ENV !== 'production',
     }),
   ],
-  providers: [AppService, PermissionCheckerModule],
+  providers: [AppService],
 })
 export class AppModule implements NestModule {
   constructor(
