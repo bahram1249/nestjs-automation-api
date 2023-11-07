@@ -12,8 +12,6 @@ import { ClientsModule, Transport } from '@nestjs/microservices';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { DatabaseModule } from '../../database/sequelize/database.module';
 import { CoreRouteModule } from '../core/core-route.module';
-import { InjectModel, SequelizeModule } from '@nestjs/sequelize';
-import { Permission } from '../../database/sequelize/models/core/permission.entity';
 import { PermissionCheckerModule } from '../../util/core/permission/permission-checker.module';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import * as path from 'path';
@@ -60,7 +58,6 @@ import { PCMRouteModule } from '../pcm/pcm-route.module';
       },
     ]),
     DatabaseModule,
-    SequelizeModule.forFeature([Permission]),
     DBLoggerModule,
     // AutomapperModule.forRoot({
     //   strategyInitializer: classes(),
@@ -75,8 +72,6 @@ import { PCMRouteModule } from '../pcm/pcm-route.module';
 })
 export class AppModule implements NestModule {
   constructor(
-    @InjectModel(Permission)
-    private readonly permissionReopsiory: typeof Permission,
     @Inject(DBLogger)
     private readonly logger: DBLogger,
     @Inject(ConfigService)
