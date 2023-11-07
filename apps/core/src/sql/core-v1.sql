@@ -1592,8 +1592,7 @@ END
 GO
 
 -- pcm/periodtypes
-IF NOT EXISTS (
-	SELECT 1 FROM Migrations WHERE version = 'CORE-Permissions-Data-v6' 
+IF NOT EXISTS ( SELECT 1 FROM Migrations WHERE version = 'CORE-Permissions-Data-v6' 
 			)
 	AND EXISTS (
 		SELECT 1 FROM Settings 
@@ -1659,6 +1658,77 @@ BEGIN
 
 	INSERT INTO Migrations(version, createdAt, updatedAt)
 	SELECT 'CORE-Permissions-Data-v6', GETDATE(), GETDATE()
+END
+
+GO
+
+-- pcm/ages
+IF NOT EXISTS ( SELECT 1 FROM Migrations WHERE version = 'CORE-Permissions-Data-v7' 
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'SITE_NAME' AND [value] IN ('PeriodContentManagement'))
+		)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'CUSTOMER_NAME' AND [value] IN ('TiyaraRah'))
+		)
+	
+BEGIN
+	
+	DECLARE @roleId int = (SELECT TOP 1 id FROM Roles WHERE static_id = 1)
+	DECLARE @userId bigint = (SELECT TOP 1 id FROM Users WHERE static_id = 1)
+
+	DECLARE @GroupTemp TABLE (
+		gorupId int
+	);
+
+	DECLARE @groupId int = null;
+
+	DECLARE @entityName nvarchar(256) = N'AgeGroups'
+	DECLARE @groupName nvarchar(256) = N'pcm.ages'
+	
+	DECLARE @permissionSymbolGetAll nvarchar(512) = @groupName + '.getall';
+	DECLARE @permissionSymbolGetOne nvarchar(512) = @groupName + '.getone';
+	
+
+	-- permission groups
+	INSERT INTO PermissionGroups(permissionGroupName, [visibility], createdAt, updatedAt)
+	OUTPUT inserted.id INTO @GroupTemp(gorupId)
+	SELECT @groupName, 1, GETDATE(), GETDATE();
+
+	SELECT  @groupId = gorupId FROM @GroupTemp
+
+
+	-- permissions
+
+	
+	DECLARE @PermissionTemp TABLE (
+		permissionId int
+	);
+
+	INSERT INTO Permissions(permissionName ,permissionSymbol,permissionGroupId,  createdAt, updatedAt)
+	OUTPUT inserted.id INTO @PermissionTemp(permissionId)
+	SELECT 'GETALL_' + @entityName, @permissionSymbolGetAll, @groupId, GETDATE(), GETDATE()
+															
+	INSERT INTO Permissions(permissionName ,permissionSymbol,permissionGroupId,  createdAt, updatedAt)
+	OUTPUT inserted.id INTO @PermissionTemp(permissionId)
+	SELECT 'GETONE_' + @entityName, @permissionSymbolGetOne, @groupId, GETDATE(), GETDATE()
+															 
+															
+	
+	
+	-- CRUD THIS Enity FOR super-admin
+	INSERT INTO RolePermissions(roleId, permissionId, createdAt, updatedAt)
+	SELECT @roleId, permissionId, GETDATE(), GETDATE()
+	FROM @PermissionTemp
+
+	DELETE FROM @PermissionTemp
+
+	
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'CORE-Permissions-Data-v7', GETDATE(), GETDATE()
 END
 
 GO
@@ -1831,33 +1901,48 @@ END
 GO
 
 -- ages
---IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'PCMAges-Data-v1' 
---			)
---	AND EXISTS (
---		SELECT 1 FROM Settings 
---		WHERE ([key] = 'SITE_NAME' AND [value] IN ('PeriodContentManagement'))
---		)
---	AND EXISTS (
---		SELECT 1 FROM Settings 
---		WHERE ([key] = 'CUSTOMER_NAME' AND [value] IN ('TiyaraRah'))
---		)
---BEGIN
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'PCMAges-Data-v1' 
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'SITE_NAME' AND [value] IN ('PeriodContentManagement'))
+		)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'CUSTOMER_NAME' AND [value] IN ('TiyaraRah'))
+		)
+BEGIN
 
---	INSERT INTO PCMAges
---	(
---		ageName,
---		minAge,
---		maxAge,
---		createdAt,
---		updatedAt
---	)
---	VALUES(N'', x, y, getdate(), getdate() 
+	INSERT INTO PCMAges
+	(
+		ageName,
+		minAge,
+		maxAge,
+		createdAt,
+		updatedAt
+	)
+	VALUES (N'یک سال تا دو سال', 1, 2, getdate(), getdate())
+			,(N'دو سال تا سه سال', 2, 3, getdate(), getdate()) 
+			,(N'سه سال تا چهار سال', 3, 4, getdate(), getdate()) 
+			,(N'چهار سال تا پنج سال', 4, 5, getdate(), getdate()) 
+			,(N'پنج سال تا شش سال', 5, 6, getdate(), getdate()) 
+			,(N'شش سال تا هفت سال', 6, 7, getdate(), getdate()) 
+			,(N'هفت سال تا هشت سال', 7, 8, getdate(), getdate()) 
+			,(N'هشت سال تا نه سال', 8, 9, getdate(), getdate()) 
+			,(N'نه سال تا ده سال', 9, 10, getdate(), getdate()) 
+			,(N'ده سال تا یازده سال', 10, 11, getdate(), getdate()) 
+			,(N'یازده سال تا دوازده سال', 11, 12, getdate(), getdate()) 
+			,(N'دوازده سال تا سیزده سال', 12, 13, getdate(), getdate()) 
+			,(N'سیزده سال تا چهارده سال', 13, 14, getdate(), getdate()) 
+			,(N'چهارده سال تا پانزده سال', 14, 15, getdate(), getdate()) 
+			,(N'پانزده سال تا شانزده سال', 15, 16, getdate(), getdate())
+			,(N'شانزده سال تا هفده سال', 16, 17, getdate(), getdate()) 
 
---	INSERT INTO Migrations(version, createdAt, updatedAt)
---	SELECT 'PCMAges-Data-v1', GETDATE(), GETDATE()
---END
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'PCMAges-Data-v1', GETDATE(), GETDATE()
+END
 
---GO
+GO
 
 -- publishes
 
