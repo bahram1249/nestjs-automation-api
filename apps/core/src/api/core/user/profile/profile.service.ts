@@ -14,7 +14,8 @@ import * as fs from 'fs';
 import { Sequelize } from 'sequelize';
 import { Op } from 'sequelize';
 import type { Response } from 'express';
-import * as sharp from 'sharp';
+import { ThumbnailService } from 'apps/core/src/util/core/thumbnail/thumbnail.service';
+import { FileService } from 'apps/core/src/util/core/file/file.service';
 
 @Injectable()
 export class ProfileService {
@@ -25,7 +26,8 @@ export class ProfileService {
     private readonly attachmentTypeRepository: typeof AttachmentType,
     @InjectModel(User)
     private readonly userRepoisitory: typeof User,
-    private readonly config: ConfigService,
+    private readonly fileService: FileService,
+    private readonly thumbnailService: ThumbnailService,
   ) {}
   async upload(userId: bigint, file: Express.Multer.File) {
     // check attachment Type
@@ -51,8 +53,8 @@ export class ProfileService {
           id: user.profilePhotoAttachmentId,
         },
       });
-      fs.rmSync(path.join(process.cwd(), attachmentOld.path));
-      fs.rmSync(path.join(process.cwd(), attachmentOld.thumbnailPath));
+      await this.fileService.removeFilePathByCwd(attachmentOld.path);
+      await this.fileService.removeFilePathByCwd(attachmentOld.thumbnailPath);
       await this.repository.update(
         {
           isDeleted: true,
@@ -67,37 +69,24 @@ export class ProfileService {
       );
     }
     // save path from config
-    const savePath = this.config
-      .get<string>('PROFILE_PATH_ATTACHMENT')
-      .concat(`/${userId}`);
-    const saveThumbPath = this.config.get<string>(
-      'PROFILE_PATH_THUMB_ATTACHMENT',
-    );
-
-    // create directory if not exists
-    fs.mkdirSync(path.join(process.cwd(), savePath), { recursive: true });
-    fs.mkdirSync(path.join(process.cwd(), saveThumbPath), { recursive: true });
-
-    // real save path
-    const attachmentSavePath = path.join(
-      process.cwd(),
-      savePath,
-      file.filename,
-    );
-
-    const attachmentThumbSavePath = path.join(
-      process.cwd(),
-      saveThumbPath,
-      file.filename,
-    );
+    const bigPath = this.fileService.generateProfilePathByCwd(userId);
+    const thumbPath = this.fileService.generateProfileThumbPathByCwd(userId);
 
     // create thumbnail and save
-    const bigThumb = await sharp(file.path).resize(700, 700).toBuffer();
-    const smallThumb = await sharp(file.path).resize(200, 200).toBuffer();
-    fs.writeFileSync(attachmentSavePath, bigThumb);
-    fs.writeFileSync(attachmentThumbSavePath, smallThumb);
+    const bigThumb = await this.thumbnailService.resize(file.path, 700, 700);
+    const smallThumb = await this.thumbnailService.resize(file.path, 300, 300);
+    const realPath = await this.fileService.saveFileByPathAsync(
+      bigPath.cwdPath,
+      file.filename,
+      bigThumb,
+    );
+    const thumbRealPath = await this.fileService.saveFileByPathAsync(
+      thumbPath.cwdPath,
+      file.filename,
+      smallThumb,
+    );
 
-    fs.rmSync(file.path);
+    this.fileService.removeFileAsync(file.path);
     const attachment = await this.repository.create({
       originalFileName: file.originalname,
       fileName: file.filename,
@@ -105,8 +94,8 @@ export class ProfileService {
       mimetype: file.mimetype,
       userId: userId,
       attachmentTypeId: attachmentTypeId,
-      path: savePath.concat('/', file.filename),
-      thumbnailPath: saveThumbPath.concat('/', file.filename),
+      path: path.join(bigPath.savePath, '/', file.filename),
+      thumbnailPath: path.join(thumbPath.savePath, '/', file.filename),
     });
     user.profilePhotoAttachmentId = attachment.id;
     user = await user.save();
