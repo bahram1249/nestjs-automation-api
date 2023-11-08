@@ -37,7 +37,7 @@ export class PermissionService {
           ],
         },
         Sequelize.where(
-          Sequelize.fn('isnull', Sequelize.col('visibility'), 1),
+          Sequelize.fn('isnull', Sequelize.col('permission.visibility'), 1),
           {
             [Op.eq]: 1,
           },
