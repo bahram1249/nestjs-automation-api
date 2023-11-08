@@ -7,9 +7,10 @@ import {
 import { PeriodTypeModule } from '../../api/pcm/period-type/period-type.module';
 import { AgeModule } from '../../api/pcm/age/age.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { PublishModule } from '../../api/pcm/publish/publish.module';
 
 @Module({
-  imports: [PeriodTypeModule, AgeModule],
+  imports: [PeriodTypeModule, AgeModule, PublishModule],
 })
 export class PCMRouteModule implements NestModule {
   constructor() {}
