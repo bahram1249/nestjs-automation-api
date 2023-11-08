@@ -21,10 +21,15 @@ import helmet from 'helmet';
 import { ThrottlerModule } from '@nestjs/throttler';
 import { DevtoolsModule } from '@nestjs/devtools-integration';
 import { PCMRouteModule } from '../pcm/pcm-route.module';
+import { CacheModule } from '@nestjs/cache-manager';
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
+    }),
+    CacheModule.register({
+      isGlobal: true,
+      ttl: 5000,
     }),
     ServeStaticModule.forRoot({
       rootPath: path.join(__dirname, '../../../../', 'client/dist'),

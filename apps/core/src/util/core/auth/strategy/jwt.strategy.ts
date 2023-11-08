@@ -1,9 +1,11 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import { User } from '../../../../database/sequelize/models/core/user.entity';
 import { InjectModel } from '@nestjs/sequelize';
+import { CACHE_MANAGER } from '@nestjs/cache-manager';
+import { Cache } from 'cache-manager';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
@@ -11,6 +13,8 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
     config: ConfigService,
     @InjectModel(User)
     private readonly userRepository: typeof User,
+    @Inject(CACHE_MANAGER)
+    private cacheManager: Cache,
   ) {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
@@ -19,16 +23,27 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
   }
 
   async validate(payload: { sub: number; email: string }) {
-    const user = await this.userRepository.findOne({
-      where: {
-        id: payload.sub,
-      },
-    });
-    if (!user) return false;
-    delete user.password;
-    delete user.lastPasswordChangeDate;
-    delete user.mustChangePassword;
-    delete user.static_id;
+    let user: User = await this.cacheManager.get(`userid:${payload.sub}`);
+    if (!user) {
+      user = await this.userRepository.findOne({
+        attributes: [
+          'id',
+          'firstname',
+          'lastname',
+          'email',
+          'username',
+          'mustChangePassword',
+          'lastPasswordChangeDate',
+          'static_id',
+          'profilePhotoAttachmentId',
+          'createdAt',
+          'updatedAt',
+        ],
+        where: {
+          id: payload.sub,
+        },
+      });
+    }
     return user;
   }
 }
