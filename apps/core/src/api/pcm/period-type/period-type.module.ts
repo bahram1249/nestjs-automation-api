@@ -7,7 +7,7 @@ import { Permission } from 'apps/core/src/database/sequelize/models/core/permiss
 import { PCMPeriodType } from 'apps/core/src/database/sequelize/models/pcm/pcm-period-type.entity';
 
 @Module({
-  imports: [SequelizeModule.forFeature([User, Permission, PCMPeriodType])],
+  imports: [SequelizeModule.forFeature([PCMPeriodType])],
   controllers: [PeriodTypeController],
   providers: [PeriodTypeService],
 })
