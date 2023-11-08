@@ -7,7 +7,7 @@ import { Menu } from 'apps/core/src/database/sequelize/models/core/menu.entity';
 import { Permission } from 'apps/core/src/database/sequelize/models/core/permission.entity';
 
 @Module({
-  imports: [SequelizeModule.forFeature([Menu])],
+  imports: [SequelizeModule.forFeature([Permission, User, Menu])],
   controllers: [MenuController],
   providers: [MenuService],
   exports: [MenuModule],

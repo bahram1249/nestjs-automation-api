@@ -21,7 +21,6 @@ import helmet from 'helmet';
 import { ThrottlerModule } from '@nestjs/throttler';
 import { DevtoolsModule } from '@nestjs/devtools-integration';
 import { PCMRouteModule } from '../pcm/pcm-route.module';
-import { PermissionCheckerModule } from '../../util/core/permission/permission-checker.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -62,7 +61,6 @@ import { PermissionCheckerModule } from '../../util/core/permission/permission-c
     // AutomapperModule.forRoot({
     //   strategyInitializer: classes(),
     // }),
-    PermissionCheckerModule,
     CoreRouteModule,
     PCMRouteModule,
     DevtoolsModule.register({
