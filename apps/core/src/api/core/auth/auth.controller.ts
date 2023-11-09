@@ -7,7 +7,7 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { AuthDto } from './dto';
+import { AuthDto, UsernameDto } from './dto';
 import { JsonResponseTransformInterceptor } from 'apps/core/src/util/core/response/interceptor';
 import { ApiTags } from '@nestjs/swagger';
 
@@ -35,5 +35,10 @@ export class AuthController {
     return {
       result: await this.authService.signin(dto),
     };
+  }
+
+  @HttpCode(HttpStatus.OK)
+  async findUser(@Body() dto: UsernameDto) {
+    return await this.authService.findUser(dto);
   }
 }

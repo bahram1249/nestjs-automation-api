@@ -1,5 +1,5 @@
 import { ForbiddenException, Inject, Injectable } from '@nestjs/common';
-import { AuthDto } from './dto';
+import { AuthDto, UsernameDto } from './dto';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { User } from '../../../database/sequelize/models/core/user.entity';
@@ -57,7 +57,21 @@ export class AuthService {
     return this.signToken(user);
   }
 
-  async signToken(user: User): Promise<{ access_token: string }> {
+  async findUser(dto: UsernameDto) {
+    // find the user by username
+    const user = await this.userRepository.findOne({
+      where: {
+        username: dto.username,
+      },
+    });
+    // if user exist throw exception
+    if (user) throw new ForbiddenException('username is taken!');
+    return {
+      result: 'can be reserved',
+    };
+  }
+
+  private async signToken(user: User): Promise<{ access_token: string }> {
     const payload = {
       sub: user.id,
     };
