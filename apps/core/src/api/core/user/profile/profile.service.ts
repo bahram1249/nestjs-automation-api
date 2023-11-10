@@ -4,7 +4,6 @@ import {
   NotFoundException,
   StreamableFile,
 } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
 import { InjectModel } from '@nestjs/sequelize';
 import { Attachment } from 'apps/core/src/database/sequelize/models/core/attachment.entity';
 import { AttachmentType } from 'apps/core/src/database/sequelize/models/core/attachmentType.entity';
@@ -14,8 +13,8 @@ import * as fs from 'fs';
 import { Sequelize } from 'sequelize';
 import { Op } from 'sequelize';
 import type { Response } from 'express';
-import { ThumbnailService } from 'apps/core/src/util/core/thumbnail/thumbnail.service';
-import { FileService } from 'apps/core/src/util/core/file/file.service';
+import { FileService } from '@rahino/file/file.service';
+import { ThumbnailService } from '@rahino/thumbnail';
 
 @Injectable()
 export class ProfileService {

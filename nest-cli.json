@@ -6,7 +6,9 @@
     "deleteOutDir": true,
     "webpack": true,
     "tsConfigPath": "apps/core/tsconfig.app.json",
-    "plugins": ["@nestjs/swagger/plugin"]
+    "plugins": [
+      "@nestjs/swagger/plugin"
+    ]
   },
   "monorepo": true,
   "root": "apps/core",
@@ -36,6 +38,24 @@
       "sourceRoot": "apps/notification/src",
       "compilerOptions": {
         "tsConfigPath": "apps/notification/tsconfig.app.json"
+      }
+    },
+    "file": {
+      "type": "library",
+      "root": "libs/file",
+      "entryFile": "index",
+      "sourceRoot": "libs/file/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/file/tsconfig.lib.json"
+      }
+    },
+    "thumbnail": {
+      "type": "library",
+      "root": "libs/thumbnail",
+      "entryFile": "index",
+      "sourceRoot": "libs/thumbnail/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/thumbnail/tsconfig.lib.json"
       }
     }
   }

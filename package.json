@@ -93,7 +93,12 @@
     "coverageDirectory": "./coverage",
     "testEnvironment": "node",
     "roots": [
-      "<rootDir>/apps/"
-    ]
+      "<rootDir>/apps/",
+      "<rootDir>/libs/"
+    ],
+    "moduleNameMapper": {
+      "^@rahino/file(|/.*)$": "<rootDir>/libs/file/src/$1",
+      "^@rahino/thumbnail(|/.*)$": "<rootDir>/libs/thumbnail/src/$1"
+    }
   }
 }
