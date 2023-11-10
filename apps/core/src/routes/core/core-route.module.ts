@@ -12,6 +12,7 @@ import { PermissionModule } from '../../api/core/admin/permission/permission.mod
 import { MenuModule } from '../../api/core/admin/menu/menu.module';
 import { PermissionGroupModule } from '../../api/core/admin/permission-group/permission-group.module';
 import { ProfileModule } from '../../api/core/user/profile/profile.module';
+import { MenuModule as UserMenuModule } from '../../api/core/user/menu/menu.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 @Module({
@@ -24,6 +25,7 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
     PermissionGroupModule,
     UserRoleModule,
     ProfileModule,
+    UserMenuModule,
   ],
 })
 export class CoreRouteModule implements NestModule {
