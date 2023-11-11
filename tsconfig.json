@@ -18,18 +18,12 @@
     "forceConsistentCasingInFileNames": false,
     "noFallthroughCasesInSwitch": false,
     "paths": {
-      "@rahino/file": [
-        "libs/file/src"
-      ],
-      "@rahino/file/*": [
-        "libs/file/src/*"
-      ],
-      "@rahino/thumbnail": [
-        "libs/thumbnail/src"
-      ],
-      "@rahino/thumbnail/*": [
-        "libs/thumbnail/src/*"
-      ]
+      "@rahino/pcm": ["apps/pcm/src"],
+      "@rahino/pcm/*": ["apps/pcm/src/*"],
+      "@rahino/file": ["libs/file/src"],
+      "@rahino/file/*": ["libs/file/src/*"],
+      "@rahino/thumbnail": ["libs/thumbnail/src"],
+      "@rahino/thumbnail/*": ["libs/thumbnail/src/*"]
     }
   }
 }

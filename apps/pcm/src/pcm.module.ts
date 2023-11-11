@@ -4,15 +4,16 @@ import {
   Module,
   NestModule,
 } from '@nestjs/common';
-import { PeriodTypeModule } from '../../api/pcm/period-type/period-type.module';
-import { AgeModule } from '../../api/pcm/age/age.module';
+import { AgeModule } from './age/age.module';
+import { PeriodTypeModule } from './period-type/period-type.module';
+import { PublishModule } from './publish/publish.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
-import { PublishModule } from '../../api/pcm/publish/publish.module';
 
 @Module({
-  imports: [PeriodTypeModule, AgeModule, PublishModule],
+  imports: [AgeModule, PeriodTypeModule, PublishModule],
+  exports: [PCMModule],
 })
-export class PCMRouteModule implements NestModule {
+export class PCMModule implements NestModule {
   constructor() {}
   private app: INestApplication;
   configure(consumer: MiddlewareConsumer) {}
@@ -25,7 +26,7 @@ export class PCMRouteModule implements NestModule {
       .addBearerAuth()
       .build();
     const pcmDocument = SwaggerModule.createDocument(this.app, pcmConfig, {
-      include: [PCMRouteModule],
+      include: [PCMModule],
       deepScanRoutes: true,
     });
 

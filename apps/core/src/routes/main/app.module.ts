@@ -20,8 +20,9 @@ import { DBLoggerModule } from '../../util/core/logger/db-logger.module';
 import helmet from 'helmet';
 import { ThrottlerModule } from '@nestjs/throttler';
 import { DevtoolsModule } from '@nestjs/devtools-integration';
-import { PCMRouteModule } from '../pcm/pcm-route.module';
 import { CacheModule } from '@nestjs/cache-manager';
+import { PCMModule } from '@rahino/pcm';
+
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -67,7 +68,7 @@ import { CacheModule } from '@nestjs/cache-manager';
     //   strategyInitializer: classes(),
     // }),
     CoreRouteModule,
-    PCMRouteModule,
+    PCMModule,
     DevtoolsModule.register({
       http: process.env.NODE_ENV !== 'production',
     }),
@@ -112,7 +113,7 @@ export class AppModule implements NestModule {
     app.enableCors();
 
     app.get(CoreRouteModule).setApp(app);
-    app.get(PCMRouteModule).setApp(app);
+    app.get(PCMModule).setApp(app);
 
     await app.listen(this.config.get('HOST_PORT'));
   }
