@@ -9,7 +9,6 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { PermissionService } from './permission.service';
-import { JwtGuard } from '../../util/core/auth/guard';
 import { CheckPermission } from 'apps/core/src/util/core/permission/decorator';
 import { PermissionGuard } from 'apps/core/src/util/core/permission/guard';
 import { JsonResponseTransformInterceptor } from 'apps/core/src/util/core/response/interceptor';
@@ -20,6 +19,7 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { PermissionGetDto } from './dto';
+import { JwtGuard } from '@rahino/auth/guard';
 
 @ApiTags('Admin-Permissions')
 @ApiBearerAuth()

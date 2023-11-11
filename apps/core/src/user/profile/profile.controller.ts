@@ -12,7 +12,6 @@ import {
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
-import { JwtGuard } from '../../util/core/auth/guard';
 import { JsonResponseTransformInterceptor } from 'apps/core/src/util/core/response/interceptor';
 import {
   ApiBearerAuth,
@@ -21,12 +20,13 @@ import {
   ApiOperation,
   ApiTags,
 } from '@nestjs/swagger';
-import { GetUser } from '../../util/core/auth/decorator';
 import { User } from '@rahino/database/models/core/user.entity';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ProfileService } from './profile.service';
 import { profileFileOptions } from './file-options';
 import type { Response } from 'express';
+import { JwtGuard } from '@rahino/auth/guard';
+import { GetUser } from '@rahino/auth/decorator';
 
 @ApiTags('User-Profile')
 @Controller({

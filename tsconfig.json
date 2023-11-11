@@ -59,6 +59,12 @@
       ],
       "@rahino/logger/*": [
         "libs/logger/src/*"
+      ],
+      "@rahino/auth": [
+        "libs/auth/src"
+      ],
+      "@rahino/auth/*": [
+        "libs/auth/src/*"
       ]
     }
   }

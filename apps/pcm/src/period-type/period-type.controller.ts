@@ -18,7 +18,7 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 
-import { JwtGuard } from 'apps/core/src/util/core/auth/guard';
+import { JwtGuard } from '@rahino/auth/guard';
 import { PeriodTypeService } from './period-type.service';
 import { PeriodTypeGetDto } from './dto';
 

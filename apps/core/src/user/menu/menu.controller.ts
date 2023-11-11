@@ -16,10 +16,10 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 
-import { JwtGuard } from 'apps/core/src/util/core/auth/guard';
+import { JwtGuard } from '@rahino/auth/guard';
 import { MenuService } from './menu.service';
 import { MenuGetDto } from './dto';
-import { GetUser } from 'apps/core/src/util/core/auth/decorator';
+import { GetUser } from '@rahino/auth/decorator';
 import { User } from '@rahino/database/models/core/user.entity';
 
 @ApiTags('CORE_USER_MENUS')

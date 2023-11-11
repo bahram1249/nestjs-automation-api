@@ -102,7 +102,8 @@
       "^@rahino/thumbnail(|/.*)$": "<rootDir>/libs/thumbnail/src/$1",
       "^@rahino/database(|/.*)$": "<rootDir>/libs/database/src/$1",
       "^@rahino/http-exception-filter(|/.*)$": "<rootDir>/libs/http-exception-filter/src/$1",
-      "^@rahino/logger(|/.*)$": "<rootDir>/libs/logger/src/$1"
+      "^@rahino/logger(|/.*)$": "<rootDir>/libs/logger/src/$1",
+      "^@rahino/auth(|/.*)$": "<rootDir>/libs/auth/src/$1"
     }
   }
 }

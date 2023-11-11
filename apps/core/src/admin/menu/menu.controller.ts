@@ -11,7 +11,6 @@ import {
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
-import { JwtGuard } from '../../util/core/auth/guard';
 import { CheckPermission } from 'apps/core/src/util/core/permission/decorator';
 import { PermissionGuard } from 'apps/core/src/util/core/permission/guard';
 import { JsonResponseTransformInterceptor } from 'apps/core/src/util/core/response/interceptor';
@@ -23,6 +22,7 @@ import {
 } from '@nestjs/swagger';
 import { GetMenuDto, MenuDto } from './dto';
 import { MenuService } from './menu.service';
+import { JwtGuard } from '@rahino/auth/guard';
 
 @ApiTags('Admin-Menu')
 @ApiBearerAuth()

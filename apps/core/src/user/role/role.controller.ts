@@ -8,7 +8,6 @@ import {
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
-import { JwtGuard } from '../../util/core/auth/guard';
 import { PermissionGuard } from 'apps/core/src/util/core/permission/guard';
 import { JsonResponseTransformInterceptor } from 'apps/core/src/util/core/response/interceptor';
 import {
@@ -18,9 +17,10 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { RoleService } from './role.service';
-import { GetUser } from '../../util/core/auth/decorator';
 import { User } from '@rahino/database/models/core/user.entity';
 import { RoleGetDto } from './dto';
+import { JwtGuard } from '@rahino/auth/guard';
+import { GetUser } from '@rahino/auth/decorator';
 
 @ApiTags('User-Roles')
 @ApiBearerAuth()
