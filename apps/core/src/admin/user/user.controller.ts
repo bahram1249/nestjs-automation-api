@@ -12,8 +12,8 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { UserService } from './user.service';
-import { CheckPermission } from 'apps/core/src/util/core/permission/decorator';
-import { PermissionGuard } from 'apps/core/src/util/core/permission/guard';
+import { CheckPermission } from '@rahino/permission-checker/decorator';
+import { PermissionGuard } from '@rahino/permission-checker/guard';
 import { JsonResponseTransformInterceptor } from 'apps/core/src/util/core/response/interceptor';
 import {
   ApiBearerAuth,

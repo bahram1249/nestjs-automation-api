@@ -65,6 +65,12 @@
       ],
       "@rahino/auth/*": [
         "libs/auth/src/*"
+      ],
+      "@rahino/permission-checker": [
+        "libs/permission-checker/src"
+      ],
+      "@rahino/permission-checker/*": [
+        "libs/permission-checker/src/*"
       ]
     }
   }

@@ -93,6 +93,15 @@
       "compilerOptions": {
         "tsConfigPath": "libs/auth/tsconfig.lib.json"
       }
+    },
+    "permission-checker": {
+      "type": "library",
+      "root": "libs/permission-checker",
+      "entryFile": "index",
+      "sourceRoot": "libs/permission-checker/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/permission-checker/tsconfig.lib.json"
+      }
     }
   }
 }
