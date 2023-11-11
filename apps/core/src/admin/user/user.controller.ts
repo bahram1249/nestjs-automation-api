@@ -21,7 +21,7 @@ import {
   ApiQuery,
   ApiTags,
 } from '@nestjs/swagger';
-import { ListFilter } from 'apps/core/src/util/core/query';
+import { ListFilter } from '@rahino/query-filter/types';
 import { UserDto } from './dto';
 import { JwtGuard } from '@rahino/auth/guard';
 

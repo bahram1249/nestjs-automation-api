@@ -9,7 +9,7 @@ import { InjectModel } from '@nestjs/sequelize';
 import { Role } from '@rahino/database/models/core/role.entity';
 import { User } from '@rahino/database/models/core/user.entity';
 import { QueryFilter } from 'apps/core/src/util/core/mapper/query-filter.mapper';
-import { ListFilter } from 'apps/core/src/util/core/query';
+import { ListFilter } from '@rahino/query-filter/types';
 import { Op } from 'sequelize';
 import { UserDto } from './dto';
 // import { InjectMapper } from '@automapper/nestjs';

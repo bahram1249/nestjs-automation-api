@@ -1,5 +1,5 @@
 import { IntersectionType } from '@nestjs/swagger';
-import { IgnorePagingFilter, ListFilter } from 'apps/core/src/util/core/query';
+import { IgnorePagingFilter, ListFilter } from '@rahino/query-filter/types';
 
 export class PeriodTypeGetDto extends IntersectionType(
   IgnorePagingFilter,

@@ -77,6 +77,12 @@
       ],
       "@rahino/response/*": [
         "libs/response/src/*"
+      ],
+      "@rahino/query-filter": [
+        "libs/query-filter/src"
+      ],
+      "@rahino/query-filter/*": [
+        "libs/query-filter/src/*"
       ]
     }
   }

@@ -111,6 +111,15 @@
       "compilerOptions": {
         "tsConfigPath": "libs/response/tsconfig.lib.json"
       }
+    },
+    "query-filter": {
+      "type": "library",
+      "root": "libs/query-filter",
+      "entryFile": "index",
+      "sourceRoot": "libs/query-filter/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/query-filter/tsconfig.lib.json"
+      }
     }
   }
 }
