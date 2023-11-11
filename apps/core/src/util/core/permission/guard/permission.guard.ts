@@ -1,11 +1,11 @@
 import { Injectable, CanActivate, ExecutionContext } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { InjectModel } from '@nestjs/sequelize';
-import { Permission } from 'apps/core/src/database/sequelize/models/core/permission.entity';
-import { RolePermission } from 'apps/core/src/database/sequelize/models/core/rolePermission.entity';
-import { Role } from 'apps/core/src/database/sequelize/models/core/role.entity';
-import { UserRole } from 'apps/core/src/database/sequelize/models/core/userRole.entity';
-import { User } from 'apps/core/src/database/sequelize/models/core/user.entity';
+import { Permission } from '@rahino/database/models/core/permission.entity';
+import { RolePermission } from '@rahino/database/models/core/rolePermission.entity';
+import { Role } from '@rahino/database/models/core/role.entity';
+import { UserRole } from '@rahino/database/models/core/userRole.entity';
+import { User } from '@rahino/database/models/core/user.entity';
 import { PermissionReflector } from '../interface';
 
 @Injectable()

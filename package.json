@@ -11,13 +11,13 @@
     "start": "nest start",
     "start:dev": "nest start --watch",
     "start:debug": "nest start --debug --watch",
-    "start:prod": "node dist/apps/core/main",
+    "start:prod": "node dist/apps/main/main",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
     "test": "jest",
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "test:e2e": "jest --config ./apps/core/test/jest-e2e.json"
+    "test:e2e": "jest --config ./apps/main/test/jest-e2e.json"
   },
   "dependencies": {
     "@nestjs/cache-manager": "^2.1.1",
@@ -99,7 +99,10 @@
     "moduleNameMapper": {
       "^@rahino/pcm(|/.*)$": "<rootDir>/apps/pcm/src/$1",
       "^@rahino/file(|/.*)$": "<rootDir>/libs/file/src/$1",
-      "^@rahino/thumbnail(|/.*)$": "<rootDir>/libs/thumbnail/src/$1"
+      "^@rahino/thumbnail(|/.*)$": "<rootDir>/libs/thumbnail/src/$1",
+      "^@rahino/database(|/.*)$": "<rootDir>/libs/database/src/$1",
+      "^@rahino/http-exception-filter(|/.*)$": "<rootDir>/libs/http-exception-filter/src/$1",
+      "^@rahino/logger(|/.*)$": "<rootDir>/libs/logger/src/$1"
     }
   }
 }

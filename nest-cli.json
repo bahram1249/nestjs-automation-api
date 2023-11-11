@@ -1,32 +1,34 @@
 {
   "$schema": "https://json.schemastore.org/nest-cli",
   "collection": "@nestjs/schematics",
-  "sourceRoot": "apps/core/src",
+  "sourceRoot": "apps/main/src",
   "compilerOptions": {
     "deleteOutDir": true,
     "webpack": true,
-    "tsConfigPath": "apps/core/tsconfig.app.json",
-    "plugins": ["@nestjs/swagger/plugin"]
+    "tsConfigPath": "apps/main/tsconfig.app.json",
+    "plugins": [
+      "@nestjs/swagger/plugin"
+    ]
   },
   "monorepo": true,
-  "root": "apps/core",
+  "root": "apps/main",
   "projects": {
-    "nest": {
+    "main": {
       "type": "application",
-      "root": "apps/core",
+      "root": "apps/main",
       "entryFile": "main",
-      "sourceRoot": "apps/core/src",
+      "sourceRoot": "apps/main/src",
       "compilerOptions": {
-        "tsConfigPath": "apps/core/tsconfig.app.json"
+        "tsConfigPath": "apps/main/tsconfig.app.json"
       }
     },
-    "user-service": {
-      "type": "application",
-      "root": "apps/user-service",
-      "entryFile": "main",
-      "sourceRoot": "apps/user-service/src",
+    "core": {
+      "type": "library",
+      "root": "apps/core",
+      "entryFile": "index",
+      "sourceRoot": "apps/core/src",
       "compilerOptions": {
-        "tsConfigPath": "apps/user-service/tsconfig.app.json"
+        "tsConfigPath": "apps/core/tsconfig.lib.json"
       }
     },
     "pcm": {
@@ -54,6 +56,33 @@
       "sourceRoot": "libs/thumbnail/src",
       "compilerOptions": {
         "tsConfigPath": "libs/thumbnail/tsconfig.lib.json"
+      }
+    },
+    "database": {
+      "type": "library",
+      "root": "libs/database",
+      "entryFile": "index",
+      "sourceRoot": "libs/database/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/database/tsconfig.lib.json"
+      }
+    },
+    "http-exception-filter": {
+      "type": "library",
+      "root": "libs/http-exception-filter",
+      "entryFile": "index",
+      "sourceRoot": "libs/http-exception-filter/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/http-exception-filter/tsconfig.lib.json"
+      }
+    },
+    "logger": {
+      "type": "library",
+      "root": "libs/logger",
+      "entryFile": "index",
+      "sourceRoot": "libs/logger/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/logger/tsconfig.lib.json"
       }
     }
   }

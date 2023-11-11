@@ -3,9 +3,9 @@ import { PublishService } from './publish.service';
 import { PublishController } from './publish.controller';
 import { SequelizeModule } from '@nestjs/sequelize';
 
-import { PCMPublish } from 'apps/core/src/database/sequelize/models/pcm/pcm-publish.entity';
-import { User } from 'apps/core/src/database/sequelize/models/core/user.entity';
-import { Permission } from 'apps/core/src/database/sequelize/models/core/permission.entity';
+import { PCMPublish } from '@rahino/database/models/pcm/pcm-publish.entity';
+import { User } from '@rahino/database/models/core/user.entity';
+import { Permission } from '@rahino/database/models/core/permission.entity';
 
 @Module({
   imports: [SequelizeModule.forFeature([User, Permission, PCMPublish])],

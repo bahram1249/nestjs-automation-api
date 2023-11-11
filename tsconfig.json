@@ -18,12 +18,48 @@
     "forceConsistentCasingInFileNames": false,
     "noFallthroughCasesInSwitch": false,
     "paths": {
-      "@rahino/pcm": ["apps/pcm/src"],
-      "@rahino/pcm/*": ["apps/pcm/src/*"],
-      "@rahino/file": ["libs/file/src"],
-      "@rahino/file/*": ["libs/file/src/*"],
-      "@rahino/thumbnail": ["libs/thumbnail/src"],
-      "@rahino/thumbnail/*": ["libs/thumbnail/src/*"]
+      "@rahino/core": [
+        "apps/core/src"
+      ],
+      "@rahino/core/*": [
+        "apps/core/src/*"
+      ],
+      "@rahino/pcm": [
+        "apps/pcm/src"
+      ],
+      "@rahino/pcm/*": [
+        "apps/pcm/src/*"
+      ],
+      "@rahino/file": [
+        "libs/file/src"
+      ],
+      "@rahino/file/*": [
+        "libs/file/src/*"
+      ],
+      "@rahino/thumbnail": [
+        "libs/thumbnail/src"
+      ],
+      "@rahino/thumbnail/*": [
+        "libs/thumbnail/src/*"
+      ],
+      "@rahino/database": [
+        "libs/database/src"
+      ],
+      "@rahino/database/*": [
+        "libs/database/src/*"
+      ],
+      "@rahino/http-exception-filter": [
+        "libs/http-exception-filter/src"
+      ],
+      "@rahino/http-exception-filter/*": [
+        "libs/http-exception-filter/src/*"
+      ],
+      "@rahino/logger": [
+        "libs/logger/src"
+      ],
+      "@rahino/logger/*": [
+        "libs/logger/src/*"
+      ]
     }
   }
 }
