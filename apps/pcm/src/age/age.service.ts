@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
-import { QueryFilter } from '@rahino/query-filter/sequelize-mapper/query-filter.mapper';
+import { QueryFilter } from '@rahino/query-filter/sequelize-mapper';
 import { Op } from 'sequelize';
 import { AgeGetDto } from './dto';
 import { PCMAge } from '@rahino/database/models/pcm/pcm-age.entity';

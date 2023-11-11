@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
-import { QueryFilter } from '@rahino/query-filter/sequelize-mapper/query-filter.mapper';
+import { QueryFilter } from '@rahino/query-filter/sequelize-mapper';
 import { Op } from 'sequelize';
 import { PublishGetDto } from './dto';
 import { PCMPublish } from '@rahino/database/models/pcm/pcm-publish.entity';
