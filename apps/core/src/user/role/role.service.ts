@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
-import { QueryFilter } from 'apps/core/src/util/core/mapper/query-filter.mapper';
+import { QueryFilter } from '@rahino/query-filter/sequelize-mapper/query-filter.mapper';
 import { Op } from 'sequelize';
 import { Role } from '@rahino/database/models/core/role.entity';
 import { RoleGetDto } from './dto';

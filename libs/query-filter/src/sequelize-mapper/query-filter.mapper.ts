@@ -1,5 +1,5 @@
 import { FindAndCountOptions } from 'sequelize';
-import { ListFilter } from '../../../../../../libs/query-filter/src/types';
+import { ListFilter } from '../types';
 
 export class QueryFilter {
   public static toFindAndCountOptions(

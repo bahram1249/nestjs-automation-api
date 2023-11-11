@@ -7,7 +7,7 @@ import {
 
 import { InjectModel } from '@nestjs/sequelize';
 import { Role } from '@rahino/database/models/core/role.entity';
-import { QueryFilter } from 'apps/core/src/util/core/mapper/query-filter.mapper';
+import { QueryFilter } from '@rahino/query-filter/sequelize-mapper/query-filter.mapper';
 import { Op } from 'sequelize';
 import { Permission } from '@rahino/database/models/core/permission.entity';
 import { RolePermission } from '@rahino/database/models/core/rolePermission.entity';
