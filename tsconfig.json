@@ -71,6 +71,12 @@
       ],
       "@rahino/permission-checker/*": [
         "libs/permission-checker/src/*"
+      ],
+      "@rahino/response": [
+        "libs/response/src"
+      ],
+      "@rahino/response/*": [
+        "libs/response/src/*"
       ]
     }
   }

@@ -9,7 +9,7 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { PermissionGuard } from '@rahino/permission-checker/guard';
-import { JsonResponseTransformInterceptor } from 'apps/core/src/util/core/response/interceptor';
+import { JsonResponseTransformInterceptor } from '@rahino/response/interceptor';
 import {
   ApiBearerAuth,
   ApiOperation,

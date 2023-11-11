@@ -102,6 +102,15 @@
       "compilerOptions": {
         "tsConfigPath": "libs/permission-checker/tsconfig.lib.json"
       }
+    },
+    "response": {
+      "type": "library",
+      "root": "libs/response",
+      "entryFile": "index",
+      "sourceRoot": "libs/response/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/response/tsconfig.lib.json"
+      }
     }
   }
 }

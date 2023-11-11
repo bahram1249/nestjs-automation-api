@@ -104,7 +104,8 @@
       "^@rahino/http-exception-filter(|/.*)$": "<rootDir>/libs/http-exception-filter/src/$1",
       "^@rahino/logger(|/.*)$": "<rootDir>/libs/logger/src/$1",
       "^@rahino/auth(|/.*)$": "<rootDir>/libs/auth/src/$1",
-      "^@rahino/permission-checker(|/.*)$": "<rootDir>/libs/permission-checker/src/$1"
+      "^@rahino/permission-checker(|/.*)$": "<rootDir>/libs/permission-checker/src/$1",
+      "^@rahino/response(|/.*)$": "<rootDir>/libs/response/src/$1"
     }
   }
 }

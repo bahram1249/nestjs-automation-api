@@ -14,7 +14,7 @@ import {
 import { UserService } from './user.service';
 import { CheckPermission } from '@rahino/permission-checker/decorator';
 import { PermissionGuard } from '@rahino/permission-checker/guard';
-import { JsonResponseTransformInterceptor } from 'apps/core/src/util/core/response/interceptor';
+import { JsonResponseTransformInterceptor } from '@rahino/response/interceptor';
 import {
   ApiBearerAuth,
   ApiOperation,

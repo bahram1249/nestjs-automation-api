@@ -12,7 +12,7 @@ import {
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
-import { JsonResponseTransformInterceptor } from 'apps/core/src/util/core/response/interceptor';
+import { JsonResponseTransformInterceptor } from '@rahino/response/interceptor';
 import {
   ApiBearerAuth,
   ApiBody,

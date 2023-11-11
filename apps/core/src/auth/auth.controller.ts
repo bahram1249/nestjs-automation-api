@@ -8,7 +8,7 @@ import {
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { AuthDto, UsernameDto } from './dto';
-import { JsonResponseTransformInterceptor } from 'apps/core/src/util/core/response/interceptor';
+import { JsonResponseTransformInterceptor } from '@rahino/response/interceptor';
 import { ApiTags } from '@nestjs/swagger';
 
 @ApiTags('Auth')
