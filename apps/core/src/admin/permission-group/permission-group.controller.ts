@@ -47,6 +47,6 @@ export class PermissionGroupController {
   @Get('/:id')
   @HttpCode(HttpStatus.OK)
   async findById(@Param('id') permissionId: number) {
-    await this.service.findById(permissionId);
+    return await this.service.findById(permissionId);
   }
 }

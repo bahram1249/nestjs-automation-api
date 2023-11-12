@@ -26,7 +26,11 @@ export class PermissionGroupService {
         },
 
         Sequelize.where(
-          Sequelize.fn('isnull', Sequelize.col('visibility'), 1),
+          Sequelize.fn(
+            'isnull',
+            Sequelize.col('PermissionGroup.visibility'),
+            1,
+          ),
           {
             [Op.eq]: 1,
           },
@@ -35,7 +39,6 @@ export class PermissionGroupService {
     };
 
     options.where = ws;
-
     const count = await this.repository.count(options);
     options.attributes = [
       'id',
@@ -44,16 +47,12 @@ export class PermissionGroupService {
       'createdAt',
       'updatedAt',
     ];
-    if (filter.ignorePaging != true) {
-      options = QueryFilter.limitOffset(options, filter);
-    }
-    options = QueryFilter.order(options, filter);
     options.include = [
       {
         model: Permission,
         as: 'permissions',
         where: Sequelize.where(
-          Sequelize.fn('isnull', Sequelize.col('visibility'), 1),
+          Sequelize.fn('isnull', Sequelize.col('permissions.visibility'), 1),
           {
             [Op.eq]: 1,
           },
@@ -69,6 +68,10 @@ export class PermissionGroupService {
         ],
       },
     ];
+    if (filter.ignorePaging != true) {
+      options = QueryFilter.limitOffset(options, filter);
+    }
+    options = QueryFilter.order(options, filter);
     return {
       result: await this.repository.findAll(options),
       total: count,
@@ -77,6 +80,13 @@ export class PermissionGroupService {
 
   async findById(id: number) {
     const permissionGroup = await this.repository.findOne({
+      attributes: [
+        'id',
+        'permissionGroupName',
+        'order',
+        'createdAt',
+        'updatedAt',
+      ],
       include: [
         {
           model: Permission,
@@ -90,22 +100,25 @@ export class PermissionGroupService {
             'createdAt',
             'updatedAt',
           ],
+          where: Sequelize.where(
+            Sequelize.fn('isnull', Sequelize.col('permissions.visibility'), 1),
+            {
+              [Op.eq]: 1,
+            },
+          ),
         },
-      ],
-      attributes: [
-        'id',
-        'permissionGroupName',
-        'order',
-        'createdAt',
-        'updatedAt',
       ],
       where: {
         [Op.and]: [
           {
-            id,
+            id: id,
           },
           Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('visibility'), 1),
+            Sequelize.fn(
+              'isnull',
+              Sequelize.col('PermissionGroup.visibility'),
+              1,
+            ),
             {
               [Op.eq]: 1,
             },

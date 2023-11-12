@@ -51,7 +51,7 @@ export class UserController {
   @Get('/:id')
   @HttpCode(HttpStatus.OK)
   async findById(@Param('id') userId: bigint) {
-    await this.service.findById(userId);
+    return await this.service.findById(userId);
   }
   @ApiOperation({ description: 'create user by admin' })
   @CheckPermission({ permissionSymbol: 'core.admin.users.create' })
