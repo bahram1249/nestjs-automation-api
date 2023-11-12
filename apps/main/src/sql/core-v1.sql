@@ -1010,7 +1010,7 @@ BEGIN
 	BEGIN
 		SELECT @parentMenuId = id
 		FROM Menus
-		WHERE title like N'%'+ @parentMenuName +'%'
+		WHERE title = @parentMenuName
 	END
 
 	IF @parentMenuId IS NOT NULL
@@ -1061,7 +1061,7 @@ BEGIN
 
 	DECLARE @entityName nvarchar(256) = N'AdminRoles'
 	DECLARE @groupName nvarchar(256) = N'core.admin.roles'
-	DECLARE @findParentMenu bit = 0;
+	DECLARE @findParentMenu bit = 1;
 	DECLARE @parentMenuName nvarchar(256) = N'مدیریت'
 	DECLARE @menuName nvarchar(256) = N'مدیریت نقش ها'
 	DECLARE @menuUrl nvarchar(512) = N'/core/admin/roles'
@@ -1154,7 +1154,7 @@ BEGIN
 	BEGIN
 		SELECT @parentMenuId = id
 		FROM Menus
-		WHERE title like N'%'+ @parentMenuName +'%'
+		WHERE title = @parentMenuName
 	END
 
 	IF @parentMenuId IS NOT NULL
@@ -1205,7 +1205,7 @@ BEGIN
 
 	DECLARE @entityName nvarchar(256) = N'AdminPermissions'
 	DECLARE @groupName nvarchar(256) = N'core.admin.permissions'
-	DECLARE @findParentMenu bit = 0;
+	DECLARE @findParentMenu bit = 1;
 	DECLARE @parentMenuName nvarchar(256) = N'مدیریت'
 	DECLARE @menuName nvarchar(256) = N'نمایش دسترسی ها'
 	DECLARE @menuUrl nvarchar(512) = N'/core/admin/permissions'
@@ -1284,7 +1284,7 @@ BEGIN
 	BEGIN
 		SELECT @parentMenuId = id
 		FROM Menus
-		WHERE title like N'%'+ @parentMenuName +'%'
+		WHERE title = @parentMenuName
 	END
 
 	IF @parentMenuId IS NOT NULL
@@ -1335,7 +1335,7 @@ BEGIN
 
 	DECLARE @entityName nvarchar(256) = N'AdminMenus'
 	DECLARE @groupName nvarchar(256) = N'core.admin.menus'
-	DECLARE @findParentMenu bit = 0;
+	DECLARE @findParentMenu bit = 1;
 	DECLARE @parentMenuName nvarchar(256) = N'مدیریت'
 	DECLARE @menuName nvarchar(256) = N'منو ها'
 	DECLARE @menuUrl nvarchar(512) = N'/core/admin/menus'
@@ -1425,7 +1425,7 @@ BEGIN
 	BEGIN
 		SELECT @parentMenuId = id
 		FROM Menus
-		WHERE title like N'%'+ @parentMenuName +'%'
+		WHERE title = @parentMenuName
 	END
 
 	IF @parentMenuId IS NOT NULL
@@ -1477,7 +1477,7 @@ BEGIN
 
 	DECLARE @entityName nvarchar(256) = N'AdminPermissionGroups'
 	DECLARE @groupName nvarchar(256) = N'core.admin.permissiongroups'
-	DECLARE @findParentMenu bit = 0;
+	DECLARE @findParentMenu bit = 1;
 	DECLARE @parentMenuName nvarchar(256) = N'مدیریت'
 	DECLARE @menuName nvarchar(256) = N'گروه دسترسی'
 	DECLARE @menuUrl nvarchar(512) = N'/core/admin/permissionGroups'
@@ -1560,7 +1560,7 @@ BEGIN
 	BEGIN
 		SELECT @parentMenuId = id
 		FROM Menus
-		WHERE title like N'%'+ @parentMenuName +'%'
+		WHERE title = @parentMenuName
 	END
 
 	IF @parentMenuId IS NOT NULL
