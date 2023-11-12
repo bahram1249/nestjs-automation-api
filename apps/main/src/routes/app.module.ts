@@ -1,6 +1,5 @@
 import {
   INestApplication,
-  Inject,
   MiddlewareConsumer,
   Module,
   NestModule,
@@ -17,7 +16,7 @@ import { ThrottlerModule } from '@nestjs/throttler';
 import { DevtoolsModule } from '@nestjs/devtools-integration';
 import { CacheModule } from '@nestjs/cache-manager';
 import { PCMModule } from '@rahino/pcm';
-import { CoreModule } from '@rahino/core/core.module';
+import { CoreModule } from '@rahino/core';
 import { HttpExceptionFilter } from '@rahino/http-exception-filter';
 import { DBLogger, DBLoggerModule } from '@rahino/logger';
 
@@ -30,19 +29,6 @@ import { DBLogger, DBLoggerModule } from '@rahino/logger';
       isGlobal: true,
       ttl: 5000,
     }),
-    ServeStaticModule.forRoot({
-      rootPath: path.join(__dirname, '../../../../', 'client/dist'),
-    }),
-    ClientsModule.register([
-      {
-        name: 'NOTIFY_SERVICE',
-        transport: Transport.REDIS,
-        options: {
-          host: '127.0.0.1',
-          port: 6379,
-        },
-      },
-    ]),
     ThrottlerModule.forRoot([
       {
         name: 'short',
@@ -75,9 +61,7 @@ import { DBLogger, DBLoggerModule } from '@rahino/logger';
 })
 export class AppModule implements NestModule {
   constructor(
-    @Inject(DBLogger)
     private readonly logger: DBLogger,
-    @Inject(ConfigService)
     private readonly config: ConfigService,
   ) {}
   app: INestApplication;
@@ -88,14 +72,6 @@ export class AppModule implements NestModule {
     this.app = app;
 
     app.useLogger(this.logger);
-
-    // app.connectMicroservice<MicroserviceOptions>({
-    //   transport: Transport.REDIS,
-    //   options: {
-    //     host: '127.0.0.1',
-    //     port: 6379,
-    //   },
-    // });
     app.enableVersioning({
       type: VersioningType.URI,
     });
@@ -113,6 +89,10 @@ export class AppModule implements NestModule {
     app.get(CoreModule).setApp(app);
     app.get(PCMModule).setApp(app);
 
-    await app.listen(this.config.get('HOST_PORT'));
+    const port = this.config.get('HOST_PORT');
+    const host = this.config.get('HOST_NAME');
+    await app.listen(port, host, () => {
+      this.logger.warn(`listening on http://${host}:${port}`);
+    });
   }
 }
