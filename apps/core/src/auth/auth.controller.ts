@@ -38,6 +38,7 @@ export class AuthController {
   }
 
   @HttpCode(HttpStatus.OK)
+  @Post('findUser')
   async findUser(@Body() dto: UsernameDto) {
     return await this.authService.findUser(dto);
   }

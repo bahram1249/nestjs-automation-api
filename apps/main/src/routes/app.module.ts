@@ -6,11 +6,8 @@ import {
   ValidationPipe,
   VersioningType,
 } from '@nestjs/common';
-import { ClientsModule, Transport } from '@nestjs/microservices';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { DatabaseModule } from '@rahino/database';
-import { ServeStaticModule } from '@nestjs/serve-static';
-import * as path from 'path';
 import helmet from 'helmet';
 import { ThrottlerModule } from '@nestjs/throttler';
 import { DevtoolsModule } from '@nestjs/devtools-integration';
