@@ -12,7 +12,11 @@ import { ThumbnailModule } from '@rahino/thumbnail';
   imports: [
     SequelizeModule.forFeature([User, Attachment, AttachmentType]),
     FileModule,
-    ThumbnailModule,
+    ThumbnailModule.register({
+      width: 700,
+      height: 700,
+      resizeOptions: { withoutEnlargement: true },
+    }),
   ],
   controllers: [ProfileController],
   providers: [ProfileService],
