@@ -1,1 +1,1 @@
-export * from './sep.provider';
+export * from './sep/sep.provider';

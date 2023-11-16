@@ -17,4 +17,17 @@ export class PayService {
       phoneNumber,
     );
   }
+  generateRedirectUrl(token: string) {
+    return this.paymentProvider.generateRedirectUrl(token);
+  }
+  async verifyTransaction(amount: bigint, terminalId: string, refNum: string) {
+    return await this.paymentProvider.verifyTransaction(
+      amount,
+      terminalId,
+      refNum,
+    );
+  }
+  async reverseTransaction(terminalId: string, refNum: string) {
+    return await this.paymentProvider.reverseTransacion(terminalId, refNum);
+  }
 }
