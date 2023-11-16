@@ -120,6 +120,15 @@
       "compilerOptions": {
         "tsConfigPath": "libs/query-filter/tsconfig.lib.json"
       }
+    },
+    "pay": {
+      "type": "library",
+      "root": "libs/pay",
+      "entryFile": "index",
+      "sourceRoot": "libs/pay/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/pay/tsconfig.lib.json"
+      }
     }
   }
 }

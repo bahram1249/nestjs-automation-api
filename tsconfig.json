@@ -83,6 +83,12 @@
       ],
       "@rahino/query-filter/*": [
         "libs/query-filter/src/*"
+      ],
+      "@rahino/pay": [
+        "libs/pay/src"
+      ],
+      "@rahino/pay/*": [
+        "libs/pay/src/*"
       ]
     }
   }

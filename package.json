@@ -34,6 +34,7 @@
     "@nestjs/swagger": "^7.1.13",
     "@nestjs/throttler": "^5.0.1",
     "@types/passport": "^1.0.13",
+    "axios": "^1.6.2",
     "bcrypt": "^5.1.1",
     "cache-manager": "^5.2.4",
     "class-transformer": "^0.5.1",
@@ -106,7 +107,8 @@
       "^@rahino/auth(|/.*)$": "<rootDir>/libs/auth/src/$1",
       "^@rahino/permission-checker(|/.*)$": "<rootDir>/libs/permission-checker/src/$1",
       "^@rahino/response(|/.*)$": "<rootDir>/libs/response/src/$1",
-      "^@rahino/query-filter(|/.*)$": "<rootDir>/libs/query-filter/src/$1"
+      "^@rahino/query-filter(|/.*)$": "<rootDir>/libs/query-filter/src/$1",
+      "^@rahino/pay(|/.*)$": "<rootDir>/libs/pay/src/$1"
     }
   }
 }
