@@ -66,10 +66,10 @@ export class SepProvider implements IPay {
     if (request.data.Success == false) {
       throw new BadRequestException(request.data.ResultDescription);
     }
-    if (request.data.TransactionDetail.OrginalAmount != amount) {
-      const reverse = await this.reverseTransacion(terminalId, refNum);
-      throw new BadRequestException('Something Wrong in Amount');
-    }
+    // if (request.data.TransactionDetail.OrginalAmount != amount) {
+    //   const reverse = await this.reverseTransacion(terminalId, refNum);
+    //   throw new BadRequestException('Something Wrong in Amount');
+    // }
 
     return request.data;
   }
