@@ -128,21 +128,23 @@ export class MenuService {
 
   async update(menuId: number, dto: MenuDto) {
     // logic validation
-    let menu = await this.menuRepository.findOne({
-      include: [
+    let builder = new QueryOptionsBulder();
+    let options = builder
+      .include([
         {
           model: Menu,
           as: 'subMenus',
           required: false,
         },
-      ],
-      where: {
+      ])
+      .filter({
         id: menuId,
         visibility: {
           [Op.is]: null,
         },
-      },
-    });
+      })
+      .build();
+    let menu = await this.menuRepository.findOne(options);
     if (!menu) throw new NotFoundException('Not Found!');
 
     await this.menuRepository.update(JSON.parse(JSON.stringify(dto)), {
@@ -150,8 +152,8 @@ export class MenuService {
         id: menuId,
       },
     });
-    const builder = new QueryOptionsBulder();
-    const options = builder
+    builder = new QueryOptionsBulder();
+    options = builder
       .attributes([
         'id',
         'title',
