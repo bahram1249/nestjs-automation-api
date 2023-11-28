@@ -16,6 +16,8 @@ import { PCMModule } from '@rahino/pcm';
 import { CoreModule } from '@rahino/core';
 import { HttpExceptionFilter } from '@rahino/http-exception-filter';
 import { DBLogger, DBLoggerModule } from '@rahino/logger';
+import { EAVModule } from '@rahino/eav';
+import { ECommerceModule } from '@rahino/ecommerce';
 
 @Module({
   imports: [
@@ -50,6 +52,8 @@ import { DBLogger, DBLoggerModule } from '@rahino/logger';
     // }),
     CoreModule,
     PCMModule,
+    EAVModule,
+    ECommerceModule,
     DevtoolsModule.register({
       http: process.env.NODE_ENV !== 'production',
     }),

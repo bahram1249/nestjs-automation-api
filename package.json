@@ -99,6 +99,8 @@
     ],
     "moduleNameMapper": {
       "^@rahino/pcm(|/.*)$": "<rootDir>/apps/pcm/src/$1",
+      "^@rahino/eav(|/.*)$": "<rootDir>/apps/eav/src/$1",
+      "^@rahino/ecommerce(|/.*)$": "<rootDir>/apps/e-commerce/src/$1",
       "^@rahino/file(|/.*)$": "<rootDir>/libs/file/src/$1",
       "^@rahino/thumbnail(|/.*)$": "<rootDir>/libs/thumbnail/src/$1",
       "^@rahino/database(|/.*)$": "<rootDir>/libs/database/src/$1",
