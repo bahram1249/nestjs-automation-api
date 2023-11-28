@@ -2,9 +2,10 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { QueryFilter } from '@rahino/query-filter/sequelize-mapper';
 import { Op } from 'sequelize';
-import { AttributeDto, GetAttributeDto } from './dto';
+import { AttributeEntityDto, GetAttributeDto } from './dto';
 import { EAVAttribute } from '@rahino/database/models/eav/eav-attribute.entity';
 import { EAVEntityAttribute } from '@rahino/database/models/eav/eav-entity-attribute.entity';
+import * as _ from 'lodash';
 
 @Injectable()
 export class AttributeService {
@@ -63,11 +64,19 @@ export class AttributeService {
       result: attribute,
     };
   }
-  async create(dto: AttributeDto) {
-    let attribute = JSON.parse(JSON.stringify(dto));
-    attribute = await this.repository.create(attribute);
+  async create(dto: AttributeEntityDto) {
+    let requestBody = JSON.parse(JSON.stringify(dto));
+    let attribute = await this.repository.create(requestBody.name);
+    let attributeEntity = JSON.parse(
+      JSON.stringify(
+        _.pick(requestBody, ['minLength', 'maxLength', 'required']),
+      ),
+    );
+    attributeEntity.attributeId = attribute.id;
+    attributeEntity =
+      await this.entityAttributeRepository.create(attributeEntity);
     return {
-      result: attribute,
+      result: attributeEntity,
     };
   }
 }
