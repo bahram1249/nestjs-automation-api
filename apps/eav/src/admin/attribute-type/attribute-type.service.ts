@@ -14,10 +14,6 @@ export class AttributeTypeService {
 
   async findAll(filter: GetAttributeTypeDto) {
     let options = QueryFilter.init();
-    if (filter.ignorePaging != true) {
-      options = QueryFilter.limitOffset(options, filter);
-    }
-    options = QueryFilter.order(options, filter);
     options.where = {
       [Op.and]: [
         {
@@ -27,9 +23,16 @@ export class AttributeTypeService {
         },
       ],
     };
+    const count = await this.repository.count(options);
+
+    if (filter.ignorePaging != true) {
+      options = QueryFilter.limitOffset(options, filter);
+    }
+    options = QueryFilter.order(options, filter);
+
     return {
       result: await this.repository.findAll(options),
-      total: await this.repository.count(options),
+      total: count,
     };
   }
 
