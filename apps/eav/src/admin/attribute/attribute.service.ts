@@ -2,7 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { QueryFilter } from '@rahino/query-filter/sequelize-mapper';
 import { Op } from 'sequelize';
-import { GetAttributeDto } from './dto';
+import { AttributeDto, GetAttributeDto } from './dto';
 import { EAVAttribute } from '@rahino/database/models/eav/eav-attribute.entity';
 import { EAVEntityAttribute } from '@rahino/database/models/eav/eav-entity-attribute.entity';
 
@@ -59,6 +59,13 @@ export class AttributeService {
       },
     });
     if (!attribute) throw new NotFoundException();
+    return {
+      result: attribute,
+    };
+  }
+  async create(dto: AttributeDto) {
+    let attribute = JSON.parse(JSON.stringify(dto));
+    attribute = await this.repository.create(attribute);
     return {
       result: attribute,
     };

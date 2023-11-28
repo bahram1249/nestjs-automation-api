@@ -1,9 +1,11 @@
 import {
+  Body,
   Controller,
   Get,
   HttpCode,
   HttpStatus,
   Param,
+  Post,
   Query,
   UseGuards,
   UseInterceptors,
@@ -19,7 +21,7 @@ import {
 } from '@nestjs/swagger';
 
 import { JwtGuard } from '@rahino/auth/guard';
-import { GetAttributeDto } from './dto';
+import { AttributeDto, GetAttributeDto } from './dto';
 import { AttributeService } from './attribute.service';
 
 @ApiTags('EAV-Attribute')
@@ -52,5 +54,13 @@ export class AttributeController {
   @HttpCode(HttpStatus.OK)
   async findById(@Param('id') entityId: bigint) {
     return await this.service.findById(entityId);
+  }
+
+  @ApiOperation({ description: 'create attribute by entity type' })
+  @CheckPermission({ permissionSymbol: 'eav.admin.attribute.create' })
+  @Post('/')
+  @HttpCode(HttpStatus.CREATED)
+  async create(@Body() dto: AttributeDto) {
+    return await this.service.create(dto);
   }
 }

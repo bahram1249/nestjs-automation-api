@@ -11,5 +11,5 @@ export class AttributeEntityFilter {
     type: IsNumber,
     description: 'entity type id',
   })
-  entityTypeId?: number;
+  public entityTypeId?: number;
 }
