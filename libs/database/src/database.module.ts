@@ -22,6 +22,10 @@ import { PCMAge } from './models/pcm/pcm-age.entity';
 import { PCMArticleType } from './models/pcm/pcm-article-type.entity';
 import { PCMPublish } from './models/pcm/pcm-publish.entity';
 import { PCMArticle } from './models/pcm/pcm-article.entity';
+import { EAVEntityModel } from './models/eav/eav-entity-model.entity';
+import { EAVEntityType } from './models/eav/eav-entity-type.entity';
+import { EAVEntity } from './models/eav/eav-entity.entity';
+import { ECProduct } from './models/ecommerce-eav/ec-product.entity';
 
 // let config;
 // switch (process.env.NODE_ENV) {
@@ -85,6 +89,10 @@ const dbLog: boolean = JSON.parse(process.env.DB_LOG);
           PCMArticleType,
           PCMPublish,
           PCMArticle,
+          EAVEntityModel,
+          EAVEntityType,
+          EAVEntity,
+          ECProduct,
         ],
         autoLoadModels: autoLoadModels,
         logging: dbLog,
