@@ -1,10 +1,9 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-
 import { InjectModel } from '@nestjs/sequelize';
 import { Menu } from '@rahino/database/models/core/menu.entity';
-import { QueryFilter } from '@rahino/query-filter/sequelize-mapper';
 import { Op, Sequelize } from 'sequelize';
 import { GetMenuDto, MenuDto } from './dto';
+import { QueryOptionsBulder } from '@rahino/query-filter/sequelize-query-builder';
 
 @Injectable()
 export class MenuService {
@@ -14,100 +13,33 @@ export class MenuService {
   ) {}
 
   async findAll(filter: GetMenuDto) {
-    let options = QueryFilter.init();
-
-    // search
-    options.where = {
-      [Op.and]: [
-        {
-          title: {
-            [Op.like]: filter.search,
-          },
+    let builder = new QueryOptionsBulder();
+    builder = builder
+      .filter({
+        title: {
+          [Op.like]: filter.search,
         },
+      })
+      .filter(
         Sequelize.where(
           Sequelize.fn('isnull', Sequelize.col('visibility'), 1),
           {
             [Op.eq]: 1,
           },
         ),
-      ],
-    };
+      );
+
     if (filter.onlyParent == true) {
-      options.where[Op.and].push({
+      builder = builder.filter({
         parentMenuId: {
           [Op.is]: null,
         },
       });
     }
+    let options = builder.build();
     const count = await this.menuRepository.count(options);
-    options.attributes = [
-      'id',
-      'title',
-      'url',
-      'icon',
-      'className',
-      'parentMenuId',
-      'order',
-      'createdAt',
-      'updatedAt',
-    ];
-    options.include = [
-      {
-        model: Menu,
-        as: 'subMenus',
-        required: false,
-      },
-    ];
-    options = QueryFilter.toFindAndCountOptions(options, filter);
-    return {
-      result: await this.menuRepository.findAll(options),
-      total: count,
-    };
-  }
-
-  async findById(id: number) {
-    return {
-      result: await this.menuRepository.findOne({
-        attributes: [
-          'id',
-          'title',
-          'url',
-          'icon',
-          'className',
-          'parentMenuId',
-          'order',
-          'createdAt',
-          'updatedAt',
-        ],
-        where: {
-          [Op.and]: [
-            {
-              id,
-            },
-            {
-              visibility: {
-                [Op.is]: null,
-              },
-            },
-          ],
-        },
-      }),
-    };
-  }
-
-  async create(dto: MenuDto) {
-    const menuObj = JSON.parse(JSON.stringify(dto));
-    let menu = await this.menuRepository.create(menuObj);
-
-    menu = await this.menuRepository.findOne({
-      include: [
-        {
-          model: Menu,
-          as: 'subMenus',
-          required: false,
-        },
-      ],
-      attributes: [
+    options = builder
+      .attributes([
         'id',
         'title',
         'url',
@@ -117,11 +49,78 @@ export class MenuService {
         'order',
         'createdAt',
         'updatedAt',
-      ],
-      where: {
-        id: menu.id,
-      },
-    });
+      ])
+      .include([
+        {
+          model: Menu,
+          as: 'subMenus',
+          required: false,
+        },
+      ])
+      .limit(filter.limit)
+      .offset(filter.offset)
+      .order({ orderBy: filter.orderBy, sortOrder: filter.sortOrder })
+      .build();
+
+    return {
+      result: await this.menuRepository.findAll(options),
+      total: count,
+    };
+  }
+
+  async findById(id: number) {
+    const builder = new QueryOptionsBulder();
+    const options = builder
+      .attributes([
+        'id',
+        'title',
+        'url',
+        'icon',
+        'className',
+        'parentMenuId',
+        'order',
+        'createdAt',
+        'updatedAt',
+      ])
+      .filter({ id })
+      .filter(
+        Sequelize.where(
+          Sequelize.fn('isnull', Sequelize.col('visibility'), 1),
+          {
+            [Op.eq]: 1,
+          },
+        ),
+      )
+      .build();
+    return {
+      result: await this.menuRepository.findOne(options),
+    };
+  }
+
+  async create(dto: MenuDto) {
+    const menuObj = JSON.parse(JSON.stringify(dto));
+    let menu = await this.menuRepository.create(menuObj);
+    const builder = new QueryOptionsBulder();
+    const options = builder
+      .include({
+        model: Menu,
+        as: 'subMenus',
+        required: false,
+      })
+      .attributes([
+        'id',
+        'title',
+        'url',
+        'icon',
+        'className',
+        'parentMenuId',
+        'order',
+        'createdAt',
+        'updatedAt',
+      ])
+      .filter({ id: menu.id })
+      .build();
+    menu = await this.menuRepository.findOne(options);
     return {
       result: menu,
     };
@@ -151,16 +150,9 @@ export class MenuService {
         id: menuId,
       },
     });
-
-    menu = await this.menuRepository.findOne({
-      include: [
-        {
-          model: Menu,
-          as: 'subMenus',
-          required: false,
-        },
-      ],
-      attributes: [
+    const builder = new QueryOptionsBulder();
+    const options = builder
+      .attributes([
         'id',
         'title',
         'url',
@@ -170,11 +162,17 @@ export class MenuService {
         'order',
         'createdAt',
         'updatedAt',
-      ],
-      where: {
-        id: menuId,
-      },
-    });
+      ])
+      .include([
+        {
+          model: Menu,
+          as: 'subMenus',
+          required: false,
+        },
+      ])
+      .filter({ id: menuId })
+      .build();
+    menu = await this.menuRepository.findOne(options);
     return {
       result: menu,
     };
