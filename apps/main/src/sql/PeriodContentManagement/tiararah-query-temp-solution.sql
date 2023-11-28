@@ -1,17 +1,18 @@
-DECLARE @signUpStartDate date = '2023-06-21'
+DECLARE @signUpStartDate date = '2023-06-15'
 SELECT *
 FROM PersianDates
 WHERE GregorianDate = @signUpStartDate
 
-DECLARE @periodTypeId int = 3
+DECLARE @periodTypeId int = 4
 DECLARE @offsetDay int = (
 	SELECT TOP 1 DATEDIFF(DAY,startDate, @signUpStartDate)
-	FROM TiyaraRahPeriods
+	FROM PCMPeriods
 	WHERE periodTypeId = @periodTypeId
 	 AND startDate <= @signUpStartDate AND endDate >= @signUpStartDate
 )
 
 PRINT @offsetDay
+
 
 
 SELECT id
@@ -27,7 +28,7 @@ SELECT id
 		, pdEnd.GregorianDate as endDate
 		, pdEnd.YearMonthDay as persianEndDate
 		, ROW_NUMBER() OVER(order by startDate asc) as rn
-	FROM TiyaraRahPeriods t
+	FROM PCMPeriods t
 	LEFT JOIN PersianDates pdStart
 	ON DATEADD(DAY, @offsetDay, t.startDate) = pdStart.GregorianDate
 	LEFT JOIN PersianDates pdEnd
