@@ -46,7 +46,7 @@ export class AttributeTypeController {
     return await this.service.findAll(filter);
   }
 
-  @ApiOperation({ description: 'show attribute by given id' })
+  @ApiOperation({ description: 'show attribute type by given id' })
   @CheckPermission({ permissionSymbol: 'eav.admin.attributetypes.getone' })
   @Get('/:id')
   @HttpCode(HttpStatus.OK)
