@@ -7,9 +7,10 @@ import {
 import { AttributeModule } from './admin/attribute/attribute.module';
 import { AttributeTypeModule } from './admin/attribute-type/attribute-type.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { EntityTypeModule } from './admin/entity-type/entity-type.module';
 
 @Module({
-  imports: [AttributeModule, AttributeTypeModule],
+  imports: [AttributeModule, AttributeTypeModule, EntityTypeModule],
 })
 export class EAVModule implements NestModule {
   constructor() {}

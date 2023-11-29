@@ -23,14 +23,14 @@ export class EAVEntityType extends Model {
   @Column({
     type: DataType.INTEGER,
   })
-  @Column({
-    type: DataType.INTEGER,
-  })
   @ForeignKey(() => EAVEntityType)
   parentEntityTypeId?: number;
   @BelongsTo(() => EAVEntityType, {
     as: 'parentEntity',
     foreignKey: 'parentEntityTypeId',
+  })
+  @Column({
+    type: DataType.INTEGER,
   })
   @ForeignKey(() => EAVEntityModel)
   entityModelId: number;
