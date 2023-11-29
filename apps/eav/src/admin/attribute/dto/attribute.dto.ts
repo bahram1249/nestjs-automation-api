@@ -6,10 +6,8 @@ export class AttributeDto {
   @AutoMap()
   @IsString()
   @ApiProperty({
-    minimum: 0,
     required: true,
-    default: 0,
-    type: IsString,
+    type: String,
     description: 'name of attribute',
   })
   public name: string;
@@ -17,7 +15,7 @@ export class AttributeDto {
   @IsNumber()
   @ApiProperty({
     required: true,
-    type: IsNumber,
+    type: Number,
     description: 'create attribute by entityTypeId',
   })
   public entityTypeId: number;
@@ -26,7 +24,7 @@ export class AttributeDto {
   @IsNumber()
   @ApiProperty({
     required: true,
-    type: IsNumber,
+    type: Number,
     description: 'attributeTypeId',
   })
   public attributeTypeId: number;
@@ -35,7 +33,7 @@ export class AttributeDto {
   @IsNumber()
   @ApiProperty({
     required: false,
-    type: IsNumber,
+    type: Number,
     description: 'min length',
   })
   public minLength?: number;
@@ -44,7 +42,7 @@ export class AttributeDto {
   @IsNumber()
   @ApiProperty({
     required: false,
-    type: IsNumber,
+    type: Number,
     description: 'max length',
   })
   public maxLength?: number;
@@ -53,7 +51,7 @@ export class AttributeDto {
   @IsBoolean()
   @ApiProperty({
     required: false,
-    type: IsBoolean,
+    type: Boolean,
     description: 'is required field?',
   })
   public required?: boolean;
