@@ -18,6 +18,8 @@ import { HttpExceptionFilter } from '@rahino/http-exception-filter';
 import { DBLogger, DBLoggerModule } from '@rahino/logger';
 import { EAVModule } from '@rahino/eav';
 import { ECommerceModule } from '@rahino/ecommerce';
+import { AutomapperModule } from 'automapper-nestjs';
+import { classes } from 'automapper-classes';
 
 @Module({
   imports: [
@@ -47,9 +49,9 @@ import { ECommerceModule } from '@rahino/ecommerce';
     ]),
     DatabaseModule,
     DBLoggerModule,
-    // AutomapperModule.forRoot({
-    //   strategyInitializer: classes(),
-    // }),
+    AutomapperModule.forRoot({
+      strategyInitializer: classes(),
+    }),
     CoreModule,
     PCMModule,
     EAVModule,

@@ -1,7 +1,9 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { AutoMap } from 'automapper-classes';
 import { IsBoolean, IsNumber, IsString } from 'class-validator';
 
-export class AttributeEntityDto {
+export class AttributeDto {
+  @AutoMap()
   @IsString()
   @ApiProperty({
     minimum: 0,
@@ -20,6 +22,16 @@ export class AttributeEntityDto {
   })
   public entityTypeId: number;
 
+  @AutoMap()
+  @IsNumber()
+  @ApiProperty({
+    required: true,
+    type: IsNumber,
+    description: 'attributeTypeId',
+  })
+  public attributeTypeId: number;
+
+  @AutoMap()
   @IsNumber()
   @ApiProperty({
     required: false,
@@ -28,6 +40,7 @@ export class AttributeEntityDto {
   })
   public minLength?: number;
 
+  @AutoMap()
   @IsNumber()
   @ApiProperty({
     required: false,
@@ -36,6 +49,7 @@ export class AttributeEntityDto {
   })
   public maxLength?: number;
 
+  @AutoMap()
   @IsBoolean()
   @ApiProperty({
     required: false,

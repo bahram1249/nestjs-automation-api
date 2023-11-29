@@ -21,7 +21,7 @@ import {
 } from '@nestjs/swagger';
 
 import { JwtGuard } from '@rahino/auth/guard';
-import { AttributeEntityDto, GetAttributeDto } from './dto';
+import { AttributeDto, GetAttributeDto } from './dto';
 import { AttributeService } from './attribute.service';
 
 @ApiTags('EAV-Attribute')
@@ -60,7 +60,7 @@ export class AttributeController {
   @CheckPermission({ permissionSymbol: 'eav.admin.attribute.create' })
   @Post('/')
   @HttpCode(HttpStatus.CREATED)
-  async create(@Body() dto: AttributeEntityDto) {
+  async create(@Body() dto: AttributeDto) {
     return await this.service.create(dto);
   }
 }

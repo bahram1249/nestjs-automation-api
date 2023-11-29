@@ -26,9 +26,9 @@ export class EAVEntityAttribute extends Model {
     type: DataType.BIGINT,
     primaryKey: true,
   })
-  @ForeignKey(() => EAVEntityType)
+  @ForeignKey(() => EAVAttribute)
   attributeId: bigint;
-  @BelongsTo(() => EAVEntityType, {
+  @BelongsTo(() => EAVAttribute, {
     as: 'attribute',
     foreignKey: 'attributeId',
   })

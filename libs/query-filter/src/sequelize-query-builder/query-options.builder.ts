@@ -10,12 +10,14 @@ export class QueryOptionsBulder {
     };
     return this;
   }
-  limit(count?: number): QueryOptionsBulder {
-    if (count) this.options.limit = count;
+  limit(count?: number, ignorePaging?: boolean): QueryOptionsBulder {
+    if (count != null && (ignorePaging == null || ignorePaging == false))
+      this.options.limit = count;
     return this;
   }
-  offset(count?: number): QueryOptionsBulder {
-    if (count) this.options.offset = count;
+  offset(count?: number, ignorePaging?: boolean): QueryOptionsBulder {
+    if (count != null && (ignorePaging == null || ignorePaging == false))
+      this.options.offset = count;
     return this;
   }
   order(order: { orderBy: string; sortOrder: string }): QueryOptionsBulder {

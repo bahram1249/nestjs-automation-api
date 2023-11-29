@@ -1,0 +1,23 @@
+import { Injectable } from '@nestjs/common';
+import { AutomapperProfile, InjectMapper } from 'automapper-nestjs';
+import { AttributeDto } from '../dto';
+import { EAVAttribute } from '@rahino/database/models/eav/eav-attribute.entity';
+import { Mapper, createMap, forMember, ignore } from 'automapper-core';
+
+@Injectable()
+export class AttributeProfile extends AutomapperProfile {
+  constructor(@InjectMapper() mapper: Mapper) {
+    super(mapper);
+  }
+
+  override get profile() {
+    return (mapper) => {
+      createMap(
+        mapper,
+        AttributeDto,
+        EAVAttribute,
+        forMember((dest) => dest.id, ignore()),
+      );
+    };
+  }
+}
