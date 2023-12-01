@@ -10,7 +10,7 @@ import { EAVAttribute } from '@rahino/database/models/eav/eav-attribute.entity';
 import { EAVEntityAttribute } from '@rahino/database/models/eav/eav-entity-attribute.entity';
 import { InjectMapper } from 'automapper-nestjs';
 import { Mapper } from 'automapper-core';
-import { QueryOptionsBulder } from '@rahino/query-filter/sequelize-query-builder';
+import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import { EAVAttributeType } from '@rahino/database/models/eav/eav-attribute-type.entity';
 import { EAVEntityType } from '@rahino/database/models/eav/eav-entity-type.entity';
 
@@ -29,7 +29,7 @@ export class AttributeService {
   ) {}
 
   async findAll(filter: GetAttributeDto) {
-    let builder = new QueryOptionsBulder();
+    let builder = new QueryOptionsBuilder();
     builder = builder.filter({
       name: {
         [Op.like]: filter.search,
@@ -64,7 +64,7 @@ export class AttributeService {
   }
 
   async findById(id: bigint) {
-    let builder = new QueryOptionsBulder();
+    let builder = new QueryOptionsBuilder();
     const options = builder
       .filter({
         id,
@@ -97,7 +97,7 @@ export class AttributeService {
       attributeId: attribute.id,
       entityTypeId: dto.entityTypeId,
     });
-    const options = new QueryOptionsBulder()
+    const options = new QueryOptionsBuilder()
       .filter({
         attributeId: attributeEntity.id,
       })

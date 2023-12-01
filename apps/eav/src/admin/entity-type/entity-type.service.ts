@@ -5,7 +5,7 @@ import { InjectMapper } from 'automapper-nestjs';
 import { Mapper } from 'automapper-core';
 import { EAVEntityType } from '@rahino/database/models/eav/eav-entity-type.entity';
 import { EntityTypeDto, GetEntityTypeDto } from './dto';
-import { QueryOptionsBulder } from '@rahino/query-filter/sequelize-query-builder';
+import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import { EAVEntityModel } from '@rahino/database/models/eav/eav-entity-model.entity';
 
 @Injectable()
@@ -19,7 +19,7 @@ export class EntityTypeService {
   ) {}
 
   async findAll(filter: GetEntityTypeDto) {
-    let builder = new QueryOptionsBulder().filter({
+    let builder = new QueryOptionsBuilder().filter({
       name: {
         [Op.like]: filter.search,
       },
@@ -41,7 +41,7 @@ export class EntityTypeService {
   }
 
   async findById(id: bigint) {
-    const builder = new QueryOptionsBulder().filter({ id });
+    const builder = new QueryOptionsBuilder().filter({ id });
     return {
       result: await this.repository.findOne(builder.build()),
     };
@@ -69,7 +69,7 @@ export class EntityTypeService {
     }
     const mappedItem = this.mapper.map(dto, EntityTypeDto, EAVEntityType);
     let entityType = await this.repository.create(mappedItem.toJSON());
-    let builder = new QueryOptionsBulder();
+    let builder = new QueryOptionsBuilder();
     const options = builder
       .filter({ id: entityType.id })
       .include([

@@ -3,7 +3,7 @@ import { InjectModel } from '@nestjs/sequelize';
 import { Menu } from '@rahino/database/models/core/menu.entity';
 import { Op, Sequelize } from 'sequelize';
 import { GetMenuDto, MenuDto } from './dto';
-import { QueryOptionsBulder } from '@rahino/query-filter/sequelize-query-builder';
+import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 
 @Injectable()
 export class MenuService {
@@ -13,7 +13,7 @@ export class MenuService {
   ) {}
 
   async findAll(filter: GetMenuDto) {
-    let builder = new QueryOptionsBulder();
+    let builder = new QueryOptionsBuilder();
     builder = builder
       .filter({
         title: {
@@ -69,7 +69,7 @@ export class MenuService {
   }
 
   async findById(id: number) {
-    const builder = new QueryOptionsBulder();
+    const builder = new QueryOptionsBuilder();
     const options = builder
       .attributes([
         'id',
@@ -100,7 +100,7 @@ export class MenuService {
   async create(dto: MenuDto) {
     const menuObj = JSON.parse(JSON.stringify(dto));
     let menu = await this.menuRepository.create(menuObj);
-    const builder = new QueryOptionsBulder();
+    const builder = new QueryOptionsBuilder();
     const options = builder
       .include({
         model: Menu,
@@ -128,7 +128,7 @@ export class MenuService {
 
   async update(menuId: number, dto: MenuDto) {
     // logic validation
-    let builder = new QueryOptionsBulder();
+    let builder = new QueryOptionsBuilder();
     let options = builder
       .include([
         {
@@ -152,7 +152,7 @@ export class MenuService {
         id: menuId,
       },
     });
-    builder = new QueryOptionsBulder();
+    builder = new QueryOptionsBuilder();
     options = builder
       .attributes([
         'id',
