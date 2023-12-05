@@ -20,8 +20,10 @@ import { EAVModule } from '@rahino/eav';
 import { ECommerceModule } from '@rahino/ecommerce';
 import { AutomapperModule } from 'automapper-nestjs';
 import { classes } from 'automapper-classes';
-import { UIModule } from 'apps/ui';
 import { NestExpressApplication } from '@nestjs/platform-express';
+import { UIModule } from '@rahino/ui';
+import { CoreDashboardModule } from '@rahino/coreDashboard';
+import * as cookieParser from 'cookie-parser';
 
 @Module({
   imports: [
@@ -56,9 +58,11 @@ import { NestExpressApplication } from '@nestjs/platform-express';
     }),
     CoreModule,
     UIModule,
+    CoreDashboardModule,
     PCMModule,
     EAVModule,
     ECommerceModule,
+
     DevtoolsModule.register({
       http: process.env.NODE_ENV !== 'production',
     }),
@@ -91,6 +95,7 @@ export class AppModule implements NestModule {
     );
     app.use(helmet());
     app.enableCors();
+    app.use(cookieParser());
 
     app.get(CoreModule).setApp(app);
     app.get(PCMModule).setApp(app);
