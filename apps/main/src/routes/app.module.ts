@@ -20,6 +20,8 @@ import { EAVModule } from '@rahino/eav';
 import { ECommerceModule } from '@rahino/ecommerce';
 import { AutomapperModule } from 'automapper-nestjs';
 import { classes } from 'automapper-classes';
+import { UIModule } from 'apps/ui';
+import { NestExpressApplication } from '@nestjs/platform-express';
 
 @Module({
   imports: [
@@ -53,6 +55,7 @@ import { classes } from 'automapper-classes';
       strategyInitializer: classes(),
     }),
     CoreModule,
+    UIModule,
     PCMModule,
     EAVModule,
     ECommerceModule,
@@ -67,11 +70,11 @@ export class AppModule implements NestModule {
     private readonly logger: DBLogger,
     private readonly config: ConfigService,
   ) {}
-  app: INestApplication;
+  app: NestExpressApplication;
   async configure(consumer: MiddlewareConsumer) {
     //...
   }
-  public async setApp(app: INestApplication) {
+  public async setApp(app: NestExpressApplication) {
     this.app = app;
 
     app.useLogger(this.logger);
@@ -92,6 +95,7 @@ export class AppModule implements NestModule {
     app.get(CoreModule).setApp(app);
     app.get(PCMModule).setApp(app);
     app.get(EAVModule).setApp(app);
+    app.get(UIModule).setApp(app);
 
     const port = this.config.get('HOST_PORT');
     const host = this.config.get('HOST_NAME');

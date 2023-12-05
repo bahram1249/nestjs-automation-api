@@ -29,6 +29,15 @@
         "tsConfigPath": "apps/core/tsconfig.lib.json"
       }
     },
+    "ui": {
+      "type": "library",
+      "root": "apps/ui",
+      "entryFile": "index",
+      "sourceRoot": "apps/ui/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/ui/tsconfig.lib.json"
+      }
+    },
     "pcm": {
       "type": "library",
       "root": "apps/pcm",
