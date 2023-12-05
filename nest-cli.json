@@ -38,6 +38,15 @@
         "tsConfigPath": "apps/ui/tsconfig.lib.json"
       }
     },
+    "coreDashboard": {
+      "type": "library",
+      "root": "apps/core-dashboard",
+      "entryFile": "index",
+      "sourceRoot": "apps/core-dashboard/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/core-dashboard/tsconfig.lib.json"
+      }
+    },
     "discountCoffe": {
       "type": "library",
       "root": "apps/discount-coffe",
