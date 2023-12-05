@@ -22,6 +22,8 @@
       "@rahino/core/*": ["apps/core/src/*"],
       "@rahino/ui": ["apps/ui/src"],
       "@rahino/ui/*": ["apps/ui/src/*"],
+      "@rahino/discountCoffe": ["apps/discount-coffe/src"],
+      "@rahino/discountCoffe/*": ["apps/discount-coffe/src/*"],
       "@rahino/pcm": ["apps/pcm/src"],
       "@rahino/pcm/*": ["apps/pcm/src/*"],
       "@rahino/eav": ["apps/eav/src"],

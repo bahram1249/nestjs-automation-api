@@ -38,6 +38,15 @@
         "tsConfigPath": "apps/ui/tsconfig.lib.json"
       }
     },
+    "discountCoffe": {
+      "type": "library",
+      "root": "apps/discount-coffe",
+      "entryFile": "index",
+      "sourceRoot": "apps/discount-coffe/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/discountCoffe/tsconfig.lib.json"
+      }
+    },
     "pcm": {
       "type": "library",
       "root": "apps/pcm",
