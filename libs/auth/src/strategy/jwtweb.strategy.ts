@@ -1,18 +1,20 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { PassportStrategy } from '@nestjs/passport';
-import { ExtractJwt, Strategy } from 'passport-jwt';
+import { Strategy } from 'passport-jwt';
 import { User } from '@rahino/database/models/core/user.entity';
 import { InjectModel } from '@nestjs/sequelize';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { Cache } from 'cache-manager';
+import { fromCookie } from '../util';
 import { Menu } from '@rahino/database/models/core/menu.entity';
 import { RolePermission } from '@rahino/database/models/core/rolePermission.entity';
-import { PermissionMenu } from '@rahino/database/models/core/permission-menu.entity';
+import { Role } from '@rahino/database/models/core/role.entity';
 import { Op } from 'sequelize';
+import { PermissionMenu } from '@rahino/database/models/core/permission-menu.entity';
 
 @Injectable()
-export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
+export class JwtWebStrategy extends PassportStrategy(Strategy, 'jwtweb') {
   constructor(
     config: ConfigService,
     @InjectModel(User)
@@ -27,7 +29,7 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
     private cacheManager: Cache,
   ) {
     super({
-      jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+      jwtFromRequest: fromCookie('token'),
       secretOrKey: config.get('JWT_SECRET'),
     });
   }
@@ -35,6 +37,30 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
   async validate(payload: { sub: number; email: string }) {
     let user: any = await this.cacheManager.get(`userid:${payload.sub}`);
     if (!user) {
+      user = await this.userRepository.findOne({
+        attributes: [
+          'id',
+          'firstname',
+          'lastname',
+          'email',
+          'username',
+          'mustChangePassword',
+          'lastPasswordChangeDate',
+          'static_id',
+          'profilePhotoAttachmentId',
+          'createdAt',
+          'updatedAt',
+        ],
+        include: [
+          {
+            model: Role,
+            as: 'roles',
+          },
+        ],
+        where: {
+          id: payload.sub,
+        },
+      });
       let menus: any = null;
       const roleIds: number[] = user.roles.map((role) => role.id);
       const rolePermissions = await this.rolePermissionRepository.findAll({

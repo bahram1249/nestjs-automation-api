@@ -18,40 +18,114 @@
     "forceConsistentCasingInFileNames": false,
     "noFallthroughCasesInSwitch": false,
     "paths": {
-      "@rahino/core": ["apps/core/src"],
-      "@rahino/core/*": ["apps/core/src/*"],
-      "@rahino/ui": ["apps/ui/src"],
-      "@rahino/ui/*": ["apps/ui/src/*"],
-      "@rahino/coreDashboard": ["apps/core-dashboard/src"],
-      "@rahino/coreDashboard/*": ["apps/core-dashboard/src/*"],
-      "@rahino/discountCoffe": ["apps/discount-coffe/src"],
-      "@rahino/discountCoffe/*": ["apps/discount-coffe/src/*"],
-      "@rahino/pcm": ["apps/pcm/src"],
-      "@rahino/pcm/*": ["apps/pcm/src/*"],
-      "@rahino/eav": ["apps/eav/src"],
-      "@rahino/eav/*": ["apps/eav/src/*"],
-      "@rahino/ecommerce": ["apps/e-commerce/src"],
-      "@rahino/ecommerce/*": ["apps/e-commerce/src/*"],
-      "@rahino/file": ["libs/file/src"],
-      "@rahino/file/*": ["libs/file/src/*"],
-      "@rahino/thumbnail": ["libs/thumbnail/src"],
-      "@rahino/thumbnail/*": ["libs/thumbnail/src/*"],
-      "@rahino/database": ["libs/database/src"],
-      "@rahino/database/*": ["libs/database/src/*"],
-      "@rahino/http-exception-filter": ["libs/http-exception-filter/src"],
-      "@rahino/http-exception-filter/*": ["libs/http-exception-filter/src/*"],
-      "@rahino/logger": ["libs/logger/src"],
-      "@rahino/logger/*": ["libs/logger/src/*"],
-      "@rahino/auth": ["libs/auth/src"],
-      "@rahino/auth/*": ["libs/auth/src/*"],
-      "@rahino/permission-checker": ["libs/permission-checker/src"],
-      "@rahino/permission-checker/*": ["libs/permission-checker/src/*"],
-      "@rahino/response": ["libs/response/src"],
-      "@rahino/response/*": ["libs/response/src/*"],
-      "@rahino/query-filter": ["libs/query-filter/src"],
-      "@rahino/query-filter/*": ["libs/query-filter/src/*"],
-      "@rahino/pay": ["libs/pay/src"],
-      "@rahino/pay/*": ["libs/pay/src/*"]
+      "@rahino/core": [
+        "apps/core/src"
+      ],
+      "@rahino/core/*": [
+        "apps/core/src/*"
+      ],
+      "@rahino/ui": [
+        "apps/ui/src"
+      ],
+      "@rahino/ui/*": [
+        "apps/ui/src/*"
+      ],
+      "@rahino/coreDashboard": [
+        "apps/core-dashboard/src"
+      ],
+      "@rahino/coreDashboard/*": [
+        "apps/core-dashboard/src/*"
+      ],
+      "@rahino/discountCoffe": [
+        "apps/discount-coffe/src"
+      ],
+      "@rahino/discountCoffe/*": [
+        "apps/discount-coffe/src/*"
+      ],
+      "@rahino/pcm": [
+        "apps/pcm/src"
+      ],
+      "@rahino/pcm/*": [
+        "apps/pcm/src/*"
+      ],
+      "@rahino/eav": [
+        "apps/eav/src"
+      ],
+      "@rahino/eav/*": [
+        "apps/eav/src/*"
+      ],
+      "@rahino/ecommerce": [
+        "apps/e-commerce/src"
+      ],
+      "@rahino/ecommerce/*": [
+        "apps/e-commerce/src/*"
+      ],
+      "@rahino/file": [
+        "libs/file/src"
+      ],
+      "@rahino/file/*": [
+        "libs/file/src/*"
+      ],
+      "@rahino/thumbnail": [
+        "libs/thumbnail/src"
+      ],
+      "@rahino/thumbnail/*": [
+        "libs/thumbnail/src/*"
+      ],
+      "@rahino/database": [
+        "libs/database/src"
+      ],
+      "@rahino/database/*": [
+        "libs/database/src/*"
+      ],
+      "@rahino/http-exception-filter": [
+        "libs/http-exception-filter/src"
+      ],
+      "@rahino/http-exception-filter/*": [
+        "libs/http-exception-filter/src/*"
+      ],
+      "@rahino/logger": [
+        "libs/logger/src"
+      ],
+      "@rahino/logger/*": [
+        "libs/logger/src/*"
+      ],
+      "@rahino/auth": [
+        "libs/auth/src"
+      ],
+      "@rahino/auth/*": [
+        "libs/auth/src/*"
+      ],
+      "@rahino/permission-checker": [
+        "libs/permission-checker/src"
+      ],
+      "@rahino/permission-checker/*": [
+        "libs/permission-checker/src/*"
+      ],
+      "@rahino/response": [
+        "libs/response/src"
+      ],
+      "@rahino/response/*": [
+        "libs/response/src/*"
+      ],
+      "@rahino/query-filter": [
+        "libs/query-filter/src"
+      ],
+      "@rahino/query-filter/*": [
+        "libs/query-filter/src/*"
+      ],
+      "@rahino/pay": [
+        "libs/pay/src"
+      ],
+      "@rahino/pay/*": [
+        "libs/pay/src/*"
+      ],
+      "@rahino/commonmiddleware": [
+        "libs/commonmiddleware/src"
+      ],
+      "@rahino/commonmiddleware/*": [
+        "libs/commonmiddleware/src/*"
+      ]
     }
   }
 }

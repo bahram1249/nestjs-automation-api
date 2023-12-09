@@ -121,7 +121,8 @@
       "^@rahino/permission-checker(|/.*)$": "<rootDir>/libs/permission-checker/src/$1",
       "^@rahino/response(|/.*)$": "<rootDir>/libs/response/src/$1",
       "^@rahino/query-filter(|/.*)$": "<rootDir>/libs/query-filter/src/$1",
-      "^@rahino/pay(|/.*)$": "<rootDir>/libs/pay/src/$1"
+      "^@rahino/pay(|/.*)$": "<rootDir>/libs/pay/src/$1",
+      "^@rahino/commonmiddleware(|/.*)$": "<rootDir>/libs/commonmiddleware/src/$1"
     }
   }
 }
