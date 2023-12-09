@@ -26,14 +26,6 @@ export class RoleService {
 
   async findAll(filter: RoleGetDto) {
     let options = QueryFilter.init();
-
-    // include
-    options.include = [
-      {
-        model: Permission,
-      },
-    ];
-
     // search
     options.where = {
       roleName: {
@@ -48,6 +40,13 @@ export class RoleService {
       'static_id',
       'createdAt',
       'updatedAt',
+    ];
+
+    // include
+    options.include = [
+      {
+        model: Permission,
+      },
     ];
     if (filter.ignorePaging != true) {
       options = QueryFilter.limitOffset(options, filter);
