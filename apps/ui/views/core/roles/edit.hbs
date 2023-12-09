@@ -1,0 +1,58 @@
+{{!-- {{#section 'header'}}
+  <meta name='keywords' content='' />
+  <meta name='author' content='' />
+  <meta name='robots' content='' />
+  <meta name='description' content='{{title}}' />
+  <meta property='og:title' content='{{title}}' />
+  <meta property='og:description' content='{{title}}' />
+  <meta property='og:image' />
+
+  <title>{{title}}</title>
+
+{{/section}}
+
+{{#section 'footer'}} --}}
+
+<div class='container'>
+  {{#each permissionGroups}}
+    <div class='row border'>
+      <div class='col-md-3 border'>
+        {{permissionGroupName}}
+      </div>
+      <div class='col-md-9'>
+        <div class='row'>
+          {{#each permissions}}
+            <div class='col-lg-4 col-md-6'>
+              <div class='media-body'>
+                <div class='custom-control custom-checkbox mb-3'>
+
+                  {{#if (isexists id ../../permissionIds)}}
+                    <input
+                      permission-id='{{id}}'
+                      type='checkbox'
+                      class='custom-control-input permission-select'
+                      id='permissionCheckBox_{{id}}'
+                      checked=''
+                    />
+                  {{else}}
+                    <input
+                      permission-id='{{id}}'
+                      type='checkbox'
+                      class='custom-control-input permission-select'
+                      id='permissionCheckBox_{{id}}'
+                    />
+                  {{/if}}
+
+                  <label
+                    class='custom-control-label'
+                    for='permissionCheckBox_{{id}}'
+                  >{{permissionName}}</label>
+                </div>
+              </div>
+            </div>
+          {{/each}}
+        </div>
+      </div>
+    </div>
+  {{/each}}
+</div>

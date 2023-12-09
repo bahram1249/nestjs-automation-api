@@ -93,8 +93,12 @@ export class AppModule implements NestModule {
         transform: true,
       }),
     );
-    app.use(helmet());
-    app.enableCors();
+    app.use(
+      helmet({
+        contentSecurityPolicy: false,
+      }),
+    );
+    app.enableCors({});
     app.use(cookieParser());
 
     app.get(CoreModule).setApp(app);

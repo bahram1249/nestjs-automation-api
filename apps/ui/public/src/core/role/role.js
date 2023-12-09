@@ -7,6 +7,12 @@ $.extend(
   $.fn.bootstrapTable.defaults,
   $.fn.bootstrapTable.locales[selectedLocale],
 );
+
+$('#backButton').on('click', function () {
+  $('#backButton').hide();
+  $('#mainSection').show();
+  $('#secondSection').hide();
+});
 function roleActionFormatter(value, row) {
   var html = [];
   html.push('<div class="text-center d-flex justify-content-center">');
@@ -57,15 +63,19 @@ function getRolesAjaxRequest(params) {
 
 function onEditClick(id) {
   $('#roleId').attr('role-id', id);
-  $('#defaultModal').modal('show');
+  $('#mainSection').hide();
+  $('#backButton').show();
+  $('#secondSection').html('');
+  $('#secondSection').show();
   $.ajax({
-    url: '/core/admin/role/' + id,
+    url: '/core/admin/roles/' + id,
     type: 'GET',
     success: function (data) {
-      $('#defaultModalBody').html(data);
+      console.log(data);
+      $('#secondSection').html(data);
     },
     error: function (XMLHttpRequest, textStatus, error) {
-      htmlError(XMLHttpRequest, textStatus, error, $('#defaultModalBody'));
+      htmlError(XMLHttpRequest, textStatus, error, $('#secondSection'));
     },
   });
 }

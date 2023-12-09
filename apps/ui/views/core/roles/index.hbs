@@ -7,7 +7,7 @@
   <meta property='og:description' content='{{model.title}}' />
   <meta property='og:image' />
 
-  <title>{{model.title}}</title>
+  <title>{{title}}</title>
   <link
     rel='stylesheet'
     href='/tools/core/bootstrap-table@1.19.1/bootstrap-table.min.css'
@@ -19,7 +19,7 @@
   <div class='card-header'>
     <h4>نقش های دسترسی</h4>
   </div>
-  <div class='card-body'>
+  <div id='mainSection' class='card-body'>
     <div class='text-left'>
       <button id='addRoleBtn' class='btn btn-success'><i
           class='flaticon-381-add'
@@ -47,6 +47,14 @@
 
     </table>
   </div>
+
+  <button
+    id='backButton'
+    class='btn btn-secondary'
+    style='display: none;'
+  >بازگشت</button>
+  <div id='secondSection' class='card-body' style='display: none;'></div>
+
 </div>
 
 <div class='modal fade' id='defaultModal'>

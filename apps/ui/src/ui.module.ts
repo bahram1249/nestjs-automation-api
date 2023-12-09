@@ -91,6 +91,12 @@ export class UIModule implements NestModule {
 
           initem: function (value, ...values) {
             const index = values.findIndex((item) => item == value);
+
+            if (index != -1) return true;
+            return false;
+          },
+          isexists: function (value, values: any[]) {
+            const index = values.findIndex((item) => item == value);
             if (index != -1) return true;
             return false;
           },
