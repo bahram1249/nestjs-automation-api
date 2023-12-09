@@ -1,0 +1,109 @@
+{{#section 'header'}}
+  <meta name='keywords' content='' />
+  <meta name='author' content='' />
+  <meta name='robots' content='' />
+  <meta name='description' content='{{model.title}}' />
+  <meta property='og:title' content='{{model.title}}' />
+  <meta property='og:description' content='{{model.title}}' />
+  <meta property='og:image' />
+
+  <title>{{model.title}}</title>
+  <link
+    rel='stylesheet'
+    href='/tools/core/bootstrap-table@1.19.1/bootstrap-table.min.css'
+  />
+
+{{/section}}
+
+<div class='card'>
+  <div class='card-header'>
+    <h4>نقش های دسترسی</h4>
+  </div>
+  <div class='card-body'>
+    <div class='text-left'>
+      <button id='addRoleBtn' class='btn btn-success'><i
+          class='flaticon-381-add'
+        ></i>
+        اضافه کردن نقش</button>
+    </div>
+
+    <table
+      id='roleTable'
+      class='table table-striped'
+      data-sticky-header='true'
+      data-ajax='getRolesAjaxRequest'
+      data-side-pagination='server'
+      data-pagination='true'
+      data-page-list='[10, 20, 50, 100, 200]'
+      data-locale='fa-IR'
+      data-search='true'
+    >
+      <thead>
+        <tr>
+          <th data-field='roleName'>نام نقش</th>
+          <th data-formatter='roleActionFormatter'>عملیات</th>
+        </tr>
+      </thead>
+
+    </table>
+  </div>
+</div>
+
+<div class='modal fade' id='defaultModal'>
+  <div class='modal-dialog modal-lg'>
+    <div class='modal-content'>
+      <div class='modal-header'>
+        <h5 id='defaultModalTitle' class='modal-title'>دسترسی ها</h5>
+        <button type='button' class='close' data-dismiss='modal'>
+          <span>&times;</span>
+        </button>
+      </div>
+      <span id='roleId' role-id=''></span>
+      <div id='defaultModalBody' class='modal-body'>
+
+      </div>
+      <div class='modal-footer'>
+        <button id='submitRoleEdit' type='button' class='btn btn-success light'>
+          ذخیره
+        </button>
+        <button type='button' class='btn btn-danger light' data-dismiss='modal'>
+          بستن
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class='modal fade' id='addModal'>
+  <div class='modal-dialog modal-lg'>
+    <div class='modal-content'>
+      <div class='modal-header'>
+        <h5 id='addModalTitle' class='modal-title'>ایجاد نقش جدید</h5>
+        <button type='button' class='close' data-dismiss='modal'>
+          <span>&times;</span>
+        </button>
+      </div>
+      <div id='addModalBody' class='modal-body'>
+
+      </div>
+      <div class='modal-footer'>
+        <button id='submitRoleAdd' type='button' class='btn btn-success light'>
+          ذخیره
+        </button>
+        <button type='button' class='btn btn-danger light' data-dismiss='modal'>
+          بستن
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+{{#section 'footer'}}
+  <script
+    src='/tools/core/bootstrap-table@1.19.1/bootstrap-table.min.js'
+  ></script>
+  <script
+    src='/tools/core/bootstrap-table@1.19.1/bootstrap-table-fa-IR.js'
+  ></script>
+  <script src='/src/core/role/role.js'></script>
+{{/section}}
