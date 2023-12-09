@@ -1,10 +1,11 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Transform } from 'class-transformer';
-import { IsBoolean } from 'class-validator';
+import { IsBoolean, IsOptional } from 'class-validator';
 
 export class RoleFilter {
   @Transform(({ value }) => value === 'true')
   @IsBoolean()
+  @IsOptional()
   @ApiProperty({
     required: false,
     default: false,

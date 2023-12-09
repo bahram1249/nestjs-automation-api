@@ -38,6 +38,7 @@ function roleActionFormatter(value, row) {
   return html.join('');
 }
 function getRolesAjaxRequest(params) {
+  //params.data.ignorePaging = false;
   var url = '/v1/api/core/admin/roles';
   $.ajax({
     method: 'GET',
@@ -46,7 +47,7 @@ function getRolesAjaxRequest(params) {
     success: function (res) {
       var result = {
         total: res.total,
-        totalNotFiltered: res.totalNotFiltered,
+        //totalNotFiltered: res.totalNotFiltered,
         rows: res.result,
       };
       params.success(result);

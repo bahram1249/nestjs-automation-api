@@ -10,6 +10,7 @@ import { Menu } from '@rahino/database/models/core/menu.entity';
 import { RolePermission } from '@rahino/database/models/core/rolePermission.entity';
 import { PermissionMenu } from '@rahino/database/models/core/permission-menu.entity';
 import { Op } from 'sequelize';
+import { Role } from '@rahino/database/models/core/role.entity';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
@@ -35,6 +36,30 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
   async validate(payload: { sub: number; email: string }) {
     let user: any = await this.cacheManager.get(`userid:${payload.sub}`);
     if (!user) {
+      user = await this.userRepository.findOne({
+        attributes: [
+          'id',
+          'firstname',
+          'lastname',
+          'email',
+          'username',
+          'mustChangePassword',
+          'lastPasswordChangeDate',
+          'static_id',
+          'profilePhotoAttachmentId',
+          'createdAt',
+          'updatedAt',
+        ],
+        include: [
+          {
+            model: Role,
+            as: 'roles',
+          },
+        ],
+        where: {
+          id: payload.sub,
+        },
+      });
       let menus: any = null;
       const roleIds: number[] = user.roles.map((role) => role.id);
       const rolePermissions = await this.rolePermissionRepository.findAll({

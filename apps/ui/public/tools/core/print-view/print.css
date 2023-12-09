@@ -1,0 +1,46 @@
+.header-print,
+.header-space-print,
+.footer-print,
+.footer-space-print {
+  height: 100px;
+}
+.header-print {
+  position: relative;
+  text-align: right;
+  top: 0;
+}
+.footer-print {
+  position: relative;
+  text-align: right;
+  bottom: 0;
+  font-size: 13px;
+}
+.content-print {
+  transform: scale(1, 0.80);
+  transform-origin: center;
+  display: block;
+  /* position: relative; */
+}
+.table-print tr td {
+  padding-top: 1px;
+  padding-bottom: 3px;
+  padding-left: 40px;
+  padding-right: 40px;
+}
+.padding-td-print-view {
+  padding-left: 40px;
+  padding-right: 40px;
+}
+.padding-td-print-view-first {
+  padding-left: 50px;
+  padding-right: 150px;
+}
+
+.td-diagnosis {
+  font-weight: bold;
+  font-size: 18px;
+}
+.td-treatment {
+  font-weight: bold;
+  font-size: 18px;
+}
