@@ -9,7 +9,7 @@ import { Cache } from 'cache-manager';
 import { fromCookie } from '../util';
 
 @Injectable()
-export class WebJwtStrategy extends PassportStrategy(Strategy, 'jwt') {
+export class WebJwtStrategy extends PassportStrategy(Strategy, 'webjwt') {
   constructor(
     config: ConfigService,
     @InjectModel(User)

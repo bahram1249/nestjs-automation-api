@@ -16,11 +16,12 @@ import {
 import { CheckPermission } from '@rahino/permission-checker/decorator';
 import { PermissionGuard } from '@rahino/permission-checker/guard';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
-import { JwtGuard } from '@rahino/auth/guard';
+import { JwtGuard, JwtWebGuard } from '@rahino/auth/guard';
 
 //@UseGuards(JwtGuard, PermissionGuard)
+@UseGuards(JwtWebGuard)
 @Controller({
-  path: '/dashboard/core/role',
+  path: '/core/dashboard/role',
 })
 export class RoleController {
   constructor() {}
