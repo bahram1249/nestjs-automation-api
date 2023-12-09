@@ -68,4 +68,41 @@ export class RoleService {
       permissionIds: JSON.parse(JSON.stringify(permissionIds)),
     };
   }
+
+  async create() {
+    const permissionGroups = await this.permissionGroupRepository.findAll({
+      include: [
+        {
+          model: Permission,
+          as: 'permissions',
+          attributes: [
+            'id',
+            'permissionSymbol',
+            'permissionName',
+            'permissionUrl',
+            'permissionMethod',
+            'createdAt',
+            'updatedAt',
+          ],
+          where: Sequelize.where(
+            Sequelize.fn('isnull', Sequelize.col('permissions.visibility'), 1),
+            {
+              [Op.eq]: 1,
+            },
+          ),
+        },
+      ],
+      where: Sequelize.where(
+        Sequelize.fn('isnull', Sequelize.col('permissions.visibility'), 1),
+        {
+          [Op.eq]: 1,
+        },
+      ),
+    });
+    return {
+      title: 'ایجاد گروه کاربری',
+      layout: false,
+      permissionGroups: JSON.parse(JSON.stringify(permissionGroups)),
+    };
+  }
 }

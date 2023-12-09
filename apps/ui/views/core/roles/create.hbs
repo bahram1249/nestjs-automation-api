@@ -1,15 +1,13 @@
 <html>
   <head><title>{{title}}</title></head>
   <body>
-      <div id="roleId" class="d-none">{{role.id}}</div>
       <div class="row">
           <div class="col-xs-12 col-xl-12">
               <div class="basic-form">
                   <div class="form-row">
                       <div class="form-group col-md-6">
                           <label>نام نقش</label>
-                          <input id="roleNameId" type="text" class="form-control" placeholder="نام نقش"
-                              value="{{role.roleName}}">
+                          <input id="roleNameId" type="text" class="form-control" placeholder="نام نقش">
                       </div>
                   </div>
               </div>
@@ -27,12 +25,9 @@
                   <div class='media-body'>
                     <div class='custom-control custom-checkbox mb-3'>
                       <label class="css-control css-control-primary css-checkbox" for="permissionCheckBox_{{id}}">
-                        {{#if (isexists id ../../permissionIds)}}
-                        <input permission-id='{{id}}' type="checkbox" class="css-control-input permission-select" id="permissionCheckBox_{{id}}" checked="">
                         
-                        {{else}}
                         <input permission-id='{{id}}' type="checkbox" class="css-control-input permission-select" id="permissionCheckBox_{{id}}">
-                        {{/if}}
+                       
                         <span class="css-control-indicator"></span>{{permissionName}}
                       </label>
                     </div>
@@ -44,7 +39,7 @@
         </div>
       {{/each}}
       <div class="row">
-        <button id="updateButton" class="btn btn-primary mt-3"><i class="fa fa-save"></i> اعمال</button>
+        <button id="saveButton" class="btn btn-primary mt-3"><i class="fa fa-save"></i> ذخیره</button>
       </div>
   </body>
 </html>

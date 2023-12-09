@@ -17,22 +17,34 @@ export class LoginService {
     private config: ConfigService,
   ) {}
 
+  get() {
+    return { title: 'صفحه ورود', layout: false };
+  }
   async login(req: Request, res: Response, dto: loginDto) {
     const user = await this.repository.findOne({
       where: {
         username: dto.username,
       },
     });
-    if (!user) return { errorMessage: 'کاربری یافت نشد', layout: false };
+    if (!user) {
+      return res.render('login/index', {
+        layout: false,
+        errorMessage: 'کاربری یافت نشد',
+      });
+    }
+
     const validPassword = await user.validPasswordAsync(dto.password);
     if (!validPassword) {
-      return { errorMessage: 'کاربری یافت نشد', layout: false };
+      return res.render('login/index', {
+        layout: false,
+        errorMessage: 'کاربری یافت نشد',
+      });
     }
     const access = await this.authService.signToken(user);
     const oneMonth = 31 * 24 * 3600 * 1000;
     const options: any = {};
     if (req.body.isRemember) options.expires = new Date(Date.now() + oneMonth);
     res.cookie('token', access.access_token, options);
-    res.redirect('/core/admin/roles');
+    return res.redirect(302, '/core/admin/roles');
   }
 }

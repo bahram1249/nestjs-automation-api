@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   HttpCode,
   HttpStatus,
@@ -69,5 +70,13 @@ export class RoleController {
   @HttpCode(HttpStatus.OK)
   async update(@Param('id') roleId: number, @Body() dto: RoleDto) {
     return await this.service.update(roleId, dto);
+  }
+
+  @ApiOperation({ description: 'delete role by admin' })
+  @Delete('/:id')
+  @CheckPermission({ permissionSymbol: 'core.admin.roles.delete' })
+  @HttpCode(HttpStatus.OK)
+  async delete(@Param('id') roleId: number) {
+    return await this.service.delete(roleId);
   }
 }

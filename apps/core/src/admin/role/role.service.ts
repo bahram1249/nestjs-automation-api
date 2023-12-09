@@ -12,6 +12,7 @@ import { Op } from 'sequelize';
 import { Permission } from '@rahino/database/models/core/permission.entity';
 import { RolePermission } from '@rahino/database/models/core/rolePermission.entity';
 import { RoleGetDto, RoleDto } from './dto';
+import { UserRole } from '@rahino/database/models/core/userRole.entity';
 
 @Injectable()
 export class RoleService {
@@ -22,6 +23,8 @@ export class RoleService {
     private readonly permissionRepository: typeof Permission,
     @InjectModel(RolePermission)
     private readonly rolePermissionRepository: typeof RolePermission,
+    @InjectModel(UserRole)
+    private readonly userRoleRepository: typeof UserRole,
   ) {}
 
   async findAll(filter: RoleGetDto) {
@@ -196,6 +199,35 @@ export class RoleService {
         id: roleId,
       },
     });
+    return {
+      result: role,
+    };
+  }
+
+  async delete(roleId: number) {
+    await this.rolePermissionRepository.destroy({
+      where: {
+        roleId: roleId,
+      },
+    });
+
+    await this.userRoleRepository.destroy({
+      where: {
+        roleId: roleId,
+      },
+    });
+
+    const role = await this.roleRepository.findOne({
+      where: {
+        id: roleId,
+      },
+    });
+    await this.roleRepository.destroy({
+      where: {
+        id: roleId,
+      },
+    });
+
     return {
       result: role,
     };

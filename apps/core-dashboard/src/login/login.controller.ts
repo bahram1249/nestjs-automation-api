@@ -12,11 +12,10 @@ export class LoginController {
   @Get('/')
   @Render('login/index')
   async get() {
-    return { title: 'صفحه ورود', layout: false };
+    return await this.service.get();
   }
 
   @Post('/')
-  @Render('login/index')
   async login(
     @Req() req: Request,
     @Res() res: Response,

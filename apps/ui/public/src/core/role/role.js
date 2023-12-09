@@ -16,29 +16,21 @@ $('#backButton').on('click', function () {
 function roleActionFormatter(value, row) {
   var html = [];
   html.push('<div class="text-center d-flex justify-content-center">');
-  html.push('<a onclick="onEditClick(' + row.id + ')">');
-  html.push('<button class="btn btn-success">');
-  html.push('<i class="flaticon-381-edit"></i>');
+  html.push(
+    '<a class="btn btn-primary shadow btn-xs sharp mr-1" onclick="onEditClick(' +
+      row.id +
+      ')">',
+  );
+  html.push('<i class="fa fa-pencil"></i>');
 
-  if (selectedLocale == 'fa-IR') {
-    html.push(' ویرایش');
-  } else {
-    html.push(' Edit');
-  }
-
-  html.push('</button>');
   html.push('</a>');
-  html.push('<a onclick="onDeleteClick(' + row.id + ')">');
-  html.push('<button class="btn btn-danger ml-1">');
-  html.push('<i class="la la-trash"></i>');
+  html.push(
+    '<a class="btn btn-danger shadow btn-xs sharp mr-1" onclick="onDeleteClick(' +
+      row.id +
+      ')">',
+  );
+  html.push('<i class="fa fa-trash"></i>');
 
-  if (selectedLocale == 'fa-IR') {
-    html.push(' حذف');
-  } else {
-    html.push(' Delete');
-  }
-
-  html.push('</button>');
   html.push('</a>');
   html.push('</div>');
   return html.join('');
@@ -62,7 +54,6 @@ function getRolesAjaxRequest(params) {
 }
 
 function onEditClick(id) {
-  $('#roleId').attr('role-id', id);
   $('#mainSection').hide();
   $('#backButton').show();
   $('#secondSection').html('');
@@ -71,7 +62,6 @@ function onEditClick(id) {
     url: '/core/admin/roles/' + id,
     type: 'GET',
     success: function (data) {
-      console.log(data);
       $('#secondSection').html(data);
     },
     error: function (XMLHttpRequest, textStatus, error) {
@@ -81,19 +71,25 @@ function onEditClick(id) {
 }
 
 function onAddClick() {
-  $('#addModal').modal('show');
+  $('#mainSection').hide();
+  $('#backButton').show();
+  $('#secondSection').html('');
+  $('#secondSection').show();
   $.ajax({
-    url: '/core/admin/newRole/',
+    url: '/core/admin/roles/create',
     type: 'GET',
     success: function (data) {
-      $('#addModalBody').html(data);
+      $('#secondSection').html(data);
     },
     error: function (XMLHttpRequest, textStatus, error) {
-      htmlError(XMLHttpRequest, textStatus, error, $('#addModalBody'));
+      htmlError(XMLHttpRequest, textStatus, error, $('#secondSection'));
     },
   });
 }
 
+$('#onAddClick').on('click', function () {
+  onAddClick();
+});
 function onDeleteClick(id) {
   var confirmDelete = '';
   var confirmDeleteText = '';
@@ -125,7 +121,7 @@ function onDeleteClick(id) {
   }).then((result) => {
     if (result.value == true) {
       $.ajax({
-        url: '/api/core/admin/roles/' + id,
+        url: '/v1/api/core/admin/roles/' + id,
         type: 'DELETE',
         beforeSend: beforeSendAjax,
         success: function (data) {
@@ -147,17 +143,22 @@ function refreshTable() {
   $('#roleTable').bootstrapTable('refresh');
 }
 
-$('#submitRoleEdit').on('click', function () {
+function showMainSection() {
+  $('#backButton').hide();
+  $('#secondSection').hide();
+  $('#mainSection').show();
+}
+
+$(document).on('click', '#updateButton', function () {
   var permissions = [];
   var inputPermissions = $('input.permission-select:checked');
   var roleName = $('#roleNameId').val();
   inputPermissions.each(function () {
     permissions.push($(this).attr('permission-id'));
   });
-
-  var roleId = $('#roleId').attr('role-id');
+  var roleId = $('#roleId').text();
   $.ajax({
-    url: '/api/core/admin/roles/' + roleId,
+    url: '/v1/api/core/admin/roles/' + roleId,
     type: 'PUT',
     data: {
       permissions:
@@ -166,24 +167,22 @@ $('#submitRoleEdit').on('click', function () {
     },
     beforeSend: beforeSendAjax,
     success: function (data) {
-      $('#defaultModal').modal('hide');
+      showMainSection();
       refreshTable();
     },
     error: errorJson,
   });
 });
 
-$('#submitRoleAdd').on('click', function () {
+$(document).on('click', '#saveButton', function () {
   var permissions = [];
   var inputPermissions = $('input.permission-select:checked');
   var roleName = $('#roleNameId').val();
   inputPermissions.each(function () {
     permissions.push($(this).attr('permission-id'));
   });
-
-  var roleId = $('#roleId').attr('role-id');
   $.ajax({
-    url: '/api/core/admin/roles',
+    url: '/v1/api/core/admin/roles/',
     type: 'POST',
     data: {
       permissions:
@@ -192,27 +191,9 @@ $('#submitRoleAdd').on('click', function () {
     },
     beforeSend: beforeSendAjax,
     success: function (data) {
-      $('#addModal').modal('hide');
+      showMainSection();
       refreshTable();
     },
     error: errorJson,
   });
-});
-
-$('#addRoleBtn').on('click', function () {
-  onAddClick();
-});
-
-$('.modal').on('hidden.bs.modal', function () {
-  $('.modal-body').html('');
-});
-
-$('.modal').on('show.bs.modal', function () {
-  var loadingText = '';
-  if (selectedLocale == 'fa-IR') {
-    loadingText = '<h1>در حال بارگزاری ...</h1>';
-  } else {
-    loadingText = '<h1>Loading ...</h1>';
-  }
-  $('.modal-body').html(loadingText);
 });

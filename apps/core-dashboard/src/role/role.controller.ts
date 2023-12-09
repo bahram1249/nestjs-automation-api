@@ -21,7 +21,7 @@ import { RoleService } from './role.service';
 })
 export class RoleController {
   constructor(private service: RoleService) {}
-  @CheckPermission({ permissionSymbol: 'core.admin.roles.showmenu' })
+  @CheckPermission({ permissionSymbol: 'core.admin.roles.getall' })
   @Get('/')
   @HttpCode(HttpStatus.OK)
   @Render('roles/index')
@@ -32,7 +32,15 @@ export class RoleController {
     };
   }
 
-  @CheckPermission({ permissionSymbol: 'core.admin.roles.showmenu' })
+  @CheckPermission({ permissionSymbol: 'core.admin.roles.create' })
+  @Get('/create')
+  @HttpCode(HttpStatus.OK)
+  @Render('roles/create')
+  async create() {
+    return await this.service.create();
+  }
+
+  @CheckPermission({ permissionSymbol: 'core.admin.roles.update' })
   @Get('/:id')
   @HttpCode(HttpStatus.OK)
   @Render('roles/edit')

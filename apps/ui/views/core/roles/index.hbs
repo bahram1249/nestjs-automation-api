@@ -12,7 +12,11 @@
     rel='stylesheet'
     href='/tools/core/bootstrap-table@1.19.1/bootstrap-table.min.css'
   />
-
+  <style>
+    .custom-checkbox label {
+      display: unset;
+    }
+  </style>
 {{/section}}
 
 <div class='card'>
@@ -21,7 +25,7 @@
   </div>
   <div id='mainSection' class='card-body'>
     <div class='text-left'>
-      <button id='addRoleBtn' class='btn btn-success'><i
+      <button id='onAddClick' class='btn btn-success'><i
           class='flaticon-381-add'
         ></i>
         اضافه کردن نقش</button>
@@ -47,12 +51,15 @@
 
     </table>
   </div>
-
-  <button
-    id='backButton'
-    class='btn btn-secondary'
-    style='display: none;'
-  >بازگشت</button>
+  <div class="card-header">
+    <div class="text-left">
+      <button
+        id='backButton'
+        class='btn btn-secondary'
+        style='display: none;'
+      >بازگشت</button>
+    </div>
+  </div>
   <div id='secondSection' class='card-body' style='display: none;'></div>
 
 </div>
