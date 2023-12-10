@@ -14,7 +14,12 @@ function sweetSuccessMessage(title, text) {
 function errorJson(XMLHttpRequest, textStatus, error) {
   if (XMLHttpRequest.readyState == 4) {
     var err = JSON.parse(XMLHttpRequest.responseText);
-    sweetErrorMessage('خطا', err.errorMessage);
+    try {
+      sweetErrorMessage('خطا', err.errors.join('<br>'));
+    } catch (e) {
+      sweetErrorMessage('خطا', 'خطای ناشناخته');
+    }
+    sweetErrorMessage('خطا', err.error.join);
     // HTTP error (can be checked by XMLHttpRequest.status and XMLHttpRequest.statusText)
   } else if (XMLHttpRequest.readyState == 0) {
     // Network error (i.e. connection refused, access denied due to CORS, etc.)
