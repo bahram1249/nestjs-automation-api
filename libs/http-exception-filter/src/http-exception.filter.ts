@@ -31,6 +31,22 @@ export class HttpExceptionFilter implements ExceptionFilter {
         stack: exception.stack,
       });
     }
+    const apiRegex = /^v[0-9]+/g;
+    // if the request send it to web
+
+    if (!apiRegex.test(request.url.split('/')[1])) {
+      if (status == 400) {
+        return response.status(status).render('error/400', { layout: false });
+      } else if (status == 403) {
+        return response.status(status).render('error/403', { layout: false });
+      } else if (status == 404) {
+        return response.status(status).render('error/404', { layout: false });
+      } else {
+        return response.status(status).render('error/error', { layout: false });
+      }
+    }
+
+    // if the request send it to api
     response.status(status).json({
       statusCode: status,
       message:
