@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { BuffetModule } from './api/admin/buffet/buffet.module';
+import { BuffetModule } from './controller/admin/buffet/buffet.module';
 
 @Module({
   imports: [BuffetModule],
