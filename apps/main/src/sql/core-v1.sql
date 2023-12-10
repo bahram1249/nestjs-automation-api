@@ -595,6 +595,56 @@ END
 
 GO
 
+
+-- takhfif coffe
+
+
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'DiscountCoffe-buffet-v1' 
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'SITE_NAME' AND [value] IN ('DiscountCoffe'))
+		)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'CUSTOMER_NAME' AND [value] IN ('DiscountCoffe'))
+		)
+BEGIN
+
+	CREATE TABLE DiscountCoffeBuffets (
+		id							bigint	identity(1,1)	PRIMARY KEY,
+		coverAttachmentId			bigint					NULL
+			CONSTRAINT FK_DiscountCoffeBuffet_AttachmentId
+				FOREIGN KEY REFERENCES Attachments(id),
+		title						nvarchar(256)			NOT NULL,
+		urlAddress					nvarchar(1024)			NULL,
+		percentDiscount				int						NULL,
+		bufferDescription			ntext					NULL,
+		buffetAddress				nvarchar(512)			NULL,
+		buffetPhone					nvarchar(512)			NULL,
+		wazeLink					nvarchar(1024)			NULL,
+		baladLink					nvarchar(1024)			NULL,
+		neshanLink					nvarchar(1024)			NULL,
+		googleMapLink				nvarchar(1024)			NULL,
+		latitude					nvarchar(256)			NULL,
+		longitude					nvarchar(256)			NULL,
+		viewCount					bigint					NULL,
+		userId						bigint					NOT NULL
+			CONSTRAINT FK_DiscountCoffeBuffet_UserId
+				FOREIGN KEY REFERENCES Users(id),
+		ownerId						bigint					NOT NULL
+			CONSTRAINT FK_DiscountCoffeBuffet_OwnerId
+				FOREIGN KEY REFERENCES Users(id),
+		[createdAt]					datetimeoffset			NOT NULL,
+		[updatedAt]					datetimeoffset			NOT NULL
+	);
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'DiscountCoffe-buffet-v1', GETDATE(), GETDATE()
+END
+
+GO
+
 -- tiarara
 
 IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'PCMPeriodTypes-v1' 

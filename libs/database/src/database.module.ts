@@ -27,6 +27,7 @@ import { EAVEntityType } from './models/eav/eav-entity-type.entity';
 import { EAVEntity } from './models/eav/eav-entity.entity';
 import { ECProduct } from './models/ecommerce-eav/ec-product.entity';
 import { EAVAttributeType } from './models/eav/eav-attribute-type.entity';
+import { Buffet } from './models/discount-coffe/buffet.entity';
 
 // let config;
 // switch (process.env.NODE_ENV) {
@@ -95,6 +96,7 @@ const dbLog: boolean = JSON.parse(process.env.DB_LOG);
           EAVEntity,
           EAVAttributeType,
           ECProduct,
+          Buffet,
         ],
         autoLoadModels: autoLoadModels,
         logging: dbLog,
