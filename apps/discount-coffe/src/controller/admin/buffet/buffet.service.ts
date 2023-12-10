@@ -22,12 +22,10 @@ export class BuffetService {
   }
 
   async create() {
-    throw new NotImplementedException();
-    // // const roles = await this.roleRepository.findAll();
-    // return {
-    //   title: 'ایجاد کاربر',
-    //   layout: false,
-    //   roles: JSON.parse(JSON.stringify(roles)),
-    // };
+    return {
+      title: 'ایجاد کافه رستوران',
+      layout: false,
+      //roles: JSON.parse(JSON.stringify(roles)),
+    };
   }
 }

@@ -9,7 +9,7 @@ import { Cache } from 'cache-manager';
 import { Menu } from '@rahino/database/models/core/menu.entity';
 import { RolePermission } from '@rahino/database/models/core/rolePermission.entity';
 import { PermissionMenu } from '@rahino/database/models/core/permission-menu.entity';
-import { Op } from 'sequelize';
+import { Op, Sequelize } from 'sequelize';
 import { Role } from '@rahino/database/models/core/role.entity';
 
 @Injectable()
@@ -95,6 +95,12 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
                 [Op.is]: null,
               },
             },
+            Sequelize.where(
+              Sequelize.fn('isnull', Sequelize.col('subMenus.visibility'), 1),
+              {
+                [Op.eq]: 1,
+              },
+            ),
           ],
         },
         include: [

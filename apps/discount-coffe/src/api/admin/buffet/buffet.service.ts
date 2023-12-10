@@ -16,7 +16,7 @@ export class BuffetService {
   async findAll(filter: ListFilter) {
     let builder = new QueryOptionsBuilder();
     builder = builder.filter({
-      ageName: {
+      title: {
         [Op.like]: filter.search,
       },
     });

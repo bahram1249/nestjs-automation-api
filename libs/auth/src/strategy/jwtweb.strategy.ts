@@ -10,7 +10,7 @@ import { fromCookie } from '../util';
 import { Menu } from '@rahino/database/models/core/menu.entity';
 import { RolePermission } from '@rahino/database/models/core/rolePermission.entity';
 import { Role } from '@rahino/database/models/core/role.entity';
-import { Op } from 'sequelize';
+import { Op, Sequelize } from 'sequelize';
 import { PermissionMenu } from '@rahino/database/models/core/permission-menu.entity';
 
 @Injectable()
@@ -96,6 +96,12 @@ export class JwtWebStrategy extends PassportStrategy(Strategy, 'jwtweb') {
                 [Op.is]: null,
               },
             },
+            Sequelize.where(
+              Sequelize.fn('isnull', Sequelize.col('subMenus.visibility'), 1),
+              {
+                [Op.eq]: 1,
+              },
+            ),
           ],
         },
         include: [
