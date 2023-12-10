@@ -8,7 +8,7 @@ import { Buffet } from '@rahino/database/models/discount-coffe/buffet.entity';
 @Injectable()
 export class BuffetService {
   constructor(
-    @InjectModel(User)
+    @InjectModel(Buffet)
     private readonly repository: typeof Buffet,
   ) {}
 
