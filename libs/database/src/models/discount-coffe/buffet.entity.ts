@@ -86,4 +86,8 @@ export class Buffet extends Model {
   ownerId: bigint;
   @BelongsTo(() => User, { as: 'owner', foreignKey: 'ownerId' })
   owner?: User;
+  @Column({
+    type: DataType.INTEGER,
+  })
+  buffetTypeId?: number;
 }

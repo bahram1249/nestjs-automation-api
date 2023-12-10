@@ -599,6 +599,31 @@ GO
 -- takhfif coffe
 
 
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'DiscountCoffe-buffetType-v1' 
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'SITE_NAME' AND [value] IN ('DiscountCoffe'))
+		)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'CUSTOMER_NAME' AND [value] IN ('DiscountCoffe'))
+		)
+BEGIN
+
+	CREATE TABLE DiscountCoffeBuffetTypes (
+		id							int						PRIMARY KEY,
+		title						nvarchar(256)			NOT NULL,
+		[createdAt]					datetimeoffset			NOT NULL,
+		[updatedAt]					datetimeoffset			NOT NULL
+	);
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'DiscountCoffe-buffetType-v1', GETDATE(), GETDATE()
+END
+
+GO
+
 IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'DiscountCoffe-buffet-v1' 
 			)
 	AND EXISTS (
@@ -618,6 +643,9 @@ BEGIN
 				FOREIGN KEY REFERENCES Attachments(id),
 		title						nvarchar(256)			NOT NULL,
 		urlAddress					nvarchar(1024)			NULL,
+		buffetTypeId				int						NULL
+			CONSTRAINT FK_DiscountCoffeBuffet_buffetTypeId
+				FOREIGN KEY REFERENCES DiscountCoffeBuffetTypes(id),
 		percentDiscount				int						NULL,
 		bufferDescription			ntext					NULL,
 		buffetAddress				nvarchar(512)			NULL,
@@ -641,6 +669,30 @@ BEGIN
 
 	INSERT INTO Migrations(version, createdAt, updatedAt)
 	SELECT 'DiscountCoffe-buffet-v1', GETDATE(), GETDATE()
+END
+
+GO
+
+-- data takhfif
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'DiscountCoffe-buffetType-Data-v1' 
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'SITE_NAME' AND [value] IN ('DiscountCoffe'))
+		)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'CUSTOMER_NAME' AND [value] IN ('DiscountCoffe'))
+		)
+BEGIN
+
+	INSERT INTO DiscountCoffeBuffetTypes (id, title, createdAt, updatedAt)
+	VALUES (1, N'کافه', getdate(), getdate())
+			,(2, N'رستوران', getdate(), getdate())
+		
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'DiscountCoffe-buffetType-Data-v1', GETDATE(), GETDATE()
 END
 
 GO
@@ -1641,6 +1693,7 @@ END
 
 GO
 
+
 -- pcm/periodtypes
 IF NOT EXISTS ( SELECT 1 FROM Migrations WHERE version = 'CORE-Permissions-Data-v6' 
 			)
@@ -1853,6 +1906,158 @@ BEGIN
 END
 
 GO
+
+
+-- discount coffe
+-- buffets
+IF NOT EXISTS ( SELECT 1 FROM Migrations WHERE version = 'CORE-Permissions-Data-v9' 
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'SITE_NAME' AND [value] IN ('DiscountCoffe'))
+		)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'CUSTOMER_NAME' AND [value] IN ('DiscountCoffe'))
+		)
+	
+BEGIN
+	
+	DECLARE @roleId int = (SELECT TOP 1 id FROM Roles WHERE static_id = 1)
+	DECLARE @userId bigint = (SELECT TOP 1 id FROM Users WHERE static_id = 1)
+
+	DECLARE @GroupTemp TABLE (
+		gorupId int
+	);
+
+	DECLARE @groupId int = null;
+
+	DECLARE @entityName nvarchar(256) = N'AdminBuffets'
+	DECLARE @groupName nvarchar(256) = N'discountcoffe.admin.buffets'
+	DECLARE @findParentMenu bit = 0;
+	DECLARE @parentMenuName nvarchar(256) = N'کافه و رستوران'
+	DECLARE @menuName nvarchar(256) = N'لیست کافه و رستوران'
+	DECLARE @menuUrl nvarchar(512) = N'/discountcoffe/admin/buffets'
+
+	DECLARE @permissionSymbolShowMenu nvarchar(512) = @groupName + '.showmenu';
+	DECLARE @permissionSymbolGetAll nvarchar(512) = @groupName + '.getall';
+	DECLARE @permissionSymbolGetOne nvarchar(512) = @groupName + '.getone';
+	DECLARE @permissionSymbolCreate nvarchar(512) = @groupName + '.create';
+	DECLARE @permissionSymbolUpdate nvarchar(512) = @groupName + '.update';
+	DECLARE @permissionSymbolDelete nvarchar(512) = @groupName + '.delete';
+
+
+	-- permission groups
+	INSERT INTO PermissionGroups(permissionGroupName, [visibility], createdAt, updatedAt)
+	OUTPUT inserted.id INTO @GroupTemp(gorupId)
+	SELECT @groupName, 1, GETDATE(), GETDATE();
+
+	SELECT  @groupId = gorupId FROM @GroupTemp
+
+
+	-- permissions
+
+	
+	DECLARE @PermissionTemp TABLE (
+		permissionId int
+	);
+
+	INSERT INTO Permissions(permissionName ,permissionSymbol,permissionGroupId,  createdAt, updatedAt)
+	OUTPUT inserted.id INTO @PermissionTemp(permissionId)
+	SELECT 'GETALL_' + @entityName, @permissionSymbolGetAll, @groupId, GETDATE(), GETDATE()
+															
+	INSERT INTO Permissions(permissionName ,permissionSymbol,permissionGroupId,  createdAt, updatedAt)
+	OUTPUT inserted.id INTO @PermissionTemp(permissionId)
+	SELECT 'GETONE_' + @entityName, @permissionSymbolGetOne, @groupId, GETDATE(), GETDATE()
+															 
+	INSERT INTO Permissions(permissionName ,permissionSymbol,permissionGroupId,  createdAt, updatedAt)
+	OUTPUT inserted.id INTO @PermissionTemp(permissionId)
+	SELECT 'CREATE_' + @entityName, @permissionSymbolCreate, @groupId, GETDATE(), GETDATE()
+															 
+	INSERT INTO Permissions(permissionName ,permissionSymbol,permissionGroupId,  createdAt, updatedAt)
+	OUTPUT inserted.id INTO @PermissionTemp(permissionId)
+	SELECT 'UPDATE_' + @entityName, @permissionSymbolUpdate, @groupId, GETDATE(), GETDATE()
+															
+	INSERT INTO Permissions(permissionName ,permissionSymbol,permissionGroupId,  createdAt, updatedAt)
+	OUTPUT inserted.id INTO @PermissionTemp(permissionId)
+	SELECT 'DELETE_' + @entityName, @permissionSymbolDelete, @groupId, GETDATE(), GETDATE()
+
+	-- CRUD THIS Enity FOR super-admin
+	INSERT INTO RolePermissions(roleId, permissionId, createdAt, updatedAt)
+	SELECT @roleId, permissionId, GETDATE(), GETDATE()
+	FROM @PermissionTemp
+
+	DELETE FROM @PermissionTemp
+
+	INSERT INTO Permissions(permissionName ,permissionSymbol, permissionGroupId,createdAt, updatedAt)
+	OUTPUT inserted.id INTO @PermissionTemp(permissionId)
+	SELECT 'SHOWMENU_' + @entityName, @permissionSymbolShowMenu, @groupId,GETDATE(), GETDATE()
+
+	INSERT INTO RolePermissions(roleId, permissionId, createdAt, updatedAt)
+	SELECT @roleId, permissionId, GETDATE(), GETDATE()
+	FROM @PermissionTemp
+
+	DECLARE @permissionId int = null
+	SELECT @permissionId = permissionId FROM @PermissionTemp
+
+
+
+
+	DECLARE @parentMenuId int = null
+	
+
+
+	IF @findParentMenu = 0
+	BEGIN
+		-- INSERT ParentMenu
+		DECLARE @ParentMenuTemp TABLE (
+			menuId int
+		);
+
+		INSERT INTO Menus(title, url, className, visibility, createdAt, updatedAt)
+		OUTPUT inserted.id INTO @ParentMenuTemp(menuId)
+		SELECT @parentMenuName, null, null, null, GETDATE(), GETDATE()
+
+		SELECT @parentMenuId = menuId FROM @ParentMenuTemp
+
+	END
+	ELSE
+	BEGIN
+		SELECT @parentMenuId = id
+		FROM Menus
+		WHERE title = @parentMenuName
+	END
+
+	IF @parentMenuId IS NOT NULL
+		AND NOT EXISTS (SELECT 1 FROM PermissionMenus WHERE permissionId = @permissionId AND menuId = @parentMenuId)
+	BEGIN
+		INSERT INTO PermissionMenus(permissionId, menuId, createdAt, updatedAt)
+		SELECT @permissionId, @parentMenuId, getdate(), getdate()
+		
+	END
+
+	DECLARE @MenuTemp TABLE (
+			menuId int
+		);
+	DECLARE @menuId int = null
+
+	INSERT INTO Menus(title, url, parentMenuId, className, visibility, createdAt, updatedAt)
+	OUTPUT inserted.id INTO @MenuTemp(menuId)
+	SELECT @menuName, @menuUrl, @parentMenuId,null, null, GETDATE(), GETDATE()
+
+	SELECT @menuId = menuId FROM @MenuTemp
+
+	INSERT INTO PermissionMenus(permissionId, menuId, createdAt, updatedAt)
+	SELECT @permissionId, @menuId, getdate(), getdate()
+
+	
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'CORE-Permissions-Data-v9', GETDATE(), GETDATE()
+END
+
+GO
+
 
 -- period types
 IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'PCMPeriodTypes-Data-v1' 

@@ -24,6 +24,7 @@ import { NestExpressApplication } from '@nestjs/platform-express';
 import { UIModule } from '@rahino/ui';
 import { CoreDashboardModule } from '@rahino/coreDashboard';
 import * as cookieParser from 'cookie-parser';
+import { DiscountCoffeModule } from '@rahino/discountCoffe';
 
 @Module({
   imports: [
@@ -62,7 +63,7 @@ import * as cookieParser from 'cookie-parser';
     PCMModule,
     EAVModule,
     ECommerceModule,
-
+    DiscountCoffeModule,
     DevtoolsModule.register({
       http: process.env.NODE_ENV !== 'production',
     }),

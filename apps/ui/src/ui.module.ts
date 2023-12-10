@@ -23,7 +23,7 @@ export class UIModule implements NestModule {
     app.useStaticAssets(join(__dirname, '../../../apps/ui', 'public'));
     app.setBaseViewsDir([
       join(__dirname, '../../../apps/ui', 'views/core'),
-      join(__dirname, '../../../apps/ui', 'views/discountCoffe'),
+      join(__dirname, '../../../apps/ui', 'views/discount-coffe'),
     ]);
     app.engine(
       'hbs',
@@ -174,7 +174,7 @@ export class UIModule implements NestModule {
         },
         partialsDir: [
           join(__dirname, '../../../apps/ui', 'views/core/partials'),
-          join(__dirname, '../../../apps/ui', 'views/discountCoffe/partials'),
+          join(__dirname, '../../../apps/ui', 'views/discount-coffe/partials'),
         ],
         layoutsDir: join(__dirname, '../../../apps/ui', 'views/core/layouts'),
       }),

@@ -1,0 +1,61 @@
+<html>
+  <head><title>{{title}}</title></head>
+  <body>
+      <div id="userId" class="d-none">{{user.id}}</div>
+      <div class="row">
+          <div class="col-xs-12 col-xl-12">
+              <div class="basic-form">
+                  <div class="form-row">
+                      <div class="form-group col-md-6">
+                          <label>نام کاربر</label>
+                          <input id="firstname" type="text" class="form-control" placeholder="نام کاربر"
+                              value="{{user.firstname}}">
+                      </div>
+                      <div class="form-group col-md-6">
+                          <label>نام خانوادگی</label>
+                          <input id="lastname" type="text" class="form-control" placeholder="نام خانوادگی"
+                              value="{{user.lastname}}">
+                      </div>
+                      <div class="form-group col-md-6">
+                        <label>نام کاربری</label>
+                        <input id="username" type="text" class="form-control" placeholder="نام کاربری"
+                                value="{{user.username}}">
+                      </div>
+                      <div class="form-group col-md-6">
+                        <label>شماره تلفن</label>
+                        <input id="phoneNumber" type="text" class="form-control" placeholder="شماره تلفن"
+                                value="{{user.phoneNumber}}">
+                      </div>
+                  </div>
+                  
+              </div>
+          </div>
+      </div>
+      {{#each roles}}
+        <div class='row'>
+          <div class='col-md-3'>
+            <h6>نقش ها</h6>
+            <div class='media-body'>
+                <div class='custom-control custom-checkbox mb-3'>
+                    <label class="css-control css-control-primary css-checkbox" for="roleCheckBox_{{id}}">
+                      {{#if (isexists id ../currentRoleIds)}}
+                        <input role-id='{{id}}' type="checkbox" class="css-control-input role-select" id="roleCheckBox_{{id}}" checked="">
+                      {{else}}
+                        <input role-id='{{id}}' type="checkbox" class="css-control-input role-select" id="roleCheckBox_{{id}}">
+                      {{/if}}
+                      <span class="css-control-indicator"></span>{{roleName}}
+                    </label>
+                </div>
+            </div>
+          </div>
+          
+        </div>
+      {{/each}}
+      <div class="row">
+        <button id="updateButton" class="btn btn-primary mt-3"><i class="fa fa-save"></i> اعمال</button>
+      </div>
+  </body>
+</html>
+
+
+

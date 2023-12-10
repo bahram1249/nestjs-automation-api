@@ -1,0 +1,77 @@
+{{#section 'header'}}
+  <meta name='keywords' content='' />
+  <meta name='author' content='' />
+  <meta name='robots' content='' />
+  <meta name='description' content='{{model.title}}' />
+  <meta property='og:title' content='{{model.title}}' />
+  <meta property='og:description' content='{{model.title}}' />
+  <meta property='og:image' />
+
+  <title>{{title}}</title>
+  <link
+    rel='stylesheet'
+    href='/tools/core/bootstrap-table@1.19.1/bootstrap-table.min.css'
+  />
+  <style>
+    .custom-checkbox label { display: unset; }
+  </style>
+{{/section}}
+
+<div class='card'>
+  <div class='card-header'>
+    <h4>کافه و رستوران ها</h4>
+  </div>
+  <div id='mainSection' class='card-body'>
+    <div class='text-left'>
+      <button id='onAddClick' class='btn btn-success'><i
+          class='flaticon-381-add'
+        ></i>
+        اضافه کردن</button>
+    </div>
+
+    <table
+      id='entityTable'
+      class='table table-striped'
+      data-sticky-header='true'
+      data-ajax='getEntityAjaxRequest'
+      data-side-pagination='server'
+      data-pagination='true'
+      data-page-list='[10, 20, 50, 100, 200]'
+      data-locale='fa-IR'
+      data-search='true'
+    >
+      <thead>
+        <tr>
+          <th data-field='firstname'>نام</th>
+          <th data-field='lastname'>نام خانوادگی</th>
+          <th data-field='username'>نام کاربری</th>
+          <th data-field='phoneNumber'>شماره تلفن</th>
+          <th data-formatter='actionFormatter'>عملیات</th>
+
+        </tr>
+      </thead>
+
+    </table>
+  </div>
+  <div class='card-header'>
+    <div class='text-left'>
+      <button
+        id='backButton'
+        class='btn btn-secondary'
+        style='display: none;'
+      >بازگشت</button>
+    </div>
+  </div>
+  <div id='secondSection' class='card-body' style='display: none;'></div>
+
+</div>
+
+{{#section 'footer'}}
+  <script
+    src='/tools/core/bootstrap-table@1.19.1/bootstrap-table.min.js'
+  ></script>
+  <script
+    src='/tools/core/bootstrap-table@1.19.1/bootstrap-table-fa-IR.js'
+  ></script>
+  {{! <script src='/src/core/user/user.js'></script> }}
+{{/section}}
