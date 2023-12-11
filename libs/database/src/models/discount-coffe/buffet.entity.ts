@@ -8,6 +8,8 @@ import {
 } from 'sequelize-typescript';
 import { User } from '../core/user.entity';
 import { Attachment } from '../core/attachment.entity';
+import { BuffetType } from './buffet-type.entity';
+import { BuffetCost } from './buffet-cost.entity';
 
 @Table({ tableName: 'DiscountCoffeBuffets' })
 export class Buffet extends Model {
@@ -43,7 +45,7 @@ export class Buffet extends Model {
   @Column({
     type: DataType.STRING,
   })
-  bufferDescription?: string;
+  buffetDescription?: string;
   @Column({
     type: DataType.STRING,
   })
@@ -97,5 +99,16 @@ export class Buffet extends Model {
   @Column({
     type: DataType.INTEGER,
   })
+  @ForeignKey(() => BuffetType)
   buffetTypeId?: number;
+  @BelongsTo(() => BuffetType, { as: 'buffetType', foreignKey: 'buffetTypeId' })
+  buffetType?: BuffetType;
+
+  @Column({
+    type: DataType.INTEGER,
+  })
+  @ForeignKey(() => BuffetCost)
+  buffetCostId?: number;
+  @BelongsTo(() => BuffetCost, { as: 'buffetCost', foreignKey: 'buffetCostId' })
+  buffetCost?: BuffetCost;
 }

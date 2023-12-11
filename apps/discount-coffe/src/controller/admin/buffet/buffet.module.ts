@@ -5,9 +5,19 @@ import { SequelizeModule } from '@nestjs/sequelize';
 import { User } from '@rahino/database/models/core/user.entity';
 import { Permission } from '@rahino/database/models/core/permission.entity';
 import { Buffet } from '@rahino/database/models/discount-coffe/buffet.entity';
+import { BuffetType } from '@rahino/database/models/discount-coffe/buffet-type.entity';
+import { BuffetCost } from '@rahino/database/models/discount-coffe/buffet-cost.entity';
 
 @Module({
-  imports: [SequelizeModule.forFeature([User, Permission, Buffet])],
+  imports: [
+    SequelizeModule.forFeature([
+      User,
+      Permission,
+      Buffet,
+      BuffetType,
+      BuffetCost,
+    ]),
+  ],
   controllers: [BuffetController],
   providers: [BuffetService],
 })

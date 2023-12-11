@@ -1,9 +1,9 @@
 function sweetErrorMessage(title, text) {
   Swal.fire({
     title: title,
-    text: text,
     type: 'error',
     confirmButtonText: 'باشه',
+    html: text,
   });
 }
 
@@ -19,7 +19,6 @@ function errorJson(XMLHttpRequest, textStatus, error) {
     } catch (e) {
       sweetErrorMessage('خطا', 'خطای ناشناخته');
     }
-    sweetErrorMessage('خطا', err.error.join);
     // HTTP error (can be checked by XMLHttpRequest.status and XMLHttpRequest.statusText)
   } else if (XMLHttpRequest.readyState == 0) {
     // Network error (i.e. connection refused, access denied due to CORS, etc.)

@@ -647,7 +647,7 @@ BEGIN
 			CONSTRAINT FK_DiscountCoffeBuffet_buffetTypeId
 				FOREIGN KEY REFERENCES DiscountCoffeBuffetTypes(id),
 		percentDiscount				int						NULL,
-		bufferDescription			ntext					NULL,
+		buffetDescription			ntext					NULL,
 		buffetAddress				nvarchar(512)			NULL,
 		buffetPhone					nvarchar(512)			NULL,
 		wazeLink					nvarchar(1024)			NULL,
@@ -673,6 +673,55 @@ END
 
 GO
 
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'DiscountCoffe-buffetCost-v1' 
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'SITE_NAME' AND [value] IN ('DiscountCoffe'))
+		)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'CUSTOMER_NAME' AND [value] IN ('DiscountCoffe'))
+		)
+BEGIN
+
+	CREATE TABLE DiscountCoffeBuffetCosts (
+		id							int						PRIMARY KEY,
+		title						nvarchar(256)			NOT NULL,
+		[createdAt]					datetimeoffset			NOT NULL,
+		[updatedAt]					datetimeoffset			NOT NULL
+	);
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'DiscountCoffe-buffetCost-v1', GETDATE(), GETDATE()
+END
+
+GO
+
+
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'DiscountCoffe-buffet-v2' 
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'SITE_NAME' AND [value] IN ('DiscountCoffe'))
+		)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'CUSTOMER_NAME' AND [value] IN ('DiscountCoffe'))
+		)
+BEGIN
+
+	ALTER TABLE DiscountCoffeBuffets
+	ADD buffetCostId int NULL
+		CONSTRAINT FK_DiscountCoffeBuffets_buffetCostId
+			FOREIGN KEY REFERENCES DiscountCoffeBuffetCosts(id)
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'DiscountCoffe-buffet-v2', GETDATE(), GETDATE()
+END
+
+GO
+
 -- data takhfif
 IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'DiscountCoffe-buffetType-Data-v1' 
 			)
@@ -693,6 +742,30 @@ BEGIN
 
 	INSERT INTO Migrations(version, createdAt, updatedAt)
 	SELECT 'DiscountCoffe-buffetType-Data-v1', GETDATE(), GETDATE()
+END
+
+GO
+
+
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'DiscountCoffe-buffetCost-Data-v1' 
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'SITE_NAME' AND [value] IN ('DiscountCoffe'))
+		)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'CUSTOMER_NAME' AND [value] IN ('DiscountCoffe'))
+		)
+BEGIN
+
+	INSERT INTO DiscountCoffeBuffetCosts (id, title, createdAt, updatedAt)
+	VALUES (1, N'ارزان', getdate(), getdate())
+			,(2, N'اقتصادی', getdate(), getdate())
+			,(3, N'لاکچری', getdate(), getdate())
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'DiscountCoffe-buffetCost-Data-v1', GETDATE(), GETDATE()
 END
 
 GO
@@ -996,6 +1069,21 @@ BEGIN
 
 	INSERT INTO Migrations(version, createdAt, updatedAt)
 	SELECT 'CORE-AttachmentTypes-Data-v1', GETDATE(), GETDATE()
+END
+
+GO
+
+
+-- takhfif coffe
+IF NOT EXISTS ((SELECT 1 FROM Migrations WHERE version = 'CORE-AttachmentTypes-Data-v2' 
+			))
+BEGIN
+	
+	INSERT INTO AttachmentTypes(id, typeName, createdAt, updatedAt)
+	SELECT 2, N'takhfifBucketCover', getdate(), getdate()
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'CORE-AttachmentTypes-Data-v2', GETDATE(), GETDATE()
 END
 
 GO

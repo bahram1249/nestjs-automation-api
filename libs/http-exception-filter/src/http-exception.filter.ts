@@ -37,6 +37,8 @@ export class HttpExceptionFilter implements ExceptionFilter {
     if (!apiRegex.test(request.url.split('/')[1])) {
       if (status == 400) {
         return response.status(status).render('error/400', { layout: false });
+      } else if (status == 401) {
+        return response.status(status).render('error/401', { layout: false });
       } else if (status == 403) {
         return response.status(status).render('error/403', { layout: false });
       } else if (status == 404) {
