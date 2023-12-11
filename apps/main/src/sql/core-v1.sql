@@ -722,6 +722,54 @@ END
 
 GO
 
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'DiscountCoffe-city-v1' 
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'SITE_NAME' AND [value] IN ('DiscountCoffe'))
+		)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'CUSTOMER_NAME' AND [value] IN ('DiscountCoffe'))
+		)
+BEGIN
+
+	CREATE TABLE DiscountCoffeCities (
+		id							int						PRIMARY KEY,
+		title						nvarchar(256)			NOT NULL,
+		[createdAt]					datetimeoffset			NOT NULL,
+		[updatedAt]					datetimeoffset			NOT NULL
+	);
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'DiscountCoffe-city-v1', GETDATE(), GETDATE()
+END
+
+GO
+
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'DiscountCoffe-buffet-v3' 
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'SITE_NAME' AND [value] IN ('DiscountCoffe'))
+		)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'CUSTOMER_NAME' AND [value] IN ('DiscountCoffe'))
+		)
+BEGIN
+
+	ALTER TABLE DiscountCoffeBuffets
+	ADD cityId int NULL
+		CONSTRAINT FK_DiscountCoffeBuffets_cityId
+			FOREIGN KEY REFERENCES DiscountCoffeCities(id)
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'DiscountCoffe-buffet-v3', GETDATE(), GETDATE()
+END
+
+GO
+
 -- data takhfif
 IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'DiscountCoffe-buffetType-Data-v1' 
 			)

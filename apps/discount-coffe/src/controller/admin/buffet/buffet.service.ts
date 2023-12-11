@@ -1,11 +1,9 @@
 import { Injectable, NotImplementedException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
-import { Op, Sequelize } from 'sequelize';
-import { User } from '@rahino/database/models/core/user.entity';
-
 import { Buffet } from '@rahino/database/models/discount-coffe/buffet.entity';
 import { BuffetType } from '@rahino/database/models/discount-coffe/buffet-type.entity';
 import { BuffetCost } from '@rahino/database/models/discount-coffe/buffet-cost.entity';
+import { BuffetCity } from '@rahino/database/models/discount-coffe/city.entity';
 
 @Injectable()
 export class BuffetService {
@@ -16,6 +14,8 @@ export class BuffetService {
     private readonly buffetTypeRepository: typeof BuffetType,
     @InjectModel(BuffetCost)
     private readonly buffetCostRepository: typeof BuffetCost,
+    @InjectModel(BuffetCity)
+    private readonly buffetCityRepository: typeof BuffetCity,
   ) {}
 
   async edit(userId: number) {
@@ -30,11 +30,13 @@ export class BuffetService {
   async create() {
     const buffetTypes = await this.buffetTypeRepository.findAll();
     const buffetCosts = await this.buffetCostRepository.findAll();
+    const buffetCities = await this.buffetCityRepository.findAll();
     return {
       title: 'ایجاد کافه رستوران',
       layout: false,
       buffetTypes: JSON.parse(JSON.stringify(buffetTypes)),
       buffetCosts: JSON.parse(JSON.stringify(buffetCosts)),
+      buffetCities: JSON.parse(JSON.stringify(buffetCities)),
       //roles: JSON.parse(JSON.stringify(roles)),
     };
   }

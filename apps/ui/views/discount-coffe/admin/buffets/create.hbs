@@ -76,6 +76,19 @@
                   </select>
             </div>
 
+
+            <div class="form-group col-sm-6 col-xl-6">
+                  <label>نام شهر</label>
+                  <select name="cityId"
+                      class="form-control default-select form-control-lg dir-rtl">
+                      {{#each buffetCities}}
+
+                      <option value="{{id}}">{{title}}</option>
+
+                      {{/each}}
+                  </select>
+            </div>
+
             <div class='form-group col-md-12'>
               <label>مقدار تخفیف به درصد</label>
               <input

@@ -10,6 +10,7 @@ import { User } from '../core/user.entity';
 import { Attachment } from '../core/attachment.entity';
 import { BuffetType } from './buffet-type.entity';
 import { BuffetCost } from './buffet-cost.entity';
+import { BuffetCity } from './city.entity';
 
 @Table({ tableName: 'DiscountCoffeBuffets' })
 export class Buffet extends Model {
@@ -111,4 +112,12 @@ export class Buffet extends Model {
   buffetCostId?: number;
   @BelongsTo(() => BuffetCost, { as: 'buffetCost', foreignKey: 'buffetCostId' })
   buffetCost?: BuffetCost;
+
+  @Column({
+    type: DataType.INTEGER,
+  })
+  @ForeignKey(() => BuffetCity)
+  cityId?: number;
+  @BelongsTo(() => BuffetCity, { as: 'city', foreignKey: 'cityId' })
+  city?: BuffetCity;
 }

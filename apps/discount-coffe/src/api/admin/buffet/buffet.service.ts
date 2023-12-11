@@ -119,6 +119,7 @@ export class BuffetService {
       'latitude',
       'longitude',
       'buffetCostId',
+      'cityId',
     ]);
     buffet.userId = user.id;
     buffet.ownerId = ownedUser.id;

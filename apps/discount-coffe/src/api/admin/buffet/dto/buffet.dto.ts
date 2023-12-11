@@ -104,4 +104,8 @@ export class BuffetDto {
   @Transform(({ value }) => JSON.parse(value))
   @IsNumber()
   buffetCostId?: number;
+
+  @Transform(({ value }) => JSON.parse(value))
+  @IsNumber()
+  cityId: number;
 }
