@@ -11,8 +11,9 @@
   </style>
   </head>
   <body>
+    <div id="entityId" class="d-none">{{buffet.id}}</div>
     <div class='basic-form'>
-      <form id='newEntityForm' autocomplete='off'>
+      <form id='editEntityForm' autocomplete='off'>
         <div class='row'>
           <div class='col-md-6'>
             <div class='form-group col-md-12'>
@@ -39,6 +40,7 @@
                 type='text'
                 class='form-control'
                 placeholder='نام کافه رستوران'
+                value="{{buffet.title}}"
               />
             </div>
             <div class='form-group col-md-12'>
@@ -48,6 +50,7 @@
                 type='text'
                 class='form-control'
                 placeholder='آدرس لینک'
+                value="{{buffet.urlAddress}}"
               />
             </div>
 
@@ -57,7 +60,7 @@
                       class="form-control default-select form-control-lg dir-rtl">
                       {{#each buffetTypes}}
 
-                      <option value="{{id}}">{{title}}</option>
+                      <option value="{{id}}" {{#if (ifequals ../buffet.buffetTypeId id)}} selected=""{{/if}}>{{title}}</option>
 
                       {{/each}}
                   </select>
@@ -69,8 +72,8 @@
                   <select id="mySelect" name="buffetCostId" 
                       class="form-control default-select form-control-lg dir-rtl">
                       {{#each buffetCosts}}
-
-                      <option value="{{id}}">{{title}}</option>
+                      
+                      <option value="{{id}}" {{#if (ifequals ../buffet.buffetCostId id)}} selected=""{{/if}}>{{title}}</option>
 
                       {{/each}}
                   </select>
@@ -83,7 +86,7 @@
                       class="form-control default-select form-control-lg dir-rtl">
                       {{#each buffetCities}}
 
-                      <option value="{{id}}">{{title}}</option>
+                      <option value="{{id}}" {{#if (ifequals ../buffet.buffetCityId id)}} selected=""{{/if}}>{{title}}</option>
 
                       {{/each}}
                   </select>
@@ -96,6 +99,7 @@
                 type='number'
                 class='form-control'
                 placeholder='مقدار تخفیف به درصد'
+                value="{{buffet.percentDiscount}}"
               />
             </div>
             <div class='form-group col-md-12'>
@@ -105,6 +109,7 @@
                 type='text'
                 class='form-control'
                 placeholder='شماره تلفن کافه'
+                value="{{buffet.buffetPhone}}"
               ></textarea>
             </div>
             <div class='form-group col-md-12'>
@@ -114,6 +119,7 @@
                 type='text'
                 class='form-control'
                 placeholder='آدرس کافه'
+                value="{{buffet.buffetAddress}}"
               ></textarea>
             </div>
             <div class='form-group col-md-12'>
@@ -123,6 +129,7 @@
                 type='text'
                 class='form-control'
                 placeholder='لینک waze'
+                value="{{buffet.wazeLink}}"
               ></input>
             </div>
             <div class='form-group col-md-12'>
@@ -132,6 +139,7 @@
                 type='text'
                 class='form-control'
                 placeholder='لینک بلد'
+                value="{{buffet.baladLink}}"
               ></input>
             </div>
             <div class='form-group col-md-12'>
@@ -141,6 +149,7 @@
                 type='text'
                 class='form-control'
                 placeholder='لینک نشان'
+                value="{{buffet.neshanLink}}"
               ></input>
             </div>
             <div class='form-group col-md-12'>
@@ -150,6 +159,7 @@
                 type='text'
                 class='form-control'
                 placeholder='لینک گوگل مپ'
+                value="{{buffet.googleMapLink}}"
               ></input>
             </div>
             
@@ -166,6 +176,7 @@
                 type='text'
                 class='form-control'
                 placeholder='نام صاحب کافه'
+                value="{{owner.firstname}}"
               />
             </div>
 
@@ -176,6 +187,7 @@
                 type='text'
                 class='form-control'
                 placeholder='نام خانوادگی صاحب کافه'
+                value="{{owner.lastname}}"
               />
             </div>
 
@@ -186,6 +198,7 @@
                 type='text'
                 class='form-control'
                 placeholder='نام کاربری صاحب کافه'
+                value="{{owner.username}}"
               />
             </div>
           </div>
@@ -203,6 +216,7 @@
                 type='text'
                 class='form-control'
                 placeholder='عرض جغرافیایی'
+                value="{{buffet.latitude}}"
               />
             </div>
             <div class="form-group col-md-6">
@@ -213,6 +227,7 @@
                 type='text'
                 class='form-control'
                 placeholder='طول جغرافیایی'
+                value="{{buffet.longitude}}"
               />
             </div>
           </div>
@@ -226,7 +241,7 @@
                 name='buffetDescription'
                 type='text'
                 
-              ></textarea>
+              >{{{buffet.buffetDescription}}}</textarea>
             </div>
         </div>
 
@@ -234,10 +249,10 @@
     </div>
 
     <div class='row'>
-      <button id='saveButton' type="submit" form="newEntityForm" class='btn btn-primary mt-3'><i
+      <button id='updateButton' type="submit" form="editEntityForm" class='btn btn-primary mt-3'><i
           class='fa fa-save'
         ></i>
-        ایجاد</button>
+        ویرایش</button>
     </div>
     
     

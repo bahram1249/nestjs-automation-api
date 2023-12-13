@@ -43,7 +43,7 @@ export class BuffetController {
   @Get('/:id')
   @HttpCode(HttpStatus.OK)
   @Render('admin/buffets/edit')
-  async edit(@Param('id') buffetId: number) {
+  async edit(@Param('id') buffetId: bigint) {
     return await this.service.edit(buffetId);
   }
 }

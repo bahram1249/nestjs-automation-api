@@ -1,10 +1,12 @@
 import {
   ForbiddenException,
   Injectable,
+  NotFoundException,
   NotImplementedException,
+  StreamableFile,
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
-import { Op } from 'sequelize';
+import { Op, Sequelize } from 'sequelize';
 import { Buffet } from '@rahino/database/models/discount-coffe/buffet.entity';
 import { ListFilter } from '@rahino/query-filter';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
@@ -16,6 +18,8 @@ import { FileService } from '@rahino/file';
 import { ThumbnailService } from '@rahino/thumbnail';
 import * as path from 'path';
 import * as _ from 'lodash';
+import { Response } from 'express';
+import * as fs from 'fs';
 
 @Injectable()
 export class BuffetService {
@@ -39,7 +43,7 @@ export class BuffetService {
         [Op.like]: filter.search,
       },
     });
-    const count = await this.repository.findOne(builder.build());
+    const count = await this.repository.count(builder.build());
     const options = builder
       .include([
         {
@@ -130,10 +134,131 @@ export class BuffetService {
       result: buffet,
     };
   }
-  async findById(id: number) {
+
+  async edit(
+    id: bigint,
+    user: User,
+    dto: BuffetDto,
+    file?: Express.Multer.File,
+  ) {
+    const buffet = await this.repository.findOne({
+      where: {
+        id: id,
+      },
+    });
+    if (!buffet) throw new NotFoundException();
+    let attachmentId = null;
+    if (file) {
+      const attachmentTypeId = 2;
+      const attachmentType = await this.attachmentTypeRepository.findOne({
+        where: {
+          id: attachmentTypeId,
+        },
+      });
+      if (!attachmentType) throw new ForbiddenException();
+      // save path from config
+      const bigPath = this.fileService.generateProfilePathByCwd(user.id);
+      const thumbPath = this.fileService.generateProfileThumbPathByCwd(user.id);
+
+      // create thumbnail and save
+      const bigThumb = await this.thumbnailService.resize(file.path, 700, 700);
+      const smallThumb = await this.thumbnailService.resize(
+        file.path,
+        300,
+        300,
+      );
+      const realPath = await this.fileService.saveFileByPathAsync(
+        bigPath.cwdPath,
+        file.filename,
+        bigThumb,
+      );
+      const thumbRealPath = await this.fileService.saveFileByPathAsync(
+        thumbPath.cwdPath,
+        file.filename,
+        smallThumb,
+      );
+
+      this.fileService.removeFileAsync(file.path);
+      const attachment = await this.attachmentRepository.create({
+        originalFileName: file.originalname,
+        fileName: file.filename,
+        ext: path.extname(file.filename),
+        mimetype: file.mimetype,
+        userId: user.id,
+        attachmentTypeId: attachmentTypeId,
+        path: path.join(bigPath.savePath, '/', file.filename),
+        thumbnailPath: path.join(thumbPath.savePath, '/', file.filename),
+      });
+      attachmentId = attachment.id;
+    }
+    let owner = await this.userRepository.findOne({
+      where: {
+        id: buffet.ownerId,
+      },
+    });
+    if (!owner) throw new NotFoundException();
+    let ownedUser: any = _.pick(dto, ['firstname', 'lastname', 'username']);
+    ownedUser = await this.userRepository.update(ownedUser, {
+      where: {
+        id: buffet.ownerId,
+      },
+    });
+
+    const buffetDto: any = _.pick(dto, [
+      'title',
+      'urlAddress',
+      'buffetTypeId',
+      'percentDiscount',
+      'buffetDescription',
+      'buffetPhone',
+      'wazeLink',
+      'neshanLink',
+      'baladLink',
+      'googleMapLink',
+      'latitude',
+      'longitude',
+      'buffetCostId',
+      'cityId',
+    ]);
+    if (attachmentId) buffetDto.coverAttachmentId = attachmentId;
+    await this.repository.update(buffetDto, {
+      where: {
+        id: id,
+      },
+    });
+    return {
+      result: buffet,
+    };
+  }
+  async getPhoto(res: Response, fileName: string) {
+    const attachment = await this.attachmentRepository.findOne({
+      where: {
+        [Op.and]: [
+          {
+            fileName: fileName,
+          },
+          Sequelize.where(
+            Sequelize.fn('isnull', Sequelize.col('isDeleted'), 0),
+            {
+              [Op.eq]: 0,
+            },
+          ),
+          {
+            attachmentTypeId: 2,
+          },
+        ],
+      },
+    });
+    if (!attachment) throw new NotFoundException();
+    res.set({
+      'Content-Type': attachment.mimetype,
+      'Content-Disposition': `filename="${attachment.fileName}"`,
+    });
+    const file = fs.createReadStream(path.join(process.cwd(), attachment.path));
+    return new StreamableFile(file);
+  }
+
+  async findById(entityId: number) {
     throw new NotImplementedException();
-    // return {
-    //   result: age,
-    // };
   }
 }

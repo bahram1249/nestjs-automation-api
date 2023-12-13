@@ -8,9 +8,11 @@ import {
   MaxFileSizeValidator,
   Param,
   ParseFilePipe,
-  ParseFilePipeBuilder,
   Post,
+  Put,
   Query,
+  Res,
+  StreamableFile,
   UploadedFile,
   UseGuards,
   UseInterceptors,
@@ -26,6 +28,7 @@ import {
   ApiQuery,
   ApiTags,
 } from '@nestjs/swagger';
+import { Response } from 'express';
 
 import { JwtGuard } from '@rahino/auth/guard';
 import { ListFilter } from '@rahino/query-filter';
@@ -38,7 +41,6 @@ import { User } from '@rahino/database/models/core/user.entity';
 
 @ApiTags('DiscountCoffe-Buffets')
 @ApiBearerAuth()
-@UseGuards(JwtGuard, PermissionGuard)
 @Controller({
   path: '/api/discountcoffe/admin/buffets',
   version: ['1'],
@@ -46,6 +48,7 @@ import { User } from '@rahino/database/models/core/user.entity';
 @UseInterceptors(JsonResponseTransformInterceptor)
 export class BuffetController {
   constructor(private service: BuffetService) {}
+  @UseGuards(JwtGuard, PermissionGuard)
   @ApiOperation({ description: 'show all buffets' })
   @CheckPermission({ permissionSymbol: 'discountcoffe.admin.buffets.getall' })
   @Get('/')
@@ -60,6 +63,7 @@ export class BuffetController {
     return await this.service.findAll(filter);
   }
 
+  @UseGuards(JwtGuard, PermissionGuard)
   @ApiOperation({ description: 'show buffets by given id' })
   @CheckPermission({ permissionSymbol: 'discountcoffe.admin.buffets.getone' })
   @Get('/:id')
@@ -68,6 +72,7 @@ export class BuffetController {
     return await this.service.findById(entityId);
   }
 
+  @UseGuards(JwtGuard, PermissionGuard)
   @ApiOperation({ description: 'create buffets' })
   @CheckPermission({ permissionSymbol: 'discountcoffe.admin.buffets.create' })
   @UseInterceptors(FileInterceptor('file', coverOptions()))
@@ -101,5 +106,51 @@ export class BuffetController {
     file?: Express.Multer.File,
   ) {
     return await this.service.create(user, dto, file);
+  }
+
+  @UseGuards(JwtGuard, PermissionGuard)
+  @ApiOperation({ description: 'update buffets' })
+  @CheckPermission({ permissionSymbol: 'discountcoffe.admin.buffets.update' })
+  @UseInterceptors(FileInterceptor('file', coverOptions()))
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        file: {
+          type: 'string',
+          format: 'binary',
+        },
+      },
+    },
+  })
+  @Put('/:id')
+  @HttpCode(HttpStatus.CREATED)
+  async edit(
+    @Param('id') id: bigint,
+    @GetUser() user: User,
+    @Body() dto: BuffetDto,
+    @UploadedFile(
+      new ParseFilePipe({
+        validators: [
+          new FileTypeValidator({ fileType: /(jpg|png)/ }),
+          new MaxFileSizeValidator({ maxSize: 2097152 }),
+        ],
+        fileIsRequired: false,
+        errorHttpStatusCode: HttpStatus.UNPROCESSABLE_ENTITY,
+      }),
+    )
+    file?: Express.Multer.File,
+  ) {
+    return await this.service.edit(id, user, dto, file);
+  }
+
+  @ApiOperation({ description: 'show buffet photo by fileName' })
+  @Get('/photo/:fileName')
+  async photo(
+    @Res({ passthrough: true }) res: Response,
+    @Param('fileName') fileName: string,
+  ): Promise<StreamableFile> {
+    return this.service.getPhoto(res, fileName);
   }
 }

@@ -79,3 +79,8 @@ tinymce.init({
   //     input.click();
   //   },
 });
+
+// Initialize Select2
+$(document).ready(function () {
+  $('select').select2();
+});

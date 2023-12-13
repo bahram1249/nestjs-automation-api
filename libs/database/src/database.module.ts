@@ -30,6 +30,7 @@ import { EAVAttributeType } from './models/eav/eav-attribute-type.entity';
 import { Buffet } from './models/discount-coffe/buffet.entity';
 import { BuffetType } from './models/discount-coffe/buffet-type.entity';
 import { BuffetCost } from './models/discount-coffe/buffet-cost.entity';
+import { BuffetCity } from './models/discount-coffe/city.entity';
 
 // let config;
 // switch (process.env.NODE_ENV) {
@@ -101,6 +102,7 @@ const dbLog: boolean = JSON.parse(process.env.DB_LOG);
           Buffet,
           BuffetType,
           BuffetCost,
+          BuffetCity,
         ],
         autoLoadModels: autoLoadModels,
         logging: dbLog,

@@ -59,7 +59,7 @@ function onEditClick(id) {
   $('#secondSection').html('');
   $('#secondSection').show();
   $.ajax({
-    url: '/core/admin/users/' + id,
+    url: '/discountcoffe/admin/buffets/' + id,
     type: 'GET',
     success: function (data) {
       $('#secondSection').html(data);
@@ -149,28 +149,44 @@ function showMainSection() {
   $('#mainSection').show();
 }
 
-$(document).on('click', '#updateButton', function () {
-  var roles = [];
-  var inputRoles = $('input.role-select:checked');
-  var firstname = $('#firstname').val();
-  var lastname = $('#lastname').val();
-  var username = $('#username').val();
-  var phoneNumber = $('#phoneNumber').val();
-  inputRoles.each(function () {
-    roles.push($(this).attr('role-id'));
+$(document).on('submit', '#editEntityForm', function (event) {
+  var entityId = $('#entityId').text();
+  event.preventDefault();
+  var requestData = JSON.parse(JSON.stringify($(this).serializeObject()));
+  $.each(requestData, function (key, value) {
+    if (key == 'buffetDescription') {
+      requestData[key] = value.replace('../..', '');
+    }
+    // console.log(!isNaN(value));
+    // if (!isNaN(value)) {
+    //   requestData[key] = parseInt(value);
+    // }
+    if (value === '' || value === null) {
+      delete requestData[key];
+    }
   });
-  var userId = $('#userId').text();
+
+  var formData = new FormData();
+  var file = $('#file')[0].files;
+  var length = file.length;
+  if (length > 0) {
+    formData.append('file', file[0]);
+  }
+
+  Object.keys(requestData).forEach(function (k, v) {
+    formData.append(k, requestData[k]);
+  });
+
   $.ajax({
-    url: '/v1/api/core/admin/users/' + userId,
+    url: '/v1/api/discountcoffe/admin/buffets/' + entityId,
     type: 'PUT',
-    data: {
-      roles: roles.length === 0 ? roles.toString() : roles,
-      firstname: firstname,
-      lastname: lastname,
-      username: username,
-      phoneNumber: phoneNumber,
+    data: formData,
+    contentType: 'multipart/form-data',
+    processData: false,
+    contentType: false,
+    beforeSend: function (request) {
+      beforeSendAjax(request);
     },
-    beforeSend: beforeSendAjax,
     success: function (data) {
       showMainSection();
       refreshTable();

@@ -7,6 +7,7 @@ import { Permission } from '@rahino/database/models/core/permission.entity';
 import { Buffet } from '@rahino/database/models/discount-coffe/buffet.entity';
 import { BuffetType } from '@rahino/database/models/discount-coffe/buffet-type.entity';
 import { BuffetCost } from '@rahino/database/models/discount-coffe/buffet-cost.entity';
+import { BuffetCity } from '@rahino/database/models/discount-coffe/city.entity';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { BuffetCost } from '@rahino/database/models/discount-coffe/buffet-cost.e
       Buffet,
       BuffetType,
       BuffetCost,
+      BuffetCity,
     ]),
   ],
   controllers: [BuffetController],
