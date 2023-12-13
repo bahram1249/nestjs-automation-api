@@ -24,6 +24,18 @@ export class BuffetService {
       },
     });
     if (!buffet) throw new NotFoundException();
+    const viewCount = Number(buffet.viewCount) + 1;
+    this.repository.update(
+      {
+        viewCount: viewCount,
+      },
+      {
+        where: {
+          id: buffet.id,
+        },
+        silent: true,
+      },
+    );
     return {
       title: buffet.title,
       layout: 'discountcoffe',
