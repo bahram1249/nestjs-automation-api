@@ -16,7 +16,11 @@ import { Attachment } from '@rahino/database/models/core/attachment.entity';
     ThumbnailModule.register({
       width: 990,
       height: 540,
-      resizeOptions: { withoutEnlargement: true },
+      resizeOptions: {
+        withoutEnlargement: true,
+        fit: 'inside',
+        withoutReduction: true,
+      },
     }),
     SequelizeModule.forFeature([
       User,
