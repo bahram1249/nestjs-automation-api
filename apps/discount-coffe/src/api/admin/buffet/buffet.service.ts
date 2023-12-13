@@ -115,6 +115,7 @@ export class BuffetService {
       'buffetTypeId',
       'percentDiscount',
       'buffetDescription',
+      'buffetAddress',
       'buffetPhone',
       'wazeLink',
       'neshanLink',
@@ -210,6 +211,7 @@ export class BuffetService {
       'buffetTypeId',
       'percentDiscount',
       'buffetDescription',
+      'buffetAddress',
       'buffetPhone',
       'wazeLink',
       'neshanLink',
@@ -230,7 +232,8 @@ export class BuffetService {
       result: buffet,
     };
   }
-  async getPhoto(res: Response, fileName: string) {
+
+  async getPhoto(res: Response, fileName: string): Promise<StreamableFile> {
     const attachment = await this.attachmentRepository.findOne({
       where: {
         [Op.and]: [

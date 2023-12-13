@@ -1,0 +1,29 @@
+$primary-color :#2A4D98;
+$secondary-color: #f2f5f4;
+$third-color: #214544;
+
+@import "../../node_modules/animate.css/animate.min.css";
+
+@import './base/typography';
+@import './base/config';
+@import './base/reset';
+
+@import './components/icons';
+
+@import './components/navbar';
+@import './components/slider';
+@import './components/buttons';
+@import './components/form';
+@import './components/alerts';
+@import './components/pagination';
+@import './components/products';
+@import './components/fastBox';
+@import './components/my';
+@import './components/cart';
+
+@import './layouts/header';
+@import './layouts/footer';
+@import './layouts/home';
+@import './layouts/about';
+@import './layouts/contact';
+@import './layouts/blog';

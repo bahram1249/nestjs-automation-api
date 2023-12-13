@@ -1,0 +1,81 @@
+@font-face {
+    font-family: 'IRANSansX';
+    src: url('IRANSansX-Black.woff2') format('woff2'),
+        url('IRANSansX-Black.woff') format('woff');
+    font-weight: 900;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'IRANSansX';
+    src: url('IRANSansX-DemiBold.woff2') format('woff2'),
+        url('IRANSansX-DemiBold.woff') format('woff');
+    font-weight: 600;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'IRANSansX';
+    src: url('IRANSansX-Bold.woff2') format('woff2'),
+        url('IRANSansX-Bold.woff') format('woff');
+    font-weight: bold;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'IRANSansX';
+    src: url('IRANSansX-Light.woff2') format('woff2'),
+        url('IRANSansX-Light.woff') format('woff');
+    font-weight: 300;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'IRANSansX';
+    src: url('IRANSansX-Medium.woff2') format('woff2'),
+        url('IRANSansX-Medium.woff') format('woff');
+    font-weight: 500;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'IRANSansX';
+    src: url('IRANSansX-ExtraBold.woff2') format('woff2'),
+        url('IRANSansX-ExtraBold.woff') format('woff');
+    font-weight: bold;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'IRANSansX';
+    src: url('IRANSansX-Regular.woff2') format('woff2'),
+        url('IRANSansX-Regular.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'IRANSansX';
+    src: url('IRANSansX-Thin.woff2') format('woff2'),
+        url('IRANSansX-Thin.woff') format('woff');
+    font-weight: 100;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'IRANSansX';
+    src: url('IRANSansX-UltraLight.woff2') format('woff2'),
+        url('IRANSansX-UltraLight.woff') format('woff');
+    font-weight: 200;
+    font-style: normal;
+    font-display: swap;
+}
+

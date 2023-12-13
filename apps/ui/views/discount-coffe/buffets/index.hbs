@@ -1,0 +1,328 @@
+{{#section 'header'}}
+  <link
+    rel='stylesheet'
+    href='https://unpkg.com/leaflet@1.7.1/dist/leaflet.css'
+  />
+  <style>
+    #map { height: 400px; width: 100%; }
+  </style>
+{{/section}}
+<div class='singleCafe'>
+  <div class='container-lg'>
+    <div class='row'>
+      <div class='col-md-9 p-0 h-100'>
+        <div class='luxCarousel mb-custom'>
+          {{#if (isDefined buffet.coverAttachment)}}
+            <div>
+              <img
+                class='w-100'
+                src='/v1/api/discountcoffe/admin/buffets/photo/{{buffet.coverAttachment.fileName}}'
+                alt=''
+              />
+            </div>
+          {{/if}}
+        </div>
+        <div class='singleDetail'>
+          <div class='title'>
+            <h1>{{buffet.title}}</h1>
+          </div>
+          <div class='mostDetail'>
+            <span class='rate'>امتیاز: 4.76</span>
+            <span><i class='icon-eye'></i> 989</span>
+            <span><i class='icon-heart'></i> 12</span>
+          </div>
+        </div>
+        <div class='features'>
+          <h3 class='head'>امکانات کافه</h3>
+          <div class='items'>
+            <div class='item'>
+              <i class='icon-pizza'></i>
+              <p>غذای فرنگی</p>
+            </div>
+            <div class='item'>
+              <i class='icon-pizza'></i>
+              <p>غذای فرنگی</p>
+            </div>
+            <div class='item'>
+              <i class='icon-pizza'></i>
+              <p>غذای فرنگی</p>
+            </div>
+            <div class='item'>
+              <i class='icon-pizza'></i>
+              <p>غذای فرنگی</p>
+            </div>
+            <div class='item'>
+              <i class='icon-pizza'></i>
+              <p>غذای فرنگی</p>
+            </div>
+            <div class='item'>
+              <i class='icon-pizza'></i>
+              <p>غذای فرنگی</p>
+            </div>
+            <div class='item'>
+              <i class='icon-pizza'></i>
+              <p>غذای فرنگی</p>
+            </div>
+            <div class='item'>
+              <i class='icon-pizza'></i>
+              <p>غذای فرنگی</p>
+            </div>
+            <div class='item'>
+              <i class='icon-pizza'></i>
+              <p>غذای فرنگی</p>
+            </div>
+            <div class='item'>
+              <i class='icon-pizza'></i>
+              <p>غذای فرنگی</p>
+            </div>
+            <div class='item'>
+              <i class='icon-pizza'></i>
+              <p>غذای فرنگی</p>
+            </div>
+            <div class='item'>
+              <i class='icon-pizza'></i>
+              <p>غذای فرنگی</p>
+            </div>
+            <div class='item'>
+              <i class='icon-pizza'></i>
+              <p>غذای فرنگی</p>
+            </div>
+            <div class='item'>
+              <i class='icon-pizza'></i>
+              <p>غذای فرنگی</p>
+            </div>
+            <div class='item'>
+              <i class='icon-pizza'></i>
+              <p>غذای فرنگی</p>
+            </div>
+            <div class='item'>
+              <i class='icon-pizza'></i>
+              <p>غذای فرنگی</p>
+            </div>
+            <div class='item'>
+              <i class='icon-pizza'></i>
+              <p>غذای فرنگی</p>
+            </div>
+            <div class='item'>
+              <i class='icon-pizza'></i>
+              <p>غذای فرنگی</p>
+            </div>
+            <div class='item'>
+              <i class='icon-pizza'></i>
+              <p>غذای فرنگی</p>
+            </div>
+            <div class='item'>
+              <i class='icon-pizza'></i>
+              <p>غذای فرنگی</p>
+            </div>
+            <div class='item'>
+              <i class='icon-pizza'></i>
+              <p>غذای فرنگی</p>
+            </div>
+            <div class='item'>
+              <i class='icon-pizza'></i>
+              <p>غذای فرنگی</p>
+            </div>
+            <div class='item'>
+              <i class='icon-pizza'></i>
+              <p>غذای فرنگی</p>
+            </div>
+            <div class='item'>
+              <i class='icon-pizza'></i>
+              <p>غذای فرنگی</p>
+            </div>
+            <div class='item'>
+              <i class='icon-pizza'></i>
+              <p>غذای فرنگی</p>
+            </div>
+            <div class='item'>
+              <i class='icon-pizza'></i>
+              <p>غذای فرنگی</p>
+            </div>
+            <div class='item'>
+              <i class='icon-pizza'></i>
+              <p>غذای فرنگی</p>
+            </div>
+            <div class='item'>
+              <i class='icon-pizza'></i>
+              <p>غذای فرنگی</p>
+            </div>
+            <div class='item'>
+              <i class='icon-pizza'></i>
+              <p>غذای فرنگی</p>
+            </div>
+            <div class='item'>
+              <i class='icon-pizza'></i>
+              <p>غذای فرنگی</p>
+            </div>
+            <div class='item'>
+              <i class='icon-pizza'></i>
+              <p>غذای فرنگی</p>
+            </div>
+            <div class='item'>
+              <i class='icon-pizza'></i>
+              <p>غذای فرنگی</p>
+            </div>
+            <div class='item'>
+              <i class='icon-pizza'></i>
+              <p>غذای فرنگی</p>
+            </div>
+            <div class='item'>
+              <i class='icon-pizza'></i>
+              <p>غذای فرنگی</p>
+            </div>
+            <div class='item'>
+              <i class='icon-pizza'></i>
+              <p>غذای فرنگی</p>
+            </div>
+            <div class='item'>
+              <i class='icon-pizza'></i>
+              <p>غذای فرنگی</p>
+            </div>
+            <div class='item'>
+              <i class='icon-pizza'></i>
+              <p>غذای فرنگی</p>
+            </div>
+            <div class='item'>
+              <i class='icon-pizza'></i>
+              <p>غذای فرنگی</p>
+            </div>
+            <div class='item'>
+              <i class='icon-pizza'></i>
+              <p>غذای فرنگی</p>
+            </div>
+            <div class='item'>
+              <i class='icon-pizza'></i>
+              <p>غذای فرنگی</p>
+            </div>
+            <div class='item'>
+              <i class='icon-pizza'></i>
+              <p>غذای فرنگی</p>
+            </div>
+            <div class='item'>
+              <i class='icon-pizza'></i>
+              <p>غذای فرنگی</p>
+            </div>
+            <div class='item'>
+              <i class='icon-pizza'></i>
+              <p>غذای فرنگی</p>
+            </div>
+            <div class='item'>
+              <i class='icon-pizza'></i>
+              <p>غذای فرنگی</p>
+            </div>
+            <div class='item'>
+              <i class='icon-pizza'></i>
+              <p>غذای فرنگی</p>
+            </div>
+          </div>
+          <div class='expander'>
+            <button class='expand'>
+              مشاهده همه
+              <i class='icon-down'></i>
+            </button>
+          </div>
+        </div>
+        <div class='showMenu'>
+          <h5 class='title'>مشاهده منوی کافه به همراه قیمت ها با تخفیف</h5>
+          <button class='popup'>مشاهده منوی کافه</button>
+        </div>
+        <div class='address'>
+          <h3 class='head'>آدرس و اطلاعات</h3>
+          <div class='item'>
+            <span>آدرس کافه:</span>
+            {{buffet.buffetAddress}}
+          </div>
+          <div class='item'>
+            <span>شماره تلفن کافه: </span>
+            {{buffet.buffetPhone}}
+          </div>
+        </div>
+        <div class='navigation'>
+          <h5>مسیریابی کافه در</h5>
+          <div class='items'>
+            {{#if (isDefined buffet.neshanLink)}}
+              <div class='item'>
+                <a href='{{buffet.neshanLink}}'>
+                  <img
+                    src='/theme/discountcoffe/assets/img/png/neshan.png'
+                    alt=''
+                  />
+
+                  <span>نشان</span>
+                </a>
+              </div>
+            {{/if}}
+            {{#if (isDefined buffet.baladLink)}}
+              <div class='item'>
+                <a href='{{buffet.baladLink}}'>
+                  <img
+                    src='/theme/discountcoffe/assets/img/png/balad.png'
+                    alt=''
+                  />
+
+                  <span>بلد</span>
+                </a>
+              </div>
+            {{/if}}
+            {{#if (isDefined buffet.googleMapLink)}}
+              <div class='item'>
+                <a href='{{buffet.googleMapLink}}'>
+                  <img
+                    src='/theme/discountcoffe/assets/img/png/google.png'
+                    alt=''
+                  />
+                  <span>گوگل مپ</span>
+                </a>
+              </div>
+
+            {{/if}}
+            {{#if (isDefined buffet.wazeLink)}}
+              <div class='item'>
+                <a href='{{buffet.wazeLink}}'>
+                  <img
+                    src='/theme/discountcoffe/assets/img/png/waze.png'
+                    alt=''
+                  />
+                  <span>ویز</span>
+                </a>
+              </div>
+            {{/if}}
+          </div>
+        </div>
+        <div class='maps'>
+          <div id='map'></div>
+        </div>
+        {{! <div class='comment'>
+          <h3 class='head'>نظرات</h3>
+          <div class='counts'>
+            <h4>دیدگاه خود را ارسال نمایید</h4>
+            <span>25 دیدگاه</span>
+          </div>
+          <textarea name='' id='' cols='30' rows='10'></textarea>
+          <button class='submit'>ارسال نظر</button>
+        </div> }}
+      </div>
+      <div class='col-md-3'>
+        <div class='sticky-reserve'>
+          <h4>رزرو تخفیف برای این کافه</h4>
+          <h3>تا {{buffet.percentDiscount}}% تخفیف!</h3>
+          <p>با دریافت کد Qr خود و ارائه به کافه از تخفیف بهره مند شوید</p>
+          <a href=''>رزرو سریع</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{{#section 'footer'}}
+  <script src='https://unpkg.com/leaflet@1.8.0/dist/leaflet.js'></script>
+  <script>
+    if($('#map').length > 0){ if(typeof L !== 'undefined'){ var map =
+    L.map("map").setView([{{buffet.latitude}},
+    {{buffet.longitude}}], 14);
+    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", { maxZoom:
+    19, attribution: "© OpenStreetMap", }).addTo(map); L.marker([{{buffet.latitude}},
+    {{buffet.longitude}}]) .addTo(map) .bindPopup("ما اینجا هستیم")
+    .openPopup(); } }
+  </script>
+{{/section}}

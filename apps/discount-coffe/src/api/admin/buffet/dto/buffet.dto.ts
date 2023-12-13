@@ -78,7 +78,7 @@ export class BuffetDto {
   buffetDescription?: string;
 
   @IsOptional()
-  buffetAddresss?: string;
+  buffetAddress?: string;
 
   @IsOptional()
   buffetPhone?: string;

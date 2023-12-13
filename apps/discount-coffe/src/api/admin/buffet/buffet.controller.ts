@@ -45,9 +45,9 @@ import { User } from '@rahino/database/models/core/user.entity';
   path: '/api/discountcoffe/admin/buffets',
   version: ['1'],
 })
-@UseInterceptors(JsonResponseTransformInterceptor)
 export class BuffetController {
   constructor(private service: BuffetService) {}
+  @UseInterceptors(JsonResponseTransformInterceptor)
   @UseGuards(JwtGuard, PermissionGuard)
   @ApiOperation({ description: 'show all buffets' })
   @CheckPermission({ permissionSymbol: 'discountcoffe.admin.buffets.getall' })
@@ -63,6 +63,7 @@ export class BuffetController {
     return await this.service.findAll(filter);
   }
 
+  @UseInterceptors(JsonResponseTransformInterceptor)
   @UseGuards(JwtGuard, PermissionGuard)
   @ApiOperation({ description: 'show buffets by given id' })
   @CheckPermission({ permissionSymbol: 'discountcoffe.admin.buffets.getone' })
@@ -72,6 +73,7 @@ export class BuffetController {
     return await this.service.findById(entityId);
   }
 
+  @UseInterceptors(JsonResponseTransformInterceptor)
   @UseGuards(JwtGuard, PermissionGuard)
   @ApiOperation({ description: 'create buffets' })
   @CheckPermission({ permissionSymbol: 'discountcoffe.admin.buffets.create' })
@@ -108,6 +110,7 @@ export class BuffetController {
     return await this.service.create(user, dto, file);
   }
 
+  @UseInterceptors(JsonResponseTransformInterceptor)
   @UseGuards(JwtGuard, PermissionGuard)
   @ApiOperation({ description: 'update buffets' })
   @CheckPermission({ permissionSymbol: 'discountcoffe.admin.buffets.update' })

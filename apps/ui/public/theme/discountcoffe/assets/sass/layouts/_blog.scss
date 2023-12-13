@@ -1,0 +1,18 @@
+.wrapper {
+  .pinned {
+    height: 574px;
+    // width: 100%;
+    object-fit: cover;
+  }
+
+  .normal {
+    height: 282px;
+    object-fit: cover;
+    margin-bottom: 10px;
+  }
+
+  .BlogDetail {
+    position: relative;
+  }
+
+}
