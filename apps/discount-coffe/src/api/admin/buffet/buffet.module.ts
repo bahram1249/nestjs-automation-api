@@ -9,6 +9,8 @@ import { AttachmentType } from '@rahino/database/models/core/attachmentType.enti
 import { FileModule, FileService } from '@rahino/file';
 import { ThumbnailModule, ThumbnailService } from '@rahino/thumbnail';
 import { Attachment } from '@rahino/database/models/core/attachment.entity';
+import { Role } from '@rahino/database/models/core/role.entity';
+import { UserRole } from '@rahino/database/models/core/userRole.entity';
 
 @Module({
   imports: [
@@ -28,6 +30,8 @@ import { Attachment } from '@rahino/database/models/core/attachment.entity';
       Buffet,
       AttachmentType,
       Attachment,
+      Role,
+      UserRole,
     ]),
   ],
   providers: [BuffetService],

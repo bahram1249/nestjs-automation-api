@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   ForbiddenException,
   Injectable,
   NotFoundException,
@@ -20,6 +21,8 @@ import * as path from 'path';
 import * as _ from 'lodash';
 import { Response } from 'express';
 import * as fs from 'fs';
+import { Role } from '@rahino/database/models/core/role.entity';
+import { UserRole } from '@rahino/database/models/core/userRole.entity';
 
 @Injectable()
 export class BuffetService {
@@ -32,6 +35,10 @@ export class BuffetService {
     private readonly attachmentRepository: typeof Attachment,
     @InjectModel(User)
     private readonly userRepository: typeof User,
+    @InjectModel(Role)
+    private readonly roleRepository: typeof Role,
+    @InjectModel(UserRole)
+    private readonly userRoleRepository: typeof UserRole,
     private readonly fileService: FileService,
     private readonly thumbnailService: ThumbnailService,
   ) {}
@@ -63,6 +70,15 @@ export class BuffetService {
 
   async create(user: User, dto: BuffetDto, file?: Express.Multer.File) {
     let attachmentId = null;
+    const coffeRole: number = 2;
+    const role = await this.roleRepository.findOne({
+      where: {
+        static_id: coffeRole,
+      },
+    });
+    if (!role) throw new BadRequestException();
+
+    // if cover is attached
     if (file) {
       const attachmentTypeId = 2;
       const attachmentType = await this.attachmentTypeRepository.findOne({
@@ -106,9 +122,18 @@ export class BuffetService {
       });
       attachmentId = attachment.id;
     }
+
+    // owner user of coffe
     let ownedUser: any = _.pick(dto, ['firstname', 'lastname', 'username']);
     ownedUser.password = ownedUser.username;
     ownedUser = await this.userRepository.create(ownedUser);
+
+    // add coffe role for this user
+    const userRole = await this.userRoleRepository.create({
+      userId: ownedUser.id,
+      roleId: role.id,
+    });
+
     let buffet: any = _.pick(dto, [
       'title',
       'urlAddress',
