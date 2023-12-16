@@ -32,4 +32,4 @@ import { BuffetMenuCategory } from '@rahino/database/models/discount-coffe/buffe
   providers: [MenuCategoryService],
   controllers: [MenuCategoryController],
 })
-export class BuffetCategoryModule {}
+export class BuffetMenuCategoryApiModule {}

@@ -46,7 +46,7 @@ export class MenuCategoryService {
       .include([
         {
           model: Attachment,
-          as: 'coverAttachment',
+          as: 'cover',
           required: false,
         },
       ])
