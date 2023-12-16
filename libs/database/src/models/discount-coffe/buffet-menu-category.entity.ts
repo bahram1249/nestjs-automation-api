@@ -6,8 +6,6 @@ import {
   ForeignKey,
   BelongsTo,
 } from 'sequelize-typescript';
-import { Buffet } from './buffet.entity';
-import { CoffeOption } from './coffe-option.entity';
 import { Attachment } from '../core/attachment.entity';
 
 @Table({ tableName: 'DiscountCoffeMenuCategories' })
