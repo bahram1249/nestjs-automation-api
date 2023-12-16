@@ -1,122 +1,197 @@
 <html>
   <head><title>{{title}}</title>
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.8.0/dist/leaflet.css">
-  <style>
-    #map {
-  width: 100%;
-  height: 400px;
-  margin: 0;
-  padding: 0;
-}
-  </style>
+    <link
+      rel='stylesheet'
+      href='https://unpkg.com/leaflet@1.8.0/dist/leaflet.css'
+    />
+    <style>
+      #map { width: 100%; height: 400px; margin: 0; padding: 0; }
+
+    </style>
   </head>
   <body>
     <div class='basic-form'>
       <form id='newEntityForm' autocomplete='off'>
-        <div class='row'>
-          <div class='col-md-6'>
-            <div class='form-group col-md-12'>
-              <h1>مشخصات کافه</h1>
-            </div>
-             <div class='input-group mb-3'>
-              <div class='input-group-prepend'>
-                <span class='input-group-text'>آپلود</span>
-              </div>
-              <div class='custom-file'>
-                <input
-                  id="file"
-                  type='file'
-                  accept='.jpg,.png'
-                  class='custom-file-input'
-                />
-                <label class='custom-file-label'>انتخاب کاور</label>
-              </div>
-            </div>
-            <div class='form-group col-md-12'>
-              <label>نام کافه رستوران</label>
-              <input
-                name='title'
-                type='text'
-                class='form-control'
-                placeholder='نام کافه رستوران'
-              />
-            </div>
-            <div class='form-group col-md-12'>
-              <label>آدرس لینک (در صورت وارد نکردن برابر نام میشود)</label>
-              <input
-                name='urlAddress'
-                type='text'
-                class='form-control'
-                placeholder='آدرس لینک'
-              />
-            </div>
+        <div class='chatbox'>
+          <div class='chatbox-close'></div>
+          <div class='custom-tab-1'>
+            <ul class='nav nav-tabs'>
+              <li class='nav-item'>
+                <a
+                  class='nav-link active'
+                  data-toggle='tab'
+                  href='#discountdetails'
+                >مشخصات کافه</a>
+              </li>
+              <li class='nav-item'>
+                <a class='nav-link' data-toggle='tab' href='#userdetails'>مشخصات
+                  صاحب کافه</a>
+              </li>
+              <li class='nav-item'>
+                <a class='nav-link' data-toggle='tab' href='#location'>مشخصات
+                  مکانی</a>
+              </li>
 
-            <div class="form-group col-sm-6 col-xl-6">
+               <li class='nav-item'>
+                <a class='nav-link' data-toggle='tab' href='#options'>امکانات کافه</a>
+              </li>
+            </ul>
+          </div>
+          <div class='tab-content'>
+            <div
+              class='tab-pane fade active show'
+              id='discountdetails'
+              role='tabpanel'
+            >
+
+              <div class='col-md-6'>
+
+                <div class='input-group mb-3'>
+                  <div class='input-group-prepend'>
+                    <span class='input-group-text'>آپلود</span>
+                  </div>
+                  <div class='custom-file'>
+                    <input
+                      id='file'
+                      type='file'
+                      accept='.jpg,.png'
+                      class='custom-file-input'
+                    />
+                    <label class='custom-file-label'>انتخاب کاور</label>
+                  </div>
+                </div>
+                <div class='form-group col-md-12'>
+                  <label>نام کافه رستوران</label>
+                  <input
+                    name='title'
+                    type='text'
+                    class='form-control'
+                    placeholder='نام کافه رستوران'
+                  />
+                </div>
+                <div class='form-group col-md-12'>
+                  <label>آدرس لینک (در صورت وارد نکردن برابر نام میشود)</label>
+                  <input
+                    name='urlAddress'
+                    type='text'
+                    class='form-control'
+                    placeholder='آدرس لینک'
+                  />
+                </div>
+
+                <div class='form-group col-sm-6 col-xl-6'>
                   <label>نوع</label>
-                  <select name="buffetTypeId"
-                      class="form-control default-select form-control-lg dir-rtl">
-                      {{#each buffetTypes}}
+                  <select
+                    name='buffetTypeId'
+                    class='form-control default-select form-control-lg dir-rtl'
+                  >
+                    {{#each buffetTypes}}
 
-                      <option value="{{id}}">{{title}}</option>
+                      <option value='{{id}}'>{{title}}</option>
 
-                      {{/each}}
+                    {{/each}}
                   </select>
-            </div>
+                </div>
 
-
-            <div class="form-group col-sm-6 col-xl-6">
+                <div class='form-group col-sm-6 col-xl-6'>
                   <label>نوع هزینه</label>
-                  <select id="mySelect" name="buffetCostId" 
-                      class="form-control default-select form-control-lg dir-rtl">
-                      {{#each buffetCosts}}
+                  <select
+                    id='mySelect'
+                    name='buffetCostId'
+                    class='form-control default-select form-control-lg dir-rtl'
+                  >
+                    {{#each buffetCosts}}
 
-                      <option value="{{id}}">{{title}}</option>
+                      <option value='{{id}}'>{{title}}</option>
 
-                      {{/each}}
+                    {{/each}}
                   </select>
-            </div>
+                </div>
 
-
-            <div class="form-group col-sm-6 col-xl-6">
+                <div class='form-group col-sm-6 col-xl-6'>
                   <label>نام شهر</label>
-                  <select name="cityId"
-                      class="form-control default-select form-control-lg dir-rtl">
-                      {{#each buffetCities}}
+                  <select
+                    name='cityId'
+                    class='form-control default-select form-control-lg dir-rtl'
+                  >
+                    {{#each buffetCities}}
 
-                      <option value="{{id}}">{{title}}</option>
+                      <option value='{{id}}'>{{title}}</option>
 
-                      {{/each}}
+                    {{/each}}
                   </select>
+                </div>
+
+                <div class='form-group col-md-12'>
+                  <label>مقدار تخفیف به درصد</label>
+                  <input
+                    name='percentDiscount'
+                    type='number'
+                    class='form-control'
+                    placeholder='مقدار تخفیف به درصد'
+                  />
+                </div>
+                <div class='form-group col-md-12'>
+                  <label>شماره تلفن کافه</label>
+                  <textarea
+                    name='buffetPhone'
+                    type='text'
+                    class='form-control'
+                    placeholder='شماره تلفن کافه'
+                  ></textarea>
+                </div>
+                <div class='form-group col-md-12'>
+                  <label>آدرس کافه</label>
+                  <textarea
+                    name='buffetAddress'
+                    type='text'
+                    class='form-control'
+                    placeholder='آدرس کافه'
+                  ></textarea>
+                </div>
+
+              </div>
             </div>
 
-            <div class='form-group col-md-12'>
-              <label>مقدار تخفیف به درصد</label>
-              <input
-                name='percentDiscount'
-                type='number'
-                class='form-control'
-                placeholder='مقدار تخفیف به درصد'
-              />
+            <div class='tab-pane fade show' id='userdetails' role='tabpanel'>
+              <div class='col-md-6'>
+
+                <div class='form-group col-md-12'>
+                  <label>نام صاحب کافه</label>
+                  <input
+                    name='firstname'
+                    type='text'
+                    class='form-control'
+                    placeholder='نام صاحب کافه'
+                  />
+                </div>
+
+                <div class='form-group col-md-12'>
+                  <label>نام خانوادگی صاحب کافه</label>
+                  <input
+                    name='lastname'
+                    type='text'
+                    class='form-control'
+                    placeholder='نام خانوادگی صاحب کافه'
+                  />
+                </div>
+
+                <div class='form-group col-md-12'>
+                  <label>نام کاربری صاحب کافه</label>
+                  <input
+                    name='username'
+                    type='text'
+                    class='form-control'
+                    placeholder='نام کاربری صاحب کافه'
+                  />
+                </div>
+              </div>
+
             </div>
-            <div class='form-group col-md-12'>
-              <label>شماره تلفن کافه</label>
-              <textarea
-                name='buffetPhone'
-                type='text'
-                class='form-control'
-                placeholder='شماره تلفن کافه'
-              ></textarea>
-            </div>
-            <div class='form-group col-md-12'>
-              <label>آدرس کافه</label>
-              <textarea
-                name='buffetAddress'
-                type='text'
-                class='form-control'
-                placeholder='آدرس کافه'
-              ></textarea>
-            </div>
-            <div class='form-group col-md-12'>
+
+            <div class='tab-pane fade show' id='location' role='tabpanel'>
+              <div class='col-md-12'>
+                <div class='form-group col-md-12'>
               <label>لینک waze</label>
               <input
                 name='wazeLink'
@@ -152,103 +227,101 @@
                 placeholder='لینک گوگل مپ'
               ></input>
             </div>
-            
-          </div>
-          <div class='col-md-6'>
-           <div class='form-group col-md-12'>
-              <h1>مشخصات صاحب کافه</h1>
-           </div>
-
-           <div class='form-group col-md-12'>
-              <label>نام صاحب کافه</label>
-              <input
-                name='firstname'
-                type='text'
-                class='form-control'
-                placeholder='نام صاحب کافه'
-              />
-            </div>
-
-            <div class='form-group col-md-12'>
-              <label>نام خانوادگی صاحب کافه</label>
-              <input
-                name='lastname'
-                type='text'
-                class='form-control'
-                placeholder='نام خانوادگی صاحب کافه'
-              />
-            </div>
-
-            <div class='form-group col-md-12'>
-              <label>نام کاربری صاحب کافه</label>
-              <input
-                name='username'
-                type='text'
-                class='form-control'
-                placeholder='نام کاربری صاحب کافه'
-              />
-            </div>
-          </div>
-          <div class="col-md-12">
-            <div class="form-group col-md-12">
-              <div id="map" data-mode="">
-                <input type="hidden" data-map-markers="" value="" name="map-geojson-data" />
+                <div class='form-group col-md-12'>
+                  <div id='map' data-mode=''>
+                    <input
+                      type='hidden'
+                      data-map-markers=''
+                      value=''
+                      name='map-geojson-data'
+                    />
+                  </div>
+                </div>
+                <div class='form-group col-md-6'>
+                  <label>عرض جغرافیایی</label>
+                  <input
+                    id='latitude'
+                    name='latitude'
+                    type='text'
+                    class='form-control'
+                    placeholder='عرض جغرافیایی'
+                  />
+                </div>
+                <div class='form-group col-md-6'>
+                  <label>طول جغرافیایی</label>
+                  <input
+                    id='longitude'
+                    name='longitude'
+                    type='text'
+                    class='form-control'
+                    placeholder='طول جغرافیایی'
+                  />
+                </div>
               </div>
+
             </div>
-            <div class="form-group col-md-6">
-              <label>عرض جغرافیایی</label>
-              <input
-                id="latitude"
-                name='latitude'
-                type='text'
-                class='form-control'
-                placeholder='عرض جغرافیایی'
-              />
-            </div>
-            <div class="form-group col-md-6">
-              <label>طول جغرافیایی</label>
-              <input
-                id="longitude"
-                name='longitude'
-                type='text'
-                class='form-control'
-                placeholder='طول جغرافیایی'
-              />
+            <div class='tab-pane fade show' id='options' role='tabpanel'>
+              {{#each coffeOptions}}
+                <div class='row'>
+                  <div class='col-md-3'>
+                  
+                    <div class='media-body'>
+                      <div class='custom-control custom-checkbox mb-3'>
+                        <label
+                          class='css-control css-control-primary css-checkbox'
+                          for='optionCheckBox_{{id}}'
+                        >
+                          <input
+                            option-id='{{id}}'
+                            type='checkbox'
+                            class='css-control-input option-select'
+                            id='optionCheckBox_{{id}}'
+                          />
+                          <span class='css-control-indicator'></span>{{title}}
+                        </label>
+                      </div>
+                    </div>
+                  </div>
+
+                </div>
+              {{/each}}
             </div>
           </div>
         </div>
 
-        <div class="row">
-            <div class='form-group col-md-12'>
-              <label>توضیحات کافه</label>
-              <textarea
-                id="content"
-                name='buffetDescription'
-                type='text'
-                
-              ></textarea>
-            </div>
+        <div class='row'>
+          <div class='form-group col-md-12'>
+            <label>توضیحات کافه</label>
+            <textarea
+              id='content'
+              name='buffetDescription'
+              type='text'
+            ></textarea>
+          </div>
         </div>
 
       </form>
     </div>
 
     <div class='row'>
-      <button id='saveButton' type="submit" form="newEntityForm" class='btn btn-primary mt-3'><i
-          class='fa fa-save'
-        ></i>
+      <button
+        id='saveButton'
+        type='submit'
+        form='newEntityForm'
+        class='btn btn-primary mt-3'
+      ><i class='fa fa-save'></i>
         ایجاد</button>
     </div>
-    
-    
+
   </body>
-  
-  
-  <script type="text/javascript" src="/src/discountcoffe/buffet/map.js"></script>
-    
-  <script src="/tools/core/vendor/tinymce/6.0.3/tinymce.min.js"></script>
-  
-  
-  <script src="/src/discountcoffe/buffet/createBuffet.js"></script>
-  
+
+  <script
+    type='text/javascript'
+    src='/src/discountcoffe/buffet/map.js'
+  ></script>
+
+  <script src='/tools/core/vendor/tinymce/6.0.3/tinymce.min.js'></script>
+
+  <script src='/src/discountcoffe/buffet/createBuffet.js'></script>
+
 </html>

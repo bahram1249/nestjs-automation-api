@@ -12,10 +12,41 @@
   </head>
   <body>
     <div id="entityId" class="d-none">{{buffet.id}}</div>
-    <div class='basic-form'>
-      <form id='editEntityForm' autocomplete='off'>
-        <div class='row'>
-          <div class='col-md-6'>
+     <form id='editEntityForm' autocomplete='off'>
+      <div class='basic-form'>
+      <div class='chatbox'>
+          <div class='chatbox-close'></div>
+          <div class='custom-tab-1'>
+            <ul class='nav nav-tabs'>
+              <li class='nav-item'>
+                <a
+                  class='nav-link active'
+                  data-toggle='tab'
+                  href='#discountdetails'
+                >مشخصات کافه</a>
+              </li>
+              <li class='nav-item'>
+                <a class='nav-link' data-toggle='tab' href='#userdetails'>مشخصات
+                  صاحب کافه</a>
+              </li>
+              <li class='nav-item'>
+                <a class='nav-link' data-toggle='tab' href='#location'>مشخصات
+                  مکانی</a>
+              </li>
+
+              <li class='nav-item'>
+                <a class='nav-link' data-toggle='tab' href='#options'>امکانات کافه</a>
+              </li>
+            </ul>
+          </div>
+          <div class='tab-content'>
+            <div
+              class='tab-pane fade active show'
+              id='discountdetails'
+              role='tabpanel'
+            >
+
+            <div class='col-md-6'>
             <div class='form-group col-md-12'>
               <h1>مشخصات کافه</h1>
             </div>
@@ -162,7 +193,10 @@
             </div>
             
           </div>
-          <div class='col-md-6'>
+
+            </div>
+            <div class='tab-pane fade show' id='userdetails' role='tabpanel'>
+              <div class='col-md-6'>
            <div class='form-group col-md-12'>
               <h1>مشخصات صاحب کافه</h1>
            </div>
@@ -200,51 +234,92 @@
               />
             </div>
           </div>
-          <div class="col-md-12">
-            <div class="form-group col-md-12">
-              <div id="map" data-mode="">
-                <input type="hidden" data-map-markers="" value="" name="map-geojson-data" />
+            </div>
+            <div class='tab-pane fade show' id='location' role='tabpanel'>
+              <div class="col-md-12">
+                <div class="form-group col-md-12">
+                  <div id="map" data-mode="">
+                    <input type="hidden" data-map-markers="" value="" name="map-geojson-data" />
+                  </div>
+                </div>
+                <div class="form-group col-md-6">
+                  <label>عرض جغرافیایی</label>
+                  <input
+                    id="latitude"
+                    name='latitude'
+                    type='text'
+                    class='form-control'
+                    placeholder='عرض جغرافیایی'
+                    value="{{buffet.latitude}}"
+                  />
+                </div>
+                <div class="form-group col-md-6">
+                  <label>طول جغرافیایی</label>
+                  <input
+                    id="longitude"
+                    name='longitude'
+                    type='text'
+                    class='form-control'
+                    placeholder='طول جغرافیایی'
+                    value="{{buffet.longitude}}"
+                  />
+                </div>
               </div>
-            </div>
-            <div class="form-group col-md-6">
-              <label>عرض جغرافیایی</label>
-              <input
-                id="latitude"
-                name='latitude'
-                type='text'
-                class='form-control'
-                placeholder='عرض جغرافیایی'
-                value="{{buffet.latitude}}"
-              />
-            </div>
-            <div class="form-group col-md-6">
-              <label>طول جغرافیایی</label>
-              <input
-                id="longitude"
-                name='longitude'
-                type='text'
-                class='form-control'
-                placeholder='طول جغرافیایی'
-                value="{{buffet.longitude}}"
-              />
-            </div>
-          </div>
-        </div>
+             </div>
+             <div class='tab-pane fade show' id='options' role='tabpanel'>
+                {{#each coffeOptions}}
+                <div class='row'>
+                  <div class='col-md-3'>
+                  
+                    <div class='media-body'>
+                      <div class='custom-control custom-checkbox mb-3'>
+                        <label
+                          class='css-control css-control-primary css-checkbox'
+                          for='optionCheckBox_{{id}}'
+                        >
+                          {{#if (isexists id ../optionIds)}}
+                          <input
+                            option-id='{{id}}'
+                            type='checkbox'
+                            class='css-control-input option-select'
+                            id='optionCheckBox_{{id}}'
+                            checked=""
+                          />
+                          {{else}}
+                          <input
+                            option-id='{{id}}'
+                            type='checkbox'
+                            class='css-control-input option-select'
+                            id='optionCheckBox_{{id}}'
+                          />
+                          {{/if}}
+                          <span class='css-control-indicator'></span>{{title}}
+                        </label>
+                      </div>
+                    </div>
+                  </div>
 
-        <div class="row">
-            <div class='form-group col-md-12'>
-              <label>توضیحات کافه</label>
-              <textarea
-                id="content"
-                name='buffetDescription'
-                type='text'
-                
-              >{{{buffet.buffetDescription}}}</textarea>
-            </div>
-        </div>
+                </div>
+              {{/each}}
+             </div>
+          </div>
+      </div>
+
+
+      <div class="row">
+          <div class='form-group col-md-12'>
+            <label>توضیحات کافه</label>
+            <textarea
+              id="content"
+              name='buffetDescription'
+              type='text'
+              
+            >{{{buffet.buffetDescription}}}</textarea>
+          </div>
+      </div>
 
       </form>
-    </div>
+    
 
     <div class='row'>
       <button id='updateButton' type="submit" form="editEntityForm" class='btn btn-primary mt-3'><i

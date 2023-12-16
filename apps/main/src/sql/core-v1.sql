@@ -770,6 +770,86 @@ END
 
 GO
 
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'DiscountCoffe-options-v1' 
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'SITE_NAME' AND [value] IN ('DiscountCoffe'))
+		)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'CUSTOMER_NAME' AND [value] IN ('DiscountCoffe'))
+		)
+BEGIN
+
+	CREATE TABLE DiscountCoffeOptions (
+		id							int						PRIMARY KEY,
+		title						nvarchar(256)			NOT NULL,
+		iconClass					nvarchar(256)			NOT NULL,
+		[createdAt]					datetimeoffset			NOT NULL,
+		[updatedAt]					datetimeoffset			NOT NULL
+	);
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'DiscountCoffe-options-v1', GETDATE(), GETDATE()
+END
+
+GO
+
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'DiscountCoffe-buffet-v4' 
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'SITE_NAME' AND [value] IN ('DiscountCoffe'))
+		)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'CUSTOMER_NAME' AND [value] IN ('DiscountCoffe'))
+		)
+BEGIN
+
+	ALTER TABLE DiscountCoffeBuffets
+	ADD isDeleted bit null,
+		deletedBy bigint null
+			CONSTRAINT FK_DiscountCoffeBuffets_deletedBy
+				FOREIGN KEY REFERENCES Users(id)
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'DiscountCoffe-buffet-v4', GETDATE(), GETDATE()
+END
+
+GO
+
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'DiscountCoffe-buffetOptions-v1' 
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'SITE_NAME' AND [value] IN ('DiscountCoffe'))
+		)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'CUSTOMER_NAME' AND [value] IN ('DiscountCoffe'))
+		)
+BEGIN
+
+	CREATE TABLE DiscountCoffeBuffetOptions (
+		id							bigint identity(1,1)	PRIMARY KEY,
+		buffetId					bigint					NOT NULL
+			CONSTRAINT FK_DiscountCoffeBuffetOptions_buffetId
+				FOREIGN KEY REFERENCES DiscountCoffeBuffets(id),
+		optionId					int						NOT NULL
+			CONSTRAINT FK_DiscountCoffeOptions_optionId
+				FOREIGN KEY REFERENCES DiscountCoffeOptions(id),
+		[createdAt]					datetimeoffset			NOT NULL,
+		[updatedAt]					datetimeoffset			NOT NULL
+	);
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'DiscountCoffe-buffetOptions-v1', GETDATE(), GETDATE()
+END
+
+GO
+
 -- data takhfif
 -- buffetType
 IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'DiscountCoffe-buffetType-Data-v1' 
@@ -1214,6 +1294,8 @@ END
 
 GO
 
+
+GO
 -- tiarara
 
 IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'PCMPeriodTypes-v1' 

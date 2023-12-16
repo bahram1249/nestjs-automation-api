@@ -8,6 +8,8 @@ import { Buffet } from '@rahino/database/models/discount-coffe/buffet.entity';
 import { BuffetType } from '@rahino/database/models/discount-coffe/buffet-type.entity';
 import { BuffetCost } from '@rahino/database/models/discount-coffe/buffet-cost.entity';
 import { BuffetCity } from '@rahino/database/models/discount-coffe/city.entity';
+import { CoffeOption } from '@rahino/database/models/discount-coffe/coffe-option.entity';
+import { BuffetOption } from '@rahino/database/models/discount-coffe/buffet-option.entity';
 
 @Module({
   imports: [
@@ -18,6 +20,8 @@ import { BuffetCity } from '@rahino/database/models/discount-coffe/city.entity';
       BuffetType,
       BuffetCost,
       BuffetCity,
+      CoffeOption,
+      BuffetOption,
     ]),
   ],
   controllers: [BuffetController],

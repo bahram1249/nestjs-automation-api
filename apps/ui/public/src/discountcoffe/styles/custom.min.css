@@ -1,0 +1,7 @@
+#map {
+  height: 400px;
+  width: 100%;
+}
+.singleCafe .features .items:before {
+  height: 150px;
+}

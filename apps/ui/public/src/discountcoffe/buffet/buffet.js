@@ -166,12 +166,22 @@ $(document).on('submit', '#editEntityForm', function (event) {
     }
   });
 
+  var options = [];
+  var inputOptions = $('input.option-select:checked');
+  inputOptions.each(function () {
+    options.push($(this).attr('option-id'));
+  });
+
   var formData = new FormData();
   var file = $('#file')[0].files;
   var length = file.length;
   if (length > 0) {
     formData.append('file', file[0]);
   }
+
+  options.forEach((option) => {
+    formData.append('options[]', option);
+  });
 
   Object.keys(requestData).forEach(function (k, v) {
     formData.append(k, requestData[k]);
@@ -211,12 +221,22 @@ $(document).on('submit', '#newEntityForm', function (event) {
     }
   });
 
+  var options = [];
+  var inputOptions = $('input.option-select:checked');
+  inputOptions.each(function () {
+    options.push($(this).attr('option-id'));
+  });
+
   var formData = new FormData();
   var file = $('#file')[0].files;
   var length = file.length;
   if (length > 0) {
     formData.append('file', file[0]);
   }
+
+  options.forEach((option) => {
+    formData.append('options[]', option);
+  });
 
   Object.keys(requestData).forEach(function (k, v) {
     formData.append(k, requestData[k]);

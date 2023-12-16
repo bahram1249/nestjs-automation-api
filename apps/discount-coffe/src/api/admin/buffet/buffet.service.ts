@@ -23,6 +23,7 @@ import { Response } from 'express';
 import * as fs from 'fs';
 import { Role } from '@rahino/database/models/core/role.entity';
 import { UserRole } from '@rahino/database/models/core/userRole.entity';
+import { BuffetOption } from '@rahino/database/models/discount-coffe/buffet-option.entity';
 
 @Injectable()
 export class BuffetService {
@@ -39,6 +40,8 @@ export class BuffetService {
     private readonly roleRepository: typeof Role,
     @InjectModel(UserRole)
     private readonly userRoleRepository: typeof UserRole,
+    @InjectModel(BuffetOption)
+    private readonly buffetOptionRepository: typeof BuffetOption,
     private readonly fileService: FileService,
     private readonly thumbnailService: ThumbnailService,
   ) {}
@@ -156,6 +159,17 @@ export class BuffetService {
     buffet.viewCount = 1;
     if (attachmentId) buffet.coverAttachmentId = attachmentId;
     buffet = await this.repository.create(buffet);
+
+    if (dto.options.length > 0) {
+      for (let index = 0; index < dto.options.length; index++) {
+        const optionId = dto.options[index];
+        await this.buffetOptionRepository.create({
+          buffetId: buffet.id,
+          optionId: optionId,
+        });
+      }
+    }
+
     return {
       result: buffet,
     };
@@ -253,6 +267,17 @@ export class BuffetService {
         id: id,
       },
     });
+
+    await this.buffetOptionRepository.destroy({ where: { buffetId: id } });
+    if (dto.options.length > 0) {
+      for (let index = 0; index < dto.options.length; index++) {
+        const optionId = dto.options[index];
+        await this.buffetOptionRepository.create({
+          buffetId: buffet.id,
+          optionId: optionId,
+        });
+      }
+    }
     return {
       result: buffet,
     };

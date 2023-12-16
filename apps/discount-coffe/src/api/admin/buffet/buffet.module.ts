@@ -11,6 +11,7 @@ import { ThumbnailModule, ThumbnailService } from '@rahino/thumbnail';
 import { Attachment } from '@rahino/database/models/core/attachment.entity';
 import { Role } from '@rahino/database/models/core/role.entity';
 import { UserRole } from '@rahino/database/models/core/userRole.entity';
+import { BuffetOption } from '@rahino/database/models/discount-coffe/buffet-option.entity';
 
 @Module({
   imports: [
@@ -32,6 +33,7 @@ import { UserRole } from '@rahino/database/models/core/userRole.entity';
       Attachment,
       Role,
       UserRole,
+      BuffetOption,
     ]),
   ],
   providers: [BuffetService],

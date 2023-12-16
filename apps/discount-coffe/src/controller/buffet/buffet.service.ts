@@ -2,6 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { Attachment } from '@rahino/database/models/core/attachment.entity';
 import { Buffet } from '@rahino/database/models/discount-coffe/buffet.entity';
+import { CoffeOption } from '@rahino/database/models/discount-coffe/coffe-option.entity';
 
 @Injectable()
 export class BuffetService {
@@ -18,6 +19,11 @@ export class BuffetService {
           as: 'coverAttachment',
           required: false,
         },
+        {
+          model: CoffeOption,
+          as: 'coffeOptions',
+          required: false,
+        },
       ],
       where: {
         urlAddress: urlAddress,
@@ -25,7 +31,7 @@ export class BuffetService {
     });
     if (!buffet) throw new NotFoundException();
     const viewCount = Number(buffet.viewCount) + 1;
-    this.repository.update(
+    await this.repository.update(
       {
         viewCount: viewCount,
       },

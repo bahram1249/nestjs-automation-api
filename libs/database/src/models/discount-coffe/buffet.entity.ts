@@ -5,12 +5,15 @@ import {
   DataType,
   ForeignKey,
   BelongsTo,
+  BelongsToMany,
 } from 'sequelize-typescript';
 import { User } from '../core/user.entity';
 import { Attachment } from '../core/attachment.entity';
 import { BuffetType } from './buffet-type.entity';
 import { BuffetCost } from './buffet-cost.entity';
 import { BuffetCity } from './city.entity';
+import { CoffeOption } from './coffe-option.entity';
+import { BuffetOption } from './buffet-option.entity';
 
 @Table({ tableName: 'DiscountCoffeBuffets' })
 export class Buffet extends Model {
@@ -120,4 +123,16 @@ export class Buffet extends Model {
   cityId?: number;
   @BelongsTo(() => BuffetCity, { as: 'city', foreignKey: 'cityId' })
   city?: BuffetCity;
+
+  isDeleted?: boolean;
+  @Column({
+    type: DataType.BIGINT,
+  })
+  @ForeignKey(() => User)
+  deletedBy?: bigint;
+  @BelongsTo(() => User, { as: 'deletedByUser', foreignKey: 'deletedBy' })
+  deletedByUser?: User;
+
+  @BelongsToMany(() => CoffeOption, () => BuffetOption)
+  coffeOptions?: CoffeOption[];
 }
