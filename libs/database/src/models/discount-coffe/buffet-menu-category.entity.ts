@@ -1,0 +1,32 @@
+import {
+  Table,
+  Column,
+  Model,
+  DataType,
+  ForeignKey,
+  BelongsTo,
+} from 'sequelize-typescript';
+import { Buffet } from './buffet.entity';
+import { CoffeOption } from './coffe-option.entity';
+import { Attachment } from '../core/attachment.entity';
+
+@Table({ tableName: 'DiscountCoffeMenuCategories' })
+export class BuffetMenuCategory extends Model {
+  @Column({
+    type: DataType.INTEGER,
+    primaryKey: true,
+    autoIncrement: true,
+  })
+  id: number;
+  @Column({
+    type: DataType.STRING,
+  })
+  title?: string;
+  @Column({
+    type: DataType.BIGINT,
+  })
+  @ForeignKey(() => Attachment)
+  coverAttachmentId: bigint;
+  @BelongsTo(() => Attachment, { as: 'cover', foreignKey: 'coverAttachmentId' })
+  cover?: Attachment;
+}

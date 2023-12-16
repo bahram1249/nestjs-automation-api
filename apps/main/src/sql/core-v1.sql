@@ -850,6 +850,36 @@ END
 
 GO
 
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'DiscountCoffe-MenuCategory-v1' 
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'SITE_NAME' AND [value] IN ('DiscountCoffe'))
+		)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'CUSTOMER_NAME' AND [value] IN ('DiscountCoffe'))
+		)
+BEGIN
+
+	CREATE TABLE DiscountCoffeMenuCategories (
+		id							int identity(1,1)		PRIMARY KEY,
+		title						nvarchar(256)			NULL,
+		coverAttachmentId			bigint					NOT NULL
+			CONSTRAINT  FK_DiscountCoffeMenuCategories_coverAttachmentId
+				FOREIGN KEY REFERENCES Attachments(id),
+		[createdAt]					datetimeoffset			NOT NULL,
+		[updatedAt]					datetimeoffset			NOT NULL
+	);
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'DiscountCoffe-MenuCategory-v1', GETDATE(), GETDATE()
+END
+
+GO
+
+
+
 -- data takhfif
 -- buffetType
 IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'DiscountCoffe-buffetType-Data-v1' 
@@ -1635,13 +1665,28 @@ IF NOT EXISTS ((SELECT 1 FROM Migrations WHERE version = 'CORE-AttachmentTypes-D
 BEGIN
 	
 	INSERT INTO AttachmentTypes(id, typeName, createdAt, updatedAt)
-	SELECT 2, N'takhfifBucketCover', getdate(), getdate()
+	SELECT 2, N'takhfifBuffetCover', getdate(), getdate()
 
 	INSERT INTO Migrations(version, createdAt, updatedAt)
 	SELECT 'CORE-AttachmentTypes-Data-v2', GETDATE(), GETDATE()
 END
 
 GO
+
+-- takhfif coffe
+IF NOT EXISTS ((SELECT 1 FROM Migrations WHERE version = 'CORE-AttachmentTypes-Data-v3' 
+			))
+BEGIN
+	
+	INSERT INTO AttachmentTypes(id, typeName, createdAt, updatedAt)
+	SELECT 3, N'takhfifMenuCategoryCover', getdate(), getdate()
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'CORE-AttachmentTypes-Data-v3', GETDATE(), GETDATE()
+END
+
+GO
+
 
 
 -- auth/admin/users
