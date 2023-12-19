@@ -894,6 +894,9 @@ BEGIN
 	CREATE TABLE DiscountCoffeMenus (
 		id							bigint identity(1,1)		PRIMARY KEY,
 		title						nvarchar(256)				NOT NULL,
+		attachmentId				bigint						NULL
+			CONSTRAINT FK_DiscountCoffe_Menus_AttachmentId
+				FOREIGN KEY REFERENCES Attachments(id),
 		menuCategoryId				int							NOT NULL
 			CONSTRAINT FK_DiscountCoffeMenus_menuCategoryId
 				FOREIGN KEY REFERENCES DiscountCoffeMenuCategories(id),
