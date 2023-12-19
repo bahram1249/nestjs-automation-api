@@ -46,4 +46,12 @@ export class BuffetController {
   async edit(@Param('id') buffetId: bigint) {
     return await this.service.edit(buffetId);
   }
+
+  @CheckPermission({ permissionSymbol: 'discountcoffe.admin.buffets.menus' })
+  @Get('/menus/:id')
+  @HttpCode(HttpStatus.OK)
+  @Render('admin/buffets/menus')
+  async menu(@Param('id') buffetId: bigint) {
+    return await this.service.menus(buffetId);
+  }
 }

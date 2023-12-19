@@ -879,6 +879,46 @@ END
 GO
 
 
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'DiscountCoffe-menu-v1' 
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'SITE_NAME' AND [value] IN ('DiscountCoffe'))
+		)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'CUSTOMER_NAME' AND [value] IN ('DiscountCoffe'))
+		)
+BEGIN
+
+	CREATE TABLE DiscountCoffeMenus (
+		id							bigint identity(1,1)		PRIMARY KEY,
+		title						nvarchar(256)				NOT NULL,
+		menuCategoryId				int							NOT NULL
+			CONSTRAINT FK_DiscountCoffeMenus_menuCategoryId
+				FOREIGN KEY REFERENCES DiscountCoffeMenuCategories(id),
+		buffetId					bigint						NOT NULL
+			CONSTRAINT FK_DiscountCoffeMenus_BuffetId
+				FOREIGN KEY REFERENCES DiscountCoffeBuffets(id),
+		price						bigint						NOT NULL,
+		userId						bigint						NOT NULL
+			CONSTRAINT FK_DiscountCoffeMenus_UserId
+				FOREIGN KEY REFERENCES Users(id),
+		isDeleted					bit							NULL,
+		deletedBy					bigint						NULL
+			CONSTRAINT FK_DiscountCoffeMenus_DeletedBy
+				FOREIGN KEY REFERENCES Users(id),
+		[deletedAt]					datetimeoffset				NULL,
+		[createdAt]					datetimeoffset				NOT NULL,
+		[updatedAt]					datetimeoffset				NOT NULL
+	);
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'DiscountCoffe-menu-v1', GETDATE(), GETDATE()
+END
+
+GO
+
 
 -- data takhfif
 -- buffetType
@@ -2633,6 +2673,7 @@ BEGIN
 	DECLARE @permissionSymbolCreate nvarchar(512) = @groupName + '.create';
 	DECLARE @permissionSymbolUpdate nvarchar(512) = @groupName + '.update';
 	DECLARE @permissionSymbolDelete nvarchar(512) = @groupName + '.delete';
+	DECLARE @permissionSymbolMenu nvarchar(512) = @groupName + '.menu';
 
 
 	-- permission groups
@@ -2669,6 +2710,10 @@ BEGIN
 	INSERT INTO Permissions(permissionName ,permissionSymbol,permissionGroupId,  createdAt, updatedAt)
 	OUTPUT inserted.id INTO @PermissionTemp(permissionId)
 	SELECT 'DELETE_' + @entityName, @permissionSymbolDelete, @groupId, GETDATE(), GETDATE()
+
+	INSERT INTO Permissions(permissionName ,permissionSymbol,permissionGroupId,  createdAt, updatedAt)
+	OUTPUT inserted.id INTO @PermissionTemp(permissionId)
+	SELECT 'Menu_' + @entityName, @permissionSymbolMenu, @groupId, GETDATE(), GETDATE()
 
 	-- CRUD THIS Enity FOR super-admin
 	INSERT INTO RolePermissions(roleId, permissionId, createdAt, updatedAt)
@@ -2748,7 +2793,7 @@ GO
 
 
 -- discount coffe
--- buffets
+-- menu categories
 IF NOT EXISTS ( SELECT 1 FROM Migrations WHERE version = 'CORE-Permissions-Data-v10' 
 			)
 	AND EXISTS (
@@ -2784,6 +2829,7 @@ BEGIN
 	DECLARE @permissionSymbolCreate nvarchar(512) = @groupName + '.create';
 	DECLARE @permissionSymbolUpdate nvarchar(512) = @groupName + '.update';
 	DECLARE @permissionSymbolDelete nvarchar(512) = @groupName + '.delete';
+
 
 
 	-- permission groups

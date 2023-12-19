@@ -84,4 +84,11 @@ export class BuffetService {
       //roles: JSON.parse(JSON.stringify(roles)),
     };
   }
+
+  async menus(buffetId: bigint) {
+    return {
+      title: 'لیست منو های کافه',
+      layout: false,
+    };
+  }
 }
