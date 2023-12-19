@@ -38,7 +38,7 @@ function menuActionFormatter(value, row) {
 }
 function getMenuAjaxRequest(params) {
   //params.data.ignorePaging = false;
-  var url = '/v1/api/discountcoffe/admin/buffets';
+  var url = '/v1/api/discountcoffe/admin/menus';
   $.ajax({
     method: 'GET',
     url: url + '?' + $.param(params.data),
@@ -77,7 +77,7 @@ function onMenuAddClick() {
   $('#menuSection').html('');
   $('#menuSection').show();
   $.ajax({
-    url: '/discountcoffe/admin/buffets/create',
+    url: '/discountcoffe/admin/menus/create',
     type: 'GET',
     success: function (data) {
       $('#menuSection').html(data);
@@ -88,8 +88,8 @@ function onMenuAddClick() {
   });
 }
 
-$('#onAddClick').on('click', function () {
-  onAddClick();
+$('#onMenuAddClick').on('click', function () {
+  onMenuAddClick();
 });
 function onMenuDeleteClick(id) {
   var confirmDelete = '';
@@ -122,7 +122,7 @@ function onMenuDeleteClick(id) {
   }).then((result) => {
     if (result.value == true) {
       $.ajax({
-        url: '/v1/api/discountcoffe/admin/menuCategories/' + id,
+        url: '/v1/api/discountcoffe/admin/menus/' + id,
         type: 'DELETE',
         beforeSend: beforeSendAjax,
         success: function (data) {
@@ -144,7 +144,7 @@ function refreshTable() {
   $('#menuTable').bootstrapTable('refresh');
 }
 
-function showsecondSection() {
+function showMenusSection() {
   $('#menuBackButton').hide();
   $('#menuSection').hide();
   $('#secondSection').show();
@@ -199,7 +199,7 @@ $(document).on('submit', '#editMenuForm', function (event) {
       beforeSendAjax(request);
     },
     success: function (data) {
-      showsecondSection();
+      showMenusSection();
       refreshTable();
     },
     error: errorJson,
@@ -244,7 +244,7 @@ $(document).on('submit', '#newMenuForm', function (event) {
   });
 
   $.ajax({
-    url: '/v1/api/discountcoffe/admin/buffets/',
+    url: '/v1/api/discountcoffe/admin/menus/',
     type: 'POST',
     data: formData,
     contentType: 'multipart/form-data',
@@ -254,7 +254,7 @@ $(document).on('submit', '#newMenuForm', function (event) {
       beforeSendAjax(request);
     },
     success: function (data) {
-      showsecondSection();
+      showMenusSection();
       refreshTable();
     },
     error: errorJson,

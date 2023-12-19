@@ -49,9 +49,9 @@ export class BuffetMenuController {
   constructor(private service: BuffetMenuService) {}
   @UseInterceptors(JsonResponseTransformInterceptor)
   @UseGuards(JwtGuard, PermissionGuard)
-  @ApiOperation({ description: 'show all coffemenus' })
+  @ApiOperation({ description: 'show all menus' })
   @CheckPermission({
-    permissionSymbol: 'discountcoffe.admin.coffemenus.getall',
+    permissionSymbol: 'discountcoffe.admin.menus.getall',
   })
   @Get('/')
   @ApiQuery({
@@ -69,7 +69,7 @@ export class BuffetMenuController {
   @UseGuards(JwtGuard, PermissionGuard)
   @ApiOperation({ description: 'show coffe menu by given id' })
   @CheckPermission({
-    permissionSymbol: 'discountcoffe.admin.coffemenus.getone',
+    permissionSymbol: 'discountcoffe.admin.menus.getone',
   })
   @Get('/:id')
   @HttpCode(HttpStatus.OK)
@@ -81,7 +81,7 @@ export class BuffetMenuController {
   @UseGuards(JwtGuard, PermissionGuard)
   @ApiOperation({ description: 'create coffe menu' })
   @CheckPermission({
-    permissionSymbol: 'discountcoffe.admin.coffemenus.create',
+    permissionSymbol: 'discountcoffe.admin.menus.create',
   })
   @UseInterceptors(FileInterceptor('file', coverOptions()))
   @ApiConsumes('multipart/form-data')
@@ -120,7 +120,7 @@ export class BuffetMenuController {
   @UseGuards(JwtGuard, PermissionGuard)
   @ApiOperation({ description: 'update coffe menu' })
   @CheckPermission({
-    permissionSymbol: 'discountcoffe.admin.coffemenus.update',
+    permissionSymbol: 'discountcoffe.admin.menus.update',
   })
   @UseInterceptors(FileInterceptor('file', coverOptions()))
   @ApiConsumes('multipart/form-data')

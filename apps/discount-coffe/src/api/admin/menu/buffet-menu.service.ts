@@ -43,9 +43,12 @@ export class BuffetMenuService {
         },
       })
       .filter(
-        Sequelize.where(Sequelize.fn('isnull', Sequelize.col('isDeleted'), 0), {
-          [Op.eq]: 0,
-        }),
+        Sequelize.where(
+          Sequelize.fn('isnull', Sequelize.col('BuffetMenu.isDeleted'), 0),
+          {
+            [Op.eq]: 0,
+          },
+        ),
       );
     const count = await this.repository.count(builder.build());
     const options = builder

@@ -88,7 +88,7 @@ export class BuffetService {
   async menus(buffetId: bigint) {
     return {
       title: 'لیست منو های کافه',
-      layout: false,
+      layout: 'empty',
     };
   }
 }
