@@ -42,7 +42,7 @@ import { BuffetMenuService } from './buffet-menu.service';
 @ApiTags('DiscountCoffe-MenuCategories')
 @ApiBearerAuth()
 @Controller({
-  path: '/api/discountcoffe/admin/menuCategories',
+  path: '/api/discountcoffe/admin/menus',
   version: ['1'],
 })
 export class BuffetMenuController {
