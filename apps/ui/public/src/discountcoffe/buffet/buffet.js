@@ -24,6 +24,16 @@ function actionFormatter(value, row) {
   html.push('<i class="fa fa-pencil"></i>');
 
   html.push('</a>');
+
+  html.push(
+    '<a class="btn btn-warning shadow btn-xs sharp mr-1" onclick="onMenuClick(' +
+      row.id +
+      ')">',
+  );
+  html.push('<i class="fa fa-list"></i>');
+
+  html.push('</a>');
+
   html.push(
     '<a class="btn btn-danger shadow btn-xs sharp mr-1" onclick="onDeleteClick(' +
       row.id +
@@ -60,6 +70,23 @@ function onEditClick(id) {
   $('#secondSection').show();
   $.ajax({
     url: '/discountcoffe/admin/buffets/' + id,
+    type: 'GET',
+    success: function (data) {
+      $('#secondSection').html(data);
+    },
+    error: function (XMLHttpRequest, textStatus, error) {
+      htmlError(XMLHttpRequest, textStatus, error, $('#secondSection'));
+    },
+  });
+}
+
+function onMenuClick(id) {
+  $('#mainSection').hide();
+  $('#backButton').show();
+  $('#secondSection').html('');
+  $('#secondSection').show();
+  $.ajax({
+    url: '/discountcoffe/admin/buffets/menus/' + id,
     type: 'GET',
     success: function (data) {
       $('#secondSection').html(data);
@@ -121,7 +148,7 @@ function onDeleteClick(id) {
   }).then((result) => {
     if (result.value == true) {
       $.ajax({
-        url: '/v1/api/core/admin/roles/' + id,
+        url: '/v1/api/discountcoffe/admin/menuCategories/' + id,
         type: 'DELETE',
         beforeSend: beforeSendAjax,
         success: function (data) {

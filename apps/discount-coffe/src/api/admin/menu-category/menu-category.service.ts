@@ -45,6 +45,7 @@ export class MenuCategoryService {
     const options = builder
       .include([
         {
+          attributes: ['id', 'fileName', 'createdAt', 'updatedAt'],
           model: Attachment,
           as: 'cover',
           required: false,

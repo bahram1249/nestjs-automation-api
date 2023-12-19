@@ -13,6 +13,16 @@ $('#backButton').on('click', function () {
   $('#mainSection').show();
   $('#secondSection').hide();
 });
+
+function imageFormatter(value, row) {
+  var html = [];
+  html.push('<img width="50" height="50" src="');
+  html.push('/v1/api/discountcoffe/admin/menuCategories/photo/');
+  html.push(row.cover.fileName);
+  html.push('" />');
+  return html.join('');
+}
+
 function actionFormatter(value, row) {
   var html = [];
   html.push('<div class="text-center d-flex justify-content-center">');

@@ -49,7 +49,7 @@ export class MenuCategoryController {
   @Get('/:id')
   @HttpCode(HttpStatus.OK)
   @Render('admin/menucategory/edit')
-  async edit(@Param('id') menuId: bigint) {
-    return await this.service.edit(menuId);
+  async edit(@Param('id') menuCategoryId: number) {
+    return await this.service.edit(menuCategoryId);
   }
 }

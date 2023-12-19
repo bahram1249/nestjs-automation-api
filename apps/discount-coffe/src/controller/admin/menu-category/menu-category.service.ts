@@ -16,10 +16,10 @@ export class MenuCategoryService {
     };
   }
 
-  async edit(menuId: bigint) {
+  async edit(menuCategoryId: number) {
     const buffetMenuCategory = await this.repository.findOne({
       where: {
-        id: menuId,
+        id: menuCategoryId,
       },
     });
     if (!buffetMenuCategory) throw new NotFoundException();
