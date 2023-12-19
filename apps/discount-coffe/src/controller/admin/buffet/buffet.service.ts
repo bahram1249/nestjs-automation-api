@@ -86,9 +86,16 @@ export class BuffetService {
   }
 
   async menus(buffetId: bigint) {
+    const buffet = await this.repository.findOne({
+      where: {
+        id: buffetId,
+      },
+    });
+    if (!buffet) throw new NotFoundException();
     return {
       title: 'لیست منو های کافه',
       layout: 'empty',
+      buffet: buffet.toJSON(),
     };
   }
 }

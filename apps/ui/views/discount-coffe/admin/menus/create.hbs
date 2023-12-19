@@ -1,15 +1,10 @@
 <html>
   <head><title>{{title}}</title>
-    <link
-      rel='stylesheet'
-      href='https://unpkg.com/leaflet@1.8.0/dist/leaflet.css'
-    />
 
   </head>
   <body>
-    <div class='d-none' id='entityId'>{{buffetMenuCategory.id}}</div>
     <div class='basic-form'>
-      <form id='editEntityForm' autocomplete='off'>
+      <form id='newMenuForm' autocomplete='off'>
         <div class='row'>
           <div class='col-md-6'>
 
@@ -27,14 +22,34 @@
                 <label class='custom-file-label'>انتخاب کاور</label>
               </div>
             </div>
+
+            <div class='form-group col-md-12 d-none'>
+              <label>کافه رستوران</label>
+              <input
+                name='buffetId'
+                type='number'
+                class='form-control'
+                placeholder='کافه رستوران'
+              />
+            </div>
+
             <div class='form-group col-md-12'>
-              <label>نام دسته بندی</label>
+              <label>عنوان منو</label>
               <input
                 name='title'
                 type='text'
                 class='form-control'
-                value='{{buffetMenuCategory.title}}'
-                placeholder='نام دسته بندی'
+                placeholder='عنوان منو'
+              />
+            </div>
+
+            <div class='form-group col-md-12'>
+              <label>قیمت</label>
+              <input
+                name='price'
+                type='number'
+                class='form-control'
+                placeholder='قیمت'
               />
             </div>
 
@@ -45,9 +60,9 @@
 
     <div class='row'>
       <button
-        id='updateButton'
+        id='saveMenuButton'
         type='submit'
-        form='editEntityForm'
+        form='newMenuForm'
         class='btn btn-primary mt-3'
       ><i class='fa fa-save'></i>
         ایجاد</button>
