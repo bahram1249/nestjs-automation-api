@@ -13,10 +13,18 @@ import { BuffetService } from './buffet.service';
 })
 export class BuffetController {
   constructor(private service: BuffetService) {}
+
+  @Get('/menus/:urlAddress')
+  @HttpCode(HttpStatus.OK)
+  @Render('buffets/menus')
+  async menus(@Param('urlAddress') urlAddress: string) {
+    return await this.service.menus(urlAddress);
+  }
+
   @Get('/:urlAddress')
   @HttpCode(HttpStatus.OK)
   @Render('buffets/index')
-  async get(@Param('urlAddress') urlAddress: string) {
-    return await this.service.get(urlAddress);
+  async index(@Param('urlAddress') urlAddress: string) {
+    return await this.service.index(urlAddress);
   }
 }

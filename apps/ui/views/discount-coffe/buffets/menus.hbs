@@ -1,0 +1,101 @@
+{{#section 'header'}}
+
+  <link
+    rel='stylesheet'
+    href='https://behzadi.github.io/persianDatepicker/css/persianDatepicker-latoja.css'
+  />
+  <title>{{title}}</title>
+{{/section}}
+<div class='reserve'>
+  <div class='container'>
+    <div class='row'>
+      <div class='col-md-4'>
+        <div id='date-picker'></div>
+        <div id='shower'>
+          <h4>انتخاب تاریخ</h4>
+        </div>
+      </div>
+      <div class='col-md-8'>
+        <div class='reserveBox'>
+          <div class='people text-center'>
+            <div class='badge'><i class='icon-people'></i> چند نفرید؟</div>
+            <div class='peopleCount'>
+              <span class='peopleIncrease'>+</span>
+              <span class='peopleCounter'>1</span>
+              <span class='peopleDecrease'>-</span>
+            </div>
+          </div>
+          <div class='chooseType'>
+            <div class='item active'>
+              منو را آنلاین انتخاب میکنم
+              <span class='check'></span>
+            </div>
+            <div class='item' data-type='cafe'>
+              منو را در کافه انتخاب میکنم
+              <span class='check'></span>
+            </div>
+          </div>
+          <div class='chooseCondition active'>
+            <div class='menu-category'>
+              {{#each buffetMenuCategories}}
+              <div class='item {{#if (ifequals @index 0)}} active{{/if}}' data-category='{{title}}'>
+                {{#if (isDefined cover)}}
+                <img
+                  src='/v1/api/discountcoffe/admin/menuCategories/photo/{{cover.fileName}}'
+                  width="50"
+                  height="50"
+                  alt=''
+                />
+                {{/if}}
+                <p>{{title}}</p>
+              </div>
+              {{/each}}
+              
+              
+             
+            </div>
+            <div class='menu-items'>
+              
+              {{#each buffetMenuCategories}}
+              <div class='group {{#if (ifequals @index 0)}} active{{/if}}' data-category='{{title}}'>
+                {{#each menus}}
+                <div class='item' data-id='{{id}}' data-price='{{price}}'>
+                  <span>
+                  {{#if (isDefined cover)}}
+                  <img src="/v1/api/discountcoffe/admin/menus/photo/{{cover.fileName}}" width="50" height="50">
+                  {{/if}}
+                  <h3>{{title}}</h3>
+                  </span>
+                  <div class='counts'>
+                    <span class='price'>{{price}}</span>
+                    <span class='decrease'>-</span>
+                    <span class='count'>0</span>
+                    <span class='increase'>+</span>
+                  </div>
+                </div>
+                {{/each}}
+               
+              </div>
+              {{/each}}
+            </div>
+          </div>
+          <div class='prices'>
+            <div class='final'>جمع کل بدون تخفیف: <span>0</span> تومان</div>
+            <a href=''>دریافت کد رزرو</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{{#section 'footer'}}
+
+  <script src='/theme/discountcoffe/assets/js/jquery.js'></script>
+  <script src='/theme/discountcoffe/assets/js/custom.min.js'></script>
+  <script src='/theme/discountcoffe/assets/js/wow.js'></script>
+  <script
+    src='/theme/discountcoffe/assets/js/persianDatepicker.min.js'
+  ></script>
+  <script src='/theme/discountcoffe/assets/js/currency.min.js'></script>
+  <script src='/src/discountcoffe/js/reserve.js'></script>
+{{/section}}
