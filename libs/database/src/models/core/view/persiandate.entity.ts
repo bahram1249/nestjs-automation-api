@@ -7,26 +7,63 @@ import {
   BelongsTo,
 } from 'sequelize-typescript';
 
-@Table({ tableName: 'persiandate' })
+@Table({ tableName: 'PersianDates' })
 export class PersianDate extends Model {
-  static associate(models) {
-    // Attachment.belongsTo(models.AttachmentType, {
-    //   foreignKey: 'attachmentTypeId',
-    //   as: 'attachmentType',
-    // });
-    // Attachment.belongsTo(models.User, {
-    //   foreignKey: 'userId',
-    //   as: 'user',
-    // });
-  }
-
   @Column({
+    type: DataType.DATE,
     primaryKey: true,
-    type: DataType.INTEGER,
-    autoIncrement: false,
   })
-  id: number;
-
-  @Column({})
-  name: string;
+  GregorianDate: Date;
+  @Column({
+    type: DataType.STRING,
+  })
+  YearMonthDay: string;
+  @Column({
+    type: DataType.STRING,
+  })
+  YearMonth: string;
+  @Column({
+    type: DataType.STRING,
+  })
+  WeekDayName: string;
+  @Column({
+    type: DataType.INTEGER,
+  })
+  WeekDayNumber: number;
+  @Column({
+    type: DataType.INTEGER,
+  })
+  DayInMonth: number;
+  @Column({
+    type: DataType.STRING,
+  })
+  DayInMonthAtLeastTwo: string;
+  @Column({
+    type: DataType.INTEGER,
+  })
+  MonthNumber: number;
+  @Column({
+    type: DataType.STRING,
+  })
+  MonthNumberAtLeastTwo: string;
+  @Column({
+    type: DataType.STRING,
+  })
+  PersianMonthName: string;
+  @Column({
+    type: DataType.INTEGER,
+  })
+  YearNumber: number;
+  @Column({
+    type: DataType.INTEGER,
+  })
+  DayInYearNumber: number;
+  @Column({
+    type: DataType.STRING,
+  })
+  DayNameInMonth: string;
+  @Column({
+    type: DataType.STRING,
+  })
+  DayNameInYear: string;
 }

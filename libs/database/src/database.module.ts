@@ -92,6 +92,7 @@ const dbLog: boolean = JSON.parse(process.env.DB_LOG);
           Attachment,
           PermissionMenu,
           WinstonLog,
+          PersianDate,
           PCMPeriodType,
           PCMPeriod,
           PCMAge,
