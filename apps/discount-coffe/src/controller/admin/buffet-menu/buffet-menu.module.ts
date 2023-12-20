@@ -6,6 +6,7 @@ import { BuffetMenuController } from './buffet-menu.controller';
 import { BuffetMenuService } from './buffet-menu.service';
 import { BuffetMenu } from '@rahino/database/models/discount-coffe/buffet-menu.entity';
 import { BuffetMenuCategory } from '@rahino/database/models/discount-coffe/buffet-menu-category.entity';
+import { Buffet } from '@rahino/database/models/discount-coffe/buffet.entity';
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { BuffetMenuCategory } from '@rahino/database/models/discount-coffe/buffe
       Permission,
       BuffetMenu,
       BuffetMenuCategory,
+      Buffet,
     ]),
   ],
   controllers: [BuffetMenuController],

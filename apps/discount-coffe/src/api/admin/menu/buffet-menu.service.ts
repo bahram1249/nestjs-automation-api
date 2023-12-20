@@ -7,10 +7,9 @@ import {
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { Op, Sequelize } from 'sequelize';
-import { ListFilter } from '@rahino/query-filter';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import { Attachment } from '@rahino/database/models/core/attachment.entity';
-import { MenuDto } from './dto';
+import { MenuDto, MenuGetDto } from './dto';
 import { User } from '@rahino/database/models/core/user.entity';
 import { AttachmentType } from '@rahino/database/models/core/attachmentType.entity';
 import { FileService } from '@rahino/file';
@@ -34,9 +33,16 @@ export class BuffetMenuService {
     private readonly thumbnailService: ThumbnailService,
   ) {}
 
-  async findAll(filter: ListFilter) {
+  async findAll(filter: MenuGetDto) {
     let builder = new QueryOptionsBuilder();
     builder = builder
+      .include([
+        {
+          model: Attachment,
+          as: 'cover',
+          required: false,
+        },
+      ])
       .filter({
         title: {
           [Op.like]: filter.search,
@@ -50,6 +56,11 @@ export class BuffetMenuService {
           },
         ),
       );
+    if (filter.buffetId) {
+      builder.filter({
+        buffetId: filter.buffetId,
+      });
+    }
     const count = await this.repository.count(builder.build());
     const options = builder
       .include([
@@ -141,6 +152,7 @@ export class BuffetMenuService {
     });
     if (!menu) throw new NotFoundException();
     let attachmentId = null;
+
     if (file) {
       const attachmentTypeId = 4;
       const attachmentType = await this.attachmentTypeRepository.findOne({
@@ -172,6 +184,7 @@ export class BuffetMenuService {
       );
 
       this.fileService.removeFileAsync(file.path);
+
       const attachment = await this.attachmentRepository.create({
         originalFileName: file.originalname,
         fileName: file.filename,
@@ -184,7 +197,6 @@ export class BuffetMenuService {
       });
       attachmentId = attachment.id;
     }
-
     const menuDto: any = _.pick(dto, [
       'title',
       'buffetId',
@@ -202,6 +214,30 @@ export class BuffetMenuService {
     };
   }
 
+  async deleteById(user: User, entityId: number) {
+    const menu = await this.repository.findOne({
+      where: {
+        id: entityId,
+      },
+    });
+    if (!menu) throw new NotFoundException();
+
+    await this.repository.update(
+      {
+        isDeleted: true,
+        deletedBy: user.id,
+      },
+      {
+        where: {
+          id: entityId,
+        },
+      },
+    );
+
+    return {
+      result: menu,
+    };
+  }
   async getPhoto(res: Response, fileName: string): Promise<StreamableFile> {
     const attachment = await this.attachmentRepository.findOne({
       where: {

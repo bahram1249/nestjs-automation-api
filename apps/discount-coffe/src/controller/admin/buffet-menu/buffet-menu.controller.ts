@@ -32,11 +32,11 @@ export class BuffetMenuController {
   }
 
   @CheckPermission({ permissionSymbol: 'discountcoffe.admin.menus.create' })
-  @Get('/create')
+  @Get('/create/:buffetId')
   @HttpCode(HttpStatus.OK)
   @Render('admin/menus/create')
-  async create() {
-    return await this.service.create();
+  async create(@Param('buffetId') buffetId: bigint) {
+    return await this.service.create(buffetId);
   }
 
   @CheckPermission({ permissionSymbol: 'discountcoffe.admin.menus.update' })

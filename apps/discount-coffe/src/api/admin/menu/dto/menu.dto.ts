@@ -12,4 +12,18 @@ export class MenuDto {
     message: 'عنوان نمیتواند خالی باشد',
   })
   title: string;
+
+  @IsNotEmpty({
+    message: 'کافه و رستوران میبایست انتخاب شود',
+  })
+  buffetId: bigint;
+  @IsNotEmpty({
+    message: 'دسته بندی منو بایستی انتخاب شود',
+  })
+  menuCategoryId: number;
+
+  @IsNotEmpty({
+    message: 'مبلغ میبایست وارد شود',
+  })
+  price: bigint;
 }

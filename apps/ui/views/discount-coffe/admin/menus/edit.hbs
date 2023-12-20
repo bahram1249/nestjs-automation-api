@@ -3,8 +3,9 @@
 
   </head>
   <body>
+    <div class="d-none" id="menuId">{{menu.id}}</div>
     <div class='basic-form'>
-      <form id='newMenuForm' autocomplete='off'>
+      <form id='editMenuForm' autocomplete='off'>
         <div class='row'>
           <div class='col-md-6'>
 
@@ -29,7 +30,7 @@
                 name='buffetId'
                 type='number'
                 class='form-control'
-                value='{{buffet.id}}'
+                value='{{menu.buffetId}}'
               />
             </div>
 
@@ -37,6 +38,7 @@
               <label>عنوان منو</label>
               <input
                 name='title'
+                value='{{menu.title}}'
                 type='text'
                 class='form-control'
                 placeholder='عنوان منو'
@@ -49,6 +51,7 @@
                 name='price'
                 type='number'
                 class='form-control'
+                value='{{menu.price}}'
                 placeholder='قیمت'
               />
             </div>
@@ -61,7 +64,7 @@
               >
                 {{#each buffetMenuCategories}}
 
-                  <option value='{{id}}'>{{title}}</option>
+                  <option value='{{id}}' {{#if (ifequals ../menu.menuCategoryId id)}} selected=""{{/if}}>{{title}}</option>
 
                 {{/each}}
               </select>
@@ -74,12 +77,12 @@
 
     <div class='row'>
       <button
-        id='saveMenuButton'
+        id='editMenuButton'
         type='submit'
-        form='newMenuForm'
+        form='editMenuForm'
         class='btn btn-primary mt-3'
       ><i class='fa fa-save'></i>
-        ایجاد</button>
+        ویرایش</button>
     </div>
 
   </body>

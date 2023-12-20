@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   FileTypeValidator,
   Get,
   HttpCode,
@@ -32,7 +33,7 @@ import { Response } from 'express';
 
 import { JwtGuard } from '@rahino/auth/guard';
 import { ListFilter } from '@rahino/query-filter';
-import { MenuDto } from './dto';
+import { MenuDto, MenuGetDto } from './dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { coverOptions } from './file-options';
 import { GetUser } from '@rahino/auth/decorator';
@@ -56,12 +57,12 @@ export class BuffetMenuController {
   @Get('/')
   @ApiQuery({
     name: 'filter',
-    type: ListFilter,
+    type: MenuGetDto,
     style: 'deepObject',
     explode: true,
   })
   @HttpCode(HttpStatus.OK)
-  async findAll(@Query() filter: ListFilter) {
+  async findAll(@Query() filter: MenuGetDto) {
     return await this.service.findAll(filter);
   }
 
@@ -136,7 +137,7 @@ export class BuffetMenuController {
     },
   })
   @Put('/:id')
-  @HttpCode(HttpStatus.CREATED)
+  @HttpCode(HttpStatus.OK)
   async edit(
     @Param('id') id: bigint,
     @GetUser() user: User,
@@ -154,6 +155,18 @@ export class BuffetMenuController {
     file?: Express.Multer.File,
   ) {
     return await this.service.edit(id, user, dto, file);
+  }
+
+  @UseInterceptors(JsonResponseTransformInterceptor)
+  @UseGuards(JwtGuard, PermissionGuard)
+  @ApiOperation({ description: 'delete coffe menu by given id' })
+  @CheckPermission({
+    permissionSymbol: 'discountcoffe.admin.menus.delete',
+  })
+  @Delete('/:id')
+  @HttpCode(HttpStatus.OK)
+  async deleteById(@GetUser() user: User, @Param('id') entityId: number) {
+    return await this.service.deleteById(user, entityId);
   }
 
   @ApiOperation({ description: 'show coffe menu photo by fileName' })

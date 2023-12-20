@@ -30,7 +30,7 @@ export class BuffetMenu extends Model {
   @ForeignKey(() => Attachment)
   attachmentId?: bigint;
   @BelongsTo(() => Attachment, { as: 'cover', foreignKey: 'attachmentId' })
-  attachment?: Attachment;
+  cover?: Attachment;
 
   @Column({
     type: DataType.INTEGER,

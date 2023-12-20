@@ -2,6 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { BuffetMenu } from '@rahino/database/models/discount-coffe/buffet-menu.entity';
 import { BuffetMenuCategory } from '@rahino/database/models/discount-coffe/buffet-menu-category.entity';
+import { Buffet } from '@rahino/database/models/discount-coffe/buffet.entity';
 
 @Injectable()
 export class BuffetMenuService {
@@ -10,16 +11,26 @@ export class BuffetMenuService {
     private readonly repository: typeof BuffetMenu,
     @InjectModel(BuffetMenuCategory)
     private readonly buffetMenuCategoryRepository: typeof BuffetMenuCategory,
+    @InjectModel(Buffet)
+    private readonly buffetRepository: typeof Buffet,
   ) {}
 
-  async create() {
+  async create(buffetId: bigint) {
     const buffetMenuCategories =
       await this.buffetMenuCategoryRepository.findAll();
+
+    const buffet = await this.buffetRepository.findOne({
+      where: {
+        id: buffetId,
+      },
+    });
+    if (!buffet) throw new NotFoundException();
 
     return {
       title: 'ایجاد منو و کافه رستوران',
       layout: false,
       buffetMenuCategories: JSON.parse(JSON.stringify(buffetMenuCategories)),
+      buffet: buffet.toJSON(),
     };
   }
 
@@ -37,7 +48,7 @@ export class BuffetMenuService {
       title: 'ویرایش ' + buffetMenu.title,
       layout: false,
       buffetMenuCategories: JSON.parse(JSON.stringify(buffetMenuCategories)),
-      buffetMenu: buffetMenu.toJSON(),
+      menu: buffetMenu.toJSON(),
     };
   }
 }

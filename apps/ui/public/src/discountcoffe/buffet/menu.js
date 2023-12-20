@@ -10,7 +10,7 @@ $.extend(
 
 $('#menuBackButton').on('click', function () {
   $('#menuBackButton').hide();
-  $('#secondSection').show();
+  $('#menusSection').show();
   $('#menuSection').hide();
 });
 function menuActionFormatter(value, row) {
@@ -36,8 +36,21 @@ function menuActionFormatter(value, row) {
   html.push('</div>');
   return html.join('');
 }
+
+function menuImageFormatter(value, row) {
+  var html = [];
+  if (row.cover != null) {
+    html.push('<img width="50" height="50" src="');
+    html.push('/v1/api/discountcoffe/admin/menus/photo/');
+    html.push(row.cover.fileName);
+    html.push('" />');
+  }
+  return html.join('');
+}
 function getMenuAjaxRequest(params) {
   //params.data.ignorePaging = false;
+  var buffetId = $('#buffetId').text();
+  params.data.buffetId = buffetId;
   var url = '/v1/api/discountcoffe/admin/menus';
   $.ajax({
     method: 'GET',
@@ -55,12 +68,12 @@ function getMenuAjaxRequest(params) {
 }
 
 function onEditMenuClick(id) {
-  $('#secondSection').hide();
+  $('#menusSection').hide();
   $('#menuBackButton').show();
   $('#menuSection').html('');
   $('#menuSection').show();
   $.ajax({
-    url: '/discountcoffe/admin/buffets/' + id,
+    url: '/discountcoffe/admin/menus/' + id,
     type: 'GET',
     success: function (data) {
       $('#menuSection').html(data);
@@ -72,12 +85,14 @@ function onEditMenuClick(id) {
 }
 
 function onMenuAddClick() {
-  $('#secondSection').hide();
+  $('#menusSection').hide();
   $('#menuBackButton').show();
   $('#menuSection').html('');
   $('#menuSection').show();
+  var buffetId = $('#buffetId').text();
+  console.log(buffetId);
   $.ajax({
-    url: '/discountcoffe/admin/menus/create',
+    url: '/discountcoffe/admin/menus/create/' + buffetId,
     type: 'GET',
     success: function (data) {
       $('#menuSection').html(data);
@@ -147,11 +162,11 @@ function refreshTable() {
 function showMenusSection() {
   $('#menuBackButton').hide();
   $('#menuSection').hide();
-  $('#secondSection').show();
+  $('#menusSection').show();
 }
 
 $(document).on('submit', '#editMenuForm', function (event) {
-  var entityId = $('#entityId').text();
+  var menuId = $('#menuId').text();
   event.preventDefault();
   var requestData = JSON.parse(JSON.stringify($(this).serializeObject()));
   $.each(requestData, function (key, value) {
@@ -167,12 +182,6 @@ $(document).on('submit', '#editMenuForm', function (event) {
     }
   });
 
-  var options = [];
-  var inputOptions = $('input.option-select:checked');
-  inputOptions.each(function () {
-    options.push($(this).attr('option-id'));
-  });
-
   var formData = new FormData();
   var file = $('#file')[0].files;
   var length = file.length;
@@ -180,16 +189,12 @@ $(document).on('submit', '#editMenuForm', function (event) {
     formData.append('file', file[0]);
   }
 
-  options.forEach((option) => {
-    formData.append('options[]', option);
-  });
-
   Object.keys(requestData).forEach(function (k, v) {
     formData.append(k, requestData[k]);
   });
 
   $.ajax({
-    url: '/v1/api/discountcoffe/admin/buffets/' + entityId,
+    url: '/v1/api/discountcoffe/admin/menus/' + menuId,
     type: 'PUT',
     data: formData,
     contentType: 'multipart/form-data',
@@ -222,22 +227,12 @@ $(document).on('submit', '#newMenuForm', function (event) {
     }
   });
 
-  var options = [];
-  var inputOptions = $('input.option-select:checked');
-  inputOptions.each(function () {
-    options.push($(this).attr('option-id'));
-  });
-
   var formData = new FormData();
   var file = $('#file')[0].files;
   var length = file.length;
   if (length > 0) {
     formData.append('file', file[0]);
   }
-
-  options.forEach((option) => {
-    formData.append('options[]', option);
-  });
 
   Object.keys(requestData).forEach(function (k, v) {
     formData.append(k, requestData[k]);
