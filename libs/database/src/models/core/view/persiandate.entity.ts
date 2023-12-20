@@ -1,13 +1,6 @@
-import {
-  Table,
-  Column,
-  Model,
-  DataType,
-  ForeignKey,
-  BelongsTo,
-} from 'sequelize-typescript';
+import { Table, Column, Model, DataType } from 'sequelize-typescript';
 
-@Table({ tableName: 'PersianDates' })
+@Table({ tableName: 'PersianDates', timestamps: false })
 export class PersianDate extends Model {
   @Column({
     type: DataType.DATE,

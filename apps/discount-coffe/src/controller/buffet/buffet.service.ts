@@ -1,6 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { Attachment } from '@rahino/database/models/core/attachment.entity';
+import { PersianDate } from '@rahino/database/models/core/view/persiandate.entity';
 import { BuffetMenuCategory } from '@rahino/database/models/discount-coffe/buffet-menu-category.entity';
 import { BuffetMenu } from '@rahino/database/models/discount-coffe/buffet-menu.entity';
 import { Buffet } from '@rahino/database/models/discount-coffe/buffet.entity';
@@ -14,6 +15,8 @@ export class BuffetService {
     private readonly repository: typeof Buffet,
     @InjectModel(BuffetMenuCategory)
     private readonly buffetMenuCategoryRepository: typeof BuffetMenuCategory,
+    @InjectModel(PersianDate)
+    private readonly persianDateRepository: typeof PersianDate,
   ) {}
 
   async index(urlAddress: string) {
@@ -103,11 +106,41 @@ export class BuffetService {
           },
         ],
       });
+    let yourDate = new Date().toISOString().slice(0, 10);
+    const today = await this.persianDateRepository.findOne({
+      where: Sequelize.where(Sequelize.col('GregorianDate'), {
+        [Op.eq]: Sequelize.fn(
+          'convert',
+          Sequelize.literal('date'),
+          Sequelize.fn('getdate'),
+          103,
+        ),
+      }),
+    });
+
+    const endDate = await this.persianDateRepository.findOne({
+      where: Sequelize.where(Sequelize.col('GregorianDate'), {
+        [Op.eq]: Sequelize.fn(
+          'convert',
+          Sequelize.literal('date'),
+          Sequelize.fn(
+            'dateadd',
+            Sequelize.literal('day'),
+            14,
+            Sequelize.fn('getdate'),
+          ),
+          103,
+        ),
+      }),
+    });
+
     return {
       title: 'رزرو از ' + buffet.title,
       layout: 'discountcoffe',
       buffet: buffet.toJSON(),
       buffetMenuCategories: JSON.parse(JSON.stringify(buffetMenuCategories)),
+      today: today.toJSON(),
+      endDate: endDate.toJSON(),
     };
   }
 }

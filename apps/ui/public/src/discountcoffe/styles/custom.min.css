@@ -5,3 +5,6 @@
 .singleCafe .features .items:before {
   height: 150px;
 }
+.curve-image {
+  border-radius: 6px;
+}

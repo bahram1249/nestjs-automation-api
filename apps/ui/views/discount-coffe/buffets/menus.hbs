@@ -6,6 +6,8 @@
   />
   <title>{{title}}</title>
 {{/section}}
+<div id="currentDate" style="display: none;">{{today.YearMonthDay}}</div>
+<div id="endDate" style="display: none;">{{endDate.YearMonthDay}}</div>
 <div class='reserve'>
   <div class='container'>
     <div class='row'>
@@ -44,6 +46,7 @@
                   src='/v1/api/discountcoffe/admin/menuCategories/photo/{{cover.fileName}}'
                   width="50"
                   height="50"
+                  class="curve-image"
                   alt=''
                 />
                 {{/if}}
@@ -62,7 +65,7 @@
                 <div class='item' data-id='{{id}}' data-price='{{price}}'>
                   <span>
                   {{#if (isDefined cover)}}
-                  <img src="/v1/api/discountcoffe/admin/menus/photo/{{cover.fileName}}" width="50" height="50">
+                  <img class="curve-image" src="/v1/api/discountcoffe/admin/menus/photo/{{cover.fileName}}" width="50" height="50">
                   {{/if}}
                   <h3>{{title}}</h3>
                   </span>

@@ -1,3 +1,5 @@
+var today = $('#currentDate').text();
+var endDate = $('#endDate').text();
 new WOW().init();
 $('#date-picker').persianDatepicker({
   alwaysShow: true,
@@ -29,9 +31,9 @@ $('#date-picker').persianDatepicker({
   persianNumbers: !0,
   formatDate: 'YYYY/MM/DD',
   selectedBefore: !1,
-  selectedDate: null,
-  startDate: null, //Date.now(),
-  endDate: null, //new Date().setDate(new Date.now().getDate() + 7),
+  selectedDate: today, //today,
+  startDate: 'today', //Date.now(),
+  endDate: endDate, //new Date().setDate(new Date.now().getDate() + 7),
   prevArrow: "<i class='icon-left'></i>",
   nextArrow: "<i class='icon-right'></i>",
   theme: 'default',
