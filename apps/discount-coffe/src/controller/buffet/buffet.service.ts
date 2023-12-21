@@ -106,18 +106,19 @@ export class BuffetService {
           },
         ],
       });
-    let yourDate = new Date().toISOString().slice(0, 10);
+
+    const convertDateFormat = 103;
+    const increase = 14;
     const today = await this.persianDateRepository.findOne({
       where: Sequelize.where(Sequelize.col('GregorianDate'), {
         [Op.eq]: Sequelize.fn(
           'convert',
           Sequelize.literal('date'),
           Sequelize.fn('getdate'),
-          103,
+          convertDateFormat,
         ),
       }),
     });
-
     const endDate = await this.persianDateRepository.findOne({
       where: Sequelize.where(Sequelize.col('GregorianDate'), {
         [Op.eq]: Sequelize.fn(
@@ -126,10 +127,10 @@ export class BuffetService {
           Sequelize.fn(
             'dateadd',
             Sequelize.literal('day'),
-            14,
+            increase,
             Sequelize.fn('getdate'),
           ),
-          103,
+          convertDateFormat,
         ),
       }),
     });
