@@ -1,12 +1,15 @@
 import {
+  Body,
   Controller,
   Get,
   HttpCode,
   HttpStatus,
   Param,
+  Post,
   Render,
 } from '@nestjs/common';
 import { BuffetService } from './buffet.service';
+import { ReserveDto } from './dto';
 
 @Controller({
   path: '/buffet',
@@ -26,5 +29,12 @@ export class BuffetController {
   @Render('buffets/index')
   async index(@Param('urlAddress') urlAddress: string) {
     return await this.service.index(urlAddress);
+  }
+
+  @Post('/reserve')
+  @HttpCode(HttpStatus.CREATED)
+  async setReserve(@Body() dto: ReserveDto) {
+    console.log(dto);
+    return await this.service.setReserve(dto);
   }
 }

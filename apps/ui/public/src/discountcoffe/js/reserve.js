@@ -157,6 +157,22 @@ $(document).on('click', '#getReserveButton', function (event) {
     alert('میبایست حداقل یک مورد را انتخاب بفرمایید');
   }
   var personCount = $('#peopleCounter').text();
-  console.log(personCount);
-  console.log(selectedDate);
+
+  var requestData = {
+    personCount: personCount,
+    selectedDate: selectedDate,
+    reserveType: reserveType,
+  };
+
+  $.ajax({
+    url: '/buffet/reserve',
+    type: 'POST',
+    data: requestData,
+    success: function (data) {
+      console.log(data);
+    },
+    error: function (data) {
+      console.log(data);
+    },
+  });
 });

@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { Attachment } from '@rahino/database/models/core/attachment.entity';
 import { PersianDate } from '@rahino/database/models/core/view/persiandate.entity';
@@ -7,6 +11,8 @@ import { BuffetMenu } from '@rahino/database/models/discount-coffe/buffet-menu.e
 import { Buffet } from '@rahino/database/models/discount-coffe/buffet.entity';
 import { CoffeOption } from '@rahino/database/models/discount-coffe/coffe-option.entity';
 import { Op, Sequelize } from 'sequelize';
+import { ReserveDto } from './dto';
+import { BuffetReserve } from '@rahino/database/models/discount-coffe/buffet-reserve.entity';
 
 @Injectable()
 export class BuffetService {
@@ -17,6 +23,8 @@ export class BuffetService {
     private readonly buffetMenuCategoryRepository: typeof BuffetMenuCategory,
     @InjectModel(PersianDate)
     private readonly persianDateRepository: typeof PersianDate,
+    @InjectModel(BuffetReserve)
+    private readonly buffetReserveRepository: typeof BuffetReserve,
   ) {}
 
   async index(urlAddress: string) {
@@ -143,5 +151,29 @@ export class BuffetService {
       today: today.toJSON(),
       endDate: endDate.toJSON(),
     };
+  }
+
+  async setReserve(dto: ReserveDto) {
+    const increase = 14;
+    const reserveDate = await this.persianDateRepository.findOne({
+      where: {
+        [Op.and]: [
+          {
+            YearMonthDay: dto.reserveDate,
+          },
+          Sequelize.where(Sequelize.col('GregorianDate'), {
+            [Op.lte]: Sequelize.fn(
+              'dateadd',
+              Sequelize.literal('day'),
+              increase,
+              Sequelize.fn('getdate'),
+            ),
+          }),
+        ],
+      },
+    });
+    if (!reserveDate) throw new BadRequestException('The Given Date not ');
+    console.log(dto);
+    return {};
   }
 }
