@@ -23,16 +23,16 @@
             <div class='badge'><i class='icon-people'></i> چند نفرید؟</div>
             <div class='peopleCount'>
               <span class='peopleIncrease'>+</span>
-              <span class='peopleCounter'>1</span>
+              <span id="peopleCounter" class='peopleCounter'>1</span>
               <span class='peopleDecrease'>-</span>
             </div>
           </div>
           <div class='chooseType'>
-            <div class='item active'>
+            <div reserve-type="1" class='item active'>
               منو را آنلاین انتخاب میکنم
               <span class='check'></span>
             </div>
-            <div class='item' data-type='cafe'>
+            <div reserve-type="2" class='item' data-type='cafe'>
               منو را در کافه انتخاب میکنم
               <span class='check'></span>
             </div>
@@ -84,7 +84,7 @@
           </div>
           <div class='prices'>
             <div class='final'>جمع کل بدون تخفیف: <span>0</span> تومان</div>
-            <a href=''>دریافت کد رزرو</a>
+            <a id="getReserveButton">دریافت کد رزرو</a>
           </div>
         </div>
       </div>

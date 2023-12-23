@@ -951,6 +951,31 @@ GO
 
 
 
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'DiscountCoffe-reservetypes-v1' 
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'SITE_NAME' AND [value] IN ('DiscountCoffe'))
+		)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'CUSTOMER_NAME' AND [value] IN ('DiscountCoffe'))
+		)
+BEGIN
+
+	CREATE TABLE DiscountCoffeReserveTypes (
+		id							int							PRIMARY KEY,
+		title						nvarchar(256)				NOT NULL,
+		[createdAt]					datetimeoffset				NOT NULL,
+		[updatedAt]					datetimeoffset				NOT NULL
+	);
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'DiscountCoffe-reservetypes-v1', GETDATE(), GETDATE()
+END
+
+GO
+
 
 IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'DiscountCoffe-reserves-v1' 
 			)
@@ -972,10 +997,15 @@ BEGIN
 		reserveStatusId				int							NOT NULL
 			CONSTRAINT FK_DiscountCoffeReserves_ReserveStatusId
 				FOREIGN KEY REFERENCES DiscountCoffeReserveStatuses(id),
+		reserveTypeId				int							NOT NULL
+			CONSTRAINT FK_DisocuntCoffeReserves_ReserveTypeId
+				FOREIGN KEY REFERENCES DiscountCoffeReserveTypes(id),
+		personCount					int							NOT NULL,
 		uniqueCode					nvarchar(1024)				NULL,
 		buffetId					bigint						NOT NULL
 			CONSTRAINT FK_DiscountCoffeReserves_BuffetId
 				FOREIGN KEY REFERENCES DiscountCoffeBuffets(id),
+		reserveDate					datetime					NOT NULL,
 		[createdAt]					datetimeoffset				NOT NULL,
 		[updatedAt]					datetimeoffset				NOT NULL
 	);
@@ -1453,6 +1483,30 @@ BEGIN
 END
 
 GO
+
+-- reserve types
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'DiscountCoffe-reservetypes-Data-v1' 
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'SITE_NAME' AND [value] IN ('DiscountCoffe'))
+		)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'CUSTOMER_NAME' AND [value] IN ('DiscountCoffe'))
+		)
+BEGIN
+
+	INSERT INTO DiscountCoffeReserveTypes(id, title, createdAt, updatedAt)
+	VALUES (1, N'منو آنلاین', getdate(), getdate())
+			,(2, N'منو از طریق کافه', getdate(), getdate())
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'DiscountCoffe-reservetypes-Data-v1', GETDATE(), GETDATE()
+END
+
+GO
+
 
 
 GO

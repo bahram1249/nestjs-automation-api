@@ -9,6 +9,7 @@ import {
 import { Buffet } from './buffet.entity';
 import { BuffetReserveStatus } from './buffet-reserve-status.entity';
 import { User } from '../core/user.entity';
+import { BuffetReserveType } from './buffet-reserve-type.entity';
 
 @Table({ tableName: 'DiscountCoffeReserves' })
 export class BuffetReserve extends Model {
@@ -25,6 +26,24 @@ export class BuffetReserve extends Model {
   userId?: bigint;
   @BelongsTo(() => User, { as: 'user', foreignKey: 'userId' })
   user?: User;
+
+  @Column({
+    type: DataType.INTEGER,
+  })
+  @ForeignKey(() => BuffetReserveType)
+  reserveTypeId: number;
+
+  @Column({
+    type: DataType.INTEGER,
+  })
+  personCount: number;
+
+  @BelongsTo(() => BuffetReserveType, {
+    as: 'reserveType',
+    foreignKey: 'reserveTypeId',
+  })
+  reserveType?: BuffetReserveType;
+
   @Column({
     type: DataType.INTEGER,
   })
@@ -47,4 +66,9 @@ export class BuffetReserve extends Model {
 
   @BelongsTo(() => Buffet, { as: 'buffet', foreignKey: 'buffetId' })
   buffet?: Buffet;
+
+  @Column({
+    type: DataType.DATE,
+  })
+  reserveDate: Date;
 }

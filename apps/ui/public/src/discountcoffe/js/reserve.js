@@ -1,5 +1,7 @@
 var today = $('#currentDate').text();
 var endDate = $('#endDate').text();
+var selectedDate = today;
+const items = [];
 new WOW().init();
 $('#date-picker').persianDatepicker({
   alwaysShow: true,
@@ -46,7 +48,7 @@ $('#date-picker').persianDatepicker({
   onShow: function () {},
   onHide: function () {},
   onSelect: function (data) {
-    alert($('#date-picker').attr('data-gdate'));
+    selectedDate = $('#date-picker').attr('data-gdate');
   },
   onRender: function () {},
 });
@@ -56,8 +58,6 @@ $('.menu-category .item').click(function () {
     'active',
   );
 });
-
-const items = [];
 
 $('.increase').click(function () {
   $(this)
@@ -71,11 +71,9 @@ $('.increase').click(function () {
     items.push({ id: productId, count: 1, price: price });
   } else {
     var index = items.indexOf(finded[0]);
-    console.log(index);
     items[index].count += 1;
   }
 
-  console.log(items);
   // cartCalculator(
   //   $(this).closest("div").find(".price").text(),
   //   "increase"
@@ -133,6 +131,9 @@ $('.chooseType .item').click(function () {
   } else {
     $('.chooseCondition').addClass('active');
   }
+
+  items.splice(0, items.length);
+  cartCalculator();
 });
 $('.peopleIncrease').click(function () {
   $(this)
@@ -147,4 +148,15 @@ $('.peopleDecrease').click(function () {
       .find('.peopleCounter')
       .text(+$(this).parent().find('.peopleCounter').text() - 1);
   }
+});
+
+$(document).on('click', '#getReserveButton', function (event) {
+  event.preventDefault();
+  var reserveType = $('.chooseType .item.active').attr('reserve-type');
+  if (reserveType == 1 && items.length == 0) {
+    alert('میبایست حداقل یک مورد را انتخاب بفرمایید');
+  }
+  var personCount = $('#peopleCounter').text();
+  console.log(personCount);
+  console.log(selectedDate);
 });
