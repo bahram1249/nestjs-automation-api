@@ -923,6 +923,69 @@ END
 GO
 
 
+
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'DiscountCoffe-reservestatus-v1' 
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'SITE_NAME' AND [value] IN ('DiscountCoffe'))
+		)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'CUSTOMER_NAME' AND [value] IN ('DiscountCoffe'))
+		)
+BEGIN
+
+	CREATE TABLE DiscountCoffeReserveStatuses (
+		id							int							PRIMARY KEY,
+		title						nvarchar(256)				NOT NULL,
+		[createdAt]					datetimeoffset				NOT NULL,
+		[updatedAt]					datetimeoffset				NOT NULL
+	);
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'DiscountCoffe-reservestatus-v1', GETDATE(), GETDATE()
+END
+
+GO
+
+
+
+
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'DiscountCoffe-reserves-v1' 
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'SITE_NAME' AND [value] IN ('DiscountCoffe'))
+		)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'CUSTOMER_NAME' AND [value] IN ('DiscountCoffe'))
+		)
+BEGIN
+
+	CREATE TABLE DiscountCoffeReserves (
+		id							bigint identity(1,1)		PRIMARY KEY,
+		userId						bigint						NULL
+			CONSTRAINT FK_DiscountCoffeReserves_UserId
+				FOREIGN KEY REFERENCES Users(id),
+		reserveStatusId				int							NOT NULL
+			CONSTRAINT FK_DiscountCoffeReserves_ReserveStatusId
+				FOREIGN KEY REFERENCES DiscountCoffeReserveStatuses(id),
+		uniqueCode					nvarchar(1024)				NULL,
+		buffetId					bigint						NOT NULL
+			CONSTRAINT FK_DiscountCoffeReserves_BuffetId
+				FOREIGN KEY REFERENCES DiscountCoffeBuffets(id),
+		[createdAt]					datetimeoffset				NOT NULL,
+		[updatedAt]					datetimeoffset				NOT NULL
+	);
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'DiscountCoffe-reserves-v1', GETDATE(), GETDATE()
+END
+
+GO
+
 -- data takhfif
 -- buffetType
 IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'DiscountCoffe-buffetType-Data-v1' 
@@ -1363,6 +1426,30 @@ BEGIN
 		,(374,N'منطقه 22 - گلستان غربي', getdate(), getdate())
 	INSERT INTO Migrations(version, createdAt, updatedAt)
 	SELECT 'DiscountCoffe-buffetCity-Data-v1', GETDATE(), GETDATE()
+END
+
+GO
+
+
+-- reserve status
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'DiscountCoffe-reservestatus-Data-v1' 
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'SITE_NAME' AND [value] IN ('DiscountCoffe'))
+		)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'CUSTOMER_NAME' AND [value] IN ('DiscountCoffe'))
+		)
+BEGIN
+
+	INSERT INTO DiscountCoffeReserveStatuses(id, title, createdAt, updatedAt)
+	VALUES (1, N'نهایی نشده', getdate(), getdate())
+			,(2, N'نهایی شده', getdate(), getdate())
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'DiscountCoffe-reservestatus-Data-v1', GETDATE(), GETDATE()
 END
 
 GO
@@ -3053,6 +3140,8 @@ BEGIN
 END
 
 GO
+
+
 
 -- period types
 IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'PCMPeriodTypes-Data-v1' 

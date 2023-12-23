@@ -35,6 +35,8 @@ import { CoffeOption } from './models/discount-coffe/coffe-option.entity';
 import { BuffetOption } from './models/discount-coffe/buffet-option.entity';
 import { BuffetMenuCategory } from './models/discount-coffe/buffet-menu-category.entity';
 import { BuffetMenu } from './models/discount-coffe/buffet-menu.entity';
+import { BuffetReserveStatus } from './models/discount-coffe/buffet-reserve-status.entity';
+import { BuffetReserve } from './models/discount-coffe/buffet-reserve.entity';
 
 // let config;
 // switch (process.env.NODE_ENV) {
@@ -112,6 +114,8 @@ const dbLog: boolean = JSON.parse(process.env.DB_LOG);
           BuffetOption,
           BuffetMenuCategory,
           BuffetMenu,
+          BuffetReserveStatus,
+          BuffetReserve,
         ],
         autoLoadModels: autoLoadModels,
         logging: dbLog,
