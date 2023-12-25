@@ -34,7 +34,12 @@ export class BuffetController {
   @Post('/reserve')
   @HttpCode(HttpStatus.CREATED)
   async setReserve(@Body() dto: ReserveDto) {
-    console.log(dto);
     return await this.service.setReserve(dto);
+  }
+
+  @Get('/completeReserve/:code')
+  @HttpCode(HttpStatus.OK)
+  async completeReserve(@Param('code') code: string) {
+    return await this.service.completeReserve(code);
   }
 }

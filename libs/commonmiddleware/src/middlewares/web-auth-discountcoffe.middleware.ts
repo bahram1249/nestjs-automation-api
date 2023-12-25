@@ -11,7 +11,7 @@ export class WebAuthDiscountCoffeMiddleware implements NestMiddleware {
       token = req.cookies['token'];
     }
     if (token == null) {
-      return res.redirect(`/login?redirectUrl=${req.url}`);
+      return res.redirect(`/login?redirectUrl=${req.originalUrl}`);
     }
     next();
   }

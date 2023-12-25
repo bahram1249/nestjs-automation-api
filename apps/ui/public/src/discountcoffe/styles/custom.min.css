@@ -8,3 +8,42 @@
 .curve-image {
   border-radius: 6px;
 }
+
+.loginItems {
+  text-align: center;
+}
+
+.loginItems h3 {
+  color: #616161;
+  text-align: center;
+  font-size: 32px;
+  font-style: normal;
+  font-weight: 800;
+  line-height: normal;
+  margin-bottom: 49px;
+}
+
+.loginItems input[type='text'] {
+  width: 100%;
+  display: block;
+  border-radius: 15px;
+  border: 1px solid #d9d9d9;
+  background: transparent;
+  padding: 16px;
+  text-align: center;
+  font-size: 22px;
+  letter-spacing: 13px;
+  margin-bottom: 30px;
+}
+
+.loginItems button {
+  color: #fff;
+  font-size: 18px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: normal;
+  border-radius: 15px;
+  background: #3c8f7c;
+  border: 0;
+  padding: 16px 45px;
+}

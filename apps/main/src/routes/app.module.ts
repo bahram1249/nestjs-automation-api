@@ -1,5 +1,4 @@
 import {
-  INestApplication,
   MiddlewareConsumer,
   Module,
   NestModule,
@@ -25,6 +24,7 @@ import { UIModule } from '@rahino/ui';
 import { CoreDashboardModule } from '@rahino/coreDashboard';
 import * as cookieParser from 'cookie-parser';
 import { DiscountCoffeModule } from '@rahino/discountCoffe';
+import * as session from 'express-session';
 
 @Module({
   imports: [
@@ -101,6 +101,13 @@ export class AppModule implements NestModule {
     );
     app.enableCors({});
     app.use(cookieParser());
+    app.use(
+      session({
+        secret: this.config.get('SESSION_KEY'),
+        resave: false,
+        saveUninitialized: false,
+      }),
+    );
 
     app.get(CoreModule).setApp(app);
     app.get(PCMModule).setApp(app);

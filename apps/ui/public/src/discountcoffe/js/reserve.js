@@ -159,9 +159,10 @@ $(document).on('click', '#getReserveButton', function (event) {
   var personCount = $('#peopleCounter').text();
 
   var requestData = {
-    personCount: personCount,
-    selectedDate: selectedDate,
-    reserveType: reserveType,
+    personCount: Number(personCount),
+    reserveDate: selectedDate,
+    buffetId: Number($('#buffetId').text()),
+    reserveType: Number(reserveType),
   };
 
   $.ajax({
@@ -169,7 +170,7 @@ $(document).on('click', '#getReserveButton', function (event) {
     type: 'POST',
     data: requestData,
     success: function (data) {
-      console.log(data);
+      window.location = '/buffet/completeReserve/' + data.result.uniqueCode;
     },
     error: function (data) {
       console.log(data);

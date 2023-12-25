@@ -47,6 +47,7 @@ HOST_NAME=0.0.0.0
 TEMP_ATTACHMENT="/tmp/attachmentFile"
 PROFILE_PATH_ATTACHMENT="/profile/big"
 PROFILE_PATH_THUMB_ATTACHMENT="/profile/thumb"
+SESSION_KEY=<YourStrongSecret>
 ```
 
 ## Running the app

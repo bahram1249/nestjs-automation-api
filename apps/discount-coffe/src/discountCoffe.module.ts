@@ -6,6 +6,7 @@ import { BuffetMenuCategoryApiModule } from './api/admin/menu-category/buffet-ca
 import { MenuCategoryModule } from './controller/admin/menu-category/menu-category.module';
 import { BuffetMenuApiModule } from './api/admin/menu/buffet-menu.module';
 import { BuffetMenuModule } from './controller/admin/buffet-menu/buffet-menu.module';
+import { LoginModule } from './controller/login/login.module';
 @Module({
   imports: [
     BuffetModule,
@@ -15,6 +16,7 @@ import { BuffetMenuModule } from './controller/admin/buffet-menu/buffet-menu.mod
     MenuCategoryModule,
     BuffetMenuApiModule,
     BuffetMenuModule,
+    LoginModule,
   ],
 })
 export class DiscountCoffeModule {}

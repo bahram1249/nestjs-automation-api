@@ -13,6 +13,7 @@ import { CoffeOption } from '@rahino/database/models/discount-coffe/coffe-option
 import { Op, Sequelize } from 'sequelize';
 import { ReserveDto } from './dto';
 import { BuffetReserve } from '@rahino/database/models/discount-coffe/buffet-reserve.entity';
+import { v4 as uuidv4 } from 'uuid';
 
 @Injectable()
 export class BuffetService {
@@ -155,6 +156,7 @@ export class BuffetService {
 
   async setReserve(dto: ReserveDto) {
     const increase = 14;
+    const reserveIncompoleteStatus = 1;
     const reserveDate = await this.persianDateRepository.findOne({
       where: {
         [Op.and]: [
@@ -173,7 +175,26 @@ export class BuffetService {
       },
     });
     if (!reserveDate) throw new BadRequestException('The Given Date not ');
-    console.log(dto);
-    return {};
+
+    const data = {
+      reserveDate: Sequelize.cast(reserveDate.GregorianDate, 'DATETIME'),
+      reserveStatusId: reserveIncompoleteStatus,
+      personCount: dto.personCount,
+      buffetId: dto.buffetId,
+      uniqueCode: uuidv4(),
+      reserveTypeId: dto.reserveType,
+    };
+
+    console.log(data);
+
+    const buffetReserve = await this.buffetReserveRepository.create(data);
+
+    return {
+      result: buffetReserve.toJSON(),
+    };
+  }
+
+  completeReserve(code: string) {
+    throw new Error('Method not implemented.');
   }
 }
