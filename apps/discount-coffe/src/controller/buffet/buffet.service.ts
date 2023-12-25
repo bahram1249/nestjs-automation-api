@@ -14,6 +14,8 @@ import { Op, Sequelize } from 'sequelize';
 import { ReserveDto } from './dto';
 import { BuffetReserve } from '@rahino/database/models/discount-coffe/buffet-reserve.entity';
 import { v4 as uuidv4 } from 'uuid';
+import { User } from '@rahino/database/models/core/user.entity';
+import { Response, Request } from 'express';
 
 @Injectable()
 export class BuffetService {
@@ -185,16 +187,29 @@ export class BuffetService {
       reserveTypeId: dto.reserveType,
     };
 
-    console.log(data);
-
     const buffetReserve = await this.buffetReserveRepository.create(data);
-
     return {
       result: buffetReserve.toJSON(),
     };
   }
 
-  completeReserve(code: string) {
+  async completeReserve(req: Request, res: Response, user: User, code: string) {
+    const reserverCompleteStatus = 2;
+    const incompleteStatus = 1;
+    let reserve = await this.buffetReserveRepository.findOne({
+      where: {
+        uniqueCode: code,
+        reserveStatusId: incompleteStatus,
+      },
+    });
+    if (!reserve) throw new NotFoundException();
+    reserve.userId = user.id;
+    reserve.reserveStatusId = reserverCompleteStatus;
+    reserve = await reserve.save();
+    return res.redirect(302, '/buffet/detail/' + code);
+  }
+
+  async detail(user: User, code: string) {
     throw new Error('Method not implemented.');
   }
 }
