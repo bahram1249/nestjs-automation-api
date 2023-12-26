@@ -48,11 +48,45 @@ export class HomeService {
       order: [['id', 'desc']],
       limit: 10,
     });
+    const lastResuturants = await this.buffetRepository.findAll({
+      include: [
+        {
+          model: Attachment,
+          as: 'coverAttachment',
+        },
+        {
+          model: BuffetCost,
+          as: 'buffetCost',
+          required: false,
+        },
+        {
+          model: CoffeOption,
+          as: 'coffeOptions',
+          required: false,
+        },
+      ],
+      where: {
+        [Op.and]: [
+          {
+            buffetTypeId: resturant,
+          },
+          Sequelize.where(
+            Sequelize.fn('isnull', Sequelize.col('isDeleted'), 0),
+            {
+              [Op.eq]: 0,
+            },
+          ),
+        ],
+      },
+      order: [['id', 'desc']],
+      limit: 10,
+    });
 
     return {
       title: 'تخفیف کافه',
       layout: 'discountcoffe',
       lastCoffes: JSON.parse(JSON.stringify(lastCoffes)),
+      lastResuturants: JSON.parse(JSON.stringify(lastResuturants)),
     };
   }
 }

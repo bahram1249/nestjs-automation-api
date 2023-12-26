@@ -59,3 +59,7 @@ img.super-lux-img {
 .slick-slide {
   height: auto;
 }
+
+.productItem img {
+  border-radius: 15px;
+}
