@@ -157,12 +157,19 @@ $(document).on('click', '#getReserveButton', function (event) {
     alert('میبایست حداقل یک مورد را انتخاب بفرمایید');
   }
   var personCount = $('#peopleCounter').text();
+  var itemMaps = items.map((item) => {
+    return {
+      id: item.id,
+      count: item.count,
+    };
+  });
 
   var requestData = {
     personCount: Number(personCount),
     reserveDate: selectedDate,
     buffetId: Number($('#buffetId').text()),
     reserveType: Number(reserveType),
+    items: itemMaps,
   };
 
   $.ajax({

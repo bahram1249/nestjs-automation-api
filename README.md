@@ -48,6 +48,7 @@ TEMP_ATTACHMENT="/tmp/attachmentFile"
 PROFILE_PATH_ATTACHMENT="/profile/big"
 PROFILE_PATH_THUMB_ATTACHMENT="/profile/thumb"
 SESSION_KEY=<YourStrongSecret>
+QR_PATH="/qrcode"
 ```
 
 ## Running the app

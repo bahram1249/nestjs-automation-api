@@ -10,6 +10,8 @@ import { Buffet } from './buffet.entity';
 import { BuffetReserveStatus } from './buffet-reserve-status.entity';
 import { User } from '../core/user.entity';
 import { BuffetReserveType } from './buffet-reserve-type.entity';
+import { Attachment } from '../core/attachment.entity';
+import { PersianDate } from '../core/view/persiandate.entity';
 
 @Table({ tableName: 'DiscountCoffeReserves' })
 export class BuffetReserve extends Model {
@@ -71,4 +73,17 @@ export class BuffetReserve extends Model {
     type: DataType.DATE,
   })
   reserveDate: Date;
+  @BelongsTo(() => PersianDate, {
+    as: 'persianDate',
+    foreignKey: 'reserveDate',
+  })
+  persianDate?: PersianDate;
+
+  @Column({
+    type: DataType.BIGINT,
+  })
+  @ForeignKey(() => Attachment)
+  attachmentId?: bigint;
+  @BelongsTo(() => Attachment, { as: 'attachment', foreignKey: 'attachmentId' })
+  attachment?: Attachment;
 }

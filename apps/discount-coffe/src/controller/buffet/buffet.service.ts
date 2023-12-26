@@ -2,6 +2,7 @@ import {
   BadRequestException,
   Injectable,
   NotFoundException,
+  StreamableFile,
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { Attachment } from '@rahino/database/models/core/attachment.entity';
@@ -16,6 +17,12 @@ import { BuffetReserve } from '@rahino/database/models/discount-coffe/buffet-res
 import { v4 as uuidv4 } from 'uuid';
 import { User } from '@rahino/database/models/core/user.entity';
 import { Response, Request } from 'express';
+import * as QRCode from 'qrcode';
+import { ConfigService } from '@nestjs/config';
+import * as fs from 'fs';
+import * as path from 'path';
+import * as util from 'util';
+const mkdirAsync = util.promisify(fs.mkdir);
 
 @Injectable()
 export class BuffetService {
@@ -28,6 +35,9 @@ export class BuffetService {
     private readonly persianDateRepository: typeof PersianDate,
     @InjectModel(BuffetReserve)
     private readonly buffetReserveRepository: typeof BuffetReserve,
+    @InjectModel(Attachment)
+    private readonly attachmentRepository: typeof Attachment,
+    private readonly config: ConfigService,
   ) {}
 
   async index(urlAddress: string) {
@@ -188,6 +198,8 @@ export class BuffetService {
     };
 
     const buffetReserve = await this.buffetReserveRepository.create(data);
+
+    console.log(dto.items);
     return {
       result: buffetReserve.toJSON(),
     };
@@ -205,11 +217,94 @@ export class BuffetService {
     if (!reserve) throw new NotFoundException();
     reserve.userId = user.id;
     reserve.reserveStatusId = reserverCompleteStatus;
+
+    const savePath = this.config.get('QR_PATH');
+    await mkdirAsync(path.join(process.cwd(), savePath), { recursive: true });
+    await QRCode.toFile(
+      savePath + '/' + code + '.png',
+      '/buffet/detail/' + code,
+    );
+
+    const attachmentTypeId = 5;
+
+    const attachment = await this.attachmentRepository.create({
+      originalFileName: code + '.png',
+      fileName: code + '.png',
+      ext: '.png',
+      mimetype: 'image/png',
+      path: savePath + '/' + code + '.png',
+      attachmentTypeId: attachmentTypeId,
+      userId: user.id,
+    });
+    reserve.attachmentId = attachment.id;
     reserve = await reserve.save();
+
     return res.redirect(302, '/buffet/detail/' + code);
   }
 
   async detail(user: User, code: string) {
-    throw new Error('Method not implemented.');
+    const completeReserve = 2;
+    const reserve = await this.buffetReserveRepository.findOne({
+      include: [
+        {
+          model: Buffet,
+          as: 'buffet',
+        },
+        {
+          model: Attachment,
+          as: 'attachment',
+        },
+        {
+          model: User,
+          as: 'user',
+        },
+        {
+          model: PersianDate,
+          as: 'persianDate',
+          on: Sequelize.literal(
+            'convert(date, [BuffetReserve].[reserveDate], 103) = [persianDate].[GregorianDate]',
+          ),
+        },
+      ],
+      where: {
+        uniqueCode: code,
+        userId: user.id,
+        reserveStatusId: completeReserve,
+      },
+    });
+    if (!reserve) throw new NotFoundException();
+    return {
+      layout: 'discountcoffe',
+      reserve: reserve.toJSON(),
+      title: 'نمایش بلیط',
+    };
+  }
+
+  async getQr(res: Response, fileName: string): Promise<StreamableFile> {
+    const attachment = await this.attachmentRepository.findOne({
+      where: {
+        [Op.and]: [
+          {
+            fileName: fileName,
+          },
+          Sequelize.where(
+            Sequelize.fn('isnull', Sequelize.col('isDeleted'), 0),
+            {
+              [Op.eq]: 0,
+            },
+          ),
+          {
+            attachmentTypeId: 5,
+          },
+        ],
+      },
+    });
+    if (!attachment) throw new NotFoundException();
+    res.set({
+      'Content-Type': attachment.mimetype,
+      'Content-Disposition': `filename="${attachment.fileName}"`,
+    });
+    const file = fs.createReadStream(path.join(process.cwd(), attachment.path));
+    return new StreamableFile(file);
   }
 }

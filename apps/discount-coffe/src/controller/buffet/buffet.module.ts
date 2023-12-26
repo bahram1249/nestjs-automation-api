@@ -7,6 +7,7 @@ import { BuffetMenuCategory } from '@rahino/database/models/discount-coffe/buffe
 import { PersianDate } from '@rahino/database/models/core/view/persiandate.entity';
 import { BuffetReserve } from '@rahino/database/models/discount-coffe/buffet-reserve.entity';
 import { WebAuthDiscountCoffeMiddleware } from '@rahino/commonmiddleware/middlewares/web-auth-discountcoffe.middleware';
+import { Attachment } from '@rahino/database/models/core/attachment.entity';
 
 @Module({
   imports: [
@@ -15,6 +16,7 @@ import { WebAuthDiscountCoffeMiddleware } from '@rahino/commonmiddleware/middlew
       BuffetMenuCategory,
       PersianDate,
       BuffetReserve,
+      Attachment,
     ]),
   ],
   controllers: [BuffetController],

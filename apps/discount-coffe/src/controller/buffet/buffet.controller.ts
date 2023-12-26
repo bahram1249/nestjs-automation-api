@@ -9,6 +9,7 @@ import {
   Render,
   Req,
   Res,
+  StreamableFile,
   UseGuards,
 } from '@nestjs/common';
 import { BuffetService } from './buffet.service';
@@ -59,7 +60,17 @@ export class BuffetController {
   @UseGuards(JwtWebGuard)
   @Get('/detail/:code')
   @HttpCode(HttpStatus.OK)
+  @Render('buffets/detail')
   async detail(@GetUser() user: User, @Param('code') code: string) {
     return await this.service.detail(user, code);
+  }
+
+  @Get('/qr/:fileName')
+  @HttpCode(HttpStatus.OK)
+  async getQr(
+    @Res({ passthrough: true }) res: Response,
+    @Param('fileName') fileName: string,
+  ): Promise<StreamableFile> {
+    return this.service.getQr(res, fileName);
   }
 }

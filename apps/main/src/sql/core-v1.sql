@@ -1000,11 +1000,15 @@ BEGIN
 		reserveTypeId				int							NOT NULL
 			CONSTRAINT FK_DisocuntCoffeReserves_ReserveTypeId
 				FOREIGN KEY REFERENCES DiscountCoffeReserveTypes(id),
+		attachmentId				bigint						NULL
+			CONSTRAINT FK_DiscountCoffeReserve_AttachmentId
+				FOREIGN KEY REFERENCES Attachments(id),
 		personCount					int							NOT NULL,
 		uniqueCode					nvarchar(1024)				NULL,
 		buffetId					bigint						NOT NULL
 			CONSTRAINT FK_DiscountCoffeReserves_BuffetId
 				FOREIGN KEY REFERENCES DiscountCoffeBuffets(id),
+		price						bigint						NULL,
 		reserveDate					datetime					NOT NULL,
 		[createdAt]					datetimeoffset				NOT NULL,
 		[updatedAt]					datetimeoffset				NOT NULL
@@ -1881,6 +1885,21 @@ BEGIN
 
 	INSERT INTO Migrations(version, createdAt, updatedAt)
 	SELECT 'CORE-AttachmentTypes-Data-v4', GETDATE(), GETDATE()
+END
+
+GO
+
+
+-- takhfif coffe
+IF NOT EXISTS ((SELECT 1 FROM Migrations WHERE version = 'CORE-AttachmentTypes-Data-v5' 
+			))
+BEGIN
+	
+	INSERT INTO AttachmentTypes(id, typeName, createdAt, updatedAt)
+	SELECT 5, N'takhfifQrCode', getdate(), getdate()
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'CORE-AttachmentTypes-Data-v5', GETDATE(), GETDATE()
 END
 
 GO
