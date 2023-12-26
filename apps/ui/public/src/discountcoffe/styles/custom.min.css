@@ -47,3 +47,15 @@
   border: 0;
   padding: 16px 45px;
 }
+
+.super-lux img {
+  height: unset;
+}
+
+img.super-lux-img {
+  height: 100%;
+}
+
+.slick-slide {
+  height: auto;
+}

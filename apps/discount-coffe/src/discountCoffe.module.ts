@@ -7,6 +7,7 @@ import { MenuCategoryModule } from './controller/admin/menu-category/menu-catego
 import { BuffetMenuApiModule } from './api/admin/menu/buffet-menu.module';
 import { BuffetMenuModule } from './controller/admin/buffet-menu/buffet-menu.module';
 import { LoginModule } from './controller/login/login.module';
+import { HomeModule } from './controller/home/home.module';
 @Module({
   imports: [
     BuffetModule,
@@ -17,6 +18,7 @@ import { LoginModule } from './controller/login/login.module';
     BuffetMenuApiModule,
     BuffetMenuModule,
     LoginModule,
+    HomeModule,
   ],
 })
 export class DiscountCoffeModule {}
