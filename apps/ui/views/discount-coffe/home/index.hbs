@@ -250,118 +250,32 @@
           <a class='more' href=''>همه کافه ها</a>
         </div>
         <div class='offersSlider'>
-          <div class='productItem'>
-            <img
-              class='w-100'
-              src='/theme/discountcoffe/assets/img/png/product.png'
-              alt=''
-            />
-            <div class='productData'>
-              <h3>کافه نوستالانژ سعادت آباد</h3>
-              <div class='features'>
-                <div class='item'>
-                  <i class='icon-pizza'></i>
-                  <p>غذای فرنگی</p>
+          {{#each luxuryCoffes}}
+            <div class='productItem'>
+              <img
+                class='w-100'
+                src='/v1/api/discountcoffe/admin/buffets/photo/{{coverAttachment.fileName}}'
+                alt=''
+              />
+              <div class='productData'>
+                <h3>{{title}}</h3>
+                <div class='features'>
+                  {{#each (limit coffeOptions 3)}}
+                    <div class='item'>
+                      <i class='{{iconClass}}'></i>
+                      <p>{{title}}</p>
+                    </div>
+                  {{/each}}
+
                 </div>
-                <div class='item'>
-                  <i class='icon-pizza'></i>
-                  <p>غذای فرنگی</p>
+                <div class='more'>
+                  <h5>تا {{percentDiscount}}% تخفیف!</h5>
+                  <a href='/buffet/{{urlAddress}}'>اطلاعات و رزرو</a>
                 </div>
-                <div class='item'>
-                  <i class='icon-pizza'></i>
-                  <p>غذای فرنگی</p>
-                </div>
-              </div>
-              <div class='more'>
-                <h5>تا 40% تخفیف!</h5>
-                <a href=''>اطلاعات و رزرو</a>
               </div>
             </div>
-          </div>
-          <div class='productItem'>
-            <img
-              class='w-100'
-              src='/theme/discountcoffe/assets/img/png/product.png'
-              alt=''
-            />
-            <div class='productData'>
-              <h3>کافه نوستالانژ سعادت آباد</h3>
-              <div class='features'>
-                <div class='item'>
-                  <i class='icon-pizza'></i>
-                  <p>غذای فرنگی</p>
-                </div>
-                <div class='item'>
-                  <i class='icon-pizza'></i>
-                  <p>غذای فرنگی</p>
-                </div>
-                <div class='item'>
-                  <i class='icon-pizza'></i>
-                  <p>غذای فرنگی</p>
-                </div>
-              </div>
-              <div class='more'>
-                <h5>تا 40% تخفیف!</h5>
-                <a href=''>اطلاعات و رزرو</a>
-              </div>
-            </div>
-          </div>
-          <div class='productItem'>
-            <img
-              class='w-100'
-              src='/theme/discountcoffe/assets/img/png/product.png'
-              alt=''
-            />
-            <div class='productData'>
-              <h3>کافه نوستالانژ سعادت آباد</h3>
-              <div class='features'>
-                <div class='item'>
-                  <i class='icon-pizza'></i>
-                  <p>غذای فرنگی</p>
-                </div>
-                <div class='item'>
-                  <i class='icon-pizza'></i>
-                  <p>غذای فرنگی</p>
-                </div>
-                <div class='item'>
-                  <i class='icon-pizza'></i>
-                  <p>غذای فرنگی</p>
-                </div>
-              </div>
-              <div class='more'>
-                <h5>تا 40% تخفیف!</h5>
-                <a href=''>اطلاعات و رزرو</a>
-              </div>
-            </div>
-          </div>
-          <div class='productItem'>
-            <img
-              class='w-100'
-              src='/theme/discountcoffe/assets/img/png/product.png'
-              alt=''
-            />
-            <div class='productData'>
-              <h3>کافه نوستالانژ سعادت آباد</h3>
-              <div class='features'>
-                <div class='item'>
-                  <i class='icon-pizza'></i>
-                  <p>غذای فرنگی</p>
-                </div>
-                <div class='item'>
-                  <i class='icon-pizza'></i>
-                  <p>غذای فرنگی</p>
-                </div>
-                <div class='item'>
-                  <i class='icon-pizza'></i>
-                  <p>غذای فرنگی</p>
-                </div>
-              </div>
-              <div class='more'>
-                <h5>تا 40% تخفیف!</h5>
-                <a href=''>اطلاعات و رزرو</a>
-              </div>
-            </div>
-          </div>
+          {{/each}}
+
         </div>
       </div>
     </div>
@@ -430,207 +344,37 @@
 <div class='productSection'>
   <div class='container'>
     <div class='titles'>
-      <h4>برترین کافه ها</h4>
+      <h4>کافه های ارزان قیمت</h4>
       <a href=''>همه کافه ها</a>
     </div>
     <div class='row'>
       <div class='productSliderMultiple'>
-        <div class='productItem'>
-          <img
-            class='w-100'
-            src='/theme/discountcoffe/assets/img/png/product.png'
-            alt=''
-          />
-          <div class='productData'>
-            <h3>کافه نوستالانژ سعادت آباد</h3>
-            <div class='features'>
-              <div class='item'>
-                <i class='icon-pizza'></i>
-                <p>غذای فرنگی</p>
+        {{#each lowPriceCoffes}}
+          <div class='productItem'>
+            <img
+              class='w-100'
+              src='/v1/api/discountcoffe/admin/buffets/photo/{{coverAttachment.fileName}}'
+              alt=''
+            />
+            <div class='productData'>
+              <h3>{{title}}</h3>
+              <div class='features'>
+                {{#each (limit coffeOptions 3)}}
+                  <div class='item'>
+                    <i class='{{iconClass}}'></i>
+                    <p>{{title}}</p>
+                  </div>
+                {{/each}}
+
               </div>
-              <div class='item'>
-                <i class='icon-pizza'></i>
-                <p>غذای فرنگی</p>
+              <div class='more'>
+                <h5>تا {{percentDiscount}}% تخفیف!</h5>
+                <a href='/buffet/{{urlAddress}}'>اطلاعات و رزرو</a>
               </div>
-              <div class='item'>
-                <i class='icon-pizza'></i>
-                <p>غذای فرنگی</p>
-              </div>
-            </div>
-            <div class='more'>
-              <h5>تا 40% تخفیف!</h5>
-              <a href=''>اطلاعات و رزرو</a>
             </div>
           </div>
-        </div>
-        <div class='productItem'>
-          <img
-            class='w-100'
-            src='/theme/discountcoffe/assets/img/png/product.png'
-            alt=''
-          />
-          <div class='productData'>
-            <h3>کافه نوستالانژ سعادت آباد</h3>
-            <div class='features'>
-              <div class='item'>
-                <i class='icon-pizza'></i>
-                <p>غذای فرنگی</p>
-              </div>
-              <div class='item'>
-                <i class='icon-pizza'></i>
-                <p>غذای فرنگی</p>
-              </div>
-              <div class='item'>
-                <i class='icon-pizza'></i>
-                <p>غذای فرنگی</p>
-              </div>
-            </div>
-            <div class='more'>
-              <h5>تا 40% تخفیف!</h5>
-              <a href=''>اطلاعات و رزرو</a>
-            </div>
-          </div>
-        </div>
-        <div class='productItem'>
-          <img
-            class='w-100'
-            src='/theme/discountcoffe/assets/img/png/product.png'
-            alt=''
-          />
-          <div class='productData'>
-            <h3>کافه نوستالانژ سعادت آباد</h3>
-            <div class='features'>
-              <div class='item'>
-                <i class='icon-pizza'></i>
-                <p>غذای فرنگی</p>
-              </div>
-              <div class='item'>
-                <i class='icon-pizza'></i>
-                <p>غذای فرنگی</p>
-              </div>
-              <div class='item'>
-                <i class='icon-pizza'></i>
-                <p>غذای فرنگی</p>
-              </div>
-            </div>
-            <div class='more'>
-              <h5>تا 40% تخفیف!</h5>
-              <a href=''>اطلاعات و رزرو</a>
-            </div>
-          </div>
-        </div>
-        <div class='productItem'>
-          <img
-            class='w-100'
-            src='/theme/discountcoffe/assets/img/png/product.png'
-            alt=''
-          />
-          <div class='productData'>
-            <h3>کافه نوستالانژ سعادت آباد</h3>
-            <div class='features'>
-              <div class='item'>
-                <i class='icon-pizza'></i>
-                <p>غذای فرنگی</p>
-              </div>
-              <div class='item'>
-                <i class='icon-pizza'></i>
-                <p>غذای فرنگی</p>
-              </div>
-              <div class='item'>
-                <i class='icon-pizza'></i>
-                <p>غذای فرنگی</p>
-              </div>
-            </div>
-            <div class='more'>
-              <h5>تا 40% تخفیف!</h5>
-              <a href=''>اطلاعات و رزرو</a>
-            </div>
-          </div>
-        </div>
-        <div class='productItem'>
-          <img
-            class='w-100'
-            src='/theme/discountcoffe/assets/img/png/product.png'
-            alt=''
-          />
-          <div class='productData'>
-            <h3>کافه نوستالانژ سعادت آباد</h3>
-            <div class='features'>
-              <div class='item'>
-                <i class='icon-pizza'></i>
-                <p>غذای فرنگی</p>
-              </div>
-              <div class='item'>
-                <i class='icon-pizza'></i>
-                <p>غذای فرنگی</p>
-              </div>
-              <div class='item'>
-                <i class='icon-pizza'></i>
-                <p>غذای فرنگی</p>
-              </div>
-            </div>
-            <div class='more'>
-              <h5>تا 40% تخفیف!</h5>
-              <a href=''>اطلاعات و رزرو</a>
-            </div>
-          </div>
-        </div>
-        <div class='productItem'>
-          <img
-            class='w-100'
-            src='/theme/discountcoffe/assets/img/png/product.png'
-            alt=''
-          />
-          <div class='productData'>
-            <h3>کافه نوستالانژ سعادت آباد</h3>
-            <div class='features'>
-              <div class='item'>
-                <i class='icon-pizza'></i>
-                <p>غذای فرنگی</p>
-              </div>
-              <div class='item'>
-                <i class='icon-pizza'></i>
-                <p>غذای فرنگی</p>
-              </div>
-              <div class='item'>
-                <i class='icon-pizza'></i>
-                <p>غذای فرنگی</p>
-              </div>
-            </div>
-            <div class='more'>
-              <h5>تا 40% تخفیف!</h5>
-              <a href=''>اطلاعات و رزرو</a>
-            </div>
-          </div>
-        </div>
-        <div class='productItem'>
-          <img
-            class='w-100'
-            src='/theme/discountcoffe/assets/img/png/product.png'
-            alt=''
-          />
-          <div class='productData'>
-            <h3>کافه نوستالانژ سعادت آباد</h3>
-            <div class='features'>
-              <div class='item'>
-                <i class='icon-pizza'></i>
-                <p>غذای فرنگی</p>
-              </div>
-              <div class='item'>
-                <i class='icon-pizza'></i>
-                <p>غذای فرنگی</p>
-              </div>
-              <div class='item'>
-                <i class='icon-pizza'></i>
-                <p>غذای فرنگی</p>
-              </div>
-            </div>
-            <div class='more'>
-              <h5>تا 40% تخفیف!</h5>
-              <a href=''>اطلاعات و رزرو</a>
-            </div>
-          </div>
-        </div>
+        {{/each}}
+
       </div>
     </div>
   </div>

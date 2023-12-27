@@ -15,6 +15,8 @@ export class HomeService {
   async index() {
     const coffe = 1;
     const resturant = 2;
+    const luxuryCoffeId = 3;
+    const lowPriceCoffe = 1;
     const lastCoffes = await this.buffetRepository.findAll({
       include: [
         {
@@ -82,11 +84,81 @@ export class HomeService {
       limit: 10,
     });
 
+    const luxuryCoffes = await this.buffetRepository.findAll({
+      include: [
+        {
+          model: Attachment,
+          as: 'coverAttachment',
+        },
+        {
+          model: BuffetCost,
+          as: 'buffetCost',
+          required: false,
+        },
+        {
+          model: CoffeOption,
+          as: 'coffeOptions',
+          required: false,
+        },
+      ],
+      where: {
+        [Op.and]: [
+          {
+            buffetCostId: luxuryCoffeId,
+          },
+          Sequelize.where(
+            Sequelize.fn('isnull', Sequelize.col('isDeleted'), 0),
+            {
+              [Op.eq]: 0,
+            },
+          ),
+        ],
+      },
+      order: [['id', 'desc']],
+      limit: 10,
+    });
+
+    const lowPriceCoffes = await this.buffetRepository.findAll({
+      include: [
+        {
+          model: Attachment,
+          as: 'coverAttachment',
+        },
+        {
+          model: BuffetCost,
+          as: 'buffetCost',
+          required: false,
+        },
+        {
+          model: CoffeOption,
+          as: 'coffeOptions',
+          required: false,
+        },
+      ],
+      where: {
+        [Op.and]: [
+          {
+            buffetCostId: lowPriceCoffe,
+          },
+          Sequelize.where(
+            Sequelize.fn('isnull', Sequelize.col('isDeleted'), 0),
+            {
+              [Op.eq]: 0,
+            },
+          ),
+        ],
+      },
+      order: [['id', 'desc']],
+      limit: 10,
+    });
+
     return {
       title: 'تخفیف کافه',
       layout: 'discountcoffe',
       lastCoffes: JSON.parse(JSON.stringify(lastCoffes)),
       lastResuturants: JSON.parse(JSON.stringify(lastResuturants)),
+      luxuryCoffes: JSON.parse(JSON.stringify(luxuryCoffes)),
+      lowPriceCoffes: JSON.parse(JSON.stringify(lowPriceCoffes)),
     };
   }
 }
