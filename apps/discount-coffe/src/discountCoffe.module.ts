@@ -8,6 +8,8 @@ import { BuffetMenuApiModule } from './api/admin/menu/buffet-menu.module';
 import { BuffetMenuModule } from './controller/admin/buffet-menu/buffet-menu.module';
 import { LoginModule } from './controller/login/login.module';
 import { HomeModule } from './controller/home/home.module';
+import { TotalReserveModule } from './controller/admin/total-reserve/total-reserve.module';
+import { TotalReserveApiModule } from './api/admin/total-reserve/total-reserve.module';
 @Module({
   imports: [
     BuffetModule,
@@ -17,6 +19,8 @@ import { HomeModule } from './controller/home/home.module';
     MenuCategoryModule,
     BuffetMenuApiModule,
     BuffetMenuModule,
+    TotalReserveApiModule,
+    TotalReserveModule,
     LoginModule,
     HomeModule,
   ],
