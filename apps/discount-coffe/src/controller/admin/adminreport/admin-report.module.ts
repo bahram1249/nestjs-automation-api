@@ -11,4 +11,4 @@ import { BuffetReserve } from '@rahino/database/models/discount-coffe/buffet-res
   controllers: [AdminReportController],
   providers: [AdminReportService],
 })
-export class ReserveModule {}
+export class AdminReportModule {}

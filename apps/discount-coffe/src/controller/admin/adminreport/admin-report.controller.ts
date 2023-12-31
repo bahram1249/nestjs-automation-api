@@ -27,7 +27,7 @@ export class AdminReportController {
   @Render('admin/adminreport/index')
   async get(@GetUser('menus') menus: Menu[]) {
     return {
-      title: 'منو کافه و رستوران',
+      title: 'گزارش های ادمین',
       menus: JSON.parse(JSON.stringify(menus)),
     };
   }

@@ -12,6 +12,7 @@ import { TotalReserveModule } from './controller/admin/total-reserve/total-reser
 import { TotalReserveApiModule } from './api/admin/total-reserve/total-reserve.module';
 import { ReserveApiModule } from './api/admin/reserve/reserve.module';
 import { ReserveModule } from './controller/admin/reservers/reserve.module';
+import { AdminReportModule } from './controller/admin/adminreport/admin-report.module';
 @Module({
   imports: [
     BuffetModule,
@@ -25,6 +26,7 @@ import { ReserveModule } from './controller/admin/reservers/reserve.module';
     TotalReserveModule,
     ReserveApiModule,
     ReserveModule,
+    AdminReportModule,
     LoginModule,
     HomeModule,
   ],
