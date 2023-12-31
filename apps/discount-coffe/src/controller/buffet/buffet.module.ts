@@ -8,6 +8,8 @@ import { PersianDate } from '@rahino/database/models/core/view/persiandate.entit
 import { BuffetReserve } from '@rahino/database/models/discount-coffe/buffet-reserve.entity';
 import { WebAuthDiscountCoffeMiddleware } from '@rahino/commonmiddleware/middlewares/web-auth-discountcoffe.middleware';
 import { Attachment } from '@rahino/database/models/core/attachment.entity';
+import { BuffetMenu } from '@rahino/database/models/discount-coffe/buffet-menu.entity';
+import { BuffetReserveDetail } from '@rahino/database/models/discount-coffe/buffet-reserve-detail.entity';
 
 @Module({
   imports: [
@@ -16,6 +18,8 @@ import { Attachment } from '@rahino/database/models/core/attachment.entity';
       BuffetMenuCategory,
       PersianDate,
       BuffetReserve,
+      BuffetMenu,
+      BuffetReserveDetail,
       Attachment,
     ]),
   ],

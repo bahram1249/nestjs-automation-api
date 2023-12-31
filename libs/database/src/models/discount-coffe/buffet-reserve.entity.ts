@@ -5,6 +5,7 @@ import {
   DataType,
   ForeignKey,
   BelongsTo,
+  HasMany,
 } from 'sequelize-typescript';
 import { Buffet } from './buffet.entity';
 import { BuffetReserveStatus } from './buffet-reserve-status.entity';
@@ -12,6 +13,7 @@ import { User } from '../core/user.entity';
 import { BuffetReserveType } from './buffet-reserve-type.entity';
 import { Attachment } from '../core/attachment.entity';
 import { PersianDate } from '../core/view/persiandate.entity';
+import { BuffetReserveDetail } from './buffet-reserve-detail.entity';
 
 @Table({ tableName: 'DiscountCoffeReserves' })
 export class BuffetReserve extends Model {
@@ -81,9 +83,20 @@ export class BuffetReserve extends Model {
 
   @Column({
     type: DataType.BIGINT,
+    allowNull: true,
+  })
+  price?: bigint;
+
+  @Column({
+    type: DataType.BIGINT,
   })
   @ForeignKey(() => Attachment)
   attachmentId?: bigint;
   @BelongsTo(() => Attachment, { as: 'attachment', foreignKey: 'attachmentId' })
   attachment?: Attachment;
+  @HasMany(() => BuffetReserveDetail, {
+    as: 'details',
+    foreignKey: 'reserveId',
+  })
+  details?: BuffetReserveDetail[];
 }

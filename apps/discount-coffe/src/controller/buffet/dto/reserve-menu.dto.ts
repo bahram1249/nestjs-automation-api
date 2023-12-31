@@ -2,10 +2,10 @@ import { Transform } from 'class-transformer';
 import { IsNumber } from 'class-validator';
 
 export class ReserveMenuDto {
-  @Transform(({ value }) => JSON.parse(value))
+  @Transform(({ value }) => BigInt(value))
   @IsNumber()
   id: bigint;
-  @Transform(({ value }) => JSON.parse(value))
+  @Transform(({ value }) => parseInt(value))
   @IsNumber()
   count: number;
 }

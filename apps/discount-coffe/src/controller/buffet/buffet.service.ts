@@ -208,7 +208,7 @@ export class BuffetService {
       reserveTypeId: dto.reserveType,
     };
 
-    const buffetReserve = await this.buffetReserveRepository.create(data);
+    let buffetReserve = await this.buffetReserveRepository.create(data);
     if (dto.items.length > 0) {
       const menusIds = dto.items.map((item) => item.id);
       const menus = await this.buffetMenuRepository.findAll({
@@ -229,17 +229,30 @@ export class BuffetService {
         },
       });
 
+      let totalPrice = 0;
       for (let index = 0; index < menus.length; index++) {
         const menu = menus[index];
         const item = dto.items.find((item) => item.id == menu.id);
+
+        var count = parseInt(item.count.toString());
+        var itemTotalPrice = Number(menu.price) * count;
+        totalPrice += itemTotalPrice;
         await this.buffetReserveDetailRepository.create({
-          reserverId: buffetReserve.id,
+          reserveId: buffetReserve.id,
           menuId: menu.id,
           price: menu.price,
-          totalPrice: menu.price * BigInt(item.count),
+          totalPrice: itemTotalPrice,
           countItem: item.count,
         });
       }
+      await this.buffetReserveRepository.update(
+        { price: totalPrice },
+        {
+          where: {
+            id: buffetReserve.id,
+          },
+        },
+      );
     }
 
     return {

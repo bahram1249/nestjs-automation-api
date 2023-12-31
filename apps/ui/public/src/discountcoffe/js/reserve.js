@@ -159,8 +159,8 @@ $(document).on('click', '#getReserveButton', function (event) {
   var personCount = $('#peopleCounter').text();
   var itemMaps = items.map((item) => {
     return {
-      id: item.id,
-      count: item.count,
+      id: parseInt(item.id),
+      count: parseInt(item.count),
     };
   });
 

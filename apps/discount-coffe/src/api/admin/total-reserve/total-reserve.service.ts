@@ -10,6 +10,8 @@ import { BuffetReserveType } from '@rahino/database/models/discount-coffe/buffet
 import { Buffet } from '@rahino/database/models/discount-coffe/buffet.entity';
 import { Attachment } from '@rahino/database/models/core/attachment.entity';
 import { PersianDate } from '@rahino/database/models/core/view/persiandate.entity';
+import { BuffetReserveDetail } from '@rahino/database/models/discount-coffe/buffet-reserve-detail.entity';
+import { BuffetMenu } from '@rahino/database/models/discount-coffe/buffet-menu.entity';
 
 @Injectable()
 export class TotalReserveService {
@@ -63,6 +65,24 @@ export class TotalReserveService {
           on: Sequelize.literal(
             'convert(date, [BuffetReserve].[reserveDate], 103) = [persianDate].[GregorianDate]',
           ),
+        },
+        {
+          model: BuffetReserveDetail,
+          as: 'details',
+          required: false,
+          include: [
+            {
+              model: BuffetMenu,
+              as: 'buffetMenu',
+              include: [
+                {
+                  model: Attachment,
+                  as: 'cover',
+                  required: false,
+                },
+              ],
+            },
+          ],
         },
       ])
       .order({ orderBy: filter.orderBy, sortOrder: filter.sortOrder })

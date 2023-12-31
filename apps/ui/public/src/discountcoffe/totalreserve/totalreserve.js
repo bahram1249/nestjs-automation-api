@@ -26,6 +26,57 @@ function imageFormatter(value, row) {
   return html.join('');
 }
 
+function detailFormatter(index, row) {
+  var html = [];
+  html.push('<div>');
+  html.push('<table class="table w-100">');
+  html.push('<tr>');
+  html.push('<th>');
+  html.push('تصویر منو');
+  html.push('</th>');
+  html.push('<th>');
+  html.push('نام منو');
+  html.push('</th>');
+  html.push('<th>');
+  html.push('مبلغ');
+  html.push('</th>');
+  html.push('<th>');
+  html.push('تعداد');
+  html.push('</th>');
+  html.push('</tr>');
+  console.log(row);
+  if (row.details.length > 0) {
+    for (let index = 0; index < row.details.length; index++) {
+      const detail = row.details[index];
+      html.push('<tr>');
+      html.push('<td>');
+      if (detail.buffetMenu.cover) {
+        html.push(
+          `<img width="50" height="50" src="/v1/api/discountcoffe/admin/menus/photo/${detail.buffetMenu.cover.fileName}">`,
+        );
+      }
+
+      html.push('</td>');
+      html.push('<td>');
+      html.push(detail.buffetMenu.title);
+      html.push('</td>');
+
+      html.push('<td>');
+      html.push(detail.totalPrice);
+      html.push('</td>');
+
+      html.push('<td>');
+      html.push(detail.countItem);
+      html.push('</td>');
+      html.push('</tr>');
+    }
+  }
+
+  html.push('</table>');
+  html.push('</div>');
+  return html.join('');
+}
+
 function actionFormatter(value, row) {
   var html = [];
   html.push('<div class="text-center d-flex justify-content-center">');

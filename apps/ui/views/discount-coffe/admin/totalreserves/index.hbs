@@ -31,6 +31,10 @@
       data-page-list='[10, 20, 50, 100, 200]'
       data-locale='fa-IR'
       data-search='true'
+      data-show-columns='true'
+      data-detail-view='true'
+      data-detail-view-by-click='true'
+      data-detail-formatter='detailFormatter'
     >
       <thead>
         <tr>
@@ -39,8 +43,9 @@
           <th data-field='personCount'>تعداد نفرات</th>
           <th data-field='persianDate.YearMonthDay'>تاریخ رزرو</th>
           <th data-field='reserveType.title'>نوع رزرو</th>
+          <th data-field='price'>مجموع قیمت</th>
           <th data-formatter='imageFormatter'>تصویر</th>
-          <th data-formatter='actionFormatter'>عملیات</th>
+          {{! <th data-formatter='actionFormatter'>عملیات</th> }}
 
         </tr>
       </thead>
