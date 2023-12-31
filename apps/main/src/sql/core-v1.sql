@@ -1020,6 +1020,40 @@ END
 
 GO
 
+
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'DiscountCoffe-reserveDetail-v1' 
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'SITE_NAME' AND [value] IN ('DiscountCoffe'))
+		)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'CUSTOMER_NAME' AND [value] IN ('DiscountCoffe'))
+		)
+BEGIN
+
+	CREATE TABLE DiscountCoffeReserveDetails (
+		id							bigint identity(1,1)		PRIMARY KEY,
+		reserveId					bigint						NOT NULL
+			CONSTRAINT FK_DiscountCoffeReserveDetails_ReserveId
+				FOREIGN KEY REFERENCES DiscountCoffeReserves(id),
+		menuId						bigint						NOT NULL
+			CONSTRAINT FK_DisocuntCoffeReserveDetails_MenuId
+				FOREIGN KEY REFERENCES DiscountCoffeMenus(id),
+		price						bigint						NOT NULL,
+		totalPrice					bigint						NOT NULL,
+		countItem					int							NOT NULL,
+		[createdAt]					datetimeoffset				NOT NULL,
+		[updatedAt]					datetimeoffset				NOT NULL
+	);
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'DiscountCoffe-reserveDetail-v1', GETDATE(), GETDATE()
+END
+
+GO
+
 -- data takhfif
 -- buffetType
 IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'DiscountCoffe-buffetType-Data-v1' 

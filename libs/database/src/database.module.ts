@@ -38,6 +38,7 @@ import { BuffetMenu } from './models/discount-coffe/buffet-menu.entity';
 import { BuffetReserveStatus } from './models/discount-coffe/buffet-reserve-status.entity';
 import { BuffetReserve } from './models/discount-coffe/buffet-reserve.entity';
 import { BuffetReserveType } from './models/discount-coffe/buffet-reserve-type.entity';
+import { BuffetReserveDetail } from './models/discount-coffe/buffet-reserve-detail.entity';
 
 // let config;
 // switch (process.env.NODE_ENV) {
@@ -118,6 +119,7 @@ const dbLog: boolean = JSON.parse(process.env.DB_LOG);
           BuffetReserveStatus,
           BuffetReserveType,
           BuffetReserve,
+          BuffetReserveDetail,
         ],
         autoLoadModels: autoLoadModels,
         logging: dbLog,

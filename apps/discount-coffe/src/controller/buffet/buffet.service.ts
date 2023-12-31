@@ -22,6 +22,7 @@ import { ConfigService } from '@nestjs/config';
 import * as fs from 'fs';
 import * as path from 'path';
 import * as util from 'util';
+import { BuffetReserveDetail } from '@rahino/database/models/discount-coffe/buffet-reserve-detail.entity';
 const mkdirAsync = util.promisify(fs.mkdir);
 
 @Injectable()
@@ -37,6 +38,10 @@ export class BuffetService {
     private readonly buffetReserveRepository: typeof BuffetReserve,
     @InjectModel(Attachment)
     private readonly attachmentRepository: typeof Attachment,
+    @InjectModel(BuffetMenu)
+    private readonly buffetMenuRepository: typeof BuffetMenu,
+    @InjectModel(BuffetReserveDetail)
+    private readonly buffetReserveDetailRepository: typeof BuffetReserveDetail,
     private readonly config: ConfigService,
   ) {}
 
@@ -167,6 +172,11 @@ export class BuffetService {
   }
 
   async setReserve(dto: ReserveDto) {
+    const onlineReserve = 1;
+    if (dto.reserveType == onlineReserve && dto.items.length == 0) {
+      throw new BadRequestException('Must select 1 menus.');
+    }
+
     const increase = 14;
     const reserveIncompoleteStatus = 1;
     const reserveDate = await this.persianDateRepository.findOne({
@@ -186,7 +196,8 @@ export class BuffetService {
         ],
       },
     });
-    if (!reserveDate) throw new BadRequestException('The Given Date not ');
+    if (!reserveDate)
+      throw new BadRequestException('The Given Date not valid.');
 
     const data = {
       reserveDate: Sequelize.cast(reserveDate.GregorianDate, 'DATETIME'),
@@ -198,8 +209,39 @@ export class BuffetService {
     };
 
     const buffetReserve = await this.buffetReserveRepository.create(data);
+    if (dto.items.length > 0) {
+      const menusIds = dto.items.map((item) => item.id);
+      const menus = await this.buffetMenuRepository.findAll({
+        where: {
+          [Op.and]: [
+            {
+              id: {
+                [Op.in]: menusIds,
+              },
+            },
+            Sequelize.where(
+              Sequelize.fn('isnull', Sequelize.col('isDeleted'), 0),
+              {
+                [Op.eq]: 0,
+              },
+            ),
+          ],
+        },
+      });
 
-    console.log(dto.items);
+      for (let index = 0; index < menus.length; index++) {
+        const menu = menus[index];
+        const item = dto.items.find((item) => item.id == menu.id);
+        await this.buffetReserveDetailRepository.create({
+          reserverId: buffetReserve.id,
+          menuId: menu.id,
+          price: menu.price,
+          totalPrice: menu.price * BigInt(item.count),
+          countItem: item.count,
+        });
+      }
+    }
+
     return {
       result: buffetReserve.toJSON(),
     };
