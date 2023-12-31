@@ -10,6 +10,7 @@ import { LoginModule } from './controller/login/login.module';
 import { HomeModule } from './controller/home/home.module';
 import { TotalReserveModule } from './controller/admin/total-reserve/total-reserve.module';
 import { TotalReserveApiModule } from './api/admin/total-reserve/total-reserve.module';
+import { ReserveApiModule } from './api/admin/reserve/reserve.module';
 @Module({
   imports: [
     BuffetModule,
@@ -21,6 +22,7 @@ import { TotalReserveApiModule } from './api/admin/total-reserve/total-reserve.m
     BuffetMenuModule,
     TotalReserveApiModule,
     TotalReserveModule,
+    ReserveApiModule,
     LoginModule,
     HomeModule,
   ],
