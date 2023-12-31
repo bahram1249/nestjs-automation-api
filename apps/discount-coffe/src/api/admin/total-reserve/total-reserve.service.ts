@@ -26,6 +26,13 @@ export class TotalReserveService {
     builder = builder
       .include([
         {
+          attributes: [
+            'id',
+            'firstname',
+            'lastname',
+            'username',
+            'phoneNumber',
+          ],
           model: User,
           as: 'user',
         },
@@ -40,6 +47,7 @@ export class TotalReserveService {
     const options = builder
       .include([
         {
+          attributes: ['id', 'firstname', 'lastname', 'username'],
           model: User,
           as: 'user',
         },
@@ -49,6 +57,7 @@ export class TotalReserveService {
           required: false,
         },
         {
+          attributes: ['id', 'title', 'buffetAddress'],
           model: Buffet,
           as: 'buffet',
           include: [
@@ -88,8 +97,9 @@ export class TotalReserveService {
       .order({ orderBy: filter.orderBy, sortOrder: filter.sortOrder })
       .build();
 
+    const result = await this.repository.findAll(options);
     return {
-      result: await this.repository.findAll(options),
+      result: result,
       total: count,
     };
   }

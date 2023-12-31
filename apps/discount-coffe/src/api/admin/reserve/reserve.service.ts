@@ -26,6 +26,7 @@ export class ReserveService {
     builder = builder
       .include([
         {
+          attributes: ['id', 'firstname', 'lastname', 'username'],
           model: User,
           as: 'user',
         },
@@ -52,6 +53,13 @@ export class ReserveService {
     const options = builder
       .include([
         {
+          attributes: [
+            'id',
+            'firstname',
+            'lastname',
+            'username',
+            'phoneNumber',
+          ],
           model: User,
           as: 'user',
         },
@@ -61,6 +69,7 @@ export class ReserveService {
           required: false,
         },
         {
+          attributes: ['id', 'title', 'buffetAddress'],
           model: Buffet,
           as: 'buffet',
           include: [
