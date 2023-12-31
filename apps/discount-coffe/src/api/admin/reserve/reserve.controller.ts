@@ -27,7 +27,7 @@ import { ReserveService } from './reserve.service';
 @ApiTags('DiscountCoffe-Reserves')
 @ApiBearerAuth()
 @Controller({
-  path: '/api/discountcoffe/admin/reserves',
+  path: '/api/discountcoffe/admin/reservers',
   version: ['1'],
 })
 export class ReserveController {
@@ -36,7 +36,7 @@ export class ReserveController {
   @UseGuards(JwtGuard, PermissionGuard)
   @ApiOperation({ description: 'show all total reserves' })
   @CheckPermission({
-    permissionSymbol: 'discountcoffe.admin.reserves.getall',
+    permissionSymbol: 'discountcoffe.admin.reservers.getall',
   })
   @Get('/')
   @ApiQuery({
@@ -54,7 +54,7 @@ export class ReserveController {
   @UseGuards(JwtGuard, PermissionGuard)
   @ApiOperation({ description: 'show reserve by given id' })
   @CheckPermission({
-    permissionSymbol: 'discountcoffe.admin.reserves.getone',
+    permissionSymbol: 'discountcoffe.admin.reservers.getone',
   })
   @Get('/:id')
   @HttpCode(HttpStatus.OK)
@@ -66,7 +66,7 @@ export class ReserveController {
   @UseGuards(JwtGuard, PermissionGuard)
   @ApiOperation({ description: 'update buffets' })
   @CheckPermission({
-    permissionSymbol: 'discountcoffe.admin.reserves.update',
+    permissionSymbol: 'discountcoffe.admin.reservers.update',
   })
   @Put('/:id')
   @HttpCode(HttpStatus.CREATED)
