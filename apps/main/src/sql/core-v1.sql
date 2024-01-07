@@ -1054,6 +1054,69 @@ END
 
 GO
 
+
+
+
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'DiscountCoffe-VW_BuffetReservers-v1' 
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'SITE_NAME' AND [value] IN ('DiscountCoffe'))
+		)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'CUSTOMER_NAME' AND [value] IN ('DiscountCoffe'))
+		)
+BEGIN
+	EXEC('
+	CREATE VIEW VW_BuffetReservers
+	AS
+	SELECT Buffets.id
+			, Buffets.title
+			, buffets.ownerId
+			, T.YearNumber
+			, T.MonthNumber
+			, T.PersianMonthName
+			, T.MinDate
+			, T.MaxDate
+			, COUNT(CASE WHEN reserveStatusId = 2 THEN Reservers.id END) as totalCnt
+			, COUNT(CASE WHEN reserveStatusId = 2 AND reserveTypeId = 1 THEN Reservers.id END) as onlineCnt
+			, COUNT(CASE WHEN reserveStatusId = 2 AND reserveTypeId = 2 THEN Reservers.id END) as offlineCnt
+			, ISNULL(SUM(CASE WHEN reserveStatusId = 2 AND reserveTypeId = 1 THEN Reservers.price END), 0) as onlineSumPrice
+	FROM DiscountCoffeBuffets Buffets
+	CROSS JOIN (
+		SELECT YearNumber
+				,MonthNumber
+				,PersianMonthName
+				,MIN(GregorianDate) MinDate
+				,MAX(GregorianDate) AS MaxDate
+		FROM PersianDates
+		WHERE YearNumber = (SELECT  top 1 YearNumber
+			FROM PersianDates
+			WHERE GregorianDate = CONVERT(date, getdate(), 103)
+		)
+		GROUP BY YearNumber,MonthNumber, PersianMonthName
+	) T
+	LEFT JOIN DiscountCoffeReserves Reservers
+	ON Buffets.id = Reservers.buffetId 
+		AND Reservers.reserveDate BETWEEN T.MinDate AND T.MaxDate
+	GROUP BY  Buffets.id
+			, Buffets.title
+			, buffets.ownerId
+			, T.YearNumber
+			, T.MonthNumber
+			, T.PersianMonthName
+			, T.MinDate
+			, T.MaxDate')
+
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'DiscountCoffe-VW_BuffetReservers-v1', GETDATE(), GETDATE()
+END
+
+GO
+
+
 -- data takhfif
 -- buffetType
 IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'DiscountCoffe-buffetType-Data-v1' 

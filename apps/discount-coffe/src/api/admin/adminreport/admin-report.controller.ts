@@ -38,7 +38,7 @@ export class AdminReportController {
   @CheckPermission({
     permissionSymbol: 'discountcoffe.admin.adminreports.getall',
   })
-  @Get('/')
+  @Get('/totalReserves')
   @ApiQuery({
     name: 'filter',
     type: ListFilter,
@@ -46,7 +46,7 @@ export class AdminReportController {
     explode: true,
   })
   @HttpCode(HttpStatus.OK)
-  async findAll(@GetUser() user: User, @Query() filter: ListFilter) {
-    return await this.service.findAll(user, filter);
+  async totalReserves(@GetUser() user: User, @Query() filter: ListFilter) {
+    return await this.service.totalReserves(user, filter);
   }
 }
