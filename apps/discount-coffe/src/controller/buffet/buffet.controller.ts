@@ -25,6 +25,13 @@ import { Response, Request } from 'express';
 export class BuffetController {
   constructor(private service: BuffetService) {}
 
+  @Get('/list')
+  @HttpCode(HttpStatus.OK)
+  @Render('buffets/list')
+  async list() {
+    return await this.service.list();
+  }
+
   @Get('/menus/:urlAddress')
   @HttpCode(HttpStatus.OK)
   @Render('buffets/menus')

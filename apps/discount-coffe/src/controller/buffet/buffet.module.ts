@@ -10,6 +10,8 @@ import { WebAuthDiscountCoffeMiddleware } from '@rahino/commonmiddleware/middlew
 import { Attachment } from '@rahino/database/models/core/attachment.entity';
 import { BuffetMenu } from '@rahino/database/models/discount-coffe/buffet-menu.entity';
 import { BuffetReserveDetail } from '@rahino/database/models/discount-coffe/buffet-reserve-detail.entity';
+import { BuffetType } from '@rahino/database/models/discount-coffe/buffet-type.entity';
+import { BuffetCost } from '@rahino/database/models/discount-coffe/buffet-cost.entity';
 
 @Module({
   imports: [
@@ -20,6 +22,8 @@ import { BuffetReserveDetail } from '@rahino/database/models/discount-coffe/buff
       BuffetReserve,
       BuffetMenu,
       BuffetReserveDetail,
+      BuffetType,
+      BuffetCost,
       Attachment,
     ]),
   ],

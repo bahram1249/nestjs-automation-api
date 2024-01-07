@@ -23,6 +23,8 @@ import * as fs from 'fs';
 import * as path from 'path';
 import * as util from 'util';
 import { BuffetReserveDetail } from '@rahino/database/models/discount-coffe/buffet-reserve-detail.entity';
+import { BuffetType } from '@rahino/database/models/discount-coffe/buffet-type.entity';
+import { BuffetCost } from '@rahino/database/models/discount-coffe/buffet-cost.entity';
 const mkdirAsync = util.promisify(fs.mkdir);
 
 @Injectable()
@@ -42,6 +44,10 @@ export class BuffetService {
     private readonly buffetMenuRepository: typeof BuffetMenu,
     @InjectModel(BuffetReserveDetail)
     private readonly buffetReserveDetailRepository: typeof BuffetReserveDetail,
+    @InjectModel(BuffetType)
+    private readonly buffetTypeRepository: typeof BuffetType,
+    @InjectModel(BuffetCost)
+    private readonly buffetCostRepository: typeof BuffetCost,
     private readonly config: ConfigService,
   ) {}
 
@@ -361,5 +367,16 @@ export class BuffetService {
     });
     const file = fs.createReadStream(path.join(process.cwd(), attachment.path));
     return new StreamableFile(file);
+  }
+
+  async list() {
+    const buffetTypes = await this.buffetTypeRepository.findAll();
+    const buffetCosts = await this.buffetCostRepository.findAll();
+    return {
+      title: 'لیست کافه و رستوران ها',
+      layout: 'discountcoffe',
+      buffetTypes: JSON.parse(JSON.stringify(buffetTypes)),
+      buffetCosts: JSON.parse(JSON.stringify(buffetCosts)),
+    };
   }
 }

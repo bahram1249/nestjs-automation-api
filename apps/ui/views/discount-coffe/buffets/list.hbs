@@ -1,0 +1,222 @@
+{{#section 'header'}}
+
+  <link
+    rel='stylesheet'
+    href='https://behzadi.github.io/persianDatepicker/css/persianDatepicker-latoja.css'
+  />
+  <title>{{title}}</title>
+{{/section}}
+<section class='cases'>
+  <div class='container'>
+    <div class='row'>
+      <div class='col-md-3'>
+        <div class='filters'>
+          <div class='head'>فیلتر نتایج</div>
+
+          <div class='filterItemSingle'>
+            <div class='topBar'>
+              <div>
+                <span>نوع کافه رستوران</span>
+              </div>
+              <i class='icon-bottom'></i>
+            </div>
+            <div class='filterWrapper'>
+              <select name='buffetTypeId' id='buffetTypeId'>
+                <option value=''>همه</option>
+                {{#each buffetTypes}}
+                  <option value='{{id}}'>{{title}}</option>
+                {{/each}}
+              </select>
+            </div>
+          </div>
+          <div class='filterItemSingle'>
+            <div class='topBar'>
+              <div>
+                <span>نوع هزینه</span>
+              </div>
+              <i class='icon-bottom'></i>
+            </div>
+            <div class='filterWrapper'>
+              <select name='buffetCostId' id='buffetCostId'>
+                <option value=''>همه</option>
+                {{#each buffetCosts}}
+                  <option value='{{id}}'>{{title}}</option>
+                {{/each}}
+              </select>
+            </div>
+          </div>
+
+        </div>
+      </div>
+      <div class='col-md-9'>
+        <div class='row'>
+          <div class='order'>
+            <span>مرتب سازی بر اساس</span>
+            <a field-id='id' field-order='desc' href='#' class='active'>جدید
+              ترین</a>
+            <a field-id='id' field-order='asc' href='#'>قدیمی ترین</a>
+          </div>
+        </div>
+        <div class='row'>
+          <div class='col-xl-4 col-lg-6 col-md-6 col-sm-6'>
+            <div class='productItem'>
+              <img class='w-100' src='assets/img/png/product.png' alt='' />
+              <div class='productData'>
+                <h3>کافه نوستالانژ سعادت آباد</h3>
+                <div class='features'>
+                  <div class='item'>
+                    <i class='icon-pizza'></i>
+                    <p>غذای فرنگی</p>
+                  </div>
+                  <div class='item'>
+                    <i class='icon-pizza'></i>
+                    <p>غذای فرنگی</p>
+                  </div>
+                  <div class='item'>
+                    <i class='icon-pizza'></i>
+                    <p>غذای فرنگی</p>
+                  </div>
+                </div>
+                <div class='more'>
+                  <h5>تا 40% تخفیف!</h5>
+                  <a href='' tabindex='0'>اطلاعات و رزرو</a>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class='col-xl-4 col-lg-6 col-md-6 col-sm-6'>
+            <div class='productItem'>
+              <img class='w-100' src='assets/img/png/product.png' alt='' />
+              <div class='productData'>
+                <h3>کافه نوستالانژ سعادت آباد</h3>
+                <div class='features'>
+                  <div class='item'>
+                    <i class='icon-pizza'></i>
+                    <p>غذای فرنگی</p>
+                  </div>
+                  <div class='item'>
+                    <i class='icon-pizza'></i>
+                    <p>غذای فرنگی</p>
+                  </div>
+                  <div class='item'>
+                    <i class='icon-pizza'></i>
+                    <p>غذای فرنگی</p>
+                  </div>
+                </div>
+                <div class='more'>
+                  <h5>تا 40% تخفیف!</h5>
+                  <a href='' tabindex='0'>اطلاعات و رزرو</a>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class='col-xl-4 col-lg-6 col-md-6 col-sm-6'>
+            <div class='productItem'>
+              <img class='w-100' src='assets/img/png/product.png' alt='' />
+              <div class='productData'>
+                <h3>کافه نوستالانژ سعادت آباد</h3>
+                <div class='features'>
+                  <div class='item'>
+                    <i class='icon-pizza'></i>
+                    <p>غذای فرنگی</p>
+                  </div>
+                  <div class='item'>
+                    <i class='icon-pizza'></i>
+                    <p>غذای فرنگی</p>
+                  </div>
+                  <div class='item'>
+                    <i class='icon-pizza'></i>
+                    <p>غذای فرنگی</p>
+                  </div>
+                </div>
+                <div class='more'>
+                  <h5>تا 40% تخفیف!</h5>
+                  <a href='' tabindex='0'>اطلاعات و رزرو</a>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class='col-xl-4 col-lg-6 col-md-6 col-sm-6'>
+            <div class='productItem'>
+              <img class='w-100' src='assets/img/png/product.png' alt='' />
+              <div class='productData'>
+                <h3>کافه نوستالانژ سعادت آباد</h3>
+                <div class='features'>
+                  <div class='item'>
+                    <i class='icon-pizza'></i>
+                    <p>غذای فرنگی</p>
+                  </div>
+                  <div class='item'>
+                    <i class='icon-pizza'></i>
+                    <p>غذای فرنگی</p>
+                  </div>
+                  <div class='item'>
+                    <i class='icon-pizza'></i>
+                    <p>غذای فرنگی</p>
+                  </div>
+                </div>
+                <div class='more'>
+                  <h5>تا 40% تخفیف!</h5>
+                  <a href='' tabindex='0'>اطلاعات و رزرو</a>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class='col-xl-4 col-lg-6 col-md-6 col-sm-6'>
+            <div class='productItem'>
+              <img class='w-100' src='assets/img/png/product.png' alt='' />
+              <div class='productData'>
+                <h3>کافه نوستالانژ سعادت آباد</h3>
+                <div class='features'>
+                  <div class='item'>
+                    <i class='icon-pizza'></i>
+                    <p>غذای فرنگی</p>
+                  </div>
+                  <div class='item'>
+                    <i class='icon-pizza'></i>
+                    <p>غذای فرنگی</p>
+                  </div>
+                  <div class='item'>
+                    <i class='icon-pizza'></i>
+                    <p>غذای فرنگی</p>
+                  </div>
+                </div>
+                <div class='more'>
+                  <h5>تا 40% تخفیف!</h5>
+                  <a href='' tabindex='0'>اطلاعات و رزرو</a>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class='col-xl-4 col-lg-6 col-md-6 col-sm-6'>
+            <div class='productItem'>
+              <img class='w-100' src='assets/img/png/product.png' alt='' />
+              <div class='productData'>
+                <h3>کافه نوستالانژ سعادت آباد</h3>
+                <div class='features'>
+                  <div class='item'>
+                    <i class='icon-pizza'></i>
+                    <p>غذای فرنگی</p>
+                  </div>
+                  <div class='item'>
+                    <i class='icon-pizza'></i>
+                    <p>غذای فرنگی</p>
+                  </div>
+                  <div class='item'>
+                    <i class='icon-pizza'></i>
+                    <p>غذای فرنگی</p>
+                  </div>
+                </div>
+                <div class='more'>
+                  <h5>تا 40% تخفیف!</h5>
+                  <a href='' tabindex='0'>اطلاعات و رزرو</a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{{#section 'footer'}}{{/section}}
