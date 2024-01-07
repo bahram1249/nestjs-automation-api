@@ -16,6 +16,8 @@ import { AdminReportModule } from './controller/admin/adminreport/admin-report.m
 import { AdminReportApiModule } from './api/admin/adminreport/admin-report.module';
 import { CoffeReportModule } from './controller/admin/coffereport/coffe-report.module';
 import { CoffeReportApiModule } from './api/admin/coffereport/coffe-report.module';
+import { BuffetModule as BuffetUserModule } from './api/user/buffet/buffet.module';
+
 @Module({
   imports: [
     BuffetModule,
@@ -33,6 +35,7 @@ import { CoffeReportApiModule } from './api/admin/coffereport/coffe-report.modul
     AdminReportApiModule,
     CoffeReportModule,
     CoffeReportApiModule,
+    BuffetUserModule,
     LoginModule,
     HomeModule,
   ],
