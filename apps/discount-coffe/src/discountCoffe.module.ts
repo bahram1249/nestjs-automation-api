@@ -14,6 +14,8 @@ import { ReserveApiModule } from './api/admin/reserve/reserve.module';
 import { ReserveModule } from './controller/admin/reservers/reserve.module';
 import { AdminReportModule } from './controller/admin/adminreport/admin-report.module';
 import { AdminReportApiModule } from './api/admin/adminreport/admin-report.module';
+import { CoffeReportModule } from './controller/admin/coffereport/coffe-report.module';
+import { CoffeReportApiModule } from './api/admin/coffereport/coffe-report.module';
 @Module({
   imports: [
     BuffetModule,
@@ -29,6 +31,8 @@ import { AdminReportApiModule } from './api/admin/adminreport/admin-report.modul
     ReserveModule,
     AdminReportModule,
     AdminReportApiModule,
+    CoffeReportModule,
+    CoffeReportApiModule,
     LoginModule,
     HomeModule,
   ],
