@@ -58,11 +58,11 @@ import * as session from 'express-session';
       strategyInitializer: classes(),
     }),
     CoreModule,
-    UIModule,
-    CoreDashboardModule,
     PCMModule,
     EAVModule,
     ECommerceModule,
+    UIModule,
+    CoreDashboardModule,
     DiscountCoffeModule,
     DevtoolsModule.register({
       http: process.env.NODE_ENV !== 'production',
