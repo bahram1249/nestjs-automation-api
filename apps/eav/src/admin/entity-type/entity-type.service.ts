@@ -29,6 +29,11 @@ export class EntityTypeService {
         entityModelId: filter.entityModelId,
       });
     }
+    if (filter.parentEntityTypeId) {
+      builder = builder.filter({
+        parentEntityTypeId: filter.parentEntityTypeId,
+      });
+    }
     const count = await this.repository.count(builder.build());
     builder = builder
       .limit(filter.limit, filter.ignorePaging)
@@ -40,7 +45,7 @@ export class EntityTypeService {
     };
   }
 
-  async findById(id: bigint) {
+  async findById(id: number) {
     const builder = new QueryOptionsBuilder().filter({ id });
     return {
       result: await this.repository.findOne(builder.build()),

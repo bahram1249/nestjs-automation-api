@@ -1117,6 +1117,161 @@ END
 GO
 
 
+
+
+
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'eav-entitymodel-v1' 
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'SITE_NAME' AND [value] IN ('ecommerce'))
+		)
+
+BEGIN
+
+	CREATE TABLE EAVEntityModels (
+		id							int							PRIMARY KEY,
+		name						nvarchar(256)				NOT NULL,
+		[createdAt]					datetimeoffset				NOT NULL,
+		[updatedAt]					datetimeoffset				NOT NULL
+	);
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'eav-entitymodel-v1', GETDATE(), GETDATE()
+END
+
+GO
+
+
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'eav-entitytype-v1' 
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'SITE_NAME' AND [value] IN ('ecommerce'))
+		)
+BEGIN
+
+	CREATE TABLE EAVEntityTypes (
+		id							int	identity(1,1)			PRIMARY KEY,
+		name						nvarchar(256)				NOT NULL,
+		slug						nvarchar(512)				NOT NULL,
+		entityModelId				int							NOT NULL
+			CONSTRAINT FK_EAVEntityTypes_EntityModelId
+				FOREIGN KEY REFERENCES EAVEntityModels(id),
+		parentEntityTypeId			int							NULL
+			CONSTRAINT FK_EAVEntityTypes_ParentEntityTypeId
+				FOREIGN KEY REFERENCES EAVEntityTypes(id),
+		isDeleted					bit							NULL,
+		[createdAt]					datetimeoffset				NOT NULL,
+		[updatedAt]					datetimeoffset				NOT NULL
+	);
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'eav-entitytype-v1', GETDATE(), GETDATE()
+END
+
+GO
+
+
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'eav-attributetype-v1' 
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'SITE_NAME' AND [value] IN ('ecommerce'))
+		)
+BEGIN
+
+	CREATE TABLE EAVAttributeTypes (
+		id							int							PRIMARY KEY,
+		name						nvarchar(256)				NOT NULL,
+		[createdAt]					datetimeoffset				NOT NULL,
+		[updatedAt]					datetimeoffset				NOT NULL
+	);
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'eav-attributetype-v1', GETDATE(), GETDATE()
+END
+
+GO
+
+
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'eav-attributes-v1' 
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'SITE_NAME' AND [value] IN ('ecommerce'))
+		)
+BEGIN
+
+	CREATE TABLE EAVAttributes (
+		id							bigint						PRIMARY KEY,
+		name						nvarchar(256)				NOT NULL,
+		attributeTypeId				int							NOT NULL
+			CONSTRAINT FK_EAVAttributes_AttributeTypeId
+				FOREIGN KEY REFERENCES EAVAttributeTypes(id),
+		minLength					int							NULL,
+		[maxLength]					int							NULL,
+		[required]					bit							NULL,
+		[isDeleted]					bit							NULL,
+		[createdAt]					datetimeoffset				NOT NULL,
+		[updatedAt]					datetimeoffset				NOT NULL
+	);
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'eav-attributes-v1', GETDATE(), GETDATE()
+END
+
+GO
+
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'eav-entityattributes-v1' 
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'SITE_NAME' AND [value] IN ('ecommerce'))
+		)
+BEGIN
+
+	CREATE TABLE EAVEntityAttributes (
+		entityTypeId				int							NOT NULL,
+		attributeId					bigint						NOT NULL,
+		[createdAt]					datetimeoffset				NOT NULL,
+		[updatedAt]					datetimeoffset				NOT NULL,
+		PRIMARY KEY CLUSTERED(entityTypeId, attributeId)
+	);
+
+
+
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'eav-entityattributes-v1', GETDATE(), GETDATE()
+END
+
+GO
+
+
+-- eav
+-- attributetypes
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'eav-attributetypes-Data-v1' 
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'SITE_NAME' AND [value] IN ('ecommerce'))
+		)
+BEGIN
+
+	INSERT INTO EAVAttributeTypes(id, name, createdAt, updatedAt)
+	VALUES (1, N'متنی', getdate(), getdate())
+			,(2, N'عددی', getdate(), getdate())
+			,(3, N'انتخابی', getdate(), getdate())
+		
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'eav-attributetypes-Data-v1', GETDATE(), GETDATE()
+END
+
+GO
+
+
 -- data takhfif
 -- buffetType
 IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'DiscountCoffe-buffetType-Data-v1' 

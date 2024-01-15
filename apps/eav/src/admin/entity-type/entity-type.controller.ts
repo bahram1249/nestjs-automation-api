@@ -52,7 +52,7 @@ export class EntityTypeController {
   @CheckPermission({ permissionSymbol: 'eav.admin.entitytype.getone' })
   @Get('/:id')
   @HttpCode(HttpStatus.OK)
-  async findById(@Param('id') entityId: bigint) {
+  async findById(@Param('id') entityId: number) {
     return await this.service.findById(entityId);
   }
 

@@ -52,4 +52,9 @@ export class EAVAttribute extends Model {
     allowNull: true,
   })
   required?: boolean;
+  @Column({
+    type: DataType.BOOLEAN,
+    allowNull: true,
+  })
+  isDeleted?: boolean;
 }

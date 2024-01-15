@@ -13,6 +13,15 @@ export class EntityTypeDto {
   public name: string;
 
   @AutoMap()
+  @IsString()
+  @ApiProperty({
+    required: true,
+    type: String,
+    description: 'slug is a unique url',
+  })
+  public slug: string;
+
+  @AutoMap()
   @IsNumber()
   @ApiProperty({
     required: true,

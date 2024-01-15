@@ -9,7 +9,7 @@ import {
 import { EAVEntityType } from './eav-entity-type.entity';
 import { EAVAttribute } from './eav-attribute.entity';
 
-@Table({ tableName: 'EAVAttributes' })
+@Table({ tableName: 'EAVEntityAttributes' })
 export class EAVEntityAttribute extends Model {
   @Column({
     type: DataType.INTEGER,

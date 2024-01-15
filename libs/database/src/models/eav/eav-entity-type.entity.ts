@@ -21,6 +21,10 @@ export class EAVEntityType extends Model {
   })
   name: string;
   @Column({
+    type: DataType.STRING,
+  })
+  slug: string;
+  @Column({
     type: DataType.INTEGER,
   })
   @ForeignKey(() => EAVEntityType)
@@ -39,4 +43,10 @@ export class EAVEntityType extends Model {
     foreignKey: 'entityModelId',
   })
   entityModel?: EAVEntityModel;
+
+  @Column({
+    type: DataType.BOOLEAN,
+    allowNull: true,
+  })
+  isDeleted?: boolean;
 }
