@@ -1249,6 +1249,31 @@ END
 GO
 
 
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'eav-entities-v1' 
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'SITE_NAME' AND [value] IN ('ecommerce'))
+		)
+BEGIN
+
+	CREATE TABLE EAVEntities (
+		entityId					bigint identity(1,1)		PRIMARY KEY,
+		entityTypeId				int							NOT NULL
+			CONSTRAINT FK_EAVEntities_EntityTypeId
+				FOREIGN KEY REFERENCES EAVEntityTypes(id),
+		[createdAt]					datetimeoffset				NOT NULL,
+		[updatedAt]					datetimeoffset				NOT NULL,
+	);
+
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'eav-entities-v1', GETDATE(), GETDATE()
+END
+
+GO
+
+
 -- eav
 -- attributetypes
 IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'eav-attributetypes-Data-v1' 
@@ -4064,7 +4089,7 @@ BEGIN
 	DECLARE @entityName nvarchar(256) = N'EntityTypes'
 	DECLARE @groupName nvarchar(256) = N'eav.admin.entitytype'
 	DECLARE @findParentMenu bit = 0;
-	DECLARE @parentMenuName nvarchar(256) = N'مدیریت'
+	DECLARE @parentMenuName nvarchar(256) = N'محصول'
 	DECLARE @menuName nvarchar(256) = N'دسته بندی ها'
 	DECLARE @menuUrl nvarchar(512) = N'/eav/admin/entityTypes'
 

@@ -1,4 +1,12 @@
-import { Table, Column, Model, DataType } from 'sequelize-typescript';
+import {
+  Table,
+  Column,
+  Model,
+  DataType,
+  ForeignKey,
+  BelongsTo,
+} from 'sequelize-typescript';
+import { EAVEntityType } from './eav-entity-type.entity';
 
 @Table({ tableName: 'EAVEntities' })
 export class EAVEntity extends Model {
@@ -8,4 +16,16 @@ export class EAVEntity extends Model {
     primaryKey: true,
   })
   id: bigint;
+
+  @Column({
+    type: DataType.INTEGER,
+  })
+  @ForeignKey(() => EAVEntityType)
+  entityTypeId: number;
+
+  @BelongsTo(() => EAVEntityType, {
+    foreignKey: 'entityTypeId',
+    as: 'entityType',
+  })
+  entityType?: EAVEntityType;
 }
