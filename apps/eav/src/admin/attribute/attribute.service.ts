@@ -4,8 +4,8 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
-import { Op } from 'sequelize';
-import { AttributeDto, GetAttributeDto } from './dto';
+import { Op, Sequelize } from 'sequelize';
+import { AttributeDto, GetAttributeDto, UpdateAttributeDto } from './dto';
 import { EAVAttribute } from '@rahino/database/models/eav/eav-attribute.entity';
 import { EAVEntityAttribute } from '@rahino/database/models/eav/eav-entity-attribute.entity';
 import { InjectMapper } from 'automapper-nestjs';
@@ -76,6 +76,7 @@ export class AttributeService {
       result: attribute,
     };
   }
+
   async create(dto: AttributeDto) {
     const attributeType = await this.attributeTypeRepository.findOne({
       where: {
@@ -118,6 +119,90 @@ export class AttributeService {
     attributeEntity = await this.entityAttributeRepository.findOne(options);
     return {
       result: attributeEntity,
+    };
+  }
+
+  async updateById(id: bigint, dto: UpdateAttributeDto) {
+    const item = await this.repository.findOne(
+      new QueryOptionsBuilder()
+        .filter({ id })
+        .filter(
+          Sequelize.where(
+            Sequelize.fn('isnull', Sequelize.col('isDeleted'), 0),
+            {
+              [Op.eq]: 0,
+            },
+          ),
+        )
+        .build(),
+    );
+    if (!item)
+      throw new NotFoundException('the item with this given id not founded!');
+    const attributeType = await this.attributeTypeRepository.findOne({
+      where: {
+        id: dto.attributeTypeId,
+      },
+    });
+    if (!attributeType)
+      throw new ForbiddenException('the given attributeTypeId not founded!');
+
+    const mappedItem = this.mapper.map(dto, UpdateAttributeDto, EAVAttribute);
+    const attribute = await this.repository.update(mappedItem.toJSON(), {
+      where: { id },
+      returning: true,
+    });
+
+    const options = new QueryOptionsBuilder()
+      .filter({
+        attributeId: attribute[1][0].id,
+      })
+      .include({
+        include: [
+          {
+            model: EAVAttribute,
+            as: 'attribute',
+          },
+          {
+            model: EAVEntityType,
+            as: 'entityType',
+          },
+        ],
+      })
+      .build();
+    const attributeEntity =
+      await this.entityAttributeRepository.findOne(options);
+    return {
+      result: attributeEntity,
+    };
+  }
+
+  async deleteById(entityId: bigint) {
+    let item = await this.repository.findOne(
+      new QueryOptionsBuilder()
+        .filter({ id: entityId })
+        .filter(
+          Sequelize.where(
+            Sequelize.fn('isnull', Sequelize.col('isDeleted'), 0),
+            {
+              [Op.eq]: 0,
+            },
+          ),
+        )
+        .build(),
+    );
+    if (!item)
+      throw new NotFoundException('the item with this given id not founded!');
+
+    await this.entityAttributeRepository.destroy({
+      where: {
+        attributeId: entityId,
+      },
+    });
+
+    item.isDeleted = true;
+    item = await item.save();
+    return {
+      result: item,
     };
   }
 }

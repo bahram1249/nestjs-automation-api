@@ -1,11 +1,13 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   HttpCode,
   HttpStatus,
   Param,
   Post,
+  Put,
   Query,
   UseGuards,
   UseInterceptors,
@@ -21,7 +23,7 @@ import {
 } from '@nestjs/swagger';
 
 import { JwtGuard } from '@rahino/auth/guard';
-import { AttributeDto, GetAttributeDto } from './dto';
+import { AttributeDto, GetAttributeDto, UpdateAttributeDto } from './dto';
 import { AttributeService } from './attribute.service';
 
 @ApiTags('EAV-Attribute')
@@ -62,5 +64,21 @@ export class AttributeController {
   @HttpCode(HttpStatus.CREATED)
   async create(@Body() dto: AttributeDto) {
     return await this.service.create(dto);
+  }
+
+  @ApiOperation({ description: 'update attribute by id' })
+  @CheckPermission({ permissionSymbol: 'eav.admin.attribute.update' })
+  @Put('/:id')
+  @HttpCode(HttpStatus.OK)
+  async updateById(@Param('id') id: bigint, @Body() dto: UpdateAttributeDto) {
+    return await this.service.updateById(id, dto);
+  }
+
+  @ApiOperation({ description: 'delete attribute by id' })
+  @CheckPermission({ permissionSymbol: 'eav.admin.attribute.delete' })
+  @Delete('/:id')
+  @HttpCode(HttpStatus.OK)
+  async deleteById(@Param('id') entityId: bigint) {
+    return await this.service.deleteById(entityId);
   }
 }
