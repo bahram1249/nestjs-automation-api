@@ -112,6 +112,7 @@ export class AppModule implements NestModule {
     app.get(CoreModule).setApp(app);
     app.get(PCMModule).setApp(app);
     app.get(EAVModule).setApp(app);
+    app.get(ECommerceModule).setApp(app);
     app.get(UIModule).setApp(app);
 
     const port = this.config.get('HOST_PORT');
