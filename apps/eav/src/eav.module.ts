@@ -8,9 +8,15 @@ import { AttributeModule } from './admin/attribute/attribute.module';
 import { AttributeTypeModule } from './admin/attribute-type/attribute-type.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { EntityTypeModule } from './admin/entity-type/entity-type.module';
+import { EntityModelModule } from './admin/entity-model/entity-model.module';
 
 @Module({
-  imports: [AttributeModule, AttributeTypeModule, EntityTypeModule],
+  imports: [
+    AttributeModule,
+    AttributeTypeModule,
+    EntityTypeModule,
+    EntityModelModule,
+  ],
 })
 export class EAVModule implements NestModule {
   constructor() {}
