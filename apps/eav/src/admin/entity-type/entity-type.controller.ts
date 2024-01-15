@@ -1,11 +1,13 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   HttpCode,
   HttpStatus,
   Param,
   Post,
+  Put,
   Query,
   UseGuards,
   UseInterceptors,
@@ -62,5 +64,21 @@ export class EntityTypeController {
   @HttpCode(HttpStatus.CREATED)
   async create(@Body() dto: EntityTypeDto) {
     return await this.service.create(dto);
+  }
+
+  @ApiOperation({ description: 'update entity type' })
+  @CheckPermission({ permissionSymbol: 'eav.admin.entitytype.update' })
+  @Put('/:id')
+  @HttpCode(HttpStatus.OK)
+  async update(@Param('id') entityId: number, @Body() dto: EntityTypeDto) {
+    return await this.service.update(entityId, dto);
+  }
+
+  @ApiOperation({ description: 'delete by entitytypeid' })
+  @CheckPermission({ permissionSymbol: 'eav.admin.entitytype.delete' })
+  @Delete('/:id')
+  @HttpCode(HttpStatus.OK)
+  async deleteById(@Param('id') entityId: number) {
+    return await this.service.deleteById(entityId);
   }
 }

@@ -1,4 +1,8 @@
-import { ForbiddenException, Injectable } from '@nestjs/common';
+import {
+  ForbiddenException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { Op } from 'sequelize';
 import { InjectMapper } from 'automapper-nestjs';
@@ -90,6 +94,70 @@ export class EntityTypeService {
       .build();
     return {
       result: this.repository.findOne(options),
+    };
+  }
+
+  async update(id: number, dto: EntityTypeDto) {
+    let item = await this.repository.findOne(
+      new QueryOptionsBuilder().filter({ id }).build(),
+    );
+    if (!item)
+      throw new NotFoundException('the item with this given id not founded!');
+
+    const entityModel = await this.entityModelRepository.findOne({
+      where: {
+        id: dto.entityModelId,
+      },
+    });
+    if (!entityModel)
+      throw new ForbiddenException('the given entityModelId not founded!');
+
+    if (dto.parentEntityTypeId) {
+      const entityTypeParent = await this.repository.findOne({
+        where: {
+          id: dto.parentEntityTypeId,
+          entityModelId: dto.entityModelId,
+        },
+      });
+      if (!entityTypeParent)
+        throw new ForbiddenException(
+          'the given parentEntityTypeId not founded!',
+        );
+    }
+    const mappedItem = this.mapper.map(dto, EntityTypeDto, EAVEntityType);
+    let entityType = await this.repository.update(mappedItem.toJSON(), {
+      where: { id },
+      returning: true,
+    });
+    let builder = new QueryOptionsBuilder();
+    const options = builder
+      .filter({ id: entityType[1][0].id })
+      .include([
+        {
+          model: EAVEntityModel,
+          as: 'entityModel',
+        },
+        {
+          model: EAVEntityType,
+          as: 'parentEntityType',
+        },
+      ])
+      .build();
+    return {
+      result: this.repository.findOne(options),
+    };
+  }
+
+  async deleteById(id: number) {
+    let item = await this.repository.findOne(
+      new QueryOptionsBuilder().filter({ id }).build(),
+    );
+    if (!item)
+      throw new NotFoundException('the item with this given id not founded!');
+    item.isDeleted = true;
+    item = await item.save();
+    return {
+      result: item,
     };
   }
 }
