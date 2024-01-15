@@ -26,7 +26,7 @@ import { JwtGuard } from '@rahino/auth/guard';
 import { EntityTypeDto, GetEntityTypeDto } from './dto';
 import { EntityTypeService } from './entity-type.service';
 
-@ApiTags('EAV-Attribute')
+@ApiTags('EAV-EntityTypes')
 @ApiBearerAuth()
 @UseGuards(JwtGuard, PermissionGuard)
 @Controller({
