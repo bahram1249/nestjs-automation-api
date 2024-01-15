@@ -58,6 +58,10 @@ export class LoginService {
       });
     }
     const signToken = await this.authService.signToken(user);
+
+    // remove from redis
+    await this.redisRepository.delete('usercode', dto.phoneNumber);
+
     return {
       token: signToken.access_token,
       result: _.pick(user, [
