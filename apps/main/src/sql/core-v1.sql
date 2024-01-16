@@ -1326,6 +1326,25 @@ END
 
 GO
 
+-- eav
+-- entitymodels
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'eav-entitymodels-Data-v1' 
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'SITE_NAME' AND [value] IN ('ecommerce'))
+		)
+BEGIN
+
+	INSERT INTO EAVEntityModels(id, name, createdAt, updatedAt)
+	VALUES (1, N'فروشگاه', getdate(), getdate())
+			
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'eav-entitymodels-Data-v1', GETDATE(), GETDATE()
+END
+
+GO
+
 
 -- data takhfif
 -- buffetType
