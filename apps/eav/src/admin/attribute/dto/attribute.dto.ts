@@ -12,6 +12,7 @@ export class AttributeDto {
   })
   public name: string;
 
+  @AutoMap()
   @IsNumber()
   @ApiProperty({
     required: true,
