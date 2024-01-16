@@ -1204,7 +1204,7 @@ IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'eav-attributes-v1'
 BEGIN
 
 	CREATE TABLE EAVAttributes (
-		id							bigint						PRIMARY KEY,
+		id							bigint identity(1,1)		PRIMARY KEY,
 		name						nvarchar(256)				NOT NULL,
 		attributeTypeId				int							NOT NULL
 			CONSTRAINT FK_EAVAttributes_AttributeTypeId
@@ -1223,6 +1223,34 @@ END
 
 GO
 
+
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'eav-attributevalues-v1' 
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'SITE_NAME' AND [value] IN ('ecommerce'))
+		)
+BEGIN
+
+	CREATE TABLE EAVAttributeValues (
+		id							bigint						PRIMARY KEY,
+		attributeId					bigint						NOT NULL
+			CONSTRAINT FK_EAVAttributeValues_AttributeId
+				FOREIGN KEY REFERENCES EAVAttributes(id),
+		[value]						nvarchar(256)				NULL,
+		[isDeleted]					bit							NULL,
+		[createdAt]					datetimeoffset				NOT NULL,
+		[updatedAt]					datetimeoffset				NOT NULL
+	);
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'eav-attributevalues-v1', GETDATE(), GETDATE()
+END
+
+GO
+
+
+
 IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'eav-entityattributes-v1' 
 			)
 	AND EXISTS (
@@ -1233,7 +1261,9 @@ BEGIN
 
 	CREATE TABLE EAVEntityAttributes (
 		entityTypeId				int							NOT NULL,
-		attributeId					bigint						NOT NULL,
+		attributeId					bigint						NOT NULL
+			CONSTRAINT FK_EAVEntityAttributes_AttributeId
+				FOREIGN KEY REFERENCES EAVAttributes(id),
 		[createdAt]					datetimeoffset				NOT NULL,
 		[updatedAt]					datetimeoffset				NOT NULL,
 		PRIMARY KEY CLUSTERED(entityTypeId, attributeId)
