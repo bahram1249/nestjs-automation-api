@@ -1278,7 +1278,7 @@ END
 
 GO
 
-
+-- eav entities
 IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'eav-entities-v1' 
 			)
 	AND EXISTS (
@@ -1302,6 +1302,137 @@ BEGIN
 END
 
 GO
+
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ecommerce-brands-v1' 
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'SITE_NAME' AND [value] IN ('ecommerce'))
+		)
+BEGIN
+
+	CREATE TABLE ECBrands (
+		id							int	identity(1,1)			PRIMARY KEY,
+		[name]						nvarchar(256)				NOT NULL,
+		isDeleted					bit							NULL,
+		[createdAt]					datetimeoffset				NOT NULL,
+		[updatedAt]					datetimeoffset				NOT NULL,
+	);
+
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'ecommerce-brands-v1', GETDATE(), GETDATE()
+END
+
+GO
+
+
+
+
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ecommerce-guarantees-v1' 
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'SITE_NAME' AND [value] IN ('ecommerce'))
+		)
+BEGIN
+
+	CREATE TABLE ECGuarantees (
+		id							int	identity(1,1)			PRIMARY KEY,
+		[name]						nvarchar(256)				NOT NULL,
+		[description]				ntext						NULL,
+		isDeleted					bit							NULL,
+		[createdAt]					datetimeoffset				NOT NULL,
+		[updatedAt]					datetimeoffset				NOT NULL,
+	);
+
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'ecommerce-guarantees-v1', GETDATE(), GETDATE()
+END
+
+
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ecommerce-guaranteemonths-v1' 
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'SITE_NAME' AND [value] IN ('ecommerce'))
+		)
+BEGIN
+
+	CREATE TABLE ECGuaranteeMonths (
+		id							int							PRIMARY KEY,
+		[name]						nvarchar(256)				NOT NULL,
+		monthCount					int							NOT NULL,
+		isDeleted					bit							NULL,
+		[createdAt]					datetimeoffset				NOT NULL,
+		[updatedAt]					datetimeoffset				NOT NULL,
+	);
+
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'ecommerce-guaranteemonths-v1', GETDATE(), GETDATE()
+END
+
+GO
+
+
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ecommerce-colors-v1' 
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'SITE_NAME' AND [value] IN ('ecommerce'))
+		)
+BEGIN
+
+	CREATE TABLE ECColors (
+		id							int	identity(1,1)			PRIMARY KEY,
+		[name]						nvarchar(256)				NOT NULL,
+		hexCode						nvarchar(256)				NOT NULL,
+		isDeleted					bit							NULL,
+		[createdAt]					datetimeoffset				NOT NULL,
+		[updatedAt]					datetimeoffset				NOT NULL,
+	);
+
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'ecommerce-colors-v1', GETDATE(), GETDATE()
+END
+
+GO
+
+
+
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ecommerce-vendors-v1' 
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'SITE_NAME' AND [value] IN ('ecommerce'))
+		)
+BEGIN
+
+	CREATE TABLE ECVendors (
+		id							int	identity(1,1)			PRIMARY KEY,
+		[name]						nvarchar(256)				NOT NULL,
+		[slug]						nvarchar(256)				NOT NULL,
+		[address]					nvarchar(512)				NULL,
+		[description]				ntext						NULL,
+		[isDefault]					bit							NULL,
+		[priorityOrder]				int							NULL,
+		isDeleted					bit							NULL,
+		[createdAt]					datetimeoffset				NOT NULL,
+		[updatedAt]					datetimeoffset				NOT NULL,
+	);
+
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'ecommerce-vendors-v1', GETDATE(), GETDATE()
+END
+
+GO
+
+
+
 
 
 -- eav
