@@ -8,10 +8,17 @@ export class ECBrand extends Model {
     primaryKey: true,
   })
   id: number;
+
   @Column({
     type: DataType.STRING,
   })
   name: string;
+
+  @Column({
+    type: DataType.STRING,
+  })
+  slug: string;
+
   @Column({
     type: DataType.BOOLEAN,
     allowNull: true,

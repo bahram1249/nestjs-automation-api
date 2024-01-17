@@ -1314,6 +1314,7 @@ BEGIN
 	CREATE TABLE ECBrands (
 		id							int	identity(1,1)			PRIMARY KEY,
 		[name]						nvarchar(256)				NOT NULL,
+		[slug]						nvarchar(256)				NOT NULL,
 		isDeleted					bit							NULL,
 		[createdAt]					datetimeoffset				NOT NULL,
 		[updatedAt]					datetimeoffset				NOT NULL,
