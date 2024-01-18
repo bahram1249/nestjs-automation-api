@@ -192,6 +192,15 @@
       "compilerOptions": {
         "tsConfigPath": "libs/redis-client/tsconfig.lib.json"
       }
+    },
+    "commontools": {
+      "type": "library",
+      "root": "libs/commontools",
+      "entryFile": "index",
+      "sourceRoot": "libs/commontools/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/commontools/tsconfig.lib.json"
+      }
     }
   }
 }

@@ -127,7 +127,8 @@
       "^@rahino/query-filter(|/.*)$": "<rootDir>/libs/query-filter/src/$1",
       "^@rahino/pay(|/.*)$": "<rootDir>/libs/pay/src/$1",
       "^@rahino/commonmiddleware(|/.*)$": "<rootDir>/libs/commonmiddleware/src/$1",
-      "^@rahino/redis-client(|/.*)$": "<rootDir>/libs/redis-client/src/$1"
+      "^@rahino/redis-client(|/.*)$": "<rootDir>/libs/redis-client/src/$1",
+      "^@rahino/commontools(|/.*)$": "<rootDir>/libs/commontools/src/$1"
     }
   }
 }
