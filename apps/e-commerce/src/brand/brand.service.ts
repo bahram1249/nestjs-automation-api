@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { BrandDto, GetBrandDto } from './dto';
 import { InjectModel } from '@nestjs/sequelize';
 import { ECBrand } from '@rahino/database/models/ecommerce-eav/ec-brand.entity';
@@ -65,6 +69,15 @@ export class BrandService {
   }
 
   async create(dto: BrandDto) {
+    const item = await this.repository.findOne(
+      new QueryOptionsBuilder().filter({ slug: dto.slug }).build(),
+    );
+    if (item) {
+      throw new BadRequestException(
+        'the item with this slug is exists before !',
+      );
+    }
+
     const mappedItem = this.mapper.map(dto, BrandDto, ECBrand);
     const result = await this.repository.create(mappedItem.toJSON());
     return {
@@ -88,6 +101,21 @@ export class BrandService {
     );
     if (!item) {
       throw new NotFoundException('the item with this given id not founded!');
+    }
+    const searchSlug = await this.repository.findOne(
+      new QueryOptionsBuilder()
+        .filter({ slug: dto.slug })
+        .filter({
+          id: {
+            [Op.ne]: entityId,
+          },
+        })
+        .build(),
+    );
+    if (searchSlug) {
+      throw new BadRequestException(
+        'the item with this slug is exists before !',
+      );
     }
     const mappedItem = this.mapper.map(dto, BrandDto, ECBrand);
     const result = await this.repository.update(mappedItem.toJSON(), {
