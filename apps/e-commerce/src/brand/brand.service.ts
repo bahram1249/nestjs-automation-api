@@ -70,7 +70,17 @@ export class BrandService {
 
   async create(dto: BrandDto) {
     const item = await this.repository.findOne(
-      new QueryOptionsBuilder().filter({ slug: dto.slug }).build(),
+      new QueryOptionsBuilder()
+        .filter({ slug: dto.slug })
+        .filter(
+          Sequelize.where(
+            Sequelize.fn('isnull', Sequelize.col('isDeleted'), 0),
+            {
+              [Op.eq]: 0,
+            },
+          ),
+        )
+        .build(),
     );
     if (item) {
       throw new BadRequestException(
@@ -110,6 +120,14 @@ export class BrandService {
             [Op.ne]: entityId,
           },
         })
+        .filter(
+          Sequelize.where(
+            Sequelize.fn('isnull', Sequelize.col('isDeleted'), 0),
+            {
+              [Op.eq]: 0,
+            },
+          ),
+        )
         .build(),
     );
     if (searchSlug) {
