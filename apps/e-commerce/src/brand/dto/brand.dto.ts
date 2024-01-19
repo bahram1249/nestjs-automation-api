@@ -1,7 +1,7 @@
 import { replaceCharacterSlug } from '@rahino/commontools';
 import { AutoMap } from 'automapper-classes';
 import { Transform } from 'class-transformer';
-import { IsNotEmpty, IsOptional, MaxLength, MinLength } from 'class-validator';
+import { IsNotEmpty, MaxLength, MinLength } from 'class-validator';
 
 export class BrandDto {
   @MinLength(3)

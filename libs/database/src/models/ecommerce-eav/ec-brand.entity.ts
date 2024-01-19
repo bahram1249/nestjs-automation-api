@@ -1,3 +1,5 @@
+import { AutoMap } from 'automapper-classes';
+
 import { Table, Column, Model, DataType } from 'sequelize-typescript';
 
 @Table({ tableName: 'ECBrands' })
@@ -9,11 +11,13 @@ export class ECBrand extends Model {
   })
   id: number;
 
+  @AutoMap()
   @Column({
     type: DataType.STRING,
   })
   name: string;
 
+  @AutoMap()
   @Column({
     type: DataType.STRING,
   })

@@ -89,7 +89,9 @@ export class BrandService {
     }
 
     const mappedItem = this.mapper.map(dto, BrandDto, ECBrand);
-    const result = await this.repository.create(mappedItem.toJSON());
+    const result = await this.repository.create(
+      _.omit(mappedItem.toJSON(), ['id']),
+    );
     return {
       result: _.pick(result, ['id', 'name', 'slug']),
     };
@@ -136,12 +138,15 @@ export class BrandService {
       );
     }
     const mappedItem = this.mapper.map(dto, BrandDto, ECBrand);
-    const result = await this.repository.update(mappedItem.toJSON(), {
-      where: {
-        id: entityId,
+    const result = await this.repository.update(
+      _.omit(mappedItem.toJSON(), ['id']),
+      {
+        where: {
+          id: entityId,
+        },
+        returning: true,
       },
-      returning: true,
-    });
+    );
     return {
       result: _.pick(result[1][0], ['id', 'name', 'slug']),
     };
