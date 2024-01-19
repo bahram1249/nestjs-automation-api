@@ -13,6 +13,7 @@ import { Mapper } from 'automapper-core';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import { EAVAttributeType } from '@rahino/database/models/eav/eav-attribute-type.entity';
 import { EAVEntityType } from '@rahino/database/models/eav/eav-entity-type.entity';
+import * as _ from 'lodash';
 
 @Injectable()
 export class AttributeService {
@@ -54,6 +55,14 @@ export class AttributeService {
     return {
       result: await this.repository.findAll(
         builder
+          .attributes([
+            'id',
+            'name',
+            'attributeTypeId',
+            'minLenth',
+            'maxLength',
+            'required',
+          ])
           .limit(filter.limit, filter.ignorePaging)
           .offset(filter.offset, filter.ignorePaging)
           .order({ orderBy: filter.orderBy, sortOrder: filter.sortOrder })
@@ -83,17 +92,23 @@ export class AttributeService {
         id: dto.attributeTypeId,
       },
     });
-    if (!attributeType)
+    if (!attributeType) {
       throw new ForbiddenException('the given attributeTypeId not founded!');
+    }
+
     const entityType = await this.entityTypeRepository.findOne({
       where: {
         id: dto.entityTypeId,
       },
     });
-    if (!entityType)
+    if (!entityType) {
       throw new ForbiddenException('the given entityTypeId not founded!');
+    }
+
     const mappedItem = this.mapper.map(dto, AttributeDto, EAVAttribute);
-    const attribute = await this.repository.create(mappedItem.toJSON());
+    const attribute = await this.repository.create(
+      _.omit(mappedItem.toJSON(), ['id']),
+    );
     let attributeEntity = await this.entityAttributeRepository.create({
       attributeId: attribute.id,
       entityTypeId: dto.entityTypeId,
@@ -106,6 +121,14 @@ export class AttributeService {
       .include({
         include: [
           {
+            attributes: [
+              'id',
+              'name',
+              'attributeTypeId',
+              'minLenth',
+              'maxLength',
+              'required',
+            ],
             model: EAVAttribute,
             as: 'attribute',
           },
@@ -136,21 +159,27 @@ export class AttributeService {
         )
         .build(),
     );
-    if (!item)
+    if (!item) {
       throw new NotFoundException('the item with this given id not founded!');
+    }
+
     const attributeType = await this.attributeTypeRepository.findOne({
       where: {
         id: dto.attributeTypeId,
       },
     });
-    if (!attributeType)
+    if (!attributeType) {
       throw new ForbiddenException('the given attributeTypeId not founded!');
+    }
 
     const mappedItem = this.mapper.map(dto, UpdateAttributeDto, EAVAttribute);
-    const attribute = await this.repository.update(mappedItem.toJSON(), {
-      where: { id },
-      returning: true,
-    });
+    const attribute = await this.repository.update(
+      _.omit(mappedItem.toJSON(), ['id']),
+      {
+        where: { id },
+        returning: true,
+      },
+    );
 
     const options = new QueryOptionsBuilder()
       .filter({
@@ -159,6 +188,14 @@ export class AttributeService {
       .include({
         include: [
           {
+            attributes: [
+              'id',
+              'name',
+              'attributeTypeId',
+              'minLenth',
+              'maxLength',
+              'required',
+            ],
             model: EAVAttribute,
             as: 'attribute',
           },
@@ -190,8 +227,9 @@ export class AttributeService {
         )
         .build(),
     );
-    if (!item)
+    if (!item) {
       throw new NotFoundException('the item with this given id not founded!');
+    }
 
     await this.entityAttributeRepository.destroy({
       where: {
@@ -202,7 +240,14 @@ export class AttributeService {
     item.isDeleted = true;
     item = await item.save();
     return {
-      result: item,
+      result: _.pick(item, [
+        'id',
+        'name',
+        'attributeTypeId',
+        'minLenth',
+        'maxLength',
+        'required',
+      ]),
     };
   }
 }

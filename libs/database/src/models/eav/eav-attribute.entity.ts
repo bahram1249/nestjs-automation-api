@@ -29,29 +29,34 @@ export class EAVAttribute extends Model {
   })
   @ForeignKey(() => EAVAttributeType)
   attributeTypeId: number;
+
   @BelongsTo(() => EAVAttributeType, {
     as: 'attributeType',
     foreignKey: 'attributeTypeId',
   })
   attributeType: EAVAttributeType;
+
   @AutoMap()
   @Column({
     type: DataType.INTEGER,
     allowNull: true,
   })
-  minLenth?: number;
+  minLength?: number;
+
   @AutoMap()
   @Column({
     type: DataType.INTEGER,
     allowNull: true,
   })
   maxLength?: number;
+
   @AutoMap()
   @Column({
     type: DataType.BOOLEAN,
     allowNull: true,
   })
   required?: boolean;
+
   @Column({
     type: DataType.BOOLEAN,
     allowNull: true,
