@@ -11,6 +11,7 @@ import { InjectMapper } from 'automapper-nestjs';
 import { Mapper } from 'automapper-core';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import { EAVAttributeValue } from '@rahino/database/models/eav/eav-attribute-value';
+import * as _ from 'lodash';
 
 @Injectable()
 export class AttributeValueService {
@@ -25,11 +26,17 @@ export class AttributeValueService {
 
   async findAll(filter: GetAttributeValueDto) {
     let builder = new QueryOptionsBuilder();
-    builder = builder.filter({
-      value: {
-        [Op.like]: filter.search,
-      },
-    });
+    builder = builder
+      .filter({
+        value: {
+          [Op.like]: filter.search,
+        },
+      })
+      .filter(
+        Sequelize.where(Sequelize.fn('isnull', Sequelize.col('isDeleted'), 0), {
+          [Op.eq]: 0,
+        }),
+      );
     if (filter.attributeId) {
       builder = builder.filter({ attributeId: filter.attributeId });
     }
@@ -37,6 +44,13 @@ export class AttributeValueService {
     return {
       result: await this.repository.findAll(
         builder
+          .attributes(['id', 'attributeId', 'value'])
+          .include([
+            {
+              model: EAVAttribute,
+              as: 'attribute',
+            },
+          ])
           .limit(filter.limit, filter.ignorePaging)
           .offset(filter.offset, filter.ignorePaging)
           .order({ orderBy: filter.orderBy, sortOrder: filter.sortOrder })
@@ -49,9 +63,20 @@ export class AttributeValueService {
   async findById(id: bigint) {
     let builder = new QueryOptionsBuilder();
     const options = builder
+      .include([
+        {
+          model: EAVAttribute,
+          as: 'attribute',
+        },
+      ])
       .filter({
         id,
       })
+      .filter(
+        Sequelize.where(Sequelize.fn('isnull', Sequelize.col('isDeleted'), 0), {
+          [Op.eq]: 0,
+        }),
+      )
       .build();
     const attributeValue = await this.repository.findOne(options);
     if (!attributeValue) {
@@ -59,7 +84,7 @@ export class AttributeValueService {
     }
 
     return {
-      result: attributeValue,
+      result: _.pick(attributeValue, ['id', 'attributeId', 'value']),
     };
   }
 
@@ -91,10 +116,12 @@ export class AttributeValueService {
       AttributeValueDto,
       EAVAttributeValue,
     );
-    const attributeValue = await this.repository.create(mappedItem.toJSON());
+    const attributeValue = await this.repository.create(
+      _.omit(mappedItem.toJSON(), ['id']),
+    );
 
     return {
-      result: attributeValue,
+      result: _.pick(attributeValue, ['id', 'attributeId', 'value']),
     };
   }
 
@@ -143,13 +170,16 @@ export class AttributeValueService {
       AttributeValueDto,
       EAVAttributeValue,
     );
-    const attributeValue = await this.repository.update(mappedItem.toJSON(), {
-      where: { id },
-      returning: true,
-    });
+    const attributeValue = await this.repository.update(
+      _.omit(mappedItem.toJSON(), ['id']),
+      {
+        where: { id },
+        returning: true,
+      },
+    );
 
     return {
-      result: attributeValue,
+      result: _.pick(attributeValue, ['id', 'attributeId', 'value']),
     };
   }
 
@@ -174,7 +204,7 @@ export class AttributeValueService {
     item.isDeleted = true;
     item = await item.save();
     return {
-      result: item,
+      result: _.pick(item, ['id', 'attributeId', 'value']),
     };
   }
 }

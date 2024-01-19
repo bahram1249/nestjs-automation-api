@@ -7,6 +7,7 @@ import {
   BelongsTo,
 } from 'sequelize-typescript';
 import { EAVAttribute } from './eav-attribute.entity';
+import { AutoMap } from 'automapper-classes';
 
 @Table({ tableName: 'EAVAttributeValues' })
 export class EAVAttributeValue extends Model {
@@ -17,6 +18,7 @@ export class EAVAttributeValue extends Model {
   })
   bigint: number;
 
+  @AutoMap()
   @Column({
     type: DataType.BIGINT,
   })
@@ -25,6 +27,7 @@ export class EAVAttributeValue extends Model {
   @BelongsTo(() => EAVAttribute, { foreignKey: 'attributeId', as: 'attribute' })
   attribute?: EAVAttribute;
 
+  @AutoMap()
   @Column({
     type: DataType.STRING,
   })
