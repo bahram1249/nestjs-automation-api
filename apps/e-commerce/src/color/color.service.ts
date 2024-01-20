@@ -42,7 +42,7 @@ export class ColorService {
   }
 
   async findById(entityId: number) {
-    const brand = await this.repository.findOne(
+    const color = await this.repository.findOne(
       new QueryOptionsBuilder()
         .attributes(['id', 'name', 'hexCode'])
         .filter({ id: entityId })
@@ -56,11 +56,11 @@ export class ColorService {
         )
         .build(),
     );
-    if (!brand) {
+    if (!color) {
       throw new NotFoundException('the item with this given id not founded!');
     }
     return {
-      result: brand,
+      result: color,
     };
   }
 
