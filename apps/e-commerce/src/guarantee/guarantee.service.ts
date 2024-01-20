@@ -175,4 +175,26 @@ export class GuaranteeService {
       result: _.pick(item, ['id', 'name', 'slug', 'description']),
     };
   }
+
+  async findBySlug(slug: string) {
+    const item = await this.repository.findOne(
+      new QueryOptionsBuilder()
+        .filter({ slug: slug })
+        .filter(
+          Sequelize.where(
+            Sequelize.fn('isnull', Sequelize.col('isDeleted'), 0),
+            {
+              [Op.eq]: 0,
+            },
+          ),
+        )
+        .build(),
+    );
+    if (!item) {
+      throw new NotFoundException('the item with this given slug not founded!');
+    }
+    return {
+      result: _.pick(item, ['id', 'name', 'slug', 'description']),
+    };
+  }
 }

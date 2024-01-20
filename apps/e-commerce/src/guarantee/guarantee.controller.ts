@@ -88,4 +88,11 @@ export class GuaranteeController {
   async deleteById(@Param('id') entityId: number) {
     return await this.service.deleteById(entityId);
   }
+
+  @ApiOperation({ description: 'get guarantee by slug' })
+  @Get('/slug/:slug')
+  @HttpCode(HttpStatus.OK)
+  async findBySlug(@Param('slug') slug: string) {
+    return await this.service.findBySlug(slug);
+  }
 }
