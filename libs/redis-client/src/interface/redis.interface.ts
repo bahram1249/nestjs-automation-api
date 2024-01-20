@@ -1,3 +1,5 @@
+import { ExistsResultInterface } from './exists-result.interface';
+
 export interface RedisRepositoryInterface {
   get(prefix: string, key: string): Promise<string | null>;
   set(prefix: string, key: string, value: string): Promise<void>;
@@ -8,4 +10,5 @@ export interface RedisRepositoryInterface {
     value: string,
     expiry: number,
   ): Promise<void>;
+  isExists(prefix: string, key: string): Promise<ExistsResultInterface>;
 }

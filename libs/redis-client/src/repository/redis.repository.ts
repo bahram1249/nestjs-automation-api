@@ -1,6 +1,6 @@
 import { Inject, Injectable, OnModuleDestroy } from '@nestjs/common';
 import { Redis } from 'ioredis';
-import { RedisRepositoryInterface } from '../interface';
+import { RedisRepositoryInterface, ExistsResultInterface } from '../interface';
 
 @Injectable()
 export class RedisRepository
@@ -31,5 +31,15 @@ export class RedisRepository
     expiry: number,
   ): Promise<void> {
     await this.redisClient.set(`${prefix}:${key}`, value, 'EX', expiry);
+  }
+
+  async isExists(prefix: string, key: string): Promise<ExistsResultInterface> {
+    const resultCount = await this.redisClient.exists(`${prefix}:${key}`);
+    const exists = resultCount == 1;
+    let result: any = null;
+    if (exists) {
+      result = await this.get(prefix, key);
+    }
+    return { result: result, exists: exists };
   }
 }
