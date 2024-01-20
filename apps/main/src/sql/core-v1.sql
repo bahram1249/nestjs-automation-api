@@ -1341,6 +1341,7 @@ BEGIN
 	CREATE TABLE ECGuarantees (
 		id							int	identity(1,1)			PRIMARY KEY,
 		[name]						nvarchar(256)				NOT NULL,
+		[slug]						nvarchar(256)				NOT NULL,
 		[description]				ntext						NULL,
 		isDeleted					bit							NULL,
 		[createdAt]					datetimeoffset				NOT NULL,

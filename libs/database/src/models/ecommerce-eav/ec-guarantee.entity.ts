@@ -1,3 +1,4 @@
+import { AutoMap } from 'automapper-classes';
 import { Table, Column, Model, DataType } from 'sequelize-typescript';
 
 @Table({ tableName: 'ECGuarantees' })
@@ -8,15 +9,26 @@ export class ECGuarantee extends Model {
     primaryKey: true,
   })
   id: number;
+
+  @AutoMap()
   @Column({
     type: DataType.STRING,
   })
   name: string;
+
+  @AutoMap()
+  @Column({
+    type: DataType.STRING,
+  })
+  slug: string;
+
+  @AutoMap()
   @Column({
     type: DataType.STRING,
     allowNull: true,
   })
   description?: string;
+
   @Column({
     type: DataType.BOOLEAN,
     allowNull: true,

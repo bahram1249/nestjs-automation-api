@@ -9,9 +9,16 @@ import { LoginModule } from './user/login/login.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { BrandModule } from './brand/brand.module';
 import { ColorModule } from './color/color.module';
+import { GuaranteeModule } from './guarantee/guarantee.module';
 
 @Module({
-  imports: [LoginModule, BrandModule, ColorModule, ProductModule],
+  imports: [
+    LoginModule,
+    BrandModule,
+    ColorModule,
+    GuaranteeModule,
+    ProductModule,
+  ],
 })
 export class ECommerceModule implements NestModule {
   constructor() {}
