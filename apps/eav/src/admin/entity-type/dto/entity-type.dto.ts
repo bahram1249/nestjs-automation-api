@@ -1,5 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { replaceCharacterSlug } from '@rahino/commontools';
 import { AutoMap } from 'automapper-classes';
+import { Transform } from 'class-transformer';
 import { IsNumber, IsOptional, IsString } from 'class-validator';
 
 export class EntityTypeDto {
@@ -13,6 +15,7 @@ export class EntityTypeDto {
   public name: string;
 
   @AutoMap()
+  @Transform(({ value }) => replaceCharacterSlug(value))
   @IsString()
   @ApiProperty({
     required: true,

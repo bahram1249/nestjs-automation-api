@@ -1,16 +1,18 @@
 import {
+  BadRequestException,
   ForbiddenException,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
-import { Op } from 'sequelize';
+import { Op, Sequelize } from 'sequelize';
 import { InjectMapper } from 'automapper-nestjs';
 import { Mapper } from 'automapper-core';
 import { EAVEntityType } from '@rahino/database/models/eav/eav-entity-type.entity';
 import { EntityTypeDto, GetEntityTypeDto } from './dto';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import { EAVEntityModel } from '@rahino/database/models/eav/eav-entity-model.entity';
+import * as _ from 'lodash';
 
 @Injectable()
 export class EntityTypeService {
@@ -23,11 +25,17 @@ export class EntityTypeService {
   ) {}
 
   async findAll(filter: GetEntityTypeDto) {
-    let builder = new QueryOptionsBuilder().filter({
-      name: {
-        [Op.like]: filter.search,
-      },
-    });
+    let builder = new QueryOptionsBuilder()
+      .filter({
+        name: {
+          [Op.like]: filter.search,
+        },
+      })
+      .filter(
+        Sequelize.where(Sequelize.fn('isnull', Sequelize.col('isDeleted'), 0), {
+          [Op.eq]: 0,
+        }),
+      );
     if (filter.entityModelId) {
       builder = builder.filter({
         entityModelId: filter.entityModelId,
@@ -40,8 +48,21 @@ export class EntityTypeService {
     }
     const count = await this.repository.count(builder.build());
     builder = builder
+      .include([
+        {
+          model: EAVEntityModel,
+          as: 'entityModel',
+        },
+        {
+          model: EAVEntityType,
+          as: 'parentEntityType',
+          required: false,
+        },
+      ])
+      .attributes(['id', 'name', 'slug', 'parentEntityTypeId', 'entityModelId'])
       .limit(filter.limit, filter.ignorePaging)
-      .offset(filter.offset, filter.ignorePaging);
+      .offset(filter.offset, filter.ignorePaging)
+      .order({ orderBy: filter.orderBy, sortOrder: filter.sortOrder });
     const options = builder.build();
     return {
       result: await this.repository.findAll(options),
@@ -50,19 +71,40 @@ export class EntityTypeService {
   }
 
   async findById(id: number) {
-    const builder = new QueryOptionsBuilder().filter({ id });
+    const builder = new QueryOptionsBuilder()
+      .attributes(['id', 'name', 'slug', 'parentEntityTypeId', 'entityModelId'])
+      .include([
+        {
+          model: EAVEntityModel,
+          as: 'entityModel',
+        },
+        {
+          model: EAVEntityType,
+          as: 'parentEntityType',
+          required: false,
+        },
+      ])
+      .filter({ id })
+      .filter(
+        Sequelize.where(Sequelize.fn('isnull', Sequelize.col('isDeleted'), 0), {
+          [Op.eq]: 0,
+        }),
+      );
+    const result = await this.repository.findOne(builder.build());
     return {
-      result: await this.repository.findOne(builder.build()),
+      result: result,
     };
   }
+
   async create(dto: EntityTypeDto) {
     const entityModel = await this.entityModelRepository.findOne({
       where: {
         id: dto.entityModelId,
       },
     });
-    if (!entityModel)
+    if (!entityModel) {
       throw new ForbiddenException('the given entityModelId not founded!');
+    }
 
     if (dto.parentEntityTypeId) {
       const entityTypeParent = await this.repository.findOne({
@@ -71,15 +113,37 @@ export class EntityTypeService {
           entityModelId: dto.entityModelId,
         },
       });
-      if (!entityTypeParent)
+      if (!entityTypeParent) {
         throw new ForbiddenException(
           'the given parentEntityTypeId not founded!',
         );
+      }
+    }
+    const searchSlug = await this.repository.findOne(
+      new QueryOptionsBuilder()
+        .filter({ slug: dto.slug })
+        .filter(
+          Sequelize.where(
+            Sequelize.fn('isnull', Sequelize.col('isDeleted'), 0),
+            {
+              [Op.eq]: 0,
+            },
+          ),
+        )
+        .build(),
+    );
+    if (searchSlug) {
+      throw new BadRequestException(
+        'the item with this given slug is exists before!',
+      );
     }
     const mappedItem = this.mapper.map(dto, EntityTypeDto, EAVEntityType);
-    let entityType = await this.repository.create(mappedItem.toJSON());
+    let entityType = await this.repository.create(
+      _.omit(mappedItem.toJSON(), ['id']),
+    );
     let builder = new QueryOptionsBuilder();
     const options = builder
+      .attributes(['id', 'name', 'slug', 'parentEntityTypeId', 'entityModelId'])
       .filter({ id: entityType.id })
       .include([
         {
@@ -89,28 +153,42 @@ export class EntityTypeService {
         {
           model: EAVEntityType,
           as: 'parentEntityType',
+          required: false,
         },
       ])
       .build();
+
     return {
-      result: this.repository.findOne(options),
+      result: await this.repository.findOne(options),
     };
   }
 
   async update(id: number, dto: EntityTypeDto) {
     let item = await this.repository.findOne(
-      new QueryOptionsBuilder().filter({ id }).build(),
+      new QueryOptionsBuilder()
+        .filter({ id })
+        .filter(
+          Sequelize.where(
+            Sequelize.fn('isnull', Sequelize.col('isDeleted'), 0),
+            {
+              [Op.eq]: 0,
+            },
+          ),
+        )
+        .build(),
     );
-    if (!item)
+    if (!item) {
       throw new NotFoundException('the item with this given id not founded!');
+    }
 
     const entityModel = await this.entityModelRepository.findOne({
       where: {
         id: dto.entityModelId,
       },
     });
-    if (!entityModel)
+    if (!entityModel) {
       throw new ForbiddenException('the given entityModelId not founded!');
+    }
 
     if (dto.parentEntityTypeId) {
       const entityTypeParent = await this.repository.findOne({
@@ -119,16 +197,45 @@ export class EntityTypeService {
           entityModelId: dto.entityModelId,
         },
       });
-      if (!entityTypeParent)
+      if (!entityTypeParent) {
         throw new ForbiddenException(
           'the given parentEntityTypeId not founded!',
         );
+      }
     }
+
+    const searchSlug = await this.repository.findOne(
+      new QueryOptionsBuilder()
+        .filter({ slug: dto.slug })
+        .filter({
+          id: {
+            [Op.ne]: id,
+          },
+        })
+        .filter(
+          Sequelize.where(
+            Sequelize.fn('isnull', Sequelize.col('isDeleted'), 0),
+            {
+              [Op.eq]: 0,
+            },
+          ),
+        )
+        .build(),
+    );
+    if (searchSlug) {
+      throw new BadRequestException(
+        'the item with this given slug is exists before!',
+      );
+    }
+
     const mappedItem = this.mapper.map(dto, EntityTypeDto, EAVEntityType);
-    let entityType = await this.repository.update(mappedItem.toJSON(), {
-      where: { id },
-      returning: true,
-    });
+    let entityType = await this.repository.update(
+      _.omit(mappedItem.toJSON(), ['id']),
+      {
+        where: { id },
+        returning: true,
+      },
+    );
     let builder = new QueryOptionsBuilder();
     const options = builder
       .filter({ id: entityType[1][0].id })
@@ -140,20 +247,33 @@ export class EntityTypeService {
         {
           model: EAVEntityType,
           as: 'parentEntityType',
+          required: false,
         },
       ])
       .build();
     return {
-      result: this.repository.findOne(options),
+      result: await this.repository.findOne(options),
     };
   }
 
   async deleteById(id: number) {
     let item = await this.repository.findOne(
-      new QueryOptionsBuilder().filter({ id }).build(),
+      new QueryOptionsBuilder()
+        .filter({ id })
+        .filter(
+          Sequelize.where(
+            Sequelize.fn('isnull', Sequelize.col('isDeleted'), 0),
+            {
+              [Op.eq]: 0,
+            },
+          ),
+        )
+        .build(),
     );
-    if (!item)
+    if (!item) {
       throw new NotFoundException('the item with this given id not founded!');
+    }
+
     item.isDeleted = true;
     item = await item.save();
     return {
