@@ -31,11 +31,17 @@ export class AttributeService {
 
   async findAll(filter: GetAttributeDto) {
     let builder = new QueryOptionsBuilder();
-    builder = builder.filter({
-      name: {
-        [Op.like]: filter.search,
-      },
-    });
+    builder = builder
+      .filter({
+        name: {
+          [Op.like]: filter.search,
+        },
+      })
+      .filter(
+        Sequelize.where(Sequelize.fn('isnull', Sequelize.col('isDeleted'), 0), {
+          [Op.eq]: 0,
+        }),
+      );
     if (filter.entityTypeId) {
       const entityAttributes = await this.entityAttributeRepository.findAll({
         where: {
@@ -63,6 +69,12 @@ export class AttributeService {
             'maxLength',
             'required',
           ])
+          .include([
+            {
+              model: EAVAttributeType,
+              as: 'attributeType',
+            },
+          ])
           .limit(filter.limit, filter.ignorePaging)
           .offset(filter.offset, filter.ignorePaging)
           .order({ orderBy: filter.orderBy, sortOrder: filter.sortOrder })
@@ -75,12 +87,33 @@ export class AttributeService {
   async findById(id: bigint) {
     let builder = new QueryOptionsBuilder();
     const options = builder
+      .attributes([
+        'id',
+        'name',
+        'attributeTypeId',
+        'minLenth',
+        'maxLength',
+        'required',
+      ])
+      .include([
+        {
+          model: EAVAttributeType,
+          as: 'attributeType',
+        },
+      ])
       .filter({
         id,
       })
+      .filter(
+        Sequelize.where(Sequelize.fn('isnull', Sequelize.col('isDeleted'), 0), {
+          [Op.eq]: 0,
+        }),
+      )
       .build();
     const attribute = await this.repository.findOne(options);
-    if (!attribute) throw new NotFoundException();
+    if (!attribute) {
+      throw new NotFoundException('the item with this given id not founded!');
+    }
     return {
       result: attribute,
     };
@@ -131,6 +164,12 @@ export class AttributeService {
             ],
             model: EAVAttribute,
             as: 'attribute',
+            include: [
+              {
+                model: EAVAttributeType,
+                as: 'attributeType',
+              },
+            ],
           },
           {
             model: EAVEntityType,
@@ -185,26 +224,30 @@ export class AttributeService {
       .filter({
         attributeId: attribute[1][0].id,
       })
-      .include({
-        include: [
-          {
-            attributes: [
-              'id',
-              'name',
-              'attributeTypeId',
-              'minLenth',
-              'maxLength',
-              'required',
-            ],
-            model: EAVAttribute,
-            as: 'attribute',
-          },
-          {
-            model: EAVEntityType,
-            as: 'entityType',
-          },
-        ],
-      })
+      .include([
+        {
+          attributes: [
+            'id',
+            'name',
+            'attributeTypeId',
+            'minLenth',
+            'maxLength',
+            'required',
+          ],
+          model: EAVAttribute,
+          as: 'attribute',
+          include: [
+            {
+              model: EAVAttributeType,
+              as: 'attributeType',
+            },
+          ],
+        },
+        {
+          model: EAVEntityType,
+          as: 'entityType',
+        },
+      ])
       .build();
     const attributeEntity =
       await this.entityAttributeRepository.findOne(options);
