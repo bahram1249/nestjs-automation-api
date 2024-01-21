@@ -11,6 +11,7 @@ import { BrandModule } from './brand/brand.module';
 import { ColorModule } from './color/color.module';
 import { GuaranteeModule } from './guarantee/guarantee.module';
 import { GuaranteeMonthModule } from './guarantee-month/guarantee-month.module';
+import { PublishStatusModule } from './publish-status/publish-status.module';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { GuaranteeMonthModule } from './guarantee-month/guarantee-month.module';
     ColorModule,
     GuaranteeModule,
     GuaranteeMonthModule,
+    PublishStatusModule,
     ProductModule,
   ],
 })

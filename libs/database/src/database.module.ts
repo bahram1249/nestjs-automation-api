@@ -42,6 +42,7 @@ import { BuffetReserveDetail } from './models/discount-coffe/buffet-reserve-deta
 import { VW_BuffetReservers } from './models/discount-coffe/vw_buffet_reserve.entity';
 import { EAVAttribute } from './models/eav/eav-attribute.entity';
 import { EAVAttributeValue } from './models/eav/eav-attribute-value';
+import { ECPublishStatus } from './models/ecommerce-eav/ec-publish-status.entity';
 
 // let config;
 // switch (process.env.NODE_ENV) {
@@ -112,6 +113,7 @@ const dbLog: boolean = JSON.parse(process.env.DB_LOG);
           EAVAttributeType,
           EAVAttribute,
           EAVAttributeValue,
+          ECPublishStatus,
           ECProduct,
           Buffet,
           BuffetType,

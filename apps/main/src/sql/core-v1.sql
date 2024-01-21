@@ -1435,6 +1435,84 @@ GO
 
 
 
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ecommerce-province-v1' 
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'SITE_NAME' AND [value] IN ('ecommerce'))
+		)
+BEGIN
+
+	CREATE TABLE ECProvince (
+		id							int							PRIMARY KEY,
+		[name]						nvarchar(256)				NOT NULL,
+		[slug]						nvarchar(256)				NOT NULL,
+		isDeleted					bit							NULL,
+		[neighborhoodBase]			bit							NULL,
+		[order]						int							NULL,
+		[createdAt]					datetimeoffset				NOT NULL,
+		[updatedAt]					datetimeoffset				NOT NULL,
+	);
+
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'ecommerce-province-v1', GETDATE(), GETDATE()
+END
+
+GO
+
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ecommerce-publish-statuses-v1' 
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'SITE_NAME' AND [value] IN ('ecommerce'))
+		)
+BEGIN
+
+	CREATE TABLE ECPublishStatuses (
+		id							int							PRIMARY KEY,
+		[name]						nvarchar(256)				NOT NULL,
+		[createdAt]					datetimeoffset				NOT NULL,
+		[updatedAt]					datetimeoffset				NOT NULL,
+	);
+
+	INSERT INTO ECPublishStatuses(id, name, createdAt, updatedAt)
+	VALUES (1, N'منتشر شده', GETDATE(), GETDATE())
+		,(2, N'پیش نویس', GETDATE(), GETDATE())
+
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'ecommerce-publish-statuses-v1', GETDATE(), GETDATE()
+END
+
+GO
+
+
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ecommerce-province-v1' 
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'SITE_NAME' AND [value] IN ('ecommerce'))
+		)
+BEGIN
+
+	CREATE TABLE ECProvince (
+		id							int							PRIMARY KEY,
+		[name]						nvarchar(256)				NOT NULL,
+		[slug]						nvarchar(256)				NOT NULL,
+		isDeleted					bit							NULL,
+		[neighborhoodBase]			bit							NULL,
+		[order]						int							NULL,
+		[createdAt]					datetimeoffset				NOT NULL,
+		[updatedAt]					datetimeoffset				NOT NULL,
+	);
+
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'ecommerce-province-v1', GETDATE(), GETDATE()
+END
+
+GO
 
 
 -- eav
