@@ -1479,6 +1479,33 @@ END
 GO
 
 
+
+-- ecommerce
+-- guaranteemonth
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ecommerce-guaranteemonths-Data-v1' 
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'SITE_NAME' AND [value] IN ('ecommerce'))
+		)
+BEGIN
+
+	INSERT INTO ECGuaranteeMonths(id, name, monthCount, createdAt, updatedAt)
+	VALUES (1, N'یک ماهه', 1, GETDATE(), GETDATE())
+			,(2, N'سه ماهه', 3, GETDATE(), GETDATE())
+			,(3, N'شش ماهه', 6, GETDATE(), GETDATE())
+			,(4, N'هشت ماهه', 8, GETDATE(), GETDATE())
+			,(5, N'دوازده ماهه', 12, GETDATE(), GETDATE())
+			,(6, N'هجده ماهه', 18, GETDATE(), GETDATE())
+			,(7, N'بیست و چهار ماهه', 24, GETDATE(), GETDATE())
+			
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'ecommerce-guaranteemonths-Data-v1', GETDATE(), GETDATE()
+END
+
+GO
+
 -- data takhfif
 -- buffetType
 IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'DiscountCoffe-buffetType-Data-v1' 
