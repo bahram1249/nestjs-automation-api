@@ -10,6 +10,7 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { BrandModule } from './brand/brand.module';
 import { ColorModule } from './color/color.module';
 import { GuaranteeModule } from './guarantee/guarantee.module';
+import { GuaranteeMonthModule } from './guarantee-month/guarantee-month.module';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { GuaranteeModule } from './guarantee/guarantee.module';
     BrandModule,
     ColorModule,
     GuaranteeModule,
+    GuaranteeMonthModule,
     ProductModule,
   ],
 })
