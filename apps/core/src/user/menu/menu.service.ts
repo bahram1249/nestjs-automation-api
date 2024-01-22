@@ -1,13 +1,13 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
-import { QueryFilter } from '@rahino/query-filter/sequelize-mapper';
-import { Op } from 'sequelize';
+import { Op, Sequelize } from 'sequelize';
 import { Menu } from '@rahino/database/models/core/menu.entity';
 import { MenuGetDto } from './dto';
 import { User } from '@rahino/database/models/core/user.entity';
 import { UserRole } from '@rahino/database/models/core/userRole.entity';
 import { RolePermission } from '@rahino/database/models/core/rolePermission.entity';
 import { PermissionMenu } from '@rahino/database/models/core/permission-menu.entity';
+import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 
 @Injectable()
 export class MenuService {
@@ -49,28 +49,69 @@ export class MenuService {
     const menuIds = permissionMenus.map((permissionMenu) => {
       return permissionMenu.menuId;
     });
-    let options = QueryFilter.init();
-    if (filter.ignorePaging != true) {
-      options = QueryFilter.limitOffset(options, filter);
+
+    let builder = new QueryOptionsBuilder();
+    if (filter.onlyParent) {
+      builder = builder.filter({
+        parentMenuId: {
+          [Op.is]: null,
+        },
+      });
     }
-    options = QueryFilter.order(options, filter);
-    options.where = {
-      [Op.and]: [
+
+    builder = builder.filter(
+      Sequelize.where(
+        Sequelize.fn('isnull', Sequelize.col('Menu.visibility'), 1),
         {
-          title: {
-            [Op.like]: filter.search,
+          [Op.eq]: 1,
+        },
+      ),
+    );
+
+    builder = builder
+      .filter({
+        title: {
+          [Op.like]: filter.search,
+        },
+      })
+      .filter({
+        id: {
+          [Op.in]: menuIds,
+        },
+      });
+
+    const count = await this.repository.count(builder.build());
+
+    builder = builder
+      .include([
+        {
+          model: Menu,
+          as: 'subMenus',
+          required: false,
+          where: {
+            [Op.and]: [
+              {
+                id: {
+                  [Op.in]: menuIds,
+                },
+              },
+              Sequelize.where(
+                Sequelize.fn('isnull', Sequelize.col('subMenus.visibility'), 1),
+                {
+                  [Op.eq]: 1,
+                },
+              ),
+            ],
           },
         },
-        {
-          id: {
-            [Op.in]: menuIds,
-          },
-        },
-      ],
-    };
+      ])
+      .limit(filter.limit, filter.ignorePaging)
+      .offset(filter.offset, filter.ignorePaging)
+      .order({ orderBy: filter.orderBy, sortOrder: filter.sortOrder });
+
     return {
-      result: await this.repository.findAll(options),
-      total: await this.repository.count(options),
+      result: await this.repository.findAll(builder.build()),
+      total: count,
     };
   }
 
