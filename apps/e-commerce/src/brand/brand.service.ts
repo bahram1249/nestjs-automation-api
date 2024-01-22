@@ -43,6 +43,14 @@ export class BrandService {
     const count = await this.repository.count(queryBuilder.build());
     const queryOptions = queryBuilder
       .attributes(['id', 'name', 'slug'])
+      .include([
+        {
+          attributes: ['id', 'fileName'],
+          model: Attachment,
+          as: 'attachment',
+          required: false,
+        },
+      ])
       .limit(filter.limit, filter.ignorePaging)
       .offset(filter.offset, filter.ignorePaging)
       .order({ orderBy: filter.orderBy, sortOrder: filter.sortOrder })
@@ -58,6 +66,14 @@ export class BrandService {
     const brand = await this.repository.findOne(
       new QueryOptionsBuilder()
         .attributes(['id', 'name', 'slug'])
+        .include([
+          {
+            attributes: ['id', 'fileName'],
+            model: Attachment,
+            as: 'attachment',
+            required: false,
+          },
+        ])
         .filter({ id: entityId })
         .filter(
           Sequelize.where(
@@ -188,6 +204,14 @@ export class BrandService {
   async findBySlug(slug: string) {
     const item = await this.repository.findOne(
       new QueryOptionsBuilder()
+        .include([
+          {
+            attributes: ['id', 'fileName'],
+            model: Attachment,
+            as: 'attachment',
+            required: false,
+          },
+        ])
         .filter({ slug: slug })
         .filter(
           Sequelize.where(
