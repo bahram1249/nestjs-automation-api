@@ -1194,6 +1194,25 @@ END
 
 GO
 
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'eav-entitytype-v2' 
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'SITE_NAME' AND [value] IN ('ecommerce'))
+		)
+BEGIN
+
+	ALTER TABLE EAVEntityTypes 
+		ADD attachmentId bigint null
+			CONSTRAINT EAVEntityTypes_AttachmentId
+				FOREIGN KEY REFERENCES Attachments(id)
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'eav-entitytype-v2', GETDATE(), GETDATE()
+END
+
+GO
+
 
 IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'eav-attributetype-v1' 
 			)
@@ -4728,6 +4747,20 @@ END
 
 GO
 
+-- ecommerce entityTypes
+IF NOT EXISTS ((SELECT 1 FROM Migrations WHERE version = 'CORE-AttachmentTypes-Data-v8' 
+			))
+BEGIN
+	
+	INSERT INTO AttachmentTypes(id, typeName, createdAt, updatedAt)
+	SELECT 8, N'entityTypes', getdate(), getdate()
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'CORE-AttachmentTypes-Data-v8', GETDATE(), GETDATE()
+END
+
+GO
+
 
 
 -- auth/admin/users
@@ -6637,7 +6670,7 @@ BEGIN
 	DECLARE @findParentMenu bit = 0;
 	DECLARE @parentMenuName nvarchar(256) = N'محصول'
 	DECLARE @menuName nvarchar(256) = N'دسته بندی ها'
-	DECLARE @menuUrl nvarchar(512) = N'/eav/admin/entityTypes'
+	DECLARE @menuUrl nvarchar(512) = N'/admin/eav/entityTypes'
 
 	DECLARE @permissionSymbolShowMenu nvarchar(512) = @groupName + '.showmenu';
 	DECLARE @permissionSymbolGetAll nvarchar(512) = @groupName + '.getall';
@@ -6645,6 +6678,7 @@ BEGIN
 	DECLARE @permissionSymbolCreate nvarchar(512) = @groupName + '.create';
 	DECLARE @permissionSymbolUpdate nvarchar(512) = @groupName + '.update';
 	DECLARE @permissionSymbolDelete nvarchar(512) = @groupName + '.delete';
+	DECLARE @permissionSymbolUploadImage nvarchar(512) = @groupName + '.uploadImage';
 
 
 	-- permission groups
@@ -6681,6 +6715,10 @@ BEGIN
 	INSERT INTO Permissions(permissionName ,permissionSymbol,permissionGroupId,  createdAt, updatedAt)
 	OUTPUT inserted.id INTO @PermissionTemp(permissionId)
 	SELECT 'DELETE_' + @entityName, @permissionSymbolDelete, @groupId, GETDATE(), GETDATE()
+
+	INSERT INTO Permissions(permissionName ,permissionSymbol,permissionGroupId,  createdAt, updatedAt)
+	OUTPUT inserted.id INTO @PermissionTemp(permissionId)
+	SELECT 'UPLOADIMAGE_' + @entityName, @permissionSymbolUploadImage, @groupId, GETDATE(), GETDATE()
 
 	-- CRUD THIS Enity FOR super-admin
 	INSERT INTO RolePermissions(roleId, permissionId, createdAt, updatedAt)

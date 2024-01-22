@@ -13,14 +13,23 @@ import { EntityTypeDto, GetEntityTypeDto } from './dto';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import { EAVEntityModel } from '@rahino/database/models/eav/eav-entity-model.entity';
 import * as _ from 'lodash';
+import { Attachment } from '@rahino/database/models/core/attachment.entity';
+import { MinioClientService } from '@rahino/minio-client';
+import { Response } from 'express';
+import { User } from '@rahino/database/models/core/user.entity';
+import * as fs from 'fs';
 
 @Injectable()
 export class EntityTypeService {
+  private entityTypeAttachmentType = 8;
   constructor(
     @InjectModel(EAVEntityType)
     private readonly repository: typeof EAVEntityType,
     @InjectModel(EAVEntityModel)
     private readonly entityModelRepository: typeof EAVEntityModel,
+    @InjectModel(Attachment)
+    private readonly attachmentRepository: typeof Attachment,
+    private minioClientService: MinioClientService,
     @InjectMapper() private readonly mapper: Mapper,
   ) {}
 
@@ -279,5 +288,110 @@ export class EntityTypeService {
     return {
       result: item,
     };
+  }
+
+  async uploadImage(id: number, user: User, file: Express.Multer.File) {
+    // find brand item
+    let item = await this.repository.findOne(
+      new QueryOptionsBuilder()
+        .filter({ id })
+        .filter(
+          Sequelize.where(
+            Sequelize.fn('isnull', Sequelize.col('isDeleted'), 0),
+            {
+              [Op.eq]: 0,
+            },
+          ),
+        )
+        .build(),
+    );
+    if (!item) {
+      throw new NotFoundException('the item with this given id not founded!');
+    }
+
+    // upload to s3 cloud
+    const bucketName = 'entityTypes';
+    await this.minioClientService.createBucket(bucketName);
+    const fileStream = fs.readFileSync(file.path);
+    const uploadResult = await this.minioClientService.upload(
+      bucketName,
+      file.filename,
+      fileStream,
+    );
+
+    // remove old one if exists
+    if (item.attachmentId) {
+      let oldAttachment = await this.attachmentRepository.findOne(
+        new QueryOptionsBuilder()
+          .filter({ id: item.attachmentId })
+          .filter(
+            Sequelize.where(
+              Sequelize.fn('isnull', Sequelize.col('isDeleted'), 0),
+              {
+                [Op.eq]: 0,
+              },
+            ),
+          )
+          .filter({ attachmentTypeId: this.entityTypeAttachmentType })
+          .build(),
+      );
+      if (oldAttachment) {
+        // remove from s3 cloud
+        await this.minioClientService.remove(
+          oldAttachment.bucketName,
+          oldAttachment.fileName,
+        );
+
+        // remove in database
+        oldAttachment.isDeleted = true;
+        oldAttachment = await oldAttachment.save();
+      }
+    }
+
+    // create new one
+    const newAttachment = await this.attachmentRepository.create({
+      attachmentTypeId: this.entityTypeAttachmentType,
+      fileName: file.filename,
+      originalFileName: file.originalname,
+      mimetype: file.mimetype,
+      etag: uploadResult.etag,
+      versionId: uploadResult.versionId,
+      bucketName: bucketName,
+      userId: user.id,
+    });
+    item.attachmentId = newAttachment.id;
+    item = await item.save();
+
+    // remove file on current instanse
+    fs.rmSync(file.path);
+
+    return {
+      result: _.pick(newAttachment, ['id', 'fileName']),
+    };
+  }
+
+  async getPhoto(res: Response, fileName: string) {
+    let attachment = await this.attachmentRepository.findOne(
+      new QueryOptionsBuilder()
+        .filter({ fileName: fileName })
+        .filter(
+          Sequelize.where(
+            Sequelize.fn('isnull', Sequelize.col('isDeleted'), 0),
+            {
+              [Op.eq]: 0,
+            },
+          ),
+        )
+        .filter({ attachmentTypeId: this.entityTypeAttachmentType })
+        .build(),
+    );
+    if (!attachment) {
+      throw new ForbiddenException("You don't have access to this file!");
+    }
+    const accessUrl = await this.minioClientService.generateDownloadUrl(
+      attachment.bucketName,
+      attachment.fileName,
+    );
+    return res.redirect(301, accessUrl);
   }
 }

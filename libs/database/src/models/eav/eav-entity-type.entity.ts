@@ -8,6 +8,7 @@ import {
 } from 'sequelize-typescript';
 import { EAVEntityModel } from './eav-entity-model.entity';
 import { AutoMap } from 'automapper-classes';
+import { Attachment } from '../core/attachment.entity';
 
 @Table({ tableName: 'EAVEntityTypes' })
 export class EAVEntityType extends Model {
@@ -52,6 +53,16 @@ export class EAVEntityType extends Model {
     foreignKey: 'entityModelId',
   })
   entityModel?: EAVEntityModel;
+
+  @Column({
+    type: DataType.INTEGER,
+    allowNull: true,
+  })
+  @ForeignKey(() => Attachment)
+  attachmentId?: bigint;
+
+  @BelongsTo(() => Attachment, { foreignKey: 'attachmentId', as: 'attachment' })
+  attachment?: Attachment;
 
   @Column({
     type: DataType.BOOLEAN,
