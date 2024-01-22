@@ -59,6 +59,12 @@ export class EntityTypeService {
     builder = builder
       .include([
         {
+          attributes: ['id', 'fileName'],
+          model: Attachment,
+          as: 'attachment',
+          required: false,
+        },
+        {
           model: EAVEntityModel,
           as: 'entityModel',
         },
@@ -83,6 +89,12 @@ export class EntityTypeService {
     const builder = new QueryOptionsBuilder()
       .attributes(['id', 'name', 'slug', 'parentEntityTypeId', 'entityModelId'])
       .include([
+        {
+          attributes: ['id', 'fileName'],
+          model: Attachment,
+          as: 'attachment',
+          required: false,
+        },
         {
           model: EAVEntityModel,
           as: 'entityModel',
@@ -249,6 +261,12 @@ export class EntityTypeService {
     const options = builder
       .filter({ id: entityType[1][0].id })
       .include([
+        {
+          attributes: ['id', 'fileName'],
+          model: Attachment,
+          as: 'attachment',
+          required: false,
+        },
         {
           model: EAVEntityModel,
           as: 'entityModel',

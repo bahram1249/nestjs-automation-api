@@ -7,6 +7,8 @@ import { EAVEntityType } from '@rahino/database/models/eav/eav-entity-type.entit
 import { User } from '@rahino/database/models/core/user.entity';
 import { Permission } from '@rahino/database/models/core/permission.entity';
 import { EAVEntityModel } from '@rahino/database/models/eav/eav-entity-model.entity';
+import { Attachment } from '@rahino/database/models/core/attachment.entity';
+import { MinioClientModule } from '@rahino/minio-client';
 
 @Module({
   imports: [
@@ -15,7 +17,9 @@ import { EAVEntityModel } from '@rahino/database/models/eav/eav-entity-model.ent
       Permission,
       EAVEntityType,
       EAVEntityModel,
+      Attachment,
     ]),
+    MinioClientModule,
   ],
   controllers: [EntityTypeController],
   providers: [EntityTypeService, EntityTypeProfile],
