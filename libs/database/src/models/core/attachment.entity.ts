@@ -61,4 +61,20 @@ export class Attachment extends Model {
   deletedDate?: Date;
   @Column({})
   deletedBy?: bigint;
+
+  @Column({
+    type: DataType.STRING,
+    allowNull: true,
+  })
+  bucketName?: string;
+  @Column({
+    type: DataType.STRING,
+    allowNull: true,
+  })
+  etag?: string;
+  @Column({
+    type: DataType.STRING,
+    allowNull: true,
+  })
+  versionId?: string;
 }

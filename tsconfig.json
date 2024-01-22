@@ -137,6 +137,12 @@
       ],
       "@rahino/commontools/*": [
         "libs/commontools/src/*"
+      ],
+      "@rahino/minio-client": [
+        "libs/minio-client/src"
+      ],
+      "@rahino/minio-client/*": [
+        "libs/minio-client/src/*"
       ]
     }
   }

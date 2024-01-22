@@ -201,6 +201,15 @@
       "compilerOptions": {
         "tsConfigPath": "libs/commontools/tsconfig.lib.json"
       }
+    },
+    "minio-client": {
+      "type": "library",
+      "root": "libs/minio-client",
+      "entryFile": "index",
+      "sourceRoot": "libs/minio-client/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/minio-client/tsconfig.lib.json"
+      }
     }
   }
 }

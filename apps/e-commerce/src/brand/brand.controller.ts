@@ -2,13 +2,18 @@ import {
   Body,
   Controller,
   Delete,
+  FileTypeValidator,
   Get,
   HttpCode,
   HttpStatus,
+  MaxFileSizeValidator,
   Param,
+  ParseFilePipe,
   Post,
   Put,
   Query,
+  Res,
+  UploadedFile,
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
@@ -17,25 +22,31 @@ import { PermissionGuard } from '@rahino/permission-checker/guard';
 import { JsonResponseTransformInterceptor } from '@rahino/response/interceptor';
 import {
   ApiBearerAuth,
+  ApiBody,
+  ApiConsumes,
   ApiOperation,
   ApiQuery,
   ApiTags,
 } from '@nestjs/swagger';
-
+import { Response } from 'express';
 import { JwtGuard } from '@rahino/auth/guard';
 import { BrandService } from './brand.service';
 import { BrandDto, GetBrandDto } from './dto';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { imageOptions } from './file-options';
+import { GetUser } from '@rahino/auth/decorator';
+import { User } from '@rahino/database/models/core/user.entity';
 
 @ApiTags('Brands')
 @Controller({
   path: '/api/ecommerce/brands',
   version: ['1'],
 })
-@UseInterceptors(JsonResponseTransformInterceptor)
 export class BrandController {
   constructor(private service: BrandService) {}
 
   // public url
+  @UseInterceptors(JsonResponseTransformInterceptor)
   @ApiOperation({ description: 'show all brands' })
   @Get('/')
   @ApiQuery({
@@ -49,6 +60,7 @@ export class BrandController {
     return await this.service.findAll(filter);
   }
 
+  @UseInterceptors(JsonResponseTransformInterceptor)
   @UseGuards(JwtGuard, PermissionGuard)
   @ApiBearerAuth()
   @ApiOperation({ description: 'show brand by given id' })
@@ -59,6 +71,7 @@ export class BrandController {
     return await this.service.findById(entityId);
   }
 
+  @UseInterceptors(JsonResponseTransformInterceptor)
   @UseGuards(JwtGuard, PermissionGuard)
   @ApiBearerAuth()
   @ApiOperation({ description: 'create brand by admin' })
@@ -69,6 +82,7 @@ export class BrandController {
     return await this.service.create(dto);
   }
 
+  @UseInterceptors(JsonResponseTransformInterceptor)
   @UseGuards(JwtGuard, PermissionGuard)
   @ApiBearerAuth()
   @ApiOperation({ description: 'update brand by admin' })
@@ -79,6 +93,7 @@ export class BrandController {
     return await this.service.update(entityId, dto);
   }
 
+  @UseInterceptors(JsonResponseTransformInterceptor)
   @UseGuards(JwtGuard, PermissionGuard)
   @ApiBearerAuth()
   @ApiOperation({ description: 'delete brand by admin' })
@@ -89,10 +104,58 @@ export class BrandController {
     return await this.service.deleteById(entityId);
   }
 
+  @UseInterceptors(JsonResponseTransformInterceptor)
   @ApiOperation({ description: 'get brand by slug' })
   @Get('/slug/:slug')
   @HttpCode(HttpStatus.OK)
   async findBySlug(@Param('slug') slug: string) {
     return await this.service.findBySlug(slug);
+  }
+
+  @UseInterceptors(JsonResponseTransformInterceptor)
+  @UseGuards(JwtGuard, PermissionGuard)
+  @ApiBearerAuth()
+  @CheckPermission({ permissionSymbol: 'ecommerce.brands.uploadImage' })
+  @UseInterceptors(FileInterceptor('file', imageOptions()))
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        file: {
+          type: 'string',
+          format: 'binary',
+        },
+      },
+    },
+  })
+  @Post('/image/:id')
+  @HttpCode(HttpStatus.OK)
+  async uploadImage(
+    @Param('id') id: number,
+    @GetUser() user: User,
+    @UploadedFile(
+      new ParseFilePipe({
+        validators: [
+          new FileTypeValidator({ fileType: /(jpg|png|jpeg)/ }),
+          new MaxFileSizeValidator({ maxSize: 2097152 }),
+        ],
+        fileIsRequired: false,
+        errorHttpStatusCode: HttpStatus.UNPROCESSABLE_ENTITY,
+      }),
+    )
+    file?: Express.Multer.File,
+  ) {
+    return await this.service.uploadImage(id, user, file);
+  }
+
+  @ApiOperation({ description: 'show brand photo by fileName' })
+  @Get('/image/:fileName')
+  @HttpCode(HttpStatus.OK)
+  async getImage(
+    @Res({ passthrough: true }) res: Response,
+    @Param('fileName') fileName: string,
+  ) {
+    return this.service.getPhoto(res, fileName);
   }
 }

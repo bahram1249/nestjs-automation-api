@@ -153,6 +153,28 @@ END
 GO
 
 
+
+IF NOT EXISTS ((SELECT 1 FROM Migrations WHERE version = 'CORE-Attachments-v2' 
+				
+			))
+	AND EXISTS (
+		SELECT 1 FROM Settings WHERE 1=1
+		OR ([key] = 'SITE_NAME' AND [value] IN ('SITE_NAME'))
+	)
+BEGIN
+
+
+	ALTER TABLE Attachments
+		ADD bucketName nvarchar(256) null,
+			etag nvarchar(256) null,
+			versionId nvarchar(256) null;
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'CORE-Attachments-v2', GETDATE(), GETDATE()
+END
+
+GO
+
 IF NOT EXISTS ((SELECT 1 FROM Migrations WHERE version = 'CORE-PermissionGroups-v1' 
 			
 			))
@@ -1328,6 +1350,27 @@ END
 GO
 
 
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ecommerce-brands-v2' 
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'SITE_NAME' AND [value] IN ('ecommerce'))
+		)
+BEGIN
+
+	ALTER TABLE ECBrands
+		ADD attachmentId bigint null
+			CONSTRAINT FK_ECBrands_AttachmentId
+				FOREIGN KEY REFERENCES Attachments(id)
+
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'ecommerce-brands-v2', GETDATE(), GETDATE()
+END
+
+GO
+
+
 
 
 IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ecommerce-guarantees-v1' 
@@ -2439,6 +2482,21 @@ BEGIN
 
 	INSERT INTO Migrations(version, createdAt, updatedAt)
 	SELECT 'CORE-AttachmentTypes-Data-v5', GETDATE(), GETDATE()
+END
+
+GO
+
+
+-- ecommerce brands
+IF NOT EXISTS ((SELECT 1 FROM Migrations WHERE version = 'CORE-AttachmentTypes-Data-v6' 
+			))
+BEGIN
+	
+	INSERT INTO AttachmentTypes(id, typeName, createdAt, updatedAt)
+	SELECT 6, N'brands', getdate(), getdate()
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'CORE-AttachmentTypes-Data-v6', GETDATE(), GETDATE()
 END
 
 GO
@@ -4779,7 +4837,7 @@ BEGIN
 	DECLARE @findParentMenu bit = 1;
 	DECLARE @parentMenuName nvarchar(256) = N'محصول'
 	DECLARE @menuName nvarchar(256) = N'برند ها'
-	DECLARE @menuUrl nvarchar(512) = N'/ecommerce/admin/brands'
+	DECLARE @menuUrl nvarchar(512) = N'/admin/ecommerce/brands'
 
 	DECLARE @permissionSymbolShowMenu nvarchar(512) = @groupName + '.showmenu';
 	DECLARE @permissionSymbolGetAll nvarchar(512) = @groupName + '.getall';
@@ -4787,6 +4845,7 @@ BEGIN
 	DECLARE @permissionSymbolCreate nvarchar(512) = @groupName + '.create';
 	DECLARE @permissionSymbolUpdate nvarchar(512) = @groupName + '.update';
 	DECLARE @permissionSymbolDelete nvarchar(512) = @groupName + '.delete';
+	DECLARE @permissionSymbolUploadImage nvarchar(512) = @groupName + '.uploadImage';
 
 
 	-- permission groups
@@ -4823,6 +4882,10 @@ BEGIN
 	INSERT INTO Permissions(permissionName ,permissionSymbol,permissionGroupId,  createdAt, updatedAt)
 	OUTPUT inserted.id INTO @PermissionTemp(permissionId)
 	SELECT 'DELETE_' + @entityName, @permissionSymbolDelete, @groupId, GETDATE(), GETDATE()
+
+	INSERT INTO Permissions(permissionName ,permissionSymbol,permissionGroupId,  createdAt, updatedAt)
+	OUTPUT inserted.id INTO @PermissionTemp(permissionId)
+	SELECT 'UPLOADIMAGE_' + @entityName, @permissionSymbolUploadImage, @groupId, GETDATE(), GETDATE()
 
 	-- CRUD THIS Enity FOR super-admin
 	INSERT INTO RolePermissions(roleId, permissionId, createdAt, updatedAt)

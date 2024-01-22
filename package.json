@@ -51,6 +51,7 @@
     "ioredis": "^5.3.2",
     "loadash": "^1.0.0",
     "mssql": "^10.0.1",
+    "nestjs-minio-client": "^2.2.0",
     "passport-jwt": "^4.0.1",
     "qrcode": "^1.5.3",
     "reflect-metadata": "^0.1.13",
@@ -128,7 +129,8 @@
       "^@rahino/pay(|/.*)$": "<rootDir>/libs/pay/src/$1",
       "^@rahino/commonmiddleware(|/.*)$": "<rootDir>/libs/commonmiddleware/src/$1",
       "^@rahino/redis-client(|/.*)$": "<rootDir>/libs/redis-client/src/$1",
-      "^@rahino/commontools(|/.*)$": "<rootDir>/libs/commontools/src/$1"
+      "^@rahino/commontools(|/.*)$": "<rootDir>/libs/commontools/src/$1",
+      "^@rahino/minio-client(|/.*)$": "<rootDir>/libs/minio-client/src/$1"
     }
   }
 }
