@@ -1421,6 +1421,49 @@ END
 
 GO
 
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ecommerce-guarantees-v2' 
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'SITE_NAME' AND [value] IN ('ecommerce'))
+		)
+BEGIN
+
+	ALTER TABLE ECGuarantees
+		ADD attachmentId bigint null
+			CONSTRAINT FK_ECGuarantees_AttachmentId
+				FOREIGN KEY REFERENCES Attachments(id)
+
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'ecommerce-guarantees-v2', GETDATE(), GETDATE()
+END
+GO
+
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ecommerce-guaranteemonths-v1' 
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'SITE_NAME' AND [value] IN ('ecommerce'))
+		)
+BEGIN
+
+	CREATE TABLE ECGuaranteeMonths (
+		id							int							PRIMARY KEY,
+		[name]						nvarchar(256)				NOT NULL,
+		monthCount					int							NOT NULL,
+		isDeleted					bit							NULL,
+		[createdAt]					datetimeoffset				NOT NULL,
+		[updatedAt]					datetimeoffset				NOT NULL,
+	);
+
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'ecommerce-guaranteemonths-v1', GETDATE(), GETDATE()
+END
+
+GO
+
 
 IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ecommerce-colors-v1' 
 			)
@@ -2501,6 +2544,21 @@ END
 
 GO
 
+
+
+-- ecommerce guarantees
+IF NOT EXISTS ((SELECT 1 FROM Migrations WHERE version = 'CORE-AttachmentTypes-Data-v7' 
+			))
+BEGIN
+	
+	INSERT INTO AttachmentTypes(id, typeName, createdAt, updatedAt)
+	SELECT 7, N'guarantees', getdate(), getdate()
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'CORE-AttachmentTypes-Data-v7', GETDATE(), GETDATE()
+END
+
+GO
 
 
 
@@ -4985,7 +5043,7 @@ BEGIN
 	DECLARE @findParentMenu bit = 1;
 	DECLARE @parentMenuName nvarchar(256) = N'محصول'
 	DECLARE @menuName nvarchar(256) = N'رنگ ها'
-	DECLARE @menuUrl nvarchar(512) = N'/ecommerce/admin/colors'
+	DECLARE @menuUrl nvarchar(512) = N'/admin/ecommerce/colors'
 
 	DECLARE @permissionSymbolShowMenu nvarchar(512) = @groupName + '.showmenu';
 	DECLARE @permissionSymbolGetAll nvarchar(512) = @groupName + '.getall';
@@ -5127,7 +5185,7 @@ BEGIN
 	DECLARE @findParentMenu bit = 1;
 	DECLARE @parentMenuName nvarchar(256) = N'محصول'
 	DECLARE @menuName nvarchar(256) = N'گارانتی ها'
-	DECLARE @menuUrl nvarchar(512) = N'/ecommerce/admin/guarantees'
+	DECLARE @menuUrl nvarchar(512) = N'/admin/ecommerce/guarantees'
 
 	DECLARE @permissionSymbolShowMenu nvarchar(512) = @groupName + '.showmenu';
 	DECLARE @permissionSymbolGetAll nvarchar(512) = @groupName + '.getall';
@@ -5135,6 +5193,8 @@ BEGIN
 	DECLARE @permissionSymbolCreate nvarchar(512) = @groupName + '.create';
 	DECLARE @permissionSymbolUpdate nvarchar(512) = @groupName + '.update';
 	DECLARE @permissionSymbolDelete nvarchar(512) = @groupName + '.delete';
+	DECLARE @permissionSymbolUploadImage nvarchar(512) = @groupName + '.uploadImage';
+
 
 
 	-- permission groups
@@ -5171,6 +5231,11 @@ BEGIN
 	INSERT INTO Permissions(permissionName ,permissionSymbol,permissionGroupId,  createdAt, updatedAt)
 	OUTPUT inserted.id INTO @PermissionTemp(permissionId)
 	SELECT 'DELETE_' + @entityName, @permissionSymbolDelete, @groupId, GETDATE(), GETDATE()
+
+
+	INSERT INTO Permissions(permissionName ,permissionSymbol,permissionGroupId,  createdAt, updatedAt)
+	OUTPUT inserted.id INTO @PermissionTemp(permissionId)
+	SELECT 'UPLOADIMAGE_' + @entityName, @permissionSymbolUploadImage, @groupId, GETDATE(), GETDATE()
 
 	-- CRUD THIS Enity FOR super-admin
 	INSERT INTO RolePermissions(roleId, permissionId, createdAt, updatedAt)

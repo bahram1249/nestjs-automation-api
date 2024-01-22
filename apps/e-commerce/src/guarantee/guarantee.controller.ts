@@ -2,13 +2,18 @@ import {
   Body,
   Controller,
   Delete,
+  FileTypeValidator,
   Get,
   HttpCode,
   HttpStatus,
+  MaxFileSizeValidator,
   Param,
+  ParseFilePipe,
   Post,
   Put,
   Query,
+  Res,
+  UploadedFile,
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
@@ -17,6 +22,8 @@ import { PermissionGuard } from '@rahino/permission-checker/guard';
 import { JsonResponseTransformInterceptor } from '@rahino/response/interceptor';
 import {
   ApiBearerAuth,
+  ApiBody,
+  ApiConsumes,
   ApiOperation,
   ApiQuery,
   ApiTags,
@@ -25,17 +32,22 @@ import {
 import { JwtGuard } from '@rahino/auth/guard';
 import { GuaranteeService } from './guarantee.service';
 import { GuaranteeDto, GetGuaranteeDto } from './dto';
+import { GetUser } from '@rahino/auth/decorator';
+import { User } from '@rahino/database/models/core/user.entity';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { imageOptions } from './file-options';
+import { Response } from 'express';
 
 @ApiTags('Guarantees')
 @Controller({
   path: '/api/ecommerce/guarantees',
   version: ['1'],
 })
-@UseInterceptors(JsonResponseTransformInterceptor)
 export class GuaranteeController {
   constructor(private service: GuaranteeService) {}
 
   // public url
+  @UseInterceptors(JsonResponseTransformInterceptor)
   @ApiOperation({ description: 'show all guarantees' })
   @Get('/')
   @ApiQuery({
@@ -49,6 +61,7 @@ export class GuaranteeController {
     return await this.service.findAll(filter);
   }
 
+  @UseInterceptors(JsonResponseTransformInterceptor)
   @UseGuards(JwtGuard, PermissionGuard)
   @ApiBearerAuth()
   @ApiOperation({ description: 'show guarantee by given id' })
@@ -59,6 +72,7 @@ export class GuaranteeController {
     return await this.service.findById(entityId);
   }
 
+  @UseInterceptors(JsonResponseTransformInterceptor)
   @UseGuards(JwtGuard, PermissionGuard)
   @ApiBearerAuth()
   @ApiOperation({ description: 'create guarantee by admin' })
@@ -69,6 +83,7 @@ export class GuaranteeController {
     return await this.service.create(dto);
   }
 
+  @UseInterceptors(JsonResponseTransformInterceptor)
   @UseGuards(JwtGuard, PermissionGuard)
   @ApiBearerAuth()
   @ApiOperation({ description: 'update guarantee by admin' })
@@ -79,6 +94,7 @@ export class GuaranteeController {
     return await this.service.update(entityId, dto);
   }
 
+  @UseInterceptors(JsonResponseTransformInterceptor)
   @UseGuards(JwtGuard, PermissionGuard)
   @ApiBearerAuth()
   @ApiOperation({ description: 'delete guarantee by admin' })
@@ -89,10 +105,58 @@ export class GuaranteeController {
     return await this.service.deleteById(entityId);
   }
 
+  @UseInterceptors(JsonResponseTransformInterceptor)
   @ApiOperation({ description: 'get guarantee by slug' })
   @Get('/slug/:slug')
   @HttpCode(HttpStatus.OK)
   async findBySlug(@Param('slug') slug: string) {
     return await this.service.findBySlug(slug);
+  }
+
+  @UseInterceptors(JsonResponseTransformInterceptor)
+  @UseGuards(JwtGuard, PermissionGuard)
+  @ApiBearerAuth()
+  @CheckPermission({ permissionSymbol: 'ecommerce.guarantees.uploadImage' })
+  @UseInterceptors(FileInterceptor('file', imageOptions()))
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        file: {
+          type: 'string',
+          format: 'binary',
+        },
+      },
+    },
+  })
+  @Post('/image/:id')
+  @HttpCode(HttpStatus.OK)
+  async uploadImage(
+    @Param('id') id: number,
+    @GetUser() user: User,
+    @UploadedFile(
+      new ParseFilePipe({
+        validators: [
+          new FileTypeValidator({ fileType: /(jpg|png|jpeg)/ }),
+          new MaxFileSizeValidator({ maxSize: 2097152 }),
+        ],
+        fileIsRequired: false,
+        errorHttpStatusCode: HttpStatus.UNPROCESSABLE_ENTITY,
+      }),
+    )
+    file?: Express.Multer.File,
+  ) {
+    return await this.service.uploadImage(id, user, file);
+  }
+
+  @ApiOperation({ description: 'show guarantee photo by fileName' })
+  @Get('/image/:fileName')
+  @HttpCode(HttpStatus.OK)
+  async getImage(
+    @Res({ passthrough: true }) res: Response,
+    @Param('fileName') fileName: string,
+  ) {
+    return this.service.getPhoto(res, fileName);
   }
 }

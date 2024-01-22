@@ -1,5 +1,13 @@
 import { AutoMap } from 'automapper-classes';
-import { Table, Column, Model, DataType } from 'sequelize-typescript';
+import {
+  Table,
+  Column,
+  Model,
+  DataType,
+  ForeignKey,
+  BelongsTo,
+} from 'sequelize-typescript';
+import { Attachment } from '../core/attachment.entity';
 
 @Table({ tableName: 'ECGuarantees' })
 export class ECGuarantee extends Model {
@@ -28,6 +36,16 @@ export class ECGuarantee extends Model {
     allowNull: true,
   })
   description?: string;
+
+  @Column({
+    type: DataType.STRING,
+    allowNull: true,
+  })
+  @ForeignKey(() => Attachment)
+  attachmentId?: bigint;
+
+  @BelongsTo(() => Attachment, { foreignKey: 'attachmentId', as: 'attachment' })
+  attachment?: Attachment;
 
   @Column({
     type: DataType.BOOLEAN,
