@@ -1,4 +1,12 @@
-import { Table, Column, Model, DataType } from 'sequelize-typescript';
+import {
+  Table,
+  Column,
+  Model,
+  DataType,
+  ForeignKey,
+  BelongsTo,
+} from 'sequelize-typescript';
+import { Attachment } from '../core/attachment.entity';
 
 @Table({ tableName: 'ECVendors' })
 export class ECVendor extends Model {
@@ -31,6 +39,17 @@ export class ECVendor extends Model {
     allowNull: true,
   })
   isDefault?: boolean;
+
+  @Column({
+    type: DataType.BIGINT,
+    allowNull: true,
+  })
+  @ForeignKey(() => Attachment)
+  attachmentId?: bigint;
+
+  @BelongsTo(() => Attachment, { foreignKey: 'attachmentId', as: 'attachment' })
+  attachment?: Attachment;
+
   @Column({
     type: DataType.INTEGER,
     allowNull: true,

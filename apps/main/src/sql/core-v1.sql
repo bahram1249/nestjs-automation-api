@@ -1507,6 +1507,9 @@ BEGIN
 		[description]				ntext						NULL,
 		[isDefault]					bit							NULL,
 		[priorityOrder]				int							NULL,
+		[attachmentId]				bigint						NULL
+			CONSTRAINT FK_ECVendors_AttachmentId
+				FOREIGN KEY REFERENCES Attachments(id),
 		isDeleted					bit							NULL,
 		[createdAt]					datetimeoffset				NOT NULL,
 		[updatedAt]					datetimeoffset				NOT NULL,
