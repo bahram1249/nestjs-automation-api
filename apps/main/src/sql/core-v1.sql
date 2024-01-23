@@ -1637,6 +1637,7 @@ BEGIN
 
 	CREATE TABLE ECAddresses (
 		id							bigint	identity(1,1)		PRIMARY KEY,
+		name						nvarchar(512)				NULL,
 		[latitude]					decimal						NULL,
 		[longitude]					decimal						NULL,
 		[provinceId]				int							NOT NULL
