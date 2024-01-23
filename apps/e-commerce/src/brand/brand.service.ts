@@ -36,9 +36,12 @@ export class BrandService {
         },
       })
       .filter(
-        Sequelize.where(Sequelize.fn('isnull', Sequelize.col('isDeleted'), 0), {
-          [Op.eq]: 0,
-        }),
+        Sequelize.where(
+          Sequelize.fn('isnull', Sequelize.col('ECBrand.isDeleted'), 0),
+          {
+            [Op.eq]: 0,
+          },
+        ),
       );
     const count = await this.repository.count(queryBuilder.build());
     const queryOptions = queryBuilder
@@ -77,7 +80,7 @@ export class BrandService {
         .filter({ id: entityId })
         .filter(
           Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('isDeleted'), 0),
+            Sequelize.fn('isnull', Sequelize.col('ECBrand.isDeleted'), 0),
             {
               [Op.eq]: 0,
             },
@@ -99,7 +102,7 @@ export class BrandService {
         .filter({ slug: dto.slug })
         .filter(
           Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('isDeleted'), 0),
+            Sequelize.fn('isnull', Sequelize.col('ECBrand.isDeleted'), 0),
             {
               [Op.eq]: 0,
             },
@@ -128,7 +131,7 @@ export class BrandService {
         .filter({ id: entityId })
         .filter(
           Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('isDeleted'), 0),
+            Sequelize.fn('isnull', Sequelize.col('ECBrand.isDeleted'), 0),
             {
               [Op.eq]: 0,
             },
@@ -149,7 +152,7 @@ export class BrandService {
         })
         .filter(
           Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('isDeleted'), 0),
+            Sequelize.fn('isnull', Sequelize.col('ECBrand.isDeleted'), 0),
             {
               [Op.eq]: 0,
             },
@@ -183,7 +186,7 @@ export class BrandService {
         .filter({ id: entityId })
         .filter(
           Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('isDeleted'), 0),
+            Sequelize.fn('isnull', Sequelize.col('ECBrand.isDeleted'), 0),
             {
               [Op.eq]: 0,
             },
@@ -215,7 +218,7 @@ export class BrandService {
         .filter({ slug: slug })
         .filter(
           Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('isDeleted'), 0),
+            Sequelize.fn('isnull', Sequelize.col('ECBrand.isDeleted'), 0),
             {
               [Op.eq]: 0,
             },
