@@ -1627,6 +1627,48 @@ END
 
 GO
 
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ecommerce-addresses-v1' 
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'SITE_NAME' AND [value] IN ('ecommerce'))
+		)
+BEGIN
+
+	CREATE TABLE ECAddresses (
+		id							bigint	identity(1,1)		PRIMARY KEY,
+		[latitude]					decimal						NULL,
+		[longitude]					decimal						NULL,
+		[provinceId]				int							NOT NULL
+			CONSTRAINT FK_ECAddresses_ProvinceId
+				FOREIGN KEY REFERENCES ECProvinces(id),
+		[cityId]					int							NOT NULL
+			CONSTRAINT FK_ECAddresses_CityId
+				FOREIGN KEY REFERENCES ECCities(id),
+		[neighborhoodId]			int							NULL
+			CONSTRAINT FK_ECAddresses_NeighborhoodId
+				FOREIGN KEY REFERENCES ECNeighborhoods(id),
+		street						nvarchar(1024)				NULL,
+		alley						nvarchar(1024)				NULL,
+		plaque						nvarchar(256)				NULL,
+		floorNumber					nvarchar(25)				NULL,
+		userId						bigint						NULL
+			CONSTRAINT FK_ECAddresses_UserId
+				FOREIGN KEY REFERENCES Users(id),
+		isDeleted					bit							NULL,
+		[createdAt]					datetimeoffset				NOT NULL,
+		[updatedAt]					datetimeoffset				NOT NULL,
+	);
+
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'ecommerce-addresses-v1', GETDATE(), GETDATE()
+END
+
+GO
+
+
+
 IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ecommerce-publish-statuses-v1' 
 			)
 	AND EXISTS (

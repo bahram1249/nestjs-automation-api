@@ -44,34 +44,9 @@ import { EAVAttribute } from './models/eav/eav-attribute.entity';
 import { EAVAttributeValue } from './models/eav/eav-attribute-value';
 import { ECPublishStatus } from './models/ecommerce-eav/ec-publish-status.entity';
 import { ECProvince } from './models/ecommerce-eav/ec-province.entity';
-
-// let config;
-// switch (process.env.NODE_ENV) {
-//   case 'DEVELOPMENT':
-//     config = databaseConfig.development;
-//     break;
-//   case 'TEST':
-//     config = databaseConfig.test;
-//     break;
-//   case 'PRODUCTION':
-//     config = databaseConfig.production;
-//     break;
-//   case 'PROVISION':
-//     config = databaseConfig.provision;
-//   default:
-//     config = databaseConfig.development;
-// }
-// config.models = [
-//   User,
-//   Role,
-//   UserRole,
-//   Menu,
-//   Permission,
-//   PermissionGroup,
-//   RolePermission,
-//   AttachmentType,
-//   Attachment,
-// ];
+import { ECCity } from './models/ecommerce-eav/ec-city.entity';
+import { ECNeighborhood } from './models/ecommerce-eav/ec-neighborhood.entity';
+import { ECAddress } from './models/ecommerce-eav/ec-address.entity';
 
 const dbSync: boolean = JSON.parse(process.env.DB_SYNCHRONIZE);
 const autoLoadModels: boolean = JSON.parse(process.env.DB_AUTO_LOAD_MODELS);
@@ -116,6 +91,9 @@ const dbLog: boolean = JSON.parse(process.env.DB_LOG);
           EAVAttributeValue,
           ECPublishStatus,
           ECProvince,
+          ECCity,
+          ECNeighborhood,
+          ECAddress,
           ECProduct,
           Buffet,
           BuffetType,

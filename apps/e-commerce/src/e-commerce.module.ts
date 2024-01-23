@@ -15,6 +15,7 @@ import { PublishStatusModule } from './publish-status/publish-status.module';
 import { ProvinceModule } from './province/province.module';
 import { CityModule } from './city/city.module';
 import { NeighborhoodModule } from './neighborhood/neighborhood.module';
+import { AddressModule } from './user/address/address.module';
 
 @Module({
   imports: [
@@ -27,6 +28,7 @@ import { NeighborhoodModule } from './neighborhood/neighborhood.module';
     ProvinceModule,
     CityModule,
     NeighborhoodModule,
+    AddressModule,
     ProductModule,
   ],
 })
