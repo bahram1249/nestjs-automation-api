@@ -19,7 +19,10 @@ import {
 } from '@nestjs/common';
 import { CheckPermission } from '@rahino/permission-checker/decorator';
 import { PermissionGuard } from '@rahino/permission-checker/guard';
-import { JsonResponseTransformInterceptor } from '@rahino/response/interceptor';
+import {
+  ImageResponseTransformInterceptor,
+  JsonResponseTransformInterceptor,
+} from '@rahino/response/interceptor';
 import {
   ApiBearerAuth,
   ApiBody,
@@ -150,6 +153,7 @@ export class GuaranteeController {
     return await this.service.uploadImage(id, user, file);
   }
 
+  @UseInterceptors(ImageResponseTransformInterceptor)
   @ApiOperation({ description: 'show guarantee photo by fileName' })
   @Get('/image/:fileName')
   @HttpCode(HttpStatus.OK)

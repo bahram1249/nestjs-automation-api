@@ -416,6 +416,8 @@ export class EntityTypeService {
       attachment.bucketName,
       attachment.fileName,
     );
-    return res.redirect(301, accessUrl);
+    return {
+      result: accessUrl,
+    };
   }
 }
