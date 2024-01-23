@@ -13,6 +13,7 @@ import { GuaranteeModule } from './guarantee/guarantee.module';
 import { GuaranteeMonthModule } from './guarantee-month/guarantee-month.module';
 import { PublishStatusModule } from './publish-status/publish-status.module';
 import { ProvinceModule } from './province/province.module';
+import { CityModule } from './city/city.module';
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { ProvinceModule } from './province/province.module';
     GuaranteeMonthModule,
     PublishStatusModule,
     ProvinceModule,
+    CityModule,
     ProductModule,
   ],
 })
