@@ -13,9 +13,12 @@ export class CityService {
 
   async findAll(dto: GetCityDto) {
     let queryBuilder = new QueryOptionsBuilder().filter(
-      Sequelize.where(Sequelize.fn('isnull', Sequelize.col('isDeleted'), 0), {
-        [Op.eq]: 0,
-      }),
+      Sequelize.where(
+        Sequelize.fn('isnull', Sequelize.col('ECCity.isDeleted'), 0),
+        {
+          [Op.eq]: 0,
+        },
+      ),
     );
     if (dto.provinceId) {
       queryBuilder = queryBuilder.filter({ provinceId: dto.provinceId });
@@ -25,6 +28,7 @@ export class CityService {
       .attributes(['id', 'name', 'slug', 'provinceId', 'neighborhoodBase'])
       .include([
         {
+          attributes: ['id', 'name'],
           model: ECProvince,
           as: 'province',
         },
