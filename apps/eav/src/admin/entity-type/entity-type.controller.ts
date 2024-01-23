@@ -19,10 +19,7 @@ import {
 } from '@nestjs/common';
 import { CheckPermission } from '@rahino/permission-checker/decorator';
 import { PermissionGuard } from '@rahino/permission-checker/guard';
-import {
-  ImageResponseTransformInterceptor,
-  JsonResponseTransformInterceptor,
-} from '@rahino/response/interceptor';
+import { JsonResponseTransformInterceptor } from '@rahino/response/interceptor';
 import {
   ApiBearerAuth,
   ApiBody,
@@ -43,6 +40,7 @@ import { Response } from 'express';
 
 @ApiTags('EAV-EntityTypes')
 @ApiBearerAuth()
+@UseInterceptors(JsonResponseTransformInterceptor)
 @UseGuards(JwtGuard, PermissionGuard)
 @Controller({
   path: '/api/eav/admin/entityTypes',
@@ -50,7 +48,7 @@ import { Response } from 'express';
 })
 export class EntityTypeController {
   constructor(private service: EntityTypeService) {}
-  @UseInterceptors(JsonResponseTransformInterceptor)
+
   @ApiOperation({ description: 'show all entitytypes' })
   @CheckPermission({ permissionSymbol: 'eav.admin.entitytype.getall' })
   @Get('/')
@@ -65,7 +63,6 @@ export class EntityTypeController {
     return await this.service.findAll(filter);
   }
 
-  @UseInterceptors(JsonResponseTransformInterceptor)
   @ApiOperation({ description: 'show attribute by given id' })
   @CheckPermission({ permissionSymbol: 'eav.admin.entitytype.getone' })
   @Get('/:id')
@@ -74,7 +71,6 @@ export class EntityTypeController {
     return await this.service.findById(entityId);
   }
 
-  @UseInterceptors(JsonResponseTransformInterceptor)
   @ApiOperation({ description: 'create entity type by modeltypeid' })
   @CheckPermission({ permissionSymbol: 'eav.admin.entitytype.create' })
   @Post('/')
@@ -83,7 +79,6 @@ export class EntityTypeController {
     return await this.service.create(dto);
   }
 
-  @UseInterceptors(JsonResponseTransformInterceptor)
   @ApiOperation({ description: 'update entity type' })
   @CheckPermission({ permissionSymbol: 'eav.admin.entitytype.update' })
   @Put('/:id')
@@ -92,7 +87,6 @@ export class EntityTypeController {
     return await this.service.update(entityId, dto);
   }
 
-  @UseInterceptors(JsonResponseTransformInterceptor)
   @ApiOperation({ description: 'delete by entitytypeid' })
   @CheckPermission({ permissionSymbol: 'eav.admin.entitytype.delete' })
   @Delete('/:id')
@@ -101,7 +95,6 @@ export class EntityTypeController {
     return await this.service.deleteById(entityId);
   }
 
-  @UseInterceptors(JsonResponseTransformInterceptor)
   @UseGuards(JwtGuard, PermissionGuard)
   @ApiBearerAuth()
   @CheckPermission({ permissionSymbol: 'eav.admin.entitytype.uploadImage' })
@@ -138,7 +131,6 @@ export class EntityTypeController {
     return await this.service.uploadImage(id, user, file);
   }
 
-  @UseInterceptors(ImageResponseTransformInterceptor)
   @ApiOperation({ description: 'show guarantee photo by fileName' })
   @Get('/image/:fileName')
   @HttpCode(HttpStatus.OK)
