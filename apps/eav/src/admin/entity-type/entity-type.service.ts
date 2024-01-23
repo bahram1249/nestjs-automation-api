@@ -41,9 +41,12 @@ export class EntityTypeService {
         },
       })
       .filter(
-        Sequelize.where(Sequelize.fn('isnull', Sequelize.col('isDeleted'), 0), {
-          [Op.eq]: 0,
-        }),
+        Sequelize.where(
+          Sequelize.fn('isnull', Sequelize.col('EAVEntityType.isDeleted'), 0),
+          {
+            [Op.eq]: 0,
+          },
+        ),
       );
     if (filter.entityModelId) {
       builder = builder.filter({
@@ -107,9 +110,12 @@ export class EntityTypeService {
       ])
       .filter({ id })
       .filter(
-        Sequelize.where(Sequelize.fn('isnull', Sequelize.col('isDeleted'), 0), {
-          [Op.eq]: 0,
-        }),
+        Sequelize.where(
+          Sequelize.fn('isnull', Sequelize.col('EAVEntityType.isDeleted'), 0),
+          {
+            [Op.eq]: 0,
+          },
+        ),
       );
     const result = await this.repository.findOne(builder.build());
     return {
@@ -145,7 +151,7 @@ export class EntityTypeService {
         .filter({ slug: dto.slug })
         .filter(
           Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('isDeleted'), 0),
+            Sequelize.fn('isnull', Sequelize.col('EAVEntityType.isDeleted'), 0),
             {
               [Op.eq]: 0,
             },
@@ -190,7 +196,7 @@ export class EntityTypeService {
         .filter({ id })
         .filter(
           Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('isDeleted'), 0),
+            Sequelize.fn('isnull', Sequelize.col('EAVEntityType.isDeleted'), 0),
             {
               [Op.eq]: 0,
             },
@@ -235,7 +241,7 @@ export class EntityTypeService {
         })
         .filter(
           Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('isDeleted'), 0),
+            Sequelize.fn('isnull', Sequelize.col('EAVEntityType.isDeleted'), 0),
             {
               [Op.eq]: 0,
             },
@@ -289,7 +295,7 @@ export class EntityTypeService {
         .filter({ id })
         .filter(
           Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('isDeleted'), 0),
+            Sequelize.fn('isnull', Sequelize.col('EAVEntityType.isDeleted'), 0),
             {
               [Op.eq]: 0,
             },
@@ -315,7 +321,7 @@ export class EntityTypeService {
         .filter({ id })
         .filter(
           Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('isDeleted'), 0),
+            Sequelize.fn('isnull', Sequelize.col('EAVEntityType.isDeleted'), 0),
             {
               [Op.eq]: 0,
             },
