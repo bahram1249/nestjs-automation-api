@@ -48,6 +48,10 @@ import { ECCity } from './models/ecommerce-eav/ec-city.entity';
 import { ECNeighborhood } from './models/ecommerce-eav/ec-neighborhood.entity';
 import { ECAddress } from './models/ecommerce-eav/ec-address.entity';
 import { ECInventoryStatus } from './models/ecommerce-eav/ec-inventory-status.entity';
+import { ECBrand } from './models/ecommerce-eav/ec-brand.entity';
+import { ECColor } from './models/ecommerce-eav/ec-color.entity';
+import { ECGuarantee } from './models/ecommerce-eav/ec-guarantee.entity';
+import { ECGuaranteeMonth } from './models/ecommerce-eav/ec-guarantee-month.entity';
 
 const dbSync: boolean = JSON.parse(process.env.DB_SYNCHRONIZE);
 const autoLoadModels: boolean = JSON.parse(process.env.DB_AUTO_LOAD_MODELS);
@@ -92,6 +96,10 @@ const dbLog: boolean = JSON.parse(process.env.DB_LOG);
           EAVAttributeValue,
           ECPublishStatus,
           ECInventoryStatus,
+          ECColor,
+          ECGuarantee,
+          ECGuaranteeMonth,
+          ECBrand,
           ECProvince,
           ECCity,
           ECNeighborhood,
