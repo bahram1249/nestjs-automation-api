@@ -47,6 +47,7 @@ import { ECProvince } from './models/ecommerce-eav/ec-province.entity';
 import { ECCity } from './models/ecommerce-eav/ec-city.entity';
 import { ECNeighborhood } from './models/ecommerce-eav/ec-neighborhood.entity';
 import { ECAddress } from './models/ecommerce-eav/ec-address.entity';
+import { ECInventoryStatus } from './models/ecommerce-eav/ec-inventory-status.entity';
 
 const dbSync: boolean = JSON.parse(process.env.DB_SYNCHRONIZE);
 const autoLoadModels: boolean = JSON.parse(process.env.DB_AUTO_LOAD_MODELS);
@@ -90,6 +91,7 @@ const dbLog: boolean = JSON.parse(process.env.DB_LOG);
           EAVAttribute,
           EAVAttributeValue,
           ECPublishStatus,
+          ECInventoryStatus,
           ECProvince,
           ECCity,
           ECNeighborhood,

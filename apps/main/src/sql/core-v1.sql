@@ -1697,6 +1697,34 @@ END
 GO
 
 
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ecommerce-inventory-status-v1' 
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'SITE_NAME' AND [value] IN ('ecommerce'))
+		)
+BEGIN
+
+	CREATE TABLE ECInventoryStatuses (
+		id							int							PRIMARY KEY,
+		[name]						nvarchar(256)				NOT NULL,
+		[createdAt]					datetimeoffset				NOT NULL,
+		[updatedAt]					datetimeoffset				NOT NULL,
+	);
+
+	INSERT INTO ECInventoryStatuses(id, name, createdAt, updatedAt)
+	VALUES (1, N'موجود', GETDATE(), GETDATE())
+		,(2, N'ناموجود', GETDATE(), GETDATE())
+
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'ecommerce-inventory-status-v1', GETDATE(), GETDATE()
+END
+
+GO
+
+
+
 
 
 -- eav
