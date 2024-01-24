@@ -1724,6 +1724,49 @@ END
 GO
 
 
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ecommerce-products-v1' 
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'SITE_NAME' AND [value] IN ('ecommerce'))
+		)
+BEGIN
+
+	CREATE TABLE ECProducts (
+		id							bigint						PRIMARY KEY,
+		title						nvarchar(512)				NOT NULL,
+		slug						nvarchar(512)				NOT NULL,
+		sku							nvarchar(512)				NULL,
+		entityTypeId				int							NULL
+			CONSTRAINT FK_ECProducts_EntityTypeId
+				FOREIGN KEY REFERENCES EAVEntityTypes(id),
+		publishStatusId				int							NULL
+			CONSTRAINT FK_ECProducts_PublishStatusId
+				FOREIGN KEY REFERENCES ECPublishStatuses(id),
+		inventoryStatusId			int							NULL
+			CONSTRAINT FK_ECProducts_InventoryStatusId
+				FOREIGN KEY REFERENCES ECInventoryStatuses(id),
+		brandId						int							NULL
+			CONSTRAINT FK_ECProducts_BrandId
+				FOREIGN KEY REFERENCES ECBrands(id),
+		colorBased					bit							NULL,
+		description					ntext						NULL,
+		userId						bigint						NULL
+			CONSTRAINT FK_ECProducts_UserId
+				FOREIGN KEY REFERENCES Users(id),
+		isDeleted					bit							NULL,
+		[createdAt]					datetimeoffset				NOT NULL,
+		[updatedAt]					datetimeoffset				NOT NULL,
+	);
+
+
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'ecommerce-products-v1', GETDATE(), GETDATE()
+END
+
+GO
+
 
 
 
