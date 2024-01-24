@@ -11,6 +11,19 @@ export class DBLogger extends EmojiLogger {
   ) {
     super();
   }
+
+  async warn(message: any) {
+    try {
+      await this.winstonLogRepository.create({
+        level: 'warn',
+        message: message,
+      });
+    } catch (e: any) {
+      super.error(e.message, 'at db-logger.service');
+    } finally {
+      super.warn(message);
+    }
+  }
   async error(message: any, stack?: string, context?: string, payload?: any) {
     try {
       await this.winstonLogRepository.create({

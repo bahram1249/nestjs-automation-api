@@ -15,9 +15,9 @@ export const redisClientFactory: FactoryProvider<Redis> = {
       password: redisPassword,
     });
 
-    redisInstance.on('error', (e) => {
-      throw new Error(`Redis connection failed: ${e}`);
-    });
+    // redisInstance.on('error', (e) => {
+    //   throw new Error(`Redis connection failed: ${e}`);
+    // });
 
     return redisInstance;
   },

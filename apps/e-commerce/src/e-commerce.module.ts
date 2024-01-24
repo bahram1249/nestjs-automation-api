@@ -17,6 +17,8 @@ import { CityModule } from './city/city.module';
 import { NeighborhoodModule } from './neighborhood/neighborhood.module';
 import { AddressModule } from './user/address/address.module';
 import { ProductPhotoModule } from './product-photo/product-photo.module';
+import { ProductImageRemovalModule } from './product-image-removal/product-image-removal.module';
+import { ProductImageRemovalService } from './product-image-removal/product-image-removal.service';
 
 @Module({
   imports: [
@@ -31,6 +33,7 @@ import { ProductPhotoModule } from './product-photo/product-photo.module';
     NeighborhoodModule,
     AddressModule,
     ProductPhotoModule,
+    ProductImageRemovalModule,
     ProductModule,
   ],
 })
@@ -38,7 +41,7 @@ export class ECommerceModule implements NestModule {
   constructor() {}
   private app: INestApplication;
   configure(consumer: MiddlewareConsumer) {}
-  setApp(app: INestApplication<any>) {
+  async setApp(app: INestApplication<any>) {
     this.app = app;
     const coreConfig = new DocumentBuilder()
       .setTitle('ECommerce Api')
@@ -50,6 +53,9 @@ export class ECommerceModule implements NestModule {
       include: [ECommerceModule],
       deepScanRoutes: true,
     });
+
     SwaggerModule.setup('api/ecommerce', this.app, coreDocument);
+
+    app.get(ProductImageRemovalService).run();
   }
 }
