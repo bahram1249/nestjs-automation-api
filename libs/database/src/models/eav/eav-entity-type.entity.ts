@@ -39,7 +39,7 @@ export class EAVEntityType extends Model {
   parentEntityTypeId?: number;
 
   @BelongsTo(() => EAVEntityType, {
-    as: 'parentEntity',
+    as: 'parentEntityType',
     foreignKey: 'parentEntityTypeId',
   })
   @AutoMap()

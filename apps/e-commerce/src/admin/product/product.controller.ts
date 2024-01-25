@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   HttpCode,
   HttpStatus,
@@ -69,5 +70,13 @@ export class ProductController {
   @HttpCode(HttpStatus.OK)
   async update(@Param('id') entityId: number, @Body() dto: ProductDto) {
     return await this.service.update(entityId, dto);
+  }
+
+  @ApiOperation({ description: 'delete products by admin' })
+  @Delete('/:id')
+  @CheckPermission({ permissionSymbol: 'ecommerce.admin.products.delete' })
+  @HttpCode(HttpStatus.OK)
+  async delete(@Param('id') entityId: number) {
+    return await this.service.deleteById(entityId);
   }
 }

@@ -52,6 +52,7 @@ import { ECBrand } from './models/ecommerce-eav/ec-brand.entity';
 import { ECColor } from './models/ecommerce-eav/ec-color.entity';
 import { ECGuarantee } from './models/ecommerce-eav/ec-guarantee.entity';
 import { ECGuaranteeMonth } from './models/ecommerce-eav/ec-guarantee-month.entity';
+import { EAVEntityAttributeValue } from './models/eav/eav-entity-attribute-value.entity';
 
 const dbSync: boolean = JSON.parse(process.env.DB_SYNCHRONIZE);
 const autoLoadModels: boolean = JSON.parse(process.env.DB_AUTO_LOAD_MODELS);
@@ -94,6 +95,7 @@ const dbLog: boolean = JSON.parse(process.env.DB_LOG);
           EAVAttributeType,
           EAVAttribute,
           EAVAttributeValue,
+          EAVEntityAttributeValue,
           ECPublishStatus,
           ECInventoryStatus,
           ECColor,

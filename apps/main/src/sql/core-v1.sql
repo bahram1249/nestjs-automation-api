@@ -1723,7 +1723,7 @@ END
 
 GO
 
-
+-- ecommerce products
 IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ecommerce-products-v1' 
 			)
 	AND EXISTS (
@@ -1751,6 +1751,7 @@ BEGIN
 				FOREIGN KEY REFERENCES ECBrands(id),
 		colorBased					bit							NULL,
 		description					ntext						NULL,
+		viewCount					bigint						NULL,
 		userId						bigint						NULL
 			CONSTRAINT FK_ECProducts_UserId
 				FOREIGN KEY REFERENCES Users(id),
@@ -1768,6 +1769,37 @@ END
 GO
 
 
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'eav-EAVEntityAttributeValues-v1' 
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'SITE_NAME' AND [value] IN ('ecommerce'))
+		)
+BEGIN
+
+	CREATE TABLE EAVEntityAttributeValues (
+		entityId					bigint						NOT NULL
+			CONSTRAINT FK_EAVEntityAttributeValues_entityId
+				FOREIGN KEY REFERENCES EAVEntities(entityId),
+		attributeId					bigint						NOT NULL
+			CONSTRAINT FK_EAVEntityAttributeValues_attributeId
+				FOREIGN KEY REFERENCES EAVAttributes(id),
+		val							nvarchar(1024)				NULL,
+		attributeValueId			bigint						NULL
+			CONSTRAINT FK_EAVEntityAttributeValues_attributeValueId
+				FOREIGN KEY REFERENCES EAVAttributeValues(id),
+		[createdAt]					datetimeoffset				NOT NULL,
+		[updatedAt]					datetimeoffset				NOT NULL,
+		PRIMARY KEY CLUSTERED(entityId, attributeId)
+	);
+
+
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'eav-EAVEntityAttributeValues-v1', GETDATE(), GETDATE()
+END
+
+GO
 
 
 -- eav

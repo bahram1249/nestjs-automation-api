@@ -11,6 +11,7 @@ import { ECPublishStatus } from './ec-publish-status.entity';
 import { ECInventoryStatus } from './ec-inventory-status.entity';
 import { ECBrand } from './ec-brand.entity';
 import { User } from '../core/user.entity';
+import { AutoMap } from 'automapper-classes';
 
 @Table({ tableName: 'ECProducts' })
 export class ECProduct extends Model {
@@ -19,19 +20,26 @@ export class ECProduct extends Model {
     primaryKey: true,
   })
   id: bigint;
+
+  @AutoMap()
   @Column({
     type: DataType.STRING,
   })
   title: string;
+
+  @AutoMap()
   @Column({
     type: DataType.STRING,
   })
   slug: string;
+
   @Column({
     type: DataType.STRING,
     allowNull: true,
   })
   sku?: string;
+
+  @AutoMap()
   @Column({
     type: DataType.INTEGER,
     allowNull: true,
@@ -45,6 +53,7 @@ export class ECProduct extends Model {
   })
   entityType?: EAVEntityType;
 
+  @AutoMap()
   @Column({
     type: DataType.INTEGER,
     allowNull: true,
@@ -71,6 +80,7 @@ export class ECProduct extends Model {
   })
   inventoryStatus?: ECInventoryStatus;
 
+  @AutoMap()
   @Column({
     type: DataType.INTEGER,
     allowNull: true,
@@ -81,16 +91,25 @@ export class ECProduct extends Model {
   @BelongsTo(() => ECBrand, { foreignKey: 'brandId', as: 'brand' })
   brand?: ECBrand;
 
+  @AutoMap()
   @Column({
     type: DataType.BOOLEAN,
     allowNull: true,
   })
   colorBased?: boolean;
+
+  @AutoMap()
   @Column({
     type: DataType.STRING,
     allowNull: true,
   })
   description?: string;
+
+  @Column({
+    type: DataType.BIGINT,
+    allowNull: true,
+  })
+  viewCount?: bigint;
 
   @Column({
     type: DataType.BIGINT,
