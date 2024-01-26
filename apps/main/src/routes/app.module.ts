@@ -21,10 +21,9 @@ import { AutomapperModule } from 'automapper-nestjs';
 import { classes } from 'automapper-classes';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { UIModule } from '@rahino/ui';
-import { CoreDashboardModule } from '@rahino/coreDashboard';
 import * as cookieParser from 'cookie-parser';
-import { DiscountCoffeModule } from '@rahino/discountCoffe';
 import * as session from 'express-session';
+import { DynamicProviderModule } from '../dynamic-provider/dynamic-provider.module';
 
 @Module({
   imports: [
@@ -58,12 +57,9 @@ import * as session from 'express-session';
       strategyInitializer: classes(),
     }),
     CoreModule,
-    PCMModule,
-    EAVModule,
-    ECommerceModule,
     UIModule,
-    CoreDashboardModule,
-    DiscountCoffeModule,
+    DynamicProviderModule.register(),
+
     DevtoolsModule.register({
       http: process.env.NODE_ENV !== 'production',
     }),
@@ -110,10 +106,15 @@ export class AppModule implements NestModule {
     );
 
     app.get(CoreModule).setApp(app);
-    app.get(PCMModule).setApp(app);
-    app.get(EAVModule).setApp(app);
-    app.get(ECommerceModule).setApp(app);
     app.get(UIModule).setApp(app);
+    const projectName = this.config.get<string>('PROJECT_NAME');
+    if (projectName == 'ECommerce') {
+      app.get(EAVModule).setApp(app);
+      app.get(ECommerceModule).setApp(app);
+    } else if (projectName == 'DiscountCoffe') {
+    } else if (projectName == 'PCM') {
+      app.get(PCMModule).setApp(app);
+    }
 
     const port = this.config.get('HOST_PORT');
     const host = this.config.get('HOST_NAME');

@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { BuffetModule } from './controller/admin/buffet/buffet.module';
 import { BuffetModule as BuffetApiModule } from './api/admin/buffet/buffet.module';
 import { BuffetModule as UserBuffetModule } from './controller/buffet/buffet.module';
@@ -40,4 +40,6 @@ import { BuffetModule as BuffetUserModule } from './api/user/buffet/buffet.modul
     HomeModule,
   ],
 })
-export class DiscountCoffeModule {}
+export class DiscountCoffeModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {}
+}

@@ -50,6 +50,7 @@ PROFILE_PATH_THUMB_ATTACHMENT="/profile/thumb"
 SESSION_KEY=<YourStrongSecret>
 QR_PATH="/qrcode"
 SITE_NAME="<YOUR_SITE_NAME>"
+PROJECT_NAME="<SET_YOUR_PROJECT_NAME> from list: [/apps/main/src/dynamic-provider]"
 
 ```
 
