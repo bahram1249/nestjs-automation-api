@@ -54,7 +54,7 @@ export class EntityAttributeValueService {
     // check if the attribute send it is not found in this type
     entityAttributes.forEach((entityAttribute) => {
       const findItem = entityTypeAttributes.find(
-        (item) => item.id == entityAttribute.id,
+        (item) => item.attributeId == entityAttribute.id,
       );
       if (!findItem)
         throw new BadRequestException(
@@ -66,14 +66,17 @@ export class EntityAttributeValueService {
     const requiredAttributes = entityTypeAttributes.filter(
       (entityTypeAttribute) => entityTypeAttribute.attribute.required == true,
     );
+
     requiredAttributes.forEach((requiredAttribute) => {
       const findItem = entityAttributes.find(
-        (entityAttribute) => entityAttribute.id == requiredAttribute.id,
+        (entityAttribute) =>
+          entityAttribute.id == requiredAttribute.attributeId,
       );
-      if (!findItem)
+      if (!findItem) {
         throw new BadRequestException(
-          `the attribute: ${requiredAttribute.attribute.name} is required!`,
+          `the attribute: ${requiredAttribute.attributeId}:${requiredAttribute.attribute.name} is required!`,
         );
+      }
     });
 
     // check type value based
@@ -81,12 +84,13 @@ export class EntityAttributeValueService {
     const valueBasedAttributes = entityTypeAttributes.filter(
       (entityTypeAttribute) =>
         valueBasedAttributeIds.findIndex(
-          (item) => (item = entityTypeAttribute.attribute.attributeTypeId),
+          (item) => item == entityTypeAttribute.attribute.attributeTypeId,
         ) != -1,
     );
     valueBasedAttributes.forEach(async (valueBasedAttribute) => {
       const findItem = entityAttributes.find(
-        (entityAttribute) => entityAttribute.id == valueBasedAttribute.id,
+        (entityAttribute) =>
+          entityAttribute.id == valueBasedAttribute.attributeId,
       );
       const attributeValue = await this.attributeValueRepository.findOne(
         new QueryOptionsBuilder()

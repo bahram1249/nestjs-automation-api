@@ -6,6 +6,7 @@ import {
   IsBoolean,
   IsNotEmpty,
   IsNumber,
+  IsOptional,
   IsString,
   MaxLength,
   MinLength,
@@ -39,19 +40,24 @@ export class ProductDto {
 
   @AutoMap()
   @IsNumber()
+  @IsOptional()
   brandId?: number;
 
   @AutoMap()
   @IsString()
+  @IsOptional()
   description?: string;
 
   @AutoMap()
   @IsBoolean()
+  @IsOptional()
   colorBased?: boolean;
 
   @IsArray()
+  @IsOptional()
   photos?: ProductPhotoDto[];
 
   @IsArray()
+  @IsOptional()
   attributes?: ProductAttributeDto[];
 }

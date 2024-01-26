@@ -1,10 +1,13 @@
+import { AutoMap } from 'automapper-classes';
 import { IsNumber, IsString } from 'class-validator';
 
 export class ProductAttributeDto {
+  @AutoMap()
   @IsNumber()
-  id: number;
+  id: bigint;
 
-  @IsNumber()
+  @AutoMap()
+  // @IsNumber()
   @IsString({ each: true })
-  val: string | number;
+  val: string;
 }

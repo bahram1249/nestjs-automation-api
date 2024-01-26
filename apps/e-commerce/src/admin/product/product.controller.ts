@@ -57,7 +57,7 @@ export class ProductController {
     return await this.service.findById(entityId);
   }
   @ApiOperation({ description: 'create product by admin' })
-  @CheckPermission({ permissionSymbol: 'ecommerce.admin.products.create' })
+  //@CheckPermission({ permissionSymbol: 'ecommerce.admin.products.create' })
   @Post('/')
   @HttpCode(HttpStatus.CREATED)
   async create(@Body() dto: ProductDto) {

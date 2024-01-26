@@ -65,7 +65,7 @@ export class AttributeService {
             'id',
             'name',
             'attributeTypeId',
-            'minLenth',
+            'minLength',
             'maxLength',
             'required',
           ])
@@ -91,7 +91,7 @@ export class AttributeService {
         'id',
         'name',
         'attributeTypeId',
-        'minLenth',
+        'minLength',
         'maxLength',
         'required',
       ])
@@ -148,35 +148,33 @@ export class AttributeService {
     });
     const options = new QueryOptionsBuilder()
       .filter({
-        attributeId: attributeEntity.id,
+        attributeId: attributeEntity.attributeId,
       })
       .filter({ entityTypeId: attributeEntity.entityTypeId })
-      .include({
-        include: [
-          {
-            attributes: [
-              'id',
-              'name',
-              'attributeTypeId',
-              'minLenth',
-              'maxLength',
-              'required',
-            ],
-            model: EAVAttribute,
-            as: 'attribute',
-            include: [
-              {
-                model: EAVAttributeType,
-                as: 'attributeType',
-              },
-            ],
-          },
-          {
-            model: EAVEntityType,
-            as: 'entityType',
-          },
-        ],
-      })
+      .include([
+        {
+          attributes: [
+            'id',
+            'name',
+            'attributeTypeId',
+            'minLength',
+            'maxLength',
+            'required',
+          ],
+          model: EAVAttribute,
+          as: 'attribute',
+          include: [
+            {
+              model: EAVAttributeType,
+              as: 'attributeType',
+            },
+          ],
+        },
+        {
+          model: EAVEntityType,
+          as: 'entityType',
+        },
+      ])
       .build();
     attributeEntity = await this.entityAttributeRepository.findOne(options);
     return {
@@ -230,7 +228,7 @@ export class AttributeService {
             'id',
             'name',
             'attributeTypeId',
-            'minLenth',
+            'minLength',
             'maxLength',
             'required',
           ],
@@ -287,7 +285,7 @@ export class AttributeService {
         'id',
         'name',
         'attributeTypeId',
-        'minLenth',
+        'minLength',
         'maxLength',
         'required',
       ]),

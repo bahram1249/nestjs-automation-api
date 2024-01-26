@@ -65,9 +65,11 @@ export class ProductService {
     }
 
     // validation of attributes
-    const mappedAttribute = dto.attributes.map((attibute) =>
-      this.mapper.map(attibute, ProductAttributeDto, EntityAttributeValueDto),
+
+    const mappedAttribute = _.map(dto.attributes, (attribute) =>
+      this.mapper.map(attribute, ProductAttributeDto, EntityAttributeValueDto),
     );
+
     await this.entityAttributeValueService.validation(
       dto.entityTypeId,
       mappedAttribute,
@@ -78,8 +80,17 @@ export class ProductService {
     const { result } = await this.entityService.create({
       entityTypeId: mappedItem.entityTypeId,
     });
-    mappedItem.id = result.id;
-    await this.repository.create(mappedItem.toJSON());
+    let insertItem = _.omit(mappedItem.toJSON(), ['id']);
+    insertItem.id = result.entityId;
+    const unavailable = 2;
+    insertItem.inventoryStatusId = unavailable;
+    const product = await this.repository.create(insertItem);
+
+    // update inventory status
+
+    return {
+      result: product,
+    };
   }
 
   async update(entityId: number, dto: ProductDto) {

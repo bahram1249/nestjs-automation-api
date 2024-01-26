@@ -15,7 +15,7 @@ export class EAVEntity extends Model {
     autoIncrement: true,
     primaryKey: true,
   })
-  id: bigint;
+  entityId: bigint;
 
   @Column({
     type: DataType.INTEGER,

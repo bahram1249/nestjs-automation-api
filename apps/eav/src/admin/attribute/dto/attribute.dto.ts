@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { AutoMap } from 'automapper-classes';
-import { IsBoolean, IsNumber, IsString } from 'class-validator';
+import { IsBoolean, IsNumber, IsOptional, IsString } from 'class-validator';
 
 export class AttributeDto {
   @AutoMap()
@@ -32,6 +32,7 @@ export class AttributeDto {
 
   @AutoMap()
   @IsNumber()
+  @IsOptional()
   @ApiProperty({
     required: false,
     type: Number,
@@ -41,6 +42,7 @@ export class AttributeDto {
 
   @AutoMap()
   @IsNumber()
+  @IsOptional()
   @ApiProperty({
     required: false,
     type: Number,
@@ -50,6 +52,7 @@ export class AttributeDto {
 
   @AutoMap()
   @IsBoolean()
+  @IsOptional()
   @ApiProperty({
     required: false,
     type: Boolean,
