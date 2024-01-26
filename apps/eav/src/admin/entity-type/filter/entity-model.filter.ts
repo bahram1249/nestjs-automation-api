@@ -1,9 +1,8 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Transform, Type } from 'class-transformer';
-import { IsInt, IsNumber, IsOptional } from 'class-validator';
+import { Type } from 'class-transformer';
+import { IsInt, IsOptional } from 'class-validator';
 
 export class EntityModelFilter {
-  // @Transform(({ value }) => Number(value))
   @IsInt()
   @Type(() => Number)
   @IsOptional()

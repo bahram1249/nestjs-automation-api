@@ -1,13 +1,14 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNumber, IsOptional } from 'class-validator';
+import { Type } from 'class-transformer';
+import { IsInt, IsNumber, IsOptional } from 'class-validator';
 
 export class AttributeValueFilter {
-  @IsNumber()
+  @IsInt()
+  @Type(() => Number)
   @IsOptional()
   @ApiProperty({
-    minimum: 0,
+    minimum: 1,
     required: false,
-    default: 0,
     type: IsNumber,
     description: 'attributeId',
   })
