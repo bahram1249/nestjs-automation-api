@@ -25,15 +25,22 @@ import { EAVEntityType } from '@rahino/database/models/eav/eav-entity-type.entit
 import { EAVEntityAttributeValue } from '@rahino/database/models/eav/eav-entity-attribute-value.entity';
 import { EAVAttribute } from '@rahino/database/models/eav/eav-attribute.entity';
 import { EAVAttributeValue } from '@rahino/database/models/eav/eav-attribute-value';
+import { ProductPhotoService } from '@rahino/ecommerce/product-photo/product-photo.service';
+import { ProductPhotoDto } from './dto/product-photo.dto';
+import { PhotoDto } from '@rahino/ecommerce/product-photo/dto';
 
 @Injectable()
 export class ProductService {
   constructor(
     @InjectModel(ECProduct)
     private readonly repository: typeof ECProduct,
-    @InjectMapper() private readonly mapper: Mapper,
+    @InjectModel(EAVEntityType)
+    private readonly entityType: typeof EAVEntityType,
+    @InjectMapper()
+    private readonly mapper: Mapper,
     private entityAttributeValueService: EntityAttributeValueService,
     private entityService: EntityService,
+    private productPhotoService: ProductPhotoService,
     private config: ConfigService,
   ) {}
 
@@ -182,7 +189,7 @@ export class ProductService {
   }
 
   async create(user: User, dto: ProductDto) {
-    // find the slug before
+    // find the slug if exists before
     const slugSearch = await this.repository.findOne(
       new QueryOptionsBuilder()
         .filter(
@@ -202,37 +209,70 @@ export class ProductService {
       );
     }
 
+    // validation of entityType is linked to ecommerce model
+    const ecommerceEntityModel = 1;
+    const entityType = await this.entityType.findOne(
+      new QueryOptionsBuilder()
+        .filter({ id: dto.entityTypeId })
+        .filter(
+          Sequelize.where(
+            Sequelize.fn('isnull', Sequelize.col('isDeleted'), 0),
+            {
+              [Op.eq]: 0,
+            },
+          ),
+        )
+        .filter({
+          entityModelId: ecommerceEntityModel,
+        })
+        .build(),
+    );
+    if (!entityType) {
+      throw new BadRequestException(
+        `the given entityType->${dto.entityTypeId} isn't exists`,
+      );
+    }
+
     // validation of attributes
 
-    const mappedAttribute = _.map(dto.attributes, (attribute) =>
+    const mappedAttributes = _.map(dto.attributes, (attribute) =>
       this.mapper.map(attribute, ProductAttributeDto, EntityAttributeValueDto),
     );
-
     await this.entityAttributeValueService.validation(
       dto.entityTypeId,
-      mappedAttribute,
+      mappedAttributes,
     );
 
     // validation of photos
+    const mappedPhotos = _.map(dto.photos, (photo) =>
+      this.mapper.map(photo, ProductPhotoDto, PhotoDto),
+    );
+    await this.productPhotoService.validationExistsPhoto(mappedPhotos);
 
     // map item to product
     const mappedItem = this.mapper.map(dto, ProductDto, ECProduct);
     const { result } = await this.entityService.create({
       entityTypeId: mappedItem.entityTypeId,
     });
-    let insertItem = _.omit(mappedItem.toJSON(), ['id']);
-    insertItem.id = result.entityId;
+
     const unavailable = 2;
-    insertItem.sku =
-      this.config.get<string>('SKU_PREFIX') + result.entityId.toString();
+    const skuPrefix = this.config.get<string>('SKU_PREFIX');
+
+    const insertItem = _.omit(mappedItem.toJSON(), ['id']);
+    insertItem.id = result.entityId;
+    insertItem.sku = skuPrefix + result.entityId.toString();
     insertItem.inventoryStatusId = unavailable;
     insertItem.userId = user.id;
+
     const product = await this.repository.create(insertItem);
 
     // insert product photos
+    await this.productPhotoService.insert(product.id, mappedPhotos);
 
     // insert attributes
-    await this.entityAttributeValueService.insert(product.id, dto.attributes);
+    await this.entityAttributeValueService.insert(product.id, mappedAttributes);
+
+    // insert inventories
 
     return {
       result: product,

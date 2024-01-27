@@ -1,4 +1,8 @@
-import { ForbiddenException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  ForbiddenException,
+  Injectable,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import { Op, Sequelize } from 'sequelize';
@@ -8,6 +12,8 @@ import { MinioClientService } from '@rahino/minio-client';
 import * as fs from 'fs';
 import { Attachment } from '@rahino/database/models/core/attachment.entity';
 import { Response } from 'express';
+import { PhotoDto } from './dto';
+import { EAVEntityPhoto } from '@rahino/database/models/eav/eav-entity-photo.entity';
 
 @Injectable()
 export class ProductPhotoService {
@@ -15,7 +21,10 @@ export class ProductPhotoService {
   private productAttachmentType = 10;
   constructor(
     private minioClientService: MinioClientService,
-    @InjectModel(Attachment) private attachmentRepository: typeof Attachment,
+    @InjectModel(Attachment)
+    private attachmentRepository: typeof Attachment,
+    @InjectModel(EAVEntityPhoto)
+    private entityPhotoRepository: typeof EAVEntityPhoto,
   ) {}
 
   async uploadImage(user: User, file: Express.Multer.File) {
@@ -82,5 +91,68 @@ export class ProductPhotoService {
     return {
       result: accessUrl,
     };
+  }
+
+  async validationExistsPhoto(photos?: PhotoDto[]) {
+    photos.forEach(async (photo) => {
+      const findAttachment = await this.attachmentRepository.findOne(
+        new QueryOptionsBuilder()
+          .filter({ id: photo.id })
+          .filter({
+            attachmentTypeId: {
+              [Op.in]: [
+                this.photoTempAttachmentType,
+                this.productAttachmentType,
+              ],
+            },
+          })
+          .filter(
+            Sequelize.where(
+              Sequelize.fn('isnull', Sequelize.col('isDeleted'), 0),
+              {
+                [Op.eq]: 0,
+              },
+            ),
+          )
+          .build(),
+      );
+      if (!findAttachment) {
+        throw new BadRequestException(
+          `the given product photo->${photo.id} isn't exists !`,
+        );
+      }
+    });
+  }
+
+  async insert(productId: bigint, photos?: PhotoDto[]) {
+    photos.forEach(async (photo) => {
+      let findAttachment = await this.attachmentRepository.findOne(
+        new QueryOptionsBuilder()
+          .filter({ id: photo.id })
+          .filter({
+            attachmentTypeId: {
+              [Op.in]: [
+                this.photoTempAttachmentType,
+                this.productAttachmentType,
+              ],
+            },
+          })
+          .filter(
+            Sequelize.where(
+              Sequelize.fn('isnull', Sequelize.col('isDeleted'), 0),
+              {
+                [Op.eq]: 0,
+              },
+            ),
+          )
+          .build(),
+      );
+      findAttachment.attachmentTypeId = this.productAttachmentType;
+      findAttachment = await findAttachment.save();
+      await this.entityPhotoRepository.create({
+        entityId: productId,
+        attachmentId: findAttachment.id,
+      });
+    });
   }
 }

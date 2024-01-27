@@ -1802,6 +1802,32 @@ END
 GO
 
 
+-- eav products
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'eav-product-photos-v1' 
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'SITE_NAME' AND [value] IN ('ecommerce'))
+		)
+BEGIN
+
+	CREATE TABLE EAVEntityPhotos (
+		entityId					bigint						NOT NULL,
+		attachmentId				bigint						NOT NULL,
+		[createdAt]					datetimeoffset				NOT NULL,
+		[updatedAt]					datetimeoffset				NOT NULL,
+		PRIMARY KEY CLUSTERED(entityId, attachmentId),
+	);
+
+
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'eav-product-photos-v1', GETDATE(), GETDATE()
+END
+
+GO
+
+
 -- eav
 -- attributetypes
 IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'eav-attributetypes-Data-v1' 
