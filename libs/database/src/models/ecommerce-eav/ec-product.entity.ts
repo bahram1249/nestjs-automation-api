@@ -5,6 +5,7 @@ import {
   DataType,
   BelongsTo,
   ForeignKey,
+  HasMany,
 } from 'sequelize-typescript';
 import { EAVEntityType } from '../eav/eav-entity-type.entity';
 import { ECPublishStatus } from './ec-publish-status.entity';
@@ -12,6 +13,7 @@ import { ECInventoryStatus } from './ec-inventory-status.entity';
 import { ECBrand } from './ec-brand.entity';
 import { User } from '../core/user.entity';
 import { AutoMap } from 'automapper-classes';
+import { EAVEntityAttributeValue } from '../eav/eav-entity-attribute-value.entity';
 
 @Table({ tableName: 'ECProducts' })
 export class ECProduct extends Model {
@@ -126,4 +128,11 @@ export class ECProduct extends Model {
     allowNull: true,
   })
   isDeleted?: boolean;
+
+  @HasMany(() => EAVEntityAttributeValue, {
+    foreignKey: 'entityId',
+    sourceKey: 'id',
+    as: 'productAttributeValues',
+  })
+  productAttributeValues?: EAVEntityAttributeValue[];
 }

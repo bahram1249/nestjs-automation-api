@@ -16,7 +16,7 @@ export class EAVAttributeValue extends Model {
     autoIncrement: true,
     primaryKey: true,
   })
-  bigint: number;
+  id: bigint;
 
   @AutoMap()
   @Column({

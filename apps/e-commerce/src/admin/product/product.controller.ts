@@ -24,6 +24,8 @@ import {
 import { GetProductDto, ProductDto } from './dto';
 import { JwtGuard } from '@rahino/auth/guard';
 import { ProductService } from './product.service';
+import { GetUser } from '@rahino/auth/decorator';
+import { User } from '@rahino/database/models/core/user.entity';
 
 @ApiTags('Admin-Product')
 @ApiBearerAuth()
@@ -36,7 +38,7 @@ import { ProductService } from './product.service';
 export class ProductController {
   constructor(private service: ProductService) {}
   @ApiOperation({ description: 'show all products' })
-  @CheckPermission({ permissionSymbol: 'ecommerce.admin.products.getall' })
+  // @CheckPermission({ permissionSymbol: 'ecommerce.admin.products.getall' })
   @Get('/')
   @ApiQuery({
     name: 'filter',
@@ -53,22 +55,22 @@ export class ProductController {
   @CheckPermission({ permissionSymbol: 'ecommerce.admin.products.getone' })
   @Get('/:id')
   @HttpCode(HttpStatus.OK)
-  async findById(@Param('id') entityId: number) {
+  async findById(@Param('id') entityId: bigint) {
     return await this.service.findById(entityId);
   }
   @ApiOperation({ description: 'create product by admin' })
   //@CheckPermission({ permissionSymbol: 'ecommerce.admin.products.create' })
   @Post('/')
   @HttpCode(HttpStatus.CREATED)
-  async create(@Body() dto: ProductDto) {
-    return await this.service.create(dto);
+  async create(@GetUser() user: User, @Body() dto: ProductDto) {
+    return await this.service.create(user, dto);
   }
 
   @ApiOperation({ description: 'update products by admin' })
   @Put('/:id')
   @CheckPermission({ permissionSymbol: 'ecommerce.admin.products.update' })
   @HttpCode(HttpStatus.OK)
-  async update(@Param('id') entityId: number, @Body() dto: ProductDto) {
+  async update(@Param('id') entityId: bigint, @Body() dto: ProductDto) {
     return await this.service.update(entityId, dto);
   }
 
@@ -76,7 +78,7 @@ export class ProductController {
   @Delete('/:id')
   @CheckPermission({ permissionSymbol: 'ecommerce.admin.products.delete' })
   @HttpCode(HttpStatus.OK)
-  async delete(@Param('id') entityId: number) {
+  async delete(@Param('id') entityId: bigint) {
     return await this.service.deleteById(entityId);
   }
 }

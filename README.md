@@ -51,7 +51,7 @@ SESSION_KEY=<YourStrongSecret>
 QR_PATH="/qrcode"
 SITE_NAME="<YOUR_SITE_NAME>"
 PROJECT_NAME="<SET_YOUR_PROJECT_NAME> from list: [/apps/main/src/dynamic-provider]"
-
+SKU_PREFIX="<SET_PREFIX_SKU_ECOMMERCE>"
 ```
 
 ## If you are Using REDIS

@@ -5,7 +5,6 @@ import {
   NotImplementedException,
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
-import { QueryFilter } from '@rahino/query-filter/sequelize-mapper';
 import { Op, Sequelize } from 'sequelize';
 import { GetProductDto, ProductDto } from './dto';
 import { ECProduct } from '@rahino/database/models/ecommerce-eav/ec-product.entity';
@@ -17,6 +16,15 @@ import { EntityAttributeValueService } from '@rahino/eav/admin/entity-attribute-
 import { ProductAttributeDto } from './dto/product-attribute.dto';
 import { EntityAttributeValueDto } from '@rahino/eav/admin/entity-attribute-value/dto';
 import { EntityService } from '@rahino/eav/admin/entity/entity.service';
+import { ConfigService } from '@nestjs/config';
+import { User } from '@rahino/database/models/core/user.entity';
+import { ECPublishStatus } from '@rahino/database/models/ecommerce-eav/ec-publish-status.entity';
+import { ECInventoryStatus } from '@rahino/database/models/ecommerce-eav/ec-inventory-status.entity';
+import { ECBrand } from '@rahino/database/models/ecommerce-eav/ec-brand.entity';
+import { EAVEntityType } from '@rahino/database/models/eav/eav-entity-type.entity';
+import { EAVEntityAttributeValue } from '@rahino/database/models/eav/eav-entity-attribute-value.entity';
+import { EAVAttribute } from '@rahino/database/models/eav/eav-attribute.entity';
+import { EAVAttributeValue } from '@rahino/database/models/eav/eav-attribute-value';
 
 @Injectable()
 export class ProductService {
@@ -26,25 +34,155 @@ export class ProductService {
     @InjectMapper() private readonly mapper: Mapper,
     private entityAttributeValueService: EntityAttributeValueService,
     private entityService: EntityService,
+    private config: ConfigService,
   ) {}
 
   async findAll(filter: GetProductDto) {
-    let options = QueryFilter.init();
-    const productCount = await this.repository.count();
-    options = QueryFilter.toFindAndCountOptions(options, filter);
-    options.attributes = ['id', 'name', 'createdAt', 'updatedAt'];
-    const products = await this.repository.findAll(options);
+    let queryBuilder = new QueryOptionsBuilder();
+    queryBuilder = queryBuilder.filter(
+      Sequelize.where(
+        Sequelize.fn('isnull', Sequelize.col('ECProduct.isDeleted'), 0),
+        {
+          [Op.eq]: 0,
+        },
+      ),
+    );
+
+    const productCount = await this.repository.count(queryBuilder.build());
+
+    queryBuilder = queryBuilder
+      .attributes([
+        'id',
+        'title',
+        'sku',
+        // 'description',
+        'slug',
+        'entityTypeId',
+        'colorBased',
+        'brandId',
+        'publishStatusId',
+        'viewCount',
+      ])
+      .include([
+        {
+          attributes: ['id', 'name'],
+          model: ECPublishStatus,
+          as: 'publishStatus',
+        },
+        {
+          attributes: ['id', 'name'],
+          model: ECInventoryStatus,
+          as: 'inventoryStatus',
+        },
+        {
+          attributes: ['id', 'name', 'slug'],
+          model: ECBrand,
+          as: 'brand',
+        },
+        {
+          attributes: ['id', 'name', 'slug'],
+          model: EAVEntityType,
+          as: 'entityType',
+        },
+        {
+          attributes: [
+            'attributeId',
+            [
+              Sequelize.fn(
+                'isnull',
+                Sequelize.col('productAttributeValues.val'),
+                Sequelize.col('productAttributeValues.attributeValue.value'),
+              ),
+              'val',
+            ],
+            [Sequelize.col('attributeValueId'), 'attributeValueId'],
+          ],
+          model: EAVEntityAttributeValue,
+          as: 'productAttributeValues',
+          include: [
+            {
+              attributes: ['id', 'name', 'attributeTypeId'],
+              model: EAVAttribute,
+              as: 'attribute',
+            },
+            {
+              attributes: ['id', 'attributeId', 'value'],
+              model: EAVAttributeValue,
+              as: 'attributeValue',
+            },
+          ],
+          required: false,
+        },
+      ])
+      .limit(filter.limit)
+      .offset(filter.offset);
+
     return {
-      result: products, //await this.repository.findAll(options),
+      result: await this.repository.findAll(queryBuilder.build()),
       total: productCount, //count,
     };
   }
 
-  async findById(id: number) {
-    throw new NotImplementedException();
+  async findById(id: bigint) {
+    const product = await this.repository.findOne(
+      new QueryOptionsBuilder()
+        .attributes([
+          'id',
+          'title',
+          'sku',
+          'description',
+          'slug',
+          'entityTypeId',
+          'colorBased',
+          'brandId',
+          'publishStatusId',
+          'viewCount',
+        ])
+        .include([
+          {
+            attributes: ['id', 'name'],
+            model: ECPublishStatus,
+            as: 'publishStatus',
+          },
+          {
+            attributes: ['id', 'name'],
+            model: ECInventoryStatus,
+            as: 'inventoryStatus',
+          },
+          {
+            attributes: ['id', 'name', 'slug'],
+            model: ECBrand,
+            as: 'brand',
+          },
+          {
+            attributes: ['id', 'name', 'slug'],
+            model: EAVEntityType,
+            as: 'entityType',
+          },
+        ])
+        .filter(
+          Sequelize.where(
+            Sequelize.fn('isnull', Sequelize.col('ECProduct.isDeleted'), 0),
+            {
+              [Op.eq]: 0,
+            },
+          ),
+        )
+        .filter({
+          id: id,
+        })
+        .build(),
+    );
+    if (!product) {
+      throw new NotFoundException('the item with this given id not founded!');
+    }
+    return {
+      result: product,
+    };
   }
 
-  async create(dto: ProductDto) {
+  async create(user: User, dto: ProductDto) {
+    // find the slug before
     const slugSearch = await this.repository.findOne(
       new QueryOptionsBuilder()
         .filter(
@@ -75,7 +213,9 @@ export class ProductService {
       mappedAttribute,
     );
 
-    // map item
+    // validation of photos
+
+    // map item to product
     const mappedItem = this.mapper.map(dto, ProductDto, ECProduct);
     const { result } = await this.entityService.create({
       entityTypeId: mappedItem.entityTypeId,
@@ -83,26 +223,66 @@ export class ProductService {
     let insertItem = _.omit(mappedItem.toJSON(), ['id']);
     insertItem.id = result.entityId;
     const unavailable = 2;
+    insertItem.sku =
+      this.config.get<string>('SKU_PREFIX') + result.entityId.toString();
     insertItem.inventoryStatusId = unavailable;
+    insertItem.userId = user.id;
     const product = await this.repository.create(insertItem);
 
-    // update inventory status
+    // insert product photos
+
+    // insert attributes
+    await this.entityAttributeValueService.insert(product.id, dto.attributes);
 
     return {
       result: product,
     };
   }
 
-  async update(entityId: number, dto: ProductDto) {
+  async update(entityId: bigint, dto: ProductDto) {
     throw new NotImplementedException();
   }
 
-  async deleteById(entityId: number) {
+  async deleteById(entityId: bigint) {
     let product = await this.repository.findOne(
       new QueryOptionsBuilder()
+        .attributes([
+          'id',
+          'title',
+          'sku',
+          'description',
+          'slug',
+          'entityTypeId',
+          'colorBased',
+          'brandId',
+          'publishStatusId',
+          'viewCount',
+        ])
+        .include([
+          {
+            attributes: ['id', 'name'],
+            model: ECPublishStatus,
+            as: 'publishStatus',
+          },
+          {
+            attributes: ['id', 'name'],
+            model: ECInventoryStatus,
+            as: 'inventoryStatus',
+          },
+          {
+            attributes: ['id', 'name', 'slug'],
+            model: ECBrand,
+            as: 'brand',
+          },
+          {
+            attributes: ['id', 'name', 'slug'],
+            model: EAVEntityType,
+            as: 'entityType',
+          },
+        ])
         .filter(
           Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('isDeleted'), 0),
+            Sequelize.fn('isnull', Sequelize.col('ECProduct.isDeleted'), 0),
             {
               [Op.eq]: 0,
             },
@@ -119,16 +299,7 @@ export class ProductService {
     product.isDeleted = true;
     product = await product.save();
     return {
-      result: _.pick(product, [
-        'id',
-        'title',
-        'description',
-        'slug',
-        'entityTypeId',
-        'colorBased',
-        'brandId',
-        'publishStatusId',
-      ]),
+      result: product,
     };
   }
 }
