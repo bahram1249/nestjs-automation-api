@@ -75,22 +75,48 @@ export class EntityTypeService {
           required: false,
         },
         {
+          attributes: ['id', 'name'],
           model: EAVEntityModel,
           as: 'entityModel',
         },
         {
+          attributes: ['id', 'name', 'slug'],
           model: EAVEntityType,
           as: 'parentEntityType',
           required: false,
+          include: [
+            {
+              attributes: ['id', 'fileName'],
+              model: Attachment,
+              as: 'attachment',
+              required: false,
+            },
+          ],
         },
         {
+          attributes: ['id', 'name', 'slug'],
           model: EAVEntityType,
           as: 'subEntityTypes',
           required: false,
           include: [
             {
+              attributes: ['id', 'name', 'slug'],
               model: EAVEntityType,
               as: 'subEntityTypes',
+              required: false,
+              include: [
+                {
+                  attributes: ['id', 'fileName'],
+                  model: Attachment,
+                  as: 'attachment',
+                  required: false,
+                },
+              ],
+            },
+            {
+              attributes: ['id', 'fileName'],
+              model: Attachment,
+              as: 'attachment',
               required: false,
             },
           ],
@@ -118,13 +144,23 @@ export class EntityTypeService {
           required: false,
         },
         {
+          attributes: ['id', 'name'],
           model: EAVEntityModel,
           as: 'entityModel',
         },
         {
+          attributes: ['id', 'name', 'slug'],
           model: EAVEntityType,
           as: 'parentEntityType',
           required: false,
+          include: [
+            {
+              attributes: ['id', 'fileName'],
+              model: Attachment,
+              as: 'attachment',
+              required: false,
+            },
+          ],
         },
       ])
       .filter({ id })
@@ -193,13 +229,23 @@ export class EntityTypeService {
       .filter({ id: entityType.id })
       .include([
         {
+          attributes: ['id', 'name'],
           model: EAVEntityModel,
           as: 'entityModel',
         },
         {
+          attributes: ['id', 'name', 'slug'],
           model: EAVEntityType,
           as: 'parentEntityType',
           required: false,
+          include: [
+            {
+              attributes: ['id', 'fileName'],
+              model: Attachment,
+              as: 'attachment',
+              required: false,
+            },
+          ],
         },
       ])
       .build();
@@ -293,13 +339,23 @@ export class EntityTypeService {
           required: false,
         },
         {
+          attributes: ['id', 'name'],
           model: EAVEntityModel,
           as: 'entityModel',
         },
         {
+          attributes: ['id', 'name', 'slug'],
           model: EAVEntityType,
           as: 'parentEntityType',
           required: false,
+          include: [
+            {
+              attributes: ['id', 'fileName'],
+              model: Attachment,
+              as: 'attachment',
+              required: false,
+            },
+          ],
         },
       ])
       .build();
