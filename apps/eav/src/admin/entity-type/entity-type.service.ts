@@ -58,6 +58,13 @@ export class EntityTypeService {
         parentEntityTypeId: filter.parentEntityTypeId,
       });
     }
+    if (filter.ignoreChilds) {
+      builder = builder.filter({
+        parentEntityTypeId: {
+          [Op.is]: null,
+        },
+      });
+    }
     const count = await this.repository.count(builder.build());
     builder = builder
       .include([
@@ -75,6 +82,18 @@ export class EntityTypeService {
           model: EAVEntityType,
           as: 'parentEntityType',
           required: false,
+        },
+        {
+          model: EAVEntityType,
+          as: 'subEntityTypes',
+          required: false,
+          include: [
+            {
+              model: EAVEntityType,
+              as: 'subEntityTypes',
+              required: false,
+            },
+          ],
         },
       ])
       .attributes(['id', 'name', 'slug', 'parentEntityTypeId', 'entityModelId'])

@@ -5,6 +5,7 @@ import {
   DataType,
   ForeignKey,
   BelongsTo,
+  HasMany,
 } from 'sequelize-typescript';
 import { EAVEntityModel } from './eav-entity-model.entity';
 import { AutoMap } from 'automapper-classes';
@@ -69,4 +70,11 @@ export class EAVEntityType extends Model {
     allowNull: true,
   })
   isDeleted?: boolean;
+
+  @HasMany(() => EAVEntityType, {
+    foreignKey: 'parentEntityTypeId',
+    sourceKey: 'id',
+    as: 'subEntityTypes',
+  })
+  subEntityTypes?: EAVEntityType[];
 }
