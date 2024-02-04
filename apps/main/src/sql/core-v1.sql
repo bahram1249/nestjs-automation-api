@@ -6844,7 +6844,7 @@ IF NOT EXISTS ((SELECT 1 FROM Migrations WHERE version = 'CORE-Permissions-Data-
 			))
 	AND EXISTS (
 		SELECT 1 FROM Settings WHERE 1=1
-		OR ([key] = 'SITE_NAME' AND [value] IN ('ecommerce'))
+		AND ([key] = 'SITE_NAME' AND [value] IN ('ecommerce'))
 	)
 BEGIN
 	
@@ -6991,7 +6991,7 @@ IF NOT EXISTS ((SELECT 1 FROM Migrations WHERE version = 'CORE-Permissions-Data-
 			))
 	AND EXISTS (
 		SELECT 1 FROM Settings WHERE 1=1
-		OR ([key] = 'SITE_NAME' AND [value] IN ('ecommerce'))
+		AND ([key] = 'SITE_NAME' AND [value] IN ('ecommerce'))
 	)
 BEGIN
 	
@@ -7052,7 +7052,7 @@ IF NOT EXISTS ((SELECT 1 FROM Migrations WHERE version = 'CORE-Permissions-Data-
 			))
 	AND EXISTS (
 		SELECT 1 FROM Settings WHERE 1=1
-		OR ([key] = 'SITE_NAME' AND [value] IN ('ecommerce'))
+		AND ([key] = 'SITE_NAME' AND [value] IN ('ecommerce'))
 	)
 BEGIN
 	
@@ -7116,7 +7116,7 @@ IF NOT EXISTS ((SELECT 1 FROM Migrations WHERE version = 'CORE-Permissions-Data-
 			))
 	AND EXISTS (
 		SELECT 1 FROM Settings WHERE 1=1
-		OR ([key] = 'SITE_NAME' AND [value] IN ('ecommerce'))
+		AND ([key] = 'SITE_NAME' AND [value] IN ('ecommerce'))
 	)
 BEGIN
 	
@@ -7196,7 +7196,7 @@ IF NOT EXISTS ((SELECT 1 FROM Migrations WHERE version = 'CORE-Permissions-Data-
 			))
 	AND EXISTS (
 		SELECT 1 FROM Settings WHERE 1=1
-		OR ([key] = 'SITE_NAME' AND [value] IN ('ecommerce'))
+		AND ([key] = 'SITE_NAME' AND [value] IN ('ecommerce'))
 	)
 BEGIN
 	
@@ -7275,7 +7275,7 @@ IF NOT EXISTS ((SELECT 1 FROM Migrations WHERE version = 'CORE-Permissions-Data-
 			))
 	AND EXISTS (
 		SELECT 1 FROM Settings WHERE 1=1
-		OR ([key] = 'SITE_NAME' AND [value] IN ('ecommerce'))
+		AND ([key] = 'SITE_NAME' AND [value] IN ('ecommerce'))
 	)
 BEGIN
 	
@@ -7423,7 +7423,7 @@ IF NOT EXISTS ((SELECT 1 FROM Migrations WHERE version = 'CORE-Permissions-Data-
 			))
 	AND EXISTS (
 		SELECT 1 FROM Settings WHERE 1=1
-		OR ([key] = 'SITE_NAME' AND [value] IN ('ecommerce'))
+		AND ([key] = 'SITE_NAME' AND [value] IN ('ecommerce'))
 	)
 BEGIN
 	
@@ -7565,7 +7565,7 @@ IF NOT EXISTS ((SELECT 1 FROM Migrations WHERE version = 'CORE-Permissions-Data-
 			))
 	AND EXISTS (
 		SELECT 1 FROM Settings WHERE 1=1
-		OR ([key] = 'SITE_NAME' AND [value] IN ('ecommerce'))
+		AND ([key] = 'SITE_NAME' AND [value] IN ('ecommerce'))
 	)
 BEGIN
 	
@@ -7714,7 +7714,7 @@ IF NOT EXISTS ((SELECT 1 FROM Migrations WHERE version = 'CORE-Permissions-Data-
 			))
 	AND EXISTS (
 		SELECT 1 FROM Settings WHERE 1=1
-		OR ([key] = 'SITE_NAME' AND [value] IN ('ecommerce'))
+		AND ([key] = 'SITE_NAME' AND [value] IN ('ecommerce'))
 	)
 BEGIN
 	

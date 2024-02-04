@@ -55,10 +55,6 @@ import { ECGuaranteeMonth } from './models/ecommerce-eav/ec-guarantee-month.enti
 import { EAVEntityAttributeValue } from './models/eav/eav-entity-attribute-value.entity';
 import { EAVEntityPhoto } from './models/eav/eav-entity-photo.entity';
 
-const dbSync: boolean = JSON.parse(process.env.DB_SYNCHRONIZE);
-const autoLoadModels: boolean = JSON.parse(process.env.DB_AUTO_LOAD_MODELS);
-const dbLog: boolean = JSON.parse(process.env.DB_LOG);
-
 @Module({
   imports: [
     SequelizeModule.forRootAsync({
@@ -123,9 +119,9 @@ const dbLog: boolean = JSON.parse(process.env.DB_LOG);
           BuffetReserveDetail,
           VW_BuffetReservers,
         ],
-        autoLoadModels: autoLoadModels,
-        logging: dbLog,
-        synchronize: dbSync,
+        autoLoadModels: configService.get('DB_AUTO_LOAD_MODELS') === 'true',
+        logging: configService.get('DB_LOG') === 'true',
+        synchronize: configService.get('DB_SYNCHRONIZE') === 'true',
         sync: {
           force: false,
           alter: false,
@@ -145,7 +141,7 @@ const dbLog: boolean = JSON.parse(process.env.DB_LOG);
         database: configService.get<string>('DB_NAME_DEVELOPMENT'),
         //[__dirname + '/models/**/*.entity.ts'],
         models: [PersianDate],
-        autoLoadModels: autoLoadModels,
+        autoLoadModels: configService.get('DB_AUTO_LOAD_MODELS') === 'true',
         synchronize: false,
         sync: {
           force: false,

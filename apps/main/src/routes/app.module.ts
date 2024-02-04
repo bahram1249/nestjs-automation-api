@@ -28,6 +28,7 @@ import { DynamicProviderModule } from '../dynamic-provider/dynamic-provider.modu
 @Module({
   imports: [
     ConfigModule.forRoot({
+      envFilePath: ['.env.development', '.env.local', '.env'],
       isGlobal: true,
     }),
     CacheModule.register({
