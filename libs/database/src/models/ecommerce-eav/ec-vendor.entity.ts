@@ -7,6 +7,7 @@ import {
   BelongsTo,
 } from 'sequelize-typescript';
 import { Attachment } from '../core/attachment.entity';
+import { User } from '../core/user.entity';
 
 @Table({ tableName: 'ECVendors' })
 export class ECVendor extends Model {
@@ -49,6 +50,15 @@ export class ECVendor extends Model {
 
   @BelongsTo(() => Attachment, { foreignKey: 'attachmentId', as: 'attachment' })
   attachment?: Attachment;
+
+  @Column({
+    type: DataType.BIGINT,
+  })
+  @ForeignKey(() => User)
+  userId: bigint;
+
+  @BelongsTo(() => User, { foreignKey: 'userId', as: 'user' })
+  user?: User;
 
   @Column({
     type: DataType.INTEGER,

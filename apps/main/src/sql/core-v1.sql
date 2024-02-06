@@ -1529,6 +1529,9 @@ BEGIN
 		[attachmentId]				bigint						NULL
 			CONSTRAINT FK_ECVendors_AttachmentId
 				FOREIGN KEY REFERENCES Attachments(id),
+		userId						bigint						NOT NULL
+			CONSTRAINT FK_ECVendors_UserId
+				FOREIGN KEY REFERENCES Users(id),
 		isDeleted					bit							NULL,
 		[createdAt]					datetimeoffset				NOT NULL,
 		[updatedAt]					datetimeoffset				NOT NULL,
@@ -1767,6 +1770,7 @@ BEGIN
 END
 
 GO
+
 
 
 IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'eav-EAVEntityAttributeValues-v1' 
