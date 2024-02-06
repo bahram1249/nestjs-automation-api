@@ -42,7 +42,6 @@ import { imageOptions } from './file-options';
 import { Response } from 'express';
 
 @ApiTags('Guarantees')
-@UseInterceptors(JsonResponseTransformInterceptor)
 @Controller({
   path: '/api/ecommerce/guarantees',
   version: ['1'],
@@ -51,7 +50,7 @@ export class GuaranteeController {
   constructor(private service: GuaranteeService) {}
 
   // public url
-
+  @UseInterceptors(JsonResponseTransformInterceptor)
   @ApiOperation({ description: 'show all guarantees' })
   @Get('/')
   @ApiQuery({
@@ -65,6 +64,7 @@ export class GuaranteeController {
     return await this.service.findAll(filter);
   }
 
+  @UseInterceptors(JsonResponseTransformInterceptor)
   @UseGuards(JwtGuard, PermissionGuard)
   @ApiBearerAuth()
   @ApiOperation({ description: 'show guarantee by given id' })
@@ -75,6 +75,7 @@ export class GuaranteeController {
     return await this.service.findById(entityId);
   }
 
+  @UseInterceptors(JsonResponseTransformInterceptor)
   @UseGuards(JwtGuard, PermissionGuard)
   @ApiBearerAuth()
   @ApiOperation({ description: 'create guarantee by admin' })
@@ -85,6 +86,7 @@ export class GuaranteeController {
     return await this.service.create(dto);
   }
 
+  @UseInterceptors(JsonResponseTransformInterceptor)
   @UseGuards(JwtGuard, PermissionGuard)
   @ApiBearerAuth()
   @ApiOperation({ description: 'update guarantee by admin' })
@@ -95,6 +97,7 @@ export class GuaranteeController {
     return await this.service.update(entityId, dto);
   }
 
+  @UseInterceptors(JsonResponseTransformInterceptor)
   @UseGuards(JwtGuard, PermissionGuard)
   @ApiBearerAuth()
   @ApiOperation({ description: 'delete guarantee by admin' })
@@ -105,6 +108,7 @@ export class GuaranteeController {
     return await this.service.deleteById(entityId);
   }
 
+  @UseInterceptors(JsonResponseTransformInterceptor)
   @ApiOperation({ description: 'get guarantee by slug' })
   @Get('/slug/:slug')
   @HttpCode(HttpStatus.OK)
@@ -112,6 +116,7 @@ export class GuaranteeController {
     return await this.service.findBySlug(slug);
   }
 
+  @UseInterceptors(JsonResponseTransformInterceptor)
   @UseGuards(JwtGuard, PermissionGuard)
   @ApiBearerAuth()
   @CheckPermission({ permissionSymbol: 'ecommerce.guarantees.uploadImage' })
@@ -155,6 +160,6 @@ export class GuaranteeController {
     @Res({ passthrough: true }) res: Response,
     @Param('fileName') fileName: string,
   ) {
-    return this.service.getPhoto(res, fileName);
+    return { ok: true };
   }
 }
