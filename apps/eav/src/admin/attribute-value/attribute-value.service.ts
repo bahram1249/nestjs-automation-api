@@ -33,9 +33,16 @@ export class AttributeValueService {
         },
       })
       .filter(
-        Sequelize.where(Sequelize.fn('isnull', Sequelize.col('isDeleted'), 0), {
-          [Op.eq]: 0,
-        }),
+        Sequelize.where(
+          Sequelize.fn(
+            'isnull',
+            Sequelize.col('EAVAttributeValue.isDeleted'),
+            0,
+          ),
+          {
+            [Op.eq]: 0,
+          },
+        ),
       );
     if (filter.attributeId) {
       builder = builder.filter({ attributeId: filter.attributeId });
@@ -73,9 +80,16 @@ export class AttributeValueService {
         id,
       })
       .filter(
-        Sequelize.where(Sequelize.fn('isnull', Sequelize.col('isDeleted'), 0), {
-          [Op.eq]: 0,
-        }),
+        Sequelize.where(
+          Sequelize.fn(
+            'isnull',
+            Sequelize.col('EAVAttributeValue.isDeleted'),
+            0,
+          ),
+          {
+            [Op.eq]: 0,
+          },
+        ),
       )
       .build();
     const attributeValue = await this.repository.findOne(options);
@@ -131,7 +145,11 @@ export class AttributeValueService {
         .filter({ id })
         .filter(
           Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('isDeleted'), 0),
+            Sequelize.fn(
+              'isnull',
+              Sequelize.col('EAVAttributeValue.isDeleted'),
+              0,
+            ),
             {
               [Op.eq]: 0,
             },
@@ -189,7 +207,11 @@ export class AttributeValueService {
         .filter({ id: entityId })
         .filter(
           Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('isDeleted'), 0),
+            Sequelize.fn(
+              'isnull',
+              Sequelize.col('EAVAttributeValue.isDeleted'),
+              0,
+            ),
             {
               [Op.eq]: 0,
             },
