@@ -19,10 +19,7 @@ import {
 } from '@nestjs/common';
 import { CheckPermission } from '@rahino/permission-checker/decorator';
 import { PermissionGuard } from '@rahino/permission-checker/guard';
-import {
-  ImageResponseTransformInterceptor,
-  JsonResponseTransformInterceptor,
-} from '@rahino/response/interceptor';
+import { JsonResponseTransformInterceptor } from '@rahino/response/interceptor';
 import {
   ApiBearerAuth,
   ApiBody,
@@ -153,6 +150,6 @@ export class BrandController {
     @Res({ passthrough: true }) res: Response,
     @Param('fileName') fileName: string,
   ) {
-    return this.service.getPhoto(res, fileName);
+    return { ok: true };
   }
 }
