@@ -17,5 +17,5 @@ export class EAVAttributeType extends Model {
     type: DataType.BOOLEAN,
     allowNull: true,
   })
-  valueBased?: Boolean;
+  valueBased?: boolean;
 }
