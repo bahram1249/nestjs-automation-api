@@ -32,7 +32,6 @@ import { GetUser } from '@rahino/auth/decorator';
 import { User } from '@rahino/database/models/core/user.entity';
 
 @ApiTags('ProductPhotos')
-@UseInterceptors(JsonResponseTransformInterceptor)
 @Controller({
   path: '/api/ecommerce/productphotos',
   version: ['1'],
@@ -40,6 +39,7 @@ import { User } from '@rahino/database/models/core/user.entity';
 export class ProductPhotoController {
   constructor(private service: ProductPhotoService) {}
 
+  @UseInterceptors(JsonResponseTransformInterceptor)
   @UseGuards(JwtGuard, PermissionGuard)
   @ApiBearerAuth()
   @CheckPermission({ permissionSymbol: 'ecommerce.productphotos.uploadImage' })
@@ -82,6 +82,8 @@ export class ProductPhotoController {
     @Res({ passthrough: true }) res: Response,
     @Param('fileName') fileName: string,
   ) {
-    return this.service.getPhoto(res, fileName);
+    return {
+      ok: true,
+    };
   }
 }
