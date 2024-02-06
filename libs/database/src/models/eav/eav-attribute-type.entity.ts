@@ -12,4 +12,10 @@ export class EAVAttributeType extends Model {
     type: DataType.STRING,
   })
   name: string;
+
+  @Column({
+    type: DataType.BOOLEAN,
+    allowNull: true,
+  })
+  valueBased?: Boolean;
 }

@@ -1235,6 +1235,22 @@ END
 
 GO
 
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'eav-attributetype-v2' 
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'SITE_NAME' AND [value] IN ('ecommerce'))
+		)
+BEGIN
+
+	ALTER TABLE EAVAttributeTypes
+	ADD valueBased bit null
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'eav-attributetype-v2', GETDATE(), GETDATE()
+END
+
+GO
 
 IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'eav-attributes-v1' 
 			)
@@ -1544,6 +1560,40 @@ END
 
 GO
 
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ecommerce-vendorusers-v1' 
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'SITE_NAME' AND [value] IN ('ecommerce'))
+		)
+BEGIN
+
+	CREATE TABLE ECVendorUsers (
+		[vendorId]					int							NOT NULL,
+		[userId]					bigint						NOT NULL
+			CONSTRAINT FK_ECVendorUsers_
+		[slug]						nvarchar(256)				NOT NULL,
+		[address]					nvarchar(512)				NULL,
+		[description]				ntext						NULL,
+		[isDefault]					bit							NULL,
+		[priorityOrder]				int							NULL,
+		[attachmentId]				bigint						NULL
+			CONSTRAINT FK_ECVendors_AttachmentId
+				FOREIGN KEY REFERENCES Attachments(id),
+		userId						bigint						NOT NULL
+			CONSTRAINT FK_ECVendors_UserId
+				FOREIGN KEY REFERENCES Users(id),
+		isDeleted					bit							NULL,
+		[createdAt]					datetimeoffset				NOT NULL,
+		[updatedAt]					datetimeoffset				NOT NULL,
+	);
+
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'ecommerce-vendors-v1', GETDATE(), GETDATE()
+END
+
+GO
 
 
 IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ecommerce-provinces-v1' 
@@ -1842,10 +1892,10 @@ IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'eav-attributetypes-Data
 		)
 BEGIN
 
-	INSERT INTO EAVAttributeTypes(id, name, createdAt, updatedAt)
-	VALUES (1, N'متنی', getdate(), getdate())
-			,(2, N'عددی', getdate(), getdate())
-			,(3, N'انتخابی', getdate(), getdate())
+	INSERT INTO EAVAttributeTypes(id, name, valueBased,createdAt, updatedAt)
+	VALUES (1, N'متنی', 0, getdate(), getdate())
+			,(2, N'عددی', 0, getdate(), getdate())
+			,(3, N'انتخابی', 1, getdate(), getdate())
 		
 
 	INSERT INTO Migrations(version, createdAt, updatedAt)
