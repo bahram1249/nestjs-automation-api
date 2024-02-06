@@ -14,6 +14,7 @@ import { EAVAttributeValue } from './eav-attribute-value';
 export class EAVEntityAttributeValue extends Model {
   @Column({
     type: DataType.BIGINT,
+    autoIncrement: true,
     primaryKey: true,
   })
   @ForeignKey(() => EAVEntity)
