@@ -409,7 +409,7 @@ export class EntityTypeService {
     }
 
     // upload to s3 cloud
-    const bucketName = 'entityTypes';
+    const bucketName = 'entitytypes';
     await this.minioClientService.createBucket(bucketName);
     const fileStream = fs.readFileSync(file.path);
     const uploadResult = await this.minioClientService.upload(

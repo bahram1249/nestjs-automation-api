@@ -39,9 +39,6 @@ import { imageOptions } from './file-options';
 import { Response } from 'express';
 
 @ApiTags('EAV-EntityTypes')
-@ApiBearerAuth()
-@UseInterceptors(JsonResponseTransformInterceptor)
-@UseGuards(JwtGuard, PermissionGuard)
 @Controller({
   path: '/api/eav/admin/entityTypes',
   version: ['1'],
@@ -49,8 +46,11 @@ import { Response } from 'express';
 export class EntityTypeController {
   constructor(private service: EntityTypeService) {}
 
+  //@ApiBearerAuth()
+  @UseInterceptors(JsonResponseTransformInterceptor)
+  //@UseGuards(JwtGuard, PermissionGuard)
   @ApiOperation({ description: 'show all entitytypes' })
-  @CheckPermission({ permissionSymbol: 'eav.admin.entitytype.getall' })
+  //@CheckPermission({ permissionSymbol: 'eav.admin.entitytype.getall' })
   @Get('/')
   @ApiQuery({
     name: 'filter',
@@ -63,6 +63,9 @@ export class EntityTypeController {
     return await this.service.findAll(filter);
   }
 
+  @ApiBearerAuth()
+  @UseInterceptors(JsonResponseTransformInterceptor)
+  @UseGuards(JwtGuard, PermissionGuard)
   @ApiOperation({ description: 'show attribute by given id' })
   @CheckPermission({ permissionSymbol: 'eav.admin.entitytype.getone' })
   @Get('/:id')
@@ -71,6 +74,9 @@ export class EntityTypeController {
     return await this.service.findById(entityId);
   }
 
+  @ApiBearerAuth()
+  @UseInterceptors(JsonResponseTransformInterceptor)
+  @UseGuards(JwtGuard, PermissionGuard)
   @ApiOperation({ description: 'create entity type by modeltypeid' })
   @CheckPermission({ permissionSymbol: 'eav.admin.entitytype.create' })
   @Post('/')
@@ -79,6 +85,9 @@ export class EntityTypeController {
     return await this.service.create(dto);
   }
 
+  @ApiBearerAuth()
+  @UseInterceptors(JsonResponseTransformInterceptor)
+  @UseGuards(JwtGuard, PermissionGuard)
   @ApiOperation({ description: 'update entity type' })
   @CheckPermission({ permissionSymbol: 'eav.admin.entitytype.update' })
   @Put('/:id')
@@ -87,6 +96,9 @@ export class EntityTypeController {
     return await this.service.update(entityId, dto);
   }
 
+  @ApiBearerAuth()
+  @UseInterceptors(JsonResponseTransformInterceptor)
+  @UseGuards(JwtGuard, PermissionGuard)
   @ApiOperation({ description: 'delete by entitytypeid' })
   @CheckPermission({ permissionSymbol: 'eav.admin.entitytype.delete' })
   @Delete('/:id')
@@ -96,6 +108,7 @@ export class EntityTypeController {
   }
 
   @UseGuards(JwtGuard, PermissionGuard)
+  @UseInterceptors(JsonResponseTransformInterceptor)
   @ApiBearerAuth()
   @CheckPermission({ permissionSymbol: 'eav.admin.entitytype.uploadImage' })
   @UseInterceptors(FileInterceptor('file', imageOptions()))
@@ -138,6 +151,6 @@ export class EntityTypeController {
     @Res({ passthrough: true }) res: Response,
     @Param('fileName') fileName: string,
   ) {
-    return this.service.getPhoto(res, fileName);
+    return { ok: true };
   }
 }
