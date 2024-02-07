@@ -19,6 +19,7 @@ import { AddressModule } from './user/address/address.module';
 import { ProductPhotoModule } from './product-photo/product-photo.module';
 import { ProductImageRemovalModule } from './product-image-removal/product-image-removal.module';
 import { ProductImageRemovalService } from './product-image-removal/product-image-removal.service';
+import { VendorModule } from './vendor/vendor.module';
 
 @Module({
   imports: [
@@ -34,6 +35,7 @@ import { ProductImageRemovalService } from './product-image-removal/product-imag
     AddressModule,
     ProductPhotoModule,
     ProductImageRemovalModule,
+    VendorModule,
     ProductModule,
   ],
 })

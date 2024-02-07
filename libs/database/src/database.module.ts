@@ -55,6 +55,7 @@ import { ECGuaranteeMonth } from './models/ecommerce-eav/ec-guarantee-month.enti
 import { EAVEntityAttributeValue } from './models/eav/eav-entity-attribute-value.entity';
 import { EAVEntityPhoto } from './models/eav/eav-entity-photo.entity';
 import { ECVendor } from './models/ecommerce-eav/ec-vendor.entity';
+import { ECVendorUser } from './models/ecommerce-eav/ec-vendor-user.entity';
 
 @Module({
   imports: [
@@ -107,6 +108,7 @@ import { ECVendor } from './models/ecommerce-eav/ec-vendor.entity';
           ECAddress,
           ECProduct,
           ECVendor,
+          ECVendorUser,
           Buffet,
           BuffetType,
           BuffetCost,

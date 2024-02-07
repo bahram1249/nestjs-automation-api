@@ -1290,7 +1290,7 @@ IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'eav-attributevalues-v1'
 BEGIN
 
 	CREATE TABLE EAVAttributeValues (
-		id							bigint						PRIMARY KEY,
+		id							bigint identity(1,1)		PRIMARY KEY,
 		attributeId					bigint						NOT NULL
 			CONSTRAINT FK_EAVAttributeValues_AttributeId
 				FOREIGN KEY REFERENCES EAVAttributes(id),
@@ -1569,28 +1569,22 @@ IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ecommerce-vendorusers-v
 BEGIN
 
 	CREATE TABLE ECVendorUsers (
-		[vendorId]					int							NOT NULL,
+		[vendorId]					int							NOT NULL
+			CONSTRAINT FK_ECVendorUsers_VendorId
+				FOREIGN KEY REFERENCES ECVendors(id),
 		[userId]					bigint						NOT NULL
-			CONSTRAINT FK_ECVendorUsers_
-		[slug]						nvarchar(256)				NOT NULL,
-		[address]					nvarchar(512)				NULL,
-		[description]				ntext						NULL,
-		[isDefault]					bit							NULL,
-		[priorityOrder]				int							NULL,
-		[attachmentId]				bigint						NULL
-			CONSTRAINT FK_ECVendors_AttachmentId
-				FOREIGN KEY REFERENCES Attachments(id),
-		userId						bigint						NOT NULL
-			CONSTRAINT FK_ECVendors_UserId
+			CONSTRAINT FK_ECVendorUsers_UserId
 				FOREIGN KEY REFERENCES Users(id),
+		[isDefault]					bit							NULL,
 		isDeleted					bit							NULL,
 		[createdAt]					datetimeoffset				NOT NULL,
 		[updatedAt]					datetimeoffset				NOT NULL,
+		PRIMARY KEY CLUSTERED ([vendorId], [userId])
 	);
 
 
 	INSERT INTO Migrations(version, createdAt, updatedAt)
-	SELECT 'ecommerce-vendors-v1', GETDATE(), GETDATE()
+	SELECT 'ecommerce-vendorusers-v1', GETDATE(), GETDATE()
 END
 
 GO
@@ -4801,6 +4795,30 @@ END
 
 GO
 
+-- super admin
+IF NOT EXISTS ((SELECT 1 FROM Migrations WHERE version = 'CORE-Roles-Data-v2' 
+			))
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'SITE_NAME' AND [value] IN ('ECommerce'))
+		)
+	
+BEGIN
+	
+	INSERT INTO Roles
+	(
+		roleName
+		,static_id
+		,createdAt
+		,updatedAt
+	) 
+	SELECT N'فروشنده', 2, getdate(), getdate()
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'CORE-Roles-Data-v2', GETDATE(), GETDATE()
+END
+
+GO
 
 -- super admin
 IF NOT EXISTS ((SELECT 1 FROM Migrations WHERE version = 'CORE-Roles-Data-v2' 
