@@ -2,13 +2,18 @@ import {
   Body,
   Controller,
   Delete,
+  FileTypeValidator,
   Get,
   HttpCode,
   HttpStatus,
+  MaxFileSizeValidator,
   Param,
+  ParseFilePipe,
   Post,
   Put,
   Query,
+  Res,
+  UploadedFile,
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
@@ -17,6 +22,8 @@ import { PermissionGuard } from '@rahino/permission-checker/guard';
 import { JsonResponseTransformInterceptor } from '@rahino/response/interceptor';
 import {
   ApiBearerAuth,
+  ApiBody,
+  ApiConsumes,
   ApiOperation,
   ApiQuery,
   ApiTags,
@@ -27,17 +34,19 @@ import { VendorService } from './vendor.service';
 import { VendorDto, GetVendorDto } from './dto';
 import { GetUser } from '@rahino/auth/decorator';
 import { User } from '@rahino/database/models/core/user.entity';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { imageOptions } from './file-options';
 
 @ApiTags('Vendors')
 @Controller({
   path: '/api/ecommerce/vendors',
   version: ['1'],
 })
-@UseInterceptors(JsonResponseTransformInterceptor)
 export class VendorController {
   constructor(private service: VendorService) {}
 
   @UseGuards(JwtGuard, PermissionGuard)
+  @UseInterceptors(JsonResponseTransformInterceptor)
   @ApiBearerAuth()
   @ApiOperation({ description: 'show all vendors' })
   @CheckPermission({ permissionSymbol: 'ecommerce.vendors.getall' })
@@ -54,6 +63,7 @@ export class VendorController {
   }
 
   @UseGuards(JwtGuard, PermissionGuard)
+  @UseInterceptors(JsonResponseTransformInterceptor)
   @ApiBearerAuth()
   @ApiOperation({ description: 'show vendor by given id' })
   @CheckPermission({ permissionSymbol: 'ecommerce.vendors.getone' })
@@ -64,6 +74,7 @@ export class VendorController {
   }
 
   @UseGuards(JwtGuard, PermissionGuard)
+  @UseInterceptors(JsonResponseTransformInterceptor)
   @ApiBearerAuth()
   @ApiOperation({ description: 'create color by admin' })
   @CheckPermission({ permissionSymbol: 'ecommerce.vendors.create' })
@@ -74,6 +85,7 @@ export class VendorController {
   }
 
   @UseGuards(JwtGuard, PermissionGuard)
+  @UseInterceptors(JsonResponseTransformInterceptor)
   @ApiBearerAuth()
   @ApiOperation({ description: 'update vendor by admin' })
   @Put('/:id')
@@ -84,6 +96,7 @@ export class VendorController {
   }
 
   @UseGuards(JwtGuard, PermissionGuard)
+  @UseInterceptors(JsonResponseTransformInterceptor)
   @ApiBearerAuth()
   @ApiOperation({ description: 'delete vendor by admin' })
   @Delete('/:id')
@@ -93,10 +106,58 @@ export class VendorController {
     return await this.service.deleteById(entityId);
   }
 
+  @UseInterceptors(JsonResponseTransformInterceptor)
   @ApiOperation({ description: 'delete vendor by admin' })
   @Get('/slug/:slug')
   @HttpCode(HttpStatus.OK)
   async findBySlug(@Param('slug') slug: string) {
     return await this.service.findBySlug(slug);
+  }
+
+  @UseInterceptors(JsonResponseTransformInterceptor)
+  @UseGuards(JwtGuard, PermissionGuard)
+  @ApiBearerAuth()
+  @CheckPermission({ permissionSymbol: 'ecommerce.vendors.uploadImage' })
+  @UseInterceptors(FileInterceptor('file', imageOptions()))
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        file: {
+          type: 'string',
+          format: 'binary',
+        },
+      },
+    },
+  })
+  @Post('/image/:id')
+  @HttpCode(HttpStatus.OK)
+  async uploadImage(
+    @Param('id') vendorId: number,
+    @GetUser() user: User,
+    @UploadedFile(
+      new ParseFilePipe({
+        validators: [
+          new FileTypeValidator({ fileType: /(jpg|png|jpeg)/ }),
+          new MaxFileSizeValidator({ maxSize: 2097152 }),
+        ],
+        fileIsRequired: false,
+        errorHttpStatusCode: HttpStatus.UNPROCESSABLE_ENTITY,
+      }),
+    )
+    file?: Express.Multer.File,
+  ) {
+    return await this.service.uploadImage(vendorId, user, file);
+  }
+
+  @ApiOperation({ description: 'show vendor photo by fileName' })
+  @Get('/image/:fileName')
+  @HttpCode(HttpStatus.OK)
+  async getImage(
+    @Res({ passthrough: true }) res: Response,
+    @Param('fileName') fileName: string,
+  ) {
+    return { ok: true };
   }
 }

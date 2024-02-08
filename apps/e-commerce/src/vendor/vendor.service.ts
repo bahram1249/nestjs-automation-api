@@ -17,21 +17,27 @@ import { Role } from '@rahino/database/models/core/role.entity';
 import { UserRoleService } from '@rahino/core/admin/user-role/user-role.service';
 import { ECVendorUser } from '@rahino/database/models/ecommerce-eav/ec-vendor-user.entity';
 import { Attachment } from '@rahino/database/models/core/attachment.entity';
+import { MinioClientService } from '@rahino/minio-client';
+import * as fs from 'fs';
 
 @Injectable()
 export class VendorService {
+  private vendorAttachmentType = 11;
   constructor(
     @InjectModel(ECVendor)
-    private repository: typeof ECVendor,
+    private readonly repository: typeof ECVendor,
     @InjectModel(Role)
-    private roleRepository: typeof Role,
+    private readonly roleRepository: typeof Role,
     @InjectModel(User)
-    private userRepository: typeof User,
+    private readonly userRepository: typeof User,
     @InjectModel(ECVendorUser)
-    private vendorUserRepository: typeof ECVendorUser,
+    private readonly vendorUserRepository: typeof ECVendorUser,
+    @InjectModel(Attachment)
+    private readonly attachmentRepository: typeof Attachment,
     @InjectMapper()
     private readonly mapper: Mapper,
     private readonly userRoleService: UserRoleService,
+    private readonly minioClientService: MinioClientService,
   ) {}
 
   async findAll(filter: GetVendorDto) {
@@ -527,6 +533,86 @@ export class VendorService {
     }
     return {
       result: vendor,
+    };
+  }
+
+  async uploadImage(id: number, user: User, file: Express.Multer.File) {
+    // find vendor item
+    let item = await this.repository.findOne(
+      new QueryOptionsBuilder()
+        .filter({ id })
+        .filter(
+          Sequelize.where(
+            Sequelize.fn('isnull', Sequelize.col('ECVendor.isDeleted'), 0),
+            {
+              [Op.eq]: 0,
+            },
+          ),
+        )
+        .build(),
+    );
+    if (!item) {
+      throw new NotFoundException('the item with this given id not founded!');
+    }
+
+    // upload to s3 cloud
+    const bucketName = 'vendors';
+    await this.minioClientService.createBucket(bucketName);
+    const fileStream = fs.readFileSync(file.path);
+    const uploadResult = await this.minioClientService.upload(
+      bucketName,
+      file.filename,
+      fileStream,
+    );
+
+    // remove old one if exists
+    if (item.attachmentId) {
+      let oldAttachment = await this.attachmentRepository.findOne(
+        new QueryOptionsBuilder()
+          .filter({ id: item.attachmentId })
+          .filter(
+            Sequelize.where(
+              Sequelize.fn('isnull', Sequelize.col('isDeleted'), 0),
+              {
+                [Op.eq]: 0,
+              },
+            ),
+          )
+          .filter({ attachmentTypeId: this.vendorAttachmentType })
+          .build(),
+      );
+      if (oldAttachment) {
+        // remove from s3 cloud
+        await this.minioClientService.remove(
+          oldAttachment.bucketName,
+          oldAttachment.fileName,
+        );
+
+        // remove in database
+        oldAttachment.isDeleted = true;
+        oldAttachment = await oldAttachment.save();
+      }
+    }
+
+    // create new one
+    const newAttachment = await this.attachmentRepository.create({
+      attachmentTypeId: this.vendorAttachmentType,
+      fileName: file.filename,
+      originalFileName: file.originalname,
+      mimetype: file.mimetype,
+      etag: uploadResult.etag,
+      versionId: uploadResult.versionId,
+      bucketName: bucketName,
+      userId: user.id,
+    });
+    item.attachmentId = newAttachment.id;
+    item = await item.save();
+
+    // remove file on current instanse
+    fs.rmSync(file.path);
+
+    return {
+      result: _.pick(newAttachment, ['id', 'fileName']),
     };
   }
 }
