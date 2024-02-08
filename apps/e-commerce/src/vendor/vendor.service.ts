@@ -16,6 +16,7 @@ import { User } from '@rahino/database/models/core/user.entity';
 import { Role } from '@rahino/database/models/core/role.entity';
 import { UserRoleService } from '@rahino/core/admin/user-role/user-role.service';
 import { ECVendorUser } from '@rahino/database/models/ecommerce-eav/ec-vendor-user.entity';
+import { Attachment } from '@rahino/database/models/core/attachment.entity';
 
 @Injectable()
 export class VendorService {
@@ -52,6 +53,12 @@ export class VendorService {
     queryBuilder = queryBuilder
       .attributes(['id', 'name', 'slug', 'address', 'priorityOrder'])
       .include([
+        {
+          attributes: ['id', 'fileName'],
+          model: Attachment,
+          as: 'attachment',
+          required: false,
+        },
         {
           model: ECVendorUser,
           as: 'vendorUser',
@@ -97,6 +104,12 @@ export class VendorService {
           'priorityOrder',
         ])
         .include([
+          {
+            attributes: ['id', 'fileName'],
+            model: Attachment,
+            as: 'attachment',
+            required: false,
+          },
           {
             model: ECVendorUser,
             as: 'vendorUser',
@@ -211,6 +224,12 @@ export class VendorService {
         ])
         .filter({ id: vendor.id })
         .include([
+          {
+            attributes: ['id', 'fileName'],
+            model: Attachment,
+            as: 'attachment',
+            required: false,
+          },
           {
             model: ECVendorUser,
             as: 'vendorUser',
@@ -414,6 +433,12 @@ export class VendorService {
         .filter({ id: vendor.id })
         .include([
           {
+            attributes: ['id', 'fileName'],
+            model: Attachment,
+            as: 'attachment',
+            required: false,
+          },
+          {
             model: ECVendorUser,
             as: 'vendorUser',
             where: {
@@ -471,6 +496,37 @@ export class VendorService {
         'address',
         'priorityOrder',
       ]),
+    };
+  }
+
+  async findBySlug(slug: string) {
+    const vendor = await this.repository.findOne(
+      new QueryOptionsBuilder()
+        .attributes(['id', 'name', 'slug', 'description'])
+        .include([
+          {
+            attributes: ['id', 'fileName'],
+            model: Attachment,
+            as: 'attachment',
+            required: false,
+          },
+        ])
+        .filter({ slug })
+        .filter(
+          Sequelize.where(
+            Sequelize.fn('isnull', Sequelize.col('ECVendor.isDeleted'), 0),
+            {
+              [Op.eq]: 0,
+            },
+          ),
+        )
+        .build(),
+    );
+    if (!vendor) {
+      throw new NotFoundException('the item with this given id not founded!');
+    }
+    return {
+      result: vendor,
     };
   }
 }

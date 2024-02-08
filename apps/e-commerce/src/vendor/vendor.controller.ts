@@ -37,8 +37,10 @@ import { User } from '@rahino/database/models/core/user.entity';
 export class VendorController {
   constructor(private service: VendorService) {}
 
-  // public url
+  @UseGuards(JwtGuard, PermissionGuard)
+  @ApiBearerAuth()
   @ApiOperation({ description: 'show all vendors' })
+  @CheckPermission({ permissionSymbol: 'ecommerce.vendors.getall' })
   @Get('/')
   @ApiQuery({
     name: 'filter',
@@ -89,5 +91,12 @@ export class VendorController {
   @HttpCode(HttpStatus.OK)
   async deleteById(@Param('id') entityId: number) {
     return await this.service.deleteById(entityId);
+  }
+
+  @ApiOperation({ description: 'delete vendor by admin' })
+  @Get('/slug/:slug')
+  @HttpCode(HttpStatus.OK)
+  async findBySlug(@Param('slug') slug: string) {
+    return await this.service.findBySlug(slug);
   }
 }
