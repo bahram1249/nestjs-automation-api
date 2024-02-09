@@ -47,7 +47,7 @@ export class BuffetController {
     return await this.service.edit(buffetId);
   }
 
-  @CheckPermission({ permissionSymbol: 'discountcoffe.admin.buffets.menus' })
+  @CheckPermission({ permissionSymbol: 'discountcoffe.admin.buffets.menu' })
   @Get('/menus/:id')
   @HttpCode(HttpStatus.OK)
   @Render('admin/buffets/menus')

@@ -36,10 +36,10 @@ export class LoginController {
     @Body() dto: LoginDto,
     @Req() req: Request,
     @Res() res: Response,
+    @Query('redirectUrl') redirectUrl: string = '',
     @Session() session: Record<string, any>,
-    @Query('redirectUrl') redirectUrl?: string,
   ) {
-    return await this.service.loginRequest(dto, req, res, session, redirectUrl);
+    return await this.service.loginRequest(dto, req, res, redirectUrl, session);
   }
 
   // show verify code page
@@ -50,7 +50,7 @@ export class LoginController {
     @Session() session: Record<string, any>,
     @Req() req: Request,
     @Res() res: Response,
-    @Query('redirectUrl') redirectUrl?: string,
+    @Query('redirectUrl') redirectUrl: string = '',
   ) {
     return await this.service.verifyCodeIndex(session, req, res, redirectUrl);
   }
@@ -63,9 +63,8 @@ export class LoginController {
     @Session() session: Record<string, any>,
     @Req() req: Request,
     @Res() res: Response,
-    @Query('redirectUrl') redirectUrl?: string,
+    @Query('redirectUrl') redirectUrl: string = '',
   ) {
-    console.log('was here');
     return await this.service.verifyCode(dto, session, req, res, redirectUrl);
   }
 }

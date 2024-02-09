@@ -25,6 +25,8 @@ import * as util from 'util';
 import { BuffetReserveDetail } from '@rahino/database/models/discount-coffe/buffet-reserve-detail.entity';
 import { BuffetType } from '@rahino/database/models/discount-coffe/buffet-type.entity';
 import { BuffetCost } from '@rahino/database/models/discount-coffe/buffet-cost.entity';
+import { BuffetFilterDto } from '@rahino/discountCoffe/api/user/buffet/dto';
+import { BuffetCity } from '@rahino/database/models/discount-coffe/city.entity';
 const mkdirAsync = util.promisify(fs.mkdir);
 
 @Injectable()
@@ -48,10 +50,12 @@ export class BuffetService {
     private readonly buffetTypeRepository: typeof BuffetType,
     @InjectModel(BuffetCost)
     private readonly buffetCostRepository: typeof BuffetCost,
+    @InjectModel(BuffetCity)
+    private readonly buffetCityRepository: typeof BuffetCity,
     private readonly config: ConfigService,
   ) {}
 
-  async index(urlAddress: string) {
+  async index(req: Request, urlAddress: string) {
     const buffet = await this.repository.findOne({
       include: [
         {
@@ -86,10 +90,11 @@ export class BuffetService {
       title: buffet.title,
       layout: 'discountcoffe',
       buffet: buffet.toJSON(),
+      user: req.user,
     };
   }
 
-  async menus(urlAddress: string) {
+  async menus(req: Request, urlAddress: string) {
     const buffet = await this.repository.findOne({
       include: [
         {
@@ -174,10 +179,11 @@ export class BuffetService {
       buffetMenuCategories: JSON.parse(JSON.stringify(buffetMenuCategories)),
       today: today.toJSON(),
       endDate: endDate.toJSON(),
+      user: req.user,
     };
   }
 
-  async setReserve(dto: ReserveDto) {
+  async setReserve(req: Request, dto: ReserveDto) {
     const onlineReserve = 1;
     if (dto.reserveType == onlineReserve && dto.items.length == 0) {
       throw new BadRequestException('Must select 1 menus.');
@@ -263,6 +269,7 @@ export class BuffetService {
 
     return {
       result: buffetReserve.toJSON(),
+      user: req.user,
     };
   }
 
@@ -338,6 +345,7 @@ export class BuffetService {
       layout: 'discountcoffe',
       reserve: reserve.toJSON(),
       title: 'نمایش بلیط',
+      user: user,
     };
   }
 
@@ -369,14 +377,24 @@ export class BuffetService {
     return new StreamableFile(file);
   }
 
-  async list() {
-    const buffetTypes = await this.buffetTypeRepository.findAll();
-    const buffetCosts = await this.buffetCostRepository.findAll();
+  async list(req: Request, dto: BuffetFilterDto) {
+    const buffetTypes = await this.buffetTypeRepository.findAll({
+      attributes: ['id', 'title'],
+    });
+    const buffetCosts = await this.buffetCostRepository.findAll({
+      attributes: ['id', 'title'],
+    });
+    const buffetCities = await this.buffetCityRepository.findAll({
+      attributes: ['id', 'title'],
+    });
     return {
       title: 'لیست کافه و رستوران ها',
       layout: 'discountcoffe',
       buffetTypes: JSON.parse(JSON.stringify(buffetTypes)),
       buffetCosts: JSON.parse(JSON.stringify(buffetCosts)),
+      buffetCities: JSON.parse(JSON.stringify(buffetCities)),
+      user: req.user,
+      queryFilter: JSON.parse(JSON.stringify(dto)),
     };
   }
 }

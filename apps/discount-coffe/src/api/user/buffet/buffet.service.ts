@@ -33,6 +33,12 @@ export class BuffetService {
       });
     }
 
+    if (dto.buffetCityId) {
+      queryBuilder = queryBuilder.filter({
+        cityId: dto.buffetCityId,
+      });
+    }
+
     const count = await this.buffetRepository.count(queryBuilder.build());
 
     queryBuilder = queryBuilder
@@ -40,20 +46,19 @@ export class BuffetService {
         'id',
         'title',
         'urlAddress',
-        'coverAttachmentId',
         'percentDiscount',
         'buffetAddress',
         'buffetPhone',
-        'wazeLink',
-        'baladLink',
-        'neshanLink',
-        'googleMapLink',
-        'latitude',
-        'longitude',
-        'viewCount',
-        'buffetTypeId',
-        'buffetCostId',
-        'cityId',
+        // 'wazeLink',
+        // 'baladLink',
+        // 'neshanLink',
+        // 'googleMapLink',
+        // 'latitude',
+        // 'longitude',
+        // 'viewCount',
+        // 'buffetTypeId',
+        // 'buffetCostId',
+        // 'cityId',
       ])
       .include([
         {
@@ -74,7 +79,7 @@ export class BuffetService {
           required: false,
         },
       ])
-      .order({ orderBy: 'id', sortOrder: 'desc' })
+      .order({ orderBy: dto.orderBy, sortOrder: dto.order })
       .limit(dto.limit)
       .offset((dto.page - 1) * dto.limit);
 

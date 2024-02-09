@@ -35,13 +35,15 @@
           </a>
         </div>
         <ul class='menuMobile'>
-          <li><a href=''>صفحه اصلی</a></li>
-          <li><a href=''>همه کافه ها</a></li>
-          <li><a href=''>درباره ما</a></li>
-          <li><a href=''>تماس با ما</a></li>
+          <li><a href='/'>صفحه اصلی</a></li>
+          <li><a href='/buffet/list'>همه کافه ها</a></li>
+          <li><a href='/aboutus'>درباره ما</a></li>
+          <li><a href='/contactus'>تماس با ما</a></li>
         </ul>
         <div class='addons'>
-          <a href='' class='login'>ورود / ثبت نام</a>
+          {{#if (isnull user)}}
+            <a href='/login' class='login'>ورود / ثبت نام</a>
+          {{/if}}
           <a href='' class='loginMobile'><i class='icon-user'></i></a>
         </div>
       </nav>
@@ -64,15 +66,15 @@
                 src='/theme/discountcoffe/assets/img/png/verified.png'
                 alt=''
               />
-              <h4>مشاورین تایید شده</h4>
+              <h4>کافه های تایید شده</h4>
             </div>
             <div class='col-md-3 col-6'>
               <img src='/theme/discountcoffe/assets/img/png/many.png' alt='' />
-              <h4>تنوع فایل های زیاد</h4>
+              <h4>تنوع منو های زیاد</h4>
             </div>
             <div class='col-md-3 col-6'>
               <img src='/theme/discountcoffe/assets/img/png/easy.png' alt='' />
-              <h4>فرایند خرید آسان</h4>
+              <h4>فرایند رزرو آسان</h4>
             </div>
           </div>
         </div>
@@ -158,8 +160,7 @@
               </div>
               <div class='row'>
                 <div class='copyright'>
-                  تمام حقوق مادی و معنوی این سایت مربوط به موسسه رسانه ای تخفیف
-                  کافه می‌باشد.
+                  تمام حقوق مادی و معنوی این سایت مربوط به تخفیف کافه می‌باشد.
                 </div>
               </div>
             </div>

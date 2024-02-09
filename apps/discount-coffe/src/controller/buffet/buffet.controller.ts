@@ -6,6 +6,7 @@ import {
   HttpStatus,
   Param,
   Post,
+  Query,
   Render,
   Req,
   Res,
@@ -14,10 +15,11 @@ import {
 } from '@nestjs/common';
 import { BuffetService } from './buffet.service';
 import { ReserveDto } from './dto';
-import { JwtWebGuard } from '@rahino/auth/guard';
+import { JwtWebGuard, OptionalJwtWebGuard } from '@rahino/auth/guard';
 import { GetUser } from '@rahino/auth/decorator';
 import { User } from '@rahino/database/models/core/user.entity';
 import { Response, Request } from 'express';
+import { BuffetFilterDto } from '@rahino/discountCoffe/api/user/buffet/dto';
 
 @Controller({
   path: '/buffet',
@@ -25,31 +27,35 @@ import { Response, Request } from 'express';
 export class BuffetController {
   constructor(private service: BuffetService) {}
 
+  @UseGuards(OptionalJwtWebGuard)
   @Get('/list')
   @HttpCode(HttpStatus.OK)
   @Render('buffets/list')
-  async list() {
-    return await this.service.list();
+  async list(@Req() req: Request, @Query() dto: BuffetFilterDto) {
+    return await this.service.list(req, dto);
   }
 
+  @UseGuards(OptionalJwtWebGuard)
   @Get('/menus/:urlAddress')
   @HttpCode(HttpStatus.OK)
   @Render('buffets/menus')
-  async menus(@Param('urlAddress') urlAddress: string) {
-    return await this.service.menus(urlAddress);
+  async menus(@Req() req: Request, @Param('urlAddress') urlAddress: string) {
+    return await this.service.menus(req, urlAddress);
   }
 
+  @UseGuards(OptionalJwtWebGuard)
   @Get('/:urlAddress')
   @HttpCode(HttpStatus.OK)
   @Render('buffets/index')
-  async index(@Param('urlAddress') urlAddress: string) {
-    return await this.service.index(urlAddress);
+  async index(@Req() req: Request, @Param('urlAddress') urlAddress: string) {
+    return await this.service.index(req, urlAddress);
   }
 
+  @UseGuards(OptionalJwtWebGuard)
   @Post('/reserve')
   @HttpCode(HttpStatus.CREATED)
-  async setReserve(@Body() dto: ReserveDto) {
-    return await this.service.setReserve(dto);
+  async setReserve(@Req() req: Request, @Body() dto: ReserveDto) {
+    return await this.service.setReserve(req, dto);
   }
 
   @UseGuards(JwtWebGuard)

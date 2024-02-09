@@ -9,8 +9,7 @@
         <p class='wow animate__animated animate__fadeInUp'>
           معرفی بهترین کافه های سطح کشور با تخفیف از ما
         </p>
-        <a href='' class='link wow animate__animated animate__fadeInUp'>همه کافه
-          ها</a>
+        <a href='/buffet/list' class='link wow animate__animated animate__fadeInUp'>همه کافه، رستوران ها</a>
       </div>
       <div class='col-md-5'>
         <div class='searchBox'>
@@ -21,59 +20,48 @@
               <div class='input'>
                 <i class='icon-location right'></i>
                 <select name='location' id='location'>
-                  <option value='1'>سهروردی</option>
-                  <option value='2'>شهر آرا</option>
-                  <option value='3'>ستارخان</option>
-                  <option value='4'>رودکی</option>
-                  <option value='5'>حسن آباد</option>
+                  <option value=''>همه</option>
+                  {{#each buffetCities}}
+                  <option value='{{id}}'>{{title}}</option>
+                  {{/each}}
                 </select>
                 <i class='icon-down arrow'></i>
               </div>
             </div>
             <div class='form-control'>
-              <label for='for'>لوکیشن</label>
+              <label for='for'>نوع بوفه</label>
               <div class='radios'>
-                <div class='radioItem active'>
-                  <label for='cafes'>کافه ها</label>
+                {{#each buffetTypes}}
+                  <div class='radioItem {{#if (ifequals @index 0 )}}active{{/if}}'>
+                  <label for='buffetTypes_{{id}}'>{{title}}</label>
                   <input
-                    id='cafes'
-                    name='type'
-                    checked
+                    id="buffetTypes_{{id}}"
+                    name='buffetTypesId'
+                    {{#if (ifequals @index 0 )}}checked{{/if}}
                     type='radio'
-                    value='1'
+                    value='{{id}}'
                   />
                 </div>
-                <div class='radioItem'>
-                  <label for='restaurant'>کافه ها</label>
-                  <input id='restaurant' name='type' type='radio' value='2' />
-                </div>
+                {{/each}}
+                
               </div>
             </div>
             <div class='form-control'>
               <label for='for'>قیمت منوها</label>
               <div class='radios'>
-                <div class='radioItem active'>
-                  <label for='poor'>ارزان</label>
+
+                {{#each buffetCosts}}
+                <div class='radioItem {{#if (ifequals @index 0)}}active{{/if}}'>
+                  <label for='buffetCosts_{{id}}'>{{title}}</label>
                   <input
-                    id='poor'
-                    name='price'
-                    checked
+                    id='buffetCosts_{{id}}'
+                    name='buffetCostId'
+                    {{#if (ifequals @index 0)}}checked{{/if}}
                     type='radio'
-                    value='1'
+                    value='{{id}}'
                   />
                 </div>
-                <div class='radioItem'>
-                  <label for='luxuary'>لاکچری</label>
-                  <input id='luxuary' name='price' type='radio' value='2' />
-                </div>
-                <div class='radioItem'>
-                  <label for='ecconomy'>اقتصادی</label>
-                  <input id='ecconomy' name='price' type='radio' value='3' />
-                </div>
-                <div class='radioItem'>
-                  <label for='cupen'>دارای کوپن</label>
-                  <input id='cupen' name='price' type='radio' value='4' />
-                </div>
+                {{/each}}
               </div>
             </div>
             <button class='searchFilter'>
@@ -97,8 +85,7 @@
           <p class='wow animate__animated animate__fadeInUp'>
             با کیفیت ترین کافه ها از نظر متریال و دکور
           </p>
-          <a class='wow animate__animated animate__fadeInUp' href=''>همه لاکچری
-            ها</a>
+          <!-- <a class='wow animate__animated animate__fadeInUp' href=''>مشاهده همه</a> -->
         </div>
       </div>
       <div class='col-md-9 col-12 p-0 h-100 reverseOrderMobile'>
@@ -173,24 +160,24 @@
       <div class='row'>
         <div class='col-md-4'>
           <div class='numbers'>
-            <h4>1320000</h4>
-            <h5>1320000</h5>
+            <h4>{{resturantCount}}</h4>
+            <h5>{{resturantCount}}</h5>
           </div>
-          <p class='title'><span>کد</span> جنریت شده</p>
+          <p class='title'><span>تعداد</span> رستوران ها</p>
         </div>
         <div class='col-md-4'>
           <div class='numbers'>
-            <h4>1320000</h4>
-            <h5>1320000</h5>
+            <h4>{{coffeCount}}</h4>
+            <h5>{{coffeCount}}</h5>
           </div>
-          <p class='title'><span>کد</span> جنریت شده</p>
+          <p class='title'><span>تعداد</span> کافه ها</p>
         </div>
         <div class='col-md-4'>
           <div class='numbers'>
-            <h4>1320000</h4>
-            <h5>1320000</h5>
+            <h4>{{reserveCount}}</h4>
+            <h5>{{reserveCount}}</h5>
           </div>
-          <p class='title'><span>کد</span> جنریت شده</p>
+          <p class='title'><span>تعداد</span> رزرو ها</p>
         </div>
       </div>
     </div>
@@ -200,7 +187,7 @@
   <div class='container'>
     <div class='titles'>
       <h4>کافه ها</h4>
-      <a href=''>همه کافه ها</a>
+      <a href='/buffet/list?buffetTypeId=1'>همه کافه ها</a>
     </div>
     <div class='row'>
       <div class='productSliderMultiple'>
@@ -247,7 +234,7 @@
         <div class='heading'>
           <h5>کافه های سوپر لاکچری</h5>
           <p>کافه های لاکچری بیش از 10 درصد تخفیف</p>
-          <a class='more' href=''>همه کافه ها</a>
+          <a class='more' href='/buffet/list?buffetCostId=3'>همه کافه ها</a>
         </div>
         <div class='offersSlider'>
           {{#each luxuryCoffes}}
@@ -285,7 +272,7 @@
   <div class='container'>
     <div class='titles'>
       <h4>رستوران ها</h4>
-      <a href=''>همه رستوران ها</a>
+      <a href='/buffet/list?buffetTypeId=2'>همه رستوران ها</a>
     </div>
     <div class='row'>
       <div class='productSliderMultiple'>
@@ -324,8 +311,8 @@
         <div class='item'>
           <img src='/theme/discountcoffe/assets/img/png/banner-1.png' alt='' />
           <div class='info'>
-            <h5>برترین کافه ها</h5>
-            <a href=''>مشاهده کافه ها</a>
+            <h5>رستوران ها</h5>
+            <a href='/buffet/list?buffetTypeId=2'>مشاهده</a>
           </div>
         </div>
       </div>
@@ -333,8 +320,8 @@
         <div class='item'>
           <img src='/theme/discountcoffe/assets/img/png/banner-2.png' alt='' />
           <div class='info'>
-            <h5>برترین کافه ها</h5>
-            <a href=''>مشاهده کافه ها</a>
+            <h5>کافه ها</h5>
+            <a href='/buffet/list?buffetTypeId=1'>مشاهده</a>
           </div>
         </div>
       </div>
@@ -344,12 +331,12 @@
 <div class='productSection'>
   <div class='container'>
     <div class='titles'>
-      <h4>کافه های ارزان قیمت</h4>
-      <a href=''>همه کافه ها</a>
+      <h4>کافه، رستوران های ارزان قیمت</h4>
+      <a href='/buffet/list?buffetCostId=1'>همه کافه، رستوران ها</a>
     </div>
     <div class='row'>
       <div class='productSliderMultiple'>
-        {{#each lowPriceCoffes}}
+        {{#each lowPrices}}
           <div class='productItem'>
             <img
               class='w-100'

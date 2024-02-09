@@ -21,4 +21,14 @@ export class BuffetFilterDto {
   @IsNumber()
   @IsOptional()
   buffetCostId?: number;
+
+  @Transform(({ value }) => JSON.parse(value))
+  @IsNumber()
+  @IsOptional()
+  buffetCityId?: number;
+
+  @IsOptional()
+  order?: string = 'desc';
+  @IsOptional()
+  orderBy?: string = 'id';
 }

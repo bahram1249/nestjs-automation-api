@@ -1,5 +1,7 @@
-import { Controller, Get, Render } from '@nestjs/common';
+import { Controller, Get, Render, Req, UseGuards } from '@nestjs/common';
 import { HomeService } from './home.service';
+import { OptionalJwtWebGuard } from '@rahino/auth/guard';
+import { Request } from 'express';
 
 @Controller({
   path: '/',
@@ -9,7 +11,8 @@ export class HomeController {
 
   @Get('/')
   @Render('home/index')
-  async index() {
-    return await this.service.index();
+  @UseGuards(OptionalJwtWebGuard)
+  async index(@Req() req: Request) {
+    return await this.service.index(req);
   }
 }

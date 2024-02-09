@@ -25,8 +25,8 @@ export class LoginService {
     dto: LoginDto,
     req: Request,
     res: Response,
-    session: Record<string, any>,
     redirectUrl: string,
+    session: Record<string, any>,
   ) {
     let user = await this.userRepository.findOne({
       where: {
@@ -52,7 +52,7 @@ export class LoginService {
     session: Record<string, any>,
     req: Request,
     res: Response,
-    redirectUrl?: string,
+    redirectUrl: string,
   ) {
     return {
       title: 'کد تایید را وارد بفرمایید',
@@ -66,7 +66,7 @@ export class LoginService {
     session: Record<string, any>,
     req: Request,
     res: Response,
-    redirectUrl?: string,
+    redirectUrl: string,
   ) {
     if (dto.code != session.verifyCode) {
       throw new BadRequestException();

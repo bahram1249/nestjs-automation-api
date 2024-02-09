@@ -4101,6 +4101,31 @@ END
 
 GO
 
+-- discount coffe options
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'DiscountCoffe-options-Data-v1' 
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'SITE_NAME' AND [value] IN ('DiscountCoffe'))
+		)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'CUSTOMER_NAME' AND [value] IN ('DiscountCoffe'))
+		)
+BEGIN
+
+	INSERT INTO DiscountCoffeOptions(id, title, iconClass,createdAt, updatedAt)
+	VALUES (1, N'اسموک روم', 'icon-pizza',getdate(), getdate())
+			,(2, N'اتاق بازی', 'icon-pizza',getdate(), getdate())
+			,(3, N'فضای کودکان', 'icon-pizza',getdate(), getdate())
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'DiscountCoffe-options-Data-v1', GETDATE(), GETDATE()
+END
+
+GO
+
+
 --buffetcity
 IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'DiscountCoffe-buffetCity-Data-v1' 
 			)
