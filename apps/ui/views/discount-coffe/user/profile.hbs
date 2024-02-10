@@ -1,0 +1,107 @@
+{{#section 'header'}}
+  <title>{{title}}</title>
+  <link
+    rel='stylesheet'
+    href='/tools/core/vendor/bootstrap@5.1.1/dist/css/bootstrap.rtl.min.css'
+  />
+{{/section}}
+
+<section class='cases news hero'>
+  <div class='container-lg'>
+    <div class='row'>
+      <div class='col-md-3'>
+        <div class='panel text-center'>
+
+          <div class='profile'>
+            <!-- <div class='camera'><img
+                src='/theme/discountcoffe/assets/img/png/camera.svg'
+                alt=''
+              /></div> -->
+            <h4>{{user.firstname}} {{user.lastname}}</h4>
+          </div>
+          <div class='menuItems'>
+            <ul>
+              <li class='active'>
+                <a href='/user/profile'>
+                  <img
+                    src='/theme/discountcoffe/assets/img/png/dashboard.svg'
+                    alt=''
+                  />
+                  پروفایل
+                </a>
+              </li>
+
+              <li>
+                <a href='/user/reserves'>
+                  <img
+                    src='/theme/discountcoffe/assets/img/png/money.svg'
+                    alt=''
+                  />
+                  رزرو ها
+                </a>
+              </li>
+
+              <li>
+                <a href='/user/logout'>
+                  <img
+                    src='/theme/discountcoffe/assets/img/png/exit.svg'
+                    width='35'
+                    height='35'
+                    alt=''
+                  />
+                  خروج
+                </a>
+              </li>
+
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class='col-md-9'>
+        <h5 class='dashboardTitle'>پروفایل شما</h5>
+        <form action='/user/profile' method='post'>
+          <div class='row'>
+
+            <div class='col-xs-12 col-xl-12'>
+              <div class='basic-form'>
+                <div class='form-row'>
+                  <div class='form-group col-md-6'>
+                    <label>نام کاربر</label>
+                    <input
+                      id='firstname'
+                      name='firstname'
+                      type='text'
+                      class='form-control'
+                      value='{{user.firstname}}'
+                      placeholder='نام کاربر'
+                    />
+                  </div>
+                  <div class='form-group col-md-6'>
+                    <label>نام خانوادگی</label>
+                    <input
+                      id='lastname'
+                      name='lastname'
+                      type='text'
+                      class='form-control'
+                      value='{{user.lastname}}'
+                      placeholder='نام خانوادگی'
+                    />
+                  </div>
+
+                  <div class='form-group col-md-6'>
+                    <button
+                      class='btn btn-sm btn-success rounded-3'
+                      type='submit'
+                    >ذخیره</button>
+                  </div>
+
+                </div>
+
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>

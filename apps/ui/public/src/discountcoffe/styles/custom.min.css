@@ -63,3 +63,100 @@ img.super-lux-img {
 .productItem img {
   border-radius: 15px;
 }
+
+.panel .menuItems ul li {
+  position: relative;
+  color: #505050;
+  text-align: center;
+  font-size: 18px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: normal;
+  padding: 15px;
+  margin: 0 0 13px;
+  border-radius: 18px;
+}
+
+.paymentItem {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: justify;
+  -ms-flex-pack: justify;
+  justify-content: space-between;
+  border: 1px solid #dbdbdb;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  padding: 20px 28px;
+  border-radius: 15px;
+  margin-bottom: 15px;
+}
+
+.paymentItem .status.paid {
+  color: #4caf50;
+}
+
+.paymentItem p {
+  margin: 0;
+  font-size: 17px;
+  font-weight: 500;
+}
+
+.paymentItem .button.read {
+  background: #2196f3;
+}
+
+.paymentItem .button {
+  border-radius: 12px;
+  border: 0;
+  color: #fff;
+  padding: 11px 17px;
+  margin-right: 12px;
+}
+
+.paymentItem .status {
+  font-weight: 800;
+}
+
+.paymentItem .button.pay {
+  background: #4caf50;
+}
+
+.paymentItem .status.rejected {
+  color: #eb411f;
+}
+
+.paymentItem .status.pending {
+  color: #b1ae11;
+}
+
+.panel .menuItems ul li.active {
+  background: #c6cacc;
+}
+
+.panel .menuItems ul {
+  padding: 0;
+}
+
+.panel .menuItems ul li img {
+  position: absolute;
+  right: 14px;
+  top: 5px;
+}
+
+.panel .menuItems ul {
+  list-style-type: none;
+  margin: 3px;
+}
+
+.features {
+  margin-top: 20px;
+}
+
+@media only screen and (max-width: 991px) {
+  .menuBase nav {
+    margin-bottom: unset;
+    position: unset;
+  }
+}

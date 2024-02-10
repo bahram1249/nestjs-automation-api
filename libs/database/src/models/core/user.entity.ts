@@ -106,12 +106,12 @@ export class User extends Model {
     type: DataType.BIGINT,
     allowNull: true,
   })
-  profilePhotoAttachmentId: bigint;
+  profilePhotoAttachmentId?: bigint;
   @BelongsTo(() => Attachment, {
     as: 'profileAttachment',
     foreignKey: 'profilePhotoAttachmentId',
   })
-  profilePhotoAttachment: Attachment;
+  profileAttachment?: Attachment;
   @HasMany(() => UserRole)
   userRoles: UserRole[];
   @BelongsToMany(() => Role, () => UserRole)

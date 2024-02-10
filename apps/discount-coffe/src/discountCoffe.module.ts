@@ -17,6 +17,7 @@ import { AdminReportApiModule } from './api/admin/adminreport/admin-report.modul
 import { CoffeReportModule } from './controller/admin/coffereport/coffe-report.module';
 import { CoffeReportApiModule } from './api/admin/coffereport/coffe-report.module';
 import { BuffetModule as BuffetUserModule } from './api/user/buffet/buffet.module';
+import { UserModule } from './controller/user/user.module';
 
 @Module({
   imports: [
@@ -38,6 +39,7 @@ import { BuffetModule as BuffetUserModule } from './api/user/buffet/buffet.modul
     BuffetUserModule,
     LoginModule,
     HomeModule,
+    UserModule,
   ],
 })
 export class DiscountCoffeModule implements NestModule {

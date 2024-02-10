@@ -1,0 +1,88 @@
+{{#section 'header'}}
+  <title>{{title}}</title>
+  <link
+    rel='stylesheet'
+    href='/tools/core/vendor/bootstrap@5.1.1/dist/css/bootstrap.rtl.min.css'
+  />
+{{/section}}
+
+<section class='cases news hero'>
+  <div class='container-lg'>
+    <div class='row'>
+      <div class='col-md-3'>
+        <div class='panel text-center'>
+
+          <div class='profile'>
+            <!-- <div class='camera'><img
+                src='/theme/discountcoffe/assets/img/png/camera.svg'
+                alt=''
+              /></div> -->
+            <h4>{{user.firstname}} {{user.lastname}}</h4>
+          </div>
+          <div class='menuItems'>
+            <ul>
+              <li>
+                <a href='/user/profile'>
+                  <img
+                    src='/theme/discountcoffe/assets/img/png/dashboard.svg'
+                    alt=''
+                  />
+                  پروفایل
+                </a>
+              </li>
+
+              <li class='active'>
+                <a href='/user/reserves'>
+                  <img
+                    src='/theme/discountcoffe/assets/img/png/money.svg'
+                    alt=''
+                  />
+                  رزرو ها
+                </a>
+              </li>
+
+              <li>
+                <a href='/user/logout'>
+                  <img
+                    src='/theme/discountcoffe/assets/img/png/exit.svg'
+                    width='35'
+                    height='35'
+                    alt=''
+                  />
+                  خروج
+                </a>
+              </li>
+
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class='col-md-9'>
+        <div class='row'>
+          <h5 class='dashboardTitle'>سوابق رزرو شما</h5>
+          {{#each reserves}}
+            <div class='col-md-12'>
+              <div class='paymentItem'>
+                <p>{{persianDate.DayInMonth}}
+                  {{persianDate.PersianMonthName}}
+                  {{persianDate.YearNumber}}</p>
+                <p>
+                  <a href='/buffet/{{buffet.urlAddress}}'>{{buffet.title}}
+                  </a>
+                </p>
+                <p class='status paid'><span></span>{{reserveStatus.title}}</p>
+                <p>{{price}} تومان</p>
+                <div class='actions'>
+                  <a href='/buffet/detail/{{uniqueCode}}'>
+                    <button class='button read'>مشاهده</button>
+                  </a>
+                </div>
+              </div>
+            </div>
+          {{/each}}
+
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
