@@ -48,7 +48,7 @@ $('#date-picker').persianDatepicker({
   onShow: function () {},
   onHide: function () {},
   onSelect: function (data) {
-    selectedDate = $('#date-picker').attr('data-gdate');
+    selectedDate = $('#date-picker').attr('data-jdate');
   },
   onRender: function () {},
 });
