@@ -37,6 +37,7 @@ export class TotalReserveService {
           as: 'user',
         },
       ])
+      .subQuery(false)
       .filter({ reserveStatusId: reserveComplete })
       .filter({
         '$user.phoneNumber$': {
@@ -47,7 +48,13 @@ export class TotalReserveService {
     const options = builder
       .include([
         {
-          attributes: ['id', 'firstname', 'lastname', 'username'],
+          attributes: [
+            'id',
+            'firstname',
+            'lastname',
+            'username',
+            'phoneNumber',
+          ],
           model: User,
           as: 'user',
         },
@@ -94,6 +101,8 @@ export class TotalReserveService {
           ],
         },
       ])
+      .limit(filter.limit)
+      .offset(filter.offset)
       .order({ orderBy: filter.orderBy, sortOrder: filter.sortOrder })
       .build();
 

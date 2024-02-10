@@ -51,6 +51,8 @@ export class MenuCategoryService {
           required: false,
         },
       ])
+      .limit(filter.limit)
+      .offset(filter.offset)
       .order({ orderBy: filter.orderBy, sortOrder: filter.sortOrder })
       .build();
 

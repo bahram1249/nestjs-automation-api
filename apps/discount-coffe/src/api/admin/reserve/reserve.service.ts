@@ -26,7 +26,13 @@ export class ReserveService {
     builder = builder
       .include([
         {
-          attributes: ['id', 'firstname', 'lastname', 'username'],
+          attributes: [
+            'id',
+            'firstname',
+            'lastname',
+            'username',
+            'phoneNumber',
+          ],
           model: User,
           as: 'user',
         },
@@ -42,13 +48,14 @@ export class ReserveService {
           ],
         },
       ])
+      .subQuery(false)
       .filter({ reserveStatusId: reserveComplete })
       .filter({
-        '$user.phoneNumber$': {
+        '$[user.phoneNumber]$': {
           [Op.like]: filter.search,
         },
       })
-      .filter({ '$buffet.ownerId$': user.id });
+      .filter({ '$[buffet.ownerId]$': user.id });
     const count = await this.repository.count(builder.build());
     const options = builder
       .include([
@@ -69,7 +76,7 @@ export class ReserveService {
           required: false,
         },
         {
-          attributes: ['id', 'title', 'buffetAddress'],
+          attributes: ['id', 'title', 'buffetAddress', 'ownerId'],
           model: Buffet,
           as: 'buffet',
           include: [
@@ -106,6 +113,8 @@ export class ReserveService {
           ],
         },
       ])
+      .limit(filter.limit)
+      .offset(filter.offset)
       .order({ orderBy: filter.orderBy, sortOrder: filter.sortOrder })
       .build();
 

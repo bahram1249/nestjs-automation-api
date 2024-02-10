@@ -71,6 +71,8 @@ export class BuffetMenuService {
           required: false,
         },
       ])
+      .limit(filter.limit)
+      .offset(filter.offset)
       .order({ orderBy: filter.orderBy, sortOrder: filter.sortOrder })
       .build();
 
