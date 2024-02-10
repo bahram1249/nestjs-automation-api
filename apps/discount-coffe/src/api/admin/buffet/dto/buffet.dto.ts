@@ -1,6 +1,8 @@
 //import { AutoMap } from '@automapper/classes';
+import { replaceCharacterSlug } from '@rahino/commontools';
 import { Transform } from 'class-transformer';
 import {
+  IsBoolean,
   IsNotEmpty,
   IsNumber,
   IsOptional,
@@ -58,6 +60,7 @@ export class BuffetDto {
   @MaxLength(1024, {
     message: 'حداکثر کاراکتر آدرس لینک میبایست 1024 کاراکتر باشد',
   })
+  @Transform(({ value }) => replaceCharacterSlug(value))
   @IsOptional()
   urlAddress?: string;
 
@@ -111,4 +114,9 @@ export class BuffetDto {
 
   @IsOptional()
   options?: number[];
+
+  @Transform(({ value }) => value == 'true')
+  @IsOptional()
+  @IsBoolean()
+  pin?: boolean;
 }

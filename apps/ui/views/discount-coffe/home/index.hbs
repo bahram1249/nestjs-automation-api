@@ -90,34 +90,17 @@
       </div>
       <div class='col-md-9 col-12 p-0 h-100 reverseOrderMobile'>
         <div class='luxCarousel'>
-          <div>
-            <img
-              class='w-100'
-              src='/theme/discountcoffe/assets/img/png/lux.png'
-              alt=''
-            />
-          </div>
-          <div>
-            <img
-              class='w-100'
-              src='/theme/discountcoffe/assets/img/png/lux.png'
-              alt=''
-            />
-          </div>
-          <div>
-            <img
-              class='w-100'
-              src='/theme/discountcoffe/assets/img/png/lux.png'
-              alt=''
-            />
-          </div>
-          <div>
-            <img
-              class='w-100'
-              src='/theme/discountcoffe/assets/img/png/lux.png'
-              alt=''
-            />
-          </div>
+          {{#each pinedBuffets}}
+            <div>
+              <a href="/buffet/{{urlAddress}}">
+              <img
+                class='w-100'
+                src='/v1/api/discountcoffe/admin/buffets/photo/{{coverAttachment.fileName}}'
+                alt='{{title}}'
+              />
+              </a>
+            </div>
+          {{/each}}
         </div>
       </div>
     </div>
@@ -130,25 +113,25 @@
       <div class='col-md-3 col-6'>
         <div class='item wow animate__animated animate__fadeInUp'>
           <img src='/theme/discountcoffe/assets/img/png/icecreame.png' alt='' />
-          <a href=''><h5>بهترین بستنی ها</h5></a>
+          <a href='#'><h5>بهترین بستنی ها</h5></a>
         </div>
       </div>
       <div class='col-md-3 col-6'>
         <div class='item wow animate__animated animate__fadeInDown'>
           <img src='/theme/discountcoffe/assets/img/png/shake.png' alt='' />
-          <a href=''><h5>بهترین شیک ها</h5></a>
+          <a href='#'><h5>بهترین شیک ها</h5></a>
         </div>
       </div>
       <div class='col-md-3 col-6'>
         <div class='item wow animate__animated animate__fadeInUp'>
           <img src='/theme/discountcoffe/assets/img/png/coockies.png' alt='' />
-          <a href=''><h5>بهترین کوکی ها</h5></a>
+          <a href='#'><h5>بهترین کوکی ها</h5></a>
         </div>
       </div>
       <div class='col-md-3 col-6'>
         <div class='item wow animate__animated animate__fadeInDown'>
           <img src='/theme/discountcoffe/assets/img/png/fruits.png' alt='' />
-          <a href=''><h5>بهترین میوه ها</h5></a>
+          <a href='#'><h5>بهترین میوه ها</h5></a>
         </div>
       </div>
     </div>

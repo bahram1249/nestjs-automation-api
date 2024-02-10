@@ -188,10 +188,16 @@ $(document).on('submit', '#editEntityForm', function (event) {
     // if (!isNaN(value)) {
     //   requestData[key] = parseInt(value);
     // }
-    if (value === '' || value === null) {
+    if (key == 'pin' && value == 'on') {
+      requestData[key] = true;
+    } else if (value === '' || value === null) {
       delete requestData[key];
     }
   });
+
+  if (requestData['pin'] == undefined) {
+    requestData['pin'] = false;
+  }
 
   var options = [];
   var inputOptions = $('input.option-select:checked');
@@ -243,10 +249,15 @@ $(document).on('submit', '#newEntityForm', function (event) {
     // if (!isNaN(value)) {
     //   requestData[key] = parseInt(value);
     // }
-    if (value === '' || value === null) {
+    if (key == 'pin' && value == 'on') {
+      requestData[key] = true;
+    } else if (value === '' || value === null) {
       delete requestData[key];
     }
   });
+  if (requestData['pin'] == undefined) {
+    requestData['pin'] = false;
+  }
 
   var options = [];
   var inputOptions = $('input.option-select:checked');

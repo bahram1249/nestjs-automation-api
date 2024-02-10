@@ -24,6 +24,7 @@ import * as fs from 'fs';
 import { Role } from '@rahino/database/models/core/role.entity';
 import { UserRole } from '@rahino/database/models/core/userRole.entity';
 import { BuffetOption } from '@rahino/database/models/discount-coffe/buffet-option.entity';
+import { replaceCharacterSlug } from '@rahino/commontools';
 
 @Injectable()
 export class BuffetService {
@@ -62,6 +63,8 @@ export class BuffetService {
           required: false,
         },
       ])
+      .limit(filter.limit)
+      .offset(filter.offset)
       .order({ orderBy: filter.orderBy, sortOrder: filter.sortOrder })
       .build();
 
@@ -137,6 +140,10 @@ export class BuffetService {
       roleId: role.id,
     });
 
+    if (dto.urlAddress == null) {
+      dto.urlAddress = replaceCharacterSlug(dto.title);
+    }
+
     let buffet: any = _.pick(dto, [
       'title',
       'urlAddress',
@@ -153,6 +160,7 @@ export class BuffetService {
       'longitude',
       'buffetCostId',
       'cityId',
+      'pin',
     ]);
     buffet.userId = user.id;
     buffet.ownerId = ownedUser.id;
@@ -244,6 +252,10 @@ export class BuffetService {
       },
     });
 
+    if (dto.urlAddress == null) {
+      dto.urlAddress = replaceCharacterSlug(dto.title);
+    }
+
     const buffetDto: any = _.pick(dto, [
       'title',
       'urlAddress',
@@ -260,6 +272,7 @@ export class BuffetService {
       'longitude',
       'buffetCostId',
       'cityId',
+      'pin',
     ]);
     if (attachmentId) buffetDto.coverAttachmentId = attachmentId;
     await this.repository.update(buffetDto, {

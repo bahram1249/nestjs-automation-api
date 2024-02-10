@@ -151,46 +151,21 @@
                 placeholder='آدرس کافه'
               >{{buffet.buffetAddress}}</textarea>
             </div>
+
             <div class='form-group col-md-12'>
-              <label>لینک waze</label>
-              <input
-                name='wazeLink'
-                type='text'
-                class='form-control'
-                placeholder='لینک waze'
-                value="{{buffet.wazeLink}}"
-              ></input>
+                  <div class='media-body'>
+                    <div class='custom-control custom-checkbox mb-3'>
+                      <label class="css-control css-control-primary css-checkbox" for="pin">
+                        
+                        <input type="checkbox" name="pin" class="css-control-input" id="pin" {{#if (ifequals buffet.pin true)}}checked{{/if}}>
+                       
+                        <span class="css-control-indicator"></span>نمایش به عنوان تبلیغات در صفحه اصلی
+                      </label>
+                    </div>
+                  </div>
             </div>
-            <div class='form-group col-md-12'>
-              <label>لینک بلد</label>
-              <input
-                name='baladLink'
-                type='text'
-                class='form-control'
-                placeholder='لینک بلد'
-                value="{{buffet.baladLink}}"
-              ></input>
-            </div>
-            <div class='form-group col-md-12'>
-              <label>لینک نشان</label>
-              <input
-                name='neshanLink'
-                type='text'
-                class='form-control'
-                placeholder='لینک نشان'
-                value="{{buffet.neshanLink}}"
-              ></input>
-            </div>
-            <div class='form-group col-md-12'>
-              <label>لینک گوگل مپ</label>
-              <input
-                name='googleMapLink'
-                type='text'
-                class='form-control'
-                placeholder='لینک گوگل مپ'
-                value="{{buffet.googleMapLink}}"
-              ></input>
-            </div>
+
+            
             
           </div>
 
@@ -237,6 +212,48 @@
             </div>
             <div class='tab-pane fade show' id='location' role='tabpanel'>
               <div class="col-md-12">
+
+                <div class='form-group col-md-12'>
+              <label>لینک waze</label>
+              <input
+                name='wazeLink'
+                type='text'
+                class='form-control'
+                placeholder='لینک waze'
+                value="{{buffet.wazeLink}}"
+              ></input>
+            </div>
+            <div class='form-group col-md-12'>
+              <label>لینک بلد</label>
+              <input
+                name='baladLink'
+                type='text'
+                class='form-control'
+                placeholder='لینک بلد'
+                value="{{buffet.baladLink}}"
+              ></input>
+            </div>
+            <div class='form-group col-md-12'>
+              <label>لینک نشان</label>
+              <input
+                name='neshanLink'
+                type='text'
+                class='form-control'
+                placeholder='لینک نشان'
+                value="{{buffet.neshanLink}}"
+              ></input>
+            </div>
+            <div class='form-group col-md-12'>
+              <label>لینک گوگل مپ</label>
+              <input
+                name='googleMapLink'
+                type='text'
+                class='form-control'
+                placeholder='لینک گوگل مپ'
+                value="{{buffet.googleMapLink}}"
+              ></input>
+            </div>
+
                 <div class="form-group col-md-12">
                   <div id="map" data-mode="">
                     <input type="hidden" data-map-markers="" value="" name="map-geojson-data" />

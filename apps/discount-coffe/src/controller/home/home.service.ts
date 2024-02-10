@@ -55,7 +55,7 @@ export class HomeService {
             buffetTypeId: coffe,
           },
           Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('isDeleted'), 0),
+            Sequelize.fn('isnull', Sequelize.col('Buffet.isDeleted'), 0),
             {
               [Op.eq]: 0,
             },
@@ -88,7 +88,7 @@ export class HomeService {
             buffetTypeId: resturant,
           },
           Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('isDeleted'), 0),
+            Sequelize.fn('isnull', Sequelize.col('Buffet.isDeleted'), 0),
             {
               [Op.eq]: 0,
             },
@@ -122,7 +122,7 @@ export class HomeService {
             buffetCostId: luxuryCoffeId,
           },
           Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('isDeleted'), 0),
+            Sequelize.fn('isnull', Sequelize.col('Buffet.isDeleted'), 0),
             {
               [Op.eq]: 0,
             },
@@ -156,7 +156,7 @@ export class HomeService {
             buffetCostId: lowPriceCoffe,
           },
           Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('isDeleted'), 0),
+            Sequelize.fn('isnull', Sequelize.col('Buffet.isDeleted'), 0),
             {
               [Op.eq]: 0,
             },
@@ -165,6 +165,42 @@ export class HomeService {
       },
       order: [['id', 'desc']],
       limit: 10,
+    });
+
+    const pinedBuffets = await this.buffetRepository.findAll({
+      include: [
+        {
+          model: Attachment,
+          as: 'coverAttachment',
+        },
+        {
+          model: BuffetCost,
+          as: 'buffetCost',
+          required: false,
+        },
+        {
+          model: CoffeOption,
+          as: 'coffeOptions',
+          required: false,
+        },
+      ],
+      where: {
+        [Op.and]: [
+          Sequelize.where(
+            Sequelize.fn('isnull', Sequelize.col('Buffet.isDeleted'), 0),
+            {
+              [Op.eq]: 0,
+            },
+          ),
+          Sequelize.where(
+            Sequelize.fn('isnull', Sequelize.col('Buffet.pin'), 0),
+            {
+              [Op.eq]: 1,
+            },
+          ),
+        ],
+      },
+      order: [['id', 'desc']],
     });
 
     const buffetTypes = await this.buffetTypesRepository.findAll({
@@ -222,6 +258,7 @@ export class HomeService {
       lastResuturants: JSON.parse(JSON.stringify(lastResuturants)),
       luxuryCoffes: JSON.parse(JSON.stringify(luxuryCoffes)),
       lowPrices: JSON.parse(JSON.stringify(lowPrices)),
+      pinedBuffets: JSON.parse(JSON.stringify(pinedBuffets)),
       buffetTypes: JSON.parse(JSON.stringify(buffetTypes)),
       buffetCities: JSON.parse(JSON.stringify(buffetCities)),
       buffetCosts: JSON.parse(JSON.stringify(buffetCosts)),

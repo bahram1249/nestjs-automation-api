@@ -133,6 +133,12 @@ export class Buffet extends Model {
   @BelongsTo(() => User, { as: 'deletedByUser', foreignKey: 'deletedBy' })
   deletedByUser?: User;
 
+  @Column({
+    type: DataType.BOOLEAN,
+    allowNull: true,
+  })
+  pin?: boolean;
+
   @BelongsToMany(() => CoffeOption, () => BuffetOption)
   coffeOptions?: CoffeOption[];
 }
