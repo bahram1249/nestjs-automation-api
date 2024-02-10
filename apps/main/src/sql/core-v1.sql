@@ -695,6 +695,9 @@ END
 
 GO
 
+
+
+
 IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'DiscountCoffe-buffetCost-v1' 
 			)
 	AND EXISTS (
@@ -744,6 +747,9 @@ END
 
 GO
 
+
+
+
 IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'DiscountCoffe-city-v1' 
 			)
 	AND EXISTS (
@@ -792,6 +798,9 @@ END
 
 GO
 
+
+
+
 IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'DiscountCoffe-options-v1' 
 			)
 	AND EXISTS (
@@ -838,6 +847,28 @@ BEGIN
 
 	INSERT INTO Migrations(version, createdAt, updatedAt)
 	SELECT 'DiscountCoffe-buffet-v4', GETDATE(), GETDATE()
+END
+
+GO
+
+
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'DiscountCoffe-buffet-v5' 
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'SITE_NAME' AND [value] IN ('DiscountCoffe'))
+		)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'CUSTOMER_NAME' AND [value] IN ('DiscountCoffe'))
+		)
+BEGIN
+
+	ALTER TABLE DiscountCoffeBuffets
+	ADD pin bit NULL
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'DiscountCoffe-buffet-v5', GETDATE(), GETDATE()
 END
 
 GO
@@ -4820,7 +4851,7 @@ END
 
 GO
 
--- super admin
+-- vendor role : hint: change the id
 IF NOT EXISTS ((SELECT 1 FROM Migrations WHERE version = 'CORE-Roles-Data-v2' 
 			))
 	AND EXISTS (
