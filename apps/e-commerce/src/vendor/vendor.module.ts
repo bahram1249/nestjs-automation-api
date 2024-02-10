@@ -16,6 +16,7 @@ import { ECVendorUser } from '@rahino/database/models/ecommerce-eav/ec-vendor-us
 import { Role } from '@rahino/database/models/core/role.entity';
 import { MinioClientModule } from '@rahino/minio-client';
 import { ReverseProxyVendorImageMiddleware } from './reverse-proxy.middleware';
+import { Attachment } from '@rahino/database/models/core/attachment.entity';
 
 @Module({
   imports: [
@@ -27,6 +28,7 @@ import { ReverseProxyVendorImageMiddleware } from './reverse-proxy.middleware';
       Role,
       ECVendor,
       ECVendorUser,
+      Attachment,
     ]),
   ],
   controllers: [VendorController],
