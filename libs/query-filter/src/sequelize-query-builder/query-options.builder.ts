@@ -39,6 +39,10 @@ export class QueryOptionsBuilder {
     this.options.attributes = attributes;
     return this;
   }
+  subQuery(flag: boolean) {
+    this.options.subQuery = flag;
+    return this;
+  }
   build(): Omit<FindAndCountOptions<any>, 'group'> {
     return this.options;
   }
