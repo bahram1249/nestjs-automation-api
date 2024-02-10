@@ -208,8 +208,9 @@ export class BuffetService {
         ],
       },
     });
-    if (!reserveDate)
+    if (!reserveDate) {
       throw new BadRequestException('The Given Date not valid.');
+    }
 
     const data = {
       reserveDate: Sequelize.cast(reserveDate.GregorianDate, 'DATETIME'),
@@ -289,7 +290,7 @@ export class BuffetService {
     const savePath = this.config.get('QR_PATH');
     await mkdirAsync(path.join(process.cwd(), savePath), { recursive: true });
     await QRCode.toFile(
-      savePath + '/' + code + '.png',
+      path.join(process.cwd(), savePath) + '/' + code + '.png',
       '/buffet/detail/' + code,
     );
 
