@@ -11,6 +11,7 @@ import { BuffetCity } from '@rahino/database/models/discount-coffe/city.entity';
 import { User } from '@rahino/database/models/core/user.entity';
 import { CoffeOption } from '@rahino/database/models/discount-coffe/coffe-option.entity';
 import { BuffetOption } from '@rahino/database/models/discount-coffe/buffet-option.entity';
+import { Attachment } from '@rahino/database/models/core/attachment.entity';
 
 @Injectable()
 export class BuffetService {
@@ -49,6 +50,13 @@ export class BuffetService {
 
   async edit(buffetId: bigint) {
     const buffet = await this.repository.findOne({
+      include: [
+        {
+          model: Attachment,
+          as: 'buffetGalleries',
+          required: false,
+        },
+      ],
       where: {
         id: buffetId,
       },

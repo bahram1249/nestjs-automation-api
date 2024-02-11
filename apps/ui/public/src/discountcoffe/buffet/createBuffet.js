@@ -84,3 +84,94 @@ tinymce.init({
 $(document).ready(function () {
   $('select').select2();
 });
+
+var myDropzone = new Dropzone('.dropzone#dropzonePhotos', {
+  url: '/v1/api/discountcoffe/admin/buffets/uploadGallery', // Set the url for your upload script location
+  paramName: 'file', // The name that will be used to transfer the file
+  maxFiles: 30,
+  maxFilesize: 10, // MB
+  addRemoveLinks: true,
+  acceptedFiles: '.jpeg,.jpg,.png',
+  dictDefaultMessage:
+    'در صورتی که کافه دارای محیطی هست، تصاویر را در این قسمت بکشید و رها کنید',
+  init: function () {
+    thisDropzone = this;
+    this.on('success', function (file, res) {
+      // or however you would point to your assigned file ID here;
+
+      var imageUploaded = document.getElementById('images-uploaded');
+      var label = document.createElement('label');
+      label.setAttribute(
+        'style',
+        'position: relative;width:120px;height:120px;margin-left:10px',
+      );
+      var input = document.createElement('input');
+      input.setAttribute('type', 'radio');
+      input.setAttribute('name', 'defaultPicture');
+      input.setAttribute('value', res.result.fileName);
+
+      if (imageUploaded.children.length == 0) {
+        input.setAttribute('checked', 'checked');
+      }
+      var img = document.createElement('img');
+      img.setAttribute(
+        'src',
+        '/v1/api/discountcoffe/admin/buffets/gallery/' + res.result.fileName,
+      );
+      img.setAttribute('width', 120);
+      img.setAttribute('height', 120);
+      img.setAttribute('filename', res.result.fileName);
+      img.setAttribute('class', 'image-upload-preview');
+      //label.appendChild(input);
+      label.appendChild(img);
+
+      var button = document.createElement('button');
+      button.setAttribute('type', 'button');
+      button.setAttribute('class', 'image-upload-preview__delete-button');
+
+      var elementI = document.createElement('i');
+      elementI.setAttribute('class', 'flaticon-381-trash');
+
+      button.appendChild(elementI);
+      label.appendChild(button);
+
+      imageUploaded.appendChild(label);
+
+      thisDropzone.removeFile(file);
+      // console should show the ID you pointed to
+      // do stuff with file.id ...
+    });
+  },
+  accept: function (file, done) {
+    if (file.name == 'wow.jpg') {
+      done("Naha, you don't.");
+    } else {
+      done();
+    }
+  },
+});
+myDropzone.on('sending', function (file, xhr, formData) {
+  xhr.setRequestHeader('authorization', 'bearer ' + getCookie('token'));
+  // formData.append('userWidth', 1980);
+  // formData.append('userHeight', 1080);
+  // formData.append('userThumbWidth', 700);
+  // formData.append('userThumbHeight', 700);
+});
+
+$(document).on(
+  'click',
+  '.image-upload-preview__delete-button',
+  function (event) {
+    event.preventDefault();
+    // var val = $("input[name='defaultPicture']:checked").val();
+    // var selectedVal = $(this).siblings("input").val();
+    //console.log(checked);
+    //var checked = $(this).siblings("input").is(":checked");
+
+    // if (val == selectedVal) {
+    //   alert("عکس پیشفرض را نمیتوانید پاک کنید");
+    //   return;
+    // }
+    $(this).parent().remove();
+  },
+);

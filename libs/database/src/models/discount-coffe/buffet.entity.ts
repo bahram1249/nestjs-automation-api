@@ -14,6 +14,7 @@ import { BuffetCost } from './buffet-cost.entity';
 import { BuffetCity } from './city.entity';
 import { CoffeOption } from './coffe-option.entity';
 import { BuffetOption } from './buffet-option.entity';
+import { BuffetGallery } from './buffet-gallery.entity';
 
 @Table({ tableName: 'DiscountCoffeBuffets' })
 export class Buffet extends Model {
@@ -141,4 +142,7 @@ export class Buffet extends Model {
 
   @BelongsToMany(() => CoffeOption, () => BuffetOption)
   coffeOptions?: CoffeOption[];
+
+  @BelongsToMany(() => Attachment, () => BuffetGallery)
+  buffetGalleries?: Attachment[];
 }

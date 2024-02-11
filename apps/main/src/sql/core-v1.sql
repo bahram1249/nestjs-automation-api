@@ -696,6 +696,35 @@ END
 GO
 
 
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'DiscountCoffe-buffet-galleries-v1' 
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'SITE_NAME' AND [value] IN ('DiscountCoffe'))
+		)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'CUSTOMER_NAME' AND [value] IN ('DiscountCoffe'))
+		)
+BEGIN
+
+	CREATE TABLE DiscountCoffeBuffetGalleries (
+		buffetId					bigint					NOT NULL,
+		attachmentId				bigint					NOT NULL
+			CONSTRAINT FK_DiscountCoffeBuffetGalleries_AttachmentId
+				FOREIGN KEY REFERENCES Attachments(id),
+		[createdAt]					datetimeoffset			NOT NULL,
+		[updatedAt]					datetimeoffset			NOT NULL,
+		PRIMARY KEY CLUSTERED(buffetId, attachmentId)
+	);
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'DiscountCoffe-buffet-galleries-v1', GETDATE(), GETDATE()
+END
+
+GO
+
+
 
 
 IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'DiscountCoffe-buffetCost-v1' 
@@ -5096,6 +5125,20 @@ END
 GO
 
 
+-- discount coffe/ coffe galleries
+IF NOT EXISTS ((SELECT 1 FROM Migrations WHERE version = 'CORE-AttachmentTypes-Data-v11' 
+			))
+BEGIN
+	
+
+	INSERT INTO AttachmentTypes(id, typeName, createdAt, updatedAt)
+	SELECT 12, N'coffe-galleries', getdate(), getdate()
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'CORE-AttachmentTypes-Data-v11', GETDATE(), GETDATE()
+END
+
+GO
 
 
 -- auth/admin/users

@@ -25,6 +25,7 @@ import { Role } from '@rahino/database/models/core/role.entity';
 import { UserRole } from '@rahino/database/models/core/userRole.entity';
 import { BuffetOption } from '@rahino/database/models/discount-coffe/buffet-option.entity';
 import { replaceCharacterSlug } from '@rahino/commontools';
+import { BuffetGallery } from '@rahino/database/models/discount-coffe/buffet-gallery.entity';
 
 @Injectable()
 export class BuffetService {
@@ -43,6 +44,8 @@ export class BuffetService {
     private readonly userRoleRepository: typeof UserRole,
     @InjectModel(BuffetOption)
     private readonly buffetOptionRepository: typeof BuffetOption,
+    @InjectModel(BuffetGallery)
+    private readonly buffetGalleryRepository: typeof BuffetGallery,
     private readonly fileService: FileService,
     private readonly thumbnailService: ThumbnailService,
   ) {}
@@ -178,6 +181,21 @@ export class BuffetService {
       }
     }
 
+    if (dto.galleries.length > 0) {
+      for (let index = 0; index < dto.galleries.length; index++) {
+        const galleryItem = dto.galleries[index];
+        const findAttachment = await this.attachmentRepository.findOne({
+          where: {
+            fileName: galleryItem,
+          },
+        });
+        const buffetGallery = await this.buffetGalleryRepository.create({
+          buffetId: buffet.id,
+          attachmentId: findAttachment.id,
+        });
+      }
+    }
+
     return {
       result: buffet,
     };
@@ -209,7 +227,11 @@ export class BuffetService {
       const thumbPath = this.fileService.generateProfileThumbPathByCwd(user.id);
 
       // create thumbnail and save
-      const bigThumb = await this.thumbnailService.resize(file.path, 700, 700);
+      const bigThumb = await this.thumbnailService.resize(
+        file.path,
+        1024,
+        1024,
+      );
       const smallThumb = await this.thumbnailService.resize(
         file.path,
         300,
@@ -291,6 +313,23 @@ export class BuffetService {
         });
       }
     }
+
+    await this.buffetGalleryRepository.destroy({ where: { buffetId: id } });
+    if (dto.galleries.length > 0) {
+      for (let index = 0; index < dto.galleries.length; index++) {
+        const galleryItem = dto.galleries[index];
+        const findAttachment = await this.attachmentRepository.findOne({
+          where: {
+            fileName: galleryItem,
+          },
+        });
+        const buffetGallery = await this.buffetGalleryRepository.create({
+          buffetId: buffet.id,
+          attachmentId: findAttachment.id,
+        });
+      }
+    }
+
     return {
       result: buffet,
     };
@@ -326,5 +365,75 @@ export class BuffetService {
 
   async findById(entityId: number) {
     throw new NotImplementedException();
+  }
+
+  async uploadGallery(user: User, file: Express.Multer.File) {
+    const attachmentTypeId = 12;
+    const attachmentType = await this.attachmentTypeRepository.findOne({
+      where: {
+        id: attachmentTypeId,
+      },
+    });
+    if (!attachmentType) throw new ForbiddenException();
+    // save path from config
+    const bigPath = this.fileService.generateProfilePathByCwd(user.id);
+    const thumbPath = this.fileService.generateProfileThumbPathByCwd(user.id);
+
+    // create thumbnail and save
+    const bigThumb = await this.thumbnailService.resize(file.path, 1024, 1024);
+    const smallThumb = await this.thumbnailService.resize(file.path, 300, 300);
+    const realPath = await this.fileService.saveFileByPathAsync(
+      bigPath.cwdPath,
+      file.filename,
+      bigThumb,
+    );
+    const thumbRealPath = await this.fileService.saveFileByPathAsync(
+      thumbPath.cwdPath,
+      file.filename,
+      smallThumb,
+    );
+
+    await this.fileService.removeFileAsync(file.path);
+    const attachment = await this.attachmentRepository.create({
+      originalFileName: file.originalname,
+      fileName: file.filename,
+      ext: path.extname(file.filename),
+      mimetype: file.mimetype,
+      userId: user.id,
+      attachmentTypeId: attachmentTypeId,
+      path: path.join(bigPath.savePath, '/', file.filename),
+      thumbnailPath: path.join(thumbPath.savePath, '/', file.filename),
+    });
+    return {
+      result: _.pick(attachment, ['id', 'fileName']),
+    };
+  }
+
+  async showGallery(res: Response, fileName: string): Promise<StreamableFile> {
+    const attachment = await this.attachmentRepository.findOne({
+      where: {
+        [Op.and]: [
+          {
+            fileName: fileName,
+          },
+          Sequelize.where(
+            Sequelize.fn('isnull', Sequelize.col('isDeleted'), 0),
+            {
+              [Op.eq]: 0,
+            },
+          ),
+          {
+            attachmentTypeId: 12,
+          },
+        ],
+      },
+    });
+    if (!attachment) throw new NotFoundException();
+    res.set({
+      'Content-Type': attachment.mimetype,
+      'Content-Disposition': `filename="${attachment.fileName}"`,
+    });
+    const file = fs.createReadStream(path.join(process.cwd(), attachment.path));
+    return new StreamableFile(file);
   }
 }

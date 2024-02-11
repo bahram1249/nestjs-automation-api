@@ -98,7 +98,7 @@ export class BuffetController {
     @UploadedFile(
       new ParseFilePipe({
         validators: [
-          new FileTypeValidator({ fileType: /(jpg|png)/ }),
+          new FileTypeValidator({ fileType: /(jpg|jpeg|png)/ }),
           new MaxFileSizeValidator({ maxSize: 2097152 }),
         ],
         fileIsRequired: false,
@@ -155,5 +155,50 @@ export class BuffetController {
     @Param('fileName') fileName: string,
   ): Promise<StreamableFile> {
     return this.service.getPhoto(res, fileName);
+  }
+
+  @UseInterceptors(JsonResponseTransformInterceptor)
+  @UseGuards(JwtGuard, PermissionGuard)
+  @ApiOperation({ description: 'upload gallery' })
+  @CheckPermission({ permissionSymbol: 'discountcoffe.admin.buffets.getone' })
+  @UseInterceptors(FileInterceptor('file', coverOptions()))
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        file: {
+          type: 'string',
+          format: 'binary',
+        },
+      },
+    },
+  })
+  @Post('/uploadGallery')
+  @HttpCode(HttpStatus.CREATED)
+  async uploadGallery(
+    @GetUser() user: User,
+    @UploadedFile(
+      new ParseFilePipe({
+        validators: [
+          new FileTypeValidator({ fileType: /(jpg|jpeg|png)/ }),
+          new MaxFileSizeValidator({ maxSize: 2097152 }),
+        ],
+        fileIsRequired: true,
+        errorHttpStatusCode: HttpStatus.UNPROCESSABLE_ENTITY,
+      }),
+    )
+    file?: Express.Multer.File,
+  ) {
+    return await this.service.uploadGallery(user, file);
+  }
+
+  @ApiOperation({ description: 'show buffet gallery by fileName' })
+  @Get('/gallery/:fileName')
+  async showGallery(
+    @Res({ passthrough: true }) res: Response,
+    @Param('fileName') fileName: string,
+  ): Promise<StreamableFile> {
+    return this.service.showGallery(res, fileName);
   }
 }

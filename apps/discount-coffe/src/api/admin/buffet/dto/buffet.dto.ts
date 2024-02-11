@@ -2,6 +2,7 @@
 import { replaceCharacterSlug } from '@rahino/commontools';
 import { Transform } from 'class-transformer';
 import {
+  IsArray,
   IsBoolean,
   IsNotEmpty,
   IsNumber,
@@ -113,10 +114,14 @@ export class BuffetDto {
   cityId: number;
 
   @IsOptional()
-  options?: number[];
+  options?: number[] = [];
 
   @Transform(({ value }) => value == 'true')
   @IsOptional()
   @IsBoolean()
   pin?: boolean;
+
+  @IsArray()
+  @IsOptional()
+  galleries: string[] = [];
 }

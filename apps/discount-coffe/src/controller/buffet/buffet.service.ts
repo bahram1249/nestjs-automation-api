@@ -68,6 +68,11 @@ export class BuffetService {
           as: 'coffeOptions',
           required: false,
         },
+        {
+          model: Attachment,
+          as: 'buffetGalleries',
+          required: false,
+        },
       ],
       where: {
         urlAddress: urlAddress,

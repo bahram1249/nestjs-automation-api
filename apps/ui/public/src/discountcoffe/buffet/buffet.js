@@ -220,6 +220,12 @@ $(document).on('submit', '#editEntityForm', function (event) {
     formData.append(k, requestData[k]);
   });
 
+  var files = $('.image-upload-preview');
+  var length = files.length;
+  for (var i = 0; i < length; i++) {
+    formData.append('galleries[]', files[i].getAttribute('filename'));
+  }
+
   $.ajax({
     url: '/v1/api/discountcoffe/admin/buffets/' + entityId,
     type: 'PUT',
@@ -279,6 +285,12 @@ $(document).on('submit', '#newEntityForm', function (event) {
   Object.keys(requestData).forEach(function (k, v) {
     formData.append(k, requestData[k]);
   });
+
+  var files = $('.image-upload-preview');
+  var length = files.length;
+  for (var i = 0; i < length; i++) {
+    formData.append('galleries[]', files[i].getAttribute('filename'));
+  }
 
   $.ajax({
     url: '/v1/api/discountcoffe/admin/buffets/',
