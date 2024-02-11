@@ -26,7 +26,7 @@ import { ReverseProxyGuaranteeImageMiddleware } from './reverse-proxy.middleware
 export class GuaranteeModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
     consumer.apply(ReverseProxyGuaranteeImageMiddleware).forRoutes({
-      path: '/v1/api/ecommerce/guarantees/image',
+      path: '/v1/api/ecommerce/guarantees/image/*',
       method: RequestMethod.GET,
     });
   }

@@ -26,7 +26,7 @@ import { ReverseProxyBrandImageMiddleware } from './reverse-proxy.middleware';
 export class BrandModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
     consumer.apply(ReverseProxyBrandImageMiddleware).forRoutes({
-      path: '/v1/api/ecommerce/brands/image',
+      path: '/v1/api/ecommerce/brands/image/*',
       method: RequestMethod.GET,
     });
   }
