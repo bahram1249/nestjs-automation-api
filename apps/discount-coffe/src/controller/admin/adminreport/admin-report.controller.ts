@@ -4,6 +4,7 @@ import {
   HttpCode,
   HttpStatus,
   Render,
+  Req,
   UseGuards,
 } from '@nestjs/common';
 import { CheckPermission } from '@rahino/permission-checker/decorator';
@@ -12,6 +13,7 @@ import { JwtWebGuard } from '@rahino/auth/guard';
 import { GetUser } from '@rahino/auth/decorator';
 import { Menu } from '@rahino/database/models/core/menu.entity';
 import { AdminReportService } from './admin-report.service';
+import { Request } from 'express';
 
 @UseGuards(JwtWebGuard, PermissionGuard)
 @Controller({
@@ -25,10 +27,11 @@ export class AdminReportController {
   @Get('/')
   @HttpCode(HttpStatus.OK)
   @Render('admin/adminreport/index')
-  async get(@GetUser('menus') menus: Menu[]) {
+  async get(@GetUser('menus') menus: Menu[], @Req() req: Request) {
     return {
       title: 'گزارش های ادمین',
       menus: JSON.parse(JSON.stringify(menus)),
+      sitename: req.sitename,
     };
   }
 }

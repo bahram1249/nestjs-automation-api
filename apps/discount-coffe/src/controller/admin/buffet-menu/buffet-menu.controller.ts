@@ -5,6 +5,7 @@ import {
   HttpStatus,
   Param,
   Render,
+  Req,
   UseGuards,
 } from '@nestjs/common';
 import { CheckPermission } from '@rahino/permission-checker/decorator';
@@ -13,6 +14,7 @@ import { JwtWebGuard } from '@rahino/auth/guard';
 import { GetUser } from '@rahino/auth/decorator';
 import { Menu } from '@rahino/database/models/core/menu.entity';
 import { BuffetMenuService } from './buffet-menu.service';
+import { Request } from 'express';
 
 @UseGuards(JwtWebGuard, PermissionGuard)
 @Controller({
@@ -24,10 +26,11 @@ export class BuffetMenuController {
   @Get('/')
   @HttpCode(HttpStatus.OK)
   @Render('admin/menus/index')
-  async get(@GetUser('menus') menus: Menu[]) {
+  async get(@GetUser('menus') menus: Menu[], @Req() req: Request) {
     return {
       title: 'منو کافه و رستوران',
       menus: JSON.parse(JSON.stringify(menus)),
+      sitename: req.sitename,
     };
   }
 

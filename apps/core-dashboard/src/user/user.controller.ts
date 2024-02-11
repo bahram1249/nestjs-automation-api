@@ -4,50 +4,79 @@ import {
   Get,
   HttpCode,
   HttpStatus,
-  Param,
+  Post,
   Render,
   Req,
+  Res,
   UseGuards,
 } from '@nestjs/common';
-import { CheckPermission } from '@rahino/permission-checker/decorator';
-import { PermissionGuard } from '@rahino/permission-checker/guard';
 import { JwtWebGuard } from '@rahino/auth/guard';
 import { GetUser } from '@rahino/auth/decorator';
 import { Menu } from '@rahino/database/models/core/menu.entity';
-import { UserService } from './user.service';
 import { Request } from 'express';
+import { UserService } from './user.service';
+import { User } from '@rahino/database/models/core/user.entity';
+import { UserDto, UserPasswordDto } from './dto';
 
-@UseGuards(JwtWebGuard, PermissionGuard)
+@UseGuards(JwtWebGuard)
 @Controller({
-  path: '/core/admin/users',
+  path: '/core/user',
 })
 export class UserController {
   constructor(private service: UserService) {}
-  @CheckPermission({ permissionSymbol: 'core.admin.users.getall' })
-  @Get('/')
+  @Get('/profile')
   @HttpCode(HttpStatus.OK)
-  @Render('users/index')
-  async get(@GetUser('menus') menus: Menu[], @Req() req: Request) {
-    return {
-      title: 'کاربران',
-      menus: JSON.parse(JSON.stringify(menus)),
-      sitename: req.sitename,
-    };
+  @Render('user/profile')
+  async profile(
+    @GetUser() user: User,
+    @GetUser('menus') menus: Menu[],
+    @Req() req: Request,
+  ) {
+    const title = 'پروفایل';
+    return await this.service.profile(title, user, menus, req);
   }
 
-  @CheckPermission({ permissionSymbol: 'core.admin.users.create' })
-  @Get('/create')
+  @Post('/profile')
   @HttpCode(HttpStatus.OK)
-  @Render('users/create')
-  async create() {
-    return await this.service.create();
+  @Render('user/profile')
+  async changeProfile(
+    @GetUser() user: User,
+    @GetUser('menus') menus: Menu[],
+    @Req() req: Request,
+    @Body() dto: UserDto,
+  ) {
+    const title = 'پروفایل';
+    return await this.service.changeProfile(title, user, menus, req, dto);
   }
 
-  @CheckPermission({ permissionSymbol: 'core.admin.users.update' })
-  @Get('/:id')
+  @Get('/changepassword')
   @HttpCode(HttpStatus.OK)
-  @Render('users/edit')
-  async edit(@Param('id') roleId: number) {
-    return await this.service.edit(roleId);
+  @Render('user/changepassword')
+  async changePassword(
+    @GetUser() user: User,
+    @GetUser('menus') menus: Menu[],
+    @Req() req: Request,
+  ) {
+    const title = 'تغییر کلمه عبور';
+    return await this.service.changePassword(title, user, menus, req);
+  }
+
+  @Post('/changepassword')
+  @HttpCode(HttpStatus.OK)
+  @Render('user/changepassword')
+  async postChangePassword(
+    @GetUser() user: User,
+    @GetUser('menus') menus: Menu[],
+    @Req() req: Request,
+    @Body() dto: UserPasswordDto,
+  ) {
+    const title = 'تغییر کلمه عبور';
+    return await this.service.postChangePassword(title, user, menus, req, dto);
+  }
+
+  @Get('/logout')
+  @HttpCode(HttpStatus.OK)
+  async exit(@Res() res) {
+    return await this.service.exit(res);
   }
 }

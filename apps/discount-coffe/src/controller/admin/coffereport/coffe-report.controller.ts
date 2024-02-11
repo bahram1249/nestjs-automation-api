@@ -4,6 +4,7 @@ import {
   HttpCode,
   HttpStatus,
   Render,
+  Req,
   UseGuards,
 } from '@nestjs/common';
 import { CheckPermission } from '@rahino/permission-checker/decorator';
@@ -12,6 +13,7 @@ import { JwtWebGuard } from '@rahino/auth/guard';
 import { GetUser } from '@rahino/auth/decorator';
 import { Menu } from '@rahino/database/models/core/menu.entity';
 import { CoffeReportService } from './coffe-report.service';
+import { Request } from 'express';
 
 @UseGuards(JwtWebGuard, PermissionGuard)
 @Controller({
@@ -25,10 +27,11 @@ export class CoffeReportController {
   @Get('/')
   @HttpCode(HttpStatus.OK)
   @Render('admin/coffereport/index')
-  async get(@GetUser('menus') menus: Menu[]) {
+  async get(@GetUser('menus') menus: Menu[], @Req() req: Request) {
     return {
       title: 'گزارش های کافه',
       menus: JSON.parse(JSON.stringify(menus)),
+      sitename: req.sitename,
     };
   }
 }

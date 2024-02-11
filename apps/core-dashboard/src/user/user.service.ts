@@ -1,56 +1,105 @@
-import {
-  Injectable,
-  NotFoundException,
-  NotImplementedException,
-} from '@nestjs/common';
-import { InjectModel } from '@nestjs/sequelize';
-import { Op, Sequelize } from 'sequelize';
-import { Permission } from '@rahino/database/models/core/permission.entity';
+import { Injectable } from '@nestjs/common';
 import { User } from '@rahino/database/models/core/user.entity';
-import { Role } from '@rahino/database/models/core/role.entity';
+import { Menu } from '@rahino/database/models/core/menu.entity';
+import { Request } from 'express';
+import { InjectModel } from '@nestjs/sequelize';
+import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
+import { UserDto, UserPasswordDto } from './dto';
+import { Response } from 'express';
+import * as _ from 'lodash';
 
 @Injectable()
 export class UserService {
   constructor(
     @InjectModel(User)
-    private readonly repository: typeof User,
-    @InjectModel(Role)
-    private readonly roleRepository: typeof Role,
+    private readonly userRepository: typeof User,
   ) {}
-
-  async edit(userId: number) {
-    const user = await this.repository.findOne({
-      include: [
-        {
-          model: Role,
-          as: 'roles',
-          required: false,
-        },
-      ],
-      where: {
-        id: userId,
-      },
-    });
-    if (!user) throw new NotFoundException();
-
-    const roleIds = user.roles.map((role) => role.id);
-    const roles = await this.roleRepository.findAll();
-
+  async profile(title: string, user: User, menus: Menu[], req: Request) {
+    const currentUser = await this.userRepository.findOne(
+      new QueryOptionsBuilder().filter({ id: user.id }).build(),
+    );
     return {
-      title: 'ویرایش ' + user.firstname,
-      layout: false,
-      user: user.toJSON(),
-      currentRoleIds: roleIds,
-      roles: JSON.parse(JSON.stringify(roles)),
+      title,
+      user: currentUser.toJSON(),
+      menus: JSON.parse(JSON.stringify(menus)),
+      sitename: req.sitename,
     };
   }
 
-  async create() {
-    const roles = await this.roleRepository.findAll();
+  async changeProfile(
+    title: string,
+    user: User,
+    menus: Menu[],
+    req: Request,
+    dto: UserDto,
+  ) {
+    const currentUser = (
+      await this.userRepository.update(_.pick(dto, ['firstname', 'lastname']), {
+        where: {
+          id: user.id,
+        },
+        returning: true,
+      })
+    )[1][0];
+
     return {
-      title: 'ایجاد کاربر',
-      layout: false,
-      roles: JSON.parse(JSON.stringify(roles)),
+      title,
+      user: currentUser.toJSON(),
+      menus: JSON.parse(JSON.stringify(menus)),
+      sitename: req.sitename,
     };
+  }
+
+  async changePassword(title: string, user: User, menus: Menu[], req: Request) {
+    let error: string = null;
+    let success: string = null;
+    return {
+      title,
+      user: user.toJSON(),
+      menus: JSON.parse(JSON.stringify(menus)),
+      sitename: req.sitename,
+      error,
+      success,
+    };
+  }
+
+  async postChangePassword(
+    title: string,
+    user: User,
+    menus: Menu[],
+    req: Request,
+    dto: UserPasswordDto,
+  ) {
+    let error: string = null;
+    let success: string = null;
+    let currentUser = await this.userRepository.findOne(
+      new QueryOptionsBuilder().filter({ id: user.id }).build(),
+    );
+    const validPassword = await currentUser.validPasswordAsync(
+      dto.currentPassword,
+    );
+    if (!validPassword) {
+      error = 'old password is not true';
+    } else if (dto.newPassword != dto.confirmPassword) {
+      error = 'confirm password not match';
+    } else {
+      currentUser.password = dto.newPassword;
+      currentUser = await currentUser.save();
+      success = 'successfull';
+    }
+
+    return {
+      title,
+      user: user.toJSON(),
+      menus: JSON.parse(JSON.stringify(menus)),
+      sitename: req.sitename,
+      error: error,
+      success: success,
+    };
+  }
+
+  async exit(res: Response) {
+    res.clearCookie('token');
+    res.redirect(302, '/');
   }
 }

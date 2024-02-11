@@ -1,0 +1,65 @@
+{{#section 'header'}}
+  <meta name='keywords' content='' />
+  <meta name='author' content='' />
+  <meta name='robots' content='' />
+  <meta name='description' content='{{title}}' />
+  <meta property='og:title' content='{{title}}' />
+  <meta property='og:description' content='{{title}}' />
+  <meta property='og:image' />
+
+  <title>{{title}}</title>
+
+{{/section}}
+
+<div class='card'>
+  <div class='card-header'>
+    <h4>پروفایل</h4>
+  </div>
+  <div id='mainSection' class='card-body'>
+    <form action='/core/user/profile' method='post'>
+      <div class='row'>
+
+        <div class='col-xs-12 col-xl-12'>
+          <div class='basic-form'>
+            <div class='form-row'>
+              <div class='form-group col-md-6'>
+                <label>نام کاربر</label>
+                <input
+                  id='firstname'
+                  name='firstname'
+                  type='text'
+                  class='form-control'
+                  value='{{user.firstname}}'
+                  placeholder='نام کاربر'
+                />
+              </div>
+              <div class='form-group col-md-6'>
+                <label>نام خانوادگی</label>
+                <input
+                  id='lastname'
+                  name='lastname'
+                  type='text'
+                  class='form-control'
+                  value='{{user.lastname}}'
+                  placeholder='نام خانوادگی'
+                />
+              </div>
+
+              <div class='form-group col-md-6'>
+                <button
+                  class='btn btn-sm btn-success rounded-3'
+                  type='submit'
+                >ذخیره</button>
+              </div>
+
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+
+</div>
+
+{{#section 'footer'}}{{/section}}

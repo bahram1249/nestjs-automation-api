@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { BuffetService } from './buffet.service';
 import { BuffetController } from './buffet.controller';
 import { SequelizeModule } from '@nestjs/sequelize';
@@ -10,6 +10,7 @@ import { BuffetCost } from '@rahino/database/models/discount-coffe/buffet-cost.e
 import { BuffetCity } from '@rahino/database/models/discount-coffe/city.entity';
 import { CoffeOption } from '@rahino/database/models/discount-coffe/coffe-option.entity';
 import { BuffetOption } from '@rahino/database/models/discount-coffe/buffet-option.entity';
+import { ExtendOptionMiddleware } from '@rahino/commonmiddleware/middlewares/extend-option.middleware';
 
 @Module({
   imports: [
