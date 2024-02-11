@@ -38,7 +38,6 @@ import { GetUser } from '@rahino/auth/decorator';
 import { User } from '@rahino/database/models/core/user.entity';
 
 @ApiTags('Brands')
-@UseInterceptors(JsonResponseTransformInterceptor)
 @Controller({
   path: '/api/ecommerce/brands',
   version: ['1'],
@@ -47,6 +46,7 @@ export class BrandController {
   constructor(private service: BrandService) {}
 
   // public url
+  @UseInterceptors(JsonResponseTransformInterceptor)
   @ApiOperation({ description: 'show all brands' })
   @Get('/')
   @ApiQuery({
@@ -60,6 +60,7 @@ export class BrandController {
     return await this.service.findAll(filter);
   }
 
+  @UseInterceptors(JsonResponseTransformInterceptor)
   @UseGuards(JwtGuard, PermissionGuard)
   @ApiBearerAuth()
   @ApiOperation({ description: 'show brand by given id' })
@@ -70,6 +71,7 @@ export class BrandController {
     return await this.service.findById(entityId);
   }
 
+  @UseInterceptors(JsonResponseTransformInterceptor)
   @UseGuards(JwtGuard, PermissionGuard)
   @ApiBearerAuth()
   @ApiOperation({ description: 'create brand by admin' })
@@ -80,6 +82,7 @@ export class BrandController {
     return await this.service.create(dto);
   }
 
+  @UseInterceptors(JsonResponseTransformInterceptor)
   @UseGuards(JwtGuard, PermissionGuard)
   @ApiBearerAuth()
   @ApiOperation({ description: 'update brand by admin' })
@@ -90,6 +93,7 @@ export class BrandController {
     return await this.service.update(entityId, dto);
   }
 
+  @UseInterceptors(JsonResponseTransformInterceptor)
   @UseGuards(JwtGuard, PermissionGuard)
   @ApiBearerAuth()
   @ApiOperation({ description: 'delete brand by admin' })
@@ -100,6 +104,7 @@ export class BrandController {
     return await this.service.deleteById(entityId);
   }
 
+  @UseInterceptors(JsonResponseTransformInterceptor)
   @ApiOperation({ description: 'get brand by slug' })
   @Get('/slug/:slug')
   @HttpCode(HttpStatus.OK)
@@ -107,6 +112,7 @@ export class BrandController {
     return await this.service.findBySlug(slug);
   }
 
+  @UseInterceptors(JsonResponseTransformInterceptor)
   @UseGuards(JwtGuard, PermissionGuard)
   @ApiBearerAuth()
   @CheckPermission({ permissionSymbol: 'ecommerce.brands.uploadImage' })
