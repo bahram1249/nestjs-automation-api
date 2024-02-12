@@ -79,6 +79,7 @@ export class BuffetService {
       },
     });
     if (!buffet) throw new NotFoundException();
+
     const viewCount = Number(buffet.viewCount) + 1;
     await this.repository.update(
       {

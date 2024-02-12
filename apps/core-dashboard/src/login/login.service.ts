@@ -18,7 +18,8 @@ export class LoginService {
   ) {}
 
   get() {
-    return { title: 'صفحه ورود', layout: false };
+    const logoPath = this.config.get<string>('LOGO_PATH');
+    return { title: 'صفحه ورود', layout: false, logo: logoPath };
   }
   async login(req: Request, res: Response, dto: loginDto) {
     const user = await this.repository.findOne({

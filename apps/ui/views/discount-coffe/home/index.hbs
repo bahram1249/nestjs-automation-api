@@ -30,7 +30,7 @@
             </div>
             <div class='form-control'>
               <label for='for'>نوع بوفه</label>
-              <div class='radios'>
+              <div class='radios buffetTypes'>
                 {{#each buffetTypes}}
                   <div class='radioItem {{#if (ifequals @index 0 )}}active{{/if}}'>
                   <label for='buffetTypes_{{id}}'>{{title}}</label>
@@ -48,7 +48,7 @@
             </div>
             <div class='form-control'>
               <label for='for'>قیمت منوها</label>
-              <div class='radios'>
+              <div class='radios buffetCosts'>
 
                 {{#each buffetCosts}}
                 <div class='radioItem {{#if (ifequals @index 0)}}active{{/if}}'>
@@ -399,4 +399,6 @@
     </div>
   </div>
 </div>
-{{#section 'footer'}}{{/section}}
+{{#section 'footer'}}
+<script src="/src/discountcoffe/js/home.js"></script>
+{{/section}}

@@ -4175,9 +4175,14 @@ IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'DiscountCoffe-options-D
 BEGIN
 
 	INSERT INTO DiscountCoffeOptions(id, title, iconClass,createdAt, updatedAt)
-	VALUES (1, N'اسموک روم', 'icon-pizza',getdate(), getdate())
-			,(2, N'اتاق بازی', 'icon-pizza',getdate(), getdate())
-			,(3, N'فضای کودکان', 'icon-pizza',getdate(), getdate())
+	VALUES (1, N'اسموک روم', 'las la-joint',getdate(), getdate())
+			,(2, N'اتاق بازی', 'lni lni-game',getdate(), getdate())
+			,(3, N'فضای کودکان', 'lni lni-brush',getdate(), getdate())
+			,(4, N'سرو غذا', 'lni lni-dinner',getdate(), getdate())
+			,(5, N'برگر', 'lni lni-burger',getdate(), getdate())
+			,(6, N'آب میوه', 'lni lni-juice',getdate(), getdate())
+			,(7, N'پیتزا', 'lni lni-pizza',getdate(), getdate())
+			,(8, N'سلف سرویس', 'lni lni-service',getdate(), getdate())
 
 	INSERT INTO Migrations(version, createdAt, updatedAt)
 	SELECT 'DiscountCoffe-options-Data-v1', GETDATE(), GETDATE()

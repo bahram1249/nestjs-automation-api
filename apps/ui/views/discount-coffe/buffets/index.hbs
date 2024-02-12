@@ -3,6 +3,10 @@
     rel='stylesheet'
     href='https://unpkg.com/leaflet@1.7.1/dist/leaflet.css'
   />
+  <link
+    rel='stylesheet'
+    href='/tools/core/vendor/splide-4.0.6/dist/css/splide.min.css'
+  />
 {{/section}}
 <div class='singleCafe'>
   <div class='container-lg'>
@@ -51,6 +55,32 @@
             </button>
           </div>
         </div>
+
+        {{#if (haveitem buffet.buffetGalleries)}}
+          <div class='galleries'>
+            <h3 class='head'>محیط کافه</h3>
+            <div class='splide'>
+              <div class='splide__track'>
+                <ul class='splide__list'>
+                  {{#each buffet.buffetGalleries}}
+                    <li class='splide__slide'>
+                      <!-- <div
+                        style="background-image: url('/v1/api/discountcoffe/admin/buffets/gallery/{{fileName}}');height: 500px; background-size: cover; background-position: center;"
+                      ></div> -->
+                      <img
+                        src='/v1/api/discountcoffe/admin/buffets/gallery/{{fileName}}'
+                        alt=''
+                      />
+                    </li>
+                  {{/each}}
+
+                </ul>
+              </div>
+            </div>
+
+          </div>
+        {{/if}}
+
         <div class='showMenu'>
           <h5 class='title'>مشاهده منوی کافه به همراه قیمت ها با تخفیف</h5>
           <a href='/buffet/menus/{{buffet.urlAddress}}'><button
@@ -146,6 +176,14 @@
 </div>
 {{#section 'footer'}}
   <script src='https://unpkg.com/leaflet@1.8.0/dist/leaflet.js'></script>
+  <script src='/tools/core/vendor/splide-4.0.6/dist/js/splide.min.js'></script>
+  <script>
+    var isFind = document.querySelectorAll('.splide').length > 0 ? true: false;
+    if(isFind) { var splide = new Splide( '.splide', { type : 'loop', autoplay:
+    true ,perPage : 1, direction : 'rtl', cover: true, height : '34rem',focus :
+    'center', } ); splide.mount(); }
+
+  </script>
   <script>
     if($('#map').length > 0){ if(typeof L !== 'undefined'){ var map =
     L.map("map").setView([{{buffet.latitude}},

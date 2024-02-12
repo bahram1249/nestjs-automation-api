@@ -42,7 +42,7 @@ export class RoleService {
         },
       ],
       where: Sequelize.where(
-        Sequelize.fn('isnull', Sequelize.col('permissions.visibility'), 1),
+        Sequelize.fn('isnull', Sequelize.col('PermissionGroup.visibility'), 1),
         {
           [Op.eq]: 1,
         },
@@ -93,7 +93,7 @@ export class RoleService {
         },
       ],
       where: Sequelize.where(
-        Sequelize.fn('isnull', Sequelize.col('permissions.visibility'), 1),
+        Sequelize.fn('isnull', Sequelize.col('PermissionGroup.visibility'), 1),
         {
           [Op.eq]: 1,
         },

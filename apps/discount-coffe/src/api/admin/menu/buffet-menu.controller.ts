@@ -105,7 +105,7 @@ export class BuffetMenuController {
     @UploadedFile(
       new ParseFilePipe({
         validators: [
-          new FileTypeValidator({ fileType: /(jpg|png)/ }),
+          new FileTypeValidator({ fileType: /(jpg|jpeg|png)/ }),
           new MaxFileSizeValidator({ maxSize: 2097152 }),
         ],
         fileIsRequired: false,
@@ -145,7 +145,7 @@ export class BuffetMenuController {
     @UploadedFile(
       new ParseFilePipe({
         validators: [
-          new FileTypeValidator({ fileType: /(jpg|png)/ }),
+          new FileTypeValidator({ fileType: /(jpg|jpeg|png)/ }),
           new MaxFileSizeValidator({ maxSize: 2097152 }),
         ],
         fileIsRequired: false,

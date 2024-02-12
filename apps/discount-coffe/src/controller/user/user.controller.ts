@@ -26,13 +26,13 @@ export class UserController {
   constructor(private readonly service: UserService) {}
 
   @Get('/profile')
-  @Render('user/profile')
+  @Render('user-discount/profile')
   async index(@GetUser() user: User, @Req() req: Request) {
     return await this.service.profile(user, req);
   }
 
   @Post('/profile')
-  @Render('user/profile')
+  @Render('user-discount/profile')
   async updateProfile(
     @GetUser() user: User,
     @Req() req: Request,
@@ -42,13 +42,13 @@ export class UserController {
   }
 
   @Get('/reserves')
-  @Render('user/reserves')
+  @Render('user-discount/reserves')
   async reserves(@GetUser() user: User, @Req() req: Request) {
     return await this.service.reserves(user, req);
   }
 
   @Get('/reserves/page/:id')
-  @Render('user/reserves')
+  @Render('user-discount/reserves')
   async reservesPaging(
     @Param('id') page: number,
     @GetUser() user: User,

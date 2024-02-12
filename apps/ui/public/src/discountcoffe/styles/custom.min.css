@@ -160,3 +160,37 @@ img.super-lux-img {
     position: unset;
   }
 }
+
+.showMenu {
+  margin-top: 10px;
+}
+
+@media only screen and (max-width: 991px) {
+  .menuBase.active ul {
+    z-index: 999;
+  }
+}
+
+.luxuaries img {
+  max-height: 490px;
+}
+
+.productItem img {
+  max-height: 255;
+}
+
+.about .photos .main {
+  height: unset;
+}
+
+img.super-lux-img {
+  height: unset;
+}
+
+.slick-slide img {
+  max-height: 500px;
+}
+
+.input .icon-location {
+  bottom: 14px;
+}
