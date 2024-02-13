@@ -306,7 +306,7 @@ export class BrandService {
     item.attachmentId = newAttachment.id;
     item = await item.save();
 
-    // remove file on current instanse
+    // remove file on current instance
     fs.rmSync(file.path);
 
     return {
