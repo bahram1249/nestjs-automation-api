@@ -14,5 +14,6 @@ import { ECNeighborhood } from '@rahino/database/models/ecommerce-eav/ec-neighbo
   ],
   controllers: [AddressController],
   providers: [AddressService, AddressProfile],
+  exports: [AddressService],
 })
 export class AddressModule {}

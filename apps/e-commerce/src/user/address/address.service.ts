@@ -313,14 +313,15 @@ export class AddressService {
           userId: user.id,
         })
         .filter({ id: entityId })
-        .filter(
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('ECAddress.isDeleted'), 0),
-            {
-              [Op.eq]: 0,
-            },
-          ),
-        )
+        // causes this service access by vendor address, can be deleted multiple times
+        // .filter(
+        //   Sequelize.where(
+        //     Sequelize.fn('isnull', Sequelize.col('ECAddress.isDeleted'), 0),
+        //     {
+        //       [Op.eq]: 0,
+        //     },
+        //   ),
+        // )
         .build(),
     );
     if (!item) {

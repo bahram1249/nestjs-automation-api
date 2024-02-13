@@ -1775,6 +1775,36 @@ END
 
 GO
 
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ecommerce-vendoraddresses-v1' 
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'SITE_NAME' AND [value] IN ('ecommerce'))
+		)
+BEGIN
+
+	CREATE TABLE ECVendorAddresses (
+		id							bigint	identity(1,1)		PRIMARY KEY,
+		vendorId					int							NOT NULL
+			CONSTRAINT FK_ECVendorAddresses_VendorId
+				FOREIGN KEY REFERENCES ECVendors(id),
+		addressId					bigint						NOT NULL
+			CONSTRAINT Fk_ECVendorAddresses_AddressId
+				FOREIGN KEY REFERENCES ECAddresses(id),
+		userId						bigint						NOT NULL,
+		isDeleted					bit							NULL,
+		[createdAt]					datetimeoffset				NOT NULL,
+		[updatedAt]					datetimeoffset				NOT NULL,
+	);
+
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'ecommerce-vendoraddresses-v1', GETDATE(), GETDATE()
+END
+
+GO
+
+
 
 
 IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ecommerce-publish-statuses-v1' 
