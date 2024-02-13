@@ -208,7 +208,7 @@ export class VendorAddressService {
         )
         .build(),
     );
-    if (vendor) {
+    if (!vendor) {
       throw new ForbiddenException(
         'you have not permited to this given vendor',
       );
@@ -299,7 +299,7 @@ export class VendorAddressService {
         )
         .build(),
     );
-    if (vendor) {
+    if (!vendor) {
       throw new ForbiddenException(
         'you have not permitted to this given vendor',
       );
