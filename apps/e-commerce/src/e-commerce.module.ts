@@ -20,6 +20,7 @@ import { ProductPhotoModule } from './product-photo/product-photo.module';
 import { ProductImageRemovalModule } from './product-image-removal/product-image-removal.module';
 import { ProductImageRemovalService } from './product-image-removal/product-image-removal.service';
 import { VendorModule } from './vendor/vendor.module';
+import { UserVendorModule } from './user/vendor/user-vendor.module';
 
 @Module({
   imports: [
@@ -36,6 +37,7 @@ import { VendorModule } from './vendor/vendor.module';
     ProductPhotoModule,
     ProductImageRemovalModule,
     VendorModule,
+    UserVendorModule,
     ProductModule,
   ],
 })

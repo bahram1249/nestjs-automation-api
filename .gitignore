@@ -1,6 +1,7 @@
 # compiled output
 /dist
 /node_modules
+/apps/ui/public/theme/discountcoffe/node_modules
 
 # Logs
 logs
