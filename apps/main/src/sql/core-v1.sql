@@ -1906,6 +1906,29 @@ END
 GO
 
 
+-- ecommerce variationprices
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ecommerce-variationprices-v1' 
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'SITE_NAME' AND [value] IN ('ecommerce'))
+		)
+BEGIN
+
+	CREATE TABLE ECVariationPrices (
+		id						int							PRIMARY KEY,
+		name					nvarchar(256)				NOT NULL,
+		[required]				bit							NULL,
+		[createdAt]				datetimeoffset				NOT NULL,
+		[updatedAt]				datetimeoffset				NOT NULL,
+	)
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'ecommerce-variationprices-v1', GETDATE(), GETDATE()
+END
+
+GO
+
 
 IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'eav-EAVEntityAttributeValues-v1' 
 			)
@@ -4133,6 +4156,49 @@ BEGIN
 
 	INSERT INTO Migrations(version, createdAt, updatedAt)
 	SELECT 'ecommerce-neighborhoods-Data-v1', GETDATE(), GETDATE()
+END
+
+GO
+
+-- ecommerce
+-- variation prices
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ecommerce-variationprices-Data-v1' 
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'SITE_NAME' AND [value] IN ('ecommerce'))
+		)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'CUSTOMER_NAME' AND [value] IN ('jahizan'))
+		)
+BEGIN
+	
+	INSERT INTO ECVariationPrices(id, [name], [required], createdAt, updatedAt)
+	SELECT 1, N'اقساطی', 1, GETDATE(), GETDATE()
+	
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'ecommerce-variationprices-Data-v1', GETDATE(), GETDATE()
+END
+
+GO
+
+
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ecommerce-variationprices-Data-v2' 
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'SITE_NAME' AND [value] IN ('ecommerce'))
+		)
+BEGIN
+	
+	INSERT INTO ECVariationPrices(id, [name], [required], createdAt, updatedAt)
+	SELECT 2, N'نقدی', 0, GETDATE(), GETDATE()
+	
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'ecommerce-variationprices-Data-v2', GETDATE(), GETDATE()
 END
 
 GO
