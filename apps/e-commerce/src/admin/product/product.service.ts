@@ -40,7 +40,6 @@ export class ProductService {
     private readonly entityType: typeof EAVEntityType,
     @InjectMapper()
     private readonly mapper: Mapper,
-    @Inject(Sequelize) private sequelize: Sequelize,
     private entityAttributeValueService: EntityAttributeValueService,
     private entityService: EntityService,
     private productPhotoService: ProductPhotoService,
@@ -252,7 +251,7 @@ export class ProductService {
     );
     await this.productPhotoService.validationExistsPhoto(mappedPhotos);
 
-    const transaction = await this.sequelize.transaction();
+    const transaction = await new Sequelize().transaction();
     let product: ECProduct = null;
     try {
       // map item to product
