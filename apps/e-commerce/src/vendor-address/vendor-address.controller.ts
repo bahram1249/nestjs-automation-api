@@ -15,7 +15,12 @@
 import { JwtGuard } from '@rahino/auth/guard';
 import { PermissionGuard } from '@rahino/permission-checker/guard';
 import { JsonResponseTransformInterceptor } from '@rahino/response/interceptor';
-import { ApiBearerAuth, ApiOperation, ApiQuery } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiOperation,
+  ApiQuery,
+  ApiTags,
+} from '@nestjs/swagger';
 import { CheckPermission } from '@rahino/permission-checker/decorator';
 import { GetUser } from '@rahino/auth/decorator';
 import { User } from '@rahino/database/models/core/user.entity';
@@ -25,6 +30,7 @@ import {
   VendorAddressDto,
 } from '@rahino/ecommerce/vendor-address/dto';
 
+@ApiTags('VendorAddresses')
 @UseGuards(JwtGuard, PermissionGuard)
 @ApiBearerAuth()
 @UseInterceptors(JsonResponseTransformInterceptor)

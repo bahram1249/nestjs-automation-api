@@ -5,7 +5,7 @@ import {
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
-import { Op, Sequelize } from 'sequelize';
+import { Op, Sequelize, Transaction } from 'sequelize';
 import * as _ from 'lodash';
 import { User } from '@rahino/database/models/core/user.entity';
 import { MinioClientService } from '@rahino/minio-client';
@@ -94,7 +94,7 @@ export class ProductPhotoService {
   }
 
   async validationExistsPhoto(photos?: PhotoDto[]) {
-    photos.forEach(async (photo) => {
+    for (const photo of photos) {
       const findAttachment = await this.attachmentRepository.findOne(
         new QueryOptionsBuilder()
           .filter({ id: photo.id })
@@ -121,11 +121,15 @@ export class ProductPhotoService {
           `the given product photo->${photo.id} isn't exists !`,
         );
       }
-    });
+    }
   }
 
-  async insert(productId: bigint, photos?: PhotoDto[]) {
-    photos.forEach(async (photo) => {
+  async insert(
+    productId: bigint,
+    photos?: PhotoDto[],
+    transaction?: Transaction,
+  ) {
+    for (const photo of photos) {
       let findAttachment = await this.attachmentRepository.findOne(
         new QueryOptionsBuilder()
           .filter({ id: photo.id })
@@ -148,11 +152,11 @@ export class ProductPhotoService {
           .build(),
       );
       findAttachment.attachmentTypeId = this.productAttachmentType;
-      findAttachment = await findAttachment.save();
+      findAttachment = await findAttachment.save({ transaction: transaction });
       await this.entityPhotoRepository.create({
         entityId: productId,
         attachmentId: findAttachment.id,
       });
-    });
+    }
   }
 }

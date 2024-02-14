@@ -1,6 +1,8 @@
 import {
   BadRequestException,
+  Inject,
   Injectable,
+  InternalServerErrorException,
   NotFoundException,
   NotImplementedException,
 } from '@nestjs/common';
@@ -38,6 +40,7 @@ export class ProductService {
     private readonly entityType: typeof EAVEntityType,
     @InjectMapper()
     private readonly mapper: Mapper,
+    @Inject(Sequelize) private sequelize: Sequelize,
     private entityAttributeValueService: EntityAttributeValueService,
     private entityService: EntityService,
     private productPhotoService: ProductPhotoService,
@@ -249,33 +252,58 @@ export class ProductService {
     );
     await this.productPhotoService.validationExistsPhoto(mappedPhotos);
 
-    // map item to product
-    const mappedItem = this.mapper.map(dto, ProductDto, ECProduct);
-    const { result } = await this.entityService.create({
-      entityTypeId: mappedItem.entityTypeId,
-    });
+    const transaction = await this.sequelize.transaction();
+    let product: ECProduct = null;
+    try {
+      // map item to product
+      const mappedItem = this.mapper.map(dto, ProductDto, ECProduct);
+      const { result } = await this.entityService.create(
+        {
+          entityTypeId: mappedItem.entityTypeId,
+        },
+        transaction,
+      );
 
-    const unavailable = 2;
-    const skuPrefix = this.config.get<string>('SKU_PREFIX');
+      const unavailable = 2;
+      const skuPrefix = this.config.get<string>('SKU_PREFIX');
 
-    const insertItem = _.omit(mappedItem.toJSON(), ['id']);
-    insertItem.id = result.entityId;
-    insertItem.sku = skuPrefix + result.entityId.toString();
-    insertItem.inventoryStatusId = unavailable;
-    insertItem.userId = user.id;
+      const insertItem = _.omit(mappedItem.toJSON(), ['id']);
+      insertItem.id = result.entityId;
+      insertItem.sku = skuPrefix + result.entityId.toString();
+      insertItem.inventoryStatusId = unavailable;
+      insertItem.userId = user.id;
 
-    const product = await this.repository.create(insertItem);
+      product = await this.repository.create(insertItem, {
+        transaction: transaction,
+      });
 
-    // insert product photos
-    await this.productPhotoService.insert(product.id, mappedPhotos);
+      // insert product photos
+      await this.productPhotoService.insert(
+        product.id,
+        mappedPhotos,
+        transaction,
+      );
 
-    // insert attributes
-    await this.entityAttributeValueService.insert(product.id, mappedAttributes);
+      // insert attributes
+      await this.entityAttributeValueService.insert(
+        product.id,
+        mappedAttributes,
+        transaction,
+      );
 
-    // insert inventories
+      // insert inventories
+
+      await transaction.commit();
+    } catch (error) {
+      await transaction.rollback();
+      console.log(error);
+      throw new InternalServerErrorException(
+        'transaction of creating product failed',
+      );
+    }
 
     return {
-      result: product,
+      result: await this.findById(product.id),
     };
   }
 

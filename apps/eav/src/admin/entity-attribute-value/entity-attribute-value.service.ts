@@ -3,7 +3,7 @@ import { EntityAttributeValueDto } from './dto';
 import { InjectModel } from '@nestjs/sequelize';
 import { EAVEntityType } from '@rahino/database/models/eav/eav-entity-type.entity';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
-import { Op, Sequelize } from 'sequelize';
+import { Op, Sequelize, Transaction } from 'sequelize';
 import { EAVEntityAttribute } from '@rahino/database/models/eav/eav-entity-attribute.entity';
 import { EAVAttribute } from '@rahino/database/models/eav/eav-attribute.entity';
 import { EAVAttributeValue } from '@rahino/database/models/eav/eav-attribute-value';
@@ -69,7 +69,7 @@ export class EntityAttributeValueService {
           (item) => item == entityTypeAttribute.attribute.attributeTypeId,
         ) != -1,
     );
-    valueBasedAttributes.forEach(async (valueBasedAttribute) => {
+    for (const valueBasedAttribute of valueBasedAttributes) {
       const findItem = entityAttributes.find(
         (entityAttribute) =>
           entityAttribute.id == valueBasedAttribute.attributeId,
@@ -97,7 +97,7 @@ export class EntityAttributeValueService {
           `the given attributeValueId-> ${findItem.val} for attribute ${valueBasedAttribute.attribute.name} is not valid !`,
         );
       }
-    });
+    }
   }
 
   private async requiredAttributeValidation(
@@ -155,9 +155,13 @@ export class EntityAttributeValueService {
     }
   }
 
-  async insert(entityId: bigint, entityAttributes?: EntityAttributeValueDto[]) {
+  async insert(
+    entityId: bigint,
+    entityAttributes?: EntityAttributeValueDto[],
+    transaction?: Transaction,
+  ) {
     const valueBasedType = [3];
-    entityAttributes.forEach(async (attribute) => {
+    for (const attribute of entityAttributes) {
       const findAttribute = await this.attributeRepository.findOne(
         new QueryOptionsBuilder()
           .filter(
@@ -181,18 +185,28 @@ export class EntityAttributeValueService {
           (itemId) => itemId == findAttribute.attributeTypeId,
         ) > -1
       ) {
-        await this.entityAttributeValueRepository.create({
-          entityId: entityId,
-          attributeId: attribute.id,
-          attributeValueId: attribute.val,
-        });
+        await this.entityAttributeValueRepository.create(
+          {
+            entityId: entityId,
+            attributeId: attribute.id,
+            attributeValueId: attribute.val,
+          },
+          {
+            transaction: transaction,
+          },
+        );
       } else {
-        await this.entityAttributeValueRepository.create({
-          entityId: entityId,
-          attributeId: attribute.id,
-          val: attribute.val,
-        });
+        await this.entityAttributeValueRepository.create(
+          {
+            entityId: entityId,
+            attributeId: attribute.id,
+            val: attribute.val,
+          },
+          {
+            transaction: transaction,
+          },
+        );
       }
-    });
+    }
   }
 }
