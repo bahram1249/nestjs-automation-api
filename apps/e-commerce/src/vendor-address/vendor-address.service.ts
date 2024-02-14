@@ -210,7 +210,7 @@ export class VendorAddressService {
     );
     if (!vendor) {
       throw new ForbiddenException(
-        'you have not permited to this given vendor',
+        'You are not permitted to perform this operation',
       );
     }
     // create address item
@@ -301,16 +301,12 @@ export class VendorAddressService {
     );
     if (!vendor) {
       throw new ForbiddenException(
-        'you have not permitted to this given vendor',
+        'You are not permitted to perform this operation',
       );
     }
 
     // update address item
-    const addressResult = await this.addressService.update(
-      user,
-      vendorAddress.addressId,
-      dto,
-    );
+    await this.addressService.update(user, vendorAddress.addressId, dto);
 
     // query with included things
     vendorAddress = await this.vendorAddressRepository.findOne(
@@ -422,10 +418,7 @@ export class VendorAddressService {
       throw new NotFoundException('the item with this given id not founded!');
     }
 
-    const addressItem = await this.addressService.deleteById(
-      user,
-      vendorAddress.addressId,
-    );
+    await this.addressService.deleteById(user, vendorAddress.addressId);
     vendorAddress.isDeleted = true;
     vendorAddress = await vendorAddress.save();
 
