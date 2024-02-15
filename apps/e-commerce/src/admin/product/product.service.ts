@@ -1,6 +1,5 @@
 import {
   BadRequestException,
-  Inject,
   Injectable,
   InternalServerErrorException,
   NotFoundException,
@@ -30,6 +29,9 @@ import { EAVAttributeValue } from '@rahino/database/models/eav/eav-attribute-val
 import { ProductPhotoService } from '@rahino/ecommerce/product-photo/product-photo.service';
 import { ProductPhotoDto } from './dto/product-photo.dto';
 import { PhotoDto } from '@rahino/ecommerce/product-photo/dto';
+import { InventoryValidationService } from '@rahino/ecommerce/inventory/inventory-validation.service';
+import { InventoryStatusEnum } from '@rahino/ecommerce/inventory/enum';
+import { InventoryService } from '@rahino/ecommerce/inventory/inventory.service';
 
 @Injectable()
 export class ProductService {
@@ -40,9 +42,11 @@ export class ProductService {
     private readonly entityType: typeof EAVEntityType,
     @InjectMapper()
     private readonly mapper: Mapper,
-    private entityAttributeValueService: EntityAttributeValueService,
-    private entityService: EntityService,
-    private productPhotoService: ProductPhotoService,
+    private readonly entityAttributeValueService: EntityAttributeValueService,
+    private readonly entityService: EntityService,
+    private readonly productPhotoService: ProductPhotoService,
+    private readonly inventoryValidationService: InventoryValidationService,
+    private readonly inventoryService: InventoryService,
     private config: ConfigService,
   ) {}
 
@@ -251,6 +255,13 @@ export class ProductService {
     );
     await this.productPhotoService.validationExistsPhoto(mappedPhotos);
 
+    // validation of inventories
+    await this.inventoryValidationService.validation(
+      user,
+      dto,
+      dto.inventories,
+    );
+
     const transaction = await new Sequelize().transaction();
     let product: ECProduct = null;
     try {
@@ -263,13 +274,12 @@ export class ProductService {
         transaction,
       );
 
-      const unavailable = 2;
       const skuPrefix = this.config.get<string>('SKU_PREFIX');
 
       const insertItem = _.omit(mappedItem.toJSON(), ['id']);
       insertItem.id = result.entityId;
       insertItem.sku = skuPrefix + result.entityId.toString();
-      insertItem.inventoryStatusId = unavailable;
+      insertItem.inventoryStatusId = InventoryStatusEnum.unavailable;
       insertItem.userId = user.id;
 
       product = await this.repository.create(insertItem, {
@@ -291,6 +301,11 @@ export class ProductService {
       );
 
       // insert inventories
+      await this.inventoryService.bulkInsert(
+        user,
+        dto.inventories,
+        transaction,
+      );
 
       await transaction.commit();
     } catch (error) {

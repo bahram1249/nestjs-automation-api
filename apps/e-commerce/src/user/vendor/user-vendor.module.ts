@@ -9,5 +9,6 @@ import { ECVendor } from '@rahino/database/models/ecommerce-eav/ec-vendor.entity
   imports: [SequelizeModule.forFeature([ECVendorUser, ECVendor])],
   controllers: [UserVendorController],
   providers: [UserVendorService],
+  exports: [UserVendorService],
 })
 export class UserVendorModule {}

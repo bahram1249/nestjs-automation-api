@@ -13,6 +13,7 @@ import {
 } from 'class-validator';
 import { ProductPhotoDto } from './product-photo.dto';
 import { ProductAttributeDto } from './product-attribute.dto';
+import { InventoryDto } from '@rahino/ecommerce/inventory/dto';
 
 export class ProductDto {
   @AutoMap()
@@ -60,4 +61,8 @@ export class ProductDto {
   @IsArray()
   @IsOptional()
   attributes?: ProductAttributeDto[];
+
+  @IsArray()
+  @IsOptional()
+  inventories?: InventoryDto[];
 }

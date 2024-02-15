@@ -10,6 +10,7 @@ import { EntityAttributeValueModule } from '@rahino/eav/admin/entity-attribute-v
 import { EntityModule } from '@rahino/eav/admin/entity/entity.module';
 import { ProductPhotoModule } from '@rahino/ecommerce/product-photo/product-photo.module';
 import { EAVEntityType } from '@rahino/database/models/eav/eav-entity-type.entity';
+import { InventoryModule } from '@rahino/ecommerce/inventory/inventory.module';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { EAVEntityType } from '@rahino/database/models/eav/eav-entity-type.entit
     EntityAttributeValueModule,
     EntityModule,
     ProductPhotoModule,
+    InventoryModule,
   ],
   controllers: [ProductController],
   providers: [ProductService, ProductProfile],

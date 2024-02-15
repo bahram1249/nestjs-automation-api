@@ -1930,6 +1930,99 @@ END
 GO
 
 
+-- ecommerce inventories
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ecommerce-inventories-v1' 
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'SITE_NAME' AND [value] IN ('ecommerce'))
+		)
+BEGIN
+
+	CREATE TABLE ECInventories (
+		id						bigint identity(1,1)			PRIMARY KEY,
+		productId				bigint							NOT NULL
+			CONSTRAINT FK_ECInventories_ProductId
+				FOREIGN KEY REFERENCES ECProducts(id),
+		vendorId				int								NOT NULL
+			CONSTRAINT FK_ECInventories_VendorId
+				FOREIGN KEY REFERENCES ECVendors(id),
+		colorId					int								NULL
+			CONSTRAINT FK_ECInventories_ColorId
+				FOREIGN KEY REFERENCES ECColors(id),
+		guaranteeId				int								NULL
+			CONSTRAINT FK_ECInventories_GuaranteeId
+				FOREIGN KEY REFERENCES ECGuarantees(id),
+		guaranteeMonthId		int								NULL
+			CONSTRAINT FK_ECInventories_GuaranteeMonthId
+				FOREIGN KEY REFERENCES ECguaranteeMonths(id),
+		buyPrice				bigint							NULL,
+		qty						int								NOT NULL,
+		onlyProvinceId			int								NULL
+			CONSTRAINT FK_ECInventories_OnlyProvinceId
+				FOREIGN KEY REFERENCES ECProvinces(id),
+		vendorAddressId				bigint							NOT NULL
+			CONSTRAINT FK_ECInventories_VendorAddressId
+				FOREIGN KEY REFERENCES ECVendorAddresses(id),
+		[weight]				float(53)						NULL,
+		inventoryStatusId		int								NOT NULL
+			CONSTRAINT FK_ECInventories_InventoryStatusId
+				FOREIGN KEY REFERENCES ECInventoryStatuses(id),
+		[description]			nvarchar(512)					NULL,
+		userId					bigint							NOT NULL
+			CONSTRAINT FK_ECInventories_UserId
+				FOREIGN KEY REFERENCES Users(id),
+		[isDeleted]				bit								NULL,
+		deletedBy				bigint							NULL
+			CONSTRAINT FK_ECInventories_DeletedBy
+				FOREIGN KEY REFERENCES Users(id),
+		[createdAt]				datetimeoffset					NOT NULL,
+		[updatedAt]				datetimeoffset					NOT NULL,
+	)
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'ecommerce-inventories-v1', GETDATE(), GETDATE()
+END
+
+GO
+
+
+-- ecommerce inventory-prices
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ecommerce-inventory-prices-v1' 
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'SITE_NAME' AND [value] IN ('ecommerce'))
+		)
+BEGIN
+
+    CREATE TABLE ECInventoryPrices (
+        id                      bigint identity(1,1)            PRIMARY KEY,
+        inventoryId             bigint                          NOT NULL
+            CONSTRAINT FK_InventoryPrices_InventoryId
+                FOREIGN KEY REFERENCES ECInventories(id),
+        variationPriceId        int                             NOT NULL
+            CONSTRAINT FK_InventoryPrices_VariationPriceId
+                FOREIGN KEY REFERENCES ECVariationPrices(id),
+        price                   bigint                          NOT NULL,
+        isDeleted               bit                             NULL,
+        userId                  bigint                          NOT NULL
+            CONSTRAINT FK_InventoryPrices_UserId
+                FOREIGN KEY REFERENCES Users(id),
+        deletedBy               bigint                          NULL
+            CONSTRAINT FK_InventoryPrices_DeletedBy
+                FOREIGN KEY REFERENCES Users(id),
+        [createdAt]				datetimeoffset					NOT NULL,
+        [updatedAt]				datetimeoffset					NOT NULL,
+	)
+
+    INSERT INTO Migrations(version, createdAt, updatedAt)
+    SELECT 'ecommerce-inventory-prices-v1', GETDATE(), GETDATE()
+END
+
+GO
+
+
 IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'eav-EAVEntityAttributeValues-v1' 
 			)
 	AND EXISTS (

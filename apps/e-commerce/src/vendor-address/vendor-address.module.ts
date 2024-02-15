@@ -20,5 +20,6 @@ import { User } from '@rahino/database/models/core/user.entity';
   ],
   controllers: [VendorAddressController],
   providers: [VendorAddressService],
+  exports: [VendorAddressService],
 })
 export class VendorAddressModule {}

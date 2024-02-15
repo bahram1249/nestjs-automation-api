@@ -59,6 +59,8 @@ import { ECVendorUser } from './models/ecommerce-eav/ec-vendor-user.entity';
 import { BuffetGallery } from './models/discount-coffe/buffet-gallery.entity';
 import { ECVendorAddress } from './models/ecommerce-eav/ec-vendor-address.entity';
 import { ECVariationPrice } from './models/ecommerce-eav/ec-variation-prices';
+import { ECInventory } from './models/ecommerce-eav/ec-inventory.entity';
+import { ECInventoryPrice } from './models/ecommerce-eav/ec-inventory-price.entity';
 
 @Module({
   imports: [
@@ -114,6 +116,8 @@ import { ECVariationPrice } from './models/ecommerce-eav/ec-variation-prices';
           ECVendorUser,
           ECVendorAddress,
           ECVariationPrice,
+          ECInventory,
+          ECInventoryPrice,
           Buffet,
           BuffetGallery,
           BuffetType,

@@ -18,7 +18,7 @@ export class ListFilter {
     type: IsNumber,
     description: 'skip item',
   })
-  public offset = 0;
+  public offset? = 0;
 
   @Transform(({ value }) => Math.max(Number(value), 1))
   @IsNumber()
@@ -31,7 +31,7 @@ export class ListFilter {
     description: 'how many item returned.',
     type: IsNumber,
   })
-  public limit = 10;
+  public limit? = 10;
 
   @IsOptional()
   @ApiProperty({
