@@ -37,7 +37,7 @@ import { Attachment } from '@rahino/database/models/core/attachment.entity';
 export class VendorModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
     consumer.apply(ReverseProxyVendorImageMiddleware).forRoutes({
-      path: '/v1/api/ecommerce/vendors/image',
+      path: '/v1/api/ecommerce/vendors/image/*',
       method: RequestMethod.GET,
     });
   }
