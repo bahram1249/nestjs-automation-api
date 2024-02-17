@@ -2,9 +2,11 @@ import { AutoMap } from 'automapper-classes';
 import {
   IsNotEmpty,
   IsNumber,
+  IsObject,
   IsOptional,
   MaxLength,
   MinLength,
+  isObject,
 } from 'class-validator';
 import { VendorUserDto } from './vendor-user.dto';
 import { replaceCharacterSlug } from '@rahino/commontools';
@@ -38,5 +40,6 @@ export class VendorDto {
   @IsNumber()
   priorityOrder?: number;
 
+  @IsObject()
   user: VendorUserDto;
 }
