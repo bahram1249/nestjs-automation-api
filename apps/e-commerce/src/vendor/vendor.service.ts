@@ -68,6 +68,19 @@ export class VendorService {
         {
           model: ECVendorUser,
           as: 'vendorUser',
+          include: [
+            {
+              attributes: [
+                'id',
+                'firstname',
+                'lastname',
+                'username',
+                'phoneNumber',
+              ],
+              model: User,
+              as: 'user',
+            },
+          ],
           where: {
             [Op.and]: [
               {
@@ -119,6 +132,19 @@ export class VendorService {
           {
             model: ECVendorUser,
             as: 'vendorUser',
+            include: [
+              {
+                attributes: [
+                  'id',
+                  'firstname',
+                  'lastname',
+                  'username',
+                  'phoneNumber',
+                ],
+                model: User,
+                as: 'user',
+              },
+            ],
             where: {
               [Op.and]: [
                 {
