@@ -181,7 +181,7 @@ export class VendorService {
     // find vendor role
     const vendorRoleStatic = 2;
     const vendorRole = await this.roleRepository.findOne(
-      new QueryOptionsBuilder().filter({ staticId: vendorRoleStatic }).build(),
+      new QueryOptionsBuilder().filter({ static_id: vendorRoleStatic }).build(),
     );
     if (!vendorRole) {
       throw new ForbiddenException('the vendor role not founded!');
@@ -313,7 +313,7 @@ export class VendorService {
     // find vendor role
     const vendorRoleStatic = 2;
     const vendorRole = await this.roleRepository.findOne(
-      new QueryOptionsBuilder().filter({ staticId: vendorRoleStatic }).build(),
+      new QueryOptionsBuilder().filter({ static_id: vendorRoleStatic }).build(),
     );
     if (!vendorRole) {
       throw new ForbiddenException('the vendor role not founded!');
