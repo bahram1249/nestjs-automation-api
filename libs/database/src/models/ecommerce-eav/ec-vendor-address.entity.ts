@@ -15,6 +15,7 @@ export class ECVendorAddress extends Model {
   @Column({
     primaryKey: true,
     type: DataType.BIGINT,
+    autoIncrement: true,
   })
   id: bigint;
 
