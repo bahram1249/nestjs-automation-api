@@ -12,6 +12,7 @@ import { InventoryService } from './inventory.service';
 import { ECInventory } from '@rahino/database/models/ecommerce-eav/ec-inventory.entity';
 import { ECInventoryPrice } from '@rahino/database/models/ecommerce-eav/ec-inventory-price.entity';
 import { ECProvince } from '@rahino/database/models/ecommerce-eav/ec-province.entity';
+import { QueryFilterModule } from '@rahino/query-filter';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { ECProvince } from '@rahino/database/models/ecommerce-eav/ec-province.en
     ]),
     UserVendorModule,
     VendorAddressModule,
+    QueryFilterModule,
   ],
   providers: [InventoryValidationService, InventoryService, InventoryProfile],
   exports: [InventoryValidationService, InventoryService],

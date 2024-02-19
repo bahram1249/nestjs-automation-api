@@ -1,4 +1,4 @@
-﻿import { BadRequestException, Injectable } from '@nestjs/common';
+﻿import { BadRequestException, Inject, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { InventoryDto, RequiredProductFieldDto } from './dto';
 import { ECVariationPrice } from '@rahino/database/models/ecommerce-eav/ec-variation-prices';
@@ -11,6 +11,8 @@ import { ECGuarantee } from '@rahino/database/models/ecommerce-eav/ec-guarantee.
 import { ECGuaranteeMonth } from '@rahino/database/models/ecommerce-eav/ec-guarantee-month.entity';
 import { VendorAddressService } from '@rahino/ecommerce/vendor-address/vendor-address.service';
 import { ECProvince } from '@rahino/database/models/ecommerce-eav/ec-province.entity';
+import { emptyListFilter } from '@rahino/query-filter/provider/constants';
+import { ListFilter } from '@rahino/query-filter';
 
 @Injectable()
 export class InventoryValidationService {
@@ -27,6 +29,7 @@ export class InventoryValidationService {
     private readonly provinceRepository: typeof ECProvince,
     private readonly userVendorService: UserVendorService,
     private readonly vendorAddressService: VendorAddressService,
+    @Inject(emptyListFilter) private readonly listFilter: ListFilter,
   ) {}
 
   async validation(
@@ -107,7 +110,9 @@ export class InventoryValidationService {
 
   // check access to selected vendor
   async vendorValidation(user: User, dto: InventoryDto[]) {
-    const vendors = (await this.userVendorService.findAll(user, {})).result;
+    const vendors = (
+      await this.userVendorService.findAll(user, this.listFilter)
+    ).result;
     for (const inventoryDto of dto) {
       const findVendor = vendors.find(
         (vendor) => vendor.id == inventoryDto.vendorId,
@@ -125,6 +130,9 @@ export class InventoryValidationService {
     for (const inventoryDto of dto) {
       if (inventoryDto.guaranteeId == null && inventoryDto.guaranteeMonthId) {
         throw new BadRequestException('guarantee month is not valid !');
+      }
+      if (inventoryDto.guaranteeMonthId == null && inventoryDto.guaranteeId) {
+        throw new BadRequestException('guarantee month must be send it !');
       }
       if (inventoryDto.guaranteeId) {
         const guarantee = await this.guaranteeRepository.findOne(

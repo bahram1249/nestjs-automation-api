@@ -44,6 +44,10 @@ import { ECProvince } from '@rahino/database/models/ecommerce-eav/ec-province.en
 import { ECVendorAddress } from '@rahino/database/models/ecommerce-eav/ec-vendor-address.entity';
 import { ECInventoryPrice } from '@rahino/database/models/ecommerce-eav/ec-inventory-price.entity';
 import { emptyListFilter } from '@rahino/query-filter/provider/constants';
+import { ECAddress } from '@rahino/database/models/ecommerce-eav/ec-address.entity';
+import { ECCity } from '@rahino/database/models/ecommerce-eav/ec-city.entity';
+import { ECNeighborhood } from '@rahino/database/models/ecommerce-eav/ec-neighborhood.entity';
+import { ECVariationPrice } from '@rahino/database/models/ecommerce-eav/ec-variation-prices';
 
 @Injectable()
 export class ProductService {
@@ -189,10 +193,59 @@ export class ProductService {
             {
               model: ECVendorAddress,
               as: 'vendorAddress',
+              include: [
+                {
+                  attributes: [
+                    'id',
+                    'name',
+                    'latitude',
+                    'longitude',
+                    'provinceId',
+                    'cityId',
+                    'neighborhoodId',
+                    'street',
+                    'alley',
+                    'plaque',
+                    'floorNumber',
+                  ],
+                  model: ECAddress,
+                  as: 'address',
+                  include: [
+                    {
+                      attributes: ['id', 'name'],
+                      model: ECProvince,
+                      as: 'province',
+                    },
+                    {
+                      attributes: ['id', 'name'],
+                      model: ECCity,
+                      as: 'city',
+                    },
+                    {
+                      attributes: ['id', 'name'],
+                      model: ECNeighborhood,
+                      as: 'neighborhood',
+                    },
+                  ],
+                },
+                {
+                  attributes: ['id', 'name'],
+                  model: ECVendor,
+                  as: 'vendor',
+                },
+              ],
             },
             {
+              attributes: ['price'],
               model: ECInventoryPrice,
               as: 'firstPrice',
+              include: [
+                {
+                  attributes: ['id', 'name'],
+                  model: ECVariationPrice,
+                  as: 'variationPrice',
+                },
+              ],
               where: Sequelize.where(
                 Sequelize.fn(
                   'isnull',
@@ -205,8 +258,16 @@ export class ProductService {
               ),
             },
             {
+              attributes: ['price'],
               model: ECInventoryPrice,
               as: 'secondaryPrice',
+              include: [
+                {
+                  attributes: ['id', 'name'],
+                  model: ECVariationPrice,
+                  as: 'variationPrice',
+                },
+              ],
               where: Sequelize.where(
                 Sequelize.fn(
                   'isnull',
