@@ -447,6 +447,7 @@ export class ProductService {
       insertItem.sku = skuPrefix + result.entityId.toString();
       insertItem.inventoryStatusId = InventoryStatusEnum.unavailable;
       insertItem.userId = user.id;
+      insertItem.viewCount = 0;
 
       product = await this.repository.create(insertItem, {
         transaction: transaction,
