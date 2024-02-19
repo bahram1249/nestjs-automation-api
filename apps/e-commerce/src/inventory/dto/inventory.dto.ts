@@ -8,10 +8,6 @@ export class InventoryDto {
 
   @AutoMap()
   @IsNumber()
-  productId: bigint;
-
-  @AutoMap()
-  @IsNumber()
   vendorId: number;
 
   @AutoMap()

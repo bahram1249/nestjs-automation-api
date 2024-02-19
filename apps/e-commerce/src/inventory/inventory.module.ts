@@ -13,6 +13,9 @@ import { ECInventory } from '@rahino/database/models/ecommerce-eav/ec-inventory.
 import { ECInventoryPrice } from '@rahino/database/models/ecommerce-eav/ec-inventory-price.entity';
 import { ECProvince } from '@rahino/database/models/ecommerce-eav/ec-province.entity';
 import { QueryFilterModule } from '@rahino/query-filter';
+import { ECProduct } from '@rahino/database/models/ecommerce-eav/ec-product.entity';
+import { ECInventoryStatus } from '@rahino/database/models/ecommerce-eav/ec-inventory-status.entity';
+import { inventoryStatusService } from './inventory-status.service';
 
 @Module({
   imports: [
@@ -24,12 +27,22 @@ import { QueryFilterModule } from '@rahino/query-filter';
       ECGuarantee,
       ECGuaranteeMonth,
       ECProvince,
+      ECProduct,
     ]),
     UserVendorModule,
     VendorAddressModule,
     QueryFilterModule,
   ],
-  providers: [InventoryValidationService, InventoryService, InventoryProfile],
-  exports: [InventoryValidationService, InventoryService],
+  providers: [
+    InventoryValidationService,
+    InventoryService,
+    inventoryStatusService,
+    InventoryProfile,
+  ],
+  exports: [
+    InventoryValidationService,
+    InventoryService,
+    inventoryStatusService,
+  ],
 })
 export class InventoryModule {}

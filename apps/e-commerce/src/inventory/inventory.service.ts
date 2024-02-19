@@ -25,6 +25,7 @@ export class InventoryService {
 
   async bulkInsert(
     user: User,
+    productId: bigint,
     inventories: InventoryDto[],
     transaction?: Transaction,
   ) {
@@ -36,6 +37,7 @@ export class InventoryService {
         inventory.qty > 0
           ? InventoryStatusEnum.available
           : InventoryStatusEnum.unavailable;
+      insertItem.productId = productId;
       const inventoryInsert = await this.repository.create(insertItem, {
         transaction: transaction,
       });

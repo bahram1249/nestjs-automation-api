@@ -48,6 +48,7 @@ import { ECAddress } from '@rahino/database/models/ecommerce-eav/ec-address.enti
 import { ECCity } from '@rahino/database/models/ecommerce-eav/ec-city.entity';
 import { ECNeighborhood } from '@rahino/database/models/ecommerce-eav/ec-neighborhood.entity';
 import { ECVariationPrice } from '@rahino/database/models/ecommerce-eav/ec-variation-prices';
+import { inventoryStatusService } from '@rahino/ecommerce/inventory/inventory-status.service';
 
 @Injectable()
 export class ProductService {
@@ -64,6 +65,7 @@ export class ProductService {
     private readonly inventoryValidationService: InventoryValidationService,
     private readonly inventoryService: InventoryService,
     private readonly userVendorService: UserVendorService,
+    private readonly inventoryStatusService: inventoryStatusService,
     @Inject(emptyListFilter) private readonly listFilter: ListFilter,
     private config: ConfigService,
   ) {}
@@ -467,7 +469,13 @@ export class ProductService {
       // insert inventories
       await this.inventoryService.bulkInsert(
         user,
+        product.id,
         dto.inventories,
+        transaction,
+      );
+
+      await this.inventoryStatusService.productInventoryStatusUpdate(
+        product.id,
         transaction,
       );
 
