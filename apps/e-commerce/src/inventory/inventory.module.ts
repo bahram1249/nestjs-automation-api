@@ -11,6 +11,7 @@ import { InventoryProfile } from './mapper';
 import { InventoryService } from './inventory.service';
 import { ECInventory } from '@rahino/database/models/ecommerce-eav/ec-inventory.entity';
 import { ECInventoryPrice } from '@rahino/database/models/ecommerce-eav/ec-inventory-price.entity';
+import { ECProvince } from '@rahino/database/models/ecommerce-eav/ec-province.entity';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { ECInventoryPrice } from '@rahino/database/models/ecommerce-eav/ec-inven
       ECColor,
       ECGuarantee,
       ECGuaranteeMonth,
+      ECProvince,
     ]),
     UserVendorModule,
     VendorAddressModule,

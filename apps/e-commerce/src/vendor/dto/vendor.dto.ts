@@ -4,7 +4,9 @@ import {
   IsNumber,
   IsObject,
   IsOptional,
+  Max,
   MaxLength,
+  Min,
   MinLength,
   isObject,
 } from 'class-validator';
@@ -38,6 +40,8 @@ export class VendorDto {
 
   @AutoMap()
   @IsNumber()
+  @IsOptional()
+  @Min(1)
   priorityOrder?: number;
 
   @IsObject()

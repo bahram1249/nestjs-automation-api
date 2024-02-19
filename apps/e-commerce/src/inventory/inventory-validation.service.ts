@@ -10,6 +10,7 @@ import { UserVendorService } from '@rahino/ecommerce/user/vendor/user-vendor.ser
 import { ECGuarantee } from '@rahino/database/models/ecommerce-eav/ec-guarantee.entity';
 import { ECGuaranteeMonth } from '@rahino/database/models/ecommerce-eav/ec-guarantee-month.entity';
 import { VendorAddressService } from '@rahino/ecommerce/vendor-address/vendor-address.service';
+import { ECProvince } from '@rahino/database/models/ecommerce-eav/ec-province.entity';
 
 @Injectable()
 export class InventoryValidationService {
@@ -22,6 +23,8 @@ export class InventoryValidationService {
     private readonly guaranteeRepository: typeof ECGuarantee,
     @InjectModel(ECGuaranteeMonth)
     private readonly guaranteeMonthRepository: typeof ECGuaranteeMonth,
+    @InjectModel(ECProvince)
+    private readonly provinceRepository: typeof ECProvince,
     private readonly userVendorService: UserVendorService,
     private readonly vendorAddressService: VendorAddressService,
   ) {}
@@ -36,6 +39,7 @@ export class InventoryValidationService {
     await this.vendorValidation(user, dto);
     await this.guaranteeValidation(dto);
     await this.vendorAddressValidation(user, dto);
+    await this.provinceValidation(dto);
   }
 
   // this function is a sample only
@@ -164,6 +168,22 @@ export class InventoryValidationService {
       ).result;
       if (vendorAddress.vendorId != inventoryDto.vendorId) {
         throw new BadRequestException('address incorrect !');
+      }
+    }
+  }
+
+  private async provinceValidation(dto: InventoryDto[]) {
+    for (const inventoryDto of dto) {
+      if (inventoryDto.onlyProvinceId) {
+        const province = await this.provinceRepository.findOne(
+          new QueryOptionsBuilder()
+            .filter({ id: inventoryDto.onlyProvinceId })
+            .build(),
+        );
+        if (!province)
+          throw new BadRequestException(
+            'the provinceId with this givenId not founded!',
+          );
       }
     }
   }

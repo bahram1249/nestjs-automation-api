@@ -1,5 +1,6 @@
 import {
   BadRequestException,
+  Inject,
   Injectable,
   InternalServerErrorException,
   NotFoundException,
@@ -32,6 +33,17 @@ import { PhotoDto } from '@rahino/ecommerce/product-photo/dto';
 import { InventoryValidationService } from '@rahino/ecommerce/inventory/inventory-validation.service';
 import { InventoryStatusEnum } from '@rahino/ecommerce/inventory/enum';
 import { InventoryService } from '@rahino/ecommerce/inventory/inventory.service';
+import { ECInventory } from '@rahino/database/models/ecommerce-eav/ec-inventory.entity';
+import { UserVendorService } from '@rahino/ecommerce/user/vendor/user-vendor.service';
+import { ListFilter } from '@rahino/query-filter';
+import { ECVendor } from '@rahino/database/models/ecommerce-eav/ec-vendor.entity';
+import { ECColor } from '@rahino/database/models/ecommerce-eav/ec-color.entity';
+import { ECGuarantee } from '@rahino/database/models/ecommerce-eav/ec-guarantee.entity';
+import { ECGuaranteeMonth } from '@rahino/database/models/ecommerce-eav/ec-guarantee-month.entity';
+import { ECProvince } from '@rahino/database/models/ecommerce-eav/ec-province.entity';
+import { ECVendorAddress } from '@rahino/database/models/ecommerce-eav/ec-vendor-address.entity';
+import { ECInventoryPrice } from '@rahino/database/models/ecommerce-eav/ec-inventory-price.entity';
+import { emptyListFilter } from '@rahino/query-filter/provider/constants';
 
 @Injectable()
 export class ProductService {
@@ -47,10 +59,19 @@ export class ProductService {
     private readonly productPhotoService: ProductPhotoService,
     private readonly inventoryValidationService: InventoryValidationService,
     private readonly inventoryService: InventoryService,
+    private readonly userVendorService: UserVendorService,
+    @Inject(emptyListFilter) private readonly listFilter: ListFilter,
     private config: ConfigService,
   ) {}
 
-  async findAll(filter: GetProductDto) {
+  async findAll(user: User, filter: GetProductDto) {
+    const vendorResult = await this.userVendorService.findAll(
+      user,
+      this.listFilter,
+    );
+
+    const vendorIds = vendorResult.result.map((vendor) => vendor.id);
+
     let queryBuilder = new QueryOptionsBuilder();
     queryBuilder = queryBuilder.filter(
       Sequelize.where(
@@ -126,9 +147,91 @@ export class ProductService {
           ],
           required: false,
         },
+        {
+          model: ECInventory,
+          as: 'inventories',
+          where: {
+            vendorId: {
+              [Op.in]: vendorIds,
+            },
+          },
+          include: [
+            {
+              attributes: ['id', 'name'],
+              model: ECInventoryStatus,
+              as: 'inventoryStatus',
+            },
+            {
+              attributes: ['id', 'name'],
+              model: ECVendor,
+              as: 'vendor',
+            },
+            {
+              attributes: ['id', 'name', 'hexCode'],
+              model: ECColor,
+              as: 'color',
+            },
+            {
+              attributes: ['id', 'name'],
+              model: ECGuarantee,
+              as: 'guarantee',
+            },
+            {
+              attributes: ['id', 'name'],
+              model: ECGuaranteeMonth,
+              as: 'guaranteeMonth',
+            },
+            {
+              attributes: ['id', 'name'],
+              model: ECProvince,
+              as: 'onlyProvince',
+            },
+            {
+              model: ECVendorAddress,
+              as: 'vendorAddress',
+            },
+            {
+              model: ECInventoryPrice,
+              as: 'firstPrice',
+              where: Sequelize.where(
+                Sequelize.fn(
+                  'isnull',
+                  Sequelize.col('inventories.firstPrice.isDeleted'),
+                  0,
+                ),
+                {
+                  [Op.eq]: 0,
+                },
+              ),
+            },
+            {
+              model: ECInventoryPrice,
+              as: 'secondaryPrice',
+              where: Sequelize.where(
+                Sequelize.fn(
+                  'isnull',
+                  Sequelize.col('inventories.secondaryPrice.isDeleted'),
+                  0,
+                ),
+                {
+                  [Op.eq]: 0,
+                },
+              ),
+            },
+          ],
+          required: false,
+        },
       ])
+      .subQuery(false)
       .limit(filter.limit)
-      .offset(filter.offset);
+      .offset(filter.offset)
+      .order({ orderBy: filter.orderBy, sortOrder: filter.sortOrder })
+      .order([
+        { model: ECInventory, as: 'inventories' },
+        { model: ECVendor, as: 'vendor' },
+        'priorityOrder',
+        'asc',
+      ]);
 
     return {
       result: await this.repository.findAll(queryBuilder.build()),

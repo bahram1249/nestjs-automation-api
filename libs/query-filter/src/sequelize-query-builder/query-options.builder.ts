@@ -1,4 +1,5 @@
 import { FindAndCountOptions, Includeable, Op, WhereOptions } from 'sequelize';
+import { Order, OrderCol } from '@rahino/query-filter';
 
 export class QueryOptionsBuilder {
   options: Omit<FindAndCountOptions<any>, 'group'>;
@@ -20,10 +21,26 @@ export class QueryOptionsBuilder {
       this.options.offset = count;
     return this;
   }
-  order(order: { orderBy: string; sortOrder: string }): QueryOptionsBuilder {
+  order(orderArg: Order): QueryOptionsBuilder {
     if (!this.options.order) this.options.order = [];
     const orders = JSON.parse(JSON.stringify(this.options.order));
-    orders.push([order.orderBy, order.sortOrder]);
+    if (isOrderCol(orderArg)) {
+      if (orderArg instanceof OrderCol) {
+        orders.push([orderArg.orderBy, orderArg.sortOrder]);
+      }
+    } else {
+      orders.push(orderArg);
+    }
+
+    // if (orderArg instanceof OrderCol && isOrderCol(orderArg)) {
+    //   orders.push([orderArg.orderBy, orderArg.sortOrder]);
+    // } else {
+    //   orders.push(orderArg);
+    // }
+
+    // } else {
+    //   orders.push(order);
+    // }
     this.options.order = orders;
     return this;
   }
@@ -46,4 +63,8 @@ export class QueryOptionsBuilder {
   build(): Omit<FindAndCountOptions<any>, 'group'> {
     return this.options;
   }
+}
+
+function isOrderCol(x: any) {
+  return 'orderBy' in x;
 }

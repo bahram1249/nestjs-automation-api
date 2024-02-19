@@ -11,6 +11,8 @@ import { EntityModule } from '@rahino/eav/admin/entity/entity.module';
 import { ProductPhotoModule } from '@rahino/ecommerce/product-photo/product-photo.module';
 import { EAVEntityType } from '@rahino/database/models/eav/eav-entity-type.entity';
 import { InventoryModule } from '@rahino/ecommerce/inventory/inventory.module';
+import { UserVendorModule } from '@rahino/ecommerce/user/vendor/user-vendor.module';
+import { QueryFilterModule } from '@rahino/query-filter';
 
 @Module({
   imports: [
@@ -19,6 +21,8 @@ import { InventoryModule } from '@rahino/ecommerce/inventory/inventory.module';
     EntityModule,
     ProductPhotoModule,
     InventoryModule,
+    UserVendorModule,
+    QueryFilterModule,
   ],
   controllers: [ProductController],
   providers: [ProductService, ProductProfile],

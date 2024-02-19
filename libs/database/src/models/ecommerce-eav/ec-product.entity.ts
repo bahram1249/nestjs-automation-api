@@ -14,6 +14,8 @@ import { ECBrand } from './ec-brand.entity';
 import { User } from '../core/user.entity';
 import { AutoMap } from 'automapper-classes';
 import { EAVEntityAttributeValue } from '../eav/eav-entity-attribute-value.entity';
+import { ECInventory } from './ec-inventory.entity';
+import { Op, Sequelize } from 'sequelize';
 
 @Table({ tableName: 'ECProducts' })
 export class ECProduct extends Model {
@@ -135,4 +137,20 @@ export class ECProduct extends Model {
     as: 'productAttributeValues',
   })
   productAttributeValues?: EAVEntityAttributeValue[];
+
+  @HasMany(() => ECInventory, {
+    as: 'inventories',
+    foreignKey: 'productId',
+    scope: {
+      [Op.and]: [
+        Sequelize.where(
+          Sequelize.fn('isnull', Sequelize.col('[inventories].isDeleted'), 0),
+          {
+            [Op.eq]: 0,
+          },
+        ),
+      ],
+    },
+  })
+  inventories?: ECInventory[];
 }

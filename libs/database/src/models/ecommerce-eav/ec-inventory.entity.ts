@@ -5,6 +5,7 @@ import {
   DataType,
   ForeignKey,
   BelongsTo,
+  HasOne,
 } from 'sequelize-typescript';
 import { ECProduct } from '@rahino/database/models/ecommerce-eav/ec-product.entity';
 import { ECVendor } from '@rahino/database/models/ecommerce-eav/ec-vendor.entity';
@@ -16,6 +17,8 @@ import { ECVendorAddress } from '@rahino/database/models/ecommerce-eav/ec-vendor
 import { ECInventoryStatus } from '@rahino/database/models/ecommerce-eav/ec-inventory-status.entity';
 import { User } from '@rahino/database/models/core/user.entity';
 import { AutoMap } from 'automapper-classes';
+import { ECInventoryPrice } from '@rahino/database/models/ecommerce-eav/ec-inventory-price.entity';
+import { Op, Sequelize } from 'sequelize';
 
 @Table({ tableName: 'ECInventories' })
 export class ECInventory extends Model {
@@ -169,4 +172,30 @@ export class ECInventory extends Model {
 
   @BelongsTo(() => User, { as: 'deletedByUser', foreignKey: 'deletedBy' })
   deletedByUser?: User;
+
+  @HasOne(() => ECInventoryPrice, {
+    as: 'firstPrice',
+    foreignKey: 'inventoryId',
+    scope: {
+      [Op.and]: [
+        {
+          variationPriceId: 1,
+        },
+      ],
+    },
+  })
+  firstPrice?: ECInventoryPrice;
+
+  @HasOne(() => ECInventoryPrice, {
+    as: 'secondaryPrice',
+    foreignKey: 'inventoryId',
+    scope: {
+      [Op.and]: [
+        {
+          variationPriceId: 2,
+        },
+      ],
+    },
+  })
+  secondaryPrice?: ECInventoryPrice;
 }

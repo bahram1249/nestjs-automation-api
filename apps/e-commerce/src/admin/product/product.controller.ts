@@ -47,8 +47,8 @@ export class ProductController {
     explode: true,
   })
   @HttpCode(HttpStatus.OK)
-  async findAll(@Query() filter: GetProductDto) {
-    return await this.service.findAll(filter);
+  async findAll(@GetUser() user: User, @Query() filter: GetProductDto) {
+    return await this.service.findAll(user, filter);
   }
 
   @ApiOperation({ description: 'show product by given id' })
