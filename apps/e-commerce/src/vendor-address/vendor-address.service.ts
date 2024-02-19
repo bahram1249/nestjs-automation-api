@@ -75,7 +75,7 @@ export class VendorAddressService {
     const count = await this.vendorAddressRepository.count(
       queryBuilder.build(),
     );
-    const vendorAddresses = this.vendorAddressRepository.findAll(
+    const vendorAddresses = await this.vendorAddressRepository.findAll(
       queryBuilder
         .include([
           {
