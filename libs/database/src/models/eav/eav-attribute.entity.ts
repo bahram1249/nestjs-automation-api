@@ -5,9 +5,11 @@ import {
   DataType,
   BelongsTo,
   ForeignKey,
+  HasMany,
 } from 'sequelize-typescript';
 import { EAVAttributeType } from './eav-attribute-type.entity';
 import { AutoMap } from 'automapper-classes';
+import { EAVAttributeValue } from './eav-attribute-value';
 
 @Table({ tableName: 'EAVAttributes' })
 export class EAVAttribute extends Model {
@@ -62,4 +64,10 @@ export class EAVAttribute extends Model {
     allowNull: true,
   })
   isDeleted?: boolean;
+
+  @HasMany(() => EAVAttributeValue, {
+    as: 'attributeValues',
+    foreignKey: 'attributeId',
+  })
+  attributeValues?: EAVAttributeValue[];
 }

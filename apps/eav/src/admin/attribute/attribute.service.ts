@@ -14,6 +14,7 @@ import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builde
 import { EAVAttributeType } from '@rahino/database/models/eav/eav-attribute-type.entity';
 import { EAVEntityType } from '@rahino/database/models/eav/eav-entity-type.entity';
 import * as _ from 'lodash';
+import { EAVAttributeValue } from '@rahino/database/models/eav/eav-attribute-value';
 
 @Injectable()
 export class AttributeService {
@@ -74,6 +75,21 @@ export class AttributeService {
               model: EAVAttributeType,
               as: 'attributeType',
             },
+            {
+              model: EAVAttributeValue,
+              as: 'attributeValues',
+              required: false,
+              where: Sequelize.where(
+                Sequelize.fn(
+                  'isnull',
+                  Sequelize.col('attributeValues.isDeleted'),
+                  0,
+                ),
+                {
+                  [Op.eq]: 0,
+                },
+              ),
+            },
           ])
           .limit(filter.limit, filter.ignorePaging)
           .offset(filter.offset, filter.ignorePaging)
@@ -99,6 +115,21 @@ export class AttributeService {
         {
           model: EAVAttributeType,
           as: 'attributeType',
+        },
+        {
+          model: EAVAttributeValue,
+          as: 'attributeValues',
+          required: false,
+          where: Sequelize.where(
+            Sequelize.fn(
+              'isnull',
+              Sequelize.col('attributeValues.isDeleted'),
+              0,
+            ),
+            {
+              [Op.eq]: 0,
+            },
+          ),
         },
       ])
       .filter({
