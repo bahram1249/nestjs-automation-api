@@ -1,7 +1,7 @@
 import { replaceCharacterSlug } from '@rahino/commontools';
 import { AutoMap } from 'automapper-classes';
 import { Transform } from 'class-transformer';
-import { IsNotEmpty, MaxLength, MinLength } from 'class-validator';
+import { IsNotEmpty, IsOptional, MaxLength, MinLength } from 'class-validator';
 
 export class GuaranteeDto {
   @MinLength(3)
@@ -18,5 +18,6 @@ export class GuaranteeDto {
   slug: string;
 
   @AutoMap()
+  @IsOptional()
   description?: string;
 }
