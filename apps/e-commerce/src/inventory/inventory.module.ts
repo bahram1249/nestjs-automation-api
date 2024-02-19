@@ -14,7 +14,6 @@ import { ECInventoryPrice } from '@rahino/database/models/ecommerce-eav/ec-inven
 import { ECProvince } from '@rahino/database/models/ecommerce-eav/ec-province.entity';
 import { QueryFilterModule } from '@rahino/query-filter';
 import { ECProduct } from '@rahino/database/models/ecommerce-eav/ec-product.entity';
-import { ECInventoryStatus } from '@rahino/database/models/ecommerce-eav/ec-inventory-status.entity';
 import { inventoryStatusService } from './inventory-status.service';
 
 @Module({
