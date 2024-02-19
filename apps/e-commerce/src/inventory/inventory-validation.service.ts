@@ -180,6 +180,7 @@ export class InventoryValidationService {
     }
   }
 
+  // only province id validation
   private async provinceValidation(dto: InventoryDto[]) {
     for (const inventoryDto of dto) {
       if (inventoryDto.onlyProvinceId) {
