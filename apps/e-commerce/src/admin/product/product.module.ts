@@ -13,7 +13,10 @@ import { EAVEntityType } from '@rahino/database/models/eav/eav-entity-type.entit
 import { InventoryModule } from '@rahino/ecommerce/inventory/inventory.module';
 import { UserVendorModule } from '@rahino/ecommerce/user/vendor/user-vendor.module';
 import { QueryFilterModule } from '@rahino/query-filter';
-import { DatabaseModule } from '@rahino/database';
+import { BullModule } from '@nestjs/bullmq';
+import { PRODUCT_INVENTORY_STATUS_QUEUE } from '@rahino/ecommerce/inventory/constants';
+import { ConfigService } from '@nestjs/config';
+import { DBLoggerModule } from '@rahino/logger';
 
 @Module({
   imports: [
@@ -25,6 +28,18 @@ import { DatabaseModule } from '@rahino/database';
     UserVendorModule,
     QueryFilterModule,
     SequelizeModule,
+    DBLoggerModule,
+    BullModule.registerQueueAsync({
+      name: PRODUCT_INVENTORY_STATUS_QUEUE,
+      inject: [ConfigService],
+      useFactory: (config: ConfigService) => ({
+        connection: {
+          host: config.get<string>('REDIS_ADDRESS'),
+          port: config.get<number>('REDIS_PORT'),
+          password: config.get<string>('REDIS_PASSWORD'),
+        },
+      }),
+    }),
   ],
   controllers: [ProductController],
   providers: [ProductService, ProductProfile],

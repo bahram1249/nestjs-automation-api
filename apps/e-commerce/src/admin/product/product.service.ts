@@ -48,8 +48,13 @@ import { ECAddress } from '@rahino/database/models/ecommerce-eav/ec-address.enti
 import { ECCity } from '@rahino/database/models/ecommerce-eav/ec-city.entity';
 import { ECNeighborhood } from '@rahino/database/models/ecommerce-eav/ec-neighborhood.entity';
 import { ECVariationPrice } from '@rahino/database/models/ecommerce-eav/ec-variation-prices';
-import { inventoryStatusService } from '@rahino/ecommerce/inventory/inventory-status.service';
 import { Attachment } from '@rahino/database/models/core/attachment.entity';
+import {
+  Constants,
+  PRODUCT_INVENTORY_STATUS_QUEUE,
+} from '@rahino/ecommerce/inventory/constants';
+import { InjectQueue } from '@nestjs/bullmq';
+import { Queue } from 'bullmq';
 
 @Injectable()
 export class ProductService {
@@ -66,10 +71,12 @@ export class ProductService {
     private readonly inventoryValidationService: InventoryValidationService,
     private readonly inventoryService: InventoryService,
     private readonly userVendorService: UserVendorService,
-    private readonly inventoryStatusService: inventoryStatusService,
     @Inject(emptyListFilter)
     private readonly listFilter: ListFilter,
-    @InjectConnection() private readonly sequelize: Sequelize,
+    @InjectConnection()
+    private readonly sequelize: Sequelize,
+    @InjectQueue(PRODUCT_INVENTORY_STATUS_QUEUE)
+    private productInventoryQueue: Queue,
     private config: ConfigService,
   ) {}
 
@@ -697,12 +704,14 @@ export class ProductService {
         transaction,
       );
 
-      await this.inventoryStatusService.productInventoryStatusUpdate(
-        product.id,
-        transaction,
-      );
-
       await transaction.commit();
+
+      await this.productInventoryQueue.add(
+        Constants.productInventoryStatusJob(product.id.toString()),
+        {
+          productId: product.id,
+        },
+      );
     } catch (error) {
       await transaction.rollback();
       throw new InternalServerErrorException(error.message);

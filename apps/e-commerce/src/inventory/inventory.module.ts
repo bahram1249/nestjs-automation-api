@@ -15,6 +15,11 @@ import { ECProvince } from '@rahino/database/models/ecommerce-eav/ec-province.en
 import { QueryFilterModule } from '@rahino/query-filter';
 import { ECProduct } from '@rahino/database/models/ecommerce-eav/ec-product.entity';
 import { inventoryStatusService } from './inventory-status.service';
+import { BullModule } from '@nestjs/bullmq';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { PRODUCT_INVENTORY_STATUS_QUEUE } from './constants';
+import { DBLoggerModule } from '@rahino/logger';
+import { ProductInventoryStatusProcessor } from './product-inventory-status.processor';
 
 @Module({
   imports: [
@@ -31,12 +36,28 @@ import { inventoryStatusService } from './inventory-status.service';
     UserVendorModule,
     VendorAddressModule,
     QueryFilterModule,
+    DBLoggerModule,
+    BullModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: (config: ConfigService) => ({
+        connection: {
+          host: config.get<string>('REDIS_ADDRESS'),
+          port: config.get<number>('REDIS_PORT'),
+          password: config.get<string>('REDIS_PASSWORD'),
+        },
+      }),
+    }),
+    BullModule.registerQueueAsync({
+      name: PRODUCT_INVENTORY_STATUS_QUEUE,
+    }),
   ],
   providers: [
     InventoryValidationService,
     InventoryService,
     inventoryStatusService,
     InventoryProfile,
+    ProductInventoryStatusProcessor,
   ],
   exports: [
     InventoryValidationService,
