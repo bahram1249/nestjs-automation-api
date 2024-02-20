@@ -1,5 +1,5 @@
 ﻿import { Injectable } from '@nestjs/common';
-import { InventoryDto } from './dto';
+import { InventoryDto } from '../dto';
 import { Transaction } from 'sequelize';
 import { InjectModel } from '@nestjs/sequelize';
 import { ECInventory } from '@rahino/database/models/ecommerce-eav/ec-inventory.entity';

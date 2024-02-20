@@ -1,8 +1,8 @@
 import { OnWorkerEvent, Processor, WorkerHost } from '@nestjs/bullmq';
 import { Job } from 'bullmq';
-import { PRODUCT_INVENTORY_STATUS_QUEUE } from './constants';
+import { PRODUCT_INVENTORY_STATUS_QUEUE } from '../constants';
 import { DBLogger } from '@rahino/logger';
-import { inventoryStatusService } from './inventory-status.service';
+import { inventoryStatusService } from '../services';
 
 @Processor(PRODUCT_INVENTORY_STATUS_QUEUE)
 export class ProductInventoryStatusProcessor extends WorkerHost {

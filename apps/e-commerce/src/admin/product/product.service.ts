@@ -30,9 +30,11 @@ import { EAVAttributeValue } from '@rahino/database/models/eav/eav-attribute-val
 import { ProductPhotoService } from '@rahino/ecommerce/product-photo/product-photo.service';
 import { ProductPhotoDto } from './dto/product-photo.dto';
 import { PhotoDto } from '@rahino/ecommerce/product-photo/dto';
-import { InventoryValidationService } from '@rahino/ecommerce/inventory/inventory-validation.service';
 import { InventoryStatusEnum } from '@rahino/ecommerce/inventory/enum';
-import { InventoryService } from '@rahino/ecommerce/inventory/inventory.service';
+import {
+  InventoryService,
+  InventoryValidationService,
+} from '@rahino/ecommerce/inventory/services';
 import { ECInventory } from '@rahino/database/models/ecommerce-eav/ec-inventory.entity';
 import { UserVendorService } from '@rahino/ecommerce/user/vendor/user-vendor.service';
 import { ListFilter } from '@rahino/query-filter';

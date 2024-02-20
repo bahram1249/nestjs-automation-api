@@ -1,6 +1,6 @@
 ﻿import { BadRequestException, Inject, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
-import { InventoryDto, RequiredProductFieldDto } from './dto';
+import { InventoryDto, RequiredProductFieldDto } from '../dto';
 import { ECVariationPrice } from '@rahino/database/models/ecommerce-eav/ec-variation-prices';
 import { Op, Sequelize } from 'sequelize';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';

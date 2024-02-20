@@ -4,7 +4,7 @@ import { ECInventory } from '@rahino/database/models/ecommerce-eav/ec-inventory.
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import { Op } from 'sequelize';
 import { Sequelize, Transaction } from 'sequelize';
-import { InventoryStatusEnum } from './enum';
+import { InventoryStatusEnum } from '../enum';
 import { ECProduct } from '@rahino/database/models/ecommerce-eav/ec-product.entity';
 
 @Injectable()
