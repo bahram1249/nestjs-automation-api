@@ -35,23 +35,23 @@ import { DynamicProviderModule } from '../dynamic-provider/dynamic-provider.modu
       isGlobal: true,
       ttl: 5000,
     }),
-    ThrottlerModule.forRoot([
-      {
-        name: 'short',
-        ttl: 1000,
-        limit: 2000,
-      },
-      {
-        name: 'medium',
-        ttl: 10000,
-        limit: 20000,
-      },
-      {
-        name: 'long',
-        ttl: 60000,
-        limit: 180000,
-      },
-    ]),
+    // ThrottlerModule.forRoot([
+    //   {
+    //     name: 'short',
+    //     ttl: 1000,
+    //     limit: 2000,
+    //   },
+    //   {
+    //     name: 'medium',
+    //     ttl: 10000,
+    //     limit: 20000,
+    //   },
+    //   {
+    //     name: 'long',
+    //     ttl: 60000,
+    //     limit: 180000,
+    //   },
+    // ]),
     DatabaseModule,
     DBLoggerModule,
     AutomapperModule.forRoot({
