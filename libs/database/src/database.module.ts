@@ -61,12 +61,14 @@ import { ECVendorAddress } from './models/ecommerce-eav/ec-vendor-address.entity
 import { ECVariationPrice } from './models/ecommerce-eav/ec-variation-prices';
 import { ECInventory } from './models/ecommerce-eav/ec-inventory.entity';
 import { ECInventoryPrice } from './models/ecommerce-eav/ec-inventory-price.entity';
+import { EAVEntityAttribute } from './models/eav/eav-entity-attribute.entity';
 
 @Module({
   imports: [
     SequelizeModule.forRootAsync({
       imports: [ConfigModule],
       useFactory: (configService: ConfigService) => ({
+        name: 'sequelize_default',
         dialect: configService.get<Dialect>('DB_DIALECT'),
         host: configService.get<string>('DB_HOST'),
         port: configService.get<number>('DB_PORT'),
@@ -98,6 +100,7 @@ import { ECInventoryPrice } from './models/ecommerce-eav/ec-inventory-price.enti
           EAVEntity,
           EAVAttributeType,
           EAVAttribute,
+          EAVEntityAttribute,
           EAVAttributeValue,
           EAVEntityAttributeValue,
           EAVEntityPhoto,
@@ -168,6 +171,5 @@ import { ECInventoryPrice } from './models/ecommerce-eav/ec-inventory-price.enti
     }),
   ],
   // providers: [...databaseProviders],
-  // exports: [...databaseProviders],
 })
 export class DatabaseModule {}

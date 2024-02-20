@@ -32,6 +32,7 @@ export class inventoryStatusService {
           ),
         )
         .filter({ inventoryStatusId: InventoryStatusEnum.available })
+        .transaction(transaction)
         .build(),
     );
     if (inventoriesCount > 0) {

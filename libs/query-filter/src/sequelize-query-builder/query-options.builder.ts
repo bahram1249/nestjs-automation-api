@@ -1,4 +1,11 @@
-import { FindAndCountOptions, Includeable, Op, WhereOptions } from 'sequelize';
+import {
+  FindAndCountOptions,
+  Includeable,
+  LOCK,
+  Op,
+  Transaction,
+  WhereOptions,
+} from 'sequelize';
 import { Order, OrderCol } from '@rahino/query-filter';
 
 export class QueryOptionsBuilder {
@@ -25,22 +32,12 @@ export class QueryOptionsBuilder {
     if (!this.options.order) this.options.order = [];
     const orders = JSON.parse(JSON.stringify(this.options.order));
     if (isOrderCol(orderArg)) {
-      if (orderArg instanceof OrderCol) {
-        orders.push([orderArg.orderBy, orderArg.sortOrder]);
-      }
+      const orderCol = orderArg as OrderCol;
+      orders.push([orderCol.orderBy, orderCol.sortOrder]);
     } else {
       orders.push(orderArg);
     }
 
-    // if (orderArg instanceof OrderCol && isOrderCol(orderArg)) {
-    //   orders.push([orderArg.orderBy, orderArg.sortOrder]);
-    // } else {
-    //   orders.push(orderArg);
-    // }
-
-    // } else {
-    //   orders.push(order);
-    // }
     this.options.order = orders;
     return this;
   }
@@ -62,6 +59,14 @@ export class QueryOptionsBuilder {
   }
   build(): Omit<FindAndCountOptions<any>, 'group'> {
     return this.options;
+  }
+  transaction(transaction: Transaction) {
+    this.options.transaction = transaction;
+    return this;
+  }
+  lock(transactionLock: LOCK) {
+    this.options.lock = transactionLock;
+    return this;
   }
 }
 

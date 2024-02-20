@@ -6,8 +6,8 @@ import {
   NotFoundException,
   NotImplementedException,
 } from '@nestjs/common';
-import { InjectModel } from '@nestjs/sequelize';
-import { Op, Sequelize } from 'sequelize';
+import { InjectConnection, InjectModel } from '@nestjs/sequelize';
+import { Op, Sequelize, Transaction } from 'sequelize';
 import { GetProductDto, ProductDto } from './dto';
 import { ECProduct } from '@rahino/database/models/ecommerce-eav/ec-product.entity';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
@@ -66,7 +66,9 @@ export class ProductService {
     private readonly inventoryService: InventoryService,
     private readonly userVendorService: UserVendorService,
     private readonly inventoryStatusService: inventoryStatusService,
-    @Inject(emptyListFilter) private readonly listFilter: ListFilter,
+    @Inject(emptyListFilter)
+    private readonly listFilter: ListFilter,
+    @InjectConnection() private readonly sequelize: Sequelize,
     private config: ConfigService,
   ) {}
 
@@ -154,6 +156,21 @@ export class ProductService {
           required: false,
         },
         {
+          attributes: [
+            'id',
+            'productId',
+            'vendorId',
+            'colorId',
+            'guaranteeId',
+            'guaranteeMonthId',
+            'buyPrice',
+            'qty',
+            'onlyProvinceId',
+            'vendorAddressId',
+            'weight',
+            'inventoryStatusId',
+            'description',
+          ],
           model: ECInventory,
           as: 'inventories',
           where: {
@@ -193,6 +210,7 @@ export class ProductService {
               as: 'onlyProvince',
             },
             {
+              attributes: ['id', 'vendorId', 'addressId'],
               model: ECVendorAddress,
               as: 'vendorAddress',
               include: [
@@ -428,7 +446,9 @@ export class ProductService {
       dto.inventories,
     );
 
-    const transaction = await new Sequelize().transaction();
+    const transaction = await this.sequelize.transaction({
+      isolationLevel: Transaction.ISOLATION_LEVELS.READ_COMMITTED,
+    });
     let product: ECProduct = null;
     try {
       // map item to product
@@ -483,10 +503,7 @@ export class ProductService {
       await transaction.commit();
     } catch (error) {
       await transaction.rollback();
-      console.log(error);
-      throw new InternalServerErrorException(
-        'transaction of creating product failed',
-      );
+      throw new InternalServerErrorException(error.message);
     }
 
     return {

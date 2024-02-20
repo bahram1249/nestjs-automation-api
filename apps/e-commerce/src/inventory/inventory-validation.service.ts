@@ -53,7 +53,11 @@ export class InventoryValidationService {
       new QueryOptionsBuilder()
         .filter(
           Sequelize.where(
-            Sequelize.fn('isnull', 'ECVariationPrices.required', 0),
+            Sequelize.fn(
+              'isnull',
+              Sequelize.col('ECVariationPrice.required'),
+              0,
+            ),
             {
               [Op.eq]: 1,
             },
@@ -95,9 +99,12 @@ export class InventoryValidationService {
         const color = await this.colorRepository.findOne(
           new QueryOptionsBuilder()
             .filter(
-              Sequelize.where(Sequelize.fn('isnull', 'ECColor.isDeleted', 0), {
-                [Op.eq]: 0,
-              }),
+              Sequelize.where(
+                Sequelize.fn('isnull', Sequelize.col('ECColor.isDeleted'), 0),
+                {
+                  [Op.eq]: 0,
+                },
+              ),
             )
             .build(),
         );

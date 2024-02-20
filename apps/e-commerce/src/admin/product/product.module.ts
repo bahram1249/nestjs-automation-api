@@ -13,6 +13,7 @@ import { EAVEntityType } from '@rahino/database/models/eav/eav-entity-type.entit
 import { InventoryModule } from '@rahino/ecommerce/inventory/inventory.module';
 import { UserVendorModule } from '@rahino/ecommerce/user/vendor/user-vendor.module';
 import { QueryFilterModule } from '@rahino/query-filter';
+import { DatabaseModule } from '@rahino/database';
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { QueryFilterModule } from '@rahino/query-filter';
     InventoryModule,
     UserVendorModule,
     QueryFilterModule,
+    SequelizeModule,
   ],
   controllers: [ProductController],
   providers: [ProductService, ProductProfile],
