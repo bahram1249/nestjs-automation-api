@@ -39,17 +39,17 @@ import { DynamicProviderModule } from '../dynamic-provider/dynamic-provider.modu
       {
         name: 'short',
         ttl: 1000,
-        limit: 20,
+        limit: 2000,
       },
       {
         name: 'medium',
         ttl: 10000,
-        limit: 40,
+        limit: 20000,
       },
       {
         name: 'long',
         ttl: 60000,
-        limit: 300,
+        limit: 180000,
       },
     ]),
     DatabaseModule,
