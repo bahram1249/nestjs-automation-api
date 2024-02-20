@@ -184,45 +184,66 @@ export class ProductService {
           model: ECInventory,
           as: 'inventories',
           where: {
-            vendorId: {
-              [Op.in]: vendorIds,
-            },
+            [Op.and]: [
+              {
+                vendorId: {
+                  [Op.in]: vendorIds,
+                },
+              },
+              Sequelize.where(
+                Sequelize.fn(
+                  'isnull',
+                  Sequelize.col('inventories.isDeleted'),
+                  0,
+                ),
+                {
+                  [Op.eq]: 0,
+                },
+              ),
+            ],
           },
           include: [
             {
               attributes: ['id', 'name'],
               model: ECInventoryStatus,
               as: 'inventoryStatus',
+              required: false,
             },
             {
               attributes: ['id', 'name'],
               model: ECVendor,
               as: 'vendor',
+              required: false,
             },
             {
               attributes: ['id', 'name', 'hexCode'],
               model: ECColor,
               as: 'color',
+              required: false,
             },
             {
               attributes: ['id', 'name'],
               model: ECGuarantee,
               as: 'guarantee',
+              required: false,
             },
             {
               attributes: ['id', 'name'],
               model: ECGuaranteeMonth,
               as: 'guaranteeMonth',
+              required: false,
             },
             {
               attributes: ['id', 'name'],
               model: ECProvince,
               as: 'onlyProvince',
+              required: false,
             },
             {
               attributes: ['id', 'vendorId', 'addressId'],
               model: ECVendorAddress,
               as: 'vendorAddress',
+              required: false,
               include: [
                 {
                   attributes: [
@@ -240,21 +261,25 @@ export class ProductService {
                   ],
                   model: ECAddress,
                   as: 'address',
+                  required: false,
                   include: [
                     {
                       attributes: ['id', 'name'],
                       model: ECProvince,
                       as: 'province',
+                      required: false,
                     },
                     {
                       attributes: ['id', 'name'],
                       model: ECCity,
                       as: 'city',
+                      required: false,
                     },
                     {
                       attributes: ['id', 'name'],
                       model: ECNeighborhood,
                       as: 'neighborhood',
+                      required: false,
                     },
                   ],
                 },
@@ -262,6 +287,7 @@ export class ProductService {
                   attributes: ['id', 'name'],
                   model: ECVendor,
                   as: 'vendor',
+                  required: false,
                 },
               ],
             },
@@ -269,6 +295,7 @@ export class ProductService {
               attributes: ['price'],
               model: ECInventoryPrice,
               as: 'firstPrice',
+              required: false,
               include: [
                 {
                   attributes: ['id', 'name'],
@@ -291,6 +318,7 @@ export class ProductService {
               attributes: ['price'],
               model: ECInventoryPrice,
               as: 'secondaryPrice',
+              required: false,
               include: [
                 {
                   attributes: ['id', 'name'],
@@ -319,7 +347,7 @@ export class ProductService {
           required: false,
         },
       ])
-      .subQuery(false)
+      .subQuery(true)
       .limit(filter.limit)
       .offset(filter.offset)
       .order({ orderBy: filter.orderBy, sortOrder: filter.sortOrder })
@@ -349,7 +377,7 @@ export class ProductService {
           'id',
           'title',
           'sku',
-          // 'description',
+          'description',
           'slug',
           'entityTypeId',
           'colorBased',
@@ -426,45 +454,66 @@ export class ProductService {
             model: ECInventory,
             as: 'inventories',
             where: {
-              vendorId: {
-                [Op.in]: vendorIds,
-              },
+              [Op.and]: [
+                {
+                  vendorId: {
+                    [Op.in]: vendorIds,
+                  },
+                },
+                Sequelize.where(
+                  Sequelize.fn(
+                    'isnull',
+                    Sequelize.col('inventories.isDeleted'),
+                    0,
+                  ),
+                  {
+                    [Op.eq]: 0,
+                  },
+                ),
+              ],
             },
             include: [
               {
                 attributes: ['id', 'name'],
                 model: ECInventoryStatus,
                 as: 'inventoryStatus',
+                required: false,
               },
               {
                 attributes: ['id', 'name'],
                 model: ECVendor,
                 as: 'vendor',
+                required: false,
               },
               {
                 attributes: ['id', 'name', 'hexCode'],
                 model: ECColor,
                 as: 'color',
+                required: false,
               },
               {
                 attributes: ['id', 'name'],
                 model: ECGuarantee,
                 as: 'guarantee',
+                required: false,
               },
               {
                 attributes: ['id', 'name'],
                 model: ECGuaranteeMonth,
                 as: 'guaranteeMonth',
+                required: false,
               },
               {
                 attributes: ['id', 'name'],
                 model: ECProvince,
                 as: 'onlyProvince',
+                required: false,
               },
               {
                 attributes: ['id', 'vendorId', 'addressId'],
                 model: ECVendorAddress,
                 as: 'vendorAddress',
+                required: false,
                 include: [
                   {
                     attributes: [
@@ -482,21 +531,25 @@ export class ProductService {
                     ],
                     model: ECAddress,
                     as: 'address',
+                    required: false,
                     include: [
                       {
                         attributes: ['id', 'name'],
                         model: ECProvince,
                         as: 'province',
+                        required: false,
                       },
                       {
                         attributes: ['id', 'name'],
                         model: ECCity,
                         as: 'city',
+                        required: false,
                       },
                       {
                         attributes: ['id', 'name'],
                         model: ECNeighborhood,
                         as: 'neighborhood',
+                        required: false,
                       },
                     ],
                   },
@@ -504,6 +557,7 @@ export class ProductService {
                     attributes: ['id', 'name'],
                     model: ECVendor,
                     as: 'vendor',
+                    required: false,
                   },
                 ],
               },
@@ -511,6 +565,7 @@ export class ProductService {
                 attributes: ['price'],
                 model: ECInventoryPrice,
                 as: 'firstPrice',
+                required: false,
                 include: [
                   {
                     attributes: ['id', 'name'],
@@ -533,6 +588,7 @@ export class ProductService {
                 attributes: ['price'],
                 model: ECInventoryPrice,
                 as: 'secondaryPrice',
+                required: false,
                 include: [
                   {
                     attributes: ['id', 'name'],
@@ -561,7 +617,8 @@ export class ProductService {
             required: false,
           },
         ])
-        .subQuery(false)
+        .subQuery(true)
+
         .filter(
           Sequelize.where(
             Sequelize.fn('isnull', Sequelize.col('ECProduct.isDeleted'), 0),
@@ -573,6 +630,7 @@ export class ProductService {
         .filter({
           id: id,
         })
+        .order({ orderBy: 'id', sortOrder: 'desc' })
         .order([
           { model: ECInventory, as: 'inventories' },
           { model: ECVendor, as: 'vendor' },

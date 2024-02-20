@@ -144,16 +144,6 @@ export class ECProduct extends Model {
   @HasMany(() => ECInventory, {
     as: 'inventories',
     foreignKey: 'productId',
-    scope: {
-      [Op.and]: [
-        Sequelize.where(
-          Sequelize.fn('isnull', Sequelize.col('[inventories].isDeleted'), 0),
-          {
-            [Op.eq]: 0,
-          },
-        ),
-      ],
-    },
   })
   inventories?: ECInventory[];
 
