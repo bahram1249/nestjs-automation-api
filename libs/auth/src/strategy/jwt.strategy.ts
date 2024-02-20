@@ -117,6 +117,7 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
         ],
       });
       user.menus = menus;
+      await this.cacheManager.set(`userid:${payload.sub}`, user);
     }
     return user;
   }

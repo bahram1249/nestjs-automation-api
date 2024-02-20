@@ -766,11 +766,15 @@ export class ProductService {
 
       await transaction.commit();
 
+      const keepJobs = this.config.get<number>(
+        'PRODUCT_INVENTORY_STATUS_KEEPJOBS',
+      );
       await this.productInventoryQueue.add(
         Constants.productInventoryStatusJob(product.id.toString()),
         {
           productId: product.id,
         },
+        { removeOnComplete: keepJobs },
       );
     } catch (error) {
       await transaction.rollback();
