@@ -6,6 +6,7 @@ import {
   BelongsTo,
   ForeignKey,
   HasMany,
+  BelongsToMany,
 } from 'sequelize-typescript';
 import { EAVEntityType } from '../eav/eav-entity-type.entity';
 import { ECPublishStatus } from './ec-publish-status.entity';
@@ -16,6 +17,8 @@ import { AutoMap } from 'automapper-classes';
 import { EAVEntityAttributeValue } from '../eav/eav-entity-attribute-value.entity';
 import { ECInventory } from './ec-inventory.entity';
 import { Op, Sequelize } from 'sequelize';
+import { Attachment } from '../core/attachment.entity';
+import { EAVEntityPhoto } from '../eav/eav-entity-photo.entity';
 
 @Table({ tableName: 'ECProducts' })
 export class ECProduct extends Model {
@@ -153,4 +156,19 @@ export class ECProduct extends Model {
     },
   })
   inventories?: ECInventory[];
+
+  @HasMany(() => EAVEntityPhoto, {
+    as: 'productPhotos',
+    foreignKey: 'entityId',
+    sourceKey: 'id',
+  })
+  productPhotos?: EAVEntityPhoto[];
+
+  @BelongsToMany(
+    () => Attachment,
+    () => EAVEntityPhoto,
+    'entityId',
+    'attachmentId',
+  )
+  attachments?: Attachment[];
 }

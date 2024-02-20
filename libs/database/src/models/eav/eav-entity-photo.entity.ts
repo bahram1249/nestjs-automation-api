@@ -30,6 +30,9 @@ export class EAVEntityPhoto extends Model {
   @ForeignKey(() => Attachment)
   attachmentId: bigint;
 
-  @BelongsTo(() => Attachment, { as: 'attachment', foreignKey: 'attachmentId' })
+  @BelongsTo(() => Attachment, {
+    as: 'attachment',
+    foreignKey: 'attachmentId',
+  })
   attachment?: Attachment;
 }

@@ -49,6 +49,7 @@ import { ECCity } from '@rahino/database/models/ecommerce-eav/ec-city.entity';
 import { ECNeighborhood } from '@rahino/database/models/ecommerce-eav/ec-neighborhood.entity';
 import { ECVariationPrice } from '@rahino/database/models/ecommerce-eav/ec-variation-prices';
 import { inventoryStatusService } from '@rahino/ecommerce/inventory/inventory-status.service';
+import { Attachment } from '@rahino/database/models/core/attachment.entity';
 
 @Injectable()
 export class ProductService {
@@ -302,6 +303,12 @@ export class ProductService {
           ],
           required: false,
         },
+        {
+          attributes: ['id', 'fileName'],
+          model: Attachment,
+          as: 'attachments',
+          required: false,
+        },
       ])
       .subQuery(false)
       .limit(filter.limit)
@@ -320,14 +327,20 @@ export class ProductService {
     };
   }
 
-  async findById(id: bigint) {
+  async findById(user: User, id: bigint) {
+    const vendorResult = await this.userVendorService.findAll(
+      user,
+      this.listFilter,
+    );
+
+    const vendorIds = vendorResult.result.map((vendor) => vendor.id);
     const product = await this.repository.findOne(
       new QueryOptionsBuilder()
         .attributes([
           'id',
           'title',
           'sku',
-          'description',
+          // 'description',
           'slug',
           'entityTypeId',
           'colorBased',
@@ -356,7 +369,190 @@ export class ProductService {
             model: EAVEntityType,
             as: 'entityType',
           },
+          {
+            attributes: [
+              'attributeId',
+              [
+                Sequelize.fn(
+                  'isnull',
+                  Sequelize.col('productAttributeValues.val'),
+                  Sequelize.col('productAttributeValues.attributeValue.value'),
+                ),
+                'val',
+              ],
+              [Sequelize.col('attributeValueId'), 'attributeValueId'],
+            ],
+            model: EAVEntityAttributeValue,
+            as: 'productAttributeValues',
+            include: [
+              {
+                attributes: ['id', 'name', 'attributeTypeId'],
+                model: EAVAttribute,
+                as: 'attribute',
+              },
+              {
+                attributes: ['id', 'attributeId', 'value'],
+                model: EAVAttributeValue,
+                as: 'attributeValue',
+              },
+            ],
+            required: false,
+          },
+          {
+            attributes: [
+              'id',
+              'productId',
+              'vendorId',
+              'colorId',
+              'guaranteeId',
+              'guaranteeMonthId',
+              'buyPrice',
+              'qty',
+              'onlyProvinceId',
+              'vendorAddressId',
+              'weight',
+              'inventoryStatusId',
+              'description',
+            ],
+            model: ECInventory,
+            as: 'inventories',
+            where: {
+              vendorId: {
+                [Op.in]: vendorIds,
+              },
+            },
+            include: [
+              {
+                attributes: ['id', 'name'],
+                model: ECInventoryStatus,
+                as: 'inventoryStatus',
+              },
+              {
+                attributes: ['id', 'name'],
+                model: ECVendor,
+                as: 'vendor',
+              },
+              {
+                attributes: ['id', 'name', 'hexCode'],
+                model: ECColor,
+                as: 'color',
+              },
+              {
+                attributes: ['id', 'name'],
+                model: ECGuarantee,
+                as: 'guarantee',
+              },
+              {
+                attributes: ['id', 'name'],
+                model: ECGuaranteeMonth,
+                as: 'guaranteeMonth',
+              },
+              {
+                attributes: ['id', 'name'],
+                model: ECProvince,
+                as: 'onlyProvince',
+              },
+              {
+                attributes: ['id', 'vendorId', 'addressId'],
+                model: ECVendorAddress,
+                as: 'vendorAddress',
+                include: [
+                  {
+                    attributes: [
+                      'id',
+                      'name',
+                      'latitude',
+                      'longitude',
+                      'provinceId',
+                      'cityId',
+                      'neighborhoodId',
+                      'street',
+                      'alley',
+                      'plaque',
+                      'floorNumber',
+                    ],
+                    model: ECAddress,
+                    as: 'address',
+                    include: [
+                      {
+                        attributes: ['id', 'name'],
+                        model: ECProvince,
+                        as: 'province',
+                      },
+                      {
+                        attributes: ['id', 'name'],
+                        model: ECCity,
+                        as: 'city',
+                      },
+                      {
+                        attributes: ['id', 'name'],
+                        model: ECNeighborhood,
+                        as: 'neighborhood',
+                      },
+                    ],
+                  },
+                  {
+                    attributes: ['id', 'name'],
+                    model: ECVendor,
+                    as: 'vendor',
+                  },
+                ],
+              },
+              {
+                attributes: ['price'],
+                model: ECInventoryPrice,
+                as: 'firstPrice',
+                include: [
+                  {
+                    attributes: ['id', 'name'],
+                    model: ECVariationPrice,
+                    as: 'variationPrice',
+                  },
+                ],
+                where: Sequelize.where(
+                  Sequelize.fn(
+                    'isnull',
+                    Sequelize.col('inventories.firstPrice.isDeleted'),
+                    0,
+                  ),
+                  {
+                    [Op.eq]: 0,
+                  },
+                ),
+              },
+              {
+                attributes: ['price'],
+                model: ECInventoryPrice,
+                as: 'secondaryPrice',
+                include: [
+                  {
+                    attributes: ['id', 'name'],
+                    model: ECVariationPrice,
+                    as: 'variationPrice',
+                  },
+                ],
+                where: Sequelize.where(
+                  Sequelize.fn(
+                    'isnull',
+                    Sequelize.col('inventories.secondaryPrice.isDeleted'),
+                    0,
+                  ),
+                  {
+                    [Op.eq]: 0,
+                  },
+                ),
+              },
+            ],
+            required: false,
+          },
+          {
+            attributes: ['id', 'fileName'],
+            model: Attachment,
+            as: 'attachments',
+            required: false,
+          },
         ])
+        .subQuery(false)
         .filter(
           Sequelize.where(
             Sequelize.fn('isnull', Sequelize.col('ECProduct.isDeleted'), 0),
@@ -368,6 +564,12 @@ export class ProductService {
         .filter({
           id: id,
         })
+        .order([
+          { model: ECInventory, as: 'inventories' },
+          { model: ECVendor, as: 'vendor' },
+          'priorityOrder',
+          'asc',
+        ])
         .build(),
     );
     if (!product) {
@@ -507,7 +709,7 @@ export class ProductService {
     }
 
     return {
-      result: await this.findById(product.id),
+      result: (await this.findById(user, product.id)).result,
     };
   }
 
