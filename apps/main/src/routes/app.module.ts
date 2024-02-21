@@ -33,7 +33,7 @@ import { DynamicProviderModule } from '../dynamic-provider/dynamic-provider.modu
     }),
     CacheModule.register({
       isGlobal: true,
-      ttl: 5000,
+      ttl: 60000,
     }),
     // ThrottlerModule.forRoot([
     //   {
