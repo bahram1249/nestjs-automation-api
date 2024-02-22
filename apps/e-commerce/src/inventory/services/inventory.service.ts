@@ -161,7 +161,7 @@ export class InventoryService {
     }
   }
 
-  async findByVendorIds(vendorIds: number[]) {
+  async findByVendorIds(vendorIds: number[], productId: bigint) {
     return await this.repository.findAll(
       new QueryOptionsBuilder()
         .filter({
@@ -177,6 +177,9 @@ export class InventoryService {
             },
           ),
         )
+        .filter({
+          productId: productId,
+        })
         .build(),
     );
   }

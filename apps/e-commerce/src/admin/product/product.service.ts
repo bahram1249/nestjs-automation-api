@@ -955,8 +955,10 @@ export class ProductService {
       const oldItemInvenotryIds = oldItemInventories.map((item) => item.id);
 
       // all old inventories exists in database
-      const allOldInventories =
-        await this.inventoryService.findByVendorIds(vendorIds);
+      const allOldInventories = await this.inventoryService.findByVendorIds(
+        vendorIds,
+        entityId,
+      );
 
       // find the items not exists in dto's for deleting in database
       const deletedInventoryIds = allOldInventories
