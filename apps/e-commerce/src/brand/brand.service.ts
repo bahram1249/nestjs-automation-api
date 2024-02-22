@@ -1,6 +1,7 @@
 import {
   BadRequestException,
   ForbiddenException,
+  Inject,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
@@ -17,6 +18,7 @@ import { MinioClientService } from '@rahino/minio-client';
 import * as fs from 'fs';
 import { Attachment } from '@rahino/database/models/core/attachment.entity';
 import { Response } from 'express';
+import { ThumbnailService } from '@rahino/thumbnail';
 
 @Injectable()
 export class BrandService {
@@ -26,6 +28,7 @@ export class BrandService {
     @InjectModel(ECBrand) private repository: typeof ECBrand,
     @InjectModel(Attachment) private attachmentRepository: typeof Attachment,
     @InjectMapper() private readonly mapper: Mapper,
+    private readonly thumbnailService: ThumbnailService,
   ) {}
 
   async findAll(filter: GetBrandDto) {
@@ -256,11 +259,11 @@ export class BrandService {
     // upload to s3 cloud
     const bucketName = 'brands';
     await this.minioClientService.createBucket(bucketName);
-    const fileStream = fs.readFileSync(file.path);
+    const buffer = await this.thumbnailService.resize(file.path);
     const uploadResult = await this.minioClientService.upload(
       bucketName,
       file.filename,
-      fileStream,
+      buffer,
     );
 
     // remove old one if exists

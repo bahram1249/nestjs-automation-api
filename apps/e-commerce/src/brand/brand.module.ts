@@ -14,11 +14,24 @@ import { BrandProfile } from './mapper';
 import { MinioClientModule } from '@rahino/minio-client';
 import { Attachment } from '@rahino/database/models/core/attachment.entity';
 import { ReverseProxyBrandImageMiddleware } from './reverse-proxy.middleware';
+import { ThumbnailModule } from '@rahino/thumbnail';
+import { ConfigService } from '@nestjs/config';
 
 @Module({
   imports: [
     SequelizeModule.forFeature([User, Permission, ECBrand, Attachment]),
     MinioClientModule,
+    ThumbnailModule.registerAsync({
+      inject: [ConfigService],
+      useFactory: (config: ConfigService) => ({
+        height: parseInt(config.get('BRAND_IMAGE_HEIGHT')) || 700,
+        width: parseInt(config.get('BRAND_IMAGE_WIDTH')) || 700,
+        resizeOptions: {
+          withoutEnlargement: true,
+          withoutReduction: true,
+        },
+      }),
+    }),
   ],
   controllers: [BrandController],
   providers: [BrandService, BrandProfile],

@@ -17,6 +17,8 @@ import { Role } from '@rahino/database/models/core/role.entity';
 import { MinioClientModule } from '@rahino/minio-client';
 import { ReverseProxyVendorImageMiddleware } from './reverse-proxy.middleware';
 import { Attachment } from '@rahino/database/models/core/attachment.entity';
+import { ThumbnailModule } from '@rahino/thumbnail';
+import { ConfigService } from '@nestjs/config';
 
 @Module({
   imports: [
@@ -30,6 +32,17 @@ import { Attachment } from '@rahino/database/models/core/attachment.entity';
       ECVendorUser,
       Attachment,
     ]),
+    ThumbnailModule.registerAsync({
+      inject: [ConfigService],
+      useFactory: (config: ConfigService) => ({
+        height: parseInt(config.get('VENDOR_IMAGE_HEIGHT')) || 700,
+        width: parseInt(config.get('VENDOR_IMAGE_WIDTH')) || 700,
+        resizeOptions: {
+          withoutEnlargement: true,
+          withoutReduction: true,
+        },
+      }),
+    }),
   ],
   controllers: [VendorController],
   providers: [VendorService, VendorProfile],

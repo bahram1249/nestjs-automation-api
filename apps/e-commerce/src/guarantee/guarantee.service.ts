@@ -17,6 +17,7 @@ import { Attachment } from '@rahino/database/models/core/attachment.entity';
 import * as fs from 'fs';
 import { User } from '@rahino/database/models/core/user.entity';
 import { MinioClientService } from '@rahino/minio-client';
+import { ThumbnailService } from '@rahino/thumbnail';
 
 @Injectable()
 export class GuaranteeService {
@@ -25,7 +26,9 @@ export class GuaranteeService {
     @InjectModel(ECGuarantee) private repository: typeof ECGuarantee,
     @InjectModel(Attachment) private attachmentRepository: typeof Attachment,
     private minioClientService: MinioClientService,
-    @InjectMapper() private readonly mapper: Mapper,
+    @InjectMapper()
+    private readonly mapper: Mapper,
+    private readonly thumbnailService: ThumbnailService,
   ) {}
 
   async findAll(filter: GetGuaranteeDto) {
@@ -256,11 +259,11 @@ export class GuaranteeService {
     // upload to s3 cloud
     const bucketName = 'guarantees';
     await this.minioClientService.createBucket(bucketName);
-    const fileStream = fs.readFileSync(file.path);
+    const buffer = await this.thumbnailService.resize(file.path);
     const uploadResult = await this.minioClientService.upload(
       bucketName,
       file.filename,
-      fileStream,
+      buffer,
     );
 
     // remove old one if exists

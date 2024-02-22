@@ -14,6 +14,7 @@ import { Attachment } from '@rahino/database/models/core/attachment.entity';
 import { Response } from 'express';
 import { PhotoDto } from './dto';
 import { EAVEntityPhoto } from '@rahino/database/models/eav/eav-entity-photo.entity';
+import { ThumbnailService } from '@rahino/thumbnail';
 
 @Injectable()
 export class ProductPhotoService {
@@ -24,18 +25,19 @@ export class ProductPhotoService {
     @InjectModel(Attachment)
     private attachmentRepository: typeof Attachment,
     @InjectModel(EAVEntityPhoto)
-    private entityPhotoRepository: typeof EAVEntityPhoto,
+    private readonly entityPhotoRepository: typeof EAVEntityPhoto,
+    private readonly thumbnailService: ThumbnailService,
   ) {}
 
   async uploadImage(user: User, file: Express.Multer.File) {
     // upload to s3 cloud
     const bucketName = 'products';
     await this.minioClientService.createBucket(bucketName);
-    const fileStream = fs.readFileSync(file.path);
+    const buffer = await this.thumbnailService.resize(file.path);
     const uploadResult = await this.minioClientService.upload(
       bucketName,
       file.filename,
-      fileStream,
+      buffer,
     );
 
     // create new one

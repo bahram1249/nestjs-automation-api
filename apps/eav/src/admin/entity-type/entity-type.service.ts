@@ -18,6 +18,7 @@ import { MinioClientService } from '@rahino/minio-client';
 import { Response } from 'express';
 import { User } from '@rahino/database/models/core/user.entity';
 import * as fs from 'fs';
+import { ThumbnailService } from '@rahino/thumbnail';
 
 @Injectable()
 export class EntityTypeService {
@@ -30,7 +31,9 @@ export class EntityTypeService {
     @InjectModel(Attachment)
     private readonly attachmentRepository: typeof Attachment,
     private minioClientService: MinioClientService,
-    @InjectMapper() private readonly mapper: Mapper,
+    @InjectMapper()
+    private readonly mapper: Mapper,
+    private readonly thumbnailService: ThumbnailService,
   ) {}
 
   async findAll(filter: GetEntityTypeDto) {
@@ -411,11 +414,11 @@ export class EntityTypeService {
     // upload to s3 cloud
     const bucketName = 'entitytypes';
     await this.minioClientService.createBucket(bucketName);
-    const fileStream = fs.readFileSync(file.path);
+    const buffer = await this.thumbnailService.resize(file.path);
     const uploadResult = await this.minioClientService.upload(
       bucketName,
       file.filename,
-      fileStream,
+      buffer,
     );
 
     // remove old one if exists

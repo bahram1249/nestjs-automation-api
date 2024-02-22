@@ -1,9 +1,10 @@
 import { Inject, Injectable } from '@nestjs/common';
 import * as sharp from 'sharp';
+import { THUMBNAIL_OPTIONS_TOKEN } from './constants';
 @Injectable()
 export class ThumbnailService {
   constructor(
-    @Inject('THUMBNAIL_OPTIONS')
+    @Inject(THUMBNAIL_OPTIONS_TOKEN)
     private readonly thumbnailOptions: {
       width?: number;
       height?: number;

@@ -19,6 +19,7 @@ import { ECVendorUser } from '@rahino/database/models/ecommerce-eav/ec-vendor-us
 import { Attachment } from '@rahino/database/models/core/attachment.entity';
 import { MinioClientService } from '@rahino/minio-client';
 import * as fs from 'fs';
+import { ThumbnailService } from '@rahino/thumbnail';
 
 @Injectable()
 export class VendorService {
@@ -38,6 +39,7 @@ export class VendorService {
     private readonly mapper: Mapper,
     private readonly userRoleService: UserRoleService,
     private readonly minioClientService: MinioClientService,
+    private readonly thumbnailService: ThumbnailService,
   ) {}
 
   async findAll(filter: GetVendorDto) {
@@ -584,11 +586,11 @@ export class VendorService {
     // upload to s3 cloud
     const bucketName = 'vendors';
     await this.minioClientService.createBucket(bucketName);
-    const fileStream = fs.readFileSync(file.path);
+    const buffer = await this.thumbnailService.resize(file.path);
     const uploadResult = await this.minioClientService.upload(
       bucketName,
       file.filename,
-      fileStream,
+      buffer,
     );
 
     // remove old one if exists

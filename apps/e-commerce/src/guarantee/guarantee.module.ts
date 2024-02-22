@@ -14,11 +14,24 @@ import { ECGuarantee } from '@rahino/database/models/ecommerce-eav/ec-guarantee.
 import { Attachment } from '@rahino/database/models/core/attachment.entity';
 import { MinioClientModule } from '@rahino/minio-client';
 import { ReverseProxyGuaranteeImageMiddleware } from './reverse-proxy.middleware';
+import { ThumbnailModule } from '@rahino/thumbnail';
+import { ConfigService } from '@nestjs/config';
 
 @Module({
   imports: [
     SequelizeModule.forFeature([User, Permission, ECGuarantee, Attachment]),
     MinioClientModule,
+    ThumbnailModule.registerAsync({
+      inject: [ConfigService],
+      useFactory: (config: ConfigService) => ({
+        height: parseInt(config.get('GUARANTEE_IMAGE_HEIGHT')) || 700,
+        width: parseInt(config.get('GUARANTEE_IMAGE_WIDTH')) || 700,
+        resizeOptions: {
+          withoutEnlargement: true,
+          withoutReduction: true,
+        },
+      }),
+    }),
   ],
   controllers: [GuaranteeController],
   providers: [GuaranteeService, GuaranteeProfile],

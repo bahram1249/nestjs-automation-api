@@ -15,6 +15,8 @@ import { EAVEntityModel } from '@rahino/database/models/eav/eav-entity-model.ent
 import { Attachment } from '@rahino/database/models/core/attachment.entity';
 import { MinioClientModule } from '@rahino/minio-client';
 import { ReverseProxyEntityTypesImageMiddleware } from './reverse-proxy.middleware';
+import { ThumbnailModule } from '@rahino/thumbnail';
+import { ConfigService } from '@nestjs/config';
 
 @Module({
   imports: [
@@ -26,6 +28,17 @@ import { ReverseProxyEntityTypesImageMiddleware } from './reverse-proxy.middlewa
       Attachment,
     ]),
     MinioClientModule,
+    ThumbnailModule.registerAsync({
+      inject: [ConfigService],
+      useFactory: (config: ConfigService) => ({
+        height: parseInt(config.get('ENTITY_TYPE_IMAGE_HEIGHT')) || 700,
+        width: parseInt(config.get('ENTITY_TYPE_IMAGE_WIDTH')) || 700,
+        resizeOptions: {
+          withoutEnlargement: true,
+          withoutReduction: true,
+        },
+      }),
+    }),
   ],
   controllers: [EntityTypeController],
   providers: [EntityTypeService, EntityTypeProfile],
