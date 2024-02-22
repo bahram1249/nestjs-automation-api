@@ -161,4 +161,13 @@ export class ProductPhotoService {
       });
     }
   }
+
+  async removePhotosByProductId(productId: bigint, transaction?: Transaction) {
+    await this.entityPhotoRepository.destroy({
+      where: {
+        entityId: productId,
+      },
+      transaction: transaction,
+    });
+  }
 }

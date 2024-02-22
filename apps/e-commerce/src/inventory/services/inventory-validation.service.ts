@@ -13,10 +13,13 @@ import { VendorAddressService } from '@rahino/ecommerce/vendor-address/vendor-ad
 import { ECProvince } from '@rahino/database/models/ecommerce-eav/ec-province.entity';
 import { emptyListFilter } from '@rahino/query-filter/provider/constants';
 import { ListFilter } from '@rahino/query-filter';
+import { ECInventory } from '@rahino/database/models/ecommerce-eav/ec-inventory.entity';
 
 @Injectable()
 export class InventoryValidationService {
   constructor(
+    @InjectModel(ECInventory)
+    private readonly inventoryRepository: typeof ECInventory,
     @InjectModel(ECVariationPrice)
     private readonly variationPriceRepository: typeof ECVariationPrice,
     @InjectModel(ECColor)
@@ -37,12 +40,43 @@ export class InventoryValidationService {
     requiredDto: RequiredProductFieldDto,
     dto: InventoryDto[],
   ) {
+    await this.isExistsInventory(dto);
     await this.requiredPriceValidation(dto);
     await this.colorBasedValidation(requiredDto, dto);
     await this.vendorValidation(user, dto);
     await this.guaranteeValidation(dto);
     await this.vendorAddressValidation(user, dto);
     await this.provinceValidation(dto);
+  }
+
+  // if update a inventory must be exist it
+  async isExistsInventory(dto: InventoryDto[]) {
+    for (const inventoryDto of dto) {
+      if (inventoryDto.id != null) {
+        const findInventory = await this.inventoryRepository.findOne(
+          new QueryOptionsBuilder()
+            .filter({ id: inventoryDto.id })
+            .filter(
+              Sequelize.where(
+                Sequelize.fn(
+                  'isnull',
+                  Sequelize.col('ECInventory.isDeleted'),
+                  0,
+                ),
+                {
+                  [Op.eq]: 0,
+                },
+              ),
+            )
+            .build(),
+        );
+        if (!findInventory) {
+          throw new BadRequestException(
+            'the inventory id you send it is not exist',
+          );
+        }
+      }
+    }
   }
 
   // this function is a sample only

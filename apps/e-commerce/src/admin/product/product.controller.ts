@@ -70,8 +70,12 @@ export class ProductController {
   @Put('/:id')
   @CheckPermission({ permissionSymbol: 'ecommerce.admin.products.update' })
   @HttpCode(HttpStatus.OK)
-  async update(@Param('id') entityId: bigint, @Body() dto: ProductDto) {
-    return await this.service.update(entityId, dto);
+  async update(
+    @GetUser() user: User,
+    @Param('id') entityId: bigint,
+    @Body() dto: ProductDto,
+  ) {
+    return await this.service.update(entityId, user, dto);
   }
 
   @ApiOperation({ description: 'delete products by admin' })

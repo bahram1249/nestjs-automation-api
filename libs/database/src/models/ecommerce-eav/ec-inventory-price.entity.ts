@@ -44,6 +44,12 @@ export class ECInventoryPrice extends Model {
     type: DataType.BIGINT,
   })
   price: bigint;
+
+  @Column({
+    type: DataType.BIGINT,
+  })
+  buyPrice?: bigint;
+
   @Column({
     type: DataType.BOOLEAN,
     allowNull: true,

@@ -2004,6 +2004,7 @@ BEGIN
         variationPriceId        int                             NOT NULL
             CONSTRAINT FK_InventoryPrices_VariationPriceId
                 FOREIGN KEY REFERENCES ECVariationPrices(id),
+		buyPrice				bigint							NULL,
         price                   bigint                          NOT NULL,
         isDeleted               bit                             NULL,
         userId                  bigint                          NOT NULL

@@ -209,4 +209,13 @@ export class EntityAttributeValueService {
       }
     }
   }
+
+  async removeByEntityId(entityId: bigint, transaction?: Transaction) {
+    await this.entityAttributeValueRepository.destroy({
+      where: {
+        entityId: entityId,
+      },
+      transaction: transaction,
+    });
+  }
 }

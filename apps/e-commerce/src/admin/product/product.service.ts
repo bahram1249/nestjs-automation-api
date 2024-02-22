@@ -742,7 +742,7 @@ export class ProductService {
         transaction: transaction,
       });
 
-      // insert product photos
+      // insert new product photos
       await this.productPhotoService.insert(
         product.id,
         mappedPhotos,
@@ -786,8 +786,229 @@ export class ProductService {
     };
   }
 
-  async update(entityId: bigint, dto: ProductDto) {
-    throw new NotImplementedException();
+  async update(entityId: bigint, user: User, dto: ProductDto) {
+    const item = await this.repository.findOne(
+      new QueryOptionsBuilder()
+        .attributes([
+          'id',
+          'title',
+          'sku',
+          'description',
+          'slug',
+          'entityTypeId',
+          'colorBased',
+          'brandId',
+          'publishStatusId',
+          'viewCount',
+        ])
+        .filter(
+          Sequelize.where(
+            Sequelize.fn('isnull', Sequelize.col('ECProduct.isDeleted'), 0),
+            {
+              [Op.eq]: 0,
+            },
+          ),
+        )
+        .filter({
+          id: entityId,
+        })
+        .build(),
+    );
+    if (!item) {
+      throw new NotFoundException('the item with this given id not founded!');
+    }
+
+    // find the slug if exists before
+    const slugSearch = await this.repository.findOne(
+      new QueryOptionsBuilder()
+        .filter(
+          Sequelize.where(
+            Sequelize.fn('isnull', Sequelize.col('isDeleted'), 0),
+            {
+              [Op.eq]: 0,
+            },
+          ),
+        )
+        .filter({
+          id: {
+            [Op.ne]: entityId,
+          },
+        })
+        .filter({ slug: dto.slug })
+        .build(),
+    );
+    if (slugSearch) {
+      throw new BadRequestException(
+        'the item with this given slug is exists before !',
+      );
+    }
+
+    // validation of entityType is linked to ecommerce model
+    const ecommerceEntityModel = 1;
+    const entityType = await this.entityType.findOne(
+      new QueryOptionsBuilder()
+        .filter({ id: dto.entityTypeId })
+        .filter(
+          Sequelize.where(
+            Sequelize.fn('isnull', Sequelize.col('isDeleted'), 0),
+            {
+              [Op.eq]: 0,
+            },
+          ),
+        )
+        .filter({
+          entityModelId: ecommerceEntityModel,
+        })
+        .build(),
+    );
+    if (!entityType) {
+      throw new BadRequestException(
+        `the given entityType->${dto.entityTypeId} isn't exists`,
+      );
+    }
+
+    // validation of attributes
+
+    const mappedAttributes = _.map(dto.attributes, (attribute) =>
+      this.mapper.map(attribute, ProductAttributeDto, EntityAttributeValueDto),
+    );
+    await this.entityAttributeValueService.validation(
+      dto.entityTypeId,
+      mappedAttributes,
+    );
+
+    // validation of photos
+    const mappedPhotos = _.map(dto.photos, (photo) =>
+      this.mapper.map(photo, ProductPhotoDto, PhotoDto),
+    );
+    await this.productPhotoService.validationExistsPhoto(mappedPhotos);
+
+    // validation of inventories
+    await this.inventoryValidationService.validation(
+      user,
+      dto,
+      dto.inventories,
+    );
+
+    // beign transaction
+    const transaction = await this.sequelize.transaction({
+      isolationLevel: Transaction.ISOLATION_LEVELS.READ_COMMITTED,
+    });
+    let product: ECProduct = null;
+    try {
+      // map item to product
+      const mappedItem = this.mapper.map(dto, ProductDto, ECProduct);
+      // update product item
+      const updateItem = _.omit(mappedItem.toJSON(), ['id']);
+      product = (
+        await this.repository.update(updateItem, {
+          where: {
+            id: entityId,
+          },
+          returning: true,
+          transaction: transaction,
+        })
+      )[0][1];
+
+      // remove photos
+      await this.productPhotoService.removePhotosByProductId(
+        product.id,
+        transaction,
+      );
+
+      // insert product photos
+      await this.productPhotoService.insert(
+        product.id,
+        mappedPhotos,
+        transaction,
+      );
+
+      // remove attributes
+
+      await this.entityAttributeValueService.removeByEntityId(
+        product.id,
+        transaction,
+      );
+
+      // insert attributes
+      await this.entityAttributeValueService.insert(
+        product.id,
+        mappedAttributes,
+        transaction,
+      );
+
+      // all vendor this user have access
+      const vendorResult = await this.userVendorService.findAll(
+        user,
+        this.listFilter,
+      );
+      const vendorIds = vendorResult.result.map((vendor) => vendor.id);
+
+      // all new inventory item
+      const newItemInventories = dto.inventories.filter(
+        (item) => item.id == null,
+      );
+
+      // all old inventory item that send
+      const oldItemInventories = dto.inventories.filter(
+        (item) => item.id != null,
+      );
+      const oldItemInvenotryIds = oldItemInventories.map((item) => item.id);
+
+      // all old inventories exists in database
+      const allOldInventories =
+        await this.inventoryService.findByVendorIds(vendorIds);
+
+      // find the items not exists in dto's for deleting in database
+      const deletedInventoryIds = allOldInventories
+        .filter(
+          (item) =>
+            oldItemInvenotryIds.findIndex((value) => value == item.id) == -1,
+        )
+        .map((item) => item.id);
+
+      // deleting inventories
+      await this.inventoryService.removeInventories(
+        user,
+        deletedInventoryIds,
+        transaction,
+      );
+
+      // updating old items
+      await this.inventoryService.bulkUpdate(
+        user,
+        oldItemInventories,
+        transaction,
+      );
+
+      // insert new inventories
+      await this.inventoryService.bulkInsert(
+        user,
+        product.id,
+        newItemInventories,
+        transaction,
+      );
+
+      await transaction.commit();
+
+      const keepJobs = this.config.get<number>(
+        'PRODUCT_INVENTORY_STATUS_KEEPJOBS',
+      );
+      await this.productInventoryQueue.add(
+        Constants.productInventoryStatusJob(product.id.toString()),
+        {
+          productId: product.id,
+        },
+        { removeOnComplete: keepJobs },
+      );
+    } catch (error) {
+      await transaction.rollback();
+      throw new InternalServerErrorException(error.message);
+    }
+
+    return {
+      result: (await this.findById(user, product.id)).result,
+    };
   }
 
   async deleteById(entityId: bigint) {
