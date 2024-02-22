@@ -900,15 +900,14 @@ export class ProductService {
       const mappedItem = this.mapper.map(dto, ProductDto, ECProduct);
       // update product item
       const updateItem = _.omit(mappedItem.toJSON(), ['id']);
-      product = (
-        await this.repository.update(updateItem, {
-          where: {
-            id: entityId,
-          },
-          returning: true,
-          transaction: transaction,
-        })
-      )[0][1];
+      const updated = await this.repository.update(updateItem, {
+        where: {
+          id: entityId,
+        },
+        returning: true,
+        transaction: transaction,
+      });
+      product = updated[1][0];
 
       // remove photos
       await this.productPhotoService.removePhotosByProductId(
@@ -1003,7 +1002,7 @@ export class ProductService {
       );
     } catch (error) {
       await transaction.rollback();
-      throw new InternalServerErrorException(error.message);
+      throw new InternalServerErrorException(error.message, error);
     }
 
     return {

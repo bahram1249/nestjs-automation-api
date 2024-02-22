@@ -7,6 +7,7 @@ import {
 } from '@nestjs/common';
 import { DBLogger } from '@rahino/logger';
 import { Request, Response } from 'express';
+import * as _ from 'lodash';
 
 @Catch()
 export class HttpExceptionFilter implements ExceptionFilter {
@@ -21,13 +22,16 @@ export class HttpExceptionFilter implements ExceptionFilter {
         : HttpStatus.INTERNAL_SERVER_ERROR;
 
     if (status == HttpStatus.INTERNAL_SERVER_ERROR) {
+      const user = request.user || {};
       await this.logger.error(exception.message, exception.stack, null, {
         statusCode: status,
         method: request.method,
         path: request.url,
-        user: request.user,
+        user: _.pick(user, ['id', 'firstname', 'lastname', 'username']),
         ip: request.ip,
+        body: request.body,
         timestamp: new Date().toISOString(),
+        cause: exception.cause,
         stack: exception.stack,
       });
     }

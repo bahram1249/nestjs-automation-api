@@ -151,14 +151,20 @@ export class ProductPhotoService {
               },
             ),
           )
+          .transaction(transaction)
           .build(),
       );
       findAttachment.attachmentTypeId = this.productAttachmentType;
       findAttachment = await findAttachment.save({ transaction: transaction });
-      await this.entityPhotoRepository.create({
-        entityId: productId,
-        attachmentId: findAttachment.id,
-      });
+      await this.entityPhotoRepository.create(
+        {
+          entityId: productId,
+          attachmentId: findAttachment.id,
+        },
+        {
+          transaction: transaction,
+        },
+      );
     }
   }
 
