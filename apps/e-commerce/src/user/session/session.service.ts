@@ -83,9 +83,9 @@ export class SessionService {
       userId: userId,
       expireAt: Sequelize.fn(
         'dateadd',
-        'day',
+        Sequelize.literal('day'),
         sessionLimitDay,
-        Sequelize.col('getdate'),
+        Sequelize.fn('getdate'),
       ),
     });
     return session;
