@@ -52,7 +52,9 @@ export class SessionService {
   }
 
   private async createSession(user?: User) {
-    const sessionLimitDay = this.config.get<number>('USER_SESSION_LIMIT_DAY');
+    const sessionLimitDay = parseInt(
+      this.config.get<string>('USER_SESSION_LIMIT_DAY'),
+    );
     const randomLength = 7;
     let random = randomstring.generate(randomLength);
     while (true) {

@@ -13,9 +13,11 @@ import { SessionService } from './session.service';
 import { JsonResponseTransformInterceptor } from '@rahino/response/interceptor';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { ECUserSession } from '@rahino/database/models/ecommerce-eav/ec-user-session.entity';
+import { Throttle } from '@nestjs/throttler';
+import { ThrottlerBehindProxyGuard } from '@rahino/commontools/guard';
 
 @ApiTags('User-Session')
-@UseGuards(OptionalJwtGuard)
+@UseGuards(ThrottlerBehindProxyGuard, OptionalJwtGuard)
 @UseInterceptors(JsonResponseTransformInterceptor)
 @Controller({
   path: '/api/ecommerce/user/sessions',
@@ -24,6 +26,7 @@ import { ECUserSession } from '@rahino/database/models/ecommerce-eav/ec-user-ses
 export class SessionController {
   constructor(private service: SessionService) {}
 
+  @Throttle({ default: { limit: 10, ttl: 60000 } })
   @ApiOperation({
     description:
       'generate or get a session, if user is authenticated, return session based user',
