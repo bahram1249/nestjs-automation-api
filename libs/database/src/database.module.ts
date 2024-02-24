@@ -141,6 +141,7 @@ import { ECUserSession } from './models/ecommerce-eav/ec-user-session.entity';
         autoLoadModels: configService.get('DB_AUTO_LOAD_MODELS') === 'true',
         logging: configService.get('DB_LOG') === 'true',
         synchronize: configService.get('DB_SYNCHRONIZE') === 'true',
+        timezone: configService.get('DB_TIMEZONE') || 'fa-IR',
         sync: {
           force: false,
           alter: false,
