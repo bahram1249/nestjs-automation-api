@@ -16,14 +16,6 @@ import { OptionalSessionGuard } from './guard';
     SessionService,
     SessionGuard,
     OptionalSessionGuard,
-    {
-      provide: APP_GUARD,
-      useClass: SessionGuard,
-    },
-    {
-      provide: APP_GUARD,
-      useClass: OptionalSessionGuard,
-    },
     ValidateSessionService,
   ],
   exports: [SessionGuard, OptionalSessionGuard, ValidateSessionService],
