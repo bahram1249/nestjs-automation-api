@@ -28,7 +28,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
         method: request.method,
         path: request.url,
         user: _.pick(user, ['id', 'firstname', 'lastname', 'username']),
-        ip: request.ip,
+        ip: request.ips.length ? request.ips[0] : request.ip,
         body: request.body,
         timestamp: new Date().toISOString(),
         cause: exception.cause,
