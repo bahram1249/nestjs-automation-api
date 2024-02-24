@@ -24,6 +24,8 @@ import { UIModule } from '@rahino/ui';
 import * as cookieParser from 'cookie-parser';
 import * as session from 'express-session';
 import { DynamicProviderModule } from '../dynamic-provider/dynamic-provider.module';
+import { ThrottlerBehindProxyGuard } from '@rahino/commontools/guard';
+import { APP_GUARD } from '@nestjs/core';
 
 @Module({
   imports: [
@@ -35,23 +37,26 @@ import { DynamicProviderModule } from '../dynamic-provider/dynamic-provider.modu
       isGlobal: true,
       ttl: 60000,
     }),
-    // ThrottlerModule.forRoot([
-    //   {
-    //     name: 'short',
-    //     ttl: 1000,
-    //     limit: 2000,
-    //   },
-    //   {
-    //     name: 'medium',
-    //     ttl: 10000,
-    //     limit: 20000,
-    //   },
-    //   {
-    //     name: 'long',
-    //     ttl: 60000,
-    //     limit: 180000,
-    //   },
-    // ]),
+    ThrottlerModule.forRootAsync({
+      inject: [ConfigService],
+      useFactory: (config: ConfigService) => [
+        {
+          name: 'short',
+          ttl: 1000,
+          limit: config.get('THROTTLER_SHORT_LIMIT'),
+        },
+        {
+          name: 'medium',
+          ttl: 10000,
+          limit: config.get('THROTTLER_MEDIUM_LIMIT'),
+        },
+        {
+          name: 'long',
+          ttl: 60000,
+          limit: config.get('THROTTLER_LONG_LIMIT'),
+        },
+      ],
+    }),
     DatabaseModule,
     DBLoggerModule,
     AutomapperModule.forRoot({
@@ -65,7 +70,12 @@ import { DynamicProviderModule } from '../dynamic-provider/dynamic-provider.modu
       http: process.env.NODE_ENV !== 'production',
     }),
   ],
-  providers: [],
+  providers: [
+    {
+      provide: APP_GUARD,
+      useClass: ThrottlerBehindProxyGuard,
+    },
+  ],
 })
 export class AppModule implements NestModule {
   constructor(
@@ -91,6 +101,7 @@ export class AppModule implements NestModule {
         transform: true,
       }),
     );
+
     app.use(
       helmet({
         contentSecurityPolicy: false,
