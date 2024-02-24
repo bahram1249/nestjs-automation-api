@@ -3,7 +3,7 @@ import { Reflector } from '@nestjs/core';
 import { ValidateSessionService } from './validate-session.service';
 
 @Injectable()
-export class SessionGuard implements CanActivate {
+export class OptionalSessionGuard implements CanActivate {
   constructor(
     private reflector: Reflector,
     private readonly validateSessionService: ValidateSessionService,
@@ -11,8 +11,8 @@ export class SessionGuard implements CanActivate {
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest();
     const session = request.headers?.user_session;
-    // if session not provided
-    if (!session) return false;
+    // session is optional
+    if (!session) return true;
     return await this.validateSessionService.validate(request, session);
   }
 }

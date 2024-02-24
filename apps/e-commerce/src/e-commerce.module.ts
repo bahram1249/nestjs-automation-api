@@ -23,10 +23,10 @@ import { VendorModule } from './vendor/vendor.module';
 import { UserVendorModule } from './user/vendor/user-vendor.module';
 import { VendorAddressModule } from './vendor-address/vendor-address.module';
 import { SessionModule } from './user/session/session.module';
-
 @Module({
   imports: [
     LoginModule,
+    SessionModule,
     BrandModule,
     ColorModule,
     GuaranteeModule,
@@ -42,7 +42,6 @@ import { SessionModule } from './user/session/session.module';
     UserVendorModule,
     VendorAddressModule,
     ProductModule,
-    SessionModule,
   ],
 })
 export class ECommerceModule implements NestModule {
