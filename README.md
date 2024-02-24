@@ -27,6 +27,7 @@ DB_DIALECT=mssql
 DB_NAME_DEVELOPMENT=nest
 DB_AUTO_LOAD_MODELS=true
 DB_SYNCHRONIZE=true
+DB_TIMEZONE='fa-IR'
 DB_LOG=false
 ```
 
@@ -34,7 +35,7 @@ Create a database in your sql server instance with the name of your choose for y
 
 We highly suggest you to disable DB_SYNCHRONIZE and use sql scripts in apps/core/sql
 
-## Set Authentication variable
+## Set Authentication and server variable
 
 In .env file set variable like below:
 
@@ -44,14 +45,27 @@ TOKEN_EXPIRATION=48h
 BEARER=Bearer
 HOST_PORT=3000
 HOST_NAME=0.0.0.0
+```
+
+## Site settings
+
+```bash
+PROJECT_NAME="<SET_YOUR_PROJECT_NAME> from list: [/apps/main/src/dynamic-provider]"
+LOGO_PATH='/theme/discountcoffe/assets/img/png/logo.svg'
 TEMP_ATTACHMENT="/tmp/attachmentFile"
 PROFILE_PATH_ATTACHMENT="/profile/big"
 PROFILE_PATH_THUMB_ATTACHMENT="/profile/thumb"
 SESSION_KEY=<YourStrongSecret>
 QR_PATH="/qrcode"
 SITE_NAME="<YOUR_SITE_NAME>"
-PROJECT_NAME="<SET_YOUR_PROJECT_NAME> from list: [/apps/main/src/dynamic-provider]"
-SKU_PREFIX="<SET_PREFIX_SKU_ECOMMERCE>"
+```
+
+## Throttler Config
+
+```bash
+THROTTLER_SHORT_LIMIT=40
+THROTTLER_MEDIUM_LIMIT=200
+THROTTLER_LONG_LIMIT=500
 ```
 
 ## If you are Using REDIS
@@ -69,6 +83,29 @@ MINIO_ENDPOINT=<YOUR_MINIO_ENDPOINT>
 MINIO_PORT=<YOUR_MINIO_PORT>
 MINIO_ACCESS_KEY=<YOUR_MINIO_ACCESS_KEY>
 MINIO_SECRET_KEY=<YOUR_MINIO_SECRET_KEY>
+```
+
+## IF your are using ECommerce Project
+
+```bash
+BRAND_IMAGE_HEIGHT=700
+BRAND_IMAGE_WIDTH=700
+GUARANTEE_IMAGE_HEIGHT=700
+GUARANTEE_IMAGE_WIDTH=700
+ENTITY_TYPE_IMAGE_HEIGHT=700
+ENTITY_TYPE_IMAGE_WIDTH=700
+PRODUCT_PHOTO_IMAGE_HEIGHT=700
+PRODUCT_PHOTO_IMAGE_WIDTH=700
+VENDOR_IMAGE_HEIGHT=700
+VENDOR_IMAGE_WIDTH=700
+USER_SESSION_LIMIT_DAY=30
+SKU_PREFIX="<SET_PREFIX_SKU_ECOMMERCE>"
+```
+
+# Bullmq job
+
+```bash
+PRODUCT_INVENTORY_STATUS_KEEPJOBS=100
 ```
 
 ## Running the app
