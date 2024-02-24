@@ -62,6 +62,7 @@ import { ECVariationPrice } from './models/ecommerce-eav/ec-variation-prices';
 import { ECInventory } from './models/ecommerce-eav/ec-inventory.entity';
 import { ECInventoryPrice } from './models/ecommerce-eav/ec-inventory-price.entity';
 import { EAVEntityAttribute } from './models/eav/eav-entity-attribute.entity';
+import { ECUserSession } from './models/ecommerce-eav/ec-user-session.entity';
 
 @Module({
   imports: [
@@ -121,6 +122,7 @@ import { EAVEntityAttribute } from './models/eav/eav-entity-attribute.entity';
           ECVariationPrice,
           ECInventory,
           ECInventoryPrice,
+          ECUserSession,
           Buffet,
           BuffetGallery,
           BuffetType,

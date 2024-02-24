@@ -2082,6 +2082,36 @@ END
 
 GO
 
+-- eav user session
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ec-user-session-v1' 
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'SITE_NAME' AND [value] IN ('ecommerce'))
+		)
+BEGIN
+
+	CREATE TABLE ECUserSessions(
+		id							nvarchar(256)				PRIMARY KEY,
+		userId						bigint						NULL
+			CONSTRAINT FK_ECUserSessions_UserId
+				FOREIGN KEY REFERENCES Users(id),
+		isDeleted					bit							NULL,
+		expireAt					datetime					NOT NULL,
+		[createdAt]					datetimeoffset				NOT NULL,
+		[updatedAt]					datetimeoffset				NOT NULL,
+	);
+
+	CREATE NONCLUSTERED INDEX NIX_ECUserSessions_UserId ON ECUserSessions(userId, isDeleted)
+	INCLUDE (id, expireAt)
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'ec-user-session-v1', GETDATE(), GETDATE()
+END
+
+GO
+
+
 
 -- eav
 -- attributetypes
