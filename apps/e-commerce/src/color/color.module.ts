@@ -6,9 +6,13 @@ import { Permission } from '@rahino/database/models/core/permission.entity';
 import { User } from '@rahino/database/models/core/user.entity';
 import { ColorProfile } from './mapper';
 import { ECColor } from '@rahino/database/models/ecommerce-eav/ec-color.entity';
+import { SessionModule } from '../user/session/session.module';
 
 @Module({
-  imports: [SequelizeModule.forFeature([User, Permission, ECColor])],
+  imports: [
+    SequelizeModule.forFeature([User, Permission, ECColor]),
+    SessionModule,
+  ],
   controllers: [ColorController],
   providers: [ColorService, ColorProfile],
 })

@@ -25,7 +25,11 @@ import {
 import { JwtGuard } from '@rahino/auth/guard';
 import { ColorService } from './color.service';
 import { ColorDto, GetColorDto } from './dto';
+import { OptionalSessionGuard } from '../user/session/guard';
+import { GetECSession } from 'apps/main/src/decorator';
+import { ECUserSession } from '@rahino/database/models/ecommerce-eav/ec-user-session.entity';
 
+@UseGuards(OptionalSessionGuard)
 @ApiTags('Colors')
 @Controller({
   path: '/api/ecommerce/colors',
@@ -45,7 +49,10 @@ export class ColorController {
     explode: true,
   })
   @HttpCode(HttpStatus.OK)
-  async findAll(@Query() filter: GetColorDto) {
+  async findAll(
+    @Query() filter: GetColorDto,
+    @GetECSession() session?: ECUserSession,
+  ) {
     return await this.service.findAll(filter);
   }
 
