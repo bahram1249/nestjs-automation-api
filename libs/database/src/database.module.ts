@@ -63,6 +63,7 @@ import { ECInventory } from './models/ecommerce-eav/ec-inventory.entity';
 import { ECInventoryPrice } from './models/ecommerce-eav/ec-inventory-price.entity';
 import { EAVEntityAttribute } from './models/eav/eav-entity-attribute.entity';
 import { ECUserSession } from './models/ecommerce-eav/ec-user-session.entity';
+import { ECRequestLog } from './models/ecommerce-eav/ec-request-log.entity';
 
 @Module({
   imports: [
@@ -107,6 +108,7 @@ import { ECUserSession } from './models/ecommerce-eav/ec-user-session.entity';
           EAVEntityPhoto,
           ECPublishStatus,
           ECInventoryStatus,
+          ECRequestLog,
           ECColor,
           ECGuarantee,
           ECGuaranteeMonth,
@@ -145,29 +147,6 @@ import { ECUserSession } from './models/ecommerce-eav/ec-user-session.entity';
         sync: {
           force: false,
           alter: false,
-        },
-      }),
-      inject: [ConfigService],
-    }),
-    SequelizeModule.forRootAsync({
-      name: 'view',
-      imports: [ConfigModule],
-      useFactory: (configService: ConfigService) => ({
-        dialect: configService.get<Dialect>('DB_DIALECT'),
-        host: configService.get<string>('DB_HOST'),
-        port: configService.get<number>('DB_PORT'),
-        username: configService.get<string>('DB_USER'),
-        password: configService.get<string>('DB_PASS'),
-        database: configService.get<string>('DB_NAME_DEVELOPMENT'),
-        //[__dirname + '/models/**/*.entity.ts'],
-        models: [PersianDate],
-        autoLoadModels: configService.get('DB_AUTO_LOAD_MODELS') === 'true',
-        synchronize: false,
-        sync: {
-          force: false,
-          alter: {
-            drop: false,
-          },
         },
       }),
       inject: [ConfigService],

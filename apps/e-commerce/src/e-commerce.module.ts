@@ -23,8 +23,27 @@ import { VendorModule } from './vendor/vendor.module';
 import { UserVendorModule } from './user/vendor/user-vendor.module';
 import { VendorAddressModule } from './vendor-address/vendor-address.module';
 import { SessionModule } from './user/session/session.module';
+import { APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
+import { LoggingInterceptor } from './logging/interceptor';
+import { BullModule } from '@nestjs/bullmq';
+import { REQUEST_LOGGING_QUEUE } from './logging/constants';
+import { ConfigService } from '@nestjs/config';
+import { LoggingModule } from './logging/logging.module';
+import { OptionalSessionGuard } from './user/session/guard';
 @Module({
   imports: [
+    LoggingModule,
+    BullModule.registerQueueAsync({
+      name: REQUEST_LOGGING_QUEUE,
+      inject: [ConfigService],
+      useFactory: (config: ConfigService) => ({
+        connection: {
+          host: config.get<string>('REDIS_ADDRESS'),
+          port: config.get<number>('REDIS_PORT'),
+          password: config.get<string>('REDIS_PASSWORD'),
+        },
+      }),
+    }),
     LoginModule,
     SessionModule,
     BrandModule,
@@ -42,6 +61,16 @@ import { SessionModule } from './user/session/session.module';
     UserVendorModule,
     VendorAddressModule,
     ProductModule,
+  ],
+  providers: [
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: LoggingInterceptor,
+    },
+    {
+      provide: APP_GUARD,
+      useClass: OptionalSessionGuard,
+    },
   ],
 })
 export class ECommerceModule implements NestModule {

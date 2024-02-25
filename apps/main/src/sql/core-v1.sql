@@ -2112,6 +2112,33 @@ END
 GO
 
 
+-- ec-requests-log-v1
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ec-requests-log-v1' 
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'SITE_NAME' AND [value] IN ('ecommerce'))
+		)
+BEGIN
+
+	CREATE TABLE ECRequestLogs(
+		id							bigint identity(1,1)		PRIMARY KEY,
+		userId						bigint						NULL,
+		sessionId					varchar(256)				NULL,
+		url							nvarchar(512)				NULL,
+		ip							nvarchar(128)				NULL,
+		beginTime					datetime					NULL,
+		endTime						datetime					NULL,
+		[createdAt]					datetimeoffset				NOT NULL,
+		[updatedAt]					datetimeoffset				NOT NULL,
+	);
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'ec-requests-log-v1', GETDATE(), GETDATE()
+END
+
+GO
+
 
 -- eav
 -- attributetypes
