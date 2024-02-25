@@ -20,7 +20,7 @@ export class ValidateSessionService {
       session,
     );
     if (item.exists) {
-      request['ecsession'] = session;
+      request['ecsession'] = JSON.parse(item.result);
       return true;
     }
 
@@ -79,10 +79,10 @@ export class ValidateSessionService {
     await this.redisRepository.setWithExpiry(
       `user:${userId}:session`,
       session,
-      session,
+      JSON.stringify(findSession.toJSON()),
       300,
     );
-    request['ecsession'] = session;
+    request['ecsession'] = findSession;
     return true;
   }
 }
