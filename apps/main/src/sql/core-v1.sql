@@ -8495,7 +8495,7 @@ BEGIN
 
 	DECLARE @entityName nvarchar(256) = N'Products'
 	DECLARE @groupName nvarchar(256) = N'ecommerce.admin.products'
-	DECLARE @findParentMenu bit = 0;
+	DECLARE @findParentMenu bit = 1;
 	DECLARE @parentMenuName nvarchar(256) = N'محصول'
 	DECLARE @menuName nvarchar(256) = N'محصولات'
 	DECLARE @menuUrl nvarchar(512) = N'/admin/ecommerce/products'
