@@ -2127,6 +2127,7 @@ BEGIN
 		sessionId					varchar(256)				NULL,
 		url							nvarchar(512)				NULL,
 		ip							nvarchar(128)				NULL,
+		method						varchar(20)					NULL,
 		beginTime					datetime					NULL,
 		endTime						datetime					NULL,
 		[createdAt]					datetimeoffset				NOT NULL,
