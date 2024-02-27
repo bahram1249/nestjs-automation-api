@@ -4,7 +4,7 @@ import {
   Module,
   NestModule,
 } from '@nestjs/common';
-import { ProductModule } from './admin/product/product.module';
+import { ProductModule as AdminProductModule } from './admin/product/product.module';
 import { LoginModule } from './user/login/login.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { BrandModule } from './brand/brand.module';
@@ -30,6 +30,7 @@ import { REQUEST_LOGGING_QUEUE } from './logging/constants';
 import { ConfigService } from '@nestjs/config';
 import { LoggingModule } from './logging/logging.module';
 import { OptionalSessionGuard } from './user/session/guard';
+import { ProductModule } from './product/product.module';
 @Module({
   imports: [
     LoggingModule,
@@ -60,6 +61,7 @@ import { OptionalSessionGuard } from './user/session/guard';
     VendorModule,
     UserVendorModule,
     VendorAddressModule,
+    AdminProductModule,
     ProductModule,
   ],
   providers: [
