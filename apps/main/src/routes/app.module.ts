@@ -2,6 +2,7 @@ import {
   MiddlewareConsumer,
   Module,
   NestModule,
+  RequestMethod,
   ValidationPipe,
   VersioningType,
 } from '@nestjs/common';
@@ -26,6 +27,7 @@ import * as session from 'express-session';
 import { DynamicProviderModule } from '../dynamic-provider/dynamic-provider.module';
 import { ThrottlerBehindProxyGuard } from '@rahino/commontools/guard';
 import { APP_GUARD } from '@nestjs/core';
+import { ChobokanRealIpMiddleware } from '@rahino/commonmiddleware/middlewares/chabokan-real-ip.middleware';
 
 @Module({
   imports: [
@@ -84,7 +86,9 @@ export class AppModule implements NestModule {
   ) {}
   app: NestExpressApplication;
   async configure(consumer: MiddlewareConsumer) {
-    //...
+    consumer
+      .apply(ChobokanRealIpMiddleware)
+      .forRoutes({ path: '/*', method: RequestMethod.ALL });
   }
   public async setApp(app: NestExpressApplication) {
     this.app = app;
