@@ -6,10 +6,10 @@ import { Request, Response, NextFunction } from 'express';
 export class ChobokanRealIpMiddleware implements NestMiddleware {
   constructor(private config: ConfigService) {}
   use(req: Request, res: Response, next: NextFunction) {
-    if (req.headers['REAL_IP'] != null) {
-      req.ips.push(req.headers['REAL_IP'].toString());
-    } else if (req.headers['REMOTE_ADDR'] != null) {
-      req.ips.push(req.headers['REMOTE_ADDR'].toString());
+    if (req.headers['x-real-ip'] != null) {
+      req.ips.push(req.headers['x-real-ip'].toString());
+    } else if (req.headers['x-forwarded-for'] != null) {
+      req.ips.push(req.headers['x-forwarded-for'].toString());
     }
     next();
   }
