@@ -27,7 +27,6 @@ import * as session from 'express-session';
 import { DynamicProviderModule } from '../dynamic-provider/dynamic-provider.module';
 import { ThrottlerBehindProxyGuard } from '@rahino/commontools/guard';
 import { APP_GUARD } from '@nestjs/core';
-import { ChobokanRealIpMiddleware } from '@rahino/commonmiddleware/middlewares/chabokan-real-ip.middleware';
 
 @Module({
   imports: [
