@@ -85,13 +85,11 @@ export class AppModule implements NestModule {
     private readonly config: ConfigService,
   ) {}
   app: NestExpressApplication;
-  async configure(consumer: MiddlewareConsumer) {
-    consumer
-      .apply(ChobokanRealIpMiddleware)
-      .forRoutes({ path: '/*', method: RequestMethod.ALL });
-  }
+  async configure(consumer: MiddlewareConsumer) {}
   public async setApp(app: NestExpressApplication) {
     this.app = app;
+
+    app.set('trust proxy', true);
 
     app.useLogger(this.logger);
     app.enableVersioning({
