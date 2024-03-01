@@ -45,7 +45,20 @@ export class ProductController {
   @ApiOperation({ description: 'show product by given slug' })
   @Get('/:slug')
   @HttpCode(HttpStatus.OK)
-  async findById(@Param('slug') slug: string) {
-    return await this.service.findBySlug(slug);
+  async findBySlug(
+    @Query(new ValidationPipe({ transform: true })) filter: GetProductDto,
+    @Param('slug') slug: string,
+  ) {
+    return await this.service.findBySlug(filter, slug);
+  }
+
+  @ApiOperation({ description: 'show product by given slug' })
+  @Get('/id/:id')
+  @HttpCode(HttpStatus.OK)
+  async findById(
+    @Query(new ValidationPipe({ transform: true })) filter: GetProductDto,
+    @Param('id') id: bigint,
+  ) {
+    return await this.service.findById(filter, id);
   }
 }
