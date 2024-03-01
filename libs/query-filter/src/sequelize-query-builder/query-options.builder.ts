@@ -68,6 +68,11 @@ export class QueryOptionsBuilder {
     this.options.lock = transactionLock;
     return this;
   }
+  thenInlcude(include: Includeable) {
+    const included = this.options.include as Includeable[];
+    included.push(include);
+    return this;
+  }
 }
 
 function isOrderCol(x: any) {
