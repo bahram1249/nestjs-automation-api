@@ -39,9 +39,12 @@ export class AttributeService {
         },
       })
       .filter(
-        Sequelize.where(Sequelize.fn('isnull', Sequelize.col('isDeleted'), 0), {
-          [Op.eq]: 0,
-        }),
+        Sequelize.where(
+          Sequelize.fn('isnull', Sequelize.col('EAVAttribute.isDeleted'), 0),
+          {
+            [Op.eq]: 0,
+          },
+        ),
       );
     if (filter.entityTypeId) {
       const entityAttributes = await this.entityAttributeRepository.findAll({
