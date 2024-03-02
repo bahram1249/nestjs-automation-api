@@ -1,8 +1,8 @@
 import {
   Controller,
-  Get,
   HttpCode,
   HttpStatus,
+  Post,
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
@@ -31,7 +31,7 @@ export class SessionController {
     description:
       'generate or get a session, if user is authenticated, return session based user',
   })
-  @Get('/generate')
+  @Post('/generate')
   @HttpCode(HttpStatus.OK)
   async getSession(
     @GetUser() user?: User,
