@@ -249,13 +249,18 @@ export class ProductQueryBuilderService {
       });
 
     if (filter.colors.length > 0) {
-      const colorFiltered = Sequelize.literal(`EXISTS (
+      const colorFiltered = Sequelize.literal(
+        `EXISTS (
             SELECT 1
             FROM ECInventories AS ECI
             WHERE [ECProduct].id = [ECI].productId
               AND [ECI].inventoryStatusId = ${InventoryStatusEnum.available}
               AND ISNULL([ECI].isDeleted, 0) = 0
-              AND [ECI].colorId IN(${filter.colors.join(',')}))`);
+              AND [ECI].colorId IN(${filter.colors.join(',')}))`.replaceAll(
+          /\s\s+/g,
+          ' ',
+        ),
+      );
       queryBuilder = queryBuilder.filter(colorFiltered);
       queryResultBuilder = queryResultBuilder.filter(colorFiltered);
       inventoryIncludeBuilder = inventoryIncludeBuilder.filter({
