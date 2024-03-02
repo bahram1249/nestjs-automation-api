@@ -4,6 +4,7 @@ import { ECUserSession } from '@rahino/database/models/ecommerce-eav/ec-user-ses
 import { InjectModel } from '@nestjs/sequelize';
 import { ECRequestLog } from '@rahino/database/models/ecommerce-eav/ec-request-log.entity';
 import * as moment from 'moment';
+import { User } from '@rahino/database/models/core/user.entity';
 
 @Injectable({ scope: Scope.DEFAULT })
 export class LoggingService {
@@ -12,7 +13,11 @@ export class LoggingService {
     private readonly requestLogRepository: typeof ECRequestLog,
   ) {}
 
-  async logRequest(requestData: RequestDataInterface, session?: ECUserSession) {
+  async logRequest(
+    requestData: RequestDataInterface,
+    session?: ECUserSession,
+    user?: User,
+  ) {
     const data: any = {
       ip: requestData.ip,
       url: requestData.url,
@@ -21,8 +26,10 @@ export class LoggingService {
       endTime: moment(requestData.end).format('YYYY-MM-DD hh:mm:ss.SSS'),
     };
     if (session) {
-      data.userId = session.userId;
       data.sessionId = session.id;
+    }
+    if (user) {
+      data.userId = user.id;
     }
     await this.requestLogRepository.create(data);
   }

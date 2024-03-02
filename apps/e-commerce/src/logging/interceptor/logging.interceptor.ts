@@ -34,6 +34,7 @@ export class LoggingInterceptor implements NestInterceptor {
               method: request.method,
             },
             session: request.ecsession,
+            user: request.user,
           },
           {
             removeOnComplete: {
