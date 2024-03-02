@@ -249,12 +249,12 @@ export class ProductQueryBuilderService {
       });
 
     if (filter.colors.length > 0) {
+      // AND [ECI].inventoryStatusId = ${InventoryStatusEnum.available}
       const colorFiltered = Sequelize.literal(
         `EXISTS (
             SELECT 1
             FROM ECInventories AS ECI
             WHERE [ECProduct].id = [ECI].productId
-              AND [ECI].inventoryStatusId = ${InventoryStatusEnum.available}
               AND ISNULL([ECI].isDeleted, 0) = 0
               AND [ECI].colorId IN(${filter.colors.join(',')}))`.replaceAll(
           /\s\s+/g,
@@ -268,6 +268,24 @@ export class ProductQueryBuilderService {
           [Op.in]: filter.colors,
         },
       });
+    }
+
+    if (filter.vendorId) {
+      // AND [ECI].inventoryStatusId = ${InventoryStatusEnum.available}
+      const vendorFiltered = Sequelize.literal(
+        `EXISTS (
+            SELECT 1
+            FROM ECInventories AS ECI
+            WHERE [ECProduct].id = [ECI].productId
+              AND ISNULL([ECI].isDeleted, 0) = 0
+              AND [ECI].vendorId = ${filter.vendorId})`.replaceAll(
+          /\s\s+/g,
+          ' ',
+        ),
+      );
+      queryBuilder.filter(vendorFiltered);
+      queryResultBuilder.filter(vendorFiltered);
+      inventoryIncludeBuilder.filter({ vendorId: filter.vendorId });
     }
 
     queryResultBuilder = queryResultBuilder.thenInlcude(
