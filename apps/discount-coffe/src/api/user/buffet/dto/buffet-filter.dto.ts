@@ -1,5 +1,5 @@
 import { Transform } from 'class-transformer';
-import { IsNumber, IsOptional } from 'class-validator';
+import { IsArray, IsInt, IsNumber, IsOptional } from 'class-validator';
 
 export class BuffetFilterDto {
   @Transform(({ value }) => JSON.parse(value))
@@ -31,4 +31,14 @@ export class BuffetFilterDto {
   order?: string = 'desc';
   @IsOptional()
   orderBy?: string = 'id';
+
+  @IsOptional()
+  @IsArray()
+  @Transform((item) =>
+    typeof item.value.map === 'function'
+      ? item.value.map((v) => parseInt(v, 10))
+      : [parseInt(item.value, 10)],
+  )
+  @IsInt({ each: true })
+  coffeOptionIds?: number[] = [];
 }

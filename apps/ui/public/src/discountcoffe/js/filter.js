@@ -113,6 +113,15 @@ async function filterProducts() {
     buffetCostId = null;
   }
 
+  var coffeOptions = filters.querySelectorAll('.coffeOptionItem input:checked');
+  var coffeOptionIds = [];
+  for (let index = 0; index < coffeOptions.length; index++) {
+    const coffeOptionInput = coffeOptions[index];
+    coffeOptionIds.push(
+      parseInt(coffeOptionInput.getAttribute('coffe-option-id')),
+    );
+  }
+
   var queryString = {
     page,
     limit,
@@ -121,6 +130,7 @@ async function filterProducts() {
     buffetTypeId,
     buffetCityId,
     buffetCostId,
+    coffeOptionIds: coffeOptionIds.length > 0 ? coffeOptionIds : null,
   };
 
   var res = await requestData(queryString);

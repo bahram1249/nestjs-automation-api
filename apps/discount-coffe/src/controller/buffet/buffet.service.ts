@@ -27,6 +27,7 @@ import { BuffetType } from '@rahino/database/models/discount-coffe/buffet-type.e
 import { BuffetCost } from '@rahino/database/models/discount-coffe/buffet-cost.entity';
 import { BuffetFilterDto } from '@rahino/discountCoffe/api/user/buffet/dto';
 import { BuffetCity } from '@rahino/database/models/discount-coffe/city.entity';
+import { BuffetOption } from '@rahino/database/models/discount-coffe/buffet-option.entity';
 const mkdirAsync = util.promisify(fs.mkdir);
 
 @Injectable()
@@ -52,6 +53,8 @@ export class BuffetService {
     private readonly buffetCostRepository: typeof BuffetCost,
     @InjectModel(BuffetCity)
     private readonly buffetCityRepository: typeof BuffetCity,
+    @InjectModel(CoffeOption)
+    private readonly coffeOptionRepository: typeof CoffeOption,
     private readonly config: ConfigService,
   ) {}
 
@@ -394,12 +397,18 @@ export class BuffetService {
     const buffetCities = await this.buffetCityRepository.findAll({
       attributes: ['id', 'title'],
     });
+
+    const buffetOptions = await this.coffeOptionRepository.findAll({
+      attributes: ['id', 'title', 'iconClass'],
+    });
+
     return {
       title: 'لیست کافه و رستوران ها',
       layout: 'discountcoffe',
       buffetTypes: JSON.parse(JSON.stringify(buffetTypes)),
       buffetCosts: JSON.parse(JSON.stringify(buffetCosts)),
       buffetCities: JSON.parse(JSON.stringify(buffetCities)),
+      coffeOptions: JSON.parse(JSON.stringify(buffetOptions)),
       user: req.user,
       queryFilter: JSON.parse(JSON.stringify(dto)),
     };

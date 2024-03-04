@@ -13,6 +13,7 @@ import { BuffetReserveDetail } from '@rahino/database/models/discount-coffe/buff
 import { BuffetType } from '@rahino/database/models/discount-coffe/buffet-type.entity';
 import { BuffetCost } from '@rahino/database/models/discount-coffe/buffet-cost.entity';
 import { BuffetCity } from '@rahino/database/models/discount-coffe/city.entity';
+import { CoffeOption } from '@rahino/database/models/discount-coffe/coffe-option.entity';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { BuffetCity } from '@rahino/database/models/discount-coffe/city.entity';
       BuffetType,
       BuffetCost,
       BuffetCity,
+      CoffeOption,
       Attachment,
     ]),
   ],

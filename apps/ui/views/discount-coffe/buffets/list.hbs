@@ -61,7 +61,22 @@
               </select>
             </div>
           </div>
-
+          <div class='filterItemSingle'>
+            <div class='topBar'>
+              <div>
+                <span>امکانات کافه</span>
+              </div>
+              <i class='icon-bottom'></i>
+            </div>
+            <div class='filterWrapper'>
+              {{#each coffeOptions}}
+                <div class="coffeOptionItem">
+                  <input coffe-option-id="{{id}}" type="checkbox" id="coffeOptions_{{@index}}" />
+                  <label for="coffeOptions_{{@index}}"><i class="{{iconClass}}"></i> {{title}}</label>
+                </div>
+              {{/each}}
+            </div>
+          </div>
         </div>
       </div>
       <div class='col-md-9'>

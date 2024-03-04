@@ -4377,6 +4377,7 @@ BEGIN
 	INSERT INTO DiscountCoffeBuffetTypes (id, title, createdAt, updatedAt)
 	VALUES (1, N'کافه', getdate(), getdate())
 			,(2, N'رستوران', getdate(), getdate())
+			,(3, N'کافه رستوران', getdate(), getdate())
 		
 
 	INSERT INTO Migrations(version, createdAt, updatedAt)
@@ -4399,9 +4400,10 @@ IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'DiscountCoffe-buffetCos
 BEGIN
 
 	INSERT INTO DiscountCoffeBuffetCosts (id, title, createdAt, updatedAt)
-	VALUES (1, N'ارزان', getdate(), getdate())
+	VALUES (1, N'دارای آفر', getdate(), getdate())
 			,(2, N'اقتصادی', getdate(), getdate())
-			,(3, N'لاکچری', getdate(), getdate())
+			,(3, N'شگفت انگیز', getdate(), getdate())
+			,(4, N'لاکچری', getdate(), getdate())
 
 	INSERT INTO Migrations(version, createdAt, updatedAt)
 	SELECT 'DiscountCoffe-buffetCost-Data-v1', GETDATE(), GETDATE()

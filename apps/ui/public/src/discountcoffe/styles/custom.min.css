@@ -194,3 +194,33 @@ img.super-lux-img {
 .input .icon-location {
   bottom: 14px;
 }
+
+@media only screen and (max-width: 991px) {
+  .menuBase.active ul {
+    background-image: url('/src/discountcoffe/img/coffe-background.png');
+    background-size: contain;
+    background-repeat: no-repeat;
+  }
+}
+
+section.cases {
+  margin-top: 100px;
+}
+
+@media only screen and (max-width: 991px) {
+  .order span {
+    font-size: 12px;
+  }
+  .order a {
+    font-size: 14px;
+  }
+  .order {
+    overflow: hidden;
+  }
+}
+.filterWrapper .coffeOptionItem {
+  display: block;
+}
+.coffe-resturant {
+  margin-top: 2em;
+}

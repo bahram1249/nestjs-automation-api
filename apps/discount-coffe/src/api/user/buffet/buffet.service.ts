@@ -39,6 +39,21 @@ export class BuffetService {
       });
     }
 
+    if (dto.coffeOptionIds.length > 0) {
+      dto.coffeOptionIds.forEach((coffeOption) => {
+        queryBuilder = queryBuilder.filter(
+          Sequelize.literal(`
+            EXISTS (
+              SELECT 1
+              FROM DiscountCoffeBuffetOptions DCBO
+              WHERE DCBO.buffetId = Buffet.id
+                AND DCBO.optionId = ${coffeOption}
+            )
+          `),
+        );
+      });
+    }
+
     const count = await this.buffetRepository.count(queryBuilder.build());
 
     queryBuilder = queryBuilder
