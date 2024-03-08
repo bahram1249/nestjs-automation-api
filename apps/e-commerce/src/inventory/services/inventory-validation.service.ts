@@ -181,7 +181,11 @@ export class InventoryValidationService {
             .filter({ id: inventoryDto.guaranteeId })
             .filter(
               Sequelize.where(
-                Sequelize.fn('isnull', 'ECGuarantee.isDeleted', 0),
+                Sequelize.fn(
+                  'isnull',
+                  Sequelize.col('ECGuarantee.isDeleted'),
+                  0,
+                ),
                 {
                   [Op.eq]: 0,
                 },
