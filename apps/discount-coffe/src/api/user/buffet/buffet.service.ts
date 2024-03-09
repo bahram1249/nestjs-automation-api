@@ -54,6 +54,14 @@ export class BuffetService {
       });
     }
 
+    if (dto.latitude) {
+      queryBuilder = queryBuilder.filter(
+        Sequelize.literal(`
+            dbo.fnCalcDistanceKM(Buffet.latitude, ${dto.latitude},Buffet.longitude, ${dto.longitude}) < 50
+          `),
+      );
+    }
+
     const count = await this.buffetRepository.count(queryBuilder.build());
 
     queryBuilder = queryBuilder

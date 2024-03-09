@@ -41,4 +41,10 @@ export class BuffetFilterDto {
   )
   @IsInt({ each: true })
   coffeOptionIds?: number[] = [];
+
+  @IsOptional()
+  latitude?: string;
+
+  @IsOptional()
+  longitude?: string;
 }

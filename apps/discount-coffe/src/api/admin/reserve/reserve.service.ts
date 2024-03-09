@@ -1,7 +1,6 @@
 import { Injectable, NotImplementedException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { Op, Sequelize } from 'sequelize';
-import { ListFilter } from '@rahino/query-filter';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import { User } from '@rahino/database/models/core/user.entity';
 import * as _ from 'lodash';
@@ -12,6 +11,7 @@ import { Attachment } from '@rahino/database/models/core/attachment.entity';
 import { PersianDate } from '@rahino/database/models/core/view/persiandate.entity';
 import { BuffetReserveDetail } from '@rahino/database/models/discount-coffe/buffet-reserve-detail.entity';
 import { BuffetMenu } from '@rahino/database/models/discount-coffe/buffet-menu.entity';
+import { ReserveFilterDto } from './dto';
 
 @Injectable()
 export class ReserveService {
@@ -20,7 +20,7 @@ export class ReserveService {
     private readonly repository: typeof BuffetReserve,
   ) {}
 
-  async findAll(user: User, filter: ListFilter) {
+  async findAll(user: User, filter: ReserveFilterDto) {
     let builder = new QueryOptionsBuilder();
     const reserveComplete = 2;
     builder = builder
@@ -56,6 +56,9 @@ export class ReserveService {
         },
       })
       .filter({ '$[buffet.ownerId]$': user.id });
+    if (filter.reserveId) {
+      builder = builder.filter({ id: filter.reserveId });
+    }
     const count = await this.repository.count(builder.build());
     const options = builder
       .include([

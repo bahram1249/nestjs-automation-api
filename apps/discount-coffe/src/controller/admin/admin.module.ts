@@ -14,6 +14,8 @@ import { TotalReserveController } from './total-reserve/total-reserve.controller
 import { ReserveController } from './reservers/reserve.controller';
 import { AdminReportController } from './adminreport/admin-report.controller';
 import { CoffeReportController } from './coffereport/coffe-report.controller';
+import { QrScanModule } from './qrscan/qrscan.module';
+import { QrScanController } from './qrscan/qrscan.controller';
 
 @Module({
   imports: [
@@ -24,6 +26,7 @@ import { CoffeReportController } from './coffereport/coffe-report.controller';
     ReserveModule,
     AdminReportModule,
     CoffeReportModule,
+    QrScanModule,
   ],
 })
 export class AdminModule implements NestModule {
@@ -38,6 +41,7 @@ export class AdminModule implements NestModule {
         ReserveController,
         AdminReportController,
         CoffeReportController,
+        QrScanController,
       );
   }
 }

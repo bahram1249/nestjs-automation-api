@@ -10,8 +10,9 @@
     <div class='row'>
       <div class='col-md-3'>
         <div class='filters'>
+          
           <div class='head'>فیلتر نتایج</div>
-
+          
           <div class='filterItemSingle'>
             <div class='topBar'>
               <div>
@@ -76,6 +77,11 @@
                 </div>
               {{/each}}
             </div>
+          </div>
+          <div class='filterCurrentLocation'>
+            <span position="" class="d-none" id="latitude"></span>
+            <span position="" class="d-none" id="longitude"></span>
+            <button id="btnBehindCurrentLocation" class="find-around-btn" type="button">یافتن کافه رستوران های اطراف</button>
           </div>
         </div>
       </div>

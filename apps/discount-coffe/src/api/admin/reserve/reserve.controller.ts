@@ -19,10 +19,10 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { JwtGuard } from '@rahino/auth/guard';
-import { ListFilter } from '@rahino/query-filter';
 import { GetUser } from '@rahino/auth/decorator';
 import { User } from '@rahino/database/models/core/user.entity';
 import { ReserveService } from './reserve.service';
+import { ReserveFilterDto } from './dto';
 
 @ApiTags('DiscountCoffe-Reserves')
 @ApiBearerAuth()
@@ -41,12 +41,12 @@ export class ReserveController {
   @Get('/')
   @ApiQuery({
     name: 'filter',
-    type: ListFilter,
+    type: ReserveFilterDto,
     style: 'deepObject',
     explode: true,
   })
   @HttpCode(HttpStatus.OK)
-  async findAll(@GetUser() user: User, @Query() filter: ListFilter) {
+  async findAll(@GetUser() user: User, @Query() filter: ReserveFilterDto) {
     return await this.service.findAll(user, filter);
   }
 

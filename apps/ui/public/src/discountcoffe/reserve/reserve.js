@@ -100,6 +100,9 @@ function actionFormatter(value, row) {
   return html.join('');
 }
 function getEntityAjaxRequest(params) {
+  if ($('#reserveId').text() != '') {
+    params.data.reserveId = $('#reserveId').text();
+  }
   //params.data.ignorePaging = false;
   var url = '/v1/api/discountcoffe/admin/reservers';
   $.ajax({

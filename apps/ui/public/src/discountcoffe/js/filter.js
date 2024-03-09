@@ -105,8 +105,20 @@ async function filterProducts() {
     buffetTypeId = null;
   }
   var buffetCityId = filters.querySelector('#buffetCityId').value;
+  var longitude = null;
+  var latitude = null;
   if (buffetCityId == 0) {
+    if ($('#latitude').attr('position') != '') {
+      latitude = $('#latitude').attr('position');
+    }
+
+    if ($('#longitude').attr('position') != '') {
+      longitude = $('#longitude').attr('position');
+    }
     buffetCityId = null;
+  } else {
+    $('#latitude').attr('position', '');
+    $('#longitude').attr('position', '');
   }
   var buffetCostId = filters.querySelector('#buffetCostId').value;
   if (buffetCostId == 0) {
@@ -130,6 +142,8 @@ async function filterProducts() {
     buffetTypeId,
     buffetCityId,
     buffetCostId,
+    latitude,
+    longitude,
     coffeOptionIds: coffeOptionIds.length > 0 ? coffeOptionIds : null,
   };
 
@@ -143,3 +157,39 @@ async function onChnageFilterProducts() {
   limit = 15;
   await filterProducts();
 }
+
+function getLocation() {
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(showPosition, showError);
+  } else {
+    console.log('Geolocation is not supported by this browser.');
+  }
+}
+
+function showPosition(position) {
+  $('#longitude').attr('position', position.coords.longitude);
+  $('#latitude').attr('position', position.coords.latitude);
+  $('select#buffetCityId').val('0').change();
+  filterProducts();
+  // console.log('Latitude:', position.coords.latitude);
+  // console.log('Longitude:', position.coords.longitude);
+}
+
+function showError(error) {
+  switch (error.code) {
+    case error.PERMISSION_DENIED:
+      console.log('User denied the request for Geolocation.');
+      break;
+    case error.POSITION_UNAVAILABLE:
+      console.log('Location information is unavailable.');
+      break;
+    case error.TIMEOUT:
+      console.log('The request to get user location timed out.');
+      break;
+    default:
+      console.log('An unknown error occurred.');
+  }
+}
+$('#btnBehindCurrentLocation').on('click', function () {
+  getLocation();
+});

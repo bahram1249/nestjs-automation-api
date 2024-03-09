@@ -15,7 +15,11 @@ function errorJson(XMLHttpRequest, textStatus, error) {
   if (XMLHttpRequest.readyState == 4) {
     var err = JSON.parse(XMLHttpRequest.responseText);
     try {
-      sweetErrorMessage('خطا', err.errors.join('<br>'));
+      if (typeof err.errors.map === 'function') {
+        sweetErrorMessage('خطا', err.errors.join('<br>'));
+      } else {
+        sweetErrorMessage('خطا', err.errors);
+      }
     } catch (e) {
       sweetErrorMessage('خطا', 'خطای ناشناخته');
     }

@@ -22,6 +22,7 @@ import { PermissionMenu } from '@rahino/database/models/core/permission-menu.ent
       Role,
       RolePermission,
       PermissionMenu,
+      Menu,
     ]),
   ],
   controllers: [LoginController],

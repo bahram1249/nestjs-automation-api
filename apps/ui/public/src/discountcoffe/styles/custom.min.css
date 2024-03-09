@@ -224,3 +224,15 @@ section.cases {
 .coffe-resturant {
   margin-top: 2em;
 }
+
+.find-around-btn {
+  color: #fff;
+  text-align: center;
+  font-size: 14px;
+  border-radius: 14px;
+  background: #00c9ac;
+  font-style: normal;
+  font-weight: 600;
+  padding: 11px 20px;
+  line-height: normal;
+}

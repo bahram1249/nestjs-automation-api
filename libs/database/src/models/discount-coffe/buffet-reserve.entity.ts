@@ -99,4 +99,20 @@ export class BuffetReserve extends Model {
     foreignKey: 'reserveId',
   })
   details?: BuffetReserveDetail[];
+
+  isQrScan?: boolean;
+  @Column({
+    type: DataType.DATE,
+    allowNull: true,
+  })
+  qrScanDate?: Date;
+  @Column({
+    type: DataType.BIGINT,
+    allowNull: true,
+  })
+  @ForeignKey(() => User)
+  qrScanBy?: bigint;
+
+  @BelongsTo(() => User, { foreignKey: 'qrScanBy', as: 'qrScanByUser' })
+  qrScanByUser?: User;
 }

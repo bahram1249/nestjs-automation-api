@@ -1,0 +1,38 @@
+{{#section 'header'}}
+  <meta name='keywords' content='' />
+  <meta name='author' content='' />
+  <meta name='robots' content='' />
+  <meta name='description' content='{{model.title}}' />
+  <meta property='og:title' content='{{model.title}}' />
+  <meta property='og:description' content='{{model.title}}' />
+  <meta property='og:image' />
+
+  <title>{{title}}</title>
+  <link
+    rel='stylesheet'
+    href='/tools/core/bootstrap-table@1.19.1/bootstrap-table.min.css'
+  />
+
+{{/section}}
+
+<div class='card'>
+  <div class='card-header'>
+    <h4>اسکن بارکد</h4>
+  </div>
+  <div id='mainSection' class='card-body'>
+    <div style='width: 500px' id='reader'></div>
+  </div>
+
+</div>
+
+{{#section 'footer'}}
+
+  <script src='/tools/core/html5-qr/html5-qrcode.min.js'></script>
+  <script
+    src='/tools/core/bootstrap-table@1.19.1/bootstrap-table.min.js'
+  ></script>
+  <script
+    src='/tools/core/bootstrap-table@1.19.1/bootstrap-table-fa-IR.js'
+  ></script>
+  <script src='/src/discountcoffe/qrscan/qrscan.js'></script>
+{{/section}}

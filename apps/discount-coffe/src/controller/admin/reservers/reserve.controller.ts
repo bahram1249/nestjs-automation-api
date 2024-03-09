@@ -4,6 +4,7 @@ import {
   HttpCode,
   HttpStatus,
   Param,
+  Query,
   Render,
   Req,
   UseGuards,
@@ -15,6 +16,7 @@ import { GetUser } from '@rahino/auth/decorator';
 import { Menu } from '@rahino/database/models/core/menu.entity';
 import { ReserveService } from './reserve.service';
 import { Request } from 'express';
+import { ReserveDto } from './dto';
 
 @UseGuards(JwtWebGuard, PermissionGuard)
 @Controller({
@@ -28,11 +30,16 @@ export class ReserveController {
   @Get('/')
   @HttpCode(HttpStatus.OK)
   @Render('admin/reserve/index')
-  async get(@GetUser('menus') menus: Menu[], @Req() req: Request) {
+  async get(
+    @GetUser('menus') menus: Menu[],
+    @Req() req: Request,
+    @Query() query: ReserveDto,
+  ) {
     return {
       title: 'منو کافه و رستوران',
       menus: JSON.parse(JSON.stringify(menus)),
       sitename: req.sitename,
+      reserveId: query.reserveId,
     };
   }
 

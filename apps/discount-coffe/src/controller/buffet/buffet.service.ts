@@ -300,7 +300,7 @@ export class BuffetService {
     await mkdirAsync(path.join(process.cwd(), savePath), { recursive: true });
     await QRCode.toFile(
       path.join(process.cwd(), savePath) + '/' + code + '.png',
-      '/buffet/detail/' + code,
+      code,
     );
 
     const attachmentTypeId = 5;
