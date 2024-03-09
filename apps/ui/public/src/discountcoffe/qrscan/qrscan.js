@@ -29,7 +29,7 @@ function checkRequest(reserveId) {
     success: function (data) {
       // redirect
       window.location.href =
-        '/discountcoffe/admin/coffereports?reserveId=' + data.result.id;
+        '/discountcoffe/admin/reservers?reserveId=' + data.result.id;
     },
     error: (XMLHttpRequest, textStatus, error) => {
       errorJson(XMLHttpRequest, textStatus, error);
