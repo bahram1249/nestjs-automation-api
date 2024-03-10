@@ -1,3 +1,4 @@
+const items = [];
 var selectedLocale = 'fa-IR';
 if (document.getElementsByClassName('locale').length > 0) {
   selectedLocale = $('.locale').first().text();
@@ -44,7 +45,6 @@ function detailFormatter(index, row) {
   html.push('تعداد');
   html.push('</th>');
   html.push('</tr>');
-  console.log(row);
   if (row.details.length > 0) {
     for (let index = 0; index < row.details.length; index++) {
       const detail = row.details[index];
@@ -77,26 +77,45 @@ function detailFormatter(index, row) {
   return html.join('');
 }
 
+function onOrderClick(reserveId, buffetId) {
+  $('#mainSection').hide();
+  $('#backButton').show();
+  items.splice(0, items.length);
+  $('#secondSection').html('');
+  $('#secondSection').show();
+  $.ajax({
+    url:
+      '/discountcoffe/admin/reservers/addOrder' +
+      `?reserveId=${reserveId}&buffetId=${buffetId}`,
+    type: 'GET',
+    success: function (data) {
+      $('#secondSection').html(data);
+    },
+    error: function (XMLHttpRequest, textStatus, error) {
+      htmlError(XMLHttpRequest, textStatus, error, $('#secondSection'));
+    },
+  });
+}
+
 function actionFormatter(value, row) {
   var html = [];
-  html.push('<div class="text-center d-flex justify-content-center">');
-  html.push(
-    '<a class="btn btn-primary shadow btn-xs sharp mr-1" onclick="onEditClick(' +
-      row.id +
-      ')">',
-  );
-  html.push('<i class="fa fa-pencil"></i>');
+  if (row.isQrScan == true) {
+    html.push('<div class="text-center d-flex justify-content-center">');
+    html.push(
+      '<a class="btn btn-primary shadow sharp mr-1" onclick="onOrderClick(' +
+        row.id +
+        ',' +
+        row.buffetId +
+        ')">',
+    );
+    html.push('<i class="fa fa-plus"></i>');
+    html.push('افزودن سفارش');
 
-  html.push('</a>');
-  html.push(
-    '<a class="btn btn-danger shadow btn-xs sharp mr-1" onclick="onDeleteClick(' +
-      row.id +
-      ')">',
-  );
-  html.push('<i class="fa fa-trash"></i>');
+    html.push('</a>');
 
-  html.push('</a>');
-  html.push('</div>');
+    html.push('</div>');
+  }
+
   return html.join('');
 }
 function getEntityAjaxRequest(params) {
@@ -216,51 +235,27 @@ function showMainSection() {
   $('#mainSection').show();
 }
 
-$(document).on('submit', '#editEntityForm', function (event) {
-  var entityId = $('#entityId').text();
+$(document).on('click', '#addReserveItem', function (event) {
   event.preventDefault();
-  var requestData = JSON.parse(JSON.stringify($(this).serializeObject()));
-  $.each(requestData, function (key, value) {
-    if (key == 'buffetDescription') {
-      requestData[key] = value.replace('../..', '');
-    }
-    // console.log(!isNaN(value));
-    // if (!isNaN(value)) {
-    //   requestData[key] = parseInt(value);
-    // }
-    if (value === '' || value === null) {
-      delete requestData[key];
-    }
-  });
-
-  var options = [];
-  var inputOptions = $('input.option-select:checked');
-  inputOptions.each(function () {
-    options.push($(this).attr('option-id'));
-  });
-
-  var formData = new FormData();
-  var file = $('#file')[0].files;
-  var length = file.length;
-  if (length > 0) {
-    formData.append('file', file[0]);
+  if (items.length == 0) {
+    alert('میبایست حداقل یک مورد را انتخاب بفرمایید');
   }
-
-  options.forEach((option) => {
-    formData.append('options[]', option);
+  var itemMaps = items.map((item) => {
+    return {
+      id: parseInt(item.id),
+      count: parseInt(item.count),
+    };
   });
 
-  Object.keys(requestData).forEach(function (k, v) {
-    formData.append(k, requestData[k]);
-  });
+  var requestData = {
+    reserveId: parseInt($('#reserveId').text()),
+    items: itemMaps,
+  };
 
   $.ajax({
-    url: '/v1/api/discountcoffe/admin/menucategories/' + entityId,
-    type: 'PUT',
-    data: formData,
-    contentType: 'multipart/form-data',
-    processData: false,
-    contentType: false,
+    url: '/v1/api/discountcoffe/admin/reservers/order',
+    type: 'POST',
+    data: requestData,
     beforeSend: function (request) {
       beforeSendAjax(request);
     },

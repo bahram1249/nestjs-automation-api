@@ -11,7 +11,7 @@ export class ReserveDto {
   personCount: number;
   @IsArray()
   @IsOptional()
-  items?: ReserveMenuDto[];
+  items?: ReserveMenuDto[] = [];
   @Transform(({ value }) => JSON.parse(value))
   @IsNumber()
   reserveType: number;

@@ -37,14 +37,15 @@ export class QrScanService {
     if (!buffet) {
       throw new BadRequestException('رزرو کافه برای شما نیست');
     }
-    reserve = await this.reserveRepository.update(
+    const reserveUpdate = await this.reserveRepository.update(
       {
         isQrScan: true,
         qrScanDate: Sequelize.fn('getdate'),
         qrScanBy: user.id,
       },
-      { where: { id: reserve.id } },
-    )[1][0];
+      { where: { id: reserve.id }, returning: true },
+    );
+    reserve = reserveUpdate[1][0];
     return {
       result: reserve,
     };

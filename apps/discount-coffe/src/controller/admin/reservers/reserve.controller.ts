@@ -16,7 +16,8 @@ import { GetUser } from '@rahino/auth/decorator';
 import { Menu } from '@rahino/database/models/core/menu.entity';
 import { ReserveService } from './reserve.service';
 import { Request } from 'express';
-import { ReserveDto } from './dto';
+import { OrderDto, ReserveDto } from './dto';
+import { User } from '@rahino/database/models/core/user.entity';
 
 @UseGuards(JwtWebGuard, PermissionGuard)
 @Controller({
@@ -43,13 +44,17 @@ export class ReserveController {
     };
   }
 
-  // @CheckPermission({
-  //   permissionSymbol: 'discountcoffe.admin.totalreserves.update',
-  // })
-  // @Get('/:id')
-  // @HttpCode(HttpStatus.OK)
-  // @Render('admin/totalreserves/edit')
-  // async edit(@Param('id') buffetMenuId: bigint) {
-  //   return await this.service.edit(buffetMenuId);
-  // }
+  @CheckPermission({
+    permissionSymbol: 'discountcoffe.admin.reservers.getall',
+  })
+  @Get('/addOrder')
+  @HttpCode(HttpStatus.OK)
+  @Render('admin/reserve/addOrder')
+  async addOrder(
+    @Req() req: Request,
+    @GetUser() user: User,
+    @Query() query: OrderDto,
+  ) {
+    return await this.service.addOrder(req, user, query);
+  }
 }

@@ -1,9 +1,11 @@
 import {
+  Body,
   Controller,
   Get,
   HttpCode,
   HttpStatus,
   Param,
+  Post,
   Put,
   Query,
   UseGuards,
@@ -22,7 +24,7 @@ import { JwtGuard } from '@rahino/auth/guard';
 import { GetUser } from '@rahino/auth/decorator';
 import { User } from '@rahino/database/models/core/user.entity';
 import { ReserveService } from './reserve.service';
-import { ReserveFilterDto } from './dto';
+import { ReserveDto, ReserveFilterDto } from './dto';
 
 @ApiTags('DiscountCoffe-Reserves')
 @ApiBearerAuth()
@@ -51,6 +53,24 @@ export class ReserveController {
   }
 
   @UseInterceptors(JsonResponseTransformInterceptor)
+  @UseGuards(JwtGuard, PermissionGuard)
+  @ApiOperation({ description: 'show all total reserves' })
+  @CheckPermission({
+    permissionSymbol: 'discountcoffe.admin.reservers.getall',
+  })
+  @Post('/order')
+  @ApiQuery({
+    name: 'filter',
+    type: ReserveFilterDto,
+    style: 'deepObject',
+    explode: true,
+  })
+  @UseInterceptors(JsonResponseTransformInterceptor)
+  @HttpCode(HttpStatus.CREATED)
+  async addOrder(@GetUser() user: User, @Body() dto: ReserveDto) {
+    return await this.service.addOrder(user, dto);
+  }
+
   @UseGuards(JwtGuard, PermissionGuard)
   @ApiOperation({ description: 'show reserve by given id' })
   @CheckPermission({

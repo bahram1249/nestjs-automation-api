@@ -100,6 +100,10 @@ export class BuffetReserve extends Model {
   })
   details?: BuffetReserveDetail[];
 
+  @Column({
+    type: DataType.BOOLEAN,
+    allowNull: true,
+  })
   isQrScan?: boolean;
   @Column({
     type: DataType.DATE,

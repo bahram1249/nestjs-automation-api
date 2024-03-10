@@ -1,4 +1,8 @@
-import { Injectable, NotImplementedException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotImplementedException,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { Op, Sequelize } from 'sequelize';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
@@ -11,13 +15,19 @@ import { Attachment } from '@rahino/database/models/core/attachment.entity';
 import { PersianDate } from '@rahino/database/models/core/view/persiandate.entity';
 import { BuffetReserveDetail } from '@rahino/database/models/discount-coffe/buffet-reserve-detail.entity';
 import { BuffetMenu } from '@rahino/database/models/discount-coffe/buffet-menu.entity';
-import { ReserveFilterDto } from './dto';
+import { ReserveDto, ReserveFilterDto } from './dto';
 
 @Injectable()
 export class ReserveService {
   constructor(
     @InjectModel(BuffetReserve)
     private readonly repository: typeof BuffetReserve,
+    @InjectModel(BuffetMenu)
+    private readonly buffetMenuRepository: typeof BuffetMenu,
+    @InjectModel(BuffetReserveDetail)
+    private readonly buffetReserveDetailRepository: typeof BuffetReserveDetail,
+    @InjectModel(Buffet)
+    private readonly buffetRepository: typeof Buffet,
   ) {}
 
   async findAll(user: User, filter: ReserveFilterDto) {
@@ -127,6 +137,80 @@ export class ReserveService {
     };
   }
 
+  async addOrder(user: User, dto: ReserveDto) {
+    const reserve = await this.repository.findOne(
+      new QueryOptionsBuilder().filter({ id: dto.reserveId }).build(),
+    );
+    if (!reserve) {
+      throw new BadRequestException('the item with this given id not founded!');
+    }
+    const buffet = await this.buffetRepository.findOne(
+      new QueryOptionsBuilder()
+        .filter({ ownerId: user.id })
+        .filter({ id: reserve.buffetId })
+        .build(),
+    );
+
+    if (!buffet) {
+      throw new BadRequestException('the buffet id not founded!');
+    }
+    if (dto.items.length > 0) {
+      const menusIds = dto.items.map((item) => item.id);
+      const menus = await this.buffetMenuRepository.findAll({
+        where: {
+          [Op.and]: [
+            {
+              id: {
+                [Op.in]: menusIds,
+              },
+            },
+            Sequelize.where(
+              Sequelize.fn('isnull', Sequelize.col('isDeleted'), 0),
+              {
+                [Op.eq]: 0,
+              },
+            ),
+          ],
+        },
+      });
+
+      for (let index = 0; index < menus.length; index++) {
+        const menu = menus[index];
+        const item = dto.items.find((item) => item.id == menu.id);
+
+        var count = parseInt(item.count.toString());
+        var itemTotalPrice = Number(menu.price) * count;
+        await this.buffetReserveDetailRepository.create({
+          reserveId: dto.reserveId,
+          menuId: menu.id,
+          price: menu.price,
+          totalPrice: itemTotalPrice,
+          countItem: item.count,
+        });
+      }
+      const totalPrice: any = await this.buffetReserveDetailRepository.findOne({
+        attributes: [
+          [Sequelize.fn('sum', Sequelize.col('totalPrice')), 'totalPrice'],
+        ],
+        group: ['reserveId'],
+        where: {
+          reserveId: dto.reserveId,
+        },
+        order: ['reserveId'],
+      });
+      await this.repository.update(
+        { price: totalPrice.totalPrice },
+        {
+          where: {
+            id: dto.reserveId,
+          },
+        },
+      );
+    }
+    return {
+      result: 'ok',
+    };
+  }
   async edit(id: bigint, user: User) {
     throw new NotImplementedException();
   }

@@ -45,6 +45,7 @@ $('#date-picker').persianDatepicker({
   cellHeight: 45, // by px
   fontSize: 15, // by px
   isRTL: !1,
+  ignoreDays: [],
   onShow: function () {},
   onHide: function () {},
   onSelect: function (data) {
