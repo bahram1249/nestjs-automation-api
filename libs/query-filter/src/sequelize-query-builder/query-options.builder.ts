@@ -1,5 +1,6 @@
 import {
   FindAndCountOptions,
+  FindAttributeOptions,
   Includeable,
   LOCK,
   Op,
@@ -49,7 +50,7 @@ export class QueryOptionsBuilder {
     this.options.include = include;
     return this;
   }
-  attributes(attributes: string[]): QueryOptionsBuilder {
+  attributes(attributes: FindAttributeOptions): QueryOptionsBuilder {
     this.options.attributes = attributes;
     return this;
   }

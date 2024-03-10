@@ -30,7 +30,7 @@ $('#date-picker').persianDatepicker({
   shortDowTitle: ['ش', 'ی', 'د', 'س', 'چ', 'پ', 'ج'],
   showGregorianDate: !1,
   persianNumbers: !0,
-  formatDate: 'YYYY/MM/DD',
+  formatDate: 'YYYY/0M/0D',
   selectedBefore: !1,
   selectedDate: today, //today,
   startDate: 'today', //Date.now(),

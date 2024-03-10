@@ -93,7 +93,14 @@
   </div>
 </div>
 {{#section 'footer'}}
+  <script>
+    var ignoreDays = [];
 
+    {{#each ignoreDays}}
+      ignoreDays.push('{{item}}')
+    {{/each}}
+
+  </script>
   <script src='/theme/discountcoffe/assets/js/jquery.js'></script>
   <script src='/theme/discountcoffe/assets/js/custom.min.js'></script>
   <script src='/theme/discountcoffe/assets/js/wow.js'></script>

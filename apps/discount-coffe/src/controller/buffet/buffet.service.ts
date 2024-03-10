@@ -28,6 +28,8 @@ import { BuffetCost } from '@rahino/database/models/discount-coffe/buffet-cost.e
 import { BuffetFilterDto } from '@rahino/discountCoffe/api/user/buffet/dto';
 import { BuffetCity } from '@rahino/database/models/discount-coffe/city.entity';
 import { BuffetOption } from '@rahino/database/models/discount-coffe/buffet-option.entity';
+import { BuffetIgnoreReserve } from '@rahino/database/models/discount-coffe/ignore-reserve.entity';
+import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 const mkdirAsync = util.promisify(fs.mkdir);
 
 @Injectable()
@@ -55,6 +57,8 @@ export class BuffetService {
     private readonly buffetCityRepository: typeof BuffetCity,
     @InjectModel(CoffeOption)
     private readonly coffeOptionRepository: typeof CoffeOption,
+    @InjectModel(BuffetIgnoreReserve)
+    private readonly ignoreReserveRepository: typeof BuffetIgnoreReserve,
     private readonly config: ConfigService,
   ) {}
 
@@ -117,6 +121,7 @@ export class BuffetService {
       },
     });
     if (!buffet) throw new NotFoundException();
+
     const buffetMenuCategories =
       await this.buffetMenuCategoryRepository.findAll({
         include: [
@@ -155,16 +160,41 @@ export class BuffetService {
 
     const convertDateFormat = 103;
     const increase = 14;
-    const today = await this.persianDateRepository.findOne({
-      where: Sequelize.where(Sequelize.col('GregorianDate'), {
-        [Op.eq]: Sequelize.fn(
-          'convert',
-          Sequelize.literal('date'),
-          Sequelize.fn('getdate'),
-          convertDateFormat,
-        ),
-      }),
-    });
+    let attempt = 0;
+    let today: PersianDate = null;
+
+    while (today == null && attempt != increase + 2) {
+      today = await this.persianDateRepository.findOne(
+        new QueryOptionsBuilder()
+          .filter(
+            Sequelize.where(Sequelize.col('GregorianDate'), {
+              [Op.eq]: Sequelize.fn(
+                'convert',
+                Sequelize.literal('date'),
+                Sequelize.fn(
+                  'dateadd',
+                  Sequelize.literal('day'),
+                  attempt,
+                  Sequelize.fn('getdate'),
+                ),
+                convertDateFormat,
+              ),
+            }),
+          )
+          .filter(
+            Sequelize.literal(`not exists(
+            SELECT 1
+            FROM DiscountCoffeIgnoreReserves DFIR
+            WHERE DFIR.buffetId = ${buffet.id}
+              AND DFIR.ignoreDate = PersianDate.GregorianDate
+
+          )`),
+          )
+          .build(),
+      );
+      attempt += 1;
+    }
+
     const endDate = await this.persianDateRepository.findOne({
       where: Sequelize.where(Sequelize.col('GregorianDate'), {
         [Op.eq]: Sequelize.fn(
@@ -181,6 +211,33 @@ export class BuffetService {
       }),
     });
 
+    const ignoreReserves = await this.ignoreReserveRepository.findAll(
+      new QueryOptionsBuilder()
+        .attributes([
+          [
+            Sequelize.fn(
+              'convert',
+              Sequelize.literal('varchar'),
+              Sequelize.col('ignoreDate'),
+              111,
+            ),
+            'ignoreDate',
+          ],
+        ])
+        .filter({
+          buffetId: buffet.id,
+        })
+        .filter({
+          ignoreDate: {
+            [Op.between]: [today.GregorianDate, endDate.GregorianDate],
+          },
+        })
+        .build(),
+    );
+
+    const ignoreDays = ignoreReserves.map((reserve) => {
+      return { item: reserve.ignoreDate.toString() };
+    });
     return {
       title: 'رزرو از ' + buffet.title,
       layout: 'discountcoffe',
@@ -189,6 +246,7 @@ export class BuffetService {
       today: today.toJSON(),
       endDate: endDate.toJSON(),
       user: req.user,
+      ignoreDays: JSON.parse(JSON.stringify(ignoreDays)),
     };
   }
 

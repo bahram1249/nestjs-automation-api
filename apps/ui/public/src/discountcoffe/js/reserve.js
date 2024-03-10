@@ -31,10 +31,10 @@ $('#date-picker').persianDatepicker({
   shortDowTitle: ['ش', 'ی', 'د', 'س', 'چ', 'پ', 'ج'],
   showGregorianDate: !1,
   persianNumbers: !0,
-  formatDate: 'YYYY/MM/DD',
+  formatDate: 'YYYY/0M/0D',
   selectedBefore: !1,
   selectedDate: today, //today,
-  startDate: 'today', //Date.now(),
+  startDate: today, //Date.now(),
   endDate: endDate, //new Date().setDate(new Date.now().getDate() + 7),
   prevArrow: "<i class='icon-left'></i>",
   nextArrow: "<i class='icon-right'></i>",
@@ -45,7 +45,7 @@ $('#date-picker').persianDatepicker({
   cellHeight: 45, // by px
   fontSize: 15, // by px
   isRTL: !1,
-  ignoreDays: [],
+  ignoreDays: ignoreDays,
   onShow: function () {},
   onHide: function () {},
   onSelect: function (data) {
