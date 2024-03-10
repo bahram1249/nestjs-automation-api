@@ -64,6 +64,7 @@ import { ECInventoryPrice } from './models/ecommerce-eav/ec-inventory-price.enti
 import { EAVEntityAttribute } from './models/eav/eav-entity-attribute.entity';
 import { ECUserSession } from './models/ecommerce-eav/ec-user-session.entity';
 import { ECRequestLog } from './models/ecommerce-eav/ec-request-log.entity';
+import { BuffetIgnoreReserve } from './models/discount-coffe/ignore-reserve.entity';
 
 @Module({
   imports: [
@@ -138,6 +139,7 @@ import { ECRequestLog } from './models/ecommerce-eav/ec-request-log.entity';
           BuffetReserveType,
           BuffetReserve,
           BuffetReserveDetail,
+          BuffetIgnoreReserve,
           VW_BuffetReservers,
         ],
         autoLoadModels: configService.get('DB_AUTO_LOAD_MODELS') === 'true',

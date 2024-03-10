@@ -13,6 +13,7 @@ import { BuffetModule as BuffetUserModule } from './api/user/buffet/buffet.modul
 import { UserModule } from './controller/user/user.module';
 import { AdminModule } from './controller/admin/admin.module';
 import { QrScanApiModule } from './api/admin/qrscan/qrscan.module';
+import { HolidayApiModule } from './api/admin/holiday/holiday.module';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { QrScanApiModule } from './api/admin/qrscan/qrscan.module';
     AdminReportApiModule,
     CoffeReportApiModule,
     QrScanApiModule,
+    HolidayApiModule,
     BuffetUserModule,
     LoginModule,
     HomeModule,

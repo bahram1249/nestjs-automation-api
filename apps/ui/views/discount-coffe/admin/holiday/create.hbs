@@ -1,0 +1,37 @@
+<html>
+  <head>
+    <title>{{title}}</title>
+
+  </head>
+  <body>
+    <div id='currentDate' style='display: none;'>{{today.YearMonthDay}}</div>
+    <div id='endDate' style='display: none;'>{{endDate.YearMonthDay}}</div>
+    <div class='basic-form'>
+      <form id='newEntityForm' autocomplete='off'>
+        <div class='row'>
+          <div class='col-md-12'>
+            <div id='date-picker'></div>
+            <div id='shower'>
+              <h4>انتخاب تاریخ</h4>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+
+    <div class='row'>
+      <button
+        id='saveButton'
+        type='submit'
+        form='newEntityForm'
+        class='btn btn-primary mt-3'
+      ><i class='fa fa-save'></i>
+        ایجاد</button>
+    </div>
+
+  </body>
+
+  <!-- <script src='/theme/discountcoffe/assets/js/jquery.js'></script> -->
+
+  <script src='/src/discountcoffe/holiday/create.js'></script>
+</html>

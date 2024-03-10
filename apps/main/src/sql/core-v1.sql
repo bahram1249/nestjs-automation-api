@@ -1227,7 +1227,34 @@ END
 
 GO
 
+-- ignore reserves
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'DiscountCoffe-IgnoreReserve-v1' 
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'SITE_NAME' AND [value] IN ('DiscountCoffe'))
+		)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'CUSTOMER_NAME' AND [value] IN ('DiscountCoffe'))
+		)
+BEGIN
 
+	CREATE TABLE DiscountCoffeIgnoreReserves (
+		id							bigint identity(1,1)		PRIMARY KEY,
+		buffetId					bigint							NOT NULL
+			CONSTRAINT FK_DiscountCoffeIgnoreReserves_BuffetId
+				FOREIGN KEY REFERENCES DiscountCoffeBuffets(id),
+		ignoreDate					date						NOT NULL,
+		[createdAt]					datetimeoffset				NOT NULL,
+		[updatedAt]					datetimeoffset				NOT NULL
+	);
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'DiscountCoffe-IgnoreReserve-v1', GETDATE(), GETDATE()
+END
+
+GO
 
 
 
