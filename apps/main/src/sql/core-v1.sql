@@ -1227,6 +1227,72 @@ END
 
 GO
 
+
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'DiscountCoffe-VW_BuffetReservers-v2' 
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'SITE_NAME' AND [value] IN ('DiscountCoffe'))
+		)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'CUSTOMER_NAME' AND [value] IN ('DiscountCoffe'))
+		)
+BEGIN
+	EXEC('
+	  
+ ALTER VIEW [dbo].[VW_BuffetReservers]  
+ AS  
+ SELECT Buffets.id  
+   , Buffets.title  
+   , buffets.ownerId  
+   , T.YearNumber  
+   , T.MonthNumber  
+   , T.PersianMonthName  
+   , T.MinDate  
+   , T.MaxDate  
+   , COUNT(DISTINCT CASE WHEN reserveStatusId = 2 THEN Reservers.id END) as totalCnt  
+   , COUNT(DISTINCT CASE WHEN reserveStatusId = 2 AND reserveTypeId = 1 THEN Reservers.id END) as onlineCnt
+   , COUNT(DISTINCT CASE WHEN reserveStatusId = 2 AND reserveTypeId = 1 AND isQrScan = 1 THEN Reservers.id END) as onlineScanCnt
+   , COUNT(DISTINCT CASE WHEN reserveStatusId = 2 AND reserveTypeId = 2 THEN Reservers.id END) as offlineCnt
+   , COUNT(DISTINCT CASE WHEN reserveStatusId = 2 AND reserveTypeId = 2 AND isQrScan = 1 THEN Reservers.id END) as offlineScanCnt  
+   , ISNULL(SUM(CASE WHEN reserveStatusId = 2 AND reserveTypeId = 1 THEN Reservers.price END), 0) as onlineSumPrice
+   , ISNULL(SUM(CASE WHEN reserveStatusId = 2 AND reserveTypeId = 1 AND isQrScan = 1 THEN Reservers.price END), 0) as onlineSumPriceScaned 
+   , ISNULL(SUM(CASE WHEN reserveStatusId = 2 AND reserveTypeId = 2 THEN Reservers.price END), 0) as offlineSumPrice
+   , ISNULL(SUM(CASE WHEN reserveStatusId = 2 AND reserveTypeId = 2 AND isQrScan = 1 THEN Reservers.price END), 0) as offlineSumPriceScaned
+ FROM DiscountCoffeBuffets Buffets  
+ CROSS JOIN (  
+  SELECT YearNumber  
+    ,MonthNumber  
+    ,PersianMonthName  
+    ,MIN(GregorianDate) MinDate  
+    ,MAX(GregorianDate) AS MaxDate  
+  FROM PersianDates  
+  WHERE YearNumber = (SELECT  top 1 YearNumber  
+   FROM PersianDates  
+   WHERE GregorianDate = CONVERT(date, getdate(), 103)  
+  )  
+  GROUP BY YearNumber,MonthNumber, PersianMonthName  
+ ) T  
+ LEFT JOIN DiscountCoffeReserves Reservers  
+ ON Buffets.id = Reservers.buffetId   
+  AND Reservers.reserveDate BETWEEN T.MinDate AND T.MaxDate  
+ GROUP BY  Buffets.id  
+   , Buffets.title  
+   , buffets.ownerId  
+   , T.YearNumber  
+   , T.MonthNumber  
+   , T.PersianMonthName  
+   , T.MinDate  
+   , T.MaxDate  ')
+
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'DiscountCoffe-VW_BuffetReservers-v2', GETDATE(), GETDATE()
+END
+
+GO
+
 -- ignore reserves
 IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'DiscountCoffe-IgnoreReserve-v1' 
 			)
@@ -8956,6 +9022,132 @@ BEGIN
 END
 
 GO
+
+-- discount coffe
+-- reports
+IF NOT EXISTS ( SELECT 1 FROM Migrations WHERE version = 'CORE-Permissions-Data-v30' 
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'SITE_NAME' AND [value] IN ('DiscountCoffe'))
+		)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'CUSTOMER_NAME' AND [value] IN ('DiscountCoffe'))
+		)
+	
+BEGIN
+	
+	DECLARE @roleId int = (SELECT TOP 1 id FROM Roles WHERE static_id = 1)
+	DECLARE @userId bigint = (SELECT TOP 1 id FROM Users WHERE static_id = 1)
+
+	DECLARE @GroupTemp TABLE (
+		gorupId int
+	);
+
+	DECLARE @groupId int = null;
+
+	DECLARE @entityName nvarchar(256) = N'FactorReport'
+	DECLARE @groupName nvarchar(256) = N'discountcoffe.admin.factorreport'
+	DECLARE @findParentMenu bit = 1;
+	DECLARE @parentMenuName nvarchar(256) = N'کافه و رستوران'
+	DECLARE @menuName nvarchar(256) = N'صورت حساب'
+	DECLARE @menuUrl nvarchar(512) = N'/discountcoffe/admin/factorReport'
+
+	DECLARE @permissionSymbolShowMenu nvarchar(512) = @groupName + '.showmenu';
+
+
+
+
+	-- permission groups
+	INSERT INTO PermissionGroups(permissionGroupName, [visibility], createdAt, updatedAt)
+	OUTPUT inserted.id INTO @GroupTemp(gorupId)
+	SELECT @groupName, 1, GETDATE(), GETDATE();
+
+	SELECT  @groupId = gorupId FROM @GroupTemp
+
+
+	-- permissions
+
+	
+	DECLARE @PermissionTemp TABLE (
+		permissionId int
+	);
+
+
+															
+
+	DELETE FROM @PermissionTemp
+
+	INSERT INTO Permissions(permissionName ,permissionSymbol, permissionGroupId,createdAt, updatedAt)
+	OUTPUT inserted.id INTO @PermissionTemp(permissionId)
+	SELECT 'SHOWMENU_' + @entityName, @permissionSymbolShowMenu, @groupId,GETDATE(), GETDATE()
+
+	INSERT INTO RolePermissions(roleId, permissionId, createdAt, updatedAt)
+	SELECT @roleId, permissionId, GETDATE(), GETDATE()
+	FROM @PermissionTemp
+
+	DECLARE @permissionId int = null
+	SELECT @permissionId = permissionId FROM @PermissionTemp
+
+
+
+
+	DECLARE @parentMenuId int = null
+	
+
+
+	IF @findParentMenu = 0
+	BEGIN
+		-- INSERT ParentMenu
+		DECLARE @ParentMenuTemp TABLE (
+			menuId int
+		);
+
+		INSERT INTO Menus(title, url, className, visibility, createdAt, updatedAt)
+		OUTPUT inserted.id INTO @ParentMenuTemp(menuId)
+		SELECT @parentMenuName, null, null, null, GETDATE(), GETDATE()
+
+		SELECT @parentMenuId = menuId FROM @ParentMenuTemp
+
+	END
+	ELSE
+	BEGIN
+		SELECT @parentMenuId = id
+		FROM Menus
+		WHERE title = @parentMenuName
+	END
+
+	IF @parentMenuId IS NOT NULL
+		AND NOT EXISTS (SELECT 1 FROM PermissionMenus WHERE permissionId = @permissionId AND menuId = @parentMenuId)
+	BEGIN
+		INSERT INTO PermissionMenus(permissionId, menuId, createdAt, updatedAt)
+		SELECT @permissionId, @parentMenuId, getdate(), getdate()
+		
+	END
+
+	DECLARE @MenuTemp TABLE (
+			menuId int
+		);
+	DECLARE @menuId int = null
+
+	INSERT INTO Menus(title, url, parentMenuId, className, visibility, createdAt, updatedAt)
+	OUTPUT inserted.id INTO @MenuTemp(menuId)
+	SELECT @menuName, @menuUrl, @parentMenuId,null, null, GETDATE(), GETDATE()
+
+	SELECT @menuId = menuId FROM @MenuTemp
+
+	INSERT INTO PermissionMenus(permissionId, menuId, createdAt, updatedAt)
+	SELECT @permissionId, @menuId, getdate(), getdate()
+
+	
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'CORE-Permissions-Data-v30', GETDATE(), GETDATE()
+END
+
+GO
+
 
 -- period types
 IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'PCMPeriodTypes-Data-v1' 

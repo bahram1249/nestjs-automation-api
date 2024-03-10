@@ -1,0 +1,73 @@
+{{#section 'header'}}
+  <meta name='keywords' content='' />
+  <meta name='author' content='' />
+  <meta name='robots' content='' />
+  <meta name='description' content='{{model.title}}' />
+  <meta property='og:title' content='{{model.title}}' />
+  <meta property='og:description' content='{{model.title}}' />
+  <meta property='og:image' />
+
+  <title>{{title}}</title>
+  <link
+    rel='stylesheet'
+    href='/tools/core/bootstrap-table@1.19.1/bootstrap-table.min.css'
+  />
+
+{{/section}}
+
+<div class='card'>
+  <div class='card-header'>
+    <h4>صورت حساب</h4>
+  </div>
+  <div id='mainSection' class='card-body'>
+    <table class='table table-striped'>
+      <thead>
+        <tr>
+          <th>شناسه کافه</th>
+          <th>نام</th>
+          <th>سال</th>
+          <th>نام ماه</th>
+          <th>تعداد کل سفارش</th>
+          <th>تعداد کل سفارش آنلاین</th>
+          <th>تعداد سفارش آنلاین اسکن شده</th>
+          <th>تعداد کل سفارش آفلاین</th>
+          <th>تعداد سفارش آفلاین اسکن شده</th>
+          <th>مبلغ سفارش آنلاین</th>
+          <th>مبلغ سفارش آنلاین اسکن شده</th>
+          <th>مبلغ سفارش آفلاین</th>
+          <th>مبلغ سفارش آفلاین اسکن شده</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{#each reports}}
+          <tr>
+            <td>{{id}}</td>
+            <td>{{title}}</td>
+            <td>{{YearNumber}}</td>
+            <td>{{PersianMonthName}}</td>
+            <td>{{totalCnt}}</td>
+            <td>{{onlineCnt}}</td>
+            <td>{{onlineScanCnt}}</td>
+            <td>{{offlineCnt}}</td>
+            <td>{{offlineScanCnt}}</td>
+            <td>{{onlineSumPrice}}</td>
+            <td>{{onlineSumPriceScaned}}</td>
+            <td>{{offlineSumPrice}}</td>
+            <td>{{offlineSumPriceScaned}}</td>
+          </tr>
+        {{/each}}
+      </tbody>
+    </table>
+  </div>
+
+</div>
+
+{{#section 'footer'}}
+
+  <script
+    src='/tools/core/bootstrap-table@1.19.1/bootstrap-table.min.js'
+  ></script>
+  <script
+    src='/tools/core/bootstrap-table@1.19.1/bootstrap-table-fa-IR.js'
+  ></script>
+{{/section}}

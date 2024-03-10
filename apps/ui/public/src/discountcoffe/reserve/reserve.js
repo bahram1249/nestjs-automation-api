@@ -99,7 +99,7 @@ function onOrderClick(reserveId, buffetId) {
 
 function actionFormatter(value, row) {
   var html = [];
-  if (row.isQrScan == true) {
+  if (row.isQrScan == true && row.reserveTypeId == 2) {
     html.push('<div class="text-center d-flex justify-content-center">');
     html.push(
       '<a class="btn btn-primary shadow sharp mr-1" onclick="onOrderClick(' +
@@ -115,7 +115,6 @@ function actionFormatter(value, row) {
 
     html.push('</div>');
   }
-
   return html.join('');
 }
 function getEntityAjaxRequest(params) {

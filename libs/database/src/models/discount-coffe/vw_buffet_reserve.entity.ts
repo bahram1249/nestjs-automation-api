@@ -1,6 +1,6 @@
 import { Table, Column, Model, DataType } from 'sequelize-typescript';
 
-@Table({ tableName: 'VW_BuffetReservers' })
+@Table({ tableName: 'VW_BuffetReservers', timestamps: false })
 export class VW_BuffetReservers extends Model {
   @Column({
     type: DataType.BIGINT,
@@ -48,9 +48,32 @@ export class VW_BuffetReservers extends Model {
   @Column({
     type: DataType.INTEGER,
   })
+  onlineScanCnt?: number;
+  @Column({
+    type: DataType.INTEGER,
+  })
   offlineCnt?: number;
+  @Column({
+    type: DataType.INTEGER,
+  })
+  offlineScanCnt?: number;
   @Column({
     type: DataType.BIGINT,
   })
   onlineSumPrice?: bigint;
+
+  @Column({
+    type: DataType.BIGINT,
+  })
+  onlineSumPriceScaned?: bigint;
+
+  @Column({
+    type: DataType.BIGINT,
+  })
+  offlineSumPrice?: bigint;
+
+  @Column({
+    type: DataType.BIGINT,
+  })
+  offlineSumPriceScaned?: bigint;
 }
