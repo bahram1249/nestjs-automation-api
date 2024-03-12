@@ -15,4 +15,18 @@ export class HomeController {
   async index(@Req() req: Request) {
     return await this.service.index(req);
   }
+
+  @Get('/aboutus')
+  @Render('home/aboutus')
+  @UseGuards(OptionalJwtWebGuard)
+  async aboutUs(@Req() req: Request) {
+    return await this.service.aboutus(req);
+  }
+
+  @Get('/contactus')
+  @Render('home/contactus')
+  @UseGuards(OptionalJwtWebGuard)
+  async contacUs(@Req() req: Request) {
+    return await this.service.contactus(req);
+  }
 }

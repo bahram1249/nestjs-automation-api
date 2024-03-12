@@ -268,4 +268,17 @@ export class HomeService {
       user: req.user,
     };
   }
+
+  async contactus(req: Request) {
+    return {
+      title: 'تماس با ما',
+      layout: 'discountcoffe',
+    };
+  }
+  async aboutus(req: Request) {
+    return {
+      title: 'درباره ما',
+      layout: 'discountcoffe',
+    };
+  }
 }
