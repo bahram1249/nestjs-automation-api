@@ -200,6 +200,7 @@ img.super-lux-img {
     background-image: url('/src/discountcoffe/img/coffe-background.png');
     background-size: contain;
     background-repeat: no-repeat;
+    background-position: center;
   }
 }
 
