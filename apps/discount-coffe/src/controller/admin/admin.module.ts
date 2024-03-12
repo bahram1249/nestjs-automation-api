@@ -20,6 +20,8 @@ import { HolidayModule } from './holiday/holiday.module';
 import { HolidayController } from './holiday/holiday.controller';
 import { FactorReportModule } from './factor-report/factor-report.module';
 import { FactorReportController } from './factor-report/factor-report.controller';
+import { AllFactorReportModule } from './all-factor-report/all-factor-report.module';
+import { AllFactorReportController } from './all-factor-report/all-factor-report.controller';
 
 @Module({
   imports: [
@@ -33,6 +35,7 @@ import { FactorReportController } from './factor-report/factor-report.controller
     QrScanModule,
     HolidayModule,
     FactorReportModule,
+    AllFactorReportModule,
   ],
 })
 export class AdminModule implements NestModule {
@@ -50,6 +53,7 @@ export class AdminModule implements NestModule {
         QrScanController,
         HolidayController,
         FactorReportController,
+        AllFactorReportController,
       );
   }
 }

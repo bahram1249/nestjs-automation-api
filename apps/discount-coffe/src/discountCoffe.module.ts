@@ -14,6 +14,7 @@ import { UserModule } from './controller/user/user.module';
 import { AdminModule } from './controller/admin/admin.module';
 import { QrScanApiModule } from './api/admin/qrscan/qrscan.module';
 import { HolidayApiModule } from './api/admin/holiday/holiday.module';
+import { AllFactorReportApiModule } from './api/admin/all-factor-report/all-factor-report.module';
 
 @Module({
   imports: [
@@ -29,6 +30,7 @@ import { HolidayApiModule } from './api/admin/holiday/holiday.module';
     QrScanApiModule,
     HolidayApiModule,
     BuffetUserModule,
+    AllFactorReportApiModule,
     LoginModule,
     HomeModule,
     UserModule,
