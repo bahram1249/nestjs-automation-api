@@ -237,3 +237,16 @@ section.cases {
   padding: 11px 20px;
   line-height: normal;
 }
+
+.loginLink {
+  border-radius: 21px;
+  background: #643303;
+  color: #fff;
+  padding: 12px;
+  display: inline-block;
+  text-align: center;
+  font-size: 18px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: normal;
+}

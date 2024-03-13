@@ -87,72 +87,83 @@
               class='popup'
             >مشاهده منوی کافه</button></a>
         </div>
-        <div class='address'>
-          <h3 class='head'>آدرس و اطلاعات</h3>
-          <div class='item'>
-            <span>آدرس کافه:</span>
-            {{buffet.buffetAddress}}
+        {{#if (isnotnull user)}}
+          <div class='address'>
+            <h3 class='head'>آدرس و اطلاعات</h3>
+            <div class='item'>
+              <span>آدرس کافه:</span>
+              {{buffet.buffetAddress}}
+            </div>
+            <div class='item'>
+              <span>شماره تلفن کافه: </span>
+              {{buffet.buffetPhone}}
+            </div>
           </div>
-          <div class='item'>
-            <span>شماره تلفن کافه: </span>
-            {{buffet.buffetPhone}}
+          <div class='navigation'>
+            <h5>مسیریابی کافه در</h5>
+            <div class='items'>
+              {{#if (isDefined buffet.neshanLink)}}
+                <div class='item'>
+                  <a href='{{buffet.neshanLink}}'>
+                    <img
+                      src='/theme/discountcoffe/assets/img/png/neshan.png'
+                      alt=''
+                    />
+
+                    <span>نشان</span>
+                  </a>
+                </div>
+              {{/if}}
+              {{#if (isDefined buffet.baladLink)}}
+                <div class='item'>
+                  <a href='{{buffet.baladLink}}'>
+                    <img
+                      src='/theme/discountcoffe/assets/img/png/balad.png'
+                      alt=''
+                    />
+
+                    <span>بلد</span>
+                  </a>
+                </div>
+              {{/if}}
+              {{#if (isDefined buffet.googleMapLink)}}
+                <div class='item'>
+                  <a href='{{buffet.googleMapLink}}'>
+                    <img
+                      src='/theme/discountcoffe/assets/img/png/google.png'
+                      alt=''
+                    />
+                    <span>گوگل مپ</span>
+                  </a>
+                </div>
+
+              {{/if}}
+              {{#if (isDefined buffet.wazeLink)}}
+                <div class='item'>
+                  <a href='{{buffet.wazeLink}}'>
+                    <img
+                      src='/theme/discountcoffe/assets/img/png/waze.png'
+                      alt=''
+                    />
+                    <span>ویز</span>
+                  </a>
+                </div>
+              {{/if}}
+            </div>
           </div>
-        </div>
-        <div class='navigation'>
-          <h5>مسیریابی کافه در</h5>
-          <div class='items'>
-            {{#if (isDefined buffet.neshanLink)}}
-              <div class='item'>
-                <a href='{{buffet.neshanLink}}'>
-                  <img
-                    src='/theme/discountcoffe/assets/img/png/neshan.png'
-                    alt=''
-                  />
-
-                  <span>نشان</span>
-                </a>
-              </div>
-            {{/if}}
-            {{#if (isDefined buffet.baladLink)}}
-              <div class='item'>
-                <a href='{{buffet.baladLink}}'>
-                  <img
-                    src='/theme/discountcoffe/assets/img/png/balad.png'
-                    alt=''
-                  />
-
-                  <span>بلد</span>
-                </a>
-              </div>
-            {{/if}}
-            {{#if (isDefined buffet.googleMapLink)}}
-              <div class='item'>
-                <a href='{{buffet.googleMapLink}}'>
-                  <img
-                    src='/theme/discountcoffe/assets/img/png/google.png'
-                    alt=''
-                  />
-                  <span>گوگل مپ</span>
-                </a>
-              </div>
-
-            {{/if}}
-            {{#if (isDefined buffet.wazeLink)}}
-              <div class='item'>
-                <a href='{{buffet.wazeLink}}'>
-                  <img
-                    src='/theme/discountcoffe/assets/img/png/waze.png'
-                    alt=''
-                  />
-                  <span>ویز</span>
-                </a>
-              </div>
-            {{/if}}
+          <div class='maps'>
+            <div id='map'></div>
           </div>
-        </div>
-        <div class='maps'>
-          <div id='map'></div>
-        </div>
+        {{else}}
+          <div class='address'>
+            <h3 class='head'>آدرس و اطلاعات</h3>
+            <div class='item'>
+              <span>برای نمایش آدرس لطفا وارد شوید</span>
+              <a class='loginLink' href='/login?redirectUrl={{url}}'>وارد شدن</a>
+            </div>
+
+          </div>
+        {{/if}}
         {{! <div class='comment'>
           <h3 class='head'>نظرات</h3>
           <div class='counts'>

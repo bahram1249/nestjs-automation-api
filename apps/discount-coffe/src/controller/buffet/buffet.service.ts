@@ -104,6 +104,7 @@ export class BuffetService {
       layout: 'discountcoffe',
       buffet: buffet.toJSON(),
       user: req.user,
+      url: req.url,
     };
   }
 
