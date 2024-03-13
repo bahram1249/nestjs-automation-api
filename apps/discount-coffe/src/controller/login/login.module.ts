@@ -9,11 +9,18 @@ import { Menu } from '@rahino/database/models/core/menu.entity';
 import { RolePermission } from '@rahino/database/models/core/rolePermission.entity';
 import { PermissionMenu } from '@rahino/database/models/core/permission-menu.entity';
 import { JwtModule } from '@nestjs/jwt';
+import { SmsModule } from '@rahino/sms/sms.module';
+import { MeliPayamakService } from '@rahino/sms/services/melipayamak.servie';
 
 @Module({
   imports: [
     JwtModule.register({}),
     SequelizeModule.forFeature([User, Menu, RolePermission, PermissionMenu]),
+    SmsModule.register({
+      token: 'meli_payamak',
+      smsProvider: new MeliPayamakService(),
+      bodyId: '203509',
+    }),
   ],
   controllers: [LoginController],
   providers: [JwtWebStrategy, LoginService, AuthService],

@@ -1,9 +1,15 @@
-import { BadRequestException, Injectable, Redirect } from '@nestjs/common';
+import {
+  BadRequestException,
+  Inject,
+  Injectable,
+  Redirect,
+} from '@nestjs/common';
 import { CodeDto, LoginDto } from './dto';
 import { User } from '@rahino/database/models/core/user.entity';
 import { Request, Response } from 'express';
 import { AuthService } from '@rahino/core/auth/auth.service';
 import { InjectModel } from '@nestjs/sequelize';
+import { SmsService } from '@rahino/sms/sms.service';
 
 @Injectable()
 export class LoginService {
@@ -11,6 +17,7 @@ export class LoginService {
     @InjectModel(User)
     private readonly userRepository: typeof User,
     private authService: AuthService,
+    @Inject('meli_payamak') private readonly smsService: SmsService,
   ) {}
 
   async login(redirectUrl?: string) {
@@ -43,6 +50,7 @@ export class LoginService {
     const rand = '123456';
     req.session.userId = user.id;
     req.session.verifyCode = rand;
+    await this.smsService.sendMessage({ text: rand, to: dto.phoneNumber });
     var queryString =
       redirectUrl.length > 0 ? '?redirectUrl=' + redirectUrl : '';
     return res.redirect(302, '/login/code' + queryString);
