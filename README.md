@@ -108,6 +108,13 @@ SKU_PREFIX="<SET_PREFIX_SKU_ECOMMERCE>"
 PRODUCT_INVENTORY_STATUS_KEEPJOBS=100
 ```
 
+# SMS
+
+```bash
+SMS_USERNAME=<Api_Username>
+SMS_PASSWORD=<Api_Password>
+```
+
 ## Running the app
 
 ```bash

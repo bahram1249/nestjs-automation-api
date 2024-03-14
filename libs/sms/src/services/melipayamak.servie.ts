@@ -9,7 +9,7 @@ export class MeliPayamakService implements SmsProviderInterface {
     message: MessageInterface,
     bodyId?: string,
   ) {
-    await axios.post(
+    const request = await axios.post(
       'https://rest.payamak-panel.com/api/SendSMS/BaseServiceNumber',
       {
         username: username,
@@ -19,5 +19,6 @@ export class MeliPayamakService implements SmsProviderInterface {
         bodyId: bodyId,
       },
     );
+    console.log(request.data);
   }
 }

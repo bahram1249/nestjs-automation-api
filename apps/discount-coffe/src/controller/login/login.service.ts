@@ -10,6 +10,7 @@ import { Request, Response } from 'express';
 import { AuthService } from '@rahino/core/auth/auth.service';
 import { InjectModel } from '@nestjs/sequelize';
 import { SmsService } from '@rahino/sms/sms.service';
+import { getIntegerRandomArbitrary } from '@rahino/commontools';
 
 @Injectable()
 export class LoginService {
@@ -47,7 +48,7 @@ export class LoginService {
         password: dto.phoneNumber,
       });
     }
-    const rand = '123456';
+    const rand = getIntegerRandomArbitrary(100000, 999999).toString();
     req.session.userId = user.id;
     req.session.verifyCode = rand;
     await this.smsService.sendMessage({ text: rand, to: dto.phoneNumber });
