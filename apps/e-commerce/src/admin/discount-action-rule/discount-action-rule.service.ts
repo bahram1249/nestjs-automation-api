@@ -16,7 +16,11 @@ export class DiscountActionRuleService {
   async findAll() {
     const queryBuilder = new QueryOptionsBuilder().filter(
       Sequelize.where(
-        Sequelize.fn('isnull', Sequelize.col('ECDiscountActionRule'), 0),
+        Sequelize.fn(
+          'isnull',
+          Sequelize.col('ECDiscountActionRule.isDeleted'),
+          0,
+        ),
         {
           [Op.eq]: 0,
         },

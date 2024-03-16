@@ -15,14 +15,16 @@ export class DiscountTypeService {
   async findAll() {
     const queryBuilder = new QueryOptionsBuilder().filter(
       Sequelize.where(
-        Sequelize.fn('isnull', Sequelize.col('ECDiscountType'), 0),
+        Sequelize.fn('isnull', Sequelize.col('ECDiscountType.isDeleted'), 0),
         {
           [Op.eq]: 0,
         },
       ),
     );
     const count = await this.repository.count(queryBuilder.build());
-    const queryOptions = queryBuilder.attributes(['id', 'name']).build();
+    const queryOptions = queryBuilder
+      .attributes(['id', 'name', 'isCouponBased'])
+      .build();
     const result = await this.repository.findAll(queryOptions);
     return {
       result: result,
