@@ -32,6 +32,7 @@ import { LoggingModule } from './logging/logging.module';
 import { OptionalSessionGuard } from './user/session/guard';
 import { ProductModule } from './product/product.module';
 import { DiscountTypeModule } from './admin/discount-type/discount-type.module';
+import { DiscountActionTypeModule } from './admin/discount-action-type/discount-action-type.module';
 @Module({
   imports: [
     LoggingModule,
@@ -65,6 +66,7 @@ import { DiscountTypeModule } from './admin/discount-type/discount-type.module';
     AdminProductModule,
     ProductModule,
     DiscountTypeModule,
+    DiscountActionTypeModule,
   ],
   providers: [
     {
