@@ -16,4 +16,9 @@ export class ECDiscountType extends Model {
     allowNull: true,
   })
   isDeleted?: boolean;
+  @Column({
+    type: DataType.BOOLEAN,
+    allowNull: true,
+  })
+  isCouponBased?: boolean;
 }

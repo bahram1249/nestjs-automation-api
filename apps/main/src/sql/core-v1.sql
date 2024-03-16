@@ -2277,6 +2277,7 @@ BEGIN
 		id							int							PRIMARY KEY,
 		name						nvarchar(256)				NOT NULL,
 		isDeleted					bit							NULL,
+		isCouponBased				bit							NULL,
 		[createdAt]					datetimeoffset				NOT NULL,
 		[updatedAt]					datetimeoffset				NOT NULL,
 	);
@@ -2366,6 +2367,7 @@ BEGIN
 		userId						bigint						NOT NULL
 			CONSTRAINT FK_ECDiscounts_UserId
 				FOREIGN KEY REFERENCES Users(id),
+		couponCode					nvarchar(256)				NULL,
 		priority					int							NULL,
 		[limit]						int 						NULL,
 		[used]						int							NULL,
@@ -2394,11 +2396,11 @@ IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ec-discount-types-Data-
 		)
 BEGIN
 
-	INSERT INTO ECDiscountTypes(id, name,createdAt, updatedAt)
-	VALUES (1, N'عمومی', GETDATE(), GETDATE())
-			,(2, N'شگفت انگیز', GETDATE(), GETDATE())
-			,(3, N'به صورت کد تخفیف', GETDATE(), GETDATE())
-			,(4, N'مناسبتی(نیازمند طراحی صفحه)', GETDATE(), GETDATE())
+	INSERT INTO ECDiscountTypes(id, name, isCouponBased,createdAt, updatedAt)
+	VALUES (1, N'عمومی', 0,GETDATE(), GETDATE())
+			,(2, N'شگفت انگیز', 0,GETDATE(), GETDATE())
+			,(3, N'به صورت کد تخفیف', 1,GETDATE(), GETDATE())
+			,(4, N'مناسبتی(نیازمند طراحی صفحه)', 0,GETDATE(), GETDATE())
 		
 
 	INSERT INTO Migrations(version, createdAt, updatedAt)
