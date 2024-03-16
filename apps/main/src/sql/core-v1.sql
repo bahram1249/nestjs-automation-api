@@ -2337,7 +2337,7 @@ END
 GO
 
 -- ec-disoucnts-v1
-IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ec-disocunts-v1' 
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ec-discounts-v1' 
 			)
 	AND EXISTS (
 		SELECT 1 FROM Settings 
