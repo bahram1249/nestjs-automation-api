@@ -81,6 +81,13 @@ export class ECDiscount extends Model {
     allowNull: true,
   })
   priority?: number;
+
+  @Column({
+    type: DataType.STRING,
+    allowNull: true,
+  })
+  couponCode: string;
+
   @Column({
     type: DataType.INTEGER,
     allowNull: true,
