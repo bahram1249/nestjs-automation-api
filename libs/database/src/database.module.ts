@@ -65,6 +65,10 @@ import { EAVEntityAttribute } from './models/eav/eav-entity-attribute.entity';
 import { ECUserSession } from './models/ecommerce-eav/ec-user-session.entity';
 import { ECRequestLog } from './models/ecommerce-eav/ec-request-log.entity';
 import { BuffetIgnoreReserve } from './models/discount-coffe/ignore-reserve.entity';
+import { ECDiscountType } from './models/ecommerce-eav/ec-discount-type.entity';
+import { ECDiscountActionType } from './models/ecommerce-eav/ec-discount-action-type.entity';
+import { ECDiscountActionRule } from './models/ecommerce-eav/ec-discount-action-rule.entity';
+import { ECDiscount } from './models/ecommerce-eav/ec-discount.entity';
 
 @Module({
   imports: [
@@ -126,6 +130,10 @@ import { BuffetIgnoreReserve } from './models/discount-coffe/ignore-reserve.enti
           ECInventory,
           ECInventoryPrice,
           ECUserSession,
+          ECDiscountType,
+          ECDiscountActionType,
+          ECDiscountActionRule,
+          ECDiscount,
           Buffet,
           BuffetGallery,
           BuffetType,
