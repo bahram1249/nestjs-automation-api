@@ -3,14 +3,18 @@ import {
   Get,
   HttpCode,
   HttpStatus,
+  UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
 
 import { JsonResponseTransformInterceptor } from '@rahino/response/interceptor';
-import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { DiscountActionTypeService } from './discount-action-type.service';
+import { JwtGuard } from '@rahino/auth/guard';
 
 @ApiTags('Admin-DiscountActionTypes')
+@ApiBearerAuth()
+@UseGuards(JwtGuard)
 @Controller({
   path: '/api/ecommerce/admin/discountActionTypes',
   version: ['1'],
