@@ -2263,6 +2263,193 @@ END
 GO
 
 
+
+-- ec-discount-types-v1
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ec-discount-types-v1' 
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'SITE_NAME' AND [value] IN ('ecommerce'))
+		)
+BEGIN
+
+	CREATE TABLE ECDiscountTypes(
+		id							int							PRIMARY KEY,
+		name						nvarchar(256)				NOT NULL,
+		isDeleted					bit							NULL,
+		[createdAt]					datetimeoffset				NOT NULL,
+		[updatedAt]					datetimeoffset				NOT NULL,
+	);
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'ec-discount-types-v1', GETDATE(), GETDATE()
+END
+
+GO
+
+
+-- ec-discount-action-rules-v1
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ec-discount-condition-action-rules-v1' 
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'SITE_NAME' AND [value] IN ('ecommerce'))
+		)
+BEGIN
+
+	CREATE TABLE ECDiscountActionRules(
+		id							int							PRIMARY KEY,
+		name						nvarchar(256)				NOT NULL,
+		isDeleted					bit							NULL,
+		[createdAt]					datetimeoffset				NOT NULL,
+		[updatedAt]					datetimeoffset				NOT NULL,
+	);
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'ec-discount-condition-action-rules-v1', GETDATE(), GETDATE()
+END
+
+GO
+
+
+
+-- ec-discount-action-types-v1
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ec-discount-action-types-v1' 
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'SITE_NAME' AND [value] IN ('ecommerce'))
+		)
+BEGIN
+
+	CREATE TABLE ECDiscountActionTypes(
+		id							int							PRIMARY KEY,
+		name						nvarchar(256)				NOT NULL,
+		isDeleted					bit							NULL,
+		[createdAt]					datetimeoffset				NOT NULL,
+		[updatedAt]					datetimeoffset				NOT NULL,
+	);
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'ec-discount-action-types-v1', GETDATE(), GETDATE()
+END
+
+GO
+
+-- ec-disoucnts-v1
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ec-disocunts-v1' 
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'SITE_NAME' AND [value] IN ('ecommerce'))
+		)
+BEGIN
+
+	CREATE TABLE ECDiscounts(
+		id							bigint identity(1,1)		PRIMARY KEY,
+		[name]						nvarchar(512)				NOT NULL,
+		[description]				ntext						NULL,
+		discountTypeId				int							NOT NULL
+			CONSTRAINT FK_ECDiscounts_DiscountTypeId
+				FOREIGN KEY REFERENCES ECDiscountTypes(id),
+
+		discountActionTypeId		int							NOT NULL
+			CONSTRAINT FK_ECDiscounts_DiscountActionTypeId
+				FOREIGN KEY REFERENCES ECDiscountActionTypes(id),
+		discountValue				decimal						NOT NULL,
+		maxValue					decimal						NULL,
+
+		discountActionRuleId		int							NOT NULL
+			CONSTRAINT FK_ECDiscounts_DiscountActionRuleI
+				FOREIGN KEY REFERENCES ECDiscountActionRules(id),
+		
+		userId						bigint						NOT NULL
+			CONSTRAINT FK_ECDiscounts_UserId
+				FOREIGN KEY REFERENCES Users(id),
+		priority					int							NULL,
+		[limit]						int 						NULL,
+		[used]						int							NULL,
+		isActive					bit							NULL,
+		isDeleted					bit							NULL,
+		startDate					datetime					NULL,
+		endDate						datetime					NULL,
+		[createdAt]					datetimeoffset				NOT NULL,
+		[updatedAt]					datetimeoffset				NOT NULL,
+	);
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'ec-discounts-v1', GETDATE(), GETDATE()
+END
+
+GO
+
+
+
+-- ec discount-types
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ec-discount-types-Data-v1' 
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'SITE_NAME' AND [value] IN ('ecommerce'))
+		)
+BEGIN
+
+	INSERT INTO ECDiscountTypes(id, name,createdAt, updatedAt)
+	VALUES (1, N'عمومی', GETDATE(), GETDATE())
+			,(2, N'شگفت انگیز', GETDATE(), GETDATE())
+			,(3, N'به صورت کد تخفیف', GETDATE(), GETDATE())
+			,(4, N'مناسبتی(نیازمند طراحی صفحه)', GETDATE(), GETDATE())
+		
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'ec-discount-types-Data-v1', GETDATE(), GETDATE()
+END
+
+GO
+
+
+-- ec discount-action-rules
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ec-discount-action-rules-Data-v1' 
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'SITE_NAME' AND [value] IN ('ecommerce'))
+		)
+BEGIN
+
+	INSERT INTO ECDiscountActionRules(id, name,createdAt, updatedAt)
+	VALUES (1, N'بهم پیوسته(And)', GETDATE(), GETDATE())
+			,(2, N'یک شرط یا بیشتر کافی است(Or)', GETDATE(), GETDATE())
+		
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'ec-discount-action-rules-Data-v1', GETDATE(), GETDATE()
+END
+
+GO
+
+
+
+-- ec discount-action-types
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ec-discount-action-types-Data-v1' 
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'SITE_NAME' AND [value] IN ('ecommerce'))
+		)
+BEGIN
+
+	INSERT INTO ECDiscountActionTypes(id, name,createdAt, updatedAt)
+	VALUES (1, N'درصدی(Percentage)', GETDATE(), GETDATE())
+			,(2, N'مقدار ثابت(FixedAmount)', GETDATE(), GETDATE())
+		
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'ec-discount-action-types-Data-v1', GETDATE(), GETDATE()
+END
+
+GO
+
 -- eav
 -- attributetypes
 IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'eav-attributetypes-Data-v1' 
