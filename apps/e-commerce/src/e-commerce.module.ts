@@ -31,6 +31,7 @@ import { ConfigService } from '@nestjs/config';
 import { LoggingModule } from './logging/logging.module';
 import { OptionalSessionGuard } from './user/session/guard';
 import { ProductModule } from './product/product.module';
+import { DiscountTypeModule } from './admin/discount-type/discount-type.module';
 @Module({
   imports: [
     LoggingModule,
@@ -63,6 +64,7 @@ import { ProductModule } from './product/product.module';
     VendorAddressModule,
     AdminProductModule,
     ProductModule,
+    DiscountTypeModule,
   ],
   providers: [
     {
