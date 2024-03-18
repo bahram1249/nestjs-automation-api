@@ -2337,7 +2337,7 @@ END
 
 GO
 
--- ec-disoucnts-v1
+-- ec-discounts-v1
 IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ec-discounts-v1' 
 			)
 	AND EXISTS (
@@ -2385,6 +2385,29 @@ END
 
 GO
 
+
+-- ec-discount-condition-types-v1
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ec-discount-condition-types-v1' 
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'SITE_NAME' AND [value] IN ('ecommerce'))
+		)
+BEGIN
+
+	CREATE TABLE ECDiscountConditionTypes(
+		id							int							PRIMARY KEY,
+		[name]						nvarchar(512)				NOT NULL,
+		isDeleted					bit							NULL,
+		[createdAt]					datetimeoffset				NOT NULL,
+		[updatedAt]					datetimeoffset				NOT NULL,
+	);
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'ec-discount-condition-types-v1', GETDATE(), GETDATE()
+END
+
+GO
 
 
 -- ec discount-types
@@ -2451,6 +2474,29 @@ BEGIN
 END
 
 GO
+
+-- ec discount-condition-types
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ec-discount-condition-types-Data-v1' 
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'SITE_NAME' AND [value] IN ('ecommerce'))
+		)
+BEGIN
+
+	INSERT INTO ECDiscountConditionTypes(id, name,createdAt, updatedAt)
+	VALUES (1, N'بر اساس محصول', GETDATE(), GETDATE())
+			,(2, N'بر اساس دسته بندی', GETDATE(), GETDATE())
+			,(3, N'بر اساس فروشنده', GETDATE(), GETDATE())
+			,(4, N'بر اساس شناسه موجودی', GETDATE(), GETDATE())
+		
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'ec-discount-condition-types-Data-v1', GETDATE(), GETDATE()
+END
+
+GO
+
 
 -- eav
 -- attributetypes

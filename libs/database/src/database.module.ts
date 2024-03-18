@@ -70,6 +70,7 @@ import { ECDiscountActionType } from './models/ecommerce-eav/ec-discount-action-
 import { ECDiscountActionRule } from './models/ecommerce-eav/ec-discount-action-rule.entity';
 import { ECDiscount } from './models/ecommerce-eav/ec-discount.entity';
 import { SequelizeOverrideModule } from './override/sequelize-override.module';
+import { ECDiscountConditionType } from './models/ecommerce-eav/ec-discount-condition-type.entity';
 
 @Module({
   imports: [
@@ -136,6 +137,7 @@ import { SequelizeOverrideModule } from './override/sequelize-override.module';
           ECDiscountActionType,
           ECDiscountActionRule,
           ECDiscount,
+          ECDiscountConditionType,
           Buffet,
           BuffetGallery,
           BuffetType,
