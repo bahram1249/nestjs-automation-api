@@ -9,6 +9,7 @@ import {
 import { ECDiscountType } from './ec-discount-type.entity';
 import { ECDiscountActionType } from './ec-discount-action-type.entity';
 import { ECDiscountActionRule } from './ec-discount-action-rule.entity';
+import { AutoMap } from 'automapper-classes';
 
 @Table({ tableName: 'ECDiscounts' })
 export class ECDiscount extends Model {
@@ -18,15 +19,21 @@ export class ECDiscount extends Model {
     primaryKey: true,
   })
   id: bigint;
+
+  @AutoMap()
   @Column({
     type: DataType.STRING,
   })
   name: string;
+
+  @AutoMap()
   @Column({
     type: DataType.STRING,
     allowNull: true,
   })
   description?: string;
+
+  @AutoMap()
   @Column({
     type: DataType.INTEGER,
   })
@@ -39,6 +46,7 @@ export class ECDiscount extends Model {
   })
   discountType?: ECDiscountType;
 
+  @AutoMap()
   @Column({
     type: DataType.INTEGER,
   })
@@ -51,15 +59,20 @@ export class ECDiscount extends Model {
   })
   actionType?: ECDiscountActionType;
 
+  @AutoMap()
   @Column({
     type: DataType.DECIMAL,
   })
   discountValue: number;
+
+  @AutoMap()
   @Column({
     type: DataType.DECIMAL,
     allowNull: true,
   })
   maxValue?: number;
+
+  @AutoMap()
   @Column({
     type: DataType.INTEGER,
   })
@@ -76,43 +89,55 @@ export class ECDiscount extends Model {
     type: DataType.BIGINT,
   })
   userId: bigint;
+
+  @AutoMap()
   @Column({
     type: DataType.INTEGER,
     allowNull: true,
   })
   priority?: number;
 
+  @AutoMap()
   @Column({
     type: DataType.STRING,
     allowNull: true,
   })
   couponCode: string;
 
+  @AutoMap()
   @Column({
     type: DataType.INTEGER,
     allowNull: true,
   })
   limit?: number;
+
   @Column({
     type: DataType.INTEGER,
     allowNull: true,
   })
   used?: number;
+
+  @AutoMap()
   @Column({
     type: DataType.BOOLEAN,
     allowNull: true,
   })
   isActive?: boolean;
+
   @Column({
     type: DataType.BOOLEAN,
     allowNull: true,
   })
   isDeleted?: boolean;
+
+  @AutoMap()
   @Column({
     type: DataType.DATE,
     allowNull: true,
   })
   startDate?: Date;
+
+  @AutoMap()
   @Column({
     type: DataType.DATE,
     allowNull: true,

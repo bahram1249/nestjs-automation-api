@@ -69,9 +69,11 @@ import { ECDiscountType } from './models/ecommerce-eav/ec-discount-type.entity';
 import { ECDiscountActionType } from './models/ecommerce-eav/ec-discount-action-type.entity';
 import { ECDiscountActionRule } from './models/ecommerce-eav/ec-discount-action-rule.entity';
 import { ECDiscount } from './models/ecommerce-eav/ec-discount.entity';
+import { SequelizeOverrideModule } from './override/sequelize-override.module';
 
 @Module({
   imports: [
+    SequelizeOverrideModule.override(),
     SequelizeModule.forRootAsync({
       imports: [ConfigModule],
       useFactory: (configService: ConfigService) => ({
