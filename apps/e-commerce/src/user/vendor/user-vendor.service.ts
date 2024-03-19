@@ -96,4 +96,36 @@ export class UserVendorService {
       total: count,
     };
   }
+
+  async isAccessToVendor(user: User, vendorId: number): Promise<Boolean> {
+    const findVendor = await this.vendorUserRepository.findOne(
+      new QueryOptionsBuilder()
+        .filter({ userId: user.id })
+        .filter({ vendorId: vendorId })
+        .filter(
+          Sequelize.where(
+            Sequelize.fn('isnull', Sequelize.col('ECVendorUser.isDeleted'), 0),
+            {
+              [Op.eq]: 0,
+            },
+          ),
+        )
+        .include([
+          {
+            model: ECVendor,
+            as: 'vendor',
+            required: true,
+            where: Sequelize.where(
+              Sequelize.fn('isnull', Sequelize.col('vendor.isDeleted'), 0),
+              {
+                [Op.eq]: 0,
+              },
+            ),
+          },
+        ])
+        .build(),
+    );
+    if (!findVendor) return false;
+    return true;
+  }
 }
