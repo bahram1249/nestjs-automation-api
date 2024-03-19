@@ -1,13 +1,14 @@
 import {
   BadRequestException,
   Injectable,
+  InternalServerErrorException,
   NotFoundException,
 } from '@nestjs/common';
-import { DiscountDto, GetDiscountDto } from './dto';
+import { CreateDiscountDto, DiscountDto, GetDiscountDto } from './dto';
 import { ECDiscount } from '@rahino/database/models/ecommerce-eav/ec-discount.entity';
-import { InjectModel } from '@nestjs/sequelize';
+import { InjectConnection, InjectModel } from '@nestjs/sequelize';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
-import { Op, Sequelize } from 'sequelize';
+import { Op, Sequelize, Transaction } from 'sequelize';
 import { ECDiscountType } from '@rahino/database/models/ecommerce-eav/ec-discount-type.entity';
 import { ECDiscountActionRule } from '@rahino/database/models/ecommerce-eav/ec-discount-action-rule.entity';
 import { ECDiscountActionType } from '@rahino/database/models/ecommerce-eav/ec-discount-action-type.entity';
@@ -15,6 +16,9 @@ import { Mapper } from 'automapper-core';
 import { InjectMapper } from 'automapper-nestjs';
 import * as _ from 'lodash';
 import { User } from '@rahino/database/models/core/user.entity';
+import { UserVendorService } from '@rahino/ecommerce/user/vendor/user-vendor.service';
+import { ECDiscountCondition } from '@rahino/database/models/ecommerce-eav/ec-discount-condition.entity';
+import { DiscountConditionEnum } from '../discount-condition-type/enum';
 
 @Injectable()
 export class DiscountService {
@@ -23,8 +27,13 @@ export class DiscountService {
     private readonly repository: typeof ECDiscount,
     @InjectModel(ECDiscountType)
     private readonly discountTypeRepository: typeof ECDiscountType,
+    @InjectModel(ECDiscountCondition)
+    private readonly discountConditionRepository: typeof ECDiscountCondition,
     @InjectMapper()
     private readonly mapper: Mapper,
+    @InjectConnection()
+    private readonly sequelize: Sequelize,
+    private readonly userVendorService: UserVendorService,
   ) {}
 
   async findAll(filter: GetDiscountDto) {
@@ -87,7 +96,7 @@ export class DiscountService {
     };
   }
 
-  async findById(entityId: bigint) {
+  async findById(entityId: bigint, transaction?: Transaction) {
     const queryBuilder = new QueryOptionsBuilder()
       .attributes([
         'id',
@@ -137,16 +146,53 @@ export class DiscountService {
     };
   }
 
-  async create(user: User, dto: DiscountDto) {
+  async create(user: User, dto: CreateDiscountDto) {
     const { error } = await this.validation(dto);
     if (error) {
       throw new BadRequestException(error);
     }
+    const isAccessToVendor = await this.userVendorService.isAccessToVendor(
+      user,
+      dto.vendorId,
+    );
+    if (!isAccessToVendor) {
+      throw new BadRequestException("You don't have access to this vendor");
+    }
+
     const mappedItem = this.mapper.map(dto, DiscountDto, ECDiscount);
     const insertItem = _.omit(mappedItem.toJSON(), ['id']);
     insertItem.userId = user.id;
-    const discount = await this.repository.create(insertItem);
-    const findItem = await this.findById(discount.id);
+
+    const transaction = await this.sequelize.transaction({
+      isolationLevel: Transaction.ISOLATION_LEVELS.READ_COMMITTED,
+    });
+
+    let discountId: bigint = null;
+    try {
+      const discount = await this.repository.create(insertItem, {
+        transaction: transaction,
+      });
+      discountId = discount.id;
+
+      // add default condition
+      const discountCondition = await this.discountConditionRepository.create(
+        {
+          conditionTypeId: DiscountConditionEnum.vendor,
+          discountId: discount.id,
+          conditionValue: dto.vendorId,
+          isDefault: true,
+        },
+        {
+          transaction: transaction,
+        },
+      );
+      transaction.commit();
+    } catch {
+      transaction.rollback();
+      throw new InternalServerErrorException('discount transaction failed');
+    }
+
+    const findItem = await this.findById(discountId);
     return {
       result: findItem.result,
     };

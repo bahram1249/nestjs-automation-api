@@ -23,7 +23,7 @@ import { JwtGuard } from '@rahino/auth/guard';
 import { PermissionGuard } from '@rahino/permission-checker/guard';
 import { JsonResponseTransformInterceptor } from '@rahino/response/interceptor';
 import { CheckPermission } from '@rahino/permission-checker/decorator';
-import { DiscountDto, GetDiscountDto } from './dto';
+import { CreateDiscountDto, DiscountDto, GetDiscountDto } from './dto';
 import { GetUser } from '@rahino/auth/decorator';
 import { User } from '@rahino/database/models/core/user.entity';
 
@@ -68,7 +68,7 @@ export class DiscountController {
   @CheckPermission({ permissionSymbol: 'ecommerce.admin.discounts.create' })
   @Post('/')
   @HttpCode(HttpStatus.CREATED)
-  async create(@GetUser() user: User, @Body() dto: DiscountDto) {
+  async create(@GetUser() user: User, @Body() dto: CreateDiscountDto) {
     return await this.service.create(user, dto);
   }
 
