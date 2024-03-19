@@ -42,6 +42,7 @@ import { ConfigService } from '@nestjs/config';
   ],
   controllers: [EntityTypeController],
   providers: [EntityTypeService, EntityTypeProfile],
+  exports: [EntityTypeService],
 })
 export class EntityTypeModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {

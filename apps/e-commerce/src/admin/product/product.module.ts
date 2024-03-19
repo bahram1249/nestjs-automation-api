@@ -43,5 +43,6 @@ import { DBLoggerModule } from '@rahino/logger';
   ],
   controllers: [ProductController],
   providers: [ProductService, ProductProfile],
+  exports: [ProductService],
 })
 export class ProductModule {}
