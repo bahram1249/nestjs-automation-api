@@ -18,7 +18,7 @@ export class ProductMiddleService implements ConditionValueSourceInterface {
     const res = await this.service.findAll(user, filter);
     return {
       result: res.result.map<KeyValueInterface>((item) => {
-        return { key: BigInt(item.id), value: item.title };
+        return { key: Number(item.id), value: item.title };
       }),
       total: res.total,
     };

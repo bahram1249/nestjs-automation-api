@@ -47,6 +47,7 @@ export class DiscountController {
     style: 'deepObject',
     explode: true,
   })
+  @CheckPermission({ permissionSymbol: 'ecommerce.admin.discounts.getall' })
   @HttpCode(HttpStatus.OK)
   async findAll(@Query() filter: GetDiscountDto) {
     return await this.service.findAll(filter);

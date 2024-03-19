@@ -1,4 +1,4 @@
 export class KeyValueInterface {
-  key: bigint;
+  key: number;
   value: string;
 }

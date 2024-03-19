@@ -12,7 +12,12 @@ import {
   ConditionValueResInterface,
   ConditionValueSourceInterface,
 } from './provider/interface';
-import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiOperation,
+  ApiQuery,
+  ApiTags,
+} from '@nestjs/swagger';
 import { JwtGuard } from '@rahino/auth/guard';
 import { JsonResponseTransformInterceptor } from '@rahino/response/interceptor';
 import { GetConditionValueDto } from './dto';
@@ -38,6 +43,12 @@ export class DiscountConditionValueController {
 
   @ApiOperation({
     description: 'show all discount condition values based conditionTypeId',
+  })
+  @ApiQuery({
+    name: 'filter',
+    type: GetConditionValueDto,
+    style: 'deepObject',
+    explode: true,
   })
   @CheckPermission({ permissionSymbol: 'ecommerce.admin.discounts.create' })
   @Get('/')

@@ -19,7 +19,7 @@ export class InventoryMiddleService implements ConditionValueSourceInterface {
     return {
       result: res.result.map<KeyValueInterface>((item) => {
         return {
-          key: item.id,
+          key: Number(item.id),
           value: item.product.title + `(شناسه موجودی:‌ ${item.id})`,
         };
       }),

@@ -18,7 +18,7 @@ export class VendorMiddleService implements ConditionValueSourceInterface {
     const res = await this.service.findAll(user, filter);
     return {
       result: res.result.map<KeyValueInterface>((item) => {
-        return { key: BigInt(item.id), value: item.name };
+        return { key: item.id, value: item.name };
       }),
       total: res.total,
     };
