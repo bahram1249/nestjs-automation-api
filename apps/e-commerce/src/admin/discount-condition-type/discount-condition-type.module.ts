@@ -9,4 +9,4 @@ import { ECDiscountConditionType } from '@rahino/database/models/ecommerce-eav/e
   controllers: [DiscountConditionTypeController],
   providers: [DiscountConditionTypeService],
 })
-export class DiscountActionRuleModule {}
+export class DiscountConditionModule {}
