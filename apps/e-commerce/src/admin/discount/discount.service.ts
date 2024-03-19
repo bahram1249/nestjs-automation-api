@@ -18,7 +18,7 @@ import * as _ from 'lodash';
 import { User } from '@rahino/database/models/core/user.entity';
 import { UserVendorService } from '@rahino/ecommerce/user/vendor/user-vendor.service';
 import { ECDiscountCondition } from '@rahino/database/models/ecommerce-eav/ec-discount-condition.entity';
-import { DiscountConditionEnum } from '../discount-condition-type/enum';
+import { DiscountConditionTypeEnum } from '../discount-condition-type/enum';
 
 @Injectable()
 export class DiscountService {
@@ -177,7 +177,7 @@ export class DiscountService {
       // add default condition
       const discountCondition = await this.discountConditionRepository.create(
         {
-          conditionTypeId: DiscountConditionEnum.vendor,
+          conditionTypeId: DiscountConditionTypeEnum.vendor,
           discountId: discount.id,
           conditionValue: dto.vendorId,
           isDefault: true,

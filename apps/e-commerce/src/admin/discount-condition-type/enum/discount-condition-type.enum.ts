@@ -1,4 +1,4 @@
-export enum DiscountConditionEnum {
+export enum DiscountConditionTypeEnum {
   product = 1,
   entityType = 2,
   vendor = 3,

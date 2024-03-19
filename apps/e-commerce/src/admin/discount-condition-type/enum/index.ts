@@ -1,1 +1,1 @@
-export * from './discount-condition.enum';
+export * from './discount-condition-type.enum';
