@@ -2410,6 +2410,37 @@ END
 GO
 
 
+-- ec-discount-conditions-v1
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ec-discount-conditions-v1' 
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'SITE_NAME' AND [value] IN ('ecommerce'))
+		)
+BEGIN
+
+	CREATE TABLE ECDiscountConditions(
+		id							bigint identity(1,1)		PRIMARY KEY,
+		discountId					bigint						NOT NULL
+			CONSTRAINT FK_ECDiscountConditions_DiscountId
+				FOREIGN KEY REFERENCES ECDiscounts(id),
+		conditionTypeId				int							NOT NULL
+			CONSTRAINT FK_ECDiscountConditions_ConditionTypeId
+				FOREIGN KEY REFERENCES ECDiscountConditionTypes(id),
+		conditionValue				bigint						NOT NULL,
+		isDefault					bit							NULL,
+		isDeleted					bit							NULL,
+		[createdAt]					datetimeoffset				NOT NULL,
+		[updatedAt]					datetimeoffset				NOT NULL,
+	);
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'ec-discount-conditions-v1', GETDATE(), GETDATE()
+END
+
+GO
+
+
 -- ec discount-types
 IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ec-discount-types-Data-v1' 
 			)
