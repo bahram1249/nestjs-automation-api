@@ -35,8 +35,9 @@ import { DiscountTypeModule } from './admin/discount-type/discount-type.module';
 import { DiscountActionTypeModule } from './admin/discount-action-type/discount-action-type.module';
 import { DiscountActionRuleModule } from './admin/discount-action-rule/discount-action-rule.module';
 import { DiscountModule } from './admin/discount/discount.module';
-import { DiscountConditionModule } from './admin/discount-condition-type/discount-condition-type.module';
+import { DiscountConditionTypeModule } from './admin/discount-condition-type/discount-condition-type.module';
 import { DiscountConditionValueModule } from './admin/discount-condition-value/discount-condition-value.module';
+import { DiscountConditionModule } from './admin/discount-condition/discount-condition.module';
 @Module({
   imports: [
     LoggingModule,
@@ -73,8 +74,9 @@ import { DiscountConditionValueModule } from './admin/discount-condition-value/d
     DiscountTypeModule,
     DiscountActionTypeModule,
     DiscountActionRuleModule,
-    DiscountConditionModule,
+    DiscountConditionTypeModule,
     DiscountConditionValueModule,
+    DiscountConditionModule,
   ],
   providers: [
     {

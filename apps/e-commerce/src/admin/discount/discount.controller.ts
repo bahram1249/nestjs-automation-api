@@ -49,8 +49,8 @@ export class DiscountController {
   })
   @CheckPermission({ permissionSymbol: 'ecommerce.admin.discounts.getall' })
   @HttpCode(HttpStatus.OK)
-  async findAll(@Query() filter: GetDiscountDto) {
-    return await this.service.findAll(filter);
+  async findAll(@Query() filter: GetDiscountDto, @GetUser() user: User) {
+    return await this.service.findAll(user, filter);
   }
 
   @UseGuards(JwtGuard, PermissionGuard)
@@ -59,8 +59,8 @@ export class DiscountController {
   @CheckPermission({ permissionSymbol: 'ecommerce.admin.discounts.getone' })
   @Get('/:id')
   @HttpCode(HttpStatus.OK)
-  async findById(@Param('id') entityId: bigint) {
-    return await this.service.findById(entityId);
+  async findById(@Param('id') entityId: bigint, @GetUser() user: User) {
+    return await this.service.findById(entityId, user);
   }
 
   @UseGuards(JwtGuard, PermissionGuard)
@@ -79,8 +79,12 @@ export class DiscountController {
   @Put('/:id')
   @CheckPermission({ permissionSymbol: 'ecommerce.admin.discounts.update' })
   @HttpCode(HttpStatus.OK)
-  async update(@Param('id') entityId: bigint, @Body() dto: DiscountDto) {
-    return await this.service.update(entityId, dto);
+  async update(
+    @Param('id') entityId: bigint,
+    @Body() dto: DiscountDto,
+    @GetUser() user: User,
+  ) {
+    return await this.service.update(entityId, dto, user);
   }
 
   @UseGuards(JwtGuard, PermissionGuard)

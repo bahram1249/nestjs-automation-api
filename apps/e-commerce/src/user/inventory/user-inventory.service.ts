@@ -251,4 +251,210 @@ export class UserInventoryService {
       total: count,
     };
   }
+
+  async findById(entityId: bigint, user: User) {
+    const vendorAccess = await this.vendorUserRepository.findAll(
+      new QueryOptionsBuilder()
+        .filter({ userId: user.id })
+        .filter(
+          Sequelize.where(
+            Sequelize.fn('isnull', Sequelize.col('ECVendorUser.isDeleted'), 0),
+            {
+              [Op.eq]: 0,
+            },
+          ),
+        )
+        .include([
+          {
+            model: ECVendor,
+            as: 'vendor',
+            required: true,
+            where: Sequelize.where(
+              Sequelize.fn('isnull', Sequelize.col('vendor.isDeleted'), 0),
+              {
+                [Op.eq]: 0,
+              },
+            ),
+          },
+        ])
+        .build(),
+    );
+    const vendorIds = vendorAccess.map((item) => item.vendorId);
+
+    let queryBuilder = new QueryOptionsBuilder()
+      .include([
+        {
+          attributes: ['id', 'title'],
+          model: ECProduct,
+          as: 'product',
+        },
+      ])
+      .filter({ id: entityId })
+      .filter({
+        vendorId: {
+          [Op.in]: vendorIds,
+        },
+      })
+      .filter(
+        Sequelize.where(
+          Sequelize.fn('isnull', Sequelize.col('ECInventory.isDeleted'), 0),
+          {
+            [Op.eq]: 0,
+          },
+        ),
+      );
+
+    const result = await this.inventoryRepository.findOne(
+      queryBuilder
+        .attributes([
+          'id',
+          'productId',
+          'vendorId',
+          'colorId',
+          'guaranteeId',
+          'guaranteeMonthId',
+          'buyPrice',
+          'qty',
+          'onlyProvinceId',
+          'vendorAddressId',
+          'weight',
+          'inventoryStatusId',
+          'description',
+        ])
+        .thenInlcude({
+          attributes: ['id', 'name'],
+          model: ECInventoryStatus,
+          as: 'inventoryStatus',
+          required: false,
+        })
+        .thenInlcude({
+          attributes: ['id', 'name'],
+          model: ECVendor,
+          as: 'vendor',
+          required: false,
+        })
+        .thenInlcude({
+          attributes: ['id', 'name', 'hexCode'],
+          model: ECColor,
+          as: 'color',
+          required: false,
+        })
+        .thenInlcude({
+          attributes: ['id', 'name'],
+          model: ECGuarantee,
+          as: 'guarantee',
+          required: false,
+        })
+        .thenInlcude({
+          attributes: ['id', 'name'],
+          model: ECGuaranteeMonth,
+          as: 'guaranteeMonth',
+          required: false,
+        })
+        .thenInlcude({
+          attributes: ['id', 'name'],
+          model: ECProvince,
+          as: 'onlyProvince',
+          required: false,
+        })
+        .thenInlcude({
+          attributes: ['id', 'vendorId', 'addressId'],
+          model: ECVendorAddress,
+          as: 'vendorAddress',
+          required: false,
+          include: [
+            {
+              attributes: [
+                'id',
+                'name',
+                'latitude',
+                'longitude',
+                'provinceId',
+                'cityId',
+                'neighborhoodId',
+                'street',
+                'alley',
+                'plaque',
+                'floorNumber',
+              ],
+              model: ECAddress,
+              as: 'address',
+              required: false,
+              include: [
+                {
+                  attributes: ['id', 'name'],
+                  model: ECProvince,
+                  as: 'province',
+                  required: false,
+                },
+                {
+                  attributes: ['id', 'name'],
+                  model: ECCity,
+                  as: 'city',
+                  required: false,
+                },
+                {
+                  attributes: ['id', 'name'],
+                  model: ECNeighborhood,
+                  as: 'neighborhood',
+                  required: false,
+                },
+              ],
+            },
+            {
+              attributes: ['id', 'name'],
+              model: ECVendor,
+              as: 'vendor',
+              required: false,
+            },
+          ],
+        })
+        .thenInlcude({
+          attributes: ['price'],
+          model: ECInventoryPrice,
+          as: 'firstPrice',
+          required: false,
+          include: [
+            {
+              attributes: ['id', 'name'],
+              model: ECVariationPrice,
+              as: 'variationPrice',
+            },
+          ],
+          where: Sequelize.where(
+            Sequelize.fn('isnull', Sequelize.col('firstPrice.isDeleted'), 0),
+            {
+              [Op.eq]: 0,
+            },
+          ),
+        })
+        .thenInlcude({
+          attributes: ['price'],
+          model: ECInventoryPrice,
+          as: 'secondaryPrice',
+          required: false,
+          include: [
+            {
+              attributes: ['id', 'name'],
+              model: ECVariationPrice,
+              as: 'variationPrice',
+            },
+          ],
+          where: Sequelize.where(
+            Sequelize.fn(
+              'isnull',
+              Sequelize.col('secondaryPrice.isDeleted'),
+              0,
+            ),
+            {
+              [Op.eq]: 0,
+            },
+          ),
+        })
+        .build(),
+    );
+    return {
+      result: result,
+    };
+  }
 }

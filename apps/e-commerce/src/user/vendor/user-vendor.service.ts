@@ -128,4 +128,35 @@ export class UserVendorService {
     if (!findVendor) return false;
     return true;
   }
+
+  async findVendorIds(user: User) {
+    const vendorAccess = await this.vendorUserRepository.findAll(
+      new QueryOptionsBuilder()
+        .filter({ userId: user.id })
+        .filter(
+          Sequelize.where(
+            Sequelize.fn('isnull', Sequelize.col('ECVendorUser.isDeleted'), 0),
+            {
+              [Op.eq]: 0,
+            },
+          ),
+        )
+        .include([
+          {
+            model: ECVendor,
+            as: 'vendor',
+            required: true,
+            where: Sequelize.where(
+              Sequelize.fn('isnull', Sequelize.col('vendor.isDeleted'), 0),
+              {
+                [Op.eq]: 0,
+              },
+            ),
+          },
+        ])
+        .build(),
+    );
+    const vendorIds = vendorAccess.map((item) => item.vendorId);
+    return vendorIds;
+  }
 }
