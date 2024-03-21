@@ -24,20 +24,33 @@ export class ApplyDiscountService {
   ) {}
 
   async applyProducts(products: ECProduct[]) {
+    const promises = [];
     for (let index = 0; index < products.length; index++) {
       let product = products[index];
-      product = await this.applyProduct(product);
+      promises.push(this.applyProduct(product));
+    }
+
+    const results = await Promise.all(promises);
+    for (let index = 0; index < results.length; index++) {
+      let product = results[index];
       products[index] = product;
     }
     return products;
   }
 
   async applyProduct(product: ECProduct) {
+    const promises = [];
     for (let index = 0; index < product.inventories.length; index++) {
       let inventory = product.inventories[index];
-      inventory = await this.applyInventory(product, inventory);
+      promises.push(this.applyInventory(product, inventory));
+    }
+
+    const results = await Promise.all(promises);
+    for (let index = 0; index < results.length; index++) {
+      let inventory = results[index];
       product.inventories[index] = inventory;
     }
+
     return product;
   }
 
@@ -46,9 +59,8 @@ export class ApplyDiscountService {
     const expire = 900;
     const key = `product:${product.id}::inventory:${inventory.id}`;
     const foundItem = await this.redisRepository.hgetall(key);
-
     // not yet read it before
-    if (foundItem == null) {
+    if (Object.keys(foundItem).length === 0) {
       inventory = await this._applyDiscountIfExists(
         product,
         inventory,
@@ -58,11 +70,16 @@ export class ApplyDiscountService {
     }
 
     let isExists: boolean = null;
-    if (foundItem != null) isExists = JSON.parse(foundItem['applied']);
+    if (Object.keys(foundItem).length > 0) {
+      isExists = JSON.parse(foundItem['applied']);
+    }
 
     // if apllied before
     if (isExists == true) {
       const appliedDiscount = foundItem as unknown as DiscountAppliedInterface;
+      if (appliedDiscount.maxValue.toString() == '') {
+        appliedDiscount.maxValue = null;
+      }
       if (inventory.firstPrice) {
         inventory.firstPrice = await this._applyPrice(
           inventory.firstPrice,
@@ -164,17 +181,17 @@ export class ApplyDiscountService {
     } else {
       await this.redisRepository.hset(
         key,
-        _.merge(discountApplied, { applied: true }),
+        _.merge(JSON.parse(JSON.stringify(discountApplied)), { applied: true }),
         expire,
       );
     }
-    if (inventory.firstPrice) {
+    if (inventory.firstPrice && discountApplied != null) {
       inventory.firstPrice = await this._applyPrice(
         inventory.firstPrice,
         discountApplied,
       );
     }
-    if (inventory.secondaryPrice) {
+    if (inventory.secondaryPrice && discountApplied != null) {
       inventory.secondaryPrice = await this._applyPrice(
         inventory.secondaryPrice,
         discountApplied,
@@ -190,18 +207,20 @@ export class ApplyDiscountService {
     if (discountApplied.actionType == DiscountActionTypeEnum.percentage) {
       let discountPrice =
         Number(inventoryPrice.price) * (discountApplied.amount / 100);
-      if (discountPrice > discountApplied.maxValue) {
+      if (
+        discountApplied.maxValue != null &&
+        discountPrice > discountApplied.maxValue
+      ) {
         discountPrice = discountApplied.maxValue;
       }
       const price = Number(inventoryPrice.price) - discountPrice;
-
-      inventoryPrice.appliedDiscount = {
+      inventoryPrice.set('appliedDiscount', {
         id: discountApplied.id,
         amount: discountApplied.amount,
         newPrice: price,
         actionType: discountApplied.actionType,
         maxValue: discountApplied.maxValue,
-      };
+      });
     } else if (
       discountApplied.actionType == DiscountActionTypeEnum.fixedAmount
     ) {
@@ -210,14 +229,13 @@ export class ApplyDiscountService {
         discountPrice = discountApplied.maxValue;
       }
       const price = Number(inventoryPrice.price) - discountPrice;
-
-      inventoryPrice.appliedDiscount = {
+      inventoryPrice.set('appliedDiscount', {
         id: discountApplied.id,
         amount: discountApplied.amount,
         newPrice: price,
         actionType: discountApplied.actionType,
         maxValue: discountApplied.maxValue,
-      };
+      });
     }
 
     return inventoryPrice;

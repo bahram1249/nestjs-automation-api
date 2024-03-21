@@ -37,7 +37,11 @@ export class DiscountConditionService {
       .filter({ discountId: filter.discountId })
       .filter(
         Sequelize.where(
-          Sequelize.fn('isnull', 'ECDiscountCondition.isDeleted', 0),
+          Sequelize.fn(
+            'isnull',
+            Sequelize.col('ECDiscountCondition.isDeleted'),
+            0,
+          ),
           {
             [Op.eq]: 0,
           },
@@ -73,7 +77,11 @@ export class DiscountConditionService {
       .filter({ id: entityId })
       .filter(
         Sequelize.where(
-          Sequelize.fn('isnull', 'ECDiscountCondition.isDeleted', 0),
+          Sequelize.fn(
+            'isnull',
+            Sequelize.col('ECDiscountCondition.isDeleted'),
+            0,
+          ),
           {
             [Op.eq]: 0,
           },
@@ -108,7 +116,11 @@ export class DiscountConditionService {
         .filter({ discountId: dto.discountId })
         .filter(
           Sequelize.where(
-            Sequelize.fn('isnull', 'ECDiscountCondition.isDeleted', 0),
+            Sequelize.fn(
+              'isnull',
+              Sequelize.col('ECDiscountCondition.isDeleted'),
+              0,
+            ),
             {
               [Op.eq]: 0,
             },
@@ -131,18 +143,22 @@ export class DiscountConditionService {
         find = (
           await this.entityTypeService.findById(Number(dto.conditionValue))
         ).result;
+        break;
       case DiscountConditionTypeEnum.product:
         find = (await this.productService.findById(user, dto.conditionValue))
           .result;
+        break;
       case DiscountConditionTypeEnum.inventory:
         find = (
           await this.userInventoryService.findById(dto.conditionValue, user)
         ).result;
+        break;
       case DiscountConditionTypeEnum.vendor:
         find = await this.userVendorService.isAccessToVendor(
           user,
           Number(dto.conditionValue),
         );
+        break;
     }
     if (!find) {
       throw new ForbiddenException("You don't access to set this given value");
@@ -153,7 +169,7 @@ export class DiscountConditionService {
       ECDiscountCondition,
     );
     const discountCondition = await this.repository.create(
-      _.omit(mappedItem, ['id']),
+      _.omit(mappedItem.toJSON(), ['id']),
     );
     return { result: discountCondition };
   }
@@ -164,7 +180,11 @@ export class DiscountConditionService {
       .filter({ id: entityId })
       .filter(
         Sequelize.where(
-          Sequelize.fn('isnull', 'ECDiscountCondition.isDeleted', 0),
+          Sequelize.fn(
+            'isnull',
+            Sequelize.col('ECDiscountCondition.isDeleted'),
+            0,
+          ),
           {
             [Op.eq]: 0,
           },

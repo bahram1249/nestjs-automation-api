@@ -59,6 +59,7 @@ export class DiscountService {
         WHERE Basetbl.discountId = ECDiscount.id
           AND Basetbl.conditionTypeId = ${DiscountConditionTypeEnum.vendor}
           AND Basetbl.conditionValue IN (${vendorIdsStringify})
+          AND ISNULL(Basetbl.isDeleted, 0) = 0
       )`),
       );
     const count = await this.repository.count(queryBuilder.build());
@@ -159,6 +160,7 @@ export class DiscountService {
         WHERE Basetbl.discountId = ECDiscount.id
           AND Basetbl.conditionTypeId = ${DiscountConditionTypeEnum.vendor}
           AND Basetbl.conditionValue IN (${vendorIdsStringify})
+          AND ISNULL(Basetbl.isDeleted, 0) = 0
       )`),
       );
     return {

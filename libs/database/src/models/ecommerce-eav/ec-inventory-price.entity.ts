@@ -75,5 +75,9 @@ export class ECInventoryPrice extends Model {
   @BelongsTo(() => User, { as: 'deletedByUser', foreignKey: 'deletedBy' })
   deletedByUser?: User;
 
+  @Column({
+    type: DataType.VIRTUAL,
+    allowNull: true,
+  })
   appliedDiscount?: DiscountAppliedInterface;
 }

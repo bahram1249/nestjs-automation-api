@@ -8,6 +8,7 @@ import {
 } from 'sequelize-typescript';
 import { ECDiscount } from './ec-discount.entity';
 import { ECDiscountConditionType } from './ec-discount-condition-type.entity';
+import { AutoMap } from 'automapper-classes';
 
 @Table({ tableName: 'ECDiscountConditions' })
 export class ECDiscountCondition extends Model {
@@ -17,6 +18,8 @@ export class ECDiscountCondition extends Model {
     primaryKey: true,
   })
   id: bigint;
+
+  @AutoMap()
   @Column({
     type: DataType.BIGINT,
   })
@@ -26,6 +29,7 @@ export class ECDiscountCondition extends Model {
   @BelongsTo(() => ECDiscount, { as: 'discount', foreignKey: 'discountId' })
   discount?: ECDiscount;
 
+  @AutoMap()
   @Column({
     type: DataType.INTEGER,
   })
@@ -38,6 +42,7 @@ export class ECDiscountCondition extends Model {
   })
   conditionType?: ECDiscountConditionType;
 
+  @AutoMap()
   @Column({
     type: DataType.BIGINT,
   })
