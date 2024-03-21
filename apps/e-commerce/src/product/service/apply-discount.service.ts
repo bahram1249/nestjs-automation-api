@@ -46,8 +46,7 @@ export class ApplyDiscountService {
     const expire = 900;
     const key = `product:${product.id}::inventory:${inventory.id}`;
     const foundItem = await this.redisRepository.hgetall(key);
-    let isExists: boolean = null;
-    if (foundItem != null) isExists = JSON.parse(foundItem['applied']);
+
     // not yet read it before
     if (foundItem == null) {
       inventory = await this._applyDiscountIfExists(
@@ -57,8 +56,12 @@ export class ApplyDiscountService {
         expire,
       );
     }
+
+    let isExists: boolean = null;
+    if (foundItem != null) isExists = JSON.parse(foundItem['applied']);
+
     // if apllied before
-    else if (isExists == true) {
+    if (isExists == true) {
       const appliedDiscount = foundItem as unknown as DiscountAppliedInterface;
       if (inventory.firstPrice) {
         inventory.firstPrice = await this._applyPrice(
