@@ -3,7 +3,7 @@ import { GetProductDto } from './dto';
 import { InjectModel } from '@nestjs/sequelize';
 import { ECProduct } from '@rahino/database/models/ecommerce-eav/ec-product.entity';
 import * as _ from 'lodash';
-import { ProductQueryBuilderService } from './service';
+import { ApplyDiscountService, ProductQueryBuilderService } from './service';
 
 @Injectable()
 export class ProductService {
@@ -11,6 +11,7 @@ export class ProductService {
     @InjectModel(ECProduct)
     private readonly repository: typeof ECProduct,
     private readonly productQueryBuilderService: ProductQueryBuilderService,
+    private readonly applyDiscountService: ApplyDiscountService,
   ) {}
 
   async findBySlug(filter: GetProductDto, slug: string) {
@@ -53,8 +54,10 @@ export class ProductService {
     const { resultQuery, countQuery } =
       await this.productQueryBuilderService.findAllAndCountQuery(filter);
 
+    let result = await this.repository.findAll(resultQuery);
+    result = await this.applyDiscountService.applyProducts(result);
     return {
-      result: await this.repository.findAll(resultQuery),
+      result: result,
       total: await this.repository.count(countQuery), //count,
     };
   }

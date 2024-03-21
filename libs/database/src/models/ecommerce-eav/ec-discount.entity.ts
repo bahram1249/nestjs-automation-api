@@ -5,11 +5,13 @@ import {
   DataType,
   ForeignKey,
   BelongsTo,
+  HasMany,
 } from 'sequelize-typescript';
 import { ECDiscountType } from './ec-discount-type.entity';
 import { ECDiscountActionType } from './ec-discount-action-type.entity';
 import { ECDiscountActionRule } from './ec-discount-action-rule.entity';
 import { AutoMap } from 'automapper-classes';
+import { ECDiscountCondition } from './ec-discount-condition.entity';
 
 @Table({ tableName: 'ECDiscounts' })
 export class ECDiscount extends Model {
@@ -143,4 +145,10 @@ export class ECDiscount extends Model {
     allowNull: true,
   })
   endDate?: Date;
+
+  @HasMany(() => ECDiscountCondition, {
+    foreignKey: 'discountId',
+    as: 'conditions',
+  })
+  conditions?: ECDiscountCondition[];
 }

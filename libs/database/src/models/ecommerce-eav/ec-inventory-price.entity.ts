@@ -9,6 +9,7 @@ import {
 import { ECInventory } from '@rahino/database/models/ecommerce-eav/ec-inventory.entity';
 import { ECVariationPrice } from '@rahino/database/models/ecommerce-eav/ec-variation-prices';
 import { User } from '@rahino/database/models/core/user.entity';
+import { DiscountAppliedInterface } from '@rahino/ecommerce/admin/discount/interface/discount-applied.interface';
 
 @Table({ tableName: 'ECInventoryPrices' })
 export class ECInventoryPrice extends Model {
@@ -73,4 +74,6 @@ export class ECInventoryPrice extends Model {
 
   @BelongsTo(() => User, { as: 'deletedByUser', foreignKey: 'deletedBy' })
   deletedByUser?: User;
+
+  appliedDiscount?: DiscountAppliedInterface;
 }

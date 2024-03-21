@@ -42,4 +42,22 @@ export class RedisRepository
     }
     return { result: result, exists: exists };
   }
+
+  async hset(key: string, value: any, expirySeconds?: number) {
+    const result = await this.redisClient.hset(key, value);
+    if (expirySeconds) await this.redisClient.expire(key, expirySeconds, 'NX');
+    return result;
+  }
+
+  async hget(key: string, field: string) {
+    return await this.redisClient.hget(key, field);
+  }
+
+  async hexists(key: string, field: string) {
+    return await this.redisClient.hexists(key, field);
+  }
+
+  async hgetall(key: string) {
+    return await this.redisClient.hgetall(key);
+  }
 }
