@@ -29,12 +29,7 @@ export class ApplyDiscountService {
       let product = products[index];
       promises.push(this.applyProduct(product));
     }
-
-    const results = await Promise.all(promises);
-    for (let index = 0; index < results.length; index++) {
-      let product = results[index];
-      products[index] = product;
-    }
+    products = await Promise.all(promises);
     return products;
   }
 
@@ -45,12 +40,7 @@ export class ApplyDiscountService {
       promises.push(this.applyInventory(product, inventory));
     }
 
-    const results = await Promise.all(promises);
-    for (let index = 0; index < results.length; index++) {
-      let inventory = results[index];
-      product.inventories[index] = inventory;
-    }
-
+    product.inventories = await Promise.all(promises);
     return product;
   }
 
@@ -103,41 +93,22 @@ export class ApplyDiscountService {
     expire: number,
   ) {
     // find all discounts
-    const entityTypeDiscounts = await this._getEntityTypeDiscounts(
-      product,
-      inventory,
-    );
-    const inventoryDiscounts = await this._getInventoryDiscounts(
-      product,
-      inventory,
-    );
-    const productDiscounts = await this._getProductDiscounts(
-      product,
-      inventory,
-    );
-    const vendorDiscounts = await this._getVendorDiscounts(product, inventory);
+    const promises = [
+      this._getEntityTypeDiscounts(product, inventory),
+      this._getInventoryDiscounts(product, inventory),
+      this._getProductDiscounts(product, inventory),
+      this._getVendorDiscounts(product, inventory),
+    ];
+
+    const promiseResults = await Promise.all(promises);
+    const results: ECDiscount[] = [].concat(...promiseResults);
 
     // distincts this discounts
-    const discounts = new Set<ECDiscount>();
-    entityTypeDiscounts.forEach((element) => {
-      discounts.add(element);
-    });
-    inventoryDiscounts.forEach((element) => {
-      discounts.add(element);
-    });
-    productDiscounts.forEach((element) => {
-      discounts.add(element);
-    });
-    vendorDiscounts.forEach((element) => {
-      discounts.add(element);
-    });
+    const discounts = new Set<ECDiscount>(results);
+    let finalList: ECDiscount[] = Array.from(discounts).sort(
+      (item) => item.priority,
+    );
 
-    let finalList: ECDiscount[] = [];
-    discounts.forEach((discount) => {
-      finalList.push(discount);
-    });
-    // sort based priority
-    finalList = finalList.sort((item) => item.priority);
     // applied discounts
     inventory = await this._applyDiscount(
       finalList,
