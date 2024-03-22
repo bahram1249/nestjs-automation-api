@@ -440,6 +440,18 @@ export class ApplyDiscountService {
             },
           ),
         )
+        .filter(
+          Sequelize.where(
+            Sequelize.fn(
+              'isnull',
+              Sequelize.col('discountType.isCouponBased'),
+              0,
+            ),
+            {
+              [Op.eq]: 0,
+            },
+          ),
+        )
         // has one releated condition to this given product or inventory
         .filter(
           Sequelize.literal(
