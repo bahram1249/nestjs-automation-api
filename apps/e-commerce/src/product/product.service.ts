@@ -28,7 +28,7 @@ export class ProductService {
       throw new NotFoundException('the item with this given slug not founded!');
     }
     return {
-      result: product,
+      result: await this.applyDiscountService.applyProduct(product),
     };
   }
 
@@ -46,7 +46,7 @@ export class ProductService {
       throw new NotFoundException('the item with this given id not founded!');
     }
     return {
-      result: product,
+      result: await this.applyDiscountService.applyProduct(product),
     };
   }
 
