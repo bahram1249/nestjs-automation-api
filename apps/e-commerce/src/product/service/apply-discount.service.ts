@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { ECDiscountCondition } from '@rahino/database/models/ecommerce-eav/ec-discount-condition.entity';
 import { ECDiscount } from '@rahino/database/models/ecommerce-eav/ec-discount.entity';
@@ -13,7 +13,9 @@ import { Op, Sequelize } from 'sequelize';
 import * as _ from 'lodash';
 import { DiscountActionTypeEnum } from '@rahino/ecommerce/admin/discount-action-type/enum';
 import { ECInventoryPrice } from '@rahino/database/models/ecommerce-eav/ec-inventory-price.entity';
-import { DiscountAppliedInterface } from '@rahino/ecommerce/admin/discount/interface/discount-applied.interface';
+import { ConfigService } from '@nestjs/config';
+import { ECDiscountType } from '@rahino/database/models/ecommerce-eav/ec-discount-type.entity';
+import { parseValue } from '@rahino/commontools/functions/parse-value';
 
 @Injectable()
 export class ApplyDiscountService {
@@ -21,6 +23,7 @@ export class ApplyDiscountService {
     @InjectModel(ECDiscount)
     private readonly repository: typeof ECDiscount,
     private readonly redisRepository: RedisRepository,
+    private readonly config: ConfigService,
   ) {}
 
   async applyProducts(products: ECProduct[]) {
@@ -29,8 +32,7 @@ export class ApplyDiscountService {
       let product = products[index];
       promises.push(this.applyProduct(product));
     }
-    products = await Promise.all(promises);
-    return products;
+    return await Promise.all(promises);
   }
 
   async applyProduct(product: ECProduct) {
@@ -39,14 +41,13 @@ export class ApplyDiscountService {
       let inventory = product.inventories[index];
       promises.push(this.applyInventory(product, inventory));
     }
-
     product.inventories = await Promise.all(promises);
     return product;
   }
 
   async applyInventory(product: ECProduct, inventory: ECInventory) {
     // 15 minutes
-    const expire = 900;
+    const expire = this.config.get<number>('EXPIRE_DISCOUNT') || 900;
     const key = `product:${product.id}::inventory:${inventory.id}`;
     const foundItem = await this.redisRepository.hgetall(key);
     // not yet read it before
@@ -66,20 +67,37 @@ export class ApplyDiscountService {
 
     // if apllied before
     if (isExists == true) {
-      const appliedDiscount = foundItem as unknown as DiscountAppliedInterface;
+      const appliedDiscount = foundItem as unknown as DiscountInterface;
+      for (const key in appliedDiscount) {
+        appliedDiscount[key] = parseValue(appliedDiscount[key]);
+      }
+
       if (appliedDiscount.maxValue.toString() == '') {
         appliedDiscount.maxValue = null;
       }
       if (inventory.firstPrice) {
-        inventory.firstPrice = await this._applyPrice(
+        inventory.firstPrice = await this._applyDiscountPrice(
           inventory.firstPrice,
           appliedDiscount,
         );
       }
       if (inventory.secondaryPrice) {
-        inventory.secondaryPrice = await this._applyPrice(
+        inventory.secondaryPrice = await this._applyDiscountPrice(
           inventory.secondaryPrice,
           appliedDiscount,
+        );
+      }
+    } else if (isExists == false) {
+      if (inventory.firstPrice) {
+        inventory.firstPrice = await this._applyDiscountPrice(
+          inventory.firstPrice,
+          null,
+        );
+      }
+      if (inventory.secondaryPrice) {
+        inventory.secondaryPrice = await this._applyDiscountPrice(
+          inventory.secondaryPrice,
+          null,
         );
       }
     }
@@ -103,15 +121,15 @@ export class ApplyDiscountService {
     const promiseResults = await Promise.all(promises);
     const results: ECDiscount[] = [].concat(...promiseResults);
 
-    // distincts this discounts
+    // distincts these discounts
     const discounts = new Set<ECDiscount>(results);
-    let finalList: ECDiscount[] = Array.from(discounts).sort(
+    let finalDiscountList: ECDiscount[] = Array.from(discounts).sort(
       (item) => item.priority,
     );
 
     // applied discounts
     inventory = await this._applyDiscount(
-      finalList,
+      finalDiscountList,
       product,
       inventory,
       key,
@@ -128,42 +146,51 @@ export class ApplyDiscountService {
     expire: number,
   ) {
     let discountApplied: DiscountInterface = null;
+
+    // check which discount can be applied first & ignore others
     for (let index = 0; index < discounts.length; index++) {
       const discount = discounts[index];
-      if (discount.discountActionRuleId == DiscountActionRuleEnum.and) {
-        discountApplied = await this._applyAndConditionDiscount(
-          product,
-          inventory,
-          discount,
-        );
-      } else if (discount.discountActionRuleId == DiscountActionRuleEnum.or) {
-        discountApplied = await this._applyOrConditionDiscount(
-          product,
-          inventory,
-          discount,
-        );
+      switch (discount.discountActionRuleId) {
+        case DiscountActionRuleEnum.and:
+          discountApplied = await this._applyAndConditionDiscount(
+            product,
+            inventory,
+            discount,
+          );
+          break;
+        case DiscountActionRuleEnum.or:
+          discountApplied = await this._applyOrConditionDiscount(
+            product,
+            inventory,
+            discount,
+          );
+          break;
+        default:
+          throw new InternalServerErrorException('unknown discountActionRule');
       }
+
       if (discountApplied != null) {
         break;
       }
     }
+    // no discount applied
     if (discountApplied == null) {
       await this.redisRepository.hset(key, { applied: false }, expire);
     } else {
       await this.redisRepository.hset(
         key,
-        _.merge(JSON.parse(JSON.stringify(discountApplied)), { applied: true }),
+        _.merge(discountApplied, { applied: true }),
         expire,
       );
     }
-    if (inventory.firstPrice && discountApplied != null) {
-      inventory.firstPrice = await this._applyPrice(
+    if (inventory.firstPrice) {
+      inventory.firstPrice = await this._applyDiscountPrice(
         inventory.firstPrice,
         discountApplied,
       );
     }
-    if (inventory.secondaryPrice && discountApplied != null) {
-      inventory.secondaryPrice = await this._applyPrice(
+    if (inventory.secondaryPrice) {
+      inventory.secondaryPrice = await this._applyDiscountPrice(
         inventory.secondaryPrice,
         discountApplied,
       );
@@ -171,43 +198,40 @@ export class ApplyDiscountService {
     return inventory;
   }
 
-  private async _applyPrice(
+  private async _applyDiscountPrice(
     inventoryPrice: ECInventoryPrice,
-    discountApplied: DiscountInterface,
+    discountApplied?: DiscountInterface,
   ) {
-    if (discountApplied.actionType == DiscountActionTypeEnum.percentage) {
-      let discountPrice =
-        Number(inventoryPrice.price) * (discountApplied.amount / 100);
-      if (
-        discountApplied.maxValue != null &&
-        discountPrice > discountApplied.maxValue
-      ) {
-        discountPrice = discountApplied.maxValue;
-      }
-      const price = Number(inventoryPrice.price) - discountPrice;
-      inventoryPrice.set('appliedDiscount', {
-        id: discountApplied.id,
-        amount: discountApplied.amount,
-        newPrice: price,
-        actionType: discountApplied.actionType,
-        maxValue: discountApplied.maxValue,
-      });
-    } else if (
-      discountApplied.actionType == DiscountActionTypeEnum.fixedAmount
-    ) {
-      let discountPrice = discountApplied.amount;
-      if (discountPrice > discountApplied.maxValue) {
-        discountPrice = discountApplied.maxValue;
-      }
-      const price = Number(inventoryPrice.price) - discountPrice;
-      inventoryPrice.set('appliedDiscount', {
-        id: discountApplied.id,
-        amount: discountApplied.amount,
-        newPrice: price,
-        actionType: discountApplied.actionType,
-        maxValue: discountApplied.maxValue,
-      });
+    if (discountApplied == null) {
+      inventoryPrice.set('appliedDiscount', null);
+      return inventoryPrice;
     }
+    let discountPrice = 0;
+    switch (Number(discountApplied.actionType)) {
+      case DiscountActionTypeEnum.percentage:
+        discountPrice =
+          Number(inventoryPrice.price) * (discountApplied.amount / 100);
+        break;
+      case DiscountActionTypeEnum.fixedAmount:
+        discountPrice = discountApplied.amount;
+        break;
+      default:
+        throw new InternalServerErrorException('unknown discountActionType');
+    }
+    if (
+      discountApplied.maxValue != null &&
+      discountPrice > discountApplied.maxValue
+    ) {
+      discountPrice = discountApplied.maxValue;
+    }
+    const newPrice = Number(inventoryPrice.price) - discountPrice;
+    inventoryPrice.set('appliedDiscount', {
+      id: discountApplied.id,
+      amount: discountApplied.amount,
+      newPrice: newPrice,
+      actionType: discountApplied.actionType,
+      maxValue: discountApplied.maxValue,
+    });
 
     return inventoryPrice;
   }
@@ -226,11 +250,13 @@ export class ApplyDiscountService {
         inventory,
         condition,
       );
+      // virtualize and condition
       if (mainConditionResult != conditionResult) {
         mainConditionResult = false;
         break;
       }
     }
+    // if all conditions are pass
     if (mainConditionResult) {
       discountApplied = {
         id: discount.id,
@@ -251,9 +277,18 @@ export class ApplyDiscountService {
     let mainConditionResult = false;
 
     let defaultConditionResult = false;
+    /*
+      cause each discount specefied to a vendor
+      first we check all conditions against specefied vendor
+    */
     const findDefaultCondition = discount.conditions.find(
       (item) => item.isDefault == true,
     );
+
+    /*
+     if doesn't exists default Condition, 
+     it's meen this condition can be applied to any vendor
+    */
     if (findDefaultCondition == null) {
       defaultConditionResult = true;
     } else {
@@ -263,6 +298,7 @@ export class ApplyDiscountService {
         findDefaultCondition,
       );
     }
+
     if (defaultConditionResult == false) return discountApplied;
 
     for (let index = 0; index < discount.conditions.length; index++) {
@@ -294,27 +330,25 @@ export class ApplyDiscountService {
     condition: ECDiscountCondition,
   ) {
     let conditionResult = false;
-    if (
-      condition.conditionTypeId == DiscountConditionTypeEnum.entityType &&
-      product.entityTypeId == Number(condition.conditionValue)
-    ) {
-      conditionResult = true;
-    } else if (
-      condition.conditionTypeId == DiscountConditionTypeEnum.product &&
-      product.id == condition.conditionValue
-    ) {
-      conditionResult = true;
-    } else if (
-      condition.conditionTypeId == DiscountConditionTypeEnum.inventory &&
-      inventory.id == condition.conditionValue
-    ) {
-      conditionResult = true;
-    } else if (
-      condition.conditionTypeId == DiscountConditionTypeEnum.vendor &&
-      inventory.vendorId == Number(condition.conditionValue)
-    ) {
-      conditionResult = true;
+    switch (condition.conditionTypeId) {
+      case DiscountConditionTypeEnum.entityType:
+        conditionResult =
+          product.entityTypeId == Number(condition.conditionValue);
+        break;
+      case DiscountConditionTypeEnum.product:
+        conditionResult = product.id == condition.conditionValue;
+        break;
+      case DiscountConditionTypeEnum.inventory:
+        conditionResult = inventory.id == condition.conditionValue;
+        break;
+      case DiscountConditionTypeEnum.vendor:
+        conditionResult =
+          inventory.vendorId == Number(condition.conditionValue);
+        break;
+      default:
+        throw new InternalServerErrorException('unknown discountConditionType');
     }
+
     return conditionResult;
   }
 
@@ -322,56 +356,9 @@ export class ApplyDiscountService {
     product: ECProduct,
     inventory: ECInventory,
   ) {
-    return await this.repository.findAll(
-      new QueryOptionsBuilder()
-        .filter(
-          Sequelize.where(Sequelize.fn('getdate'), {
-            [Op.between]: [
-              Sequelize.col('ECDiscount.startDate'),
-              Sequelize.col('ECDiscount.endDate'),
-            ],
-          }),
-        )
-        .filter(
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('ECDiscount.isDeleted'), 0),
-            {
-              [Op.eq]: 0,
-            },
-          ),
-        )
-        .filter(
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('ECDiscount.isActive'), 0),
-            {
-              [Op.eq]: 1,
-            },
-          ),
-        )
-        .filter(
-          Sequelize.literal(` EXISTS (
-          SELECT 1
-          FROM ECDiscountConditions conditionTbl
-          WHERE conditionTbl.discountId = ECDiscount.id
-            AND conditionTbl.conditionTypeId = ${DiscountConditionTypeEnum.entityType}
-            AND conditionTbl.conditionValue = ${product.entityTypeId}
-            AND ISNULL(conditionTbl.isDeleted, 0) = 0
-        )`),
-        )
-        .include([
-          {
-            model: ECDiscountCondition,
-            as: 'conditions',
-            required: true,
-            where: Sequelize.where(
-              Sequelize.fn('isnull', Sequelize.col('conditions.isDeleted'), 0),
-              {
-                [Op.eq]: 0,
-              },
-            ),
-          },
-        ])
-        .build(),
+    return await this._getDiscountByConditionType(
+      DiscountConditionTypeEnum.entityType,
+      product.entityTypeId,
     );
   }
 
@@ -379,56 +366,9 @@ export class ApplyDiscountService {
     product: ECProduct,
     inventory: ECInventory,
   ) {
-    return await this.repository.findAll(
-      new QueryOptionsBuilder()
-        .filter(
-          Sequelize.where(Sequelize.fn('getdate'), {
-            [Op.between]: [
-              Sequelize.col('ECDiscount.startDate'),
-              Sequelize.col('ECDiscount.endDate'),
-            ],
-          }),
-        )
-        .filter(
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('ECDiscount.isDeleted'), 0),
-            {
-              [Op.eq]: 0,
-            },
-          ),
-        )
-        .filter(
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('ECDiscount.isActive'), 0),
-            {
-              [Op.eq]: 1,
-            },
-          ),
-        )
-        .filter(
-          Sequelize.literal(` EXISTS (
-          SELECT 1
-          FROM ECDiscountConditions conditionTbl
-          WHERE conditionTbl.discountId = ECDiscount.id
-            AND conditionTbl.conditionTypeId = ${DiscountConditionTypeEnum.product}
-            AND conditionTbl.conditionValue = ${product.id}
-            AND ISNULL(conditionTbl.isDeleted, 0) = 0
-        )`),
-        )
-        .include([
-          {
-            model: ECDiscountCondition,
-            as: 'conditions',
-            required: true,
-            where: Sequelize.where(
-              Sequelize.fn('isnull', Sequelize.col('conditions.isDeleted'), 0),
-              {
-                [Op.eq]: 0,
-              },
-            ),
-          },
-        ])
-        .build(),
+    return await this._getDiscountByConditionType(
+      DiscountConditionTypeEnum.product,
+      product.id,
     );
   }
 
@@ -436,56 +376,9 @@ export class ApplyDiscountService {
     product: ECProduct,
     inventory: ECInventory,
   ) {
-    return await this.repository.findAll(
-      new QueryOptionsBuilder()
-        .filter(
-          Sequelize.where(Sequelize.fn('getdate'), {
-            [Op.between]: [
-              Sequelize.col('ECDiscount.startDate'),
-              Sequelize.col('ECDiscount.endDate'),
-            ],
-          }),
-        )
-        .filter(
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('ECDiscount.isDeleted'), 0),
-            {
-              [Op.eq]: 0,
-            },
-          ),
-        )
-        .filter(
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('ECDiscount.isActive'), 0),
-            {
-              [Op.eq]: 1,
-            },
-          ),
-        )
-        .filter(
-          Sequelize.literal(` EXISTS (
-          SELECT 1
-          FROM ECDiscountConditions conditionTbl
-          WHERE conditionTbl.discountId = ECDiscount.id
-            AND conditionTbl.conditionTypeId = ${DiscountConditionTypeEnum.inventory}
-            AND conditionTbl.conditionValue = ${inventory.id}
-            AND ISNULL(conditionTbl.isDeleted, 0) = 0
-        )`),
-        )
-        .include([
-          {
-            model: ECDiscountCondition,
-            as: 'conditions',
-            required: true,
-            where: Sequelize.where(
-              Sequelize.fn('isnull', Sequelize.col('conditions.isDeleted'), 0),
-              {
-                [Op.eq]: 0,
-              },
-            ),
-          },
-        ])
-        .build(),
+    return await this._getDiscountByConditionType(
+      DiscountConditionTypeEnum.inventory,
+      inventory.id,
     );
   }
 
@@ -493,8 +386,36 @@ export class ApplyDiscountService {
     product: ECProduct,
     inventory: ECInventory,
   ) {
+    return await this._getDiscountByConditionType(
+      DiscountConditionTypeEnum.vendor,
+      inventory.vendorId,
+    );
+  }
+
+  private async _getDiscountByConditionType(
+    conditionType: DiscountConditionTypeEnum,
+    value: any,
+  ) {
     return await this.repository.findAll(
       new QueryOptionsBuilder()
+        .include([
+          {
+            model: ECDiscountCondition,
+            as: 'conditions',
+            required: true,
+            where: Sequelize.where(
+              Sequelize.fn('isnull', Sequelize.col('conditions.isDeleted'), 0),
+              {
+                [Op.eq]: 0,
+              },
+            ),
+          },
+          {
+            model: ECDiscountType,
+            as: 'discountType',
+            required: true,
+          },
+        ])
         .filter(
           Sequelize.where(Sequelize.fn('getdate'), {
             [Op.between]: [
@@ -519,29 +440,19 @@ export class ApplyDiscountService {
             },
           ),
         )
+        // has one releated condition to this given product or inventory
         .filter(
-          Sequelize.literal(` EXISTS (
+          Sequelize.literal(
+            ` EXISTS (
           SELECT 1
           FROM ECDiscountConditions conditionTbl
           WHERE conditionTbl.discountId = ECDiscount.id
-            AND conditionTbl.conditionTypeId = ${DiscountConditionTypeEnum.vendor}
-            AND conditionTbl.conditionValue = ${inventory.vendorId}
+            AND conditionTbl.conditionTypeId = ${conditionType}
+            AND conditionTbl.conditionValue = ${value}
             AND ISNULL(conditionTbl.isDeleted, 0) = 0
-        )`),
+        )`.replaceAll(/\s\s+/g, ' '),
+          ),
         )
-        .include([
-          {
-            model: ECDiscountCondition,
-            as: 'conditions',
-            required: true,
-            where: Sequelize.where(
-              Sequelize.fn('isnull', Sequelize.col('conditions.isDeleted'), 0),
-              {
-                [Op.eq]: 0,
-              },
-            ),
-          },
-        ])
         .build(),
     );
   }
