@@ -3,4 +3,6 @@ export interface DiscountInterface {
   amount: number;
   maxValue?: number;
   actionType: number;
+  startDate?: Date;
+  endDate?: Date;
 }

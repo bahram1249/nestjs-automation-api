@@ -65,9 +65,11 @@ export class ApplyDiscountService {
       isExists = JSON.parse(foundItem['applied']);
     }
 
+    let appliedDiscount = null;
+
     // if apllied before
     if (isExists == true) {
-      const appliedDiscount = foundItem as unknown as DiscountInterface;
+      appliedDiscount = foundItem as unknown as DiscountInterface;
       for (const key in appliedDiscount) {
         appliedDiscount[key] = parseValue(appliedDiscount[key]);
       }
@@ -75,32 +77,33 @@ export class ApplyDiscountService {
       if (appliedDiscount.maxValue.toString() == '') {
         appliedDiscount.maxValue = null;
       }
-      if (inventory.firstPrice) {
-        inventory.firstPrice = await this._applyDiscountPrice(
-          inventory.firstPrice,
-          appliedDiscount,
-        );
+      if (appliedDiscount.startDate.toString() == '') {
+        appliedDiscount.startDate = new Date();
       }
-      if (inventory.secondaryPrice) {
-        inventory.secondaryPrice = await this._applyDiscountPrice(
-          inventory.secondaryPrice,
-          appliedDiscount,
-        );
+      if (appliedDiscount.endDate.toString() == '') {
+        const oneDay = 24 * 3600 * 1000;
+        appliedDiscount.endDate = new Date(Date.now() + oneDay);
       }
-    } else if (isExists == false) {
-      if (inventory.firstPrice) {
-        inventory.firstPrice = await this._applyDiscountPrice(
-          inventory.firstPrice,
-          null,
-        );
-      }
-      if (inventory.secondaryPrice) {
-        inventory.secondaryPrice = await this._applyDiscountPrice(
-          inventory.secondaryPrice,
-          null,
-        );
+
+      const now = new Date();
+      if (appliedDiscount.startDate > now || appliedDiscount.endDate < now) {
+        appliedDiscount = null;
       }
     }
+
+    if (inventory.firstPrice) {
+      inventory.firstPrice = await this._applyDiscountPrice(
+        inventory.firstPrice,
+        appliedDiscount,
+      );
+    }
+    if (inventory.secondaryPrice) {
+      inventory.secondaryPrice = await this._applyDiscountPrice(
+        inventory.secondaryPrice,
+        appliedDiscount,
+      );
+    }
+
     return inventory;
   }
 
@@ -263,6 +266,8 @@ export class ApplyDiscountService {
         amount: discount.discountValue,
         maxValue: discount.maxValue,
         actionType: discount.discountActionTypeId,
+        startDate: discount.startDate,
+        endDate: discount.endDate,
       };
     }
     return discountApplied;
@@ -319,6 +324,8 @@ export class ApplyDiscountService {
         actionType: discount.discountActionTypeId,
         amount: discount.discountValue,
         maxValue: discount.maxValue,
+        startDate: discount.startDate,
+        endDate: discount.endDate,
       };
     }
     return discountApplied;
@@ -419,8 +426,16 @@ export class ApplyDiscountService {
         .filter(
           Sequelize.where(Sequelize.fn('getdate'), {
             [Op.between]: [
-              Sequelize.col('ECDiscount.startDate'),
-              Sequelize.col('ECDiscount.endDate'),
+              Sequelize.fn(
+                'isnull',
+                Sequelize.col('ECDiscount.startDate'),
+                Sequelize.fn('getdate'),
+              ),
+              Sequelize.fn(
+                'isnull',
+                Sequelize.col('ECDiscount.endDate'),
+                Sequelize.fn('getdate'),
+              ),
             ],
           }),
         )
