@@ -4,4 +4,6 @@ export interface DiscountAppliedInterface {
   maxValue?: number;
   actionType: number;
   newPrice: number;
+  startDate?: Date;
+  endDate?: Date;
 }

@@ -183,7 +183,7 @@ export class ApplyDiscountService {
     } else {
       await this.redisRepository.hset(
         key,
-        _.merge(discountApplied, { applied: true }),
+        _.merge(JSON.parse(JSON.stringify(discountApplied)), { applied: true }),
         expire,
       );
     }
@@ -235,6 +235,8 @@ export class ApplyDiscountService {
       newPrice: newPrice,
       actionType: discountApplied.actionType,
       maxValue: discountApplied.maxValue,
+      startDate: discountApplied.startDate,
+      endDate: discountApplied.endDate,
     });
 
     return inventoryPrice;
