@@ -145,7 +145,6 @@ export class ProductQueryBuilderService {
         'colorId',
         'guaranteeId',
         'guaranteeMonthId',
-        'buyPrice',
         'qty',
         'onlyProvinceId',
         'vendorAddressId',
