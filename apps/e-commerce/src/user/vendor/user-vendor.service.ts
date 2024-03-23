@@ -129,6 +129,23 @@ export class UserVendorService {
     return true;
   }
 
+  async findVendorAnyway(user: User, vendorId: number): Promise<ECVendorUser> {
+    const findVendor = await this.vendorUserRepository.findOne(
+      new QueryOptionsBuilder()
+        .filter({ userId: user.id })
+        .filter({ vendorId: vendorId })
+        .include([
+          {
+            model: ECVendor,
+            as: 'vendor',
+            required: true,
+          },
+        ])
+        .build(),
+    );
+    return findVendor;
+  }
+
   async findVendorIds(user: User) {
     const vendorAccess = await this.vendorUserRepository.findAll(
       new QueryOptionsBuilder()

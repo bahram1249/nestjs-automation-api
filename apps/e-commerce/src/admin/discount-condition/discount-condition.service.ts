@@ -1,6 +1,7 @@
 import {
   ForbiddenException,
   Injectable,
+  InternalServerErrorException,
   NotFoundException,
 } from '@nestjs/common';
 import { DiscountConditionDto, GetDiscountConditionDto } from './dto';
@@ -63,7 +64,51 @@ export class DiscountConditionService {
       .limit(filter.limit)
       .offset(filter.offset)
       .order({ orderBy: filter.orderBy, sortOrder: filter.sortOrder });
-    const conditions = await this.repository.findAll(queryBuilder.build());
+    let conditions = await this.repository.findAll(queryBuilder.build());
+
+    for (let index = 0; index < conditions.length; index++) {
+      const condition = conditions[index];
+      let name: string = null;
+      switch (condition.conditionTypeId) {
+        case DiscountConditionTypeEnum.entityType:
+          name = (
+            await this.entityTypeService.findByIdAnyway(
+              Number(condition.conditionValue),
+            )
+          ).result.name;
+          break;
+        case DiscountConditionTypeEnum.product:
+          name = (
+            await this.productService.findByIdAnyway(
+              user,
+              condition.conditionValue,
+            )
+          ).result.title;
+          break;
+        case DiscountConditionTypeEnum.inventory:
+          const inventory = (
+            await this.userInventoryService.findByIdAnyway(
+              condition.conditionValue,
+              user,
+            )
+          ).result;
+          name = inventory.product.title + `(شناسه موجودی: ${inventory.id})`;
+          break;
+        case DiscountConditionTypeEnum.vendor:
+          name = (
+            await this.userVendorService.findVendorAnyway(
+              user,
+              Number(condition.conditionValue),
+            )
+          ).vendor.name;
+          break;
+        default:
+          throw new InternalServerErrorException(
+            'the condition type with this given id not founded!',
+          );
+      }
+      conditions[index].set('name', name);
+    }
 
     return {
       result: conditions,
@@ -103,6 +148,44 @@ export class DiscountConditionService {
     if (!result) {
       throw new NotFoundException('the item with this given id not founded!');
     }
+
+    let name: string = null;
+    switch (result.conditionTypeId) {
+      case DiscountConditionTypeEnum.entityType:
+        name = (
+          await this.entityTypeService.findByIdAnyway(
+            Number(result.conditionValue),
+          )
+        ).result.name;
+        break;
+      case DiscountConditionTypeEnum.product:
+        name = (
+          await this.productService.findByIdAnyway(user, result.conditionValue)
+        ).result.title;
+        break;
+      case DiscountConditionTypeEnum.inventory:
+        const inventory = (
+          await this.userInventoryService.findByIdAnyway(
+            result.conditionValue,
+            user,
+          )
+        ).result;
+        name = inventory.product.title + `(شناسه موجودی: ${inventory.id})`;
+        break;
+      case DiscountConditionTypeEnum.vendor:
+        name = (
+          await this.userVendorService.findVendorAnyway(
+            user,
+            Number(result.conditionValue),
+          )
+        ).vendor.name;
+        break;
+      default:
+        throw new InternalServerErrorException(
+          'the condition type with this given id not founded!',
+        );
+    }
+    result.set('name', name);
 
     return {
       result: result,
@@ -159,6 +242,10 @@ export class DiscountConditionService {
           Number(dto.conditionValue),
         );
         break;
+      default:
+        throw new InternalServerErrorException(
+          'the condition type with this given id not founded!',
+        );
     }
     if (!find) {
       throw new ForbiddenException("You don't access to set this given value");

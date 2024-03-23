@@ -59,4 +59,10 @@ export class ECDiscountCondition extends Model {
     allowNull: true,
   })
   isDeleted?: boolean;
+
+  @Column({
+    type: DataType.VIRTUAL,
+    allowNull: true,
+  })
+  name?: string;
 }

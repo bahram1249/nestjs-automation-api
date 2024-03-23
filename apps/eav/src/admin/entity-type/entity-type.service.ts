@@ -181,6 +181,44 @@ export class EntityTypeService {
     };
   }
 
+  async findByIdAnyway(id: number) {
+    const builder = new QueryOptionsBuilder()
+      .attributes(['id', 'name', 'slug', 'parentEntityTypeId', 'entityModelId'])
+      .include([
+        {
+          attributes: ['id', 'fileName'],
+          model: Attachment,
+          as: 'attachment',
+          required: false,
+        },
+        {
+          attributes: ['id', 'name'],
+          model: EAVEntityModel,
+          as: 'entityModel',
+        },
+        {
+          attributes: ['id', 'name', 'slug'],
+          model: EAVEntityType,
+          as: 'parentEntityType',
+          required: false,
+          include: [
+            {
+              attributes: ['id', 'fileName'],
+              model: Attachment,
+              as: 'attachment',
+              required: false,
+            },
+          ],
+        },
+      ])
+      .filter({ id });
+
+    const result = await this.repository.findOne(builder.build());
+    return {
+      result: result,
+    };
+  }
+
   async create(dto: EntityTypeDto) {
     const entityModel = await this.entityModelRepository.findOne({
       where: {

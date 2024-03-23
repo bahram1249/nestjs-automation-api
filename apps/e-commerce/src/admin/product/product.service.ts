@@ -647,6 +647,280 @@ export class ProductService {
     };
   }
 
+  async findByIdAnyway(user: User, id: bigint) {
+    const vendorResult = await this.userVendorService.findAll(
+      user,
+      this.listFilter,
+    );
+
+    const vendorIds = vendorResult.result.map((vendor) => vendor.id);
+    const product = await this.repository.findOne(
+      new QueryOptionsBuilder()
+        .attributes([
+          'id',
+          'title',
+          'sku',
+          'description',
+          'slug',
+          'entityTypeId',
+          'colorBased',
+          'brandId',
+          'publishStatusId',
+          'viewCount',
+        ])
+        .include([
+          {
+            attributes: ['id', 'name'],
+            model: ECPublishStatus,
+            as: 'publishStatus',
+          },
+          {
+            attributes: ['id', 'name'],
+            model: ECInventoryStatus,
+            as: 'inventoryStatus',
+          },
+          {
+            attributes: ['id', 'name', 'slug'],
+            model: ECBrand,
+            as: 'brand',
+          },
+          {
+            attributes: ['id', 'name', 'slug'],
+            model: EAVEntityType,
+            as: 'entityType',
+          },
+          {
+            attributes: [
+              'attributeId',
+              [
+                Sequelize.fn(
+                  'isnull',
+                  Sequelize.col('productAttributeValues.val'),
+                  Sequelize.col('productAttributeValues.attributeValue.value'),
+                ),
+                'val',
+              ],
+              [Sequelize.col('attributeValueId'), 'attributeValueId'],
+            ],
+            model: EAVEntityAttributeValue,
+            as: 'productAttributeValues',
+            include: [
+              {
+                attributes: ['id', 'name', 'attributeTypeId'],
+                model: EAVAttribute,
+                as: 'attribute',
+              },
+              {
+                attributes: ['id', 'attributeId', 'value'],
+                model: EAVAttributeValue,
+                as: 'attributeValue',
+              },
+            ],
+            required: false,
+          },
+          {
+            attributes: [
+              'id',
+              'productId',
+              'vendorId',
+              'colorId',
+              'guaranteeId',
+              'guaranteeMonthId',
+              'buyPrice',
+              'qty',
+              'onlyProvinceId',
+              'vendorAddressId',
+              'weight',
+              'inventoryStatusId',
+              'description',
+            ],
+            model: ECInventory,
+            as: 'inventories',
+            where: {
+              [Op.and]: [
+                {
+                  vendorId: {
+                    [Op.in]: vendorIds,
+                  },
+                },
+                Sequelize.where(
+                  Sequelize.fn(
+                    'isnull',
+                    Sequelize.col('inventories.isDeleted'),
+                    0,
+                  ),
+                  {
+                    [Op.eq]: 0,
+                  },
+                ),
+              ],
+            },
+            include: [
+              {
+                attributes: ['id', 'name'],
+                model: ECInventoryStatus,
+                as: 'inventoryStatus',
+                required: false,
+              },
+              {
+                attributes: ['id', 'name'],
+                model: ECVendor,
+                as: 'vendor',
+                required: false,
+              },
+              {
+                attributes: ['id', 'name', 'hexCode'],
+                model: ECColor,
+                as: 'color',
+                required: false,
+              },
+              {
+                attributes: ['id', 'name'],
+                model: ECGuarantee,
+                as: 'guarantee',
+                required: false,
+              },
+              {
+                attributes: ['id', 'name'],
+                model: ECGuaranteeMonth,
+                as: 'guaranteeMonth',
+                required: false,
+              },
+              {
+                attributes: ['id', 'name'],
+                model: ECProvince,
+                as: 'onlyProvince',
+                required: false,
+              },
+              {
+                attributes: ['id', 'vendorId', 'addressId'],
+                model: ECVendorAddress,
+                as: 'vendorAddress',
+                required: false,
+                include: [
+                  {
+                    attributes: [
+                      'id',
+                      'name',
+                      'latitude',
+                      'longitude',
+                      'provinceId',
+                      'cityId',
+                      'neighborhoodId',
+                      'street',
+                      'alley',
+                      'plaque',
+                      'floorNumber',
+                    ],
+                    model: ECAddress,
+                    as: 'address',
+                    required: false,
+                    include: [
+                      {
+                        attributes: ['id', 'name'],
+                        model: ECProvince,
+                        as: 'province',
+                        required: false,
+                      },
+                      {
+                        attributes: ['id', 'name'],
+                        model: ECCity,
+                        as: 'city',
+                        required: false,
+                      },
+                      {
+                        attributes: ['id', 'name'],
+                        model: ECNeighborhood,
+                        as: 'neighborhood',
+                        required: false,
+                      },
+                    ],
+                  },
+                  {
+                    attributes: ['id', 'name'],
+                    model: ECVendor,
+                    as: 'vendor',
+                    required: false,
+                  },
+                ],
+              },
+              {
+                attributes: ['price'],
+                model: ECInventoryPrice,
+                as: 'firstPrice',
+                required: false,
+                include: [
+                  {
+                    attributes: ['id', 'name'],
+                    model: ECVariationPrice,
+                    as: 'variationPrice',
+                  },
+                ],
+                where: Sequelize.where(
+                  Sequelize.fn(
+                    'isnull',
+                    Sequelize.col('inventories.firstPrice.isDeleted'),
+                    0,
+                  ),
+                  {
+                    [Op.eq]: 0,
+                  },
+                ),
+              },
+              {
+                attributes: ['price'],
+                model: ECInventoryPrice,
+                as: 'secondaryPrice',
+                required: false,
+                include: [
+                  {
+                    attributes: ['id', 'name'],
+                    model: ECVariationPrice,
+                    as: 'variationPrice',
+                  },
+                ],
+                where: Sequelize.where(
+                  Sequelize.fn(
+                    'isnull',
+                    Sequelize.col('inventories.secondaryPrice.isDeleted'),
+                    0,
+                  ),
+                  {
+                    [Op.eq]: 0,
+                  },
+                ),
+              },
+            ],
+            required: false,
+          },
+          {
+            attributes: ['id', 'fileName'],
+            model: Attachment,
+            as: 'attachments',
+            required: false,
+          },
+        ])
+        .subQuery(true)
+        .filter({
+          id: id,
+        })
+        .order({ orderBy: 'id', sortOrder: 'desc' })
+        .order([
+          { model: ECInventory, as: 'inventories' },
+          { model: ECVendor, as: 'vendor' },
+          'priorityOrder',
+          'asc',
+        ])
+        .build(),
+    );
+    if (!product) {
+      throw new NotFoundException('the item with this given id not founded!');
+    }
+    return {
+      result: product,
+    };
+  }
+
   async create(user: User, dto: ProductDto) {
     // find the slug if exists before
     const slugSearch = await this.repository.findOne(
