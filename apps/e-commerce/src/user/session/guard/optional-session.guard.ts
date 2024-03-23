@@ -10,7 +10,7 @@ export class OptionalSessionGuard implements CanActivate {
   ) {}
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest();
-    const session = request.headers?.user_session;
+    const session = request.headers['x-session-id'];
     // session is optional
     if (!session) return true;
     return await this.validateSessionService.validate(request, session);

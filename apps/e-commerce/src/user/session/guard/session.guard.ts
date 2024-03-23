@@ -10,7 +10,7 @@ export class SessionGuard implements CanActivate {
   ) {}
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest();
-    const session = request.headers?.user_session;
+    const session = request.headers['x-session-id'];
     // if session not provided
     if (!session) return false;
     return await this.validateSessionService.validate(request, session);
