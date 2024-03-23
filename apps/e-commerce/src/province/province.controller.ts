@@ -3,12 +3,15 @@ import {
   Get,
   HttpCode,
   HttpStatus,
+  UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
 
 import { JsonResponseTransformInterceptor } from '@rahino/response/interceptor';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { ProvinceService } from './province.service';
+import { OptionalJwtGuard } from '@rahino/auth/guard';
+import { OptionalSessionGuard } from '../user/session/guard';
 
 @ApiTags('Provinces')
 @Controller({
@@ -20,6 +23,7 @@ export class ProvinceController {
   constructor(private service: ProvinceService) {}
 
   // public url
+  @UseGuards(OptionalJwtGuard, OptionalSessionGuard)
   @ApiOperation({ description: 'show all provinces' })
   @Get('/')
   @HttpCode(HttpStatus.OK)

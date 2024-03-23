@@ -29,13 +29,14 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 
-import { JwtGuard } from '@rahino/auth/guard';
+import { JwtGuard, OptionalJwtGuard } from '@rahino/auth/guard';
 import { VendorService } from './vendor.service';
 import { VendorDto, GetVendorDto } from './dto';
 import { GetUser } from '@rahino/auth/decorator';
 import { User } from '@rahino/database/models/core/user.entity';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { imageOptions } from './file-options';
+import { OptionalSessionGuard } from '../user/session/guard';
 
 @ApiTags('Vendors')
 @Controller({
@@ -106,6 +107,7 @@ export class VendorController {
     return await this.service.deleteById(entityId);
   }
 
+  @UseGuards(OptionalJwtGuard, OptionalSessionGuard)
   @UseInterceptors(JsonResponseTransformInterceptor)
   @ApiOperation({ description: 'delete vendor by admin' })
   @Get('/slug/:slug')

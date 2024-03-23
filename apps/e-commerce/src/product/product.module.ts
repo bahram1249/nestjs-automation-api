@@ -6,9 +6,11 @@ import { ECProduct } from '@rahino/database/models/ecommerce-eav/ec-product.enti
 import { ApplyDiscountService, ProductQueryBuilderService } from './service';
 import { RedisClientModule } from '@rahino/redis-client';
 import { ECDiscount } from '@rahino/database/models/ecommerce-eav/ec-discount.entity';
+import { SessionModule } from '../user/session/session.module';
 
 @Module({
   imports: [
+    SessionModule,
     RedisClientModule,
     SequelizeModule.forFeature([ECProduct, ECDiscount]),
   ],

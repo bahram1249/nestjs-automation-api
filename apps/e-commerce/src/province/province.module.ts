@@ -3,9 +3,10 @@ import { ProvinceController } from './province.controller';
 import { ProvinceService } from './province.service';
 import { SequelizeModule } from '@nestjs/sequelize';
 import { ECProvince } from '@rahino/database/models/ecommerce-eav/ec-province.entity';
+import { SessionModule } from '../user/session/session.module';
 
 @Module({
-  imports: [SequelizeModule.forFeature([ECProvince])],
+  imports: [SessionModule, SequelizeModule.forFeature([ECProvince])],
   controllers: [ProvinceController],
   providers: [ProvinceService],
 })

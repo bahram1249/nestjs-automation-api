@@ -3,6 +3,7 @@ import {
   Get,
   HttpCode,
   HttpStatus,
+  UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
 
@@ -10,6 +11,8 @@ import { JsonResponseTransformInterceptor } from '@rahino/response/interceptor';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 
 import { GuaranteeMonthService } from './guarantee-month.service';
+import { OptionalJwtGuard } from '@rahino/auth/guard';
+import { OptionalSessionGuard } from '../user/session/guard';
 
 @ApiTags('GuaranteeMonths')
 @Controller({
@@ -21,6 +24,7 @@ export class GuaranteeMonthController {
   constructor(private service: GuaranteeMonthService) {}
 
   // public url
+  @UseGuards(OptionalJwtGuard, OptionalSessionGuard)
   @ApiOperation({ description: 'show all guarantee months' })
   @Get('/')
   @HttpCode(HttpStatus.OK)

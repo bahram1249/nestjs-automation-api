@@ -24,9 +24,10 @@ import { AddressService } from './address.service';
 import { AddressDto, GetAddressDto } from './dto';
 import { GetUser } from '@rahino/auth/decorator';
 import { User } from '@rahino/database/models/core/user.entity';
+import { OptionalSessionGuard } from '../session/guard';
 
 @ApiTags('Addresses')
-@UseGuards(JwtGuard)
+@UseGuards(JwtGuard, OptionalSessionGuard)
 @ApiBearerAuth()
 @UseInterceptors(JsonResponseTransformInterceptor)
 @Controller({

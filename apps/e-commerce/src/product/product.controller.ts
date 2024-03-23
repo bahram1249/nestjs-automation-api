@@ -14,9 +14,10 @@ import { ApiOperation, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { OptionalJwtGuard } from '@rahino/auth/guard';
 import { GetProductDto } from './dto';
 import { ProductService } from './product.service';
+import { OptionalSessionGuard } from '../user/session/guard';
 
 @ApiTags('Products')
-@UseGuards(OptionalJwtGuard)
+@UseGuards(OptionalJwtGuard, OptionalSessionGuard)
 @UseInterceptors(JsonResponseTransformInterceptor)
 @Controller({
   path: '/api/ecommerce/products',

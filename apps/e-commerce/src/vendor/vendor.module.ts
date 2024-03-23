@@ -19,9 +19,11 @@ import { ReverseProxyVendorImageMiddleware } from './reverse-proxy.middleware';
 import { Attachment } from '@rahino/database/models/core/attachment.entity';
 import { ThumbnailModule } from '@rahino/thumbnail';
 import { ConfigService } from '@nestjs/config';
+import { SessionModule } from '../user/session/session.module';
 
 @Module({
   imports: [
+    SessionModule,
     UserRoleModule,
     MinioClientModule,
     SequelizeModule.forFeature([

@@ -32,7 +32,7 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 
-import { JwtGuard } from '@rahino/auth/guard';
+import { JwtGuard, OptionalJwtGuard } from '@rahino/auth/guard';
 import { GuaranteeService } from './guarantee.service';
 import { GuaranteeDto, GetGuaranteeDto } from './dto';
 import { GetUser } from '@rahino/auth/decorator';
@@ -40,6 +40,7 @@ import { User } from '@rahino/database/models/core/user.entity';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { imageOptions } from './file-options';
 import { Response } from 'express';
+import { OptionalSessionGuard } from '../user/session/guard';
 
 @ApiTags('Guarantees')
 @Controller({
@@ -51,6 +52,7 @@ export class GuaranteeController {
 
   // public url
   @UseInterceptors(JsonResponseTransformInterceptor)
+  @UseGuards(OptionalJwtGuard, OptionalSessionGuard)
   @ApiOperation({ description: 'show all guarantees' })
   @Get('/')
   @ApiQuery({

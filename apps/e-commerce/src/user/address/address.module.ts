@@ -7,9 +7,11 @@ import { ECAddress } from '@rahino/database/models/ecommerce-eav/ec-address.enti
 import { ECProvince } from '@rahino/database/models/ecommerce-eav/ec-province.entity';
 import { ECCity } from '@rahino/database/models/ecommerce-eav/ec-city.entity';
 import { ECNeighborhood } from '@rahino/database/models/ecommerce-eav/ec-neighborhood.entity';
+import { SessionModule } from '../session/session.module';
 
 @Module({
   imports: [
+    SessionModule,
     SequelizeModule.forFeature([ECAddress, ECProvince, ECCity, ECNeighborhood]),
   ],
   controllers: [AddressController],

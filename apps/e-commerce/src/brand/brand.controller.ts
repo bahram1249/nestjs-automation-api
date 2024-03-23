@@ -29,13 +29,14 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { Response } from 'express';
-import { JwtGuard } from '@rahino/auth/guard';
+import { JwtGuard, OptionalJwtGuard } from '@rahino/auth/guard';
 import { BrandService } from './brand.service';
 import { BrandDto, GetBrandDto } from './dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { imageOptions } from './file-options';
 import { GetUser } from '@rahino/auth/decorator';
 import { User } from '@rahino/database/models/core/user.entity';
+import { OptionalSessionGuard } from '../user/session/guard';
 
 @ApiTags('Brands')
 @Controller({
@@ -46,6 +47,7 @@ export class BrandController {
   constructor(private service: BrandService) {}
 
   // public url
+  @UseGuards(OptionalJwtGuard, OptionalSessionGuard)
   @UseInterceptors(JsonResponseTransformInterceptor)
   @ApiOperation({ description: 'show all brands' })
   @Get('/')

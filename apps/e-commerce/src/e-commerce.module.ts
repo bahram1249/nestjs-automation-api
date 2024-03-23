@@ -23,13 +23,12 @@ import { VendorModule } from './vendor/vendor.module';
 import { UserVendorModule } from './user/vendor/user-vendor.module';
 import { VendorAddressModule } from './vendor-address/vendor-address.module';
 import { SessionModule } from './user/session/session.module';
-import { APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
+import { APP_INTERCEPTOR } from '@nestjs/core';
 import { LoggingInterceptor } from './logging/interceptor';
 import { BullModule } from '@nestjs/bullmq';
 import { REQUEST_LOGGING_QUEUE } from './logging/constants';
 import { ConfigService } from '@nestjs/config';
 import { LoggingModule } from './logging/logging.module';
-import { OptionalSessionGuard } from './user/session/guard';
 import { ProductModule } from './product/product.module';
 import { DiscountTypeModule } from './admin/discount-type/discount-type.module';
 import { DiscountActionTypeModule } from './admin/discount-action-type/discount-action-type.module';
@@ -82,10 +81,6 @@ import { DiscountConditionModule } from './admin/discount-condition/discount-con
     {
       provide: APP_INTERCEPTOR,
       useClass: LoggingInterceptor,
-    },
-    {
-      provide: APP_GUARD,
-      useClass: OptionalSessionGuard,
     },
   ],
 })

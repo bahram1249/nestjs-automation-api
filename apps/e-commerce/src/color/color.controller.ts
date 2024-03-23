@@ -22,14 +22,13 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 
-import { JwtGuard } from '@rahino/auth/guard';
+import { JwtGuard, OptionalJwtGuard } from '@rahino/auth/guard';
 import { ColorService } from './color.service';
 import { ColorDto, GetColorDto } from './dto';
 import { OptionalSessionGuard } from '../user/session/guard';
 import { GetECSession } from 'apps/main/src/decorator';
 import { ECUserSession } from '@rahino/database/models/ecommerce-eav/ec-user-session.entity';
 
-@UseGuards(OptionalSessionGuard)
 @ApiTags('Colors')
 @Controller({
   path: '/api/ecommerce/colors',
@@ -40,6 +39,7 @@ export class ColorController {
   constructor(private service: ColorService) {}
 
   // public url
+  @UseGuards(OptionalJwtGuard, OptionalSessionGuard)
   @ApiOperation({ description: 'show all colors' })
   @Get('/')
   @ApiQuery({
