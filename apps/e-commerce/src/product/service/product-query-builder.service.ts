@@ -258,10 +258,9 @@ export class ProductQueryBuilderService {
             FROM ECInventories AS ECI
             WHERE [ECProduct].id = [ECI].productId
               AND ISNULL([ECI].isDeleted, 0) = 0
-              AND [ECI].colorId IN(${filter.colors.join(',')}))`.replaceAll(
-          /\s\s+/g,
-          ' ',
-        ),
+              AND [ECI].colorId IN(
+                ${filter.colors.join(',')})
+              )`.replaceAll(/\s\s+/g, ' '),
       );
       queryBuilder = queryBuilder.filter(colorFiltered);
       queryResultBuilder = queryResultBuilder.filter(colorFiltered);
@@ -280,14 +279,29 @@ export class ProductQueryBuilderService {
             FROM ECInventories AS ECI
             WHERE [ECProduct].id = [ECI].productId
               AND ISNULL([ECI].isDeleted, 0) = 0
-              AND [ECI].vendorId = ${filter.vendorId})`.replaceAll(
-          /\s\s+/g,
-          ' ',
-        ),
+              AND [ECI].vendorId = ${filter.vendorId}
+          )`.replaceAll(/\s\s+/g, ' '),
       );
       queryBuilder.filter(vendorFiltered);
       queryResultBuilder.filter(vendorFiltered);
       inventoryIncludeBuilder.filter({ vendorId: filter.vendorId });
+    }
+
+    if (filter.attributes.length > 0) {
+      for (let index = 0; index < filter.attributes.length; index++) {
+        const attribute = filter.attributes[index];
+        const attributeFilter = Sequelize.literal(
+          `EXISTS (
+            SELECT 1
+            FROM EAVEntityAttributeValues AS EEAV
+            WHERE [ECProduct].id = [EEAV].entityId
+              AND [EEAV].attributeValueId IN (
+                ${attribute.attributeValues.join(',')})
+            )`.replaceAll(/\s\s+/g, ' '),
+        );
+        queryBuilder.filter(attributeFilter);
+        queryResultBuilder.filter(attributeFilter);
+      }
     }
 
     queryResultBuilder = queryResultBuilder.thenInlcude(
