@@ -58,6 +58,7 @@ export class ApplyDiscountService {
         key,
         expire,
       );
+      return inventory;
     }
 
     let isExists: boolean = null;
