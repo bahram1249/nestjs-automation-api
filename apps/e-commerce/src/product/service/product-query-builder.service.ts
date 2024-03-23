@@ -94,6 +94,9 @@ export class ProductQueryBuilderService {
       })
       .thenInlcude({
         attributes: ['id', 'fileName'],
+        through: {
+          attributes: [],
+        },
         model: Attachment,
         as: 'attachments',
         required: false,
