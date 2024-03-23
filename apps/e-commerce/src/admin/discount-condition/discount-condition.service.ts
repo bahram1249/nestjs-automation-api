@@ -18,6 +18,7 @@ import * as _ from 'lodash';
 import { EntityTypeService } from '@rahino/eav/admin/entity-type/entity-type.service';
 import { ProductService } from '../product/product.service';
 import { UserInventoryService } from '@rahino/ecommerce/user/inventory/user-inventory.service';
+import { ECDiscountConditionType } from '@rahino/database/models/ecommerce-eav/ec-discount-condition-type.entity';
 
 @Injectable()
 export class DiscountConditionService {
@@ -35,6 +36,13 @@ export class DiscountConditionService {
   async findAll(user: User, filter: GetDiscountConditionDto) {
     const vendorIdsStringify = await this.retrunVendorIdsAsString(user);
     let queryBuilder = new QueryOptionsBuilder()
+      .include([
+        {
+          attributes: ['id', 'name'],
+          model: ECDiscountConditionType,
+          as: 'conditionType',
+        },
+      ])
       .filter({ discountId: filter.discountId })
       .filter(
         Sequelize.where(
@@ -119,6 +127,13 @@ export class DiscountConditionService {
   async findById(user: User, entityId: bigint) {
     const vendorIdsStringify = await this.retrunVendorIdsAsString(user);
     let queryBuilder = new QueryOptionsBuilder()
+      .include([
+        {
+          attributes: ['id', 'name'],
+          model: ECDiscountConditionType,
+          as: 'conditionType',
+        },
+      ])
       .filter({ id: entityId })
       .filter(
         Sequelize.where(
