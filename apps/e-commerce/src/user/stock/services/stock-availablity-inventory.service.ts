@@ -7,8 +7,9 @@ import { InventoryService } from '@rahino/ecommerce/inventory/services';
 import { InjectMapper } from 'automapper-nestjs';
 import { Mapper } from 'automapper-core';
 import * as _ from 'lodash';
-import { Sequelize } from 'sequelize';
+import { Op, Sequelize } from 'sequelize';
 import { ConfigService } from '@nestjs/config';
+import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 
 @Injectable()
 export class StockAvailabilityInventoryService {
@@ -41,5 +42,25 @@ export class StockAvailabilityInventoryService {
     );
     const item = await this.repository.create(insertedItem);
     return _.pick(item, ['id', 'inventoryId', 'qty', 'expire', 'productId']);
+  }
+
+  async remove(stockId: bigint) {
+    let item = await this.repository.findOne(
+      new QueryOptionsBuilder()
+        .attributes(['id', 'inventoryId', 'productId', 'qty'])
+        .filter({ id: stockId })
+        .filter(
+          Sequelize.where(
+            Sequelize.fn('isnull', Sequelize.col('ECStock.isPurchase'), 0),
+            {
+              [Op.eq]: 0,
+            },
+          ),
+        )
+        .build(),
+    );
+    item.isDeleted = true;
+    await item.save();
+    return item;
   }
 }

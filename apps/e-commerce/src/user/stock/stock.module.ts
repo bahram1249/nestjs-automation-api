@@ -9,12 +9,16 @@ import { StockAvailabilityInventoryService } from './services';
 import { StockInventoryProcessor } from './processor';
 import { DBLoggerModule } from '@rahino/logger';
 import { BullModule } from '@nestjs/bullmq';
-import { STOCK_INVENTORY_QUEUE } from './constants';
+import {
+  STOCK_INVENTORY_QUEUE,
+  STOCK_INVENTORY_REMOVE_QUEUE,
+} from './constants';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { SequelizeModule } from '@nestjs/sequelize';
 import { User } from '@rahino/database/models/core/user.entity';
 import { ECStock } from '@rahino/database/models/ecommerce-eav/ec-stocks.entity';
 import { SessionModule } from '../session/session.module';
+import { StockInventoryRemoveProcessor } from './processor/stock-inventory-remove.processor';
 
 @Module({
   imports: [
@@ -38,6 +42,9 @@ import { SessionModule } from '../session/session.module';
     BullModule.registerQueueAsync({
       name: STOCK_INVENTORY_QUEUE,
     }),
+    BullModule.registerQueueAsync({
+      name: STOCK_INVENTORY_REMOVE_QUEUE,
+    }),
   ],
   controllers: [StockController],
   providers: [
@@ -45,6 +52,7 @@ import { SessionModule } from '../session/session.module';
     StockAvailabilityInventoryService,
     StockProfile,
     StockInventoryProcessor,
+    StockInventoryRemoveProcessor,
   ],
 })
 export class StockModule {}

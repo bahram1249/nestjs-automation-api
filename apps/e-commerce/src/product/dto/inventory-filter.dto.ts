@@ -5,7 +5,7 @@ import { IsInt, IsNumber, IsOptional } from 'class-validator';
 export class InventoryFilterDto {
   @IsOptional()
   @IsInt()
-  @Type(() => BigInt)
+  @Type(() => Number)
   @ApiProperty({
     minimum: 1,
     required: false,

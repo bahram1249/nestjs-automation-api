@@ -12,6 +12,8 @@ import { BullModule } from '@nestjs/bullmq';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { QUERY_NEXT_PAGE_PRODUCT_QUEUE } from './constants';
 import { QueryNextPageProductProcessor } from './processor';
+import { ApplyInventoryStatus } from './service/apply-inventory-status.service';
+import { ECInventoryStatus } from '@rahino/database/models/ecommerce-eav/ec-inventory-status.entity';
 
 @Module({
   imports: [
@@ -31,13 +33,14 @@ import { QueryNextPageProductProcessor } from './processor';
     BullModule.registerQueueAsync({
       name: QUERY_NEXT_PAGE_PRODUCT_QUEUE,
     }),
-    SequelizeModule.forFeature([ECProduct, ECDiscount]),
+    SequelizeModule.forFeature([ECProduct, ECDiscount, ECInventoryStatus]),
   ],
   controllers: [ProductController],
   providers: [
     ProductService,
     ProductQueryBuilderService,
     ApplyDiscountService,
+    ApplyInventoryStatus,
     ProductRepositoryService,
     QueryNextPageProductProcessor,
   ],

@@ -5,6 +5,7 @@ import { ECProduct } from '@rahino/database/models/ecommerce-eav/ec-product.enti
 import * as _ from 'lodash';
 import { ProductQueryBuilderService } from './product-query-builder.service';
 import { ApplyDiscountService } from './apply-discount.service';
+import { ApplyInventoryStatus } from './apply-inventory-status.service';
 
 @Injectable()
 export class ProductRepositoryService {
@@ -13,6 +14,7 @@ export class ProductRepositoryService {
     private readonly repository: typeof ECProduct,
     private readonly productQueryBuilderService: ProductQueryBuilderService,
     private readonly applyDiscountService: ApplyDiscountService,
+    private readonly applyInventoryStatus: ApplyInventoryStatus,
   ) {}
 
   async findBySlug(filter: GetProductDto, slug: string) {
@@ -24,10 +26,11 @@ export class ProductRepositoryService {
         true,
       );
 
-    const product = await this.repository.findOne(resultQuery);
+    let product = await this.repository.findOne(resultQuery);
     if (!product) {
       throw new NotFoundException('the item with this given slug not founded!');
     }
+    product = await this.applyInventoryStatus.applyProduct(product);
     return {
       result: await this.applyDiscountService.applyProduct(product),
     };
@@ -42,10 +45,11 @@ export class ProductRepositoryService {
         true,
       );
 
-    const product = await this.repository.findOne(resultQuery);
+    let product = await this.repository.findOne(resultQuery);
     if (!product) {
       throw new NotFoundException('the item with this given id not founded!');
     }
+    product = await this.applyInventoryStatus.applyProduct(product);
     return {
       result: await this.applyDiscountService.applyProduct(product),
     };
@@ -55,10 +59,11 @@ export class ProductRepositoryService {
     const { resultQuery, countQuery } =
       await this.productQueryBuilderService.findAllAndCountQuery(filter);
 
-    let result = await this.repository.findAll(resultQuery);
-    result = await this.applyDiscountService.applyProducts(result);
+    let results = await this.repository.findAll(resultQuery);
+    results = await this.applyDiscountService.applyProducts(results);
+    results = await this.applyInventoryStatus.applyProducts(results);
     return {
-      result: result,
+      result: results,
       total: await this.repository.count(countQuery), //count,
     };
   }

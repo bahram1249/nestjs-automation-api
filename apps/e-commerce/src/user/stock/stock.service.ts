@@ -15,12 +15,18 @@ import { ProductRepositoryService } from '@rahino/ecommerce/product/service/prod
 import { emptyListFilter } from '@rahino/query-filter/provider/constants';
 import { ListFilter } from '@rahino/query-filter';
 import * as _ from 'lodash';
-import { STOCK_INVENTORY_JOB, STOCK_INVENTORY_QUEUE } from './constants';
+import {
+  STOCK_INVENTORY_JOB,
+  STOCK_INVENTORY_QUEUE,
+  STOCK_INVENTORY_REMOVE_JOB,
+  STOCK_INVENTORY_REMOVE_QUEUE,
+} from './constants';
 import { InjectQueue } from '@nestjs/bullmq';
 import { Queue } from 'bullmq';
 import { QueueEvents } from 'bullmq';
 import { Job } from 'bullmq';
 import { ConfigService } from '@nestjs/config';
+import { InventoryStatusEnum } from '@rahino/ecommerce/inventory/enum';
 
 @Injectable()
 export class StockService {
@@ -32,6 +38,8 @@ export class StockService {
     private readonly productRepositoryService: ProductRepositoryService,
     @InjectQueue(STOCK_INVENTORY_QUEUE)
     private readonly stockInventoryQueue: Queue,
+    @InjectQueue(STOCK_INVENTORY_REMOVE_QUEUE)
+    private readonly stockInventoryRemoveQueue: Queue,
     private readonly config: ConfigService,
   ) {}
 
@@ -71,6 +79,11 @@ export class StockService {
       );
       stock.set('product', queryItem.result);
       stocks[index] = stock;
+      if (stock.product.inventoryStatusId == InventoryStatusEnum.unavailable) {
+        await this.stockInventoryRemoveQueue.add(STOCK_INVENTORY_REMOVE_JOB, {
+          stockId: stock.id,
+        });
+      }
     }
     return {
       result: stocks,
@@ -147,6 +160,12 @@ export class StockService {
     );
     stock.set('product', queryItem.result);
 
+    if (stock.product.inventoryStatusId == InventoryStatusEnum.unavailable) {
+      await this.stockInventoryRemoveQueue.add(STOCK_INVENTORY_REMOVE_JOB, {
+        stockId: stock.id,
+      });
+    }
+
     return {
       result: stock,
     };
@@ -161,6 +180,7 @@ export class StockService {
       },
       {
         attempts: 1,
+        removeOnComplete: 500,
       },
     );
     try {
