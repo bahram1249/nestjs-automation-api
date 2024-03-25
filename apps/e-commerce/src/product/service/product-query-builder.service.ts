@@ -59,7 +59,7 @@ export class ProductQueryBuilderService {
     if (filter.entityTypeId) {
       queryBuilder = queryBuilder.filter({ entityTypeId: filter.entityTypeId });
     }
-    if (filter.brands.length > 0) {
+    if (filter.brands != null && filter.brands.length > 0) {
       queryBuilder = queryBuilder.filter({
         brandId: {
           [Op.in]: filter.brands,
@@ -250,7 +250,11 @@ export class ProductQueryBuilderService {
         inventoryStatusId: InventoryStatusEnum.available,
       });
 
-    if (filter.colors.length > 0) {
+    if (filter.inventoryId) {
+      inventoryIncludeBuilder.filter({ id: filter.inventoryId });
+    }
+
+    if (filter.colors != null && filter.colors.length > 0) {
       // AND [ECI].inventoryStatusId = ${InventoryStatusEnum.available}
       const colorFiltered = Sequelize.literal(
         `EXISTS (
@@ -287,7 +291,7 @@ export class ProductQueryBuilderService {
       inventoryIncludeBuilder.filter({ vendorId: filter.vendorId });
     }
 
-    if (filter.attributes.length > 0) {
+    if (filter.attributes != null && filter.attributes.length > 0) {
       for (let index = 0; index < filter.attributes.length; index++) {
         const attribute = filter.attributes[index];
         const attributeFilter = Sequelize.literal(

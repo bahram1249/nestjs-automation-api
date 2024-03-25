@@ -14,6 +14,13 @@ import {
 import { ECInventoryPrice } from '@rahino/database/models/ecommerce-eav/ec-inventory-price.entity';
 import { Op } from 'sequelize';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
+import { ECInventoryStatus } from '@rahino/database/models/ecommerce-eav/ec-inventory-status.entity';
+import { ECVendor } from '@rahino/database/models/ecommerce-eav/ec-vendor.entity';
+import { ECColor } from '@rahino/database/models/ecommerce-eav/ec-color.entity';
+import { ECGuarantee } from '@rahino/database/models/ecommerce-eav/ec-guarantee.entity';
+import { ECGuaranteeMonth } from '@rahino/database/models/ecommerce-eav/ec-guarantee-month.entity';
+import { ECProvince } from '@rahino/database/models/ecommerce-eav/ec-province.entity';
+import { ECVariationPrice } from '@rahino/database/models/ecommerce-eav/ec-variation-prices';
 
 @Injectable()
 export class InventoryService {
@@ -25,6 +32,117 @@ export class InventoryService {
     @InjectMapper() private readonly mapper: Mapper,
   ) {}
 
+  async findById(id: bigint) {
+    return await this.repository.findOne(
+      new QueryOptionsBuilder()
+        .attributes([
+          'id',
+          'productId',
+          'vendorId',
+          'colorId',
+          'guaranteeId',
+          'guaranteeMonthId',
+          'qty',
+          'onlyProvinceId',
+          'vendorAddressId',
+          'weight',
+          'inventoryStatusId',
+        ])
+        .include([
+          {
+            attributes: ['id', 'name'],
+            model: ECInventoryStatus,
+            as: 'inventoryStatus',
+            required: false,
+          },
+          {
+            attributes: ['id', 'name'],
+            model: ECVendor,
+            as: 'vendor',
+            required: false,
+          },
+          {
+            attributes: ['id', 'name', 'hexCode'],
+            model: ECColor,
+            as: 'color',
+            required: false,
+          },
+          {
+            attributes: ['id', 'name', 'slug'],
+            model: ECGuarantee,
+            as: 'guarantee',
+            required: false,
+          },
+          {
+            attributes: ['id', 'name'],
+            model: ECGuaranteeMonth,
+            as: 'guaranteeMonth',
+            required: false,
+          },
+          {
+            attributes: ['id', 'name'],
+            model: ECProvince,
+            as: 'onlyProvince',
+            required: false,
+          },
+          {
+            attributes: ['price'],
+            model: ECInventoryPrice,
+            as: 'firstPrice',
+            required: false,
+            include: [
+              {
+                attributes: ['id', 'name'],
+                model: ECVariationPrice,
+                as: 'variationPrice',
+              },
+            ],
+            where: Sequelize.where(
+              Sequelize.fn('isnull', Sequelize.col('firstPrice.isDeleted'), 0),
+              {
+                [Op.eq]: 0,
+              },
+            ),
+          },
+          {
+            attributes: ['price'],
+            model: ECInventoryPrice,
+            as: 'secondaryPrice',
+            required: false,
+            include: [
+              {
+                attributes: ['id', 'name'],
+                model: ECVariationPrice,
+                as: 'variationPrice',
+              },
+            ],
+            where: Sequelize.where(
+              Sequelize.fn(
+                'isnull',
+                Sequelize.col('secondaryPrice.isDeleted'),
+                0,
+              ),
+              {
+                [Op.eq]: 0,
+              },
+            ),
+          },
+        ])
+        .filter(
+          Sequelize.where(
+            Sequelize.fn('isnull', Sequelize.col('ECInventory.isDeleted'), 0),
+            {
+              [Op.eq]: 0,
+            },
+          ),
+        )
+        .filter({
+          inventoryStatusId: InventoryStatusEnum.available,
+        })
+        .filter({ id: id })
+        .build(),
+    );
+  }
   async bulkInsert(
     user: User,
     productId: bigint,

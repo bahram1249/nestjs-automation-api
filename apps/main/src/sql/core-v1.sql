@@ -2441,6 +2441,44 @@ END
 GO
 
 
+-- ec-stocks-v1
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ec-stocks-v1' 
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'SITE_NAME' AND [value] IN ('ecommerce'))
+		)
+BEGIN
+
+	CREATE TABLE ECStocks(
+		id							bigint identity(1,1)		NOT NULL,
+		sessionId					nvarchar(256)				NOT NULL
+			CONSTRAINT FK_ECStocks_SessionId
+				FOREIGN KEY REFERENCES ECUserSessions(id),
+		productId					bigint						NOT NULL
+			CONSTRAINT FK_ECStocks_ProductId
+				FOREIGN KEY REFERENCES ECProducts(id),
+		inventoryId					bigint						NOT NULL
+			CONSTRAINT FK_ECStocks_InventoryId
+				FOREIGN KEY REFERENCES ECInventories(id),
+		qty							int							NOT NULl,
+		expire						datetime					NOT NULL,
+		isPurchase					bit							NULL,
+		isDeleted					bit							NULL,
+		[createdAt]					datetimeoffset				NOT NULL,
+		[updatedAt]					datetimeoffset				NOT NULL,
+		PRIMARY KEY NONCLUSTERED(id),
+	);
+
+	CREATE CLUSTERED INDEX IX_Stocks_SessionId
+		ON ECStocks(sessionId, id)
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'ec-stocks-v1', GETDATE(), GETDATE()
+END
+
+GO
+
 -- ec discount-types
 IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ec-discount-types-Data-v1' 
 			)

@@ -41,5 +41,6 @@ import { QueryNextPageProductProcessor } from './processor';
     ProductRepositoryService,
     QueryNextPageProductProcessor,
   ],
+  exports: [ProductRepositoryService],
 })
 export class ProductModule {}

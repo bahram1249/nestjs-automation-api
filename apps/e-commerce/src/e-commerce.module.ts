@@ -37,6 +37,7 @@ import { DiscountModule } from './admin/discount/discount.module';
 import { DiscountConditionTypeModule } from './admin/discount-condition-type/discount-condition-type.module';
 import { DiscountConditionValueModule } from './admin/discount-condition-value/discount-condition-value.module';
 import { DiscountConditionModule } from './admin/discount-condition/discount-condition.module';
+import { StockModule } from './user/stock/stock.module';
 @Module({
   imports: [
     LoggingModule,
@@ -76,6 +77,7 @@ import { DiscountConditionModule } from './admin/discount-condition/discount-con
     DiscountConditionTypeModule,
     DiscountConditionValueModule,
     DiscountConditionModule,
+    StockModule,
   ],
   providers: [
     {
