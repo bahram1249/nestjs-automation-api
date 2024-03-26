@@ -6,7 +6,10 @@ import { QueryFilterModule } from '@rahino/query-filter';
 import { StockProfile } from './mapper';
 import { InventoryModule } from '@rahino/ecommerce/inventory/inventory.module';
 import { StockAvailabilityInventoryService } from './services';
-import { StockInventoryProcessor } from './processor';
+import {
+  StockInventoryProcessor,
+  StockInventoryRemoveProcessor,
+} from './processor';
 import { DBLoggerModule } from '@rahino/logger';
 import { BullModule } from '@nestjs/bullmq';
 import {
@@ -18,7 +21,6 @@ import { SequelizeModule } from '@nestjs/sequelize';
 import { User } from '@rahino/database/models/core/user.entity';
 import { ECStock } from '@rahino/database/models/ecommerce-eav/ec-stocks.entity';
 import { SessionModule } from '../session/session.module';
-import { StockInventoryRemoveProcessor } from './processor/stock-inventory-remove.processor';
 
 @Module({
   imports: [
