@@ -91,14 +91,20 @@ export class ProductService {
     const vendorIds = vendorResult.result.map((vendor) => vendor.id);
 
     let queryBuilder = new QueryOptionsBuilder();
-    queryBuilder = queryBuilder.filter(
-      Sequelize.where(
-        Sequelize.fn('isnull', Sequelize.col('ECProduct.isDeleted'), 0),
-        {
-          [Op.eq]: 0,
+    queryBuilder = queryBuilder
+      .filter(
+        Sequelize.where(
+          Sequelize.fn('isnull', Sequelize.col('ECProduct.isDeleted'), 0),
+          {
+            [Op.eq]: 0,
+          },
+        ),
+      )
+      .filter({
+        title: {
+          [Op.like]: filter.search,
         },
-      ),
-    );
+      });
 
     const productCount = await this.repository.count(queryBuilder.build());
 
