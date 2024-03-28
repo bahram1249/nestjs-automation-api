@@ -40,7 +40,7 @@ export class ColorService {
         WHERE ECP.entityTypeId = ${filter.entityTypeId}
           AND ISNULL(ECP.isDeleted, 0) = 0
           AND ISNULL(ECI.isDeleted, 0) = 0
-          AND ECI.colorId = 
+          AND ECI.colorId = ECColor.id
       )`),
       );
     }
