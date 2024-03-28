@@ -16,17 +16,34 @@ export class ColorService {
   ) {}
 
   async findAll(filter: GetColorDto) {
-    const queryBuilder = new QueryOptionsBuilder()
+    let queryBuilder = new QueryOptionsBuilder()
       .filter({
         name: {
           [Op.like]: filter.search,
         },
       })
       .filter(
-        Sequelize.where(Sequelize.fn('isnull', Sequelize.col('isDeleted'), 0), {
-          [Op.eq]: 0,
-        }),
+        Sequelize.where(
+          Sequelize.fn('isnull', Sequelize.col('ECColor.isDeleted'), 0),
+          {
+            [Op.eq]: 0,
+          },
+        ),
       );
+    if (filter.entityTypeId) {
+      queryBuilder = queryBuilder.filter(
+        Sequelize.literal(`EXISTS (
+        SELECT 1
+        FROM ECProducts ECP
+        LEFT JOIN ECInventories ECI
+        ON ECP.id = ECI.productId
+        WHERE ECP.entityTypeId = ${filter.entityTypeId}
+          AND ISNULL(ECP.isDeleted, 0) = 0
+          AND ISNULL(ECI.isDeleted, 0) = 0
+          AND ECI.colorId = 
+      )`),
+      );
+    }
     const count = await this.repository.count(queryBuilder.build());
     const queryOptions = queryBuilder
       .attributes(['id', 'name', 'hexCode'])
