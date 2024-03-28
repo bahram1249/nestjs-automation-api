@@ -46,6 +46,9 @@ export class AttributeService {
           },
         ),
       );
+    if (filter.attributeTypeId) {
+      builder = builder.filter({ attributeTypeId: filter.attributeTypeId });
+    }
     if (filter.entityTypeId) {
       const entityAttributes = await this.entityAttributeRepository.findAll({
         where: {
