@@ -219,6 +219,56 @@ export class EntityTypeService {
     };
   }
 
+  async findBySlug(slug: string) {
+    const builder = new QueryOptionsBuilder()
+      .attributes(['id', 'name', 'slug', 'parentEntityTypeId', 'entityModelId'])
+      .include([
+        {
+          attributes: ['id', 'fileName'],
+          model: Attachment,
+          as: 'attachment',
+          required: false,
+        },
+        {
+          attributes: ['id', 'name'],
+          model: EAVEntityModel,
+          as: 'entityModel',
+        },
+        {
+          attributes: ['id', 'name', 'slug'],
+          model: EAVEntityType,
+          as: 'parentEntityType',
+          required: false,
+          include: [
+            {
+              attributes: ['id', 'fileName'],
+              model: Attachment,
+              as: 'attachment',
+              required: false,
+            },
+          ],
+        },
+      ])
+      .filter({ slug: slug })
+      .filter(
+        Sequelize.where(
+          Sequelize.fn('isnull', Sequelize.col('EAVEntityType.isDeleted'), 0),
+          {
+            [Op.eq]: 0,
+          },
+        ),
+      );
+    const result = await this.repository.findOne(builder.build());
+    if (!result) {
+      throw new NotFoundException(
+        'the item with this given slug is not founded!',
+      );
+    }
+    return {
+      result: result,
+    };
+  }
+
   async create(dto: EntityTypeDto) {
     const entityModel = await this.entityModelRepository.findOne({
       where: {

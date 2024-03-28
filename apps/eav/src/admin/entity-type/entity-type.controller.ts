@@ -63,6 +63,14 @@ export class EntityTypeController {
     return await this.service.findAll(filter);
   }
 
+  @UseInterceptors(JsonResponseTransformInterceptor)
+  @ApiOperation({ description: 'show attribute by given slug' })
+  @Get('/slug/:slug')
+  @HttpCode(HttpStatus.OK)
+  async findBySlug(@Param('slug') slug: string) {
+    return await this.service.findBySlug(slug);
+  }
+
   @ApiBearerAuth()
   @UseInterceptors(JsonResponseTransformInterceptor)
   @UseGuards(JwtGuard, PermissionGuard)
