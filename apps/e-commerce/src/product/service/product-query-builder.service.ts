@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { FindAndCountOptions, Op, Sequelize } from 'sequelize';
 import { GetProductDto } from '../dto';
 import { PublishStatusEnum } from '../enum';
@@ -333,18 +333,54 @@ export class ProductQueryBuilderService {
       .subQuery(true)
       .limit(filter.limit)
       .offset(filter.offset)
-      .order({ orderBy: 'inventoryStatusId', sortOrder: 'ASC' })
-      .order({ orderBy: filter.orderBy, sortOrder: filter.sortOrder })
-      .order([
-        { model: ECInventory, as: 'inventories' },
-        { model: ECVendor, as: 'vendor' },
-        'priorityOrder',
-        'asc',
-      ]);
+      .order({ orderBy: 'inventoryStatusId', sortOrder: 'ASC' });
+    queryBuilder = await this.parseOrder(filter, queryBuilder);
+    queryBuilder = queryBuilder.order([
+      { model: ECInventory, as: 'inventories' },
+      { model: ECVendor, as: 'vendor' },
+      'priorityOrder',
+      'asc',
+    ]);
 
     return {
       resultQuery: queryResultBuilder.build(),
       countQuery: queryBuilder.build(),
     };
+  }
+
+  async parseOrder(filter: GetProductDto, queryBuilder: QueryOptionsBuilder) {
+    if (filter.orderBy.startsWith('$')) {
+      const items = filter.orderBy.replaceAll('$', '').split('.');
+      const orders = [];
+      for (let index = 0; index < items.length; index++) {
+        const order = items[index];
+        if (index == items.length - 1) {
+          orders.push(...[order, filter.sortOrder]);
+        } else {
+          switch (order) {
+            case 'vendor':
+              orders.push({ model: ECVendor, as: order });
+              break;
+            case 'inventories':
+              orders.push({ model: ECInventory, as: order });
+              break;
+            case 'firstPrice':
+              orders.push({ model: ECVariationPrice, as: order });
+              break;
+            case 'secondarayPrice':
+              orders.push({ model: ECVariationPrice, as: order });
+              break;
+            default:
+              throw new BadRequestException('the given format is not valid');
+          }
+        }
+      }
+    } else {
+      queryBuilder = queryBuilder.order({
+        orderBy: filter.orderBy,
+        sortOrder: filter.sortOrder,
+      });
+    }
+    return queryBuilder;
   }
 }
