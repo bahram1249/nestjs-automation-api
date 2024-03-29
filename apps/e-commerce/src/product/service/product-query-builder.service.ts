@@ -232,7 +232,7 @@ export class ProductQueryBuilderService {
     let firstPriceIncludeBuilder = new IncludeOptionsBuilder({
       model: ECInventoryPrice,
       as: 'firstPrice',
-      required: true,
+      required: false,
     })
       .attributes(['price'])
       .include([

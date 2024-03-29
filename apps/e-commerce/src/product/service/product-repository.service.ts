@@ -6,6 +6,7 @@ import * as _ from 'lodash';
 import { ProductQueryBuilderService } from './product-query-builder.service';
 import { ApplyDiscountService } from './apply-discount.service';
 import { ApplyInventoryStatus } from './apply-inventory-status.service';
+import { RemoveEmptyPriceService } from './remove-empty-price.service';
 
 @Injectable()
 export class ProductRepositoryService {
@@ -15,6 +16,7 @@ export class ProductRepositoryService {
     private readonly productQueryBuilderService: ProductQueryBuilderService,
     private readonly applyDiscountService: ApplyDiscountService,
     private readonly applyInventoryStatus: ApplyInventoryStatus,
+    private readonly removeEmptyPriceService: RemoveEmptyPriceService,
   ) {}
 
   async findBySlug(filter: GetProductDto, slug: string) {
@@ -30,6 +32,7 @@ export class ProductRepositoryService {
     if (!product) {
       throw new NotFoundException('the item with this given slug not founded!');
     }
+    product = await this.removeEmptyPriceService.applyProduct(product);
     product = await this.applyInventoryStatus.applyProduct(product);
     return {
       result: await this.applyDiscountService.applyProduct(product),
@@ -49,6 +52,7 @@ export class ProductRepositoryService {
     if (!product) {
       throw new NotFoundException('the item with this given id not founded!');
     }
+    product = await this.removeEmptyPriceService.applyProduct(product);
     product = await this.applyInventoryStatus.applyProduct(product);
     return {
       result: await this.applyDiscountService.applyProduct(product),
@@ -60,8 +64,9 @@ export class ProductRepositoryService {
       await this.productQueryBuilderService.findAllAndCountQuery(filter);
 
     let results = await this.repository.findAll(resultQuery);
-    results = await this.applyDiscountService.applyProducts(results);
+    results = await this.removeEmptyPriceService.applyProducts(results);
     results = await this.applyInventoryStatus.applyProducts(results);
+    results = await this.applyDiscountService.applyProducts(results);
     return {
       result: results,
       total: await this.repository.count(countQuery), //count,
