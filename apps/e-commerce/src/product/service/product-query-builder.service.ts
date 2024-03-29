@@ -161,83 +161,61 @@ export class ProductQueryBuilderService {
           as: 'inventoryStatus',
           required: false,
         },
-        {
-          attributes: ['id', 'name'],
-          model: ECVendor,
-          as: 'vendor',
-          required: false,
-        },
-        {
-          attributes: ['id', 'name', 'hexCode'],
-          model: ECColor,
-          as: 'color',
-          required: false,
-        },
-        {
-          attributes: ['id', 'name', 'slug'],
-          model: ECGuarantee,
-          as: 'guarantee',
-          required: false,
-        },
-        {
-          attributes: ['id', 'name'],
-          model: ECGuaranteeMonth,
-          as: 'guaranteeMonth',
-          required: false,
-        },
-        {
-          attributes: ['id', 'name'],
-          model: ECProvince,
-          as: 'onlyProvince',
-          required: false,
-        },
-        {
-          attributes: ['price'],
-          model: ECInventoryPrice,
-          as: 'firstPrice',
-          required: false,
-          include: [
-            {
-              attributes: ['id', 'name'],
-              model: ECVariationPrice,
-              as: 'variationPrice',
-            },
-          ],
-          where: Sequelize.where(
-            Sequelize.fn(
-              'isnull',
-              Sequelize.col('inventories.firstPrice.isDeleted'),
-              0,
-            ),
-            {
-              [Op.eq]: 0,
-            },
-          ),
-        },
-        {
-          attributes: ['price'],
-          model: ECInventoryPrice,
-          as: 'secondaryPrice',
-          required: false,
-          include: [
-            {
-              attributes: ['id', 'name'],
-              model: ECVariationPrice,
-              as: 'variationPrice',
-            },
-          ],
-          where: Sequelize.where(
-            Sequelize.fn(
-              'isnull',
-              Sequelize.col('inventories.secondaryPrice.isDeleted'),
-              0,
-            ),
-            {
-              [Op.eq]: 0,
-            },
-          ),
-        },
       ])
+      .thenInlcude({
+        attributes: ['id', 'name'],
+        model: ECVendor,
+        as: 'vendor',
+        required: false,
+      })
+      .thenInlcude({
+        attributes: ['id', 'name', 'hexCode'],
+        model: ECColor,
+        as: 'color',
+        required: false,
+      })
+      .thenInlcude({
+        attributes: ['id', 'name', 'slug'],
+        model: ECGuarantee,
+        as: 'guarantee',
+        required: false,
+      })
+      .thenInlcude({
+        attributes: ['id', 'name'],
+        model: ECGuaranteeMonth,
+        as: 'guaranteeMonth',
+        required: false,
+      })
+      .thenInlcude({
+        attributes: ['id', 'name'],
+        model: ECProvince,
+        as: 'onlyProvince',
+        required: false,
+      })
+
+      .thenInlcude({
+        attributes: ['price'],
+        model: ECInventoryPrice,
+        as: 'secondaryPrice',
+        required: false,
+        include: [
+          {
+            attributes: ['id', 'name'],
+            model: ECVariationPrice,
+            as: 'variationPrice',
+          },
+        ],
+        where: Sequelize.where(
+          Sequelize.fn(
+            'isnull',
+            Sequelize.col('inventories.secondaryPrice.isDeleted'),
+            0,
+          ),
+          {
+            [Op.eq]: 0,
+          },
+        ),
+      })
       .filter(
         Sequelize.where(
           Sequelize.fn('isnull', Sequelize.col('inventories.isDeleted'), 0),
@@ -248,6 +226,26 @@ export class ProductQueryBuilderService {
       )
       .filter({
         inventoryStatusId: InventoryStatusEnum.available,
+      });
+
+    // conditions
+    let firstPriceIncludeBuilder = new IncludeOptionsBuilder({
+      model: ECInventoryPrice,
+      as: 'firstPrice',
+      required: true,
+    })
+      .attributes(['price'])
+      .include([
+        {
+          attributes: ['id', 'name'],
+          model: ECVariationPrice,
+          as: 'variationPrice',
+        },
+      ])
+      .filter({
+        isDeleted: {
+          [Op.is]: null,
+        },
       });
 
     if (filter.inventoryId) {
@@ -271,6 +269,52 @@ export class ProductQueryBuilderService {
       inventoryIncludeBuilder = inventoryIncludeBuilder.filter({
         colorId: {
           [Op.in]: filter.colors,
+        },
+      });
+    }
+
+    if (filter.minPrice != null) {
+      const minPriceFiltered = Sequelize.literal(
+        `EXISTS (
+            SELECT 1
+            FROM ECInventories AS ECI
+            LEFT JOIN ECInventoryPrices ECIP
+            ON ECI.id = ECIP.inventoryId
+            WHERE [ECProduct].id = [ECI].productId
+              AND ISNULL([ECI].isDeleted, 0) = 0
+              AND ISNULL([ECIP].isDeleted, 0) = 0
+              AND ECIP.variationPriceId = 1
+              AND ECIP.price >= ${filter.minPrice}
+            )`.replaceAll(/\s\s+/g, ' '),
+      );
+      queryBuilder = queryBuilder.filter(minPriceFiltered);
+      queryResultBuilder = queryResultBuilder.filter(minPriceFiltered);
+      firstPriceIncludeBuilder = firstPriceIncludeBuilder.filter({
+        price: {
+          [Op.gte]: filter.minPrice,
+        },
+      });
+    }
+
+    if (filter.maxPrice != null) {
+      const maxPriceFiltered = Sequelize.literal(
+        `EXISTS (
+            SELECT 1
+            FROM ECInventories AS ECI
+            LEFT JOIN ECInventoryPrices ECIP
+            ON ECI.id = ECIP.inventoryId
+            WHERE [ECProduct].id = [ECI].productId
+              AND ISNULL([ECI].isDeleted, 0) = 0
+              AND ISNULL([ECIP].isDeleted, 0) = 0
+              AND ECIP.variationPriceId = 1
+              AND ECIP.price <= ${filter.maxPrice}
+            )`.replaceAll(/\s\s+/g, ' '),
+      );
+      queryBuilder = queryBuilder.filter(maxPriceFiltered);
+      queryResultBuilder = queryResultBuilder.filter(maxPriceFiltered);
+      firstPriceIncludeBuilder = firstPriceIncludeBuilder.filter({
+        price: {
+          [Op.lte]: filter.maxPrice,
         },
       });
     }
@@ -307,6 +351,11 @@ export class ProductQueryBuilderService {
         queryResultBuilder.filter(attributeFilter);
       }
     }
+
+    // add first price
+    inventoryIncludeBuilder = inventoryIncludeBuilder.thenInlcude(
+      firstPriceIncludeBuilder.build(),
+    );
 
     queryResultBuilder = queryResultBuilder.thenInlcude(
       inventoryIncludeBuilder.build(),
