@@ -1,5 +1,5 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { GetProductDto } from '../dto';
+import { GetProductDto, GetUnPriceDto } from '../dto';
 import { InjectModel } from '@nestjs/sequelize';
 import { ECProduct } from '@rahino/database/models/ecommerce-eav/ec-product.entity';
 import * as _ from 'lodash';
@@ -7,6 +7,8 @@ import { ProductQueryBuilderService } from './product-query-builder.service';
 import { ApplyDiscountService } from './apply-discount.service';
 import { ApplyInventoryStatus } from './apply-inventory-status.service';
 import { RemoveEmptyPriceService } from './remove-empty-price.service';
+import { Sequelize } from 'sequelize';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class ProductRepositoryService {
@@ -17,6 +19,7 @@ export class ProductRepositoryService {
     private readonly applyDiscountService: ApplyDiscountService,
     private readonly applyInventoryStatus: ApplyInventoryStatus,
     private readonly removeEmptyPriceService: RemoveEmptyPriceService,
+    private readonly config: ConfigService,
   ) {}
 
   async findBySlug(filter: GetProductDto, slug: string) {
@@ -70,6 +73,48 @@ export class ProductRepositoryService {
     return {
       result: results,
       total: await this.repository.count(countQuery), //count,
+    };
+  }
+
+  async priceRange(filter: GetUnPriceDto) {
+    const defaultMax =
+      this.config.get<number>('DEFAULT_MIN_PRICE_RANGE') || 10000000;
+    const defaultMin = this.config.get<number>('DEFAULT_MAX_PRICE_RANGE') || 0;
+    const { resultQuery, countQuery } =
+      await this.productQueryBuilderService.findAllAndCountQuery(
+        filter,
+        null,
+        null,
+        null,
+        true,
+      );
+
+    resultQuery.limit = null;
+    resultQuery.offset = null;
+    resultQuery.order = null;
+    resultQuery.subQuery = false;
+    resultQuery.attributes = [
+      [
+        Sequelize.fn(
+          'isnull',
+          Sequelize.fn('min', Sequelize.col('inventories.firstPrice.price')),
+          defaultMin,
+        ),
+        'minPrice',
+      ],
+      [
+        Sequelize.fn(
+          'isnull',
+          Sequelize.fn('max', Sequelize.col('inventories.firstPrice.price')),
+          defaultMax,
+        ),
+        'maxPrice',
+      ],
+    ];
+    resultQuery.raw = true;
+    let results = await this.repository.findOne(resultQuery);
+    return {
+      result: results,
     };
   }
 }

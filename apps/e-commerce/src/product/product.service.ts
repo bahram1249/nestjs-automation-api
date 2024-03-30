@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { GetProductDto } from './dto';
+import { GetProductDto, GetUnPriceDto } from './dto';
 import * as _ from 'lodash';
 import { ProductRepositoryService } from './service/product-repository.service';
 import {
@@ -44,6 +44,13 @@ export class ProductService {
     return {
       result: result,
       total: total,
+    };
+  }
+
+  async priceRange(filter: GetUnPriceDto) {
+    const { result } = await this.productRepositoryService.priceRange(filter);
+    return {
+      result: result,
     };
   }
 }

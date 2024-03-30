@@ -33,6 +33,7 @@ export class ProductQueryBuilderService {
     productId?: bigint,
     slug?: string,
     includeAttributes?: boolean,
+    priceRangeQuery?: boolean,
   ): Promise<{
     resultQuery: FindAndCountOptions<any>;
     countQuery: FindAndCountOptions<any>;
@@ -72,28 +73,28 @@ export class ProductQueryBuilderService {
     queryResultBuilder = queryResultBuilder
       .include([
         {
-          attributes: ['id', 'name'],
+          attributes: priceRangeQuery ? [] : ['id', 'name'],
           model: ECPublishStatus,
           as: 'publishStatus',
         },
       ])
       .thenInlcude({
-        attributes: ['id', 'name'],
+        attributes: priceRangeQuery ? [] : ['id', 'name'],
         model: ECInventoryStatus,
         as: 'inventoryStatus',
       })
       .thenInlcude({
-        attributes: ['id', 'name', 'slug'],
+        attributes: priceRangeQuery ? [] : ['id', 'name', 'slug'],
         model: ECBrand,
         as: 'brand',
       })
       .thenInlcude({
-        attributes: ['id', 'name', 'slug'],
+        attributes: priceRangeQuery ? [] : ['id', 'name', 'slug'],
         model: EAVEntityType,
         as: 'entityType',
       })
       .thenInlcude({
-        attributes: ['id', 'fileName'],
+        attributes: priceRangeQuery ? [] : ['id', 'fileName'],
         through: {
           attributes: [],
         },
@@ -109,26 +110,34 @@ export class ProductQueryBuilderService {
         required: false,
       });
       attributeIncludeBuilder = attributeIncludeBuilder
-        .attributes([
-          'attributeId',
-          [
-            Sequelize.fn(
-              'isnull',
-              Sequelize.col('productAttributeValues.val'),
-              Sequelize.col('productAttributeValues.attributeValue.value'),
-            ),
-            'val',
-          ],
-          [Sequelize.col('attributeValueId'), 'attributeValueId'],
-        ])
+        .attributes(
+          priceRangeQuery
+            ? []
+            : [
+                'attributeId',
+                [
+                  Sequelize.fn(
+                    'isnull',
+                    Sequelize.col('productAttributeValues.val'),
+                    Sequelize.col(
+                      'productAttributeValues.attributeValue.value',
+                    ),
+                  ),
+                  'val',
+                ],
+                [Sequelize.col('attributeValueId'), 'attributeValueId'],
+              ],
+        )
         .include([
           {
-            attributes: ['id', 'name', 'attributeTypeId'],
+            attributes: priceRangeQuery
+              ? []
+              : ['id', 'name', 'attributeTypeId'],
             model: EAVAttribute,
             as: 'attribute',
           },
           {
-            attributes: ['id', 'attributeId', 'value'],
+            attributes: priceRangeQuery ? [] : ['id', 'attributeId', 'value'],
             model: EAVAttributeValue,
             as: 'attributeValue',
           },
@@ -141,66 +150,70 @@ export class ProductQueryBuilderService {
       required: false,
     });
     inventoryIncludeBuilder = inventoryIncludeBuilder
-      .attributes([
-        'id',
-        'productId',
-        'vendorId',
-        'colorId',
-        'guaranteeId',
-        'guaranteeMonthId',
-        'qty',
-        'onlyProvinceId',
-        'vendorAddressId',
-        'weight',
-        'inventoryStatusId',
-      ])
+      .attributes(
+        priceRangeQuery
+          ? []
+          : [
+              'id',
+              'productId',
+              'vendorId',
+              'colorId',
+              'guaranteeId',
+              'guaranteeMonthId',
+              'qty',
+              'onlyProvinceId',
+              'vendorAddressId',
+              'weight',
+              'inventoryStatusId',
+            ],
+      )
       .include([
         {
-          attributes: ['id', 'name'],
+          attributes: priceRangeQuery ? [] : ['id', 'name'],
           model: ECInventoryStatus,
           as: 'inventoryStatus',
           required: false,
         },
       ])
       .thenInlcude({
-        attributes: ['id', 'name'],
+        attributes: priceRangeQuery ? [] : ['id', 'name'],
         model: ECVendor,
         as: 'vendor',
         required: false,
       })
       .thenInlcude({
-        attributes: ['id', 'name', 'hexCode'],
+        attributes: priceRangeQuery ? [] : ['id', 'name', 'hexCode'],
         model: ECColor,
         as: 'color',
         required: false,
       })
       .thenInlcude({
-        attributes: ['id', 'name', 'slug'],
+        attributes: priceRangeQuery ? [] : ['id', 'name', 'slug'],
         model: ECGuarantee,
         as: 'guarantee',
         required: false,
       })
       .thenInlcude({
-        attributes: ['id', 'name'],
+        attributes: priceRangeQuery ? [] : ['id', 'name'],
         model: ECGuaranteeMonth,
         as: 'guaranteeMonth',
         required: false,
       })
       .thenInlcude({
-        attributes: ['id', 'name'],
+        attributes: priceRangeQuery ? [] : ['id', 'name'],
         model: ECProvince,
         as: 'onlyProvince',
         required: false,
       })
 
       .thenInlcude({
-        attributes: ['price'],
+        attributes: priceRangeQuery ? [] : ['price'],
         model: ECInventoryPrice,
         as: 'secondaryPrice',
         required: false,
         include: [
           {
-            attributes: ['id', 'name'],
+            attributes: priceRangeQuery ? [] : ['id', 'name'],
             model: ECVariationPrice,
             as: 'variationPrice',
           },
@@ -234,10 +247,10 @@ export class ProductQueryBuilderService {
       as: 'firstPrice',
       required: false,
     })
-      .attributes(['price'])
+      .attributes(priceRangeQuery ? [] : ['price'])
       .include([
         {
-          attributes: ['id', 'name'],
+          attributes: priceRangeQuery ? [] : ['id', 'name'],
           model: ECVariationPrice,
           as: 'variationPrice',
         },
@@ -343,6 +356,7 @@ export class ProductQueryBuilderService {
             SELECT 1
             FROM EAVEntityAttributeValues AS EEAV
             WHERE [ECProduct].id = [EEAV].entityId
+              AND [EEAV].attributeId = ${attribute.attributeId}
               AND [EEAV].attributeValueId IN (
                 ${attribute.attributeValues.join(',')})
             )`.replaceAll(/\s\s+/g, ' '),
@@ -361,19 +375,21 @@ export class ProductQueryBuilderService {
       inventoryIncludeBuilder.build(),
     );
 
-    const resultQueryAttributes = [
-      'id',
-      'title',
-      'sku',
-      // 'description',
-      'slug',
-      'entityTypeId',
-      'colorBased',
-      'brandId',
-      'inventoryStatusId',
-      'publishStatusId',
-      'viewCount',
-    ];
+    const resultQueryAttributes = priceRangeQuery
+      ? []
+      : [
+          'id',
+          'title',
+          'sku',
+          // 'description',
+          'slug',
+          'entityTypeId',
+          'colorBased',
+          'brandId',
+          'inventoryStatusId',
+          'publishStatusId',
+          'viewCount',
+        ];
     if (productId || slug) {
       resultQueryAttributes.push('description');
     }

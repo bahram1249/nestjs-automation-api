@@ -12,7 +12,7 @@ import {
 import { JsonResponseTransformInterceptor } from '@rahino/response/interceptor';
 import { ApiOperation, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { OptionalJwtGuard } from '@rahino/auth/guard';
-import { GetProductDto } from './dto';
+import { GetProductDto, GetUnPriceDto } from './dto';
 import { ProductService } from './product.service';
 import { OptionalSessionGuard } from '../user/session/guard';
 
@@ -41,6 +41,21 @@ export class ProductController {
     @Query(new ValidationPipe({ transform: true })) filter: GetProductDto,
   ) {
     return await this.service.findAll(filter);
+  }
+
+  @ApiOperation({ description: 'get price range of products' })
+  @Get('/priceRange')
+  @ApiQuery({
+    name: 'filter',
+    type: GetUnPriceDto,
+    style: 'deepObject',
+    explode: true,
+  })
+  @HttpCode(HttpStatus.OK)
+  async priceRange(
+    @Query(new ValidationPipe({ transform: true })) filter: GetUnPriceDto,
+  ) {
+    return await this.service.priceRange(filter);
   }
 
   @ApiOperation({ description: 'show product by given slug' })
