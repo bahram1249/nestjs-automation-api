@@ -31,7 +31,7 @@ import { OptionalSessionGuard } from '../session/guard';
 @ApiBearerAuth()
 @UseInterceptors(JsonResponseTransformInterceptor)
 @Controller({
-  path: '/api/ecommerce/addresses',
+  path: '/api/ecommerce/user/addresses',
   version: ['1'],
 })
 export class AddressController {
