@@ -76,6 +76,21 @@ export class ProductRepositoryService {
     };
   }
 
+  async findAllAndCount(filter: GetProductDto) {
+    const { resultQuery, countQuery } =
+      await this.productQueryBuilderService.findAllAndCountQuery(filter);
+
+    const { rows, count } = await this.repository.findAndCountAll(resultQuery);
+    let results = rows;
+    results = await this.removeEmptyPriceService.applyProducts(results);
+    results = await this.applyInventoryStatus.applyProducts(results);
+    results = await this.applyDiscountService.applyProducts(results);
+    return {
+      result: results,
+      total: count, //count,
+    };
+  }
+
   async priceRange(filter: GetUnPriceDto) {
     const defaultMax =
       this.config.get<number>('DEFAULT_MIN_PRICE_RANGE') || 10000000;
