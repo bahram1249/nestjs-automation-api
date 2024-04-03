@@ -31,7 +31,7 @@ export class ProductService {
 
   async findAll(filter: GetProductDto) {
     const { result, total } =
-      await this.productRepositoryService.findAllAndCount(filter);
+      await this.productRepositoryService.findAll(filter);
     this.nextPageQueryQueue.add(
       QUERY_NEXT_PAGE_PRODUCT_JOB,
       {

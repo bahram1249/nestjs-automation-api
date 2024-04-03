@@ -13,7 +13,7 @@ export class QueryNextPageProductProcessor extends WorkerHost {
   async process(job: Job<any, any, any>, token?: string): Promise<any> {
     const filter: GetProductDto = job.data.filter;
     filter.offset = filter.offset + filter.limit;
-    await this.service.findAllAndCount(filter);
+    await this.service.findAll(filter);
     return Promise.resolve(true);
   }
 }

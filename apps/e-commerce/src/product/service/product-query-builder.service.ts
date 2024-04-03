@@ -403,7 +403,7 @@ export class ProductQueryBuilderService {
     }
     queryResultBuilder = queryResultBuilder
       .attributes(resultQueryAttributes)
-      .subQuery(false)
+      .subQuery(true)
       .limit(filter.limit)
       .offset(filter.offset)
       .order({ orderBy: 'inventoryStatusId', sortOrder: 'ASC' });
