@@ -4,6 +4,7 @@ import {
   Includeable,
   LOCK,
   Op,
+  OrderItem,
   Transaction,
   WhereOptions,
 } from 'sequelize';
@@ -31,12 +32,12 @@ export class QueryOptionsBuilder {
   }
   order(orderArg: Order): QueryOptionsBuilder {
     if (!this.options.order) this.options.order = [];
-    const orders = JSON.parse(JSON.stringify(this.options.order));
+    const orders = this.options.order as OrderItem[];
     if (isOrderCol(orderArg)) {
       const orderCol = orderArg as OrderCol;
       orders.push([orderCol.orderBy, orderCol.sortOrder]);
     } else {
-      orders.push(orderArg);
+      orders.push(orderArg as OrderItem);
     }
 
     this.options.order = orders;

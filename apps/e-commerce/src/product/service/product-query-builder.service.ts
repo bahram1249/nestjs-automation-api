@@ -1,5 +1,13 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { FindAndCountOptions, Op, Sequelize } from 'sequelize';
+import {
+  FindAndCountOptions,
+  Model,
+  ModelStatic,
+  Op,
+  Order,
+  OrderItem,
+  Sequelize,
+} from 'sequelize';
 import { GetProductDto } from '../dto';
 import { PublishStatusEnum } from '../enum';
 import {
@@ -399,14 +407,13 @@ export class ProductQueryBuilderService {
       .limit(filter.limit)
       .offset(filter.offset)
       .order({ orderBy: 'inventoryStatusId', sortOrder: 'ASC' });
-    queryBuilder = await this.parseOrder(filter, queryBuilder);
-    queryBuilder = queryBuilder.order([
+    queryResultBuilder = await this.parseOrder(filter, queryResultBuilder);
+    queryResultBuilder = queryResultBuilder.order([
       { model: ECInventory, as: 'inventories' },
       { model: ECVendor, as: 'vendor' },
       'priorityOrder',
       'asc',
     ]);
-
     return {
       resultQuery: queryResultBuilder.build(),
       countQuery: queryBuilder.build(),
@@ -422,24 +429,31 @@ export class ProductQueryBuilderService {
         if (index == items.length - 1) {
           orders.push(...[order, filter.sortOrder]);
         } else {
+          let orderItemAssociation: { model: ModelStatic<Model>; as: string };
           switch (order) {
             case 'vendor':
-              orders.push({ model: ECVendor, as: order });
+              orderItemAssociation = { model: ECVendor, as: order };
+              orders.push(orderItemAssociation);
               break;
             case 'inventories':
-              orders.push({ model: ECInventory, as: order });
+              orderItemAssociation = { model: ECInventory, as: order };
+              orders.push(orderItemAssociation);
               break;
             case 'firstPrice':
-              orders.push({ model: ECVariationPrice, as: order });
+              orderItemAssociation = { model: ECInventoryPrice, as: order };
+              orders.push(orderItemAssociation);
               break;
             case 'secondarayPrice':
-              orders.push({ model: ECVariationPrice, as: order });
+              orderItemAssociation = { model: ECInventoryPrice, as: order };
+              orders.push(orderItemAssociation);
               break;
             default:
               throw new BadRequestException('the given format is not valid');
           }
         }
       }
+      const orderItem: OrderItem = orders as OrderItem;
+      queryBuilder = queryBuilder.order(orderItem);
     } else {
       queryBuilder = queryBuilder.order({
         orderBy: filter.orderBy,
