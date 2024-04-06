@@ -8,6 +8,7 @@ import {
   Param,
   Post,
   Put,
+  Query,
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
@@ -22,7 +23,7 @@ import { JsonResponseTransformInterceptor } from '@rahino/response/interceptor';
 import { SessionGuard } from '../session/guard';
 import { GetECSession } from 'apps/main/src/decorator';
 import { ECUserSession } from '@rahino/database/models/ecommerce-eav/ec-user-session.entity';
-import { StockDto } from './dto';
+import { StockDto, StockPriceDto } from './dto';
 import { StockService } from './stock.service';
 
 @ApiTags('Stocks')
@@ -47,6 +48,16 @@ export class StockController {
   @HttpCode(HttpStatus.OK)
   async count(@GetECSession() session: ECUserSession) {
     return await this.service.count(session);
+  }
+
+  @ApiOperation({ description: 'total price' })
+  @Get('/price')
+  @HttpCode(HttpStatus.OK)
+  async price(
+    @GetECSession() session: ECUserSession,
+    @Query() query: StockPriceDto,
+  ) {
+    return await this.service.price(session, query);
   }
 
   @ApiOperation({ description: 'show stock by given id' })

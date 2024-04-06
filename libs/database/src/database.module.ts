@@ -74,6 +74,7 @@ import { ECDiscountConditionType } from './models/ecommerce-eav/ec-discount-cond
 import { ECDiscountCondition } from './models/ecommerce-eav/ec-discount-condition.entity';
 import { ECStock } from './models/ecommerce-eav/ec-stocks.entity';
 import { ECPostageFee } from './models/ecommerce-eav/ec-postage-fee.entity';
+import { ECPaymentGateway } from './models/ecommerce-eav/ec-payment-gateway.entity';
 
 @Module({
   imports: [
@@ -143,6 +144,7 @@ import { ECPostageFee } from './models/ecommerce-eav/ec-postage-fee.entity';
           ECDiscountConditionType,
           ECDiscountCondition,
           ECStock,
+          ECPaymentGateway,
           ECPostageFee,
           Buffet,
           BuffetGallery,

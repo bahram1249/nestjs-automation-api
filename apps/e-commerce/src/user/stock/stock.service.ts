@@ -3,9 +3,10 @@ import {
   Inject,
   Injectable,
   NotFoundException,
+  NotImplementedException,
 } from '@nestjs/common';
 import { ECUserSession } from '@rahino/database/models/ecommerce-eav/ec-user-session.entity';
-import { StockDto } from './dto';
+import { StockDto, StockPriceDto } from './dto';
 import { ECStock } from '@rahino/database/models/ecommerce-eav/ec-stocks.entity';
 import { InjectModel } from '@nestjs/sequelize';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
@@ -27,20 +28,23 @@ import { QueueEvents } from 'bullmq';
 import { Job } from 'bullmq';
 import { ConfigService } from '@nestjs/config';
 import { InventoryStatusEnum } from '@rahino/ecommerce/inventory/enum';
+import { ECPaymentGateway } from '@rahino/database/models/ecommerce-eav/ec-payment-gateway.entity';
 
 @Injectable()
 export class StockService {
   constructor(
     @InjectModel(ECStock)
     private readonly repository: typeof ECStock,
+    @InjectModel(ECPaymentGateway)
+    private readonly paymentGatewayRepository: typeof ECPaymentGateway,
     @Inject(emptyListFilter)
     private readonly emptyListFilter: ListFilter,
     private readonly productRepositoryService: ProductRepositoryService,
+    private readonly config: ConfigService,
     @InjectQueue(STOCK_INVENTORY_QUEUE)
     private readonly stockInventoryQueue: Queue,
     @InjectQueue(STOCK_INVENTORY_REMOVE_QUEUE)
     private readonly stockInventoryRemoveQueue: Queue,
-    private readonly config: ConfigService,
   ) {}
 
   async findAll(session: ECUserSession) {
@@ -120,6 +124,23 @@ export class StockService {
     return {
       result: count,
     };
+  }
+
+  async price(session: ECUserSession, query: StockPriceDto) {
+    throw new NotImplementedException();
+    // const result = {
+    //   payments: [
+    //     {
+    //       variationPriceId: 1,
+    //       variationPriceName: 'اقساطی',
+    //       totalProductPrice: 10000,
+    //       totalDiscount: 10000,
+    //       postPrice: 10000,
+    //       sumPrice: 10000,
+    //       gateways: [{ id: 1, name: '' }],
+    //     },
+    //   ],
+    // };
   }
 
   async findById(session: ECUserSession, entityId: bigint) {

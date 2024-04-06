@@ -2498,6 +2498,31 @@ END
 GO
 
 
+GO
+
+-- ec-paymentgateways-v1
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ec-paymentgateways-v1' 
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'SITE_NAME' AND [value] IN ('ecommerce'))
+		)
+BEGIN
+
+	CREATE TABLE ECPaymentGateways(
+		id							int 					PRIMARY KEY,
+		name						nvarchar(256)			NOT NULL,
+		variationPriceId			int						NOT NULL,
+		serviceName					nvarchar(512)			NULL,
+		isDeleted					bit						NULL,
+		[createdAt]					datetimeoffset			NOT NULL,
+		[updatedAt]					datetimeoffset			NOT NULL,
+	)
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'ec-paymentgateways-v1', GETDATE(), GETDATE()
+END
+
 -- ec-postage-fee-v1
 IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ec-postage-fee-v1' 
 			)
