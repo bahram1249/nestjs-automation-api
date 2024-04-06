@@ -2027,6 +2027,24 @@ END
 
 GO
 
+-- ecommerce products
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ecommerce-products-v2' 
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'SITE_NAME' AND [value] IN ('ecommerce'))
+		)
+BEGIN
+
+	ALTER TABLE ECProducts
+		ADD lastPrice bigint NULL;
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'ecommerce-products-v2', GETDATE(), GETDATE()
+END
+
+GO
+
 
 -- ecommerce variationprices
 IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ecommerce-variationprices-v1' 

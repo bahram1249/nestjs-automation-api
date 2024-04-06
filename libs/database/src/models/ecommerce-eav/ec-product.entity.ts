@@ -161,4 +161,10 @@ export class ECProduct extends Model {
     'attachmentId',
   )
   attachments?: Attachment[];
+
+  @Column({
+    type: DataType.BIGINT,
+    allowNull: true,
+  })
+  lastPrice?: bigint;
 }

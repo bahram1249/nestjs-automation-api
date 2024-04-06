@@ -1017,6 +1017,9 @@ export class ProductService {
       insertItem.inventoryStatusId = InventoryStatusEnum.unavailable;
       insertItem.userId = user.id;
       insertItem.viewCount = 0;
+      if (dto.inventories.length > 0) {
+        insertItem.lastPrice = dto.inventories[0].firstPrice;
+      }
 
       product = await this.repository.create(insertItem, {
         transaction: transaction,
@@ -1180,6 +1183,9 @@ export class ProductService {
       const mappedItem = this.mapper.map(dto, ProductDto, ECProduct);
       // update product item
       const updateItem = _.omit(mappedItem.toJSON(), ['id']);
+      if (dto.inventories.length > 0) {
+        updateItem.lastPrice = dto.inventories[0].firstPrice;
+      }
       const updated = await this.repository.update(updateItem, {
         where: {
           id: entityId,
