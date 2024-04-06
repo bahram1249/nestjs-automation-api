@@ -21,10 +21,11 @@ import { SequelizeModule } from '@nestjs/sequelize';
 import { User } from '@rahino/database/models/core/user.entity';
 import { ECStock } from '@rahino/database/models/ecommerce-eav/ec-stocks.entity';
 import { SessionModule } from '../session/session.module';
+import { ECPaymentGateway } from '@rahino/database/models/ecommerce-eav/ec-payment-gateway.entity';
 
 @Module({
   imports: [
-    SequelizeModule.forFeature([User, ECStock]),
+    SequelizeModule.forFeature([User, ECStock, ECPaymentGateway]),
     SessionModule,
     QueryFilterModule,
     InventoryModule,
