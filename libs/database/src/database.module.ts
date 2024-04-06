@@ -73,6 +73,7 @@ import { SequelizeOverrideModule } from './override/sequelize-override.module';
 import { ECDiscountConditionType } from './models/ecommerce-eav/ec-discount-condition-type.entity';
 import { ECDiscountCondition } from './models/ecommerce-eav/ec-discount-condition.entity';
 import { ECStock } from './models/ecommerce-eav/ec-stocks.entity';
+import { ECPostageFee } from './models/ecommerce-eav/ec-postage-fee.entity';
 
 @Module({
   imports: [
@@ -142,6 +143,7 @@ import { ECStock } from './models/ecommerce-eav/ec-stocks.entity';
           ECDiscountConditionType,
           ECDiscountCondition,
           ECStock,
+          ECPostageFee,
           Buffet,
           BuffetGallery,
           BuffetType,

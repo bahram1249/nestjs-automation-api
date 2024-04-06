@@ -2479,6 +2479,81 @@ END
 
 GO
 
+
+-- ec-postage-fee-v1
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ec-postage-fee-v1' 
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'SITE_NAME' AND [value] IN ('ecommerce'))
+		)
+BEGIN
+
+	CREATE TABLE ECPostageFees(
+		id							int identity(1,1)			PRIMARY KEY,
+		fromWeight					int							NOT NULL,
+		toWeight					int							NOT NULL,
+		allProvincePrice			bigint						NOT NULL,
+		[createdAt]					datetimeoffset				NOT NULL,
+		[updatedAt]					datetimeoffset				NOT NULL,
+	);
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'ec-postage-fee-v1', GETDATE(), GETDATE()
+END
+
+GO
+
+
+
+-- ec-postage-fee-Data-v1
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ec-postage-fee-Data-v1' 
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'SITE_NAME' AND [value] IN ('ecommerce'))
+		)
+BEGIN
+
+	INSERT INTO ECPostageFees(fromWeight, toWeight, allProvincePrice,createdAt, updatedAt)
+	VALUES (0, 500, 20056,GETDATE(), GETDATE())
+			,(500, 1000, 26160,GETDATE(), GETDATE())
+			,(1000, 2000, 32264,GETDATE(), GETDATE())
+			,(2000, 3000, 37714,GETDATE(), GETDATE())
+			,(3000, 4000, 43164,GETDATE(), GETDATE())
+			,(4000, 5000, 48614,GETDATE(), GETDATE())
+			,(5000, 6000, 54064,GETDATE(), GETDATE())
+			,(6000, 7000, 59514,GETDATE(), GETDATE())
+			,(7000, 8000, 64964,GETDATE(), GETDATE())
+			,(8000, 9000, 70414,GETDATE(), GETDATE())
+			,(9000, 10000, 75864,GETDATE(), GETDATE())
+			,(10000, 11000, 81314,GETDATE(), GETDATE())
+			,(11000, 12000, 86764,GETDATE(), GETDATE())
+			,(12000, 13000, 92214,GETDATE(), GETDATE())
+			,(13000, 14000, 97664,GETDATE(), GETDATE())
+			,(14000, 15000, 103114,GETDATE(), GETDATE())
+			,(15000, 16000, 108564,GETDATE(), GETDATE())
+			,(16000, 17000, 114014,GETDATE(), GETDATE())
+			,(17000, 18000, 119464,GETDATE(), GETDATE())
+			,(18000, 19000, 124914,GETDATE(), GETDATE())
+			,(19000, 20000, 130364,GETDATE(), GETDATE())
+			,(20000, 21000, 135814,GETDATE(), GETDATE())
+			,(21000, 22000, 141264,GETDATE(), GETDATE())
+			,(22000, 23000, 146714,GETDATE(), GETDATE())
+			,(23000, 24000, 152164,GETDATE(), GETDATE())
+			,(24000, 25000, 157614,GETDATE(), GETDATE())
+			,(25000, 26000, 163064,GETDATE(), GETDATE())
+			,(26000, 27000, 168514,GETDATE(), GETDATE())
+			,(27000, 28000, 173964,GETDATE(), GETDATE())
+			,(28000, 29000, 179414,GETDATE(), GETDATE())
+			,(29000, 30000, 184864,GETDATE(), GETDATE())
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'ec-postage-fee-Data-v1', GETDATE(), GETDATE()
+END
+
+GO
+
 -- ec discount-types
 IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ec-discount-types-Data-v1' 
 			)
