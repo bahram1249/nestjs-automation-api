@@ -14,9 +14,9 @@ export class StockPriceDto {
   addressId: bigint;
 
   @IsOptional()
+  @IsString()
   @ApiProperty({
     required: false,
-    type: IsString(),
     description: 'couponCode',
   })
   couponCode: string;

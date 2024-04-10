@@ -53,14 +53,14 @@ export class StockController {
   }
 
   @ApiOperation({ description: 'total price' })
-  @Get('/price')
+  @Post('/price')
   @HttpCode(HttpStatus.OK)
   async price(
     @GetECSession() session: ECUserSession,
-    @Query() query: StockPriceDto,
+    @Body() body: StockPriceDto,
     @GetUser() user?: User,
   ) {
-    return await this.service.price(session, query, user);
+    return await this.service.price(session, body, user);
   }
 
   @ApiOperation({ description: 'show stock by given id' })
