@@ -22,10 +22,23 @@ import { User } from '@rahino/database/models/core/user.entity';
 import { ECStock } from '@rahino/database/models/ecommerce-eav/ec-stocks.entity';
 import { SessionModule } from '../session/session.module';
 import { ECPaymentGateway } from '@rahino/database/models/ecommerce-eav/ec-payment-gateway.entity';
+import { AddressModule } from '../address/address.module';
+import { GeneralPrice, JahizanPrice } from './services/price';
+import { ECVariationPrice } from '@rahino/database/models/ecommerce-eav/ec-variation-prices';
+import { ECProvince } from '@rahino/database/models/ecommerce-eav/ec-province.entity';
+import { ECPostageFee } from '@rahino/database/models/ecommerce-eav/ec-postage-fee.entity';
 
 @Module({
   imports: [
-    SequelizeModule.forFeature([User, ECStock, ECPaymentGateway]),
+    SequelizeModule.forFeature([
+      User,
+      ECStock,
+      ECPaymentGateway,
+      ECVariationPrice,
+      ECProvince,
+      ECPostageFee,
+    ]),
+    AddressModule,
     SessionModule,
     QueryFilterModule,
     InventoryModule,
@@ -56,6 +69,8 @@ import { ECPaymentGateway } from '@rahino/database/models/ecommerce-eav/ec-payme
     StockProfile,
     StockInventoryProcessor,
     StockInventoryRemoveProcessor,
+    GeneralPrice,
+    JahizanPrice,
   ],
 })
 export class StockModule {}

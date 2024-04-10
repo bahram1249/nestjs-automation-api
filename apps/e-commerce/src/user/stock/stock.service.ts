@@ -2,6 +2,7 @@ import {
   BadRequestException,
   Inject,
   Injectable,
+  InternalServerErrorException,
   NotFoundException,
   NotImplementedException,
 } from '@nestjs/common';
@@ -29,6 +30,11 @@ import { Job } from 'bullmq';
 import { ConfigService } from '@nestjs/config';
 import { InventoryStatusEnum } from '@rahino/ecommerce/inventory/enum';
 import { ECPaymentGateway } from '@rahino/database/models/ecommerce-eav/ec-payment-gateway.entity';
+import { User } from '@rahino/database/models/core/user.entity';
+import { AddressService } from '../address/address.service';
+import { ECProvince } from '@rahino/database/models/ecommerce-eav/ec-province.entity';
+import { ECVariationPrice } from '@rahino/database/models/ecommerce-eav/ec-variation-prices';
+import { JahizanPrice } from './services/price';
 
 @Injectable()
 export class StockService {
@@ -45,6 +51,12 @@ export class StockService {
     private readonly stockInventoryQueue: Queue,
     @InjectQueue(STOCK_INVENTORY_REMOVE_QUEUE)
     private readonly stockInventoryRemoveQueue: Queue,
+    private readonly addressService: AddressService,
+    @InjectModel(ECProvince)
+    private readonly provinceRepository: typeof ECProvince,
+    @InjectModel(ECVariationPrice)
+    private readonly variationPriceRepository: typeof ECVariationPrice,
+    private readonly jahizanPriceService: JahizanPrice,
   ) {}
 
   async findAll(session: ECUserSession) {
@@ -83,7 +95,10 @@ export class StockService {
       );
       stock.set('product', queryItem.result);
       stocks[index] = stock;
-      if (stock.product.inventoryStatusId == InventoryStatusEnum.unavailable) {
+      if (
+        stock.product.inventoryStatusId == InventoryStatusEnum.unavailable ||
+        stock.product.inventories[0].qty < stock.qty
+      ) {
         await this.stockInventoryRemoveQueue.add(STOCK_INVENTORY_REMOVE_JOB, {
           stockId: stock.id,
         });
@@ -126,21 +141,93 @@ export class StockService {
     };
   }
 
-  async price(session: ECUserSession, query: StockPriceDto) {
-    throw new NotImplementedException();
-    // const result = {
-    //   payments: [
-    //     {
-    //       variationPriceId: 1,
-    //       variationPriceName: 'اقساطی',
-    //       totalProductPrice: 10000,
-    //       totalDiscount: 10000,
-    //       postPrice: 10000,
-    //       sumPrice: 10000,
-    //       gateways: [{ id: 1, name: '' }],
-    //     },
-    //   ],
-    // };
+  async price(session: ECUserSession, query: StockPriceDto, user?: User) {
+    const stockResult = (await this.findAll(session)).result;
+    // available items
+    const stocks = stockResult.filter(
+      (stock) =>
+        stock.product.inventoryStatusId == InventoryStatusEnum.available &&
+        stock.product.inventories[0].qty >= stock.qty,
+    );
+
+    // validation on address
+    if (query.addressId) {
+      const findAddress = (
+        await this.addressService.findById(user, query.addressId)
+      ).result;
+      for (let index = 0; index < stocks.length; index++) {
+        const stock = stocks[index];
+        if (
+          stock.product.inventories[0].onlyProvinceId != null &&
+          stock.product.inventories[0].onlyProvinceId != findAddress.provinceId
+        ) {
+          const province = await this.provinceRepository.findOne(
+            new QueryOptionsBuilder()
+              .filter({
+                id: stock.product.inventories[0].onlyProvinceId,
+              })
+              .build(),
+          );
+          throw new BadRequestException(
+            `${stock.product.title} فقط مجوز ارسال به استان ${province.name} را دارد.`,
+          );
+        }
+      }
+    }
+
+    const resultList = [];
+    const variationPrices = await this.variationPriceRepository.findAll();
+    // find all variationPrice and specify the required one
+    for (let index = 0; index < variationPrices.length; index++) {
+      const variationPrice = variationPrices[index];
+      const calculatedResult = await this.jahizanPriceService.cal(
+        stocks,
+        query,
+        variationPrice.id,
+      );
+      if (variationPrice.required == true && calculatedResult.error != null) {
+        throw new InternalServerErrorException(
+          'something failed of calculatedResult',
+        );
+      }
+      if (calculatedResult.error == null) {
+        const payments = await this.paymentGatewayRepository.findAll(
+          new QueryOptionsBuilder()
+            .attributes(['id', 'name'])
+            .filter({ variationPriceId: variationPrice.id })
+            .filter(
+              Sequelize.where(
+                Sequelize.fn(
+                  'isnull',
+                  Sequelize.col('ECPaymentGateway.isDeleted'),
+                  0,
+                ),
+                {
+                  [Op.eq]: 0,
+                },
+              ),
+            )
+            .build(),
+        );
+        resultList.push({
+          variationPriceId: variationPrice.id,
+          variationPriceName: variationPrice.name,
+          totalProductPrice: calculatedResult.totalPrice,
+          totalDiscount: calculatedResult.totalDiscounts,
+          totalShipmentPrice: calculatedResult.totalPostageFee,
+          totalPrice: calculatedResult.totalSum,
+          couponCode: query.couponCode,
+          addressId: query.addressId,
+          geteways: payments,
+        });
+      }
+    }
+    return {
+      result: {
+        paymentOptions: resultList,
+        stocks: stocks,
+      },
+    };
   }
 
   async findById(session: ECUserSession, entityId: bigint) {

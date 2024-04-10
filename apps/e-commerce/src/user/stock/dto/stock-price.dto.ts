@@ -17,7 +17,7 @@ export class StockPriceDto {
   @ApiProperty({
     required: false,
     type: IsString(),
-    description: 'coupunCode',
+    description: 'couponCode',
   })
-  coupunCode: string;
+  couponCode: string;
 }

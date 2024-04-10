@@ -1,6 +1,7 @@
 import {
   FindAndCountOptions,
   FindAttributeOptions,
+  GroupOption,
   Includeable,
   LOCK,
   Op,
@@ -11,7 +12,7 @@ import {
 import { Order, OrderCol } from '@rahino/query-filter';
 
 export class QueryOptionsBuilder {
-  options: Omit<FindAndCountOptions<any>, 'group'>;
+  options: FindAndCountOptions<any>;
   constructor() {
     this.options = {
       where: {
@@ -73,6 +74,10 @@ export class QueryOptionsBuilder {
   thenInlcude(include: Includeable) {
     const included = this.options.include as Includeable[];
     included.push(include);
+    return this;
+  }
+  group(group: GroupOption) {
+    this.options.group = group;
     return this;
   }
 }

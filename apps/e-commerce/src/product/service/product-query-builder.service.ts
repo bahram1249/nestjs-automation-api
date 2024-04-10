@@ -398,7 +398,7 @@ export class ProductQueryBuilderService {
           'publishStatusId',
           'viewCount',
         ];
-    if (productId || slug) {
+    if (slug) {
       resultQueryAttributes.push('description');
     }
     queryResultBuilder = queryResultBuilder
@@ -408,12 +408,12 @@ export class ProductQueryBuilderService {
       .offset(filter.offset)
       .order({ orderBy: 'inventoryStatusId', sortOrder: 'ASC' });
     queryResultBuilder = await this.parseOrder(filter, queryResultBuilder);
-    queryResultBuilder = queryResultBuilder.order([
-      { model: ECInventory, as: 'inventories' },
-      { model: ECVendor, as: 'vendor' },
-      'priorityOrder',
-      'asc',
-    ]);
+    // queryResultBuilder = queryResultBuilder.order([
+    //   { model: ECInventory, as: 'inventories' },
+    //   { model: ECVendor, as: 'vendor' },
+    //   'priorityOrder',
+    //   'asc',
+    // ]);
     return {
       resultQuery: queryResultBuilder.build(),
       countQuery: queryBuilder.build(),

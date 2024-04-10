@@ -25,6 +25,8 @@ import { GetECSession } from 'apps/main/src/decorator';
 import { ECUserSession } from '@rahino/database/models/ecommerce-eav/ec-user-session.entity';
 import { StockDto, StockPriceDto } from './dto';
 import { StockService } from './stock.service';
+import { GetUser } from '@rahino/auth/decorator';
+import { User } from '@rahino/database/models/core/user.entity';
 
 @ApiTags('Stocks')
 @UseGuards(OptionalJwtGuard, SessionGuard)
@@ -56,8 +58,9 @@ export class StockController {
   async price(
     @GetECSession() session: ECUserSession,
     @Query() query: StockPriceDto,
+    @GetUser() user?: User,
   ) {
-    return await this.service.price(session, query);
+    return await this.service.price(session, query, user);
   }
 
   @ApiOperation({ description: 'show stock by given id' })
