@@ -11,7 +11,7 @@ export class StockPriceDto {
   })
   @IsInt()
   @Type(() => Number)
-  addressId: bigint;
+  addressId?: bigint;
 
   @IsOptional()
   @IsString()
@@ -19,5 +19,5 @@ export class StockPriceDto {
     required: false,
     description: 'couponCode',
   })
-  couponCode: string;
+  couponCode?: string;
 }
