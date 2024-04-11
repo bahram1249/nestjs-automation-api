@@ -31,7 +31,6 @@ export class StockAvailabilityInventoryService {
       throw new BadRequestException("the inventory isn't available");
     }
 
-    let qty = dto.qty;
     let findItem = await this.repository.findOne(
       new QueryOptionsBuilder()
         .filter({ productId: inventory.productId })
@@ -45,9 +44,9 @@ export class StockAvailabilityInventoryService {
         .build(),
     );
     if (findItem) {
-      qty = qty + findItem.qty;
+      dto.qty = dto.qty + findItem.qty;
     }
-    if (qty > inventory.qty) {
+    if (dto.qty > inventory.qty) {
       throw new BadRequestException("the inventory isn't available");
     }
     const increase = this.config.get<number>('STOCK_EXPIRE_DAY') || 2;
@@ -89,7 +88,6 @@ export class StockAvailabilityInventoryService {
       throw new BadRequestException("the inventory isn't available");
     }
 
-    let qty = dto.qty;
     let findItem = await this.repository.findOne(
       new QueryOptionsBuilder()
         .filter({ productId: inventory.productId })
@@ -106,10 +104,10 @@ export class StockAvailabilityInventoryService {
       throw new NotFoundException("the stock you mentioned isn't exists");
     }
 
-    if (qty > inventory.qty) {
+    if (dto.qty > inventory.qty) {
       throw new BadRequestException("the inventory isn't available");
     }
-    if (qty == 0) {
+    if (dto.qty == 0) {
       throw new BadRequestException('at least you have to set qty to 1');
     }
     const increase = this.config.get<number>('STOCK_EXPIRE_DAY') || 2;
