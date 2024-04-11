@@ -1,2 +1,2 @@
-export * from './cal-price.interface';
-export * from './total-price.interface';
+export * from './stock-price.interface';
+export * from './variation-stock.interface';

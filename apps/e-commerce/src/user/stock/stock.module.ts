@@ -23,10 +23,10 @@ import { ECStock } from '@rahino/database/models/ecommerce-eav/ec-stocks.entity'
 import { SessionModule } from '../session/session.module';
 import { ECPaymentGateway } from '@rahino/database/models/ecommerce-eav/ec-payment-gateway.entity';
 import { AddressModule } from '../address/address.module';
-import { GeneralPrice, JahizanPrice } from './services/price';
+import { StockPriceService } from './services/price';
 import { ECVariationPrice } from '@rahino/database/models/ecommerce-eav/ec-variation-prices';
 import { ECProvince } from '@rahino/database/models/ecommerce-eav/ec-province.entity';
-import { ECPostageFee } from '@rahino/database/models/ecommerce-eav/ec-postage-fee.entity';
+import { ShipmentModule } from './services/shipment-price';
 
 @Module({
   imports: [
@@ -36,8 +36,8 @@ import { ECPostageFee } from '@rahino/database/models/ecommerce-eav/ec-postage-f
       ECPaymentGateway,
       ECVariationPrice,
       ECProvince,
-      ECPostageFee,
     ]),
+    ShipmentModule.register({ token: 'SHIPMENT_SERVICE' }),
     AddressModule,
     SessionModule,
     QueryFilterModule,
@@ -69,8 +69,7 @@ import { ECPostageFee } from '@rahino/database/models/ecommerce-eav/ec-postage-f
     StockProfile,
     StockInventoryProcessor,
     StockInventoryRemoveProcessor,
-    GeneralPrice,
-    JahizanPrice,
+    StockPriceService,
   ],
 })
 export class StockModule {}

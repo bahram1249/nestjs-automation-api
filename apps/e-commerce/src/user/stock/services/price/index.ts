@@ -1,3 +1,2 @@
 export * from './interface';
-export * from './general-price.service';
-export * from './jahizan-price.service';
+export * from './stock-price.service';

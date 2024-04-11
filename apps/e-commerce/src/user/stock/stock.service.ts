@@ -34,7 +34,9 @@ import { User } from '@rahino/database/models/core/user.entity';
 import { AddressService } from '../address/address.service';
 import { ECProvince } from '@rahino/database/models/ecommerce-eav/ec-province.entity';
 import { ECVariationPrice } from '@rahino/database/models/ecommerce-eav/ec-variation-prices';
-import { JahizanPrice } from './services/price';
+import { StockPriceService } from './services/price';
+import { PostShipmentPriceService } from './services/shipment-price/post-shipment-price.service';
+import { ShipmentInteface } from './services/shipment-price/interface';
 
 @Injectable()
 export class StockService {
@@ -56,7 +58,9 @@ export class StockService {
     private readonly provinceRepository: typeof ECProvince,
     @InjectModel(ECVariationPrice)
     private readonly variationPriceRepository: typeof ECVariationPrice,
-    private readonly jahizanPriceService: JahizanPrice,
+    private readonly priceService: StockPriceService,
+    @Inject('SHIPMENT_SERVICE')
+    private readonly shipmentService: ShipmentInteface,
   ) {}
 
   async findAll(session: ECUserSession) {
@@ -175,57 +179,67 @@ export class StockService {
       }
     }
 
-    const resultList = [];
     const variationPrices = await this.variationPriceRepository.findAll();
-    // find all variationPrice and specify the required one
-    for (let index = 0; index < variationPrices.length; index++) {
-      const variationPrice = variationPrices[index];
-      const calculatedResult = await this.jahizanPriceService.cal(
-        stocks,
-        query,
-        variationPrice.id,
-      );
-      if (variationPrice.required == true && calculatedResult.error != null) {
-        throw new InternalServerErrorException(
-          'something failed of calculatedResult',
-        );
-      }
-      if (calculatedResult.error == null) {
-        const payments = await this.paymentGatewayRepository.findAll(
-          new QueryOptionsBuilder()
-            .attributes(['id', 'name'])
-            .filter({ variationPriceId: variationPrice.id })
-            .filter(
-              Sequelize.where(
-                Sequelize.fn(
-                  'isnull',
-                  Sequelize.col('ECPaymentGateway.isDeleted'),
-                  0,
-                ),
-                {
-                  [Op.eq]: 0,
-                },
+
+    const variationPriceStocks = await this.priceService.calByVariationPrices(
+      stocks,
+      variationPrices,
+      query.couponCode,
+    );
+
+    const resultList = [];
+    for (let index = 0; index < variationPriceStocks.length; index++) {
+      const variationPriceStock = variationPriceStocks[index];
+      const totalPrice = variationPriceStock.stocks
+        .map((stock) => stock.totalPrice)
+        .reduce((prev, current) => prev + current);
+      const totalDiscount = variationPriceStock.stocks
+        .map((stock) => stock.discountFee)
+        .reduce((prev, current) => prev + current);
+      const totalProductPrice = variationPriceStock.stocks
+        .map((stock) => stock.totalProductPrice)
+        .reduce((prev, current) => prev + current);
+      const payments = await this.paymentGatewayRepository.findAll(
+        new QueryOptionsBuilder()
+          .attributes(['id', 'name'])
+          .filter({ variationPriceId: variationPriceStock.variationPrice.id })
+          .filter(
+            Sequelize.where(
+              Sequelize.fn(
+                'isnull',
+                Sequelize.col('ECPaymentGateway.isDeleted'),
+                0,
               ),
-            )
-            .build(),
-        );
-        resultList.push({
-          variationPriceId: variationPrice.id,
-          variationPriceName: variationPrice.name,
-          totalProductPrice: calculatedResult.totalPrice,
-          totalDiscount: calculatedResult.totalDiscounts,
-          totalShipmentPrice: calculatedResult.totalPostageFee,
-          totalPrice: calculatedResult.totalSum,
-          couponCode: query.couponCode,
-          addressId: query.addressId,
-          geteways: payments,
-        });
-      }
+              {
+                [Op.eq]: 0,
+              },
+            ),
+          )
+          .build(),
+      );
+      const totalShipmentPrice = await this.shipmentService.cal(
+        variationPriceStock.stocks,
+        query.addressId,
+      );
+      resultList.push({
+        variationPriceId: variationPriceStock.variationPrice.id,
+        variationPriceName: variationPriceStock.variationPrice.name,
+        totalProductPrice: totalProductPrice,
+        totalDiscount: totalDiscount,
+        totalPrice: totalPrice + Number(totalShipmentPrice),
+        totalShipmentPrice: totalShipmentPrice,
+        payments: payments,
+      });
     }
+
+    // this is end of new
+
     return {
       result: {
         paymentOptions: resultList,
         stocks: stocks,
+        couponCode: query.couponCode,
+        addressId: query.addressId,
       },
     };
   }
