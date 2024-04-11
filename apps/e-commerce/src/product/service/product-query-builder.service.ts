@@ -56,7 +56,12 @@ export class ProductQueryBuilderService {
           },
         ),
       )
-      .filter({ publishStatusId: PublishStatusEnum.publish });
+      .filter({ publishStatusId: PublishStatusEnum.publish })
+      .filter({
+        title: {
+          [Op.like]: filter.search,
+        },
+      });
     // .filter({ inventoryStatusId: InventoryStatusEnum.available });
 
     if (slug) {
