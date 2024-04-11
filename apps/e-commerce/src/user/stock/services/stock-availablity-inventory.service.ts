@@ -39,7 +39,7 @@ export class StockAvailabilityInventoryService {
         .filter({ inventoryId: inventory.id })
         .filter({
           expire: {
-            [Op.gt]: [Sequelize.fn('getdate')],
+            [Op.gt]: Sequelize.fn('getdate'),
           },
         })
         .build(),
@@ -97,7 +97,7 @@ export class StockAvailabilityInventoryService {
         .filter({ inventoryId: inventory.id })
         .filter({
           expire: {
-            [Op.gt]: [Sequelize.fn('getdate')],
+            [Op.gt]: Sequelize.fn('getdate'),
           },
         })
         .build(),
