@@ -9,12 +9,14 @@ import { StockAvailabilityInventoryService } from './services';
 import {
   StockInventoryProcessor,
   StockInventoryRemoveProcessor,
+  StockInventoryUpdateProcessor,
 } from './processor';
 import { DBLoggerModule } from '@rahino/logger';
 import { BullModule } from '@nestjs/bullmq';
 import {
   STOCK_INVENTORY_QUEUE,
   STOCK_INVENTORY_REMOVE_QUEUE,
+  STOCK_INVENTORY_UPDATE_QUEUE,
 } from './constants';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { SequelizeModule } from '@nestjs/sequelize';
@@ -61,6 +63,9 @@ import { ShipmentModule } from './services/shipment-price';
     BullModule.registerQueueAsync({
       name: STOCK_INVENTORY_REMOVE_QUEUE,
     }),
+    BullModule.registerQueueAsync({
+      name: STOCK_INVENTORY_UPDATE_QUEUE,
+    }),
   ],
   controllers: [StockController],
   providers: [
@@ -69,6 +74,7 @@ import { ShipmentModule } from './services/shipment-price';
     StockProfile,
     StockInventoryProcessor,
     StockInventoryRemoveProcessor,
+    StockInventoryUpdateProcessor,
     StockPriceService,
   ],
 })

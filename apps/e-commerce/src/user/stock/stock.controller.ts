@@ -80,6 +80,13 @@ export class StockController {
     return await this.service.create(session, dto);
   }
 
+  @ApiOperation({ description: 'update stock' })
+  @Put('/')
+  @HttpCode(HttpStatus.CREATED)
+  async update(@GetECSession() session: ECUserSession, @Body() dto: StockDto) {
+    return await this.service.update(session, dto);
+  }
+
   @ApiOperation({ description: 'delete stock' })
   @Delete('/:id')
   @HttpCode(HttpStatus.OK)

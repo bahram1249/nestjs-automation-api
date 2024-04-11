@@ -1,4 +1,8 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { ECStock } from '@rahino/database/models/ecommerce-eav/ec-stocks.entity';
 import { StockDto } from '../dto';
@@ -26,7 +30,24 @@ export class StockAvailabilityInventoryService {
     if (!inventory) {
       throw new BadRequestException("the inventory isn't available");
     }
-    if (dto.qty > inventory.qty) {
+
+    let qty = dto.qty;
+    let findItem = await this.repository.findOne(
+      new QueryOptionsBuilder()
+        .filter({ productId: inventory.productId })
+        .filter({ sessionId: session.id })
+        .filter({ inventoryId: inventory.id })
+        .filter({
+          expire: {
+            [Op.gt]: [Sequelize.fn('getdate')],
+          },
+        })
+        .build(),
+    );
+    if (findItem) {
+      qty = qty + findItem.qty;
+    }
+    if (qty > inventory.qty) {
       throw new BadRequestException("the inventory isn't available");
     }
     const increase = this.config.get<number>('STOCK_EXPIRE_DAY') || 2;
@@ -40,8 +61,85 @@ export class StockAvailabilityInventoryService {
       increase,
       Sequelize.fn('getdate'),
     );
-    const item = await this.repository.create(insertedItem);
-    return _.pick(item, ['id', 'inventoryId', 'qty', 'expire', 'productId']);
+    if (findItem) {
+      findItem = (
+        await this.repository.update(insertedItem, {
+          where: {
+            id: findItem.id,
+          },
+          returning: true,
+        })
+      )[1][0];
+    } else {
+      findItem = await this.repository.create(insertedItem);
+    }
+
+    return _.pick(findItem, [
+      'id',
+      'inventoryId',
+      'qty',
+      'expire',
+      'productId',
+    ]);
+  }
+
+  async update(session: ECUserSession, dto: StockDto) {
+    const inventory = await this.inventoryService.findById(dto.inventoryId);
+    if (!inventory) {
+      throw new BadRequestException("the inventory isn't available");
+    }
+
+    let qty = dto.qty;
+    let findItem = await this.repository.findOne(
+      new QueryOptionsBuilder()
+        .filter({ productId: inventory.productId })
+        .filter({ sessionId: session.id })
+        .filter({ inventoryId: inventory.id })
+        .filter({
+          expire: {
+            [Op.gt]: [Sequelize.fn('getdate')],
+          },
+        })
+        .build(),
+    );
+    if (!findItem) {
+      throw new NotFoundException("the stock you mentioned isn't exists");
+    }
+
+    if (qty > inventory.qty) {
+      throw new BadRequestException("the inventory isn't available");
+    }
+    if (qty == 0) {
+      throw new BadRequestException('at least you have to set qty to 1');
+    }
+    const increase = this.config.get<number>('STOCK_EXPIRE_DAY') || 2;
+    const mappedItem = this.mapper.map(dto, StockDto, ECStock);
+    const insertedItem = _.omit(mappedItem.toJSON(), ['id']);
+    insertedItem.productId = inventory.productId;
+    insertedItem.sessionId = session.id;
+    insertedItem.expire = Sequelize.fn(
+      'dateadd',
+      Sequelize.literal('day'),
+      increase,
+      Sequelize.fn('getdate'),
+    );
+
+    findItem = (
+      await this.repository.update(insertedItem, {
+        where: {
+          id: findItem.id,
+        },
+        returning: true,
+      })
+    )[1][0];
+
+    return _.pick(findItem, [
+      'id',
+      'inventoryId',
+      'qty',
+      'expire',
+      'productId',
+    ]);
   }
 
   async remove(stockId: bigint) {

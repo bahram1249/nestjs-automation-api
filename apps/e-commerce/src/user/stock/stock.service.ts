@@ -22,6 +22,8 @@ import {
   STOCK_INVENTORY_QUEUE,
   STOCK_INVENTORY_REMOVE_JOB,
   STOCK_INVENTORY_REMOVE_QUEUE,
+  STOCK_INVENTORY_UPDATE_JOB,
+  STOCK_INVENTORY_UPDATE_QUEUE,
 } from './constants';
 import { InjectQueue } from '@nestjs/bullmq';
 import { Queue } from 'bullmq';
@@ -53,6 +55,8 @@ export class StockService {
     private readonly stockInventoryQueue: Queue,
     @InjectQueue(STOCK_INVENTORY_REMOVE_QUEUE)
     private readonly stockInventoryRemoveQueue: Queue,
+    @InjectQueue(STOCK_INVENTORY_UPDATE_QUEUE)
+    private readonly stockInventoryUpdateQueue: Queue,
     private readonly addressService: AddressService,
     @InjectModel(ECProvince)
     private readonly provinceRepository: typeof ECProvince,
@@ -362,5 +366,72 @@ export class StockService {
     return {
       result: item,
     };
+  }
+
+  async update(session: ECUserSession, dto: StockDto) {
+    const stock = await this.repository.findOne(
+      new QueryOptionsBuilder()
+        .attributes(['id', 'inventoryId', 'productId', 'qty'])
+        .filter({ sessionId: session.id })
+        .filter(
+          Sequelize.where(
+            Sequelize.fn('isnull', Sequelize.col('ECStock.isDeleted'), 0),
+            {
+              [Op.eq]: 0,
+            },
+          ),
+        )
+        .filter({
+          expire: {
+            [Op.gt]: Sequelize.fn('getdate'),
+          },
+        })
+        .filter(
+          Sequelize.where(
+            Sequelize.fn('isnull', Sequelize.col('ECStock.isPurchase'), 0),
+            {
+              [Op.eq]: 0,
+            },
+          ),
+        )
+        .build(),
+    );
+    if (!stock) {
+      throw new NotFoundException('the item with this given id not founded!');
+    }
+
+    const job = await this.stockInventoryUpdateQueue.add(
+      STOCK_INVENTORY_UPDATE_JOB,
+      {
+        session,
+        dto,
+      },
+      {
+        attempts: 1,
+        removeOnComplete: 500,
+      },
+    );
+
+    try {
+      const result = await job.waitUntilFinished(
+        new QueueEvents(STOCK_INVENTORY_UPDATE_QUEUE, {
+          connection: {
+            host: this.config.get<string>('REDIS_ADDRESS'),
+            port: this.config.get<number>('REDIS_PORT'),
+            password: this.config.get<string>('REDIS_PASSWORD'),
+          },
+        }),
+        5000,
+      );
+      const finishedJob = await Job.fromId(
+        this.stockInventoryUpdateQueue,
+        job.id,
+      );
+      return {
+        result: finishedJob.returnvalue,
+      };
+    } catch (error) {
+      throw new BadRequestException(error);
+    }
   }
 }
