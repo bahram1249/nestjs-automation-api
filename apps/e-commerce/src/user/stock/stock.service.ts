@@ -2,9 +2,7 @@ import {
   BadRequestException,
   Inject,
   Injectable,
-  InternalServerErrorException,
   NotFoundException,
-  NotImplementedException,
 } from '@nestjs/common';
 import { ECUserSession } from '@rahino/database/models/ecommerce-eav/ec-user-session.entity';
 import { StockDto, StockPriceDto } from './dto';
@@ -37,7 +35,6 @@ import { AddressService } from '../address/address.service';
 import { ECProvince } from '@rahino/database/models/ecommerce-eav/ec-province.entity';
 import { ECVariationPrice } from '@rahino/database/models/ecommerce-eav/ec-variation-prices';
 import { StockPriceService } from './services/price';
-import { PostShipmentPriceService } from './services/shipment-price/post-shipment-price.service';
 import { ShipmentInteface } from './services/shipment-price/interface';
 
 @Injectable()
