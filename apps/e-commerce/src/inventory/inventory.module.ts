@@ -8,8 +8,10 @@ import { ECGuarantee } from '@rahino/database/models/ecommerce-eav/ec-guarantee.
 import { ECGuaranteeMonth } from '@rahino/database/models/ecommerce-eav/ec-guarantee-month.entity';
 import { InventoryProfile } from './mapper';
 import {
+  DecreaseInventoryService,
   InventoryService,
   InventoryValidationService,
+  RevertInventoryQtyService,
   inventoryStatusService,
 } from './services';
 import { ECInventory } from '@rahino/database/models/ecommerce-eav/ec-inventory.entity';
@@ -19,9 +21,19 @@ import { QueryFilterModule } from '@rahino/query-filter';
 import { ECProduct } from '@rahino/database/models/ecommerce-eav/ec-product.entity';
 import { BullModule } from '@nestjs/bullmq';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { PRODUCT_INVENTORY_STATUS_QUEUE } from './constants';
+import {
+  DECREASE_INVENTORY_QUEUE,
+  PRODUCT_INVENTORY_STATUS_QUEUE,
+  REVERT_INVENTORY_QTY_QUEUE,
+} from './constants';
 import { DBLoggerModule } from '@rahino/logger';
-import { ProductInventoryStatusProcessor } from './processor';
+import {
+  DecreaseInventoryProcessor,
+  ProductInventoryStatusProcessor,
+} from './processor';
+import { ECPayment } from '@rahino/database/models/ecommerce-eav/ec-payment-entity';
+import { ECOrder } from '@rahino/database/models/ecommerce-eav/ec-order.entity';
+import { RevertInventoryQtyProcessor } from './processor/revert-inventory-qty.processor';
 
 @Module({
   imports: [
@@ -34,6 +46,8 @@ import { ProductInventoryStatusProcessor } from './processor';
       ECGuaranteeMonth,
       ECProvince,
       ECProduct,
+      ECPayment,
+      ECOrder,
     ]),
     UserVendorModule,
     VendorAddressModule,
@@ -53,6 +67,12 @@ import { ProductInventoryStatusProcessor } from './processor';
     BullModule.registerQueueAsync({
       name: PRODUCT_INVENTORY_STATUS_QUEUE,
     }),
+    BullModule.registerQueueAsync({
+      name: DECREASE_INVENTORY_QUEUE,
+    }),
+    BullModule.registerQueue({
+      name: REVERT_INVENTORY_QTY_QUEUE,
+    }),
   ],
   providers: [
     InventoryValidationService,
@@ -60,11 +80,17 @@ import { ProductInventoryStatusProcessor } from './processor';
     inventoryStatusService,
     InventoryProfile,
     ProductInventoryStatusProcessor,
+    DecreaseInventoryService,
+    DecreaseInventoryProcessor,
+    RevertInventoryQtyService,
+    RevertInventoryQtyProcessor,
   ],
   exports: [
     InventoryValidationService,
     InventoryService,
     inventoryStatusService,
+    DecreaseInventoryService,
+    RevertInventoryQtyService,
   ],
 })
 export class InventoryModule {}

@@ -34,6 +34,15 @@ import { ECOrderDetail } from '@rahino/database/models/ecommerce-eav/ec-order-de
 import { ECProduct } from '@rahino/database/models/ecommerce-eav/ec-product.entity';
 import { EAVEntityType } from '@rahino/database/models/eav/eav-entity-type.entity';
 import { ECStock } from '@rahino/database/models/ecommerce-eav/ec-stocks.entity';
+import {
+  DECREASE_INVENTORY_JOB,
+  DECREASE_INVENTORY_QUEUE,
+  REVERT_INVENTORY_QTY_JOB,
+  REVERT_INVENTORY_QTY_QUEUE,
+} from '@rahino/ecommerce/inventory/constants';
+import { Queue, QueueEvents, Job } from 'bullmq';
+import { InjectQueue } from '@nestjs/bullmq';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class PaymentService {
@@ -59,6 +68,11 @@ export class PaymentService {
     private readonly sequelize: Sequelize,
     @InjectModel(ECStock)
     private readonly stockRepository: ECStock,
+    @InjectQueue(DECREASE_INVENTORY_QUEUE)
+    private readonly decreaseInventoryQueue: Queue,
+    @InjectQueue(REVERT_INVENTORY_QTY_QUEUE)
+    private readonly revertInventoryQueue: Queue,
+    private readonly config: ConfigService,
   ) {}
 
   async stock(session: ECUserSession, body: StockPaymentDto, user: User) {
@@ -77,6 +91,7 @@ export class PaymentService {
     const findAddress = (
       await this.addressService.findById(user, body.addressId)
     ).result;
+
     for (let index = 0; index < stocks.length; index++) {
       const stock = stocks[index];
       if (
@@ -124,7 +139,7 @@ export class PaymentService {
     const totalProductPrice = variationPriceStock.stocks
       .map((stock) => stock.totalProductPrice)
       .reduce((prev, current) => prev + current);
-    const payment = await this.paymentGatewayRepository.findOne(
+    const paymentGateway = await this.paymentGatewayRepository.findOne(
       new QueryOptionsBuilder()
         .attributes(['id', 'name'])
         .filter({ variationPriceId: variationPriceStock.variationPrice.id })
@@ -143,7 +158,7 @@ export class PaymentService {
         )
         .build(),
     );
-    if (!payment) {
+    if (!paymentGateway) {
       throw new BadRequestException('invalid paymentId');
     }
     const transaction = await this.sequelize.transaction({
@@ -151,6 +166,7 @@ export class PaymentService {
     });
     let redirectUrl = '';
     try {
+      // create order
       const order = await this.createOrder(
         totalPrice,
         totalDiscount,
@@ -162,6 +178,7 @@ export class PaymentService {
         body.addressId,
         transaction,
       );
+      // create order details
       const orderDetails = await this.createOrderDetails(
         order,
         variationPriceStock,
@@ -169,7 +186,8 @@ export class PaymentService {
         transaction,
       );
 
-      redirectUrl = await this.paymentProviderService.requestPayment(
+      // create payment token from provider of payments
+      const res = await this.paymentProviderService.requestPayment(
         totalPrice + shipment.price,
         user,
         PaymentTypeEnum.ForOrder,
@@ -177,11 +195,56 @@ export class PaymentService {
         order.id,
         orderDetails,
       );
+      redirectUrl = res.redirectUrl;
 
-      // stocks...
+      // set stocks to purchase
       await this.purchaseStocks(stocks, transaction);
 
       // decrease inventories
+      const job = await this.decreaseInventoryQueue.add(
+        DECREASE_INVENTORY_JOB,
+        {
+          paymentId: res.paymentId,
+          transaction: transaction,
+        },
+        {
+          attempts: 1,
+          removeOnComplete: 500,
+        },
+      );
+      const result = await job.waitUntilFinished(
+        new QueueEvents(DECREASE_INVENTORY_QUEUE, {
+          connection: {
+            host: this.config.get<string>('REDIS_ADDRESS'),
+            port: this.config.get<number>('REDIS_PORT'),
+            password: this.config.get<string>('REDIS_PASSWORD'),
+          },
+        }),
+        5000,
+      );
+      const finishedJob = await Job.fromId(this.decreaseInventoryQueue, job.id);
+
+      // revert inventory qty after one hour if there is no payment
+      const hour = 1;
+      const now = new Date();
+      const targetTime = new Date().setTime(
+        now.getTime() + hour * 60 * 60 * 1000,
+      );
+      const delay = Number(targetTime) - Number(new Date());
+
+      this.revertInventoryQueue.add(
+        REVERT_INVENTORY_QTY_JOB,
+        {
+          paymentId: res.paymentId,
+        },
+        {
+          removeOnComplete: true,
+          backoff: {
+            delay: delay,
+            type: 'fixed',
+          },
+        },
+      );
 
       await transaction.commit();
     } catch (error) {

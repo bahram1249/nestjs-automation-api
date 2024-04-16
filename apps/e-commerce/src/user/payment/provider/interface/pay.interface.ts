@@ -11,5 +11,5 @@ export interface PayInterface {
     transaction?: Transaction,
     orderId?: bigint,
     orderDetails?: ECOrderDetail[],
-  ): Promise<string>;
+  ): Promise<{ redirectUrl: string; paymentId: bigint }>;
 }

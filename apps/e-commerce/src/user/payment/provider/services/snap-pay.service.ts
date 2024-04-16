@@ -22,6 +22,7 @@ import { SnapPayDto } from '@rahino/ecommerce/verify-payment/dto';
 import { ECOrder } from '@rahino/database/models/ecommerce-eav/ec-order.entity';
 import { Response } from 'express';
 import { ConfigService } from '@nestjs/config';
+import { RevertInventoryQtyService } from '@rahino/ecommerce/inventory/services';
 
 export class SnapPayService implements PayInterface {
   private baseUrl = '';
@@ -33,6 +34,7 @@ export class SnapPayService implements PayInterface {
     @InjectModel(ECOrder)
     private readonly orderRepository: typeof ECOrder,
     private readonly config: ConfigService,
+    private readonly revertInventoryQtyService: RevertInventoryQtyService,
   ) {
     this.baseUrl = 'https://snap-pay.com';
   }
@@ -43,7 +45,7 @@ export class SnapPayService implements PayInterface {
     transaction?: Transaction,
     orderId?: bigint,
     orderDetails?: ECOrderDetail[],
-  ) {
+  ): Promise<{ redirectUrl: string; paymentId: bigint }> {
     const paymentGateway = await this.paymentGateway.findOne(
       new QueryOptionsBuilder()
         .filter({ serviceName: 'SnapPayService' })
@@ -141,7 +143,10 @@ export class SnapPayService implements PayInterface {
         },
       )
     )[1][0];
-    return finalRequest.data.response.paymentPageUrl;
+    return {
+      redirectUrl: finalRequest.data.response.paymentPageUrl,
+      paymentId: payment.id,
+    };
   }
 
   async verify(res: Response, query: SnapPayDto) {
@@ -180,6 +185,8 @@ export class SnapPayService implements PayInterface {
           { where: { id: query.transactionId }, returning: true },
         )
       )[1][0];
+      // revert qty
+      await this.revertInventoryQtyService.revertQty(payment.id);
     } else if (query.state == 'OK') {
       if (Number(query.amount) == Number(payment.totalprice)) {
         const token = await this.generateToken(paymentGateway);

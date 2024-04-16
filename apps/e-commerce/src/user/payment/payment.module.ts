@@ -13,6 +13,12 @@ import { ECOrder } from '@rahino/database/models/ecommerce-eav/ec-order.entity';
 import { ECOrderDetail } from '@rahino/database/models/ecommerce-eav/ec-order-detail.entity';
 import { ECStock } from '@rahino/database/models/ecommerce-eav/ec-stocks.entity';
 import { SessionModule } from '../session/session.module';
+import { BullModule } from '@nestjs/bullmq';
+import { ConfigService } from '@nestjs/config';
+import {
+  DECREASE_INVENTORY_QUEUE,
+  REVERT_INVENTORY_QTY_QUEUE,
+} from '@rahino/ecommerce/inventory/constants';
 
 @Module({
   imports: [
@@ -30,6 +36,28 @@ import { SessionModule } from '../session/session.module';
     ShipmentModule.register({ token: 'SHIPMENT_SERVICE' }),
     StockModule,
     AddressModule,
+    BullModule.registerQueueAsync({
+      name: DECREASE_INVENTORY_QUEUE,
+      inject: [ConfigService],
+      useFactory: (config: ConfigService) => ({
+        connection: {
+          host: config.get<string>('REDIS_ADDRESS'),
+          port: config.get<number>('REDIS_PORT'),
+          password: config.get<string>('REDIS_PASSWORD'),
+        },
+      }),
+    }),
+    BullModule.registerQueueAsync({
+      name: REVERT_INVENTORY_QTY_QUEUE,
+      inject: [ConfigService],
+      useFactory: (config: ConfigService) => ({
+        connection: {
+          host: config.get<string>('REDIS_ADDRESS'),
+          port: config.get<number>('REDIS_PORT'),
+          password: config.get<string>('REDIS_PASSWORD'),
+        },
+      }),
+    }),
   ],
   controllers: [PaymentController],
   providers: [PaymentService],

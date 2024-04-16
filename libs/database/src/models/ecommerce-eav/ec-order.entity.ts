@@ -5,11 +5,13 @@ import {
   DataType,
   ForeignKey,
   BelongsTo,
+  HasMany,
 } from 'sequelize-typescript';
 import { ECOrderShipmentWay } from './ec-order-shipmentway.entity';
 import { ECOrderStatus } from './ec-order-status.entity';
 import { User } from '../core/user.entity';
 import { ECAddress } from './ec-address.entity';
+import { ECOrderDetail } from './ec-order-detail.entity';
 
 @Table({ tableName: 'ECOrders' })
 export class ECOrder extends Model {
@@ -95,4 +97,7 @@ export class ECOrder extends Model {
     allowNull: true,
   })
   isDeleted?: boolean;
+
+  @HasMany(() => ECOrderDetail, { as: 'details', foreignKey: 'orderId' })
+  details?: ECOrderDetail[];
 }

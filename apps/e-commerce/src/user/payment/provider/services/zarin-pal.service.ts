@@ -14,8 +14,8 @@ export class ZarinPalService implements PayInterface {
     transaction?: Transaction,
     orderId?: bigint,
     orderDetails?: ECOrderDetail[],
-  ) {
+  ): Promise<{ redirectUrl: string; paymentId: bigint }> {
     throw new NotImplementedException();
-    return '';
+    return null;
   }
 }
