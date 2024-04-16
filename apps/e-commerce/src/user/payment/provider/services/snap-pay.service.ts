@@ -60,31 +60,7 @@ export class SnapPayService implements PayInterface {
     if (!paymentGateway) {
       throw new BadRequestException('invalid payment');
     }
-    const clientId = paymentGateway.username;
-    if (!clientId) {
-      throw new InternalServerErrorException('clientId not provided');
-    }
-    const clientSecret = paymentGateway.password;
-    if (!clientSecret) {
-      throw new InternalServerErrorException('secret not provided');
-    }
-    const base64 = new Base64();
-    const authorization =
-      'Basic ' + base64.encode(`${clientId}:${clientSecret}`);
-
-    const tokenResponse = await axios.post(
-      this.baseUrl + '/api/online/v1/oauth/token',
-      {},
-      {
-        headers: {
-          Authorization: authorization,
-        },
-      },
-    );
-    if (tokenResponse.status < 200 || tokenResponse.status > 299) {
-      throw new InternalServerErrorException('invalid token');
-    }
-    const token = tokenResponse.data.access_token;
+    const token = await this.generateToken(paymentGateway);
 
     const eligeble = await axios.get(
       this.baseUrl + `/api/online/offer/v1/eligible?amount=${totalPrice}`,
@@ -206,31 +182,7 @@ export class SnapPayService implements PayInterface {
       )[1][0];
     } else if (query.state == 'OK') {
       if (Number(query.amount) == Number(payment.totalprice)) {
-        const clientId = paymentGateway.username;
-        if (!clientId) {
-          throw new InternalServerErrorException('clientId not provided');
-        }
-        const clientSecret = paymentGateway.password;
-        if (!clientSecret) {
-          throw new InternalServerErrorException('secret not provided');
-        }
-        const base64 = new Base64();
-        const authorization =
-          'Basic ' + base64.encode(`${clientId}:${clientSecret}`);
-
-        const tokenResponse = await axios.post(
-          this.baseUrl + '/api/online/v1/oauth/token',
-          {},
-          {
-            headers: {
-              Authorization: authorization,
-            },
-          },
-        );
-        if (tokenResponse.status < 200 || tokenResponse.status > 299) {
-          throw new InternalServerErrorException('invalid token');
-        }
-        const token = tokenResponse.data.access_token;
+        const token = await this.generateToken(paymentGateway);
 
         const result = await axios.post(
           this.baseUrl + '/api/online/payment/v1/verify',
@@ -288,5 +240,34 @@ export class SnapPayService implements PayInterface {
       301,
       frontUrl + `/payment/transaction?transaction=${payment.id}`,
     );
+  }
+
+  private async generateToken(paymentGateway: ECPaymentGateway) {
+    const clientId = paymentGateway.username;
+    if (!clientId) {
+      throw new InternalServerErrorException('clientId not provided');
+    }
+    const clientSecret = paymentGateway.password;
+    if (!clientSecret) {
+      throw new InternalServerErrorException('secret not provided');
+    }
+    const base64 = new Base64();
+    const authorization =
+      'Basic ' + base64.encode(`${clientId}:${clientSecret}`);
+
+    const tokenResponse = await axios.post(
+      this.baseUrl + '/api/online/v1/oauth/token',
+      {},
+      {
+        headers: {
+          Authorization: authorization,
+        },
+      },
+    );
+    if (tokenResponse.status < 200 || tokenResponse.status > 299) {
+      throw new InternalServerErrorException('invalid token');
+    }
+    const token = tokenResponse.data.access_token;
+    return token;
   }
 }
