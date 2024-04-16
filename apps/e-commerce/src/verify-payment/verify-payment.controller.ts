@@ -1,9 +1,9 @@
 import {
+  Body,
   Controller,
-  Get,
   HttpCode,
   HttpStatus,
-  Query,
+  Post,
   Res,
 } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
@@ -19,9 +19,9 @@ export class VerifyPaymentController {
   constructor(private readonly service: VerifyPaymentService) {}
 
   @ApiOperation({ description: 'verify snappay' })
-  @Get('/snappay')
+  @Post('/snappay')
   @HttpCode(HttpStatus.OK)
-  async verifySnappay(@Res() res, @Query() query: SnapPayDto) {
+  async verifySnappay(@Res() res, @Body() query: SnapPayDto) {
     return await this.service.verifySnappay(res, query);
   }
 }
