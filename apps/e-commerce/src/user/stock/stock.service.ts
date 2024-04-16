@@ -193,13 +193,13 @@ export class StockService {
       const variationPriceStock = variationPriceStocks[index];
       const totalPrice = variationPriceStock.stocks
         .map((stock) => stock.totalPrice)
-        .reduce((prev, current) => prev + current);
+        .reduce((prev, current) => prev + current, 0);
       const totalDiscount = variationPriceStock.stocks
         .map((stock) => stock.discountFee)
-        .reduce((prev, current) => prev + current);
+        .reduce((prev, current) => prev + current, 0);
       const totalProductPrice = variationPriceStock.stocks
         .map((stock) => stock.totalProductPrice)
-        .reduce((prev, current) => prev + current);
+        .reduce((prev, current) => prev + current, 0);
       const payments = await this.paymentGatewayRepository.findAll(
         new QueryOptionsBuilder()
           .attributes(['id', 'name'])

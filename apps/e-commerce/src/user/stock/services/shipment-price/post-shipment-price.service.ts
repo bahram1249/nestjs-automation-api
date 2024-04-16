@@ -19,7 +19,7 @@ export class PostShipmentPriceService implements ShipmentInteface {
     addressId?: bigint,
   ): Promise<{ type: OrderShipmentwayEnum; price: number }> {
     const weights = stockPrices.map((stock) => stock.weight);
-    const totalWeight = weights.reduce((prev, current) => prev + current);
+    const totalWeight = weights.reduce((prev, current) => prev + current, 0);
     let postageFee = await this.postageFeeRepository.findOne(
       new QueryOptionsBuilder()
         .filter(

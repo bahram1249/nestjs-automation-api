@@ -70,9 +70,11 @@ export class ValidateSessionService {
     if (!findSession) return false;
     // if the session exists but not assign to this user
     if (findSession.userId == null && request.user != null) {
-      findSession = await this.userSessionRepository.update(
-        { userId: request.user.id },
-        { where: { id: session }, returning: true },
+      findSession = (
+        await this.userSessionRepository.update(
+          { userId: request.user.id },
+          { where: { id: session }, returning: true },
+        )
       )[1][0];
     }
     // store this session for 300 seconds

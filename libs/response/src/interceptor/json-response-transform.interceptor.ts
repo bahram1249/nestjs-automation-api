@@ -26,7 +26,7 @@ export class JsonResponseTransformInterceptor<T>
         statusCode: context.switchToHttp().getResponse().statusCode,
         reqId: context.switchToHttp().getRequest().reqId,
         message: data.message || 'Success',
-        result: data.result || data,
+        result: data.result != undefined ? data.result : data,
         timestamp: new Date().toISOString(),
         path: context.switchToHttp().getRequest().url,
         total: data.total || 0,
