@@ -38,6 +38,8 @@ import { DiscountConditionTypeModule } from './admin/discount-condition-type/dis
 import { DiscountConditionValueModule } from './admin/discount-condition-value/discount-condition-value.module';
 import { DiscountConditionModule } from './admin/discount-condition/discount-condition.module';
 import { StockModule } from './user/stock/stock.module';
+import { PaymentModule } from './user/payment/payment.module';
+import { VerifyPaymentModule } from './verify-payment/verify-payment.module';
 @Module({
   imports: [
     LoggingModule,
@@ -78,6 +80,8 @@ import { StockModule } from './user/stock/stock.module';
     DiscountConditionValueModule,
     DiscountConditionModule,
     StockModule,
+    PaymentModule,
+    VerifyPaymentModule,
   ],
   providers: [
     {

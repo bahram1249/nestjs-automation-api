@@ -75,6 +75,14 @@ import { ECDiscountCondition } from './models/ecommerce-eav/ec-discount-conditio
 import { ECStock } from './models/ecommerce-eav/ec-stocks.entity';
 import { ECPostageFee } from './models/ecommerce-eav/ec-postage-fee.entity';
 import { ECPaymentGateway } from './models/ecommerce-eav/ec-payment-gateway.entity';
+import { ECOrderStatus } from './models/ecommerce-eav/ec-order-status.entity';
+import { ECOrderDetailStatus } from './models/ecommerce-eav/ec-order-detail-status.entity';
+import { ECOrderShipmentWay } from './models/ecommerce-eav/ec-order-shipmentway.entity';
+import { ECOrder } from './models/ecommerce-eav/ec-order.entity';
+import { ECPaymentStatus } from './models/ecommerce-eav/ec-payment-status.entity';
+import { ECPaymentType } from './models/ecommerce-eav/ec-payment-type.entity';
+import { ECPayment } from './models/ecommerce-eav/ec-payment-entity';
+import { ECOrderDetail } from './models/ecommerce-eav/ec-order-detail.entity';
 
 @Module({
   imports: [
@@ -146,6 +154,14 @@ import { ECPaymentGateway } from './models/ecommerce-eav/ec-payment-gateway.enti
           ECStock,
           ECPaymentGateway,
           ECPostageFee,
+          ECOrderStatus,
+          ECOrderDetailStatus,
+          ECOrderShipmentWay,
+          ECOrder,
+          ECPaymentStatus,
+          ECPaymentType,
+          ECPayment,
+          ECOrderDetail,
           Buffet,
           BuffetGallery,
           BuffetType,

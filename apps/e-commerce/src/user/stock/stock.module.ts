@@ -77,5 +77,6 @@ import { ShipmentModule } from './services/shipment-price';
     StockInventoryUpdateProcessor,
     StockPriceService,
   ],
+  exports: [StockService, StockPriceService],
 })
 export class StockModule {}

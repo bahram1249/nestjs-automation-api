@@ -218,7 +218,7 @@ export class StockService {
           )
           .build(),
       );
-      const totalShipmentPrice = await this.shipmentService.cal(
+      const shipment = await this.shipmentService.cal(
         variationPriceStock.stocks,
         query.addressId,
       );
@@ -227,8 +227,9 @@ export class StockService {
         variationPriceName: variationPriceStock.variationPrice.name,
         totalProductPrice: totalProductPrice,
         totalDiscount: totalDiscount,
-        totalPrice: totalPrice + Number(totalShipmentPrice),
-        totalShipmentPrice: totalShipmentPrice,
+        totalPrice: totalPrice + Number(shipment.price),
+        totalShipmentPrice: shipment.price,
+        shipmentType: shipment.type,
         payments: payments,
       });
     }

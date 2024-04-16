@@ -5,6 +5,8 @@ export interface StockPriceInterface {
   productId: bigint;
   inventoryId: bigint;
   variationPrice: ECVariationPrice;
+  inventoryPriceId?: bigint;
+  vendorId?: number;
   basePrice?: number;
   afterDiscount?: number;
   discountId?: bigint;

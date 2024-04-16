@@ -43,4 +43,16 @@ export class ECPaymentGateway extends Model {
     allowNull: true,
   })
   isDeleted?: boolean;
+
+  @Column({
+    type: DataType.STRING,
+    allowNull: true,
+  })
+  username?: string;
+
+  @Column({
+    type: DataType.STRING,
+    allowNull: true,
+  })
+  password?: string;
 }

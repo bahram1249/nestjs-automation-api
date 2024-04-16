@@ -48,6 +48,7 @@ export class StockPriceService {
         );
     }
     result.basePrice = Number(price.price);
+    result.inventoryPriceId = price.id;
     result.afterDiscount = price.appliedDiscount
       ? Number(price.appliedDiscount.newPrice)
       : Number(price.price);
@@ -57,6 +58,7 @@ export class StockPriceService {
     result.totalPrice = result.afterDiscount * stock.qty;
     result.discountFee = (result.basePrice - result.afterDiscount) * stock.qty;
     result.weight = stock.product.inventories[0].weight;
+    result.vendorId = stock.product.inventories[0].vendorId;
     return result;
   }
 

@@ -5,6 +5,7 @@ import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builde
 import { Op, Sequelize } from 'sequelize';
 import { StockPriceInterface } from '../price';
 import { ShipmentInteface } from './interface';
+import { OrderShipmentwayEnum } from '@rahino/ecommerce/util/enum';
 
 @Injectable()
 export class PostShipmentPriceService implements ShipmentInteface {
@@ -13,7 +14,10 @@ export class PostShipmentPriceService implements ShipmentInteface {
     private readonly postageFeeRepository: typeof ECPostageFee,
   ) {}
 
-  async cal(stockPrices: StockPriceInterface[], addressId?: bigint) {
+  async cal(
+    stockPrices: StockPriceInterface[],
+    addressId?: bigint,
+  ): Promise<{ type: OrderShipmentwayEnum; price: number }> {
     const weights = stockPrices.map((stock) => stock.weight);
     const totalWeight = weights.reduce((prev, current) => prev + current);
     let postageFee = await this.postageFeeRepository.findOne(
@@ -35,6 +39,9 @@ export class PostShipmentPriceService implements ShipmentInteface {
           .build(),
       );
     }
-    return postageFee.allProvincePrice;
+    return {
+      type: OrderShipmentwayEnum.post,
+      price: Number(postageFee.allProvincePrice),
+    };
   }
 }

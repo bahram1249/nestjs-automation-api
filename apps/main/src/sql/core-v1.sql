@@ -2523,6 +2523,28 @@ BEGIN
 	SELECT 'ec-paymentgateways-v1', GETDATE(), GETDATE()
 END
 
+GO
+
+-- ec-paymentgateways-v2
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ec-paymentgateways-v2' 
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'SITE_NAME' AND [value] IN ('ecommerce'))
+		)
+BEGIN
+
+	ALTER TABLE ECPaymentGateways
+	ADD username nvarchar(512) null,
+		[password]	nvarchar(512) null;
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'ec-paymentgateways-v2', GETDATE(), GETDATE()
+END
+
+GO
+
+
 -- ec-postage-fee-v1
 IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ec-postage-fee-v1' 
 			)
@@ -2547,6 +2569,388 @@ END
 
 GO
 
+
+
+-- ec-order-status
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ec-order-status-v1' 
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'SITE_NAME' AND [value] IN ('ecommerce'))
+		)
+BEGIN
+
+	CREATE TABLE ECOrderStatus(
+		id							int							PRIMARY KEY,
+		name						nvarchar(256)				NOT NULL,
+		[createdAt]					datetimeoffset				NOT NULL,
+		[updatedAt]					datetimeoffset				NOT NULL,
+	);
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'ec-order-status-v1', GETDATE(), GETDATE()
+END
+
+GO
+
+
+-- ec-order-detail-status
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ec-order-detail-status-v1' 
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'SITE_NAME' AND [value] IN ('ecommerce'))
+		)
+BEGIN
+
+	CREATE TABLE ECOrderDetailStatus(
+		id							int							PRIMARY KEY,
+		name						nvarchar(256)				NOT NULL,
+		[createdAt]					datetimeoffset				NOT NULL,
+		[updatedAt]					datetimeoffset				NOT NULL,
+	);
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'ec-order-detail-status-v1', GETDATE(), GETDATE()
+END
+
+GO
+
+
+
+-- ec-order-shipment-ways
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ec-order-shipment-ways-v1' 
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'SITE_NAME' AND [value] IN ('ecommerce'))
+		)
+BEGIN
+
+	CREATE TABLE ECOrderShipmentWays(
+		id							int							PRIMARY KEY,
+		name						nvarchar(256)				NOT NULL,
+		[createdAt]					datetimeoffset				NOT NULL,
+		[updatedAt]					datetimeoffset				NOT NULL,
+	);
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'ec-order-shipment-ways-v1', GETDATE(), GETDATE()
+END
+
+GO
+
+
+-- ec-orders
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ec-orders-v1' 
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'SITE_NAME' AND [value] IN ('ecommerce'))
+		)
+BEGIN
+
+	CREATE TABLE ECOrders(
+		id							bigint	identity(1,1)		PRIMARY KEY,
+		totalProductPrice			bigint						NULL,
+		totalDiscountFee			bigint						NULL,
+		totalShipmentPrice			bigint						NULL,
+		orderShipmentWayId			int							NULL
+			CONSTRAINT FK_ECOrders_OrderShipmentWays
+				FOREIGN KEY REFERENCES ECOrderShipmentWays(id),
+		totalPrice					bigint						NULL,
+		orderStatusId				int							NOT NULL
+			CONSTRAINT FK_ECOrders_OrderStatusId
+				FOREIGN KEY REFERENCES ECOrderStatus(id),
+		sessionId					nvarchar(256)				NOT NULL
+			CONSTRAINT FK_ECOrders_SessionId
+				FOREIGN KEY REFERENCES ECUserSessions(id),
+		userId						bigint						NOT NULL
+			CONSTRAINT FK_ECOrders_UserId
+				FOREIGN KEY REFERENCES Users(id),
+		addressId					bigint						NULL
+			CONSTRAINT FK_ECOrders_AddressId
+				FOREIGN KEY REFERENCES ECAddresses(id),
+		isDeleted					bit							NULL,
+		[createdAt]					datetimeoffset				NOT NULL,
+		[updatedAt]					datetimeoffset				NOT NULL,
+	);
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'ec-orders-v1', GETDATE(), GETDATE()
+END
+
+GO
+
+
+-- ec-order-details
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ec-order-details-v1' 
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'SITE_NAME' AND [value] IN ('ecommerce'))
+		)
+BEGIN
+
+
+	CREATE TABLE ECOrderDetails(
+		id							bigint	identity(1,1)		PRIMARY KEY,
+		orderId						bigint						NOT NULL
+			CONSTRAINT FK_ECOrderDetails_OrderId
+				FOREIGN KEY REFERENCES ECOrders(id),
+		orderDetailStatusId			int							NOT NULL
+			CONSTRAINT FK_ECOrderDetails_OrderDetailStatusId
+				FOREIGN KEY REFERENCES ECOrderDetailStatus(id),
+		vendorId					int							NOT NULL
+			CONSTRAINT FK_ECOrderDetails_VendorId
+				FOREIGN KEY REFERENCES ECVendors(id),
+		productId					bigint						NOT NULL
+			CONSTRAINT FK_ECOrderDetails_ProductId
+				FOREIGN KEY REFERENCES ECProducts(id),
+		inventoryId					bigint						NOT NULL
+			CONSTRAINT FK_ECOrderDetails_InventoryId
+				FOREIGN KEY REFERENCES ECInventories(id),
+		inventoryPriceId			bigint						NOT NULL
+			CONSTRAINT FK_ECOrderDetails_InventoryPriceId
+				FOREIGN KEY REFERENCES ECInventoryPrices(id),
+		stockId						bigint						NULL
+			CONSTRAINT FK_ECOrderDetails_Stocks
+				FOREIGN KEY REFERENCES ECStocks(id),
+		qty							int							NULL,
+		productPrice				bigint						NULL,
+		discountFee					bigint						NULL,
+		discountId					bigint						NULL
+			CONSTRAINT FK_ECOrderDetails_DiscountId
+				FOREIGN KEY REFERENCES ECDiscounts(id),
+		totalPrice					bigint						NULL,
+		userId						bigint						NULL
+			CONSTRAINT FK_ECOrderDetails_UserId
+				FOREIGN KEY REFERENCES Users(id),
+		[createdAt]					datetimeoffset				NOT NULL,
+		[updatedAt]					datetimeoffset				NOT NULL,
+	);
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'ec-order-details-v1', GETDATE(), GETDATE()
+END
+
+GO
+
+
+-- ec-payment-status
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ec-payment-status-v1' 
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'SITE_NAME' AND [value] IN ('ecommerce'))
+		)
+BEGIN
+
+	CREATE TABLE ECPaymentStatus(
+		id							int							PRIMARY KEY,
+		name						nvarchar(256)				NULL,
+		[createdAt]					datetimeoffset				NOT NULL,
+		[updatedAt]					datetimeoffset				NOT NULL,
+	);
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'ec-payment-status-v1', GETDATE(), GETDATE()
+END
+
+GO
+
+-- ec-payment-types
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ec-payment-types-v1' 
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'SITE_NAME' AND [value] IN ('ecommerce'))
+		)
+BEGIN
+
+	CREATE TABLE ECPaymentTypes(
+		id							int							PRIMARY KEY,
+		name						nvarchar(256)				NULL,
+		[createdAt]					datetimeoffset				NOT NULL,
+		[updatedAt]					datetimeoffset				NOT NULL,
+	);
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'ec-payment-types-v1', GETDATE(), GETDATE()
+END
+
+GO
+
+
+-- ec-payments
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ec-payments-v1' 
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'SITE_NAME' AND [value] IN ('ecommerce'))
+		)
+BEGIN
+
+
+	CREATE TABLE ECPayments(
+		id									bigint	identity(1,1)		PRIMARY KEY,
+		paymentGatewayId					int							NOT NULL
+			CONSTRAINT FK_ECPayments_paymentId
+				FOREIGN KEY REFERENCES ECPaymentGateways(id),
+		paymentTypeId				int							NOT NULL
+			CONSTRAINT FK_ECPayments_paymentTypeId
+				FOREIGN KEY REFERENCES ECPaymentTypes(id),
+		paymentStatusId				int							NOT NULL
+			CONSTRAINT FK_ECPayments_PaymentStatusId
+				FOREIGN KEY REFERENCES ECPaymentStatus(id),
+		totalprice					bigint						NULL,
+		transactionId				nvarchar(256)				NULL,
+		paymentToken				nvarchar(256)				NULL,
+		transactionReceipt			nvarchar(512)				NULL,
+		orderId						bigint						NULL
+			CONSTRAINT FK_ECPayments_OrderId
+				FOREIGN KEY REFERENCES ECOrders(id),
+		userId						bigint						NOT NULL
+			CONSTRAINT FK_ECPayments_UserId
+				FOREIGN KEY REFERENCES Users(id),
+		isDeleted					bit							NULL,
+		[createdAt]					datetimeoffset				NOT NULL,
+		[updatedAt]					datetimeoffset				NOT NULL,
+	);
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'ec-payments-v1', GETDATE(), GETDATE()
+END
+
+GO
+
+
+
+
+
+
+/*
+
+Data
+
+
+*/
+
+
+
+-- ec-order-status-Data-v1
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ec-order-status-Data-v1' 
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'SITE_NAME' AND [value] IN ('ecommerce'))
+		)
+BEGIN
+
+	INSERT INTO ECOrderStatus(id, name ,createdAt, updatedAt)
+	VALUES (1, N'منتظر پرداخت', GETDATE(), GETDATE())
+			,(2, N'پرداخت شده', GETDATE(), GETDATE())
+			,(3, N'سفارش پردازش شده', GETDATE(), GETDATE())
+			,(4, N'ارسال به پست', GETDATE(), GETDATE())
+			,(5, N'ارسال به پیک', GETDATE(), GETDATE())
+			,(6, N'سفارش تحویل مشتری گردیده', GETDATE(), GETDATE())
+			
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'ec-order-status-Data-v1', GETDATE(), GETDATE()
+END
+
+GO
+
+
+-- ec-order-detail-status-Data-v1
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ec-order-detail-status-Data-v1' 
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'SITE_NAME' AND [value] IN ('ecommerce'))
+		)
+BEGIN
+
+	INSERT INTO ECOrderDetailStatus(id, name ,createdAt, updatedAt)
+	VALUES (1, N'منتظر پردازش', GETDATE(), GETDATE())
+			,(2, N'پردازش شده', GETDATE(), GETDATE())
+			
+			
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'ec-order-detail-status-Data-v1', GETDATE(), GETDATE()
+END
+
+GO
+
+
+-- ec-payment-status-Data-v1
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ec-payment-status-Data-v1' 
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'SITE_NAME' AND [value] IN ('ecommerce'))
+		)
+BEGIN
+
+	INSERT INTO ECPaymentStatus(id, name ,createdAt, updatedAt)
+	VALUES (1, N'منتظر پرداخت', GETDATE(), GETDATE())
+			,(2, N'پرداخت ناموفق', GETDATE(), GETDATE())
+			,(3, N'پرداخت موفق', GETDATE(), GETDATE())
+			,(4, N'وجه بازگشتی', GETDATE(), GETDATE())
+			
+			
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'ec-payment-status-Data-v1', GETDATE(), GETDATE()
+END
+
+GO
+
+
+-- ec-payment-types-Data-v1
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ec-payment-types-Data-v1' 
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'SITE_NAME' AND [value] IN ('ecommerce'))
+		)
+BEGIN
+
+	INSERT INTO ECPaymentTypes(id, name ,createdAt, updatedAt)
+	VALUES (1, N'به منظور پرداخت سفارش', GETDATE(), GETDATE())
+			,(2, N'به منظور افزایش موجودی کیف پول', GETDATE(), GETDATE())
+			
+			
+			
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'ec-payment-types-Data-v1', GETDATE(), GETDATE()
+END
+
+GO
+
+-- ec-order-shipment-ways-Data-v1
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ec-order-shipment-ways-Data-v1' 
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'SITE_NAME' AND [value] IN ('ecommerce'))
+		)
+BEGIN
+
+	INSERT INTO ECOrderShipmentWays(id, name ,createdAt, updatedAt)
+	VALUES (1, N'ارسال از طریق پست', GETDATE(), GETDATE())
+			,(2, N'ارسال از طریق پیک', GETDATE(), GETDATE())
+			
+			
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'ec-order-shipment-ways-Data-v1', GETDATE(), GETDATE()
+END
+
+GO
 
 
 -- ec-postage-fee-Data-v1
