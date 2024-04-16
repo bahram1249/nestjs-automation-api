@@ -76,6 +76,7 @@ export class RevertInventoryQtyService {
       if (inventory.qty > 0) {
         inventory.inventoryStatusId = InventoryStatusEnum.available;
       }
+      inventory = await inventory.save();
       await this.inventoryStatusService.productInventoryStatusUpdate(
         detail.productId,
       );

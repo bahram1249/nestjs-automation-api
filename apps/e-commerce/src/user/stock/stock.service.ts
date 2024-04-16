@@ -330,7 +330,6 @@ export class StockService {
   async deleteById(session: ECUserSession, entityId: bigint) {
     let item = await this.repository.findOne(
       new QueryOptionsBuilder()
-        .attributes(['id', 'inventoryId', 'productId', 'qty'])
         .filter({ id: entityId })
         .filter({ sessionId: session.id })
         .filter(
