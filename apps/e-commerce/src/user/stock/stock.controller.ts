@@ -8,16 +8,10 @@ import {
   Param,
   Post,
   Put,
-  Query,
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
-import {
-  ApiBearerAuth,
-  ApiOperation,
-  ApiQuery,
-  ApiTags,
-} from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { OptionalJwtGuard } from '@rahino/auth/guard';
 import { JsonResponseTransformInterceptor } from '@rahino/response/interceptor';
 import { SessionGuard } from '../session/guard';
