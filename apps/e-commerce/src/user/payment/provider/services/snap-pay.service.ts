@@ -63,91 +63,95 @@ export class SnapPayService implements PayInterface {
     if (!paymentGateway) {
       throw new BadRequestException('invalid payment');
     }
-    const token = await this.generateToken(paymentGateway);
-
-    const eligeble = await axios.get(
-      this.baseUrl + `/api/online/offer/v1/eligible?amount=${totalPrice}`,
-      {
-        headers: {
-          Authorization: 'Bearer ' + token,
-        },
-      },
-    );
-    if (eligeble.data.successful != true) {
-      throw new BadRequestException('invalid to use this payment gateway');
-    }
-
-    let payment = await this.paymentRepository.create(
-      {
-        paymentGatewayId: paymentGateway.id,
-        paymentTypeId: paymentType,
-        paymentStatusId: PaymentStatusEnum.WaitingForPayment,
-        totalPrice: totalPrice * 10,
-        orderId: orderId,
-        userId: user.id,
-      },
-      {
-        transaction: transaction,
-      },
-    );
-
-    const baseUrl = this.config.get('BASE_URL');
-    const finalRequetData = {
-      amount: totalPrice * 10,
-      cartList: [
+    try {
+      const token = await this.generateToken(paymentGateway);
+      const eligeble = await axios.get(
+        this.baseUrl + `/api/online/offer/v1/eligible?amount=${totalPrice}`,
         {
-          cartId: orderId,
-          cartItems: orderDetails.map((orderDetail) => {
-            return {
-              id: orderDetail.id,
-              amount: Number(orderDetail.productPrice) * 10,
-              count: orderDetail.qty,
-              name: orderDetail.product.title,
-              category: orderDetail.product.entityType.name,
-              totalAmount: Number(orderDetail.totalPrice) * 10,
-            };
-          }),
-          isShipmentIncluded: true,
-          isTaxIncluded: true,
-        },
-      ],
-      mobile: user.phoneNumber,
-      paymentMethodTypeDto: 'INSTALLMENT',
-      returnURL: baseUrl + '/v1/api/ecommerce/verifyPayments/snappay',
-      transactionId: payment.id,
-    };
-
-    const finalRequest = await axios.post(
-      this.baseUrl + '/api/online/payment/v1/token',
-      finalRequetData,
-      {
-        headers: {
-          Authorization: 'Bearer ' + token,
-        },
-      },
-    );
-    if (finalRequest.data.successful != true) {
-      throw new InternalServerErrorException('invalid payment Request');
-    }
-
-    payment = (
-      await this.paymentRepository.update(
-        {
-          paymentToken: finalRequest.data.response.paymentToken,
-        },
-        {
-          where: {
-            id: payment.id,
+          headers: {
+            Authorization: 'Bearer ' + token,
           },
-          transaction: transaction,
-          returning: true,
         },
-      )
-    )[1][0];
-    return {
-      redirectUrl: finalRequest.data.response.paymentPageUrl,
-      paymentId: payment.id,
-    };
+      );
+      if (eligeble.data.successful != true) {
+        throw new BadRequestException('invalid to use this payment gateway');
+      }
+
+      let payment = await this.paymentRepository.create(
+        {
+          paymentGatewayId: paymentGateway.id,
+          paymentTypeId: paymentType,
+          paymentStatusId: PaymentStatusEnum.WaitingForPayment,
+          totalPrice: totalPrice * 10,
+          orderId: orderId,
+          userId: user.id,
+        },
+        {
+          transaction: transaction,
+        },
+      );
+
+      const baseUrl = this.config.get('BASE_URL');
+      const finalRequetData = {
+        amount: totalPrice * 10,
+        cartList: [
+          {
+            cartId: orderId,
+            cartItems: orderDetails.map((orderDetail) => {
+              return {
+                id: orderDetail.id,
+                amount: Number(orderDetail.productPrice) * 10,
+                count: orderDetail.qty,
+                name: orderDetail.product.title,
+                category: orderDetail.product.entityType.name,
+                totalAmount: Number(orderDetail.totalPrice) * 10,
+              };
+            }),
+            isShipmentIncluded: true,
+            isTaxIncluded: true,
+          },
+        ],
+        mobile: user.phoneNumber,
+        paymentMethodTypeDto: 'INSTALLMENT',
+        returnURL: baseUrl + '/v1/api/ecommerce/verifyPayments/snappay',
+        transactionId: payment.id,
+      };
+
+      const finalRequest = await axios.post(
+        this.baseUrl + '/api/online/payment/v1/token',
+        finalRequetData,
+        {
+          headers: {
+            Authorization: 'Bearer ' + token,
+          },
+        },
+      );
+      if (finalRequest.data.successful != true) {
+        throw new InternalServerErrorException('invalid payment Request');
+      }
+
+      payment = (
+        await this.paymentRepository.update(
+          {
+            paymentToken: finalRequest.data.response.paymentToken,
+          },
+          {
+            where: {
+              id: payment.id,
+            },
+            transaction: transaction,
+            returning: true,
+          },
+        )
+      )[1][0];
+      return {
+        redirectUrl: finalRequest.data.response.paymentPageUrl,
+        paymentId: payment.id,
+      };
+    } catch (error) {
+      console.log(error);
+      throw new InternalServerErrorException('something failed in payment');
+    }
   }
 
   async verify(res: Response, query: SnapPayDto) {
