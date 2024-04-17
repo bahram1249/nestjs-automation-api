@@ -250,3 +250,131 @@ section.cases {
   font-weight: 700;
   line-height: normal;
 }
+
+@media only screen and (max-width: 991px) {
+  .fomos .title {
+    font-size: 18px;
+  }
+
+  .productItem .features .item {
+    padding: 8px 4px;
+    margin-right: 2px;
+  }
+
+  .productItem .more a {
+    padding: 3px 7px;
+    font-size: 9;
+  }
+
+  .productItem .productData {
+    padding: 0 5px 10px;
+  }
+
+  .productData h3 {
+    text-align: center;
+    font-size: 14px;
+    margin: 12px;
+  }
+
+  .productItem .more h5 {
+    font-size: 10px;
+  }
+
+  .productItem {
+    margin: 3px;
+  }
+
+  .banner .item .info h5 {
+    font-size: 20px;
+  }
+  .bestCategories .item h5 {
+    font-size: 14px !important;
+  }
+
+  .features h4 {
+    font-size: 10px;
+    font-weight: 450;
+  }
+  .banner .item {
+    height: 200px;
+  }
+
+  .menuBase nav ul li {
+    border-radius: 21px;
+    background: #3dd120;
+    color: #fff;
+    padding: 12px;
+    display: inline-block;
+    text-align: center;
+    font-size: 18px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: normal;
+  }
+
+  .vp-bottom-sheet {
+    position: fixed;
+    z-index: 20;
+    left: 0;
+    bottom: -2px;
+    width: 100%;
+    background: #fff;
+    display: flex;
+    flex-direction: row;
+    align-items: stretch;
+    height: 60px;
+    box-shadow: 0 -5px 10px -10px rgba(0, 0, 0, 0.7);
+    padding: 0 10px;
+    color: #000;
+  }
+
+  .vp-bottom-sheet .vp-item {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    text-align: center;
+    align-items: center;
+    transition: all 0.3s ease-in-out;
+  }
+
+  .vp-bottom-sheet .vp-item > .vp-btn {
+    display: inline-block;
+    position: relative;
+    z-index: 3;
+    width: 43px;
+    height: 43px;
+    border-radius: 43px;
+    line-height: 43px;
+    text-align: center;
+  }
+
+  .vp-btn {
+    display: inline-block;
+    font-size: 14px;
+    cursor: pointer;
+    background: transparent;
+    border: 0;
+    transition: all 0.3s ease-in-out;
+  }
+
+  .vp-bottom-sheet .vp-item > .vp-btn i {
+    font-size: 20px;
+    position: absolute;
+    right: 0;
+    top: -7px;
+    width: 100%;
+    height: 43px;
+    line-height: 43px;
+    transition: all 0.3s ease-in-out;
+  }
+
+  .vp-bottom-sheet .vp-item.vp-active {
+    flex: 1.25;
+  }
+}
+
+@media only screen and (min-width: 960px) {
+  .vp-bottom-sheet {
+    display: none;
+  }
+}

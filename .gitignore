@@ -13,6 +13,7 @@ yarn-error.log*
 lerna-debug.log*
 
 # Config
+.env*
 .env
 .env.development
 .env.local
