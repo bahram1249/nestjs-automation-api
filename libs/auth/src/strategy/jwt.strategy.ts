@@ -43,6 +43,7 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
           'lastname',
           'email',
           'username',
+          'phoneNumber',
           'mustChangePassword',
           'lastPasswordChangeDate',
           'static_id',

@@ -95,4 +95,16 @@ export class ECPayment extends Model {
     allowNull: true,
   })
   isDeleted?: boolean;
+
+  @Column({
+    type: DataType.STRING,
+    allowNull: true,
+  })
+  cardPan?: string;
+
+  @Column({
+    type: DataType.STRING,
+    allowNull: true,
+  })
+  cardHash?: string;
 }

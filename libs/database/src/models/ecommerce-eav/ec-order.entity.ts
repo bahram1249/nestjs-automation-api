@@ -64,7 +64,7 @@ export class ECOrder extends Model {
 
   @BelongsTo(() => ECOrderStatus, {
     as: 'orderStatus',
-    foreignKey: 'orerStatusId',
+    foreignKey: 'orderStatusId',
   })
   orderStatus?: ECOrderStatus;
 

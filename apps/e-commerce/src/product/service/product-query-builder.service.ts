@@ -220,7 +220,7 @@ export class ProductQueryBuilderService {
       })
 
       .thenInlcude({
-        attributes: priceRangeQuery ? [] : ['price'],
+        attributes: priceRangeQuery ? [] : ['id', 'price'],
         model: ECInventoryPrice,
         as: 'secondaryPrice',
         required: false,
@@ -260,7 +260,7 @@ export class ProductQueryBuilderService {
       as: 'firstPrice',
       required: false,
     })
-      .attributes(priceRangeQuery ? [] : ['price'])
+      .attributes(priceRangeQuery ? [] : ['id', 'price'])
       .include([
         {
           attributes: priceRangeQuery ? [] : ['id', 'name'],

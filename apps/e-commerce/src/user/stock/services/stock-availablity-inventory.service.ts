@@ -41,6 +41,22 @@ export class StockAvailabilityInventoryService {
             [Op.gt]: Sequelize.fn('getdate'),
           },
         })
+        .filter(
+          Sequelize.where(
+            Sequelize.fn('isnull', Sequelize.col('ECStock.isDeleted'), 0),
+            {
+              [Op.eq]: 0,
+            },
+          ),
+        )
+        .filter(
+          Sequelize.where(
+            Sequelize.fn('isnull', Sequelize.col('ECStock.isPurchase'), 0),
+            {
+              [Op.eq]: 0,
+            },
+          ),
+        )
         .build(),
     );
     if (findItem) {
@@ -93,6 +109,22 @@ export class StockAvailabilityInventoryService {
         .filter({ productId: inventory.productId })
         .filter({ sessionId: session.id })
         .filter({ inventoryId: inventory.id })
+        .filter(
+          Sequelize.where(
+            Sequelize.fn('isnull', Sequelize.col('ECStock.isPurchase'), 0),
+            {
+              [Op.eq]: 0,
+            },
+          ),
+        )
+        .filter(
+          Sequelize.where(
+            Sequelize.fn('isnull', Sequelize.col('ECStock.isDeleted'), 0),
+            {
+              [Op.eq]: 0,
+            },
+          ),
+        )
         .filter({
           expire: {
             [Op.gt]: Sequelize.fn('getdate'),

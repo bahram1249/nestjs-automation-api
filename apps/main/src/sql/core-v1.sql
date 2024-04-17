@@ -2824,6 +2824,27 @@ END
 
 GO
 
+-- ec-payments-v2
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ec-payments-v2' 
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'SITE_NAME' AND [value] IN ('ecommerce'))
+		)
+BEGIN
+
+
+	ALTER TABLE ECPayments
+		ADD 
+			cardPan nvarchar(512)		NULL,
+			cardHash  nvarchar(512)		NULL;
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'ec-payments-v2', GETDATE(), GETDATE()
+END
+
+GO
+
 
 
 

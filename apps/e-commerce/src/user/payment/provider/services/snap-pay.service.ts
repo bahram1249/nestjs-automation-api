@@ -182,7 +182,7 @@ export class SnapPayService implements PayInterface {
       payment = (
         await this.paymentRepository.update(
           { paymentStatusId: PaymentStatusEnum.FailedPayment },
-          { where: { id: query.transactionId }, returning: true },
+          { where: { id: payment.id }, returning: true },
         )
       )[1][0];
       // revert qty
