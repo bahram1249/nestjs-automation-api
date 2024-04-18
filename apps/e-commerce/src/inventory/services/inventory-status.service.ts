@@ -35,6 +35,7 @@ export class inventoryStatusService {
         .transaction(transaction)
         .build(),
     );
+    console.log('inventoriescount', inventoriesCount);
     if (inventoriesCount > 0) {
       // update product inventorystatus
       await this.productRepository.update(

@@ -43,6 +43,7 @@ import {
 import { Queue, QueueEvents, Job } from 'bullmq';
 import { InjectQueue } from '@nestjs/bullmq';
 import { ConfigService } from '@nestjs/config';
+import { DecreaseInventoryService } from '@rahino/ecommerce/inventory/services';
 
 @Injectable()
 export class PaymentService {
@@ -73,6 +74,7 @@ export class PaymentService {
     @InjectQueue(REVERT_INVENTORY_QTY_QUEUE)
     private readonly revertInventoryQueue: Queue,
     private readonly config: ConfigService,
+    private readonly decreaseInventoryService: DecreaseInventoryService,
   ) {}
 
   async stock(session: ECUserSession, body: StockPaymentDto, user: User) {
@@ -162,7 +164,7 @@ export class PaymentService {
       throw new BadRequestException('invalid paymentId');
     }
     const transaction = await this.sequelize.transaction({
-      isolationLevel: Transaction.ISOLATION_LEVELS.READ_COMMITTED,
+      isolationLevel: Transaction.ISOLATION_LEVELS.READ_UNCOMMITTED,
     });
     let redirectUrl = '';
     try {
@@ -201,28 +203,33 @@ export class PaymentService {
       await this.purchaseStocks(stocks, transaction);
 
       // decrease inventories
-      const job = await this.decreaseInventoryQueue.add(
-        DECREASE_INVENTORY_JOB,
-        {
-          paymentId: res.paymentId,
-          transaction: transaction,
-        },
-        {
-          attempts: 1,
-          removeOnComplete: 500,
-        },
+      // const job = await this.decreaseInventoryQueue.add(
+      //   DECREASE_INVENTORY_JOB,
+      //   {
+      //     paymentId: res.paymentId,
+      //     transaction: transaction,
+      //   },
+      //   {
+      //     attempts: 1,
+      //     removeOnComplete: 500,
+      //   },
+      // );
+      // const result = await job.waitUntilFinished(
+      //   new QueueEvents(DECREASE_INVENTORY_QUEUE, {
+      //     connection: {
+      //       host: this.config.get<string>('REDIS_ADDRESS'),
+      //       port: this.config.get<number>('REDIS_PORT'),
+      //       password: this.config.get<string>('REDIS_PASSWORD'),
+      //     },
+      //   }),
+      //   5000,
+      // );
+      // const finishedJob = await Job.fromId(this.decreaseInventoryQueue, job.id);
+
+      await this.decreaseInventoryService.decreaseByPayment(
+        res.paymentId,
+        transaction,
       );
-      const result = await job.waitUntilFinished(
-        new QueueEvents(DECREASE_INVENTORY_QUEUE, {
-          connection: {
-            host: this.config.get<string>('REDIS_ADDRESS'),
-            port: this.config.get<number>('REDIS_PORT'),
-            password: this.config.get<string>('REDIS_PASSWORD'),
-          },
-        }),
-        5000,
-      );
-      const finishedJob = await Job.fromId(this.decreaseInventoryQueue, job.id);
 
       // revert inventory qty after one hour if there is no payment
       const hour = 1;
@@ -239,10 +246,7 @@ export class PaymentService {
         },
         {
           removeOnComplete: true,
-          backoff: {
-            delay: delay,
-            type: 'fixed',
-          },
+          delay: delay,
         },
       );
 

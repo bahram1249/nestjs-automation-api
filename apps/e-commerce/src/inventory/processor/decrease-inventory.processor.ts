@@ -22,13 +22,17 @@ export class DecreaseInventoryProcessor extends WorkerHost {
       return Promise.reject('transaction not provided!');
     }
 
+    console.log(job.data.transaction);
+
     const transaction = job.data.transaction;
     const paymentId = job.data.paymentId;
     try {
+      console.log('was here');
       await this.decreaseInventoryService.decreaseByPayment(
         paymentId,
         transaction,
       );
+      console.log('after decrease');
 
       // if payment not success in 1 hour later then reset payment
     } catch (error) {

@@ -82,7 +82,7 @@ export class SnapPayService implements PayInterface {
           paymentGatewayId: paymentGateway.id,
           paymentTypeId: paymentType,
           paymentStatusId: PaymentStatusEnum.WaitingForPayment,
-          totalPrice: totalPrice * 10,
+          totalprice: totalPrice * 10,
           orderId: orderId,
           userId: user.id,
         },

@@ -19,6 +19,7 @@ import {
   DECREASE_INVENTORY_QUEUE,
   REVERT_INVENTORY_QTY_QUEUE,
 } from '@rahino/ecommerce/inventory/constants';
+import { InventoryModule } from '@rahino/ecommerce/inventory/inventory.module';
 
 @Module({
   imports: [
@@ -36,6 +37,7 @@ import {
     ShipmentModule.register({ token: 'SHIPMENT_SERVICE' }),
     StockModule,
     AddressModule,
+    InventoryModule,
     BullModule.registerQueueAsync({
       name: DECREASE_INVENTORY_QUEUE,
       inject: [ConfigService],

@@ -32,7 +32,7 @@ export class PaymentController {
   @ApiOperation({ description: 'request stock payment' })
   @Post('/stock')
   @HttpCode(HttpStatus.OK)
-  async price(
+  async stock(
     @GetECSession() session: ECUserSession,
     @Body() body: StockPaymentDto,
     @GetUser() user: User,

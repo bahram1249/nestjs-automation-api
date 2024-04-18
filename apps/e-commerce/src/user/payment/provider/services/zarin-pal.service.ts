@@ -67,7 +67,7 @@ export class ZarinPalService implements PayInterface {
         paymentGatewayId: paymentGateway.id,
         paymentTypeId: paymentType,
         paymentStatusId: PaymentStatusEnum.WaitingForPayment,
-        totalPrice: totalPrice * 10,
+        totalprice: totalPrice * 10,
         orderId: orderId,
         userId: user.id,
       },
@@ -113,13 +113,12 @@ export class ZarinPalService implements PayInterface {
       )[1][0];
       return {
         redirectUrl:
-          this.baseUrl +
+          'https://www.zarinpal.com' +
           '/pg/StartPay/' +
           requestTransaction.data.data.authority,
         paymentId: payment.id,
       };
     } catch (error) {
-      console.log(error);
       throw new InternalServerErrorException(
         'something failed in payments requests',
       );
@@ -170,10 +169,9 @@ export class ZarinPalService implements PayInterface {
         {
           authority: query.Authority,
           amount: payment.totalprice,
-          merchat_id: paymentGateway.username,
+          merchant_id: paymentGateway.username,
         },
       );
-
       if (verifyRequest.data.data.code == 100) {
         payment = (
           await this.paymentRepository.update(
