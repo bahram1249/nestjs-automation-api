@@ -12,13 +12,11 @@ export class ValidateSessionService {
     private readonly userSessionRepository: typeof ECUserSession,
     private readonly redisRepository: RedisRepository,
   ) {}
+
   async validate(request: any, session: string) {
     // find user session
     const userId = request.user ? request.user.id : 0;
-    const item = await this.redisRepository.isExists(
-      `user:${userId}:session`,
-      session,
-    );
+    const item = await this.redisRepository.isExists(`user:session`, session);
     if (item.exists) {
       request['ecsession'] = JSON.parse(item.result);
       return true;
@@ -79,7 +77,50 @@ export class ValidateSessionService {
     }
     // store this session for 300 seconds
     await this.redisRepository.setWithExpiry(
-      `user:${userId}:session`,
+      `user:session`,
+      session,
+      JSON.stringify(findSession.toJSON()),
+      300,
+    );
+    request['ecsession'] = findSession;
+    return true;
+  }
+
+  async validateIgnoreUser(request: any, session: string) {
+    // find user session
+    const item = await this.redisRepository.isExists(`user:session`, session);
+    if (item.exists) {
+      request['ecsession'] = JSON.parse(item.result);
+      return true;
+    }
+
+    // basic query for non deleted and non expired session
+    let queryBuilder = new QueryOptionsBuilder()
+      .filter({ id: session })
+      .filter(
+        Sequelize.where(
+          Sequelize.fn('isnull', Sequelize.col('ECUserSession.isDeleted'), 0),
+          {
+            [Op.eq]: 0,
+          },
+        ),
+      )
+      .filter(
+        Sequelize.where(Sequelize.fn('getdate'), {
+          [Op.lt]: Sequelize.col('expireAt'),
+        }),
+      );
+
+    // find the valid session
+    let findSession = await this.userSessionRepository.findOne(
+      queryBuilder.build(),
+    );
+    // if the session is not valid
+    if (!findSession) return false;
+
+    // store this session for 300 seconds
+    await this.redisRepository.setWithExpiry(
+      `user:session`,
       session,
       JSON.stringify(findSession.toJSON()),
       300,

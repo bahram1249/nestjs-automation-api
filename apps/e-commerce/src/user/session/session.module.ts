@@ -7,7 +7,7 @@ import { SessionGuard } from './guard/session.guard';
 import { RedisClientModule } from '@rahino/redis-client';
 import { APP_GUARD } from '@nestjs/core';
 import { ValidateSessionService } from './guard/validate-session.service';
-import { OptionalSessionGuard } from './guard';
+import { OptionalSessionGuard, SessionIgnoreUserGuard } from './guard';
 
 @Module({
   imports: [SequelizeModule.forFeature([ECUserSession]), RedisClientModule],
@@ -15,9 +15,15 @@ import { OptionalSessionGuard } from './guard';
   providers: [
     SessionService,
     SessionGuard,
+    SessionIgnoreUserGuard,
     OptionalSessionGuard,
     ValidateSessionService,
   ],
-  exports: [SessionGuard, OptionalSessionGuard, ValidateSessionService],
+  exports: [
+    SessionGuard,
+    OptionalSessionGuard,
+    SessionIgnoreUserGuard,
+    ValidateSessionService,
+  ],
 })
 export class SessionModule {}
