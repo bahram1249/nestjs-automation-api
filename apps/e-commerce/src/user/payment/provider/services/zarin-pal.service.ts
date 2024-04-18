@@ -79,10 +79,12 @@ export class ZarinPalService implements PayInterface {
     const baseUrl = this.config.get('BASE_URL');
 
     const data = {
-      merchantId: paymentGateway.username,
+      merchant_id: paymentGateway.username,
       callback_url: baseUrl + '/v1/api/ecommerce/verifyPayments/zarinpal',
       amount: totalPrice * 10,
-      mobile: user.phoneNumber,
+      metadata: {
+        mobile: user.phoneNumber,
+      },
       description: 'برای شماره تراکنش ' + payment.id,
     };
 
