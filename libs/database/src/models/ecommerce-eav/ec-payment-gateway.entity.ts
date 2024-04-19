@@ -55,4 +55,16 @@ export class ECPaymentGateway extends Model {
     allowNull: true,
   })
   password?: string;
+
+  @Column({
+    type: DataType.STRING,
+    allowNull: true,
+  })
+  clientId?: string;
+
+  @Column({
+    type: DataType.STRING,
+    allowNull: true,
+  })
+  secret?: string;
 }

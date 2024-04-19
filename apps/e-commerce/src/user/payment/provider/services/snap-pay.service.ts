@@ -255,21 +255,37 @@ export class SnapPayService implements PayInterface {
   }
 
   private async generateToken(paymentGateway: ECPaymentGateway) {
-    const clientId = paymentGateway.username;
+    const clientId = paymentGateway.clientId;
     if (!clientId) {
       throw new InternalServerErrorException('clientId not provided');
     }
-    const clientSecret = paymentGateway.password;
+    const clientSecret = paymentGateway.secret;
     if (!clientSecret) {
       throw new InternalServerErrorException('secret not provided');
     }
+
+    const username = paymentGateway.username;
+    if (!username) {
+      throw new InternalServerErrorException('username not provided');
+    }
+
+    const password = paymentGateway.password;
+    if (!username) {
+      throw new InternalServerErrorException('password not provided');
+    }
+
     const base64 = new Base64();
     const authorization =
       'Basic ' + base64.encode(`${clientId}:${clientSecret}`);
 
-    const tokenResponse = await axios.post(
+    const tokenResponse = await axios.postForm(
       this.baseUrl + '/api/online/v1/oauth/token',
-      {},
+      {
+        grant_type: 'password',
+        scope: 'online-merchant',
+        username: username,
+        password: password,
+      },
       {
         headers: {
           Authorization: authorization,
