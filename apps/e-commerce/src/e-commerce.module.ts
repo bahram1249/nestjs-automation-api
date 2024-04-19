@@ -40,6 +40,7 @@ import { DiscountConditionModule } from './admin/discount-condition/discount-con
 import { StockModule } from './user/stock/stock.module';
 import { PaymentModule } from './user/payment/payment.module';
 import { VerifyPaymentModule } from './verify-payment/verify-payment.module';
+import { TransactionModule } from './user/transaction/transaction.module';
 @Module({
   imports: [
     LoggingModule,
@@ -82,6 +83,7 @@ import { VerifyPaymentModule } from './verify-payment/verify-payment.module';
     StockModule,
     PaymentModule,
     VerifyPaymentModule,
+    TransactionModule,
   ],
   providers: [
     {
