@@ -213,8 +213,9 @@ export class ApplyDiscountService {
     let discountPrice = 0;
     switch (Number(discountApplied.actionType)) {
       case DiscountActionTypeEnum.percentage:
-        discountPrice =
-          Number(inventoryPrice.price) * (discountApplied.amount / 100);
+        discountPrice = Math.round(
+          Number(inventoryPrice.price) * (discountApplied.amount / 100),
+        );
         break;
       case DiscountActionTypeEnum.fixedAmount:
         discountPrice = discountApplied.amount;
@@ -234,6 +235,8 @@ export class ApplyDiscountService {
       amount: discountApplied.amount,
       newPrice: newPrice,
       actionType: discountApplied.actionType,
+      discountTypeId: discountApplied.discountTypeId,
+      discountTypeName: discountApplied.discountTypeName,
       maxValue: discountApplied.maxValue,
       startDate: discountApplied.startDate,
       endDate: discountApplied.endDate,
@@ -269,6 +272,8 @@ export class ApplyDiscountService {
         amount: discount.discountValue,
         maxValue: discount.maxValue,
         actionType: discount.discountActionTypeId,
+        discountTypeId: discount.discountActionTypeId,
+        discountTypeName: discount.discountType.name,
         startDate: discount.startDate,
         endDate: discount.endDate,
       };
@@ -327,6 +332,8 @@ export class ApplyDiscountService {
         actionType: discount.discountActionTypeId,
         amount: discount.discountValue,
         maxValue: discount.maxValue,
+        discountTypeId: discount.discountTypeId,
+        discountTypeName: discount.discountType.name,
         startDate: discount.startDate,
         endDate: discount.endDate,
       };

@@ -3,6 +3,8 @@ export interface DiscountAppliedInterface {
   amount: number;
   maxValue?: number;
   actionType: number;
+  discountTypeId: number;
+  discountTypeName: string;
   newPrice: number;
   startDate?: Date;
   endDate?: Date;
