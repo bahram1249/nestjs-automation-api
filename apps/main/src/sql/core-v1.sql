@@ -2545,6 +2545,25 @@ END
 GO
 
 
+-- ec-paymentgateways-v2
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ec-paymentgateways-v2' 
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'SITE_NAME' AND [value] IN ('ecommerce'))
+		)
+BEGIN
+
+	ALTER TABLE ECPaymentGateways
+	ADD clientId nvarchar(512) null,
+		secret	nvarchar(512) null;
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'ec-paymentgateways-v3', GETDATE(), GETDATE()
+END
+
+GO
+
 -- ec-postage-fee-v1
 IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ec-postage-fee-v1' 
 			)

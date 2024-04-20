@@ -92,6 +92,10 @@ export class SnapPayService implements PayInterface {
       );
 
       const baseUrl = this.config.get('BASE_URL');
+      let phoneNumber = user.phoneNumber;
+      if (phoneNumber.startsWith('0')) {
+        phoneNumber = '+98' + phoneNumber.substring(1, phoneNumber.length);
+      }
       const finalRequetData = {
         amount: totalPrice * 10,
         cartList: [
@@ -104,14 +108,14 @@ export class SnapPayService implements PayInterface {
                 count: orderDetail.qty,
                 name: orderDetail.product.title,
                 category: orderDetail.product.entityType.name,
-                totalAmount: Number(orderDetail.totalPrice) * 10,
               };
             }),
-            isShipmentIncluded: true,
+            isShipmentIncluded: false,
             isTaxIncluded: true,
+            totalAmount: totalPrice * 10,
           },
         ],
-        mobile: user.phoneNumber,
+        mobile: phoneNumber,
         paymentMethodTypeDto: 'INSTALLMENT',
         returnURL: baseUrl + '/v1/api/ecommerce/verifyPayments/snappay',
         transactionId: payment.id,
@@ -149,7 +153,7 @@ export class SnapPayService implements PayInterface {
         paymentId: payment.id,
       };
     } catch (error) {
-      console.log(error);
+      console.log(error.response.data.errorData);
       throw new InternalServerErrorException('something failed in payment');
     }
   }
