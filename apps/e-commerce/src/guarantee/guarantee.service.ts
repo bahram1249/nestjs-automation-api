@@ -233,7 +233,7 @@ export class GuaranteeService {
       throw new NotFoundException('the item with this given slug not founded!');
     }
     return {
-      result: _.pick(item, ['id', 'name', 'slug', 'description']),
+      result: item,
     };
   }
 
