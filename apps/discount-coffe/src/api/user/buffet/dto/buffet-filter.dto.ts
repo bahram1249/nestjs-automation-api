@@ -1,5 +1,12 @@
+import { ApiProperty } from '@nestjs/swagger';
 import { Transform } from 'class-transformer';
-import { IsArray, IsInt, IsNumber, IsOptional } from 'class-validator';
+import {
+  IsArray,
+  IsInt,
+  IsNumber,
+  IsOptional,
+  IsString,
+} from 'class-validator';
 
 export class BuffetFilterDto {
   @Transform(({ value }) => JSON.parse(value))
@@ -47,4 +54,9 @@ export class BuffetFilterDto {
 
   @IsOptional()
   longitude?: string;
+
+  @IsOptional()
+  @ApiProperty({ required: false, type: IsString, default: '' })
+  @Transform(({ value }) => '%' + value + '%')
+  public search?: string = '%%';
 }

@@ -100,6 +100,8 @@ async function filterProducts() {
 
   var filters = document.querySelector('.filters');
 
+  var search = filters.querySelector('#searchInput').value;
+
   var buffetTypeId = filters.querySelector('#buffetTypeId').value;
   if (buffetTypeId == 0) {
     buffetTypeId = null;
@@ -144,6 +146,7 @@ async function filterProducts() {
     buffetCostId,
     latitude,
     longitude,
+    search,
     coffeOptionIds: coffeOptionIds.length > 0 ? coffeOptionIds : null,
   };
 

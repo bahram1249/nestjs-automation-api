@@ -17,11 +17,17 @@ export class BuffetService {
 
   async findAll(dto: BuffetFilterDto) {
     let queryBuilder = new QueryOptionsBuilder();
-    queryBuilder = queryBuilder.filter(
-      Sequelize.where(Sequelize.fn('isnull', Sequelize.col('isDeleted'), 0), {
-        [Op.eq]: 0,
-      }),
-    );
+    queryBuilder = queryBuilder
+      .filter(
+        Sequelize.where(Sequelize.fn('isnull', Sequelize.col('isDeleted'), 0), {
+          [Op.eq]: 0,
+        }),
+      )
+      .filter({
+        title: {
+          [Op.like]: dto.search,
+        },
+      });
     if (dto.buffetTypeId) {
       queryBuilder = queryBuilder.filter({
         buffetTypeId: dto.buffetTypeId,

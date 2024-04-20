@@ -1,58 +1,48 @@
 {{#section 'header'}}
   <title>{{title}}</title>
-  <link
+  <!-- <link
     rel='stylesheet'
     href='/tools/core/vendor/bootstrap@5.1.1/dist/css/bootstrap.rtl.min.css'
-  />
+  /> -->
 {{/section}}
 
-<section class='cases news hero'>
+<section class='profile'>
   <div class='container-lg'>
     <div class='row'>
       <div class='col-md-3'>
-        <div class='panel text-center'>
+        <div class='sidebar sticky-bar p-4 rounded shadow'>
 
-          <div class='profile'>
-            <!-- <div class='camera'><img
-                src='/theme/discountcoffe/assets/img/png/camera.svg'
-                alt=''
-              /></div> -->
-            <h4>{{user.firstname}} {{user.lastname}}</h4>
-          </div>
-          <div class='menuItems'>
-            <ul>
-              <li>
-                <a href='/user/profile'>
-                  <img
-                    src='/theme/discountcoffe/assets/img/png/dashboard.svg'
-                    alt=''
-                  />
-                  پروفایل
+          <div class='widget mt-4'>
+            <ul class='list-unstyled sidebar-nav mb-0' id='navmenu-nav'>
+              <li class='navbar-item account-menu px-0'>
+                <a
+                  href='/user/profile'
+                  class='navbar-link d-flex rounded shadow align-items-center py-2 px-4'
+                >
+                  <span class='h4 mb-0'><i class='la la-user'></i></span>
+                  <h6 class='mb-0 ms-2'>پروفایل </h6>
                 </a>
               </li>
 
-              <li class='active'>
-                <a href='/user/reserves'>
-                  <img
-                    src='/theme/discountcoffe/assets/img/png/money.svg'
-                    alt=''
-                  />
-                  رزرو ها
+              <li class='navbar-item account-menu px-0 mt-2 active'>
+                <a
+                  href='/user/reserves'
+                  class='navbar-link d-flex rounded shadow align-items-center py-2 px-4'
+                >
+                  <span class='h4 mb-0'><i class='la la-store'></i></span>
+                  <h6 class='mb-0 ms-2'>رزرو ها </h6>
                 </a>
               </li>
 
-              <li>
-                <a href='/user/logout'>
-                  <img
-                    src='/theme/discountcoffe/assets/img/png/exit.svg'
-                    width='35'
-                    height='35'
-                    alt=''
-                  />
-                  خروج
+              <li class='navbar-item account-menu px-0 mt-2'>
+                <a
+                  href='/user/logout'
+                  class='navbar-link d-flex rounded shadow align-items-center py-2 px-4'
+                >
+                  <span class='h4 mb-0'><i class='la la-user-minus'></i></span>
+                  <h6 class='mb-0 ms-2'>خروج </h6>
                 </a>
               </li>
-
             </ul>
           </div>
         </div>
@@ -67,7 +57,10 @@
                   {{persianDate.PersianMonthName}}
                   {{persianDate.YearNumber}}</p>
                 <p>
-                  <a href='/buffet/{{buffet.urlAddress}}'>{{buffet.title}}
+                  <a
+                    class='buffet-link'
+                    href='/buffet/{{buffet.urlAddress}}'
+                  >{{buffet.title}}
                   </a>
                 </p>
                 <p class='status paid'><span></span>{{reserveStatus.title}}</p>
