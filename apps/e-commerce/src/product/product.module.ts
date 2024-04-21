@@ -18,6 +18,7 @@ import { QUERY_NEXT_PAGE_PRODUCT_QUEUE } from './constants';
 import { QueryNextPageProductProcessor } from './processor';
 import { ApplyInventoryStatus } from './service/apply-inventory-status.service';
 import { ECInventoryStatus } from '@rahino/database/models/ecommerce-eav/ec-inventory-status.entity';
+import { EAVEntityType } from '@rahino/database/models/eav/eav-entity-type.entity';
 
 @Module({
   imports: [
@@ -37,7 +38,12 @@ import { ECInventoryStatus } from '@rahino/database/models/ecommerce-eav/ec-inve
     BullModule.registerQueueAsync({
       name: QUERY_NEXT_PAGE_PRODUCT_QUEUE,
     }),
-    SequelizeModule.forFeature([ECProduct, ECDiscount, ECInventoryStatus]),
+    SequelizeModule.forFeature([
+      ECProduct,
+      ECDiscount,
+      ECInventoryStatus,
+      EAVEntityType,
+    ]),
   ],
   controllers: [ProductController],
   providers: [
