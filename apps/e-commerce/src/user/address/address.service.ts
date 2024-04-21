@@ -61,6 +61,23 @@ export class AddressService {
         'floorNumber',
         'postalCode',
       ])
+      .include([
+        {
+          attributes: ['id', 'name'],
+          model: ECProvince,
+          as: 'province',
+        },
+        {
+          attributes: ['id', 'name'],
+          model: ECCity,
+          as: 'city',
+        },
+        {
+          attributes: ['id', 'name'],
+          model: ECNeighborhood,
+          as: 'neighborhood',
+        },
+      ])
       .limit(filter.limit, filter.ignorePaging)
       .offset(filter.offset, filter.ignorePaging)
       .order({ orderBy: filter.orderBy, sortOrder: filter.sortOrder })
@@ -101,6 +118,23 @@ export class AddressService {
             },
           ),
         )
+        .include([
+          {
+            attributes: ['id', 'name'],
+            model: ECProvince,
+            as: 'province',
+          },
+          {
+            attributes: ['id', 'name'],
+            model: ECCity,
+            as: 'city',
+          },
+          {
+            attributes: ['id', 'name'],
+            model: ECNeighborhood,
+            as: 'neighborhood',
+          },
+        ])
         .build(),
     );
     if (!address) {

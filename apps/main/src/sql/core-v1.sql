@@ -1586,6 +1586,7 @@ END
 GO
 
 
+
 IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ecommerce-brands-v2' 
 			)
 	AND EXISTS (
@@ -1607,6 +1608,25 @@ END
 GO
 
 
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ecommerce-brands-v3' 
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'SITE_NAME' AND [value] IN ('ecommerce'))
+		)
+BEGIN
+
+	ALTER TABLE ECBrands 
+		ADD metaTitle nvarchar(512) null,
+			metaKeywords nvarchar(512) null,
+			metaDescription nvarchar(512) null;
+
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'ecommerce-brands-v3', GETDATE(), GETDATE()
+END
+
+GO
 
 
 IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ecommerce-guarantees-v1' 
