@@ -33,9 +33,14 @@ import * as _ from 'lodash';
 import { EAVEntityAttributeValue } from '@rahino/database/models/eav/eav-entity-attribute-value.entity';
 import { EAVAttribute } from '@rahino/database/models/eav/eav-attribute.entity';
 import { EAVAttributeValue } from '@rahino/database/models/eav/eav-attribute-value';
+import { InjectModel } from '@nestjs/sequelize';
 
 @Injectable()
 export class ProductQueryBuilderService {
+  constructor(
+    @InjectModel(EAVEntityType)
+    private readonly entityTypeRepository: typeof EAVEntityType,
+  ) {}
   async findAllAndCountQuery(
     filter: GetProductDto,
     productId?: bigint,
@@ -71,7 +76,73 @@ export class ProductQueryBuilderService {
       queryBuilder = queryBuilder.filter({ id: productId });
     }
     if (filter.entityTypeId) {
-      queryBuilder = queryBuilder.filter({ entityTypeId: filter.entityTypeId });
+      const entityTypeIds = [filter.entityTypeId];
+      const entityType = await this.entityTypeRepository.findOne(
+        new QueryOptionsBuilder()
+          .filter({ id: filter.entityTypeId })
+          .filter(
+            Sequelize.where(
+              Sequelize.fn(
+                'isnull',
+                Sequelize.col('EAVEntityType.isDeleted'),
+                0,
+              ),
+              {
+                [Op.eq]: 0,
+              },
+            ),
+          )
+          .include([
+            {
+              attributes: ['id', 'name', 'slug'],
+              model: EAVEntityType,
+              as: 'subEntityTypes',
+              required: false,
+              include: [
+                {
+                  attributes: ['id', 'name', 'slug'],
+                  model: EAVEntityType,
+                  as: 'subEntityTypes',
+                  required: false,
+                  include: [
+                    {
+                      attributes: ['id', 'fileName'],
+                      model: Attachment,
+                      as: 'attachment',
+                      required: false,
+                    },
+                  ],
+                },
+                {
+                  attributes: ['id', 'fileName'],
+                  model: Attachment,
+                  as: 'attachment',
+                  required: false,
+                },
+              ],
+            },
+          ])
+          .build(),
+      );
+      if (entityType) {
+        for (let index = 0; index < entityType.subEntityTypes.length; index++) {
+          const firstChild = entityType.subEntityTypes[index];
+          entityTypeIds.push(firstChild.id);
+          for (
+            let index = 0;
+            index < firstChild.subEntityTypes.length;
+            index++
+          ) {
+            const secondaryChild = firstChild.subEntityTypes[index];
+            entityTypeIds.push(secondaryChild.id);
+          }
+        }
+      }
+      queryBuilder = queryBuilder.filter({
+        entityTypeId: {
+          [Op.in]: entityTypeIds,
+        },
+      });
     }
     if (filter.brands != null && filter.brands.length > 0) {
       queryBuilder = queryBuilder.filter({
