@@ -1957,6 +1957,24 @@ END
 
 GO
 
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ecommerce-addresses-v2' 
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'SITE_NAME' AND [value] IN ('ecommerce'))
+		)
+BEGIN
+
+	ALTER TABLE ECAddresses
+		ADD postalCode nvarchar(128) null
+
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'ecommerce-addresses-v2', GETDATE(), GETDATE()
+END
+
+GO
+
 IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ecommerce-vendoraddresses-v1' 
 			)
 	AND EXISTS (
@@ -10465,7 +10483,7 @@ BEGIN
 
 	DECLARE @groupId int = null;
 
-	DECLARE @entityName nvarchar(256) = N'Transactions'
+	DECLARE @entityName nvarchar(256) = N'Transactions'e
 	DECLARE @groupName nvarchar(256) = N'ecommerce.admin.tranactions'
 	DECLARE @findParentMenu bit = 0;
 	DECLARE @parentMenuName nvarchar(256) = N'پرداخت و حمل و نقل'

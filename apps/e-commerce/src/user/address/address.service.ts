@@ -59,6 +59,7 @@ export class AddressService {
         'alley',
         'plaque',
         'floorNumber',
+        'postalCode',
       ])
       .limit(filter.limit, filter.ignorePaging)
       .offset(filter.offset, filter.ignorePaging)
@@ -86,6 +87,7 @@ export class AddressService {
           'alley',
           'plaque',
           'floorNumber',
+          'postalCode',
         ])
         .filter({
           userId: user.id,
@@ -191,6 +193,7 @@ export class AddressService {
         'alley',
         'plaque',
         'floorNumber',
+        'postalCode',
       ]),
     };
   }
@@ -302,6 +305,7 @@ export class AddressService {
         'alley',
         'plaque',
         'floorNumber',
+        'postalCode',
       ]),
     };
   }

@@ -119,4 +119,11 @@ export class ECAddress extends Model {
     allowNull: true,
   })
   isDeleted?: boolean;
+
+  @AutoMap()
+  @Column({
+    type: DataType.STRING,
+    allowNull: true,
+  })
+  postalCode?: string;
 }
