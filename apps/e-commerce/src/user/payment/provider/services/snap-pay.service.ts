@@ -230,7 +230,9 @@ export class SnapPayService implements PayInterface {
         if (result.data.successful != true) {
           throw new BadRequestException('invalid payment');
         }
-        if (result.data.response.transactionId != payment.id.toString()) {
+        if (
+          result.data.response.transactionId != payment.transactionId.toString()
+        ) {
           throw new BadRequestException('invalid payment');
         }
         const finalRequest = await axios.post(
