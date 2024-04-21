@@ -134,13 +134,13 @@ export class PaymentService {
 
     const totalPrice = variationPriceStock.stocks
       .map((stock) => stock.totalPrice)
-      .reduce((prev, current) => prev + current);
+      .reduce((prev, current) => prev + current, 0);
     const totalDiscount = variationPriceStock.stocks
-      .map((stock) => stock.discountFee)
-      .reduce((prev, current) => prev + current);
+      .map((stock) => (stock.discountFee ? stock.discountFee : 0))
+      .reduce((prev, current) => prev + current, 0);
     const totalProductPrice = variationPriceStock.stocks
       .map((stock) => stock.totalProductPrice)
-      .reduce((prev, current) => prev + current);
+      .reduce((prev, current) => prev + current, 0);
     const paymentGateway = await this.paymentGatewayRepository.findOne(
       new QueryOptionsBuilder()
         .attributes(['id', 'name'])
@@ -191,6 +191,8 @@ export class PaymentService {
       // create payment token from provider of payments
       const res = await this.paymentProviderService.requestPayment(
         totalPrice + shipment.price,
+        totalDiscount,
+        shipment.price,
         user,
         PaymentTypeEnum.ForOrder,
         transaction,
@@ -291,10 +293,12 @@ export class PaymentService {
   ) {
     const order = await this.orderRepository.create(
       {
+        // total base product base multiple by qty
         totalProductPrice: totalProductPrice,
         totalDiscountFee: totalDiscount,
         totalShipmentPrice: totalShipmentPrice,
         orderShipmentWayId: shipmentWay,
+        // total price after discount and multiple by qty + shipment
         totalPrice: totalPrice + totalShipmentPrice,
         orderStatusId: OrderStatusEnum.WaitingForPayment,
         sessionId: sessionId,

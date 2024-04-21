@@ -39,6 +39,8 @@ export class ZarinPalService implements PayInterface {
   }
   async requestPayment(
     totalPrice: number,
+    discountAmount: number,
+    shipmentAmount: number,
     user: User,
     paymentType: PaymentTypeEnum,
     transaction?: Transaction,

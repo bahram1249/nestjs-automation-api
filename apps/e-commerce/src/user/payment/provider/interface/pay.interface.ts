@@ -6,6 +6,8 @@ import { Transaction } from 'sequelize';
 export interface PayInterface {
   requestPayment(
     totalPrice: number,
+    discountAmount: number,
+    shipmentAmount: number,
     user: User,
     paymentType: PaymentTypeEnum,
     transaction?: Transaction,

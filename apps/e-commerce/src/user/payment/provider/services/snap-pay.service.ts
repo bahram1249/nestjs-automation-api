@@ -23,6 +23,7 @@ import { ECOrder } from '@rahino/database/models/ecommerce-eav/ec-order.entity';
 import { Response } from 'express';
 import { ConfigService } from '@nestjs/config';
 import { RevertInventoryQtyService } from '@rahino/ecommerce/inventory/services';
+import { v4 as uuidv4 } from 'uuid';
 
 export class SnapPayService implements PayInterface {
   private baseUrl = '';
@@ -41,6 +42,8 @@ export class SnapPayService implements PayInterface {
   }
   async requestPayment(
     totalPrice: number,
+    discountAmount: number,
+    shipmentAmount: number,
     user: User,
     paymentType: PaymentTypeEnum,
     transaction?: Transaction,
@@ -85,6 +88,7 @@ export class SnapPayService implements PayInterface {
           totalprice: totalPrice * 10,
           orderId: orderId,
           userId: user.id,
+          transactionId: uuidv4(),
         },
         {
           transaction: transaction,
@@ -108,17 +112,29 @@ export class SnapPayService implements PayInterface {
                 count: orderDetail.qty,
                 name: orderDetail.product.title,
                 category: orderDetail.product.entityType.name,
+                commissionType: 100,
               };
             }),
-            isShipmentIncluded: false,
-            isTaxIncluded: true,
-            totalAmount: totalPrice * 10,
+            isShipmentIncluded: true,
+            shippingAmount: shipmentAmount * 10,
+            isTaxIncluded: false,
+            taxAmount: 0,
+            totalAmount:
+              orderDetails
+                .map((orderDetail) => {
+                  return (
+                    Number(orderDetail.productPrice) * 10 * orderDetail.qty
+                  );
+                })
+                .reduce((prev, current) => prev + current, 0) +
+              shipmentAmount * 10,
           },
         ],
+        discountAmount: discountAmount * 10,
         mobile: phoneNumber,
         paymentMethodTypeDto: 'INSTALLMENT',
         returnURL: baseUrl + '/v1/api/ecommerce/verifyPayments/snappay',
-        transactionId: payment.id,
+        transactionId: payment.transactionId,
       };
 
       const finalRequest = await axios.post(
@@ -178,7 +194,7 @@ export class SnapPayService implements PayInterface {
 
     let payment = await this.paymentRepository.findOne(
       new QueryOptionsBuilder()
-        .filter({ id: query.transactionId })
+        .filter({ transactionId: query.transactionId })
         .filter({ paymentGatewayId: paymentGateway.id })
         .filter({ paymentStatusId: PaymentStatusEnum.WaitingForPayment })
         .build(),
