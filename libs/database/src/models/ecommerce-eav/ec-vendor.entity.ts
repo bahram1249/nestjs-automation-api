@@ -87,4 +87,25 @@ export class ECVendor extends Model {
 
   @HasOne(() => ECVendorUser, { as: 'vendorUser', foreignKey: 'vendorId' })
   vendorUser?: ECVendorUser;
+
+  @Column({
+    type: DataType.STRING,
+    allowNull: true,
+  })
+  @AutoMap()
+  metaTitle?: string;
+
+  @Column({
+    type: DataType.STRING,
+    allowNull: true,
+  })
+  @AutoMap()
+  metaKeywords?: string;
+
+  @Column({
+    type: DataType.STRING,
+    allowNull: true,
+  })
+  @AutoMap()
+  metaDescription?: string;
 }

@@ -120,6 +120,9 @@ export class ProductService {
         'brandId',
         'publishStatusId',
         'viewCount',
+        'metaTitle',
+        'metaKeywords',
+        'metaDescription',
       ])
       .include([
         {
@@ -390,6 +393,9 @@ export class ProductService {
           'brandId',
           'publishStatusId',
           'viewCount',
+          'metaTitle',
+          'metaKeywords',
+          'metaDescription',
         ])
         .include([
           {
@@ -673,6 +679,9 @@ export class ProductService {
           'brandId',
           'publishStatusId',
           'viewCount',
+          'metaTitle',
+          'metaKeywords',
+          'metaDescription',
         ])
         .include([
           {
@@ -1083,6 +1092,9 @@ export class ProductService {
           'brandId',
           'publishStatusId',
           'viewCount',
+          'metaTitle',
+          'metaKeywords',
+          'metaDescription',
         ])
         .filter(
           Sequelize.where(
@@ -1312,6 +1324,9 @@ export class ProductService {
           'brandId',
           'publishStatusId',
           'viewCount',
+          'metaTitle',
+          'metaKeywords',
+          'metaDescription',
         ])
         .include([
           {

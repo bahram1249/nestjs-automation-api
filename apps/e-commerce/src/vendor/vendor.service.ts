@@ -59,7 +59,16 @@ export class VendorService {
       );
     const count = await this.repository.count(queryBuilder.build());
     queryBuilder = queryBuilder
-      .attributes(['id', 'name', 'slug', 'address', 'priorityOrder'])
+      .attributes([
+        'id',
+        'name',
+        'slug',
+        'address',
+        'priorityOrder',
+        'metaTitle',
+        'metaKeywords',
+        'metaDescription',
+      ])
       .include([
         {
           attributes: ['id', 'fileName'],
@@ -123,6 +132,9 @@ export class VendorService {
           'description',
           'address',
           'priorityOrder',
+          'metaTitle',
+          'metaKeywords',
+          'metaDescription',
         ])
         .include([
           {
@@ -255,6 +267,9 @@ export class VendorService {
           'description',
           'address',
           'priorityOrder',
+          'metaTitle',
+          'metaKeywords',
+          'metaDescription',
         ])
         .filter({ id: vendor.id })
         .include([
@@ -463,6 +478,9 @@ export class VendorService {
           'description',
           'address',
           'priorityOrder',
+          'metaTitle',
+          'metaKeywords',
+          'metaDescription',
         ])
         .filter({ id: vendor.id })
         .include([
@@ -529,6 +547,9 @@ export class VendorService {
         'description',
         'address',
         'priorityOrder',
+        'metaTitle',
+        'metaKeywords',
+        'metaDescription',
       ]),
     };
   }
@@ -536,7 +557,15 @@ export class VendorService {
   async findBySlug(slug: string) {
     const vendor = await this.repository.findOne(
       new QueryOptionsBuilder()
-        .attributes(['id', 'name', 'slug', 'description'])
+        .attributes([
+          'id',
+          'name',
+          'slug',
+          'description',
+          'metaTitle',
+          'metaKeywords',
+          'metaDescription',
+        ])
         .include([
           {
             attributes: ['id', 'fileName'],

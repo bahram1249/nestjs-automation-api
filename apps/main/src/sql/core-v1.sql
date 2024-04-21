@@ -1395,6 +1395,25 @@ END
 
 GO
 
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'eav-entitytype-v3' 
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'SITE_NAME' AND [value] IN ('ecommerce'))
+		)
+BEGIN
+
+	ALTER TABLE EAVEntityTypes 
+		ADD metaTitle nvarchar(512) null,
+			metaKeywords nvarchar(512) null,
+			metaDescription nvarchar(512) null
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'eav-entitytype-v3', GETDATE(), GETDATE()
+END
+
+GO
+
 
 IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'eav-attributetype-v1' 
 			)
@@ -1657,6 +1676,26 @@ BEGIN
 END
 GO
 
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ecommerce-guarantees-v3' 
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'SITE_NAME' AND [value] IN ('ecommerce'))
+		)
+BEGIN
+
+	ALTER TABLE ECGuarantees
+		ADD metaTitle nvarchar(512) null,
+			metaKeywords nvarchar(512) null,
+			metaDescription nvarchar(512) null
+
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'ecommerce-guarantees-v3', GETDATE(), GETDATE()
+END
+GO
+
+
 IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ecommerce-guaranteemonths-v1' 
 			)
 	AND EXISTS (
@@ -1741,6 +1780,27 @@ BEGIN
 END
 
 GO
+
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ecommerce-vendors-v2' 
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'SITE_NAME' AND [value] IN ('ecommerce'))
+		)
+BEGIN
+
+	ALTER TABLE ECVendors 
+		ADD metaTitle nvarchar(512) null,
+			metaKeywords nvarchar(512) null,
+			metaDescription nvarchar(512) null
+
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'ecommerce-vendors-v2', GETDATE(), GETDATE()
+END
+
+GO
+
 
 IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ecommerce-vendorusers-v1' 
 			)
@@ -2045,6 +2105,27 @@ END
 
 GO
 
+
+
+-- ecommerce products
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ecommerce-products-v3' 
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'SITE_NAME' AND [value] IN ('ecommerce'))
+		)
+BEGIN
+
+	ALTER TABLE ECProducts
+		ADD metaTitle nvarchar(512) null,
+			metaKeywords nvarchar(512) null,
+			metaDescription nvarchar(512) null
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'ecommerce-products-v3', GETDATE(), GETDATE()
+END
+
+GO
 
 -- ecommerce variationprices
 IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ecommerce-variationprices-v1' 
@@ -10384,7 +10465,7 @@ BEGIN
 
 	DECLARE @groupId int = null;
 
-	DECLARE @entityName nvarchar(256) = N'Discounts'
+	DECLARE @entityName nvarchar(256) = N'Transactions'
 	DECLARE @groupName nvarchar(256) = N'ecommerce.admin.tranactions'
 	DECLARE @findParentMenu bit = 0;
 	DECLARE @parentMenuName nvarchar(256) = N'پرداخت و حمل و نقل'
@@ -10495,6 +10576,137 @@ BEGIN
 END
 
 GO
+
+-- ecommerce/admin/postagefees
+IF NOT EXISTS ((SELECT 1 FROM Migrations WHERE version = 'CORE-Permissions-Data-v35' 
+			))
+	AND EXISTS (
+		SELECT 1 FROM Settings WHERE 1=1
+		AND ([key] = 'SITE_NAME' AND [value] IN ('ecommerce'))
+	)
+BEGIN
+	
+	DECLARE @roleId int = (SELECT TOP 1 id FROM Roles WHERE static_id = 1)
+	DECLARE @userId bigint = (SELECT TOP 1 id FROM Users WHERE static_id = 1)
+
+	DECLARE @GroupTemp TABLE (
+		gorupId int
+	);
+
+	DECLARE @groupId int = null;
+
+	DECLARE @entityName nvarchar(256) = N'PostageFees'
+	DECLARE @groupName nvarchar(256) = N'ecommerce.admin.postagefees'
+	DECLARE @findParentMenu bit = 1;
+	DECLARE @parentMenuName nvarchar(256) = N'پرداخت و حمل و نقل'
+	DECLARE @menuName nvarchar(256) = N'نرخ پستی'
+	DECLARE @menuUrl nvarchar(512) = N'/admin/ecommerce/postageFees'
+
+	DECLARE @permissionSymbolShowMenu nvarchar(512) = @groupName + '.showmenu';
+	DECLARE @permissionSymbolGetAll nvarchar(512) = @groupName + '.getall';
+	DECLARE @permissionSymbolPathAllProvincePrice nvarchar(512) = @groupName + '.updateAllProvincePrice';
+
+
+
+	-- permission groups
+	INSERT INTO PermissionGroups(permissionGroupName, [visibility], createdAt, updatedAt)
+	OUTPUT inserted.id INTO @GroupTemp(gorupId)
+	SELECT @groupName, 1, GETDATE(), GETDATE();
+
+	SELECT  @groupId = gorupId FROM @GroupTemp
+
+
+	-- permissions
+
+	
+	DECLARE @PermissionTemp TABLE (
+		permissionId int
+	);
+
+	INSERT INTO Permissions(permissionName ,permissionSymbol,permissionGroupId,  createdAt, updatedAt)
+	OUTPUT inserted.id INTO @PermissionTemp(permissionId)
+	SELECT 'GETALL_' + @entityName, @permissionSymbolGetAll, @groupId, GETDATE(), GETDATE()
+															
+	INSERT INTO Permissions(permissionName ,permissionSymbol,permissionGroupId,  createdAt, updatedAt)
+	OUTPUT inserted.id INTO @PermissionTemp(permissionId)
+	SELECT 'PATCH_AllProvincePrice_' + @entityName, @permissionSymbolPathAllProvincePrice, @groupId, GETDATE(), GETDATE()
+	
+
+
+	-- CRUD THIS Enity FOR super-admin
+	INSERT INTO RolePermissions(roleId, permissionId, createdAt, updatedAt)
+	SELECT @roleId, permissionId, GETDATE(), GETDATE()
+	FROM @PermissionTemp
+
+	DELETE FROM @PermissionTemp
+
+	INSERT INTO Permissions(permissionName ,permissionSymbol, permissionGroupId,createdAt, updatedAt)
+	OUTPUT inserted.id INTO @PermissionTemp(permissionId)
+	SELECT 'SHOWMENU_' + @entityName, @permissionSymbolShowMenu, @groupId,GETDATE(), GETDATE()
+
+	INSERT INTO RolePermissions(roleId, permissionId, createdAt, updatedAt)
+	SELECT @roleId, permissionId, GETDATE(), GETDATE()
+	FROM @PermissionTemp
+
+	DECLARE @permissionId int = null
+	SELECT @permissionId = permissionId FROM @PermissionTemp
+
+
+
+
+	DECLARE @parentMenuId int = null
+	
+
+
+	IF @findParentMenu = 0
+	BEGIN
+		-- INSERT ParentMenu
+		DECLARE @ParentMenuTemp TABLE (
+			menuId int
+		);
+
+		INSERT INTO Menus(title, url, className, visibility, createdAt, updatedAt)
+		OUTPUT inserted.id INTO @ParentMenuTemp(menuId)
+		SELECT @parentMenuName, null, null, null, GETDATE(), GETDATE()
+
+		SELECT @parentMenuId = menuId FROM @ParentMenuTemp
+
+	END
+	ELSE
+	BEGIN
+		SELECT @parentMenuId = id
+		FROM Menus
+		WHERE title = @parentMenuName
+	END
+
+	IF @parentMenuId IS NOT NULL
+		AND NOT EXISTS (SELECT 1 FROM PermissionMenus WHERE permissionId = @permissionId AND menuId = @parentMenuId)
+	BEGIN
+		INSERT INTO PermissionMenus(permissionId, menuId, createdAt, updatedAt)
+		SELECT @permissionId, @parentMenuId, getdate(), getdate()
+		
+	END
+
+	DECLARE @MenuTemp TABLE (
+			menuId int
+		);
+	DECLARE @menuId int = null
+
+	INSERT INTO Menus(title, url, parentMenuId, className, visibility, createdAt, updatedAt)
+	OUTPUT inserted.id INTO @MenuTemp(menuId)
+	SELECT @menuName, @menuUrl, @parentMenuId,null, null, GETDATE(), GETDATE()
+
+	SELECT @menuId = menuId FROM @MenuTemp
+
+	INSERT INTO PermissionMenus(permissionId, menuId, createdAt, updatedAt)
+	SELECT @permissionId, @menuId, getdate(), getdate()
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'CORE-Permissions-Data-v35', GETDATE(), GETDATE()
+END
+
+GO
+
 
 -- period types
 IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'PCMPeriodTypes-Data-v1' 

@@ -405,6 +405,9 @@ export class ProductQueryBuilderService {
         ];
     if (slug) {
       resultQueryAttributes.push('description');
+      resultQueryAttributes.push('metaTitle');
+      resultQueryAttributes.push('metaKeywords');
+      resultQueryAttributes.push('metaDescription');
     }
     queryResultBuilder = queryResultBuilder
       .attributes(resultQueryAttributes)

@@ -14,6 +14,7 @@ import {
 import { ProductPhotoDto } from './product-photo.dto';
 import { ProductAttributeDto } from './product-attribute.dto';
 import { InventoryDto } from '@rahino/ecommerce/inventory/dto';
+import { ApiProperty } from '@nestjs/swagger';
 
 export class ProductDto {
   @AutoMap()
@@ -65,4 +66,34 @@ export class ProductDto {
   @IsArray()
   @IsOptional()
   inventories?: InventoryDto[];
+
+  @AutoMap()
+  @IsOptional()
+  @IsString()
+  @ApiProperty({
+    required: true,
+    type: String,
+    description: 'metaTitle',
+  })
+  public metaTitle?: string;
+
+  @AutoMap()
+  @IsOptional()
+  @IsString()
+  @ApiProperty({
+    required: true,
+    type: String,
+    description: 'metaKeywords',
+  })
+  public metaKeywords?: string;
+
+  @AutoMap()
+  @IsOptional()
+  @IsString()
+  @ApiProperty({
+    required: true,
+    type: String,
+    description: 'metaDescription',
+  })
+  public metaDescription?: string;
 }

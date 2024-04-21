@@ -4,6 +4,7 @@ import {
   IsNumber,
   IsObject,
   IsOptional,
+  IsString,
   Max,
   MaxLength,
   Min,
@@ -13,6 +14,7 @@ import {
 import { VendorUserDto } from './vendor-user.dto';
 import { replaceCharacterSlug } from '@rahino/commontools';
 import { Transform } from 'class-transformer';
+import { ApiProperty } from '@nestjs/swagger';
 
 export class VendorDto {
   @MinLength(3)
@@ -46,4 +48,34 @@ export class VendorDto {
 
   @IsObject()
   user: VendorUserDto;
+
+  @AutoMap()
+  @IsOptional()
+  @IsString()
+  @ApiProperty({
+    required: true,
+    type: String,
+    description: 'metaTitle',
+  })
+  public metaTitle?: string;
+
+  @AutoMap()
+  @IsOptional()
+  @IsString()
+  @ApiProperty({
+    required: true,
+    type: String,
+    description: 'metaKeywords',
+  })
+  public metaKeywords?: string;
+
+  @AutoMap()
+  @IsOptional()
+  @IsString()
+  @ApiProperty({
+    required: true,
+    type: String,
+    description: 'metaDescription',
+  })
+  public metaDescription?: string;
 }

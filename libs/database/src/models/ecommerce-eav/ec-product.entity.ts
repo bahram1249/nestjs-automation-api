@@ -167,4 +167,25 @@ export class ECProduct extends Model {
     allowNull: true,
   })
   lastPrice?: bigint;
+
+  @Column({
+    type: DataType.STRING,
+    allowNull: true,
+  })
+  @AutoMap()
+  metaTitle?: string;
+
+  @Column({
+    type: DataType.STRING,
+    allowNull: true,
+  })
+  @AutoMap()
+  metaKeywords?: string;
+
+  @Column({
+    type: DataType.STRING,
+    allowNull: true,
+  })
+  @AutoMap()
+  metaDescription?: string;
 }

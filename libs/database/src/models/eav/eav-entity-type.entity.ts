@@ -77,4 +77,25 @@ export class EAVEntityType extends Model {
     as: 'subEntityTypes',
   })
   subEntityTypes?: EAVEntityType[];
+
+  @Column({
+    type: DataType.STRING,
+    allowNull: true,
+  })
+  @AutoMap()
+  metaTitle?: string;
+
+  @Column({
+    type: DataType.STRING,
+    allowNull: true,
+  })
+  @AutoMap()
+  metaKeywords?: string;
+
+  @Column({
+    type: DataType.STRING,
+    allowNull: true,
+  })
+  @AutoMap()
+  metaDescription?: string;
 }

@@ -42,4 +42,34 @@ export class EntityTypeDto {
     description: 'parentEntityTypeId',
   })
   public parentEntityTypeId?: number;
+
+  @AutoMap()
+  @IsOptional()
+  @IsString()
+  @ApiProperty({
+    required: true,
+    type: String,
+    description: 'metaTitle',
+  })
+  public metaTitle?: string;
+
+  @AutoMap()
+  @IsOptional()
+  @IsString()
+  @ApiProperty({
+    required: true,
+    type: String,
+    description: 'metaKeywords',
+  })
+  public metaKeywords?: string;
+
+  @AutoMap()
+  @IsOptional()
+  @IsString()
+  @ApiProperty({
+    required: true,
+    type: String,
+    description: 'metaDescription',
+  })
+  public metaDescription?: string;
 }

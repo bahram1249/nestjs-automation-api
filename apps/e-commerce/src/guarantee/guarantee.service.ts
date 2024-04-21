@@ -48,7 +48,15 @@ export class GuaranteeService {
       );
     const count = await this.repository.count(queryBuilder.build());
     const queryOptions = queryBuilder
-      .attributes(['id', 'name', 'slug', 'description'])
+      .attributes([
+        'id',
+        'name',
+        'slug',
+        'description',
+        'metaTitle',
+        'metaKeywords',
+        'metaDescription',
+      ])
       .include([
         {
           attributes: ['id', 'fileName'],
@@ -71,7 +79,15 @@ export class GuaranteeService {
   async findById(entityId: number) {
     const guarantee = await this.repository.findOne(
       new QueryOptionsBuilder()
-        .attributes(['id', 'name', 'slug', 'description'])
+        .attributes([
+          'id',
+          'name',
+          'slug',
+          'description',
+          'metaTitle',
+          'metaKeywords',
+          'metaDescription',
+        ])
         .include([
           {
             attributes: ['id', 'fileName'],
@@ -124,7 +140,15 @@ export class GuaranteeService {
       _.omit(mappedItem.toJSON(), ['id', 'attachmentId']),
     );
     return {
-      result: _.pick(result, ['id', 'name', 'slug', 'description']),
+      result: _.pick(result, [
+        'id',
+        'name',
+        'slug',
+        'description',
+        'metaTitle',
+        'metaKeywords',
+        'metaDescription',
+      ]),
     };
   }
 
@@ -179,7 +203,15 @@ export class GuaranteeService {
       },
     );
     return {
-      result: _.pick(result[1][0], ['id', 'name', 'slug', 'description']),
+      result: _.pick(result[1][0], [
+        'id',
+        'name',
+        'slug',
+        'description',
+        'metaTitle',
+        'metaKeywords',
+        'metaDescription',
+      ]),
     };
   }
 
@@ -233,7 +265,15 @@ export class GuaranteeService {
       throw new NotFoundException('the item with this given slug not founded!');
     }
     return {
-      result: item,
+      result: _.pick(item, [
+        'id',
+        'name',
+        'slug',
+        'description',
+        'metaTitle',
+        'metaKeywords',
+        'metaDescription',
+      ]),
     };
   }
 

@@ -42,6 +42,7 @@ import { PaymentModule } from './user/payment/payment.module';
 import { VerifyPaymentModule } from './verify-payment/verify-payment.module';
 import { TransactionModule } from './user/transaction/transaction.module';
 import { TransactionModule as AdminTransactionModule } from './admin/transaction/transaction.module';
+import { PostageFeeModule } from './admin/postage-fee/postage-fee.module';
 
 @Module({
   imports: [
@@ -87,6 +88,7 @@ import { TransactionModule as AdminTransactionModule } from './admin/transaction
     VerifyPaymentModule,
     TransactionModule,
     AdminTransactionModule,
+    PostageFeeModule,
   ],
   providers: [
     {

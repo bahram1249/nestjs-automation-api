@@ -125,7 +125,16 @@ export class EntityTypeService {
           ],
         },
       ])
-      .attributes(['id', 'name', 'slug', 'parentEntityTypeId', 'entityModelId'])
+      .attributes([
+        'id',
+        'name',
+        'slug',
+        'parentEntityTypeId',
+        'entityModelId',
+        'metaTitle',
+        'metaKeywords',
+        'metaDescription',
+      ])
       .limit(filter.limit, filter.ignorePaging)
       .offset(filter.offset, filter.ignorePaging)
       .order({ orderBy: filter.orderBy, sortOrder: filter.sortOrder });
@@ -138,7 +147,16 @@ export class EntityTypeService {
 
   async findById(id: number) {
     const builder = new QueryOptionsBuilder()
-      .attributes(['id', 'name', 'slug', 'parentEntityTypeId', 'entityModelId'])
+      .attributes([
+        'id',
+        'name',
+        'slug',
+        'parentEntityTypeId',
+        'entityModelId',
+        'metaTitle',
+        'metaKeywords',
+        'metaDescription',
+      ])
       .include([
         {
           attributes: ['id', 'fileName'],
@@ -183,7 +201,16 @@ export class EntityTypeService {
 
   async findByIdAnyway(id: number) {
     const builder = new QueryOptionsBuilder()
-      .attributes(['id', 'name', 'slug', 'parentEntityTypeId', 'entityModelId'])
+      .attributes([
+        'id',
+        'name',
+        'slug',
+        'parentEntityTypeId',
+        'entityModelId',
+        'metaTitle',
+        'metaKeywords',
+        'metaDescription',
+      ])
       .include([
         {
           attributes: ['id', 'fileName'],
@@ -221,7 +248,16 @@ export class EntityTypeService {
 
   async findBySlug(slug: string) {
     const builder = new QueryOptionsBuilder()
-      .attributes(['id', 'name', 'slug', 'parentEntityTypeId', 'entityModelId'])
+      .attributes([
+        'id',
+        'name',
+        'slug',
+        'parentEntityTypeId',
+        'entityModelId',
+        'metaTitle',
+        'metaKeywords',
+        'metaDescription',
+      ])
       .include([
         {
           attributes: ['id', 'fileName'],
@@ -316,7 +352,16 @@ export class EntityTypeService {
     );
     let builder = new QueryOptionsBuilder();
     const options = builder
-      .attributes(['id', 'name', 'slug', 'parentEntityTypeId', 'entityModelId'])
+      .attributes([
+        'id',
+        'name',
+        'slug',
+        'parentEntityTypeId',
+        'entityModelId',
+        'metaTitle',
+        'metaKeywords',
+        'metaDescription',
+      ])
       .filter({ id: entityType.id })
       .include([
         {
