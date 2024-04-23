@@ -1,5 +1,6 @@
 import { AutoMap } from 'automapper-classes';
 import {
+  IsDecimal,
   IsNotEmpty,
   IsNumber,
   IsOptional,
@@ -16,11 +17,11 @@ export class AddressDto {
   name: string;
 
   @AutoMap()
-  @IsNumber()
+  @IsDecimal({ force_decimal: true })
   latitude: number;
 
   @AutoMap()
-  @IsNumber()
+  @IsDecimal({ force_decimal: true })
   longitude: number;
 
   @AutoMap()
