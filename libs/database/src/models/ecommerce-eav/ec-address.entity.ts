@@ -30,17 +30,17 @@ export class ECAddress extends Model {
 
   @AutoMap()
   @Column({
-    type: DataType.DECIMAL,
+    type: DataType.STRING,
     allowNull: true,
   })
-  latitude?: number;
+  latitude?: string;
 
   @AutoMap()
   @Column({
-    type: DataType.DECIMAL,
+    type: DataType.STRING,
     allowNull: true,
   })
-  longitude?: number;
+  longitude?: string;
 
   @AutoMap()
   @Column({

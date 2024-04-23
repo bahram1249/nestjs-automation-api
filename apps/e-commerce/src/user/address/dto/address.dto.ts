@@ -17,12 +17,12 @@ export class AddressDto {
   name: string;
 
   @AutoMap()
-  @IsDecimal({ force_decimal: true })
-  latitude: number;
+  @IsString()
+  latitude: string;
 
   @AutoMap()
-  @IsDecimal({ force_decimal: true })
-  longitude: number;
+  @IsString()
+  longitude: string;
 
   @AutoMap()
   @IsNumber()
