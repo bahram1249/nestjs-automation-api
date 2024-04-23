@@ -299,7 +299,7 @@ export class DiscountService {
     if (!item) {
       throw new NotFoundException('the item with this given id not founded!');
     }
-    item.isDeleted = false;
+    item.isDeleted = true;
     item = await item.save();
     return {
       result: _.pick(item, [
