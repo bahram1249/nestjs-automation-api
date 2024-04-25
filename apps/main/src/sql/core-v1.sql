@@ -10783,16 +10783,17 @@ BEGIN
 
 	DECLARE @groupId int = null;
 
-	DECLARE @entityName nvarchar(256) = N'Orders'
-	DECLARE @groupName nvarchar(256) = N'ecommerce.admin.orders'
+	DECLARE @entityName nvarchar(256) = N'PendingOrders'
+	DECLARE @groupName nvarchar(256) = N'ecommerce.admin.pendingorders'
 	DECLARE @findParentMenu bit = 1;
 	DECLARE @parentMenuName nvarchar(256) = N'فروشنده'
 	DECLARE @menuName nvarchar(256) = N'سفارشات'
-	DECLARE @menuUrl nvarchar(512) = N'/admin/ecommerce/orders'
+	DECLARE @menuUrl nvarchar(512) = N'/admin/ecommerce/pendingOrders'
 
 	DECLARE @permissionSymbolShowMenu nvarchar(512) = @groupName + '.showmenu';
 	DECLARE @permissionSymbolGetAll nvarchar(512) = @groupName + '.getall';
 	DECLARE @permissionSymbolGetOne nvarchar(512) = @groupName + '.getone';
+	DECLARE @permissionSymbolProcessDetail nvarchar(512) = @groupName + '.processdetail';
 
 
 
@@ -10818,6 +10819,10 @@ BEGIN
 	INSERT INTO Permissions(permissionName ,permissionSymbol,permissionGroupId,  createdAt, updatedAt)
 	OUTPUT inserted.id INTO @PermissionTemp(permissionId)
 	SELECT 'GETONE_' + @entityName, @permissionSymbolGetOne, @groupId, GETDATE(), GETDATE()
+															
+	INSERT INTO Permissions(permissionName ,permissionSymbol,permissionGroupId,  createdAt, updatedAt)
+	OUTPUT inserted.id INTO @PermissionTemp(permissionId)
+	SELECT 'ProcessDetail_' + @entityName, @permissionSymbolProcessDetail, @groupId, GETDATE(), GETDATE()
 	
 
 

@@ -43,7 +43,7 @@ import { VerifyPaymentModule } from './verify-payment/verify-payment.module';
 import { TransactionModule } from './user/transaction/transaction.module';
 import { TransactionModule as AdminTransactionModule } from './admin/transaction/transaction.module';
 import { PostageFeeModule } from './admin/postage-fee/postage-fee.module';
-import { OrderModule } from './admin/order/order.module';
+import { PendingOrderModule } from './admin/pendingOrder/pending-order.module';
 
 @Module({
   imports: [
@@ -90,7 +90,7 @@ import { OrderModule } from './admin/order/order.module';
     TransactionModule,
     AdminTransactionModule,
     PostageFeeModule,
-    OrderModule,
+    PendingOrderModule,
   ],
   providers: [
     {

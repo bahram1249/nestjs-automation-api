@@ -4,13 +4,14 @@ import {
   ApiQuery,
   ApiTags,
 } from '@nestjs/swagger';
-import { OrderService } from './order.service';
+import { PendingOrderService } from './pending-order.service';
 import {
   Controller,
   Get,
   HttpCode,
   HttpStatus,
   Param,
+  Patch,
   Query,
   UseGuards,
   UseInterceptors,
@@ -28,14 +29,14 @@ import { CheckPermission } from '@rahino/permission-checker/decorator';
 @ApiBearerAuth()
 @UseInterceptors(JsonResponseTransformInterceptor)
 @Controller({
-  path: '/api/ecommerce/admin/orders',
+  path: '/api/ecommerce/admin/pendingOrders',
   version: ['1'],
 })
-export class OrderController {
-  constructor(private readonly service: OrderService) {}
+export class PendingOrderController {
+  constructor(private readonly service: PendingOrderService) {}
 
-  @ApiOperation({ description: 'show all orders' })
-  @CheckPermission({ permissionSymbol: 'ecommerce.admin.orders.getall' })
+  @ApiOperation({ description: 'show all pending orders' })
+  @CheckPermission({ permissionSymbol: 'ecommerce.admin.pendingorders.getall' })
   @Get('/')
   @ApiQuery({
     name: 'filter',
@@ -48,8 +49,8 @@ export class OrderController {
     return await this.service.findAll(user, filter);
   }
 
-  @ApiOperation({ description: 'show orders by given id' })
-  @CheckPermission({ permissionSymbol: 'ecommerce.admin.orders.getone' })
+  @ApiOperation({ description: 'show pending orders by given id' })
+  @CheckPermission({ permissionSymbol: 'ecommerce.admin.pendingorders.getone' })
   @Get('/:id')
   @HttpCode(HttpStatus.OK)
   async findById(
@@ -58,5 +59,15 @@ export class OrderController {
     @Query() filter: GetOrderDto,
   ) {
     return await this.service.findById(entityId, user, filter);
+  }
+
+  @ApiOperation({ description: 'change detail to process' })
+  @CheckPermission({
+    permissionSymbol: 'ecommerce.admin.pendingorders.processdetail',
+  })
+  @Patch('/processDetail/:id')
+  @HttpCode(HttpStatus.OK)
+  async processDetail(@Param('id') detailId: bigint, @GetUser() user: User) {
+    return await this.service.processDetail(detailId, user);
   }
 }
