@@ -1,6 +1,8 @@
-import { IsNumber } from 'class-validator';
+import { Type } from 'class-transformer';
+import { IsInt } from 'class-validator';
 
 export class VendorDto {
-  @IsNumber()
+  @IsInt()
+  @Type(() => Number)
   vendorId: number;
 }
