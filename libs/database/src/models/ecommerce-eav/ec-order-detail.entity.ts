@@ -134,4 +134,10 @@ export class ECOrderDetail extends Model {
 
   @BelongsTo(() => User, { as: 'user', foreignKey: 'userId' })
   user?: User;
+
+  @Column({
+    type: DataType.BOOLEAN,
+    allowNull: true,
+  })
+  isDeleted?: boolean;
 }

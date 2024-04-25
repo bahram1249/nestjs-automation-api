@@ -14,6 +14,9 @@ import { ECOrderDetailStatus } from '@rahino/database/models/ecommerce-eav/ec-or
 import { ECProduct } from '@rahino/database/models/ecommerce-eav/ec-product.entity';
 import { ECDiscount } from '@rahino/database/models/ecommerce-eav/ec-discount.entity';
 import { ECAddress } from '@rahino/database/models/ecommerce-eav/ec-address.entity';
+import { ECProvince } from '@rahino/database/models/ecommerce-eav/ec-province.entity';
+import { ECCity } from '@rahino/database/models/ecommerce-eav/ec-city.entity';
+import { ECNeighborhood } from '@rahino/database/models/ecommerce-eav/ec-neighborhood.entity';
 
 @Injectable()
 export class OrderService {
@@ -48,64 +51,93 @@ export class OrderService {
         },
       })
       .filter(
-        Sequelize.literal(`is exists (
+        Sequelize.literal(`EXISTS (
         SELECT 1
         FROM ECOrderDetails EOD
-        WHERE EDO.orderId = ECOrder.id AND EDO.vendorId = ${filter.vendorId}
+        WHERE EOD.orderId = ECOrder.id AND EOD.vendorId = ${filter.vendorId}
       )`),
       );
 
     const count = await this.repository.count(queryBuilder.build());
-    queryBuilder = queryBuilder.include([
-      {
-        include: [
-          {
-            model: ECVendor,
-            as: 'vendor',
-          },
-          {
-            model: ECOrderDetailStatus,
-            as: 'orderDetailStatus',
-          },
-          {
-            attributes: ['id', 'title', 'slug'],
-            model: ECProduct,
-            as: 'product',
-          },
-          {
-            attributes: ['id', 'name'],
-            model: ECDiscount,
-            as: 'discount',
-          },
-        ],
-        model: ECOrderDetail,
-        as: 'details',
-        where: {
-          [Op.and]: [
+    queryBuilder = queryBuilder
+      .include([
+        {
+          include: [
             {
-              vendorId: filter.vendorId,
+              attributes: ['id', 'name', 'slug'],
+              model: ECVendor,
+              as: 'vendor',
             },
-            Sequelize.where(
-              Sequelize.fn('isnull', Sequelize.col('details.isDeleted'), 0),
+            {
+              attributes: ['id', 'name'],
+              model: ECOrderDetailStatus,
+              as: 'orderDetailStatus',
+            },
+            {
+              attributes: ['id', 'title', 'slug'],
+              model: ECProduct,
+              as: 'product',
+            },
+            {
+              attributes: ['id', 'name'],
+              model: ECDiscount,
+              as: 'discount',
+            },
+          ],
+          model: ECOrderDetail,
+          as: 'details',
+          where: {
+            [Op.and]: [
               {
-                [Op.eq]: 0,
+                vendorId: filter.vendorId,
               },
-            ),
+              Sequelize.where(
+                Sequelize.fn('isnull', Sequelize.col('details.isDeleted'), 0),
+                {
+                  [Op.eq]: 0,
+                },
+              ),
+            ],
+          },
+        },
+        {
+          attributes: [
+            'id',
+            'firstname',
+            'lastname',
+            'username',
+            'phoneNumber',
+          ],
+          model: User,
+          as: 'user',
+        },
+        {
+          model: ECAddress,
+          as: 'address',
+          include: [
+            {
+              attributes: ['id', 'name'],
+              model: ECProvince,
+              as: 'province',
+            },
+            {
+              attributes: ['id', 'name'],
+              model: ECCity,
+              as: 'city',
+            },
+            {
+              attributes: ['id', 'name'],
+              model: ECNeighborhood,
+              as: 'neighborhood',
+            },
           ],
         },
-      },
-      {
-        attributes: ['id', 'firstname', 'lastname', 'username', 'phoneNumber'],
-        model: User,
-        as: 'user',
-      },
-      {
-        model: ECAddress,
-        as: 'address',
-      },
-    ]);
+      ])
+      .offset(filter.offset)
+      .limit(filter.limit)
+      .order({ orderBy: filter.orderBy, sortOrder: filter.sortOrder });
     return {
-      result: queryBuilder.build(),
+      result: await this.repository.findAll(queryBuilder.build()),
       total: count,
     };
   }
@@ -135,10 +167,10 @@ export class OrderService {
         },
       })
       .filter(
-        Sequelize.literal(`is exists (
+        Sequelize.literal(`EXISTS (
         SELECT 1
         FROM ECOrderDetails EOD
-        WHERE EDO.orderId = ECOrder.id AND EDO.vendorId = ${filter.vendorId}
+        WHERE EOD.orderId = ECOrder.id AND EOD.vendorId = ${filter.vendorId}
       )`),
       )
       .filter({ id: id });
@@ -146,12 +178,16 @@ export class OrderService {
     const count = await this.repository.count(queryBuilder.build());
     queryBuilder = queryBuilder.include([
       {
+        model: ECOrderDetail,
+        as: 'details',
         include: [
           {
+            attributes: ['id', 'name', 'slug'],
             model: ECVendor,
             as: 'vendor',
           },
           {
+            attributes: ['id', 'name'],
             model: ECOrderDetailStatus,
             as: 'orderDetailStatus',
           },
@@ -166,8 +202,6 @@ export class OrderService {
             as: 'discount',
           },
         ],
-        model: ECOrderDetail,
-        as: 'details',
         where: {
           [Op.and]: [
             {
@@ -190,10 +224,27 @@ export class OrderService {
       {
         model: ECAddress,
         as: 'address',
+        include: [
+          {
+            attributes: ['id', 'name'],
+            model: ECProvince,
+            as: 'province',
+          },
+          {
+            attributes: ['id', 'name'],
+            model: ECCity,
+            as: 'city',
+          },
+          {
+            attributes: ['id', 'name'],
+            model: ECNeighborhood,
+            as: 'neighborhood',
+          },
+        ],
       },
     ]);
     return {
-      result: queryBuilder.build(),
+      result: await this.repository.findOne(queryBuilder.build()),
       total: count,
     };
   }
