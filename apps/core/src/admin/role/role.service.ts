@@ -13,6 +13,7 @@ import { Permission } from '@rahino/database/models/core/permission.entity';
 import { RolePermission } from '@rahino/database/models/core/rolePermission.entity';
 import { RoleGetDto, RoleDto } from './dto';
 import { UserRole } from '@rahino/database/models/core/userRole.entity';
+import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 
 @Injectable()
 export class RoleService {
@@ -205,6 +206,16 @@ export class RoleService {
   }
 
   async delete(roleId: number) {
+    const item = await this.roleRepository.findOne(
+      new QueryOptionsBuilder().filter({ id: roleId }).build(),
+    );
+    if (!item) {
+      throw new NotFoundException('the item with this given id not founded!');
+    }
+    if (item.static_id != null) {
+      throw new BadRequestException('this role cannot be deleted!');
+    }
+
     await this.rolePermissionRepository.destroy({
       where: {
         roleId: roleId,
@@ -217,11 +228,6 @@ export class RoleService {
       },
     });
 
-    const role = await this.roleRepository.findOne({
-      where: {
-        id: roleId,
-      },
-    });
     await this.roleRepository.destroy({
       where: {
         id: roleId,
@@ -229,7 +235,7 @@ export class RoleService {
     });
 
     return {
-      result: role,
+      result: item,
     };
   }
 }
