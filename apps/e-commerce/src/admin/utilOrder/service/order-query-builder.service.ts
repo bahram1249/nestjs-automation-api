@@ -1,4 +1,5 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Scope } from '@nestjs/common';
+import { Attachment } from '@rahino/database/models/core/attachment.entity';
 import { User } from '@rahino/database/models/core/user.entity';
 import { ECAddress } from '@rahino/database/models/ecommerce-eav/ec-address.entity';
 import { ECCity } from '@rahino/database/models/ecommerce-eav/ec-city.entity';
@@ -13,7 +14,10 @@ import { ECOrderDetail } from '@rahino/database/models/ecommerce-eav/ec-order-de
 import { ECProduct } from '@rahino/database/models/ecommerce-eav/ec-product.entity';
 import { ECProvince } from '@rahino/database/models/ecommerce-eav/ec-province.entity';
 import { ECVendor } from '@rahino/database/models/ecommerce-eav/ec-vendor.entity';
-import { OrderStatusEnum } from '@rahino/ecommerce/util/enum';
+import {
+  OrderShipmentwayEnum,
+  OrderStatusEnum,
+} from '@rahino/ecommerce/util/enum';
 import { Order } from '@rahino/query-filter';
 import {
   IncludeOptionsBuilder,
@@ -21,7 +25,7 @@ import {
 } from '@rahino/query-filter/sequelize-query-builder';
 import { Op, Sequelize } from 'sequelize';
 
-@Injectable({})
+@Injectable({ scope: Scope.REQUEST })
 export class OrderQueryBuilder {
   private builder: QueryOptionsBuilder;
   constructor() {
@@ -41,8 +45,20 @@ export class OrderQueryBuilder {
     return this;
   }
 
+  subQuery(enable: boolean) {
+    this.builder = this.builder.subQuery(enable);
+    return this;
+  }
+
   addOrderId(orderId: bigint) {
     this.builder = this.builder.filter({ id: orderId });
+    return this;
+  }
+
+  orderShipmentWay(orderShipmentWay: OrderShipmentwayEnum.post) {
+    this.builder = this.builder.filter({
+      orderShipmentWayId: orderShipmentWay,
+    });
     return this;
   }
 
@@ -57,11 +73,13 @@ export class OrderQueryBuilder {
 
   addOnlyVendor(vendorId: number) {
     this.builder = this.builder.filter(
-      Sequelize.literal(`EXISTS (
+      Sequelize.literal(
+        `EXISTS (
         SELECT 1
         FROM ECOrderDetails EOD
         WHERE EOD.orderId = ECOrder.id AND EOD.vendorId = ${vendorId}
-      )`),
+      )`.replaceAll(/\s\s+/g, ' '),
+      ),
     );
     return this;
   }
@@ -70,42 +88,86 @@ export class OrderQueryBuilder {
     let includeBuilder = new IncludeOptionsBuilder({
       model: ECOrderDetail,
       as: 'details',
+      required: false,
+      attributes: [
+        'id',
+        'orderId',
+        'orderDetailStatusId',
+        'vendorId',
+        'productId',
+        'inventoryId',
+        'qty',
+        'productPrice',
+        'discountFee',
+        'discountId',
+        'totalPrice',
+        'userId',
+        'createdAt',
+        'updatedAt',
+      ],
       include: [
         {
           attributes: ['id', 'name', 'slug'],
           model: ECVendor,
           as: 'vendor',
+          required: false,
         },
         {
           attributes: ['id', 'name'],
           model: ECOrderDetailStatus,
           as: 'orderDetailStatus',
+          required: false,
         },
         {
           attributes: ['id', 'title', 'slug'],
           model: ECProduct,
           as: 'product',
-        },
-        {
-          model: ECInventory,
-          as: 'inventory',
+          required: false,
           include: [
             {
-              attributes: ['id', 'name', 'hexCode'],
-              model: ECColor,
-              as: 'color',
+              attributes: [
+                'id',
+                'colorId',
+                'guaranteeId',
+                'guaranteeMonthId',
+                'description',
+                'weight',
+                'buyPrice',
+              ],
+              model: ECInventory,
+              as: 'inventories',
               required: false,
+              where: Sequelize.where(Sequelize.col('details.inventoryId'), {
+                [Op.eq]: Sequelize.col('details.product.inventories.id'),
+              }),
+              include: [
+                {
+                  attributes: ['id', 'name', 'hexCode'],
+                  model: ECColor,
+                  as: 'color',
+                  required: false,
+                },
+                {
+                  attributes: ['id', 'name', 'slug'],
+                  model: ECGuarantee,
+                  as: 'guarantee',
+                  required: false,
+                },
+                {
+                  attributes: ['id', 'name'],
+                  model: ECGuaranteeMonth,
+                  as: 'guaranteeMonth',
+                  required: false,
+                },
+              ],
             },
             {
-              attributes: ['id', 'name', 'slug'],
-              model: ECGuarantee,
-              as: 'guarantee',
-              required: false,
-            },
-            {
-              attributes: ['id', 'name'],
-              model: ECGuaranteeMonth,
-              as: 'guaranteeMonth',
+              attributes: ['id', 'fileName'],
+              through: {
+                attributes: [],
+              },
+              model: Attachment,
+              as: 'attachments',
               required: false,
             },
           ],
@@ -114,6 +176,7 @@ export class OrderQueryBuilder {
           attributes: ['id', 'name'],
           model: ECDiscount,
           as: 'discount',
+          required: false,
         },
       ],
     });
@@ -136,6 +199,20 @@ export class OrderQueryBuilder {
 
   addAddress() {
     this.builder = this.builder.thenInlcude({
+      attributes: [
+        'id',
+        'name',
+        'latitude',
+        'longitude',
+        'provinceId',
+        'cityId',
+        'neighborhoodId',
+        'street',
+        'alley',
+        'plaque',
+        'floorNumber',
+        'postalCode',
+      ],
       model: ECAddress,
       as: 'address',
       include: [

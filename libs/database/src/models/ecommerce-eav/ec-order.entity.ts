@@ -100,4 +100,10 @@ export class ECOrder extends Model {
 
   @HasMany(() => ECOrderDetail, { as: 'details', foreignKey: 'orderId' })
   details?: ECOrderDetail[];
+
+  @Column({
+    type: DataType.STRING,
+    allowNull: true,
+  })
+  postReceipt?: string;
 }

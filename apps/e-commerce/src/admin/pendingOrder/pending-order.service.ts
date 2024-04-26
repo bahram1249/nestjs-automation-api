@@ -47,6 +47,7 @@ export class PendingOrderService {
     const count = await this.repository.count(builder.build());
 
     builder = builder
+      .subQuery(false)
       .addOrderDetails(filter.vendorId)
       .addAddress()
       .addUser()
