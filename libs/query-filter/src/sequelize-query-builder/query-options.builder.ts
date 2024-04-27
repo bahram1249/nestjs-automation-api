@@ -80,6 +80,10 @@ export class QueryOptionsBuilder {
     this.options.group = group;
     return this;
   }
+  raw(flag: boolean) {
+    this.options.raw = flag;
+    return this;
+  }
 }
 
 function isOrderCol(x: any) {

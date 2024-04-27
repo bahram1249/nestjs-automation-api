@@ -71,6 +71,15 @@ export class OrderQueryBuilder {
     return this;
   }
 
+  addNegativeOrderStatus(status: OrderStatusEnum) {
+    this.builder = this.builder.filter({
+      orderStatusId: {
+        [Op.ne]: status,
+      },
+    });
+    return this;
+  }
+
   addOnlyVendor(vendorId: number) {
     this.builder = this.builder.filter(
       Sequelize.literal(

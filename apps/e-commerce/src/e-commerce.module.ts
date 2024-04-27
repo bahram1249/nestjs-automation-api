@@ -45,6 +45,7 @@ import { TransactionModule as AdminTransactionModule } from './admin/transaction
 import { PostageFeeModule } from './admin/postage-fee/postage-fee.module';
 import { PendingOrderModule } from './admin/pendingOrder/pending-order.module';
 import { PostageOrderModule } from './admin/postageOrder/postage-order.module';
+import { TotalOrderModule } from './admin/totalOrders/total-order.module';
 
 @Module({
   imports: [
@@ -93,6 +94,7 @@ import { PostageOrderModule } from './admin/postageOrder/postage-order.module';
     PostageFeeModule,
     PendingOrderModule,
     PostageOrderModule,
+    TotalOrderModule,
   ],
   providers: [
     {

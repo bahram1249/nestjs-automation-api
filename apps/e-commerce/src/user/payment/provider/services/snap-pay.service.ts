@@ -117,7 +117,7 @@ export class SnapPayService implements PayInterface {
             }),
             isShipmentIncluded: true,
             shippingAmount: shipmentAmount * 10,
-            isTaxIncluded: false,
+            isTaxIncluded: true,
             taxAmount: 0,
             totalAmount:
               orderDetails
@@ -133,6 +133,7 @@ export class SnapPayService implements PayInterface {
         discountAmount: discountAmount * 10,
         mobile: phoneNumber,
         paymentMethodTypeDto: 'INSTALLMENT',
+        externalSourceAmount: 0,
         returnURL: baseUrl + '/v1/api/ecommerce/verifyPayments/snappay',
         transactionId: payment.transactionId,
       };
@@ -169,7 +170,6 @@ export class SnapPayService implements PayInterface {
         paymentId: payment.id,
       };
     } catch (error) {
-      console.log(error.response.data.errorData);
       throw new InternalServerErrorException('something failed in payment');
     }
   }
@@ -273,6 +273,112 @@ export class SnapPayService implements PayInterface {
     return res.redirect(
       301,
       frontUrl + `/payment/transaction?transaction=${payment.id}`,
+    );
+  }
+
+  async update(
+    totalPrice: number,
+    discountAmount: number,
+    shipmentAmount: number,
+    phoneNumber: string,
+    transaction?: Transaction,
+    orderId?: bigint,
+    orderDetails?: ECOrderDetail[],
+  ) {
+    const paymentGateway = await this.paymentGateway.findOne(
+      new QueryOptionsBuilder()
+        .filter({ serviceName: 'SnapPayService' })
+        .filter(
+          Sequelize.where(
+            Sequelize.fn('isnull', Sequelize.col('isDeleted'), 0),
+            {
+              [Op.eq]: 0,
+            },
+          ),
+        )
+        .build(),
+    );
+    if (!paymentGateway) {
+      throw new BadRequestException('invalid payment');
+    }
+
+    const payment = await this.paymentRepository.findOne(
+      new QueryOptionsBuilder()
+        .filter({ orderId: orderId })
+        .filter({ paymentGatewayId: paymentGateway.id })
+        .filter(
+          Sequelize.where(
+            Sequelize.fn('isnull', Sequelize.col('isDeleted'), 0),
+            {
+              [Op.eq]: 0,
+            },
+          ),
+        )
+        .build(),
+    );
+
+    const token = await this.generateToken(paymentGateway);
+
+    let phone = phoneNumber;
+    if (phone.startsWith('0')) {
+      phone = '+98' + phone.substring(1, phone.length);
+    }
+
+    const finalRequetData = {
+      amount: totalPrice * 10,
+      cartList: [
+        {
+          cartId: orderId,
+          cartItems: orderDetails.map((orderDetail) => {
+            return {
+              id: orderDetail.id,
+              amount: Number(orderDetail.productPrice) * 10,
+              count: orderDetail.qty,
+              name: orderDetail.product.title,
+              category: orderDetail.product.entityType.name,
+              commissionType: 100,
+            };
+          }),
+          isShipmentIncluded: true,
+          shippingAmount: shipmentAmount * 10,
+          isTaxIncluded: true,
+          taxAmount: 0,
+          totalAmount:
+            orderDetails
+              .map((orderDetail) => {
+                return Number(orderDetail.productPrice) * 10 * orderDetail.qty;
+              })
+              .reduce((prev, current) => prev + current, 0) +
+            shipmentAmount * 10,
+        },
+      ],
+      discountAmount: discountAmount * 10,
+      mobile: phoneNumber,
+      paymentMethodTypeDto: 'INSTALLMENT',
+      externalSourceAmount: 0,
+      transactionId: payment.transactionId,
+    };
+
+    const finalRequest = await axios.post(
+      this.baseUrl + ' /api/online/payment/v1/update',
+      finalRequetData,
+      {
+        headers: {
+          Authorization: 'Bearer ' + token,
+        },
+      },
+    );
+    if (finalRequest.data.successful != true) {
+      throw new InternalServerErrorException('invalid payment Request');
+    }
+    await this.paymentRepository.update(
+      { totalprice: totalPrice * 10 },
+      {
+        where: {
+          id: payment.id,
+        },
+        transaction: transaction,
+      },
     );
   }
 
