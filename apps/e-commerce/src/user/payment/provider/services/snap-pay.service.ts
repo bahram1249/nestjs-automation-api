@@ -380,6 +380,9 @@ export class SnapPayService implements PayInterface {
         transaction: transaction,
       },
     );
+    return {
+      result: payment,
+    };
   }
 
   private async generateToken(paymentGateway: ECPaymentGateway) {
