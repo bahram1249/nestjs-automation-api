@@ -91,13 +91,14 @@ export class ECPayment extends Model {
     type: DataType.BIGINT,
   })
   userId: bigint;
+
+  @BelongsTo(() => User, { as: 'user', foreignKey: 'userId' })
+  user?: User;
+
   @Column({
     type: DataType.BOOLEAN,
     allowNull: true,
   })
-  @BelongsTo(() => User, { as: 'user', foreignKey: 'userId' })
-  user?: User;
-
   isDeleted?: boolean;
 
   @Column({
