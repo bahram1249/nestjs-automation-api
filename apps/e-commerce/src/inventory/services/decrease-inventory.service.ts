@@ -86,7 +86,6 @@ export class DecreaseInventoryService {
       if (inventory.qty == 0) {
         inventory.inventoryStatusId = InventoryStatusEnum.unavailable;
       }
-      console.log('inventoryStatusId', inventory.inventoryStatusId);
       await this.inventoryRepository.update(
         { qty: inventory.qty, inventoryStatusId: inventory.inventoryStatusId },
         {
