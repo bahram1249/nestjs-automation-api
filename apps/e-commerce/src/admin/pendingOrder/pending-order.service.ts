@@ -49,6 +49,7 @@ export class PendingOrderService {
     builder = builder
       .subQuery(false)
       .addOrderDetails(filter.vendorId)
+      .addOrderShipmentWay()
       .addAddress()
       .addUser()
       .limit(filter.limit)
@@ -75,6 +76,7 @@ export class PendingOrderService {
     builder = builder
       .nonDeletedOrder()
       .addOrderId(id)
+      .addOrderShipmentWay()
       .addOrderStatus(OrderStatusEnum.Paid)
       .addOnlyVendor(filter.vendorId)
       .addOrderDetails(filter.vendorId)

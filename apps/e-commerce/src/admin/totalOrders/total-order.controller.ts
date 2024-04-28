@@ -66,4 +66,14 @@ export class TotalOrderController {
   async removeDetail(@Param('id') detailId: bigint, @GetUser() user: User) {
     return await this.service.removeDetail(detailId, user);
   }
+
+  @ApiOperation({ description: 'delete order by given id' })
+  @CheckPermission({
+    permissionSymbol: 'ecommerce.admin.totalorders.delete',
+  })
+  @Delete('/:id')
+  @HttpCode(HttpStatus.OK)
+  async removeById(@Param('id') id: bigint, @GetUser() user: User) {
+    return await this.service.removeById(id);
+  }
 }

@@ -357,6 +357,7 @@ export class SnapPayService implements PayInterface {
       paymentMethodTypeDto: 'INSTALLMENT',
       externalSourceAmount: 0,
       transactionId: payment.transactionId,
+      paymentToken: payment.paymentToken,
     };
 
     const finalRequest = await axios.post(
@@ -383,6 +384,66 @@ export class SnapPayService implements PayInterface {
     return {
       result: payment,
     };
+  }
+
+  async cancel(orderId: bigint, transaction?: Transaction) {
+    const paymentGateway = await this.paymentGateway.findOne(
+      new QueryOptionsBuilder()
+        .filter({ serviceName: 'SnapPayService' })
+        .filter(
+          Sequelize.where(
+            Sequelize.fn('isnull', Sequelize.col('isDeleted'), 0),
+            {
+              [Op.eq]: 0,
+            },
+          ),
+        )
+        .build(),
+    );
+    if (!paymentGateway) {
+      throw new BadRequestException('invalid payment');
+    }
+
+    const payment = await this.paymentRepository.findOne(
+      new QueryOptionsBuilder()
+        .filter({ orderId: orderId })
+        .filter({ paymentGatewayId: paymentGateway.id })
+        .filter({ paymentStatusId: PaymentStatusEnum.SuccessPayment })
+        .filter(
+          Sequelize.where(
+            Sequelize.fn('isnull', Sequelize.col('isDeleted'), 0),
+            {
+              [Op.eq]: 0,
+            },
+          ),
+        )
+        .build(),
+    );
+
+    const token = await this.generateToken(paymentGateway);
+
+    const finalRequest = await axios.post(
+      this.baseUrl + ' /api/online/payment/v1/cancel',
+      {
+        paymentToken: payment.paymentToken,
+      },
+      {
+        headers: {
+          Authorization: 'Bearer ' + token,
+        },
+      },
+    );
+    if (finalRequest.data.successful != true) {
+      throw new InternalServerErrorException('invalid payment Request');
+    }
+
+    await this.paymentRepository.update(
+      {
+        paymentStatusId: PaymentStatusEnum.Refund,
+      },
+      { where: { id: payment.id }, transaction: transaction },
+    );
+    return payment;
   }
 
   private async generateToken(paymentGateway: ECPaymentGateway) {

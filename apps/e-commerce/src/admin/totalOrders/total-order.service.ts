@@ -1,6 +1,7 @@
 import {
   BadRequestException,
   Injectable,
+  InternalServerErrorException,
   NotFoundException,
 } from '@nestjs/common';
 import { InjectConnection, InjectModel } from '@nestjs/sequelize';
@@ -46,6 +47,7 @@ export class TotalOrderService {
 
     builder = builder
       .subQuery(false)
+      .addOrderShipmentWay()
       .addOrderDetails()
       .addAddress()
       .addUser()
@@ -64,6 +66,7 @@ export class TotalOrderService {
 
     builder = builder
       .nonDeletedOrder()
+      .addOrderShipmentWay()
       .addOrderId(id)
       .addNegativeOrderStatus(OrderStatusEnum.WaitingForPayment)
       .addOrderDetails()
@@ -72,6 +75,74 @@ export class TotalOrderService {
 
     return {
       result: await this.repository.findOne(builder.build()),
+    };
+  }
+
+  async removeById(id: bigint) {
+    const transaction = await this.sequelize.transaction({
+      isolationLevel: Transaction.ISOLATION_LEVELS.READ_COMMITTED,
+    });
+    try {
+      let item = await this.repository.findOne(
+        new QueryOptionsBuilder()
+          .filter({ id: id })
+          .filter({
+            orderStatusId: {
+              [Op.ne]: OrderStatusEnum.WaitingForPayment,
+            },
+          })
+          .filter(
+            Sequelize.where(
+              Sequelize.fn('isnull', Sequelize.col('ECOrder.isDeleted'), 0),
+              {
+                [Op.eq]: 0,
+              },
+            ),
+          )
+          .build(),
+      );
+      if (!item) {
+        throw new NotFoundException('the item with this given id not founded!');
+      }
+
+      await this.repository.update(
+        { isDeleted: true },
+        {
+          where: {
+            id: id,
+          },
+          transaction: transaction,
+        },
+      );
+
+      const payment = await this.paymentRepository.findOne(
+        new QueryOptionsBuilder()
+          .filter({ orderId: item.id })
+          .filter(
+            Sequelize.where(
+              Sequelize.fn('isnull', Sequelize.col('isDeleted'), 0),
+              {
+                [Op.eq]: 0,
+              },
+            ),
+          )
+          .build(),
+      );
+      const paymentGateway = await this.paymentGatewayRepository.findOne(
+        new QueryOptionsBuilder()
+          .filter({ id: payment.paymentGatewayId })
+          .build(),
+      );
+      if (paymentGateway.serviceName == 'SnapPayService') {
+        await this.snapPayService.cancel(item.id, transaction);
+      }
+
+      await transaction.commit();
+    } catch {
+      await transaction.rollback();
+    }
+    return {
+      result: 'ok',
     };
   }
 
@@ -241,6 +312,9 @@ export class TotalOrderService {
       await transaction.commit();
     } catch {
       await transaction.rollback();
+      throw new InternalServerErrorException(
+        'something failed on remove detail order',
+      );
     }
 
     return {

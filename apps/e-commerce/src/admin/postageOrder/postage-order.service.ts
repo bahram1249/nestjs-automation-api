@@ -32,6 +32,7 @@ export class PostageOrderService {
 
     builder = builder
       .subQuery(false)
+      .addOrderShipmentWay()
       .addOrderDetails()
       .addAddress()
       .addUser()
@@ -50,6 +51,7 @@ export class PostageOrderService {
 
     builder = builder
       .nonDeletedOrder()
+      .addOrderShipmentWay()
       .orderShipmentWay(OrderShipmentwayEnum.post)
       .addOrderId(id)
       .addOrderStatus(OrderStatusEnum.OrderHasBeenProcessed)

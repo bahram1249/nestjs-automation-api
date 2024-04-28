@@ -11,6 +11,7 @@ import { ECInventory } from '@rahino/database/models/ecommerce-eav/ec-inventory.
 import { ECNeighborhood } from '@rahino/database/models/ecommerce-eav/ec-neighborhood.entity';
 import { ECOrderDetailStatus } from '@rahino/database/models/ecommerce-eav/ec-order-detail-status.entity';
 import { ECOrderDetail } from '@rahino/database/models/ecommerce-eav/ec-order-detail.entity';
+import { ECOrderShipmentWay } from '@rahino/database/models/ecommerce-eav/ec-order-shipmentway.entity';
 import { ECProduct } from '@rahino/database/models/ecommerce-eav/ec-product.entity';
 import { ECProvince } from '@rahino/database/models/ecommerce-eav/ec-province.entity';
 import { ECVendor } from '@rahino/database/models/ecommerce-eav/ec-vendor.entity';
@@ -141,7 +142,6 @@ export class OrderQueryBuilder {
                 'guaranteeMonthId',
                 'description',
                 'weight',
-                'buyPrice',
               ],
               model: ECInventory,
               as: 'inventories',
@@ -250,6 +250,15 @@ export class OrderQueryBuilder {
       attributes: ['id', 'firstname', 'lastname', 'username', 'phoneNumber'],
       model: User,
       as: 'user',
+    });
+    return this;
+  }
+
+  addOrderShipmentWay() {
+    this.builder = this.builder.thenInlcude({
+      attributes: ['id', 'name'],
+      model: ECOrderShipmentWay,
+      as: 'orderShipmentWay',
     });
     return this;
   }
