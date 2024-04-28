@@ -10,6 +10,7 @@ import { ECPaymentGateway } from './ec-payment-gateway.entity';
 import { ECPaymentType } from './ec-payment-type.entity';
 import { ECPaymentStatus } from './ec-payment-status.entity';
 import { ECOrder } from './ec-order.entity';
+import { User } from '../core/user.entity';
 
 @Table({ tableName: 'ECPayments' })
 export class ECPayment extends Model {
@@ -94,6 +95,9 @@ export class ECPayment extends Model {
     type: DataType.BOOLEAN,
     allowNull: true,
   })
+  @BelongsTo(() => User, { as: 'user', foreignKey: 'userId' })
+  user?: User;
+
   isDeleted?: boolean;
 
   @Column({
