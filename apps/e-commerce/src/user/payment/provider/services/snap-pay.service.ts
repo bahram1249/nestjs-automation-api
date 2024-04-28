@@ -24,6 +24,7 @@ import { Response } from 'express';
 import { ConfigService } from '@nestjs/config';
 import { RevertInventoryQtyService } from '@rahino/ecommerce/inventory/services';
 import { v4 as uuidv4 } from 'uuid';
+import ShortUniqueId from 'short-unique-id';
 
 export class SnapPayService implements PayInterface {
   private baseUrl = '';
@@ -80,6 +81,22 @@ export class SnapPayService implements PayInterface {
         throw new BadRequestException('invalid to use this payment gateway');
       }
 
+      let { randomUUID } = new ShortUniqueId({ length: 11 });
+      let finded = true;
+      let randomTransactionId: string = '';
+      while (finded) {
+        randomTransactionId = randomUUID();
+        const isExists = await this.paymentRepository.findOne(
+          new QueryOptionsBuilder()
+            .filter({
+              transactionId: randomTransactionId,
+            })
+            .build(),
+        );
+        if (!isExists) {
+          finded = false;
+        }
+      }
       let payment = await this.paymentRepository.create(
         {
           paymentGatewayId: paymentGateway.id,
@@ -88,7 +105,7 @@ export class SnapPayService implements PayInterface {
           totalprice: totalPrice * 10,
           orderId: orderId,
           userId: user.id,
-          transactionId: uuidv4(),
+          transactionId: randomTransactionId,
         },
         {
           transaction: transaction,

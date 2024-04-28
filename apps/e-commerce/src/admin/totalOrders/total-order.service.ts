@@ -304,7 +304,6 @@ export class TotalOrderService {
             'the order with this given id not founded!',
           );
         }
-        console.log(order);
         await this.snapPayService.update(
           Number(order.totalPrice),
           Number(order.totalDiscountFee),
