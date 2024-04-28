@@ -230,9 +230,9 @@ export class TotalOrderService {
           totalProductPrice: totalPrice.productPrice,
           totalDiscountFee: totalPrice.discountFee,
           totalPrice:
-            totalPrice.productPrice -
-            totalPrice.discountFee +
-            order.totalShipmentPrice,
+            Number(totalPrice.productPrice) -
+            Number(totalPrice.discountFee) +
+            Number(order.totalShipmentPrice),
         },
         {
           where: {
@@ -304,6 +304,7 @@ export class TotalOrderService {
             'the order with this given id not founded!',
           );
         }
+        console.log(order);
         await this.snapPayService.update(
           Number(order.totalPrice),
           Number(order.totalDiscountFee),
