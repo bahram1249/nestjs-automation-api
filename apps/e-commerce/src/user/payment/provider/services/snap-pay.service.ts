@@ -81,7 +81,7 @@ export class SnapPayService implements PayInterface {
         throw new BadRequestException('invalid to use this payment gateway');
       }
 
-      let { randomUUID } = new ShortUniqueId({ length: 11 });
+      let { randomUUID } = new ShortUniqueId({ length: 10 });
       let finded = true;
       let randomTransactionId: string = '';
       while (finded) {
