@@ -216,6 +216,11 @@ export class TotalOrderService {
         )
         .raw(true)
         .transaction(transaction);
+      let resultQuery = queryBulder.build();
+      resultQuery.limit = null;
+      resultQuery.offset = null;
+      resultQuery.order = null;
+      resultQuery.subQuery = false;
       const totalPrice = await this.orderDetailRepository.findOne(
         queryBulder.build(),
       );
