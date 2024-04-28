@@ -214,6 +214,7 @@ export class TotalOrderService {
             },
           ),
         )
+        .raw(true)
         .transaction(transaction);
       const totalPrice = await this.orderDetailRepository.findOne(
         queryBulder.build(),
