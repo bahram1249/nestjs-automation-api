@@ -299,7 +299,7 @@ export class TotalOrderService {
             .transaction(transaction)
             .build(),
         );
-        if (order) {
+        if (!order) {
           throw new BadRequestException(
             'the order with this given id not founded!',
           );
