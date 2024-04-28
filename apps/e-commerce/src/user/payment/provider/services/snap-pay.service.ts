@@ -361,7 +361,7 @@ export class SnapPayService implements PayInterface {
     const token = await this.generateToken(paymentGateway);
 
     const finalRequest = await axios.post(
-      this.baseUrl + ' /api/online/payment/v1/update',
+      this.baseUrl + '/api/online/payment/v1/update',
       finalRequetData,
       {
         headers: {
@@ -423,7 +423,7 @@ export class SnapPayService implements PayInterface {
     const token = await this.generateToken(paymentGateway);
 
     const finalRequest = await axios.post(
-      this.baseUrl + ' /api/online/payment/v1/cancel',
+      this.baseUrl + '/api/online/payment/v1/cancel',
       {
         paymentToken: payment.paymentToken,
       },
