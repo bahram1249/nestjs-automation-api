@@ -221,9 +221,7 @@ export class TotalOrderService {
       resultQuery.offset = null;
       resultQuery.order = null;
       resultQuery.subQuery = false;
-      const totalPrice = await this.orderDetailRepository.findOne(
-        queryBulder.build(),
-      );
+      const totalPrice = await this.orderDetailRepository.findOne(resultQuery);
       let order = await this.repository.findOne(
         new QueryOptionsBuilder().filter({ id: detail.orderId }).build(),
       );
