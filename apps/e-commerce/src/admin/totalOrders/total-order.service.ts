@@ -310,7 +310,8 @@ export class TotalOrderService {
         );
       }
       await transaction.commit();
-    } catch {
+    } catch (error) {
+      console.log(error);
       await transaction.rollback();
       throw new InternalServerErrorException(
         'something failed on remove detail order',
