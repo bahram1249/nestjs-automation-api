@@ -311,6 +311,7 @@ export class TotalOrderService {
           order.user.phoneNumber,
           transaction,
           order.id,
+          order.details,
         );
       }
       await transaction.commit();

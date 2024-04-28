@@ -317,8 +317,6 @@ export class SnapPayService implements PayInterface {
         .build(),
     );
 
-    const token = await this.generateToken(paymentGateway);
-
     let phone = phoneNumber;
     if (phone.startsWith('0')) {
       phone = '+98' + phone.substring(1, phone.length);
@@ -359,6 +357,8 @@ export class SnapPayService implements PayInterface {
       transactionId: payment.transactionId,
       paymentToken: payment.paymentToken,
     };
+
+    const token = await this.generateToken(paymentGateway);
 
     const finalRequest = await axios.post(
       this.baseUrl + ' /api/online/payment/v1/update',
