@@ -81,11 +81,11 @@ export class SnapPayService implements PayInterface {
         throw new BadRequestException('invalid to use this payment gateway');
       }
 
-      let { randomUUID } = new ShortUniqueId({ length: 10 });
       let finded = true;
       let randomTransactionId: string = '';
       while (finded) {
-        randomTransactionId = randomUUID();
+        let date = new Date();
+        randomTransactionId = Math.floor(date.getTime() / 1000).toString();
         const isExists = await this.paymentRepository.findOne(
           new QueryOptionsBuilder()
             .filter({
