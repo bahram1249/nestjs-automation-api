@@ -204,7 +204,7 @@ export class ZarinPalService implements PayInterface {
     const frontUrl = this.config.get('BASE_FRONT_URL');
     return res.redirect(
       301,
-      frontUrl + `/payment/transaction?transaction=${payment.id}`,
+      frontUrl + `/payment/transaction?transactionId=${payment.id}`,
     );
   }
 }

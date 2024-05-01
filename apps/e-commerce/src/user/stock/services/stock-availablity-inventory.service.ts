@@ -175,7 +175,6 @@ export class StockAvailabilityInventoryService {
   async remove(stockId: bigint) {
     let item = await this.repository.findOne(
       new QueryOptionsBuilder()
-        .attributes(['id', 'inventoryId', 'productId', 'qty'])
         .filter({ id: stockId })
         .filter(
           Sequelize.where(
