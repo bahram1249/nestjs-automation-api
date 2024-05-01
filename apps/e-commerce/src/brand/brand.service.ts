@@ -59,7 +59,14 @@ export class BrandService {
     }
     const count = await this.repository.count(queryBuilder.build());
     const queryOptions = queryBuilder
-      .attributes(['id', 'name', 'slug'])
+      .attributes([
+        'id',
+        'name',
+        'slug',
+        'metaTitle',
+        'metaKeywords',
+        'metaDescription',
+      ])
       .include([
         {
           attributes: ['id', 'fileName'],
@@ -82,7 +89,14 @@ export class BrandService {
   async findById(entityId: number) {
     const brand = await this.repository.findOne(
       new QueryOptionsBuilder()
-        .attributes(['id', 'name', 'slug'])
+        .attributes([
+          'id',
+          'name',
+          'slug',
+          'metaTitle',
+          'metaKeywords',
+          'metaDescription',
+        ])
         .include([
           {
             attributes: ['id', 'fileName'],
@@ -135,7 +149,14 @@ export class BrandService {
       _.omit(mappedItem.toJSON(), ['id']),
     );
     return {
-      result: _.pick(result, ['id', 'name', 'slug']),
+      result: _.pick(result, [
+        'id',
+        'name',
+        'slug',
+        'metaTitle',
+        'metaKeywords',
+        'metaDescription',
+      ]),
     };
   }
 
@@ -190,7 +211,14 @@ export class BrandService {
       },
     );
     return {
-      result: _.pick(result[1][0], ['id', 'name', 'slug']),
+      result: _.pick(result[1][0], [
+        'id',
+        'name',
+        'slug',
+        'metaTitle',
+        'metaKeywords',
+        'metaDescription',
+      ]),
     };
   }
 
@@ -214,7 +242,14 @@ export class BrandService {
     item.isDeleted = true;
     await item.save();
     return {
-      result: _.pick(item, ['id', 'name', 'slug']),
+      result: _.pick(item, [
+        'id',
+        'name',
+        'slug',
+        'metaTitle',
+        'metaKeywords',
+        'metaDescription',
+      ]),
     };
   }
 
@@ -244,7 +279,14 @@ export class BrandService {
       throw new NotFoundException('the item with this given slug not founded!');
     }
     return {
-      result: _.pick(item, ['id', 'name', 'slug']),
+      result: _.pick(item, [
+        'id',
+        'name',
+        'slug',
+        'metaTitle',
+        'metaKeywords',
+        'metaDescription',
+      ]),
     };
   }
 

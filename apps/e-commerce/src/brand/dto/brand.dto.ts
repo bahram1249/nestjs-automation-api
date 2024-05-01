@@ -1,7 +1,14 @@
+import { ApiProperty } from '@nestjs/swagger';
 import { replaceCharacterSlug } from '@rahino/commontools';
 import { AutoMap } from 'automapper-classes';
 import { Transform } from 'class-transformer';
-import { IsNotEmpty, MaxLength, MinLength } from 'class-validator';
+import {
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+  MaxLength,
+  MinLength,
+} from 'class-validator';
 
 export class BrandDto {
   @MinLength(3)
@@ -16,4 +23,34 @@ export class BrandDto {
   @IsNotEmpty()
   @AutoMap()
   slug: string;
+
+  @AutoMap()
+  @IsOptional()
+  @IsString()
+  @ApiProperty({
+    required: true,
+    type: String,
+    description: 'metaTitle',
+  })
+  public metaTitle?: string;
+
+  @AutoMap()
+  @IsOptional()
+  @IsString()
+  @ApiProperty({
+    required: true,
+    type: String,
+    description: 'metaKeywords',
+  })
+  public metaKeywords?: string;
+
+  @AutoMap()
+  @IsOptional()
+  @IsString()
+  @ApiProperty({
+    required: true,
+    type: String,
+    description: 'metaDescription',
+  })
+  public metaDescription?: string;
 }
