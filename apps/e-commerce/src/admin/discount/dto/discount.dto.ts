@@ -6,11 +6,16 @@ import {
   IsNumber,
   IsOptional,
   IsString,
+  MaxLength,
+  Min,
+  MinLength,
 } from 'class-validator';
 
 export class DiscountDto {
   @AutoMap()
   @IsString()
+  @MinLength(3)
+  @MaxLength(256)
   name: string;
 
   @AutoMap()
@@ -36,11 +41,14 @@ export class DiscountDto {
 
   @AutoMap()
   @IsNumber()
+  @Min(1)
   @IsOptional()
   maxValue?: number;
 
   @AutoMap()
   @IsString()
+  @MinLength(3)
+  @MaxLength(100)
   @IsOptional()
   couponCode?: string;
 
