@@ -35,15 +35,14 @@ import { ECProduct } from '@rahino/database/models/ecommerce-eav/ec-product.enti
 import { EAVEntityType } from '@rahino/database/models/eav/eav-entity-type.entity';
 import { ECStock } from '@rahino/database/models/ecommerce-eav/ec-stocks.entity';
 import {
-  DECREASE_INVENTORY_JOB,
-  DECREASE_INVENTORY_QUEUE,
   REVERT_INVENTORY_QTY_JOB,
   REVERT_INVENTORY_QTY_QUEUE,
 } from '@rahino/ecommerce/inventory/constants';
-import { Queue, QueueEvents, Job } from 'bullmq';
+import { Queue } from 'bullmq';
 import { InjectQueue } from '@nestjs/bullmq';
 import { ConfigService } from '@nestjs/config';
 import { DecreaseInventoryService } from '@rahino/ecommerce/inventory/services';
+import { ApplyDiscountService } from '@rahino/ecommerce/product/service';
 
 @Injectable()
 export class PaymentService {
@@ -69,18 +68,19 @@ export class PaymentService {
     private readonly sequelize: Sequelize,
     @InjectModel(ECStock)
     private readonly stockRepository: ECStock,
-    @InjectQueue(DECREASE_INVENTORY_QUEUE)
-    private readonly decreaseInventoryQueue: Queue,
+    // @InjectQueue(DECREASE_INVENTORY_QUEUE)
+    // private readonly decreaseInventoryQueue: Queue,
     @InjectQueue(REVERT_INVENTORY_QTY_QUEUE)
     private readonly revertInventoryQueue: Queue,
     private readonly config: ConfigService,
     private readonly decreaseInventoryService: DecreaseInventoryService,
+    private readonly applyDiscountService: ApplyDiscountService,
   ) {}
 
   async stock(session: ECUserSession, body: StockPaymentDto, user: User) {
     const stockResult = (await this.stockService.findAll(session)).result;
     // available items
-    const stocks = stockResult.filter(
+    let stocks = stockResult.filter(
       (stock) =>
         stock.product.inventoryStatusId == InventoryStatusEnum.available &&
         stock.product.inventories[0].qty >= stock.qty,
@@ -111,6 +111,16 @@ export class PaymentService {
           `${stock.product.title} فقط مجوز ارسال به استان ${province.name} را دارد.`,
         );
       }
+    }
+
+    // discount
+    if (body.couponCode) {
+      const applitedStocksDiscount =
+        await this.applyDiscountService.applyStocksCouponDiscount(
+          stocks,
+          body.couponCode,
+        );
+      stocks = applitedStocksDiscount.stocks;
     }
 
     const variationPrices = await this.variationPriceRepository.findAll(

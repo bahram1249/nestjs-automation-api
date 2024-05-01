@@ -20,6 +20,8 @@ import {
   REVERT_INVENTORY_QTY_QUEUE,
 } from '@rahino/ecommerce/inventory/constants';
 import { InventoryModule } from '@rahino/ecommerce/inventory/inventory.module';
+import { ECDiscount } from '@rahino/database/models/ecommerce-eav/ec-discount.entity';
+import { ProductModule } from '@rahino/ecommerce/product/product.module';
 
 @Module({
   imports: [
@@ -31,6 +33,7 @@ import { InventoryModule } from '@rahino/ecommerce/inventory/inventory.module';
       ECOrder,
       ECOrderDetail,
       ECStock,
+      ECDiscount,
     ]),
     PaymentServiceProviderModule,
     SequelizeModule,
@@ -38,6 +41,7 @@ import { InventoryModule } from '@rahino/ecommerce/inventory/inventory.module';
     StockModule,
     AddressModule,
     InventoryModule,
+    ProductModule,
     BullModule.registerQueueAsync({
       name: DECREASE_INVENTORY_QUEUE,
       inject: [ConfigService],

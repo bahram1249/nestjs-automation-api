@@ -55,6 +55,6 @@ import { EAVEntityType } from '@rahino/database/models/eav/eav-entity-type.entit
     ProductRepositoryService,
     QueryNextPageProductProcessor,
   ],
-  exports: [ProductRepositoryService],
+  exports: [ProductRepositoryService, ApplyDiscountService],
 })
 export class ProductModule {}

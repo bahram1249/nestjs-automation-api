@@ -1,4 +1,8 @@
-import { Injectable, InternalServerErrorException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  InternalServerErrorException,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { ECDiscountCondition } from '@rahino/database/models/ecommerce-eav/ec-discount-condition.entity';
 import { ECDiscount } from '@rahino/database/models/ecommerce-eav/ec-discount.entity';
@@ -16,6 +20,7 @@ import { ECInventoryPrice } from '@rahino/database/models/ecommerce-eav/ec-inven
 import { ConfigService } from '@nestjs/config';
 import { ECDiscountType } from '@rahino/database/models/ecommerce-eav/ec-discount-type.entity';
 import { parseValue } from '@rahino/commontools/functions/parse-value';
+import { ECStock } from '@rahino/database/models/ecommerce-eav/ec-stocks.entity';
 
 @Injectable()
 export class ApplyDiscountService {
@@ -154,24 +159,13 @@ export class ApplyDiscountService {
     // check which discount can be applied first & ignore others
     for (let index = 0; index < discounts.length; index++) {
       const discount = discounts[index];
-      switch (discount.discountActionRuleId) {
-        case DiscountActionRuleEnum.and:
-          discountApplied = await this._applyAndConditionDiscount(
-            product,
-            inventory,
-            discount,
-          );
-          break;
-        case DiscountActionRuleEnum.or:
-          discountApplied = await this._applyOrConditionDiscount(
-            product,
-            inventory,
-            discount,
-          );
-          break;
-        default:
-          throw new InternalServerErrorException('unknown discountActionRule');
-      }
+
+      // find can be applied discount object
+      discountApplied = await this._findSingleInventoryDiscount(
+        product,
+        inventory,
+        discount,
+      );
 
       if (discountApplied != null) {
         break;
@@ -490,6 +484,198 @@ export class ApplyDiscountService {
         )`.replaceAll(/\s\s+/g, ' '),
           ),
         )
+        .build(),
+    );
+  }
+
+  public async applyStocksCouponDiscount(
+    stocks: ECStock[],
+    couponCode: string,
+  ) {
+    const discount = await this.findDiscountByCouponCode(couponCode);
+    if (!discount) {
+      throw new BadRequestException('کد تخفیفی یافت نشد');
+    }
+    const result = await this._canApplyCouponDiscount(stocks, discount);
+    return {
+      stocks: result.stocks,
+      discount: discount,
+      countApplied: result.appliedItem,
+    };
+  }
+
+  private async _canApplyCouponDiscount(
+    stocks: ECStock[],
+    discount: ECDiscount,
+  ) {
+    const available = discount.limit - discount.used;
+    if (available < 0) {
+      throw new BadRequestException('مجاز به استفاده از این کد تخفیف نیستید');
+    }
+    const promises = [];
+    for (let index = 0; index < stocks.length; index++) {
+      let stock = stocks[index];
+      promises.push(this._applyStockCoponDiscount(stock, discount));
+    }
+    const results = await Promise.all(promises);
+    const stocksEdited: ECStock[] = results.map((results) => results.stock);
+    const appliedItem: number = results
+      .map((results) => results.countApllied)
+      .reduce((prev, current) => prev + current, 0);
+    if (appliedItem == 0) {
+      throw new BadRequestException(
+        'کد تخفیفی برای کالای های مورد نظر یافت نشد',
+      );
+    }
+    if (appliedItem > available) {
+      throw new BadRequestException(
+        'میزان استفاده از این کد تخفیف به اتمام رسیده است',
+      );
+    }
+    return { stocks: stocksEdited, appliedItem };
+  }
+
+  private async _applyStockCoponDiscount(stock: ECStock, discount: ECDiscount) {
+    // quantity of applied
+    let countApllied = 0;
+    let { inventory, applied } = await this._applyCopunCodeToInventory(
+      stock.product,
+      stock.product.inventories[0],
+      discount,
+    );
+
+    if (applied) {
+      // set count of applied
+      countApllied = stock.qty;
+    }
+    stock.product.inventories[0] = inventory;
+    return { stock: stock, countApllied: countApllied };
+  }
+
+  private async _applyCopunCodeToInventory(
+    product: ECProduct,
+    inventory: ECInventory,
+    discount: ECDiscount,
+  ) {
+    let applied = false;
+    const discountInterface = await this._findSingleInventoryDiscount(
+      product,
+      inventory,
+      discount,
+    );
+
+    // if discount founded set for inventories
+    if (discountInterface) {
+      applied = true;
+      if (inventory.firstPrice) {
+        inventory.firstPrice = await this._applyDiscountPrice(
+          inventory.firstPrice,
+          discountInterface,
+        );
+      }
+      if (inventory.secondaryPrice) {
+        inventory.secondaryPrice = await this._applyDiscountPrice(
+          inventory.secondaryPrice,
+          discountInterface,
+        );
+      }
+    }
+    return { inventory, applied };
+  }
+
+  private async _findSingleInventoryDiscount(
+    product: ECProduct,
+    inventory: ECInventory,
+    discount: ECDiscount,
+  ) {
+    let discountApplied: DiscountInterface = null;
+    switch (discount.discountActionRuleId) {
+      case DiscountActionRuleEnum.and:
+        discountApplied = await this._applyAndConditionDiscount(
+          product,
+          inventory,
+          discount,
+        );
+        break;
+      case DiscountActionRuleEnum.or:
+        discountApplied = await this._applyOrConditionDiscount(
+          product,
+          inventory,
+          discount,
+        );
+        break;
+      default:
+        throw new InternalServerErrorException('unknown discountActionRule');
+    }
+    return discountApplied;
+  }
+
+  private async findDiscountByCouponCode(couponCode: string) {
+    return await this.repository.findOne(
+      new QueryOptionsBuilder()
+        .include([
+          {
+            model: ECDiscountCondition,
+            as: 'conditions',
+            required: true,
+            where: Sequelize.where(
+              Sequelize.fn('isnull', Sequelize.col('conditions.isDeleted'), 0),
+              {
+                [Op.eq]: 0,
+              },
+            ),
+          },
+          {
+            model: ECDiscountType,
+            as: 'discountType',
+            required: true,
+          },
+        ])
+        .filter(
+          Sequelize.where(Sequelize.fn('getdate'), {
+            [Op.between]: [
+              Sequelize.fn(
+                'isnull',
+                Sequelize.col('ECDiscount.startDate'),
+                Sequelize.fn('getdate'),
+              ),
+              Sequelize.fn(
+                'isnull',
+                Sequelize.col('ECDiscount.endDate'),
+                Sequelize.fn('getdate'),
+              ),
+            ],
+          }),
+        )
+        .filter(
+          Sequelize.where(
+            Sequelize.fn('isnull', Sequelize.col('ECDiscount.isDeleted'), 0),
+            {
+              [Op.eq]: 0,
+            },
+          ),
+        )
+        .filter(
+          Sequelize.where(
+            Sequelize.fn('isnull', Sequelize.col('ECDiscount.isActive'), 0),
+            {
+              [Op.eq]: 1,
+            },
+          ),
+        )
+        .filter(
+          Sequelize.where(
+            Sequelize.fn(
+              'isnull',
+              Sequelize.col('discountType.isCouponBased'),
+              0,
+            ),
+            {
+              [Op.eq]: 1,
+            },
+          ),
+        )
+        .filter({ couponCode: couponCode })
         .build(),
     );
   }

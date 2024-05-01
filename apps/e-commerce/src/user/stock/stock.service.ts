@@ -2,6 +2,7 @@ import {
   BadRequestException,
   Inject,
   Injectable,
+  InternalServerErrorException,
   NotFoundException,
 } from '@nestjs/common';
 import { ECUserSession } from '@rahino/database/models/ecommerce-eav/ec-user-session.entity';
@@ -36,6 +37,8 @@ import { ECProvince } from '@rahino/database/models/ecommerce-eav/ec-province.en
 import { ECVariationPrice } from '@rahino/database/models/ecommerce-eav/ec-variation-prices';
 import { StockPriceService } from './services/price';
 import { ShipmentInteface } from './services/shipment-price/interface';
+import { ECDiscount } from '@rahino/database/models/ecommerce-eav/ec-discount.entity';
+import { ApplyDiscountService } from '@rahino/ecommerce/product/service';
 
 @Injectable()
 export class StockService {
@@ -62,6 +65,7 @@ export class StockService {
     private readonly priceService: StockPriceService,
     @Inject('SHIPMENT_SERVICE')
     private readonly shipmentService: ShipmentInteface,
+    private readonly applyDiscountService: ApplyDiscountService,
   ) {}
 
   async findAll(session: ECUserSession) {
@@ -149,7 +153,7 @@ export class StockService {
   async price(session: ECUserSession, query: StockPriceDto, user?: User) {
     const stockResult = (await this.findAll(session)).result;
     // available items
-    const stocks = stockResult.filter(
+    let stocks = stockResult.filter(
       (stock) =>
         stock.product.inventoryStatusId == InventoryStatusEnum.available &&
         stock.product.inventories[0].qty >= stock.qty,
@@ -178,6 +182,18 @@ export class StockService {
           );
         }
       }
+    }
+
+    if (query.couponCode) {
+      const applitedStocksDiscount =
+        await this.applyDiscountService.applyStocksCouponDiscount(
+          stocks,
+          query.couponCode,
+        );
+      stocks = applitedStocksDiscount.stocks;
+
+      // const discount = applitedStocksDiscount.discount;
+      // const countApplied = applitedStocksDiscount.countApplied;
     }
 
     const variationPrices = await this.variationPriceRepository.findAll();
