@@ -11,7 +11,7 @@
 @mixin <%= cssClass%>-styles {
 	font-family: "<%= fontName %>";
 	-webkit-font-smoothing: antialiased;
-	-moz-osx-font-smoothing: grayscale;
+	// -moz-osx-font-smoothing: grayscale;
 	font-style: normal;
 	font-variant: normal;
 	font-weight: normal;

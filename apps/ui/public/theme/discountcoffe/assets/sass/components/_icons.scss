@@ -11,7 +11,7 @@
 @mixin icon-styles {
 	font-family: "Icons";
 	-webkit-font-smoothing: antialiased;
-	-moz-osx-font-smoothing: grayscale;
+	// -moz-osx-font-smoothing: grayscale;
 	font-style: normal;
 	font-variant: normal;
 	font-weight: normal;
@@ -45,266 +45,296 @@
 		@if $filename == basket {
 		$char: "\E006";
 	}
-		@if $filename == bottom {
+		@if $filename == birthday {
 		$char: "\E007";
 	}
-		@if $filename == box {
+		@if $filename == book {
 		$char: "\E008";
 	}
-		@if $filename == calendar {
+		@if $filename == bottom {
 		$char: "\E009";
 	}
-		@if $filename == call {
+		@if $filename == box {
 		$char: "\E00A";
 	}
-		@if $filename == carpenter {
+		@if $filename == calendar {
 		$char: "\E00B";
 	}
-		@if $filename == cart {
+		@if $filename == call {
 		$char: "\E00C";
 	}
-		@if $filename == catalog {
+		@if $filename == carpenter {
 		$char: "\E00D";
 	}
-		@if $filename == certificate {
+		@if $filename == cart {
 		$char: "\E00E";
 	}
-		@if $filename == clean {
+		@if $filename == catalog {
 		$char: "\E00F";
 	}
-		@if $filename == clock {
+		@if $filename == certificate {
 		$char: "\E010";
 	}
-		@if $filename == code {
+		@if $filename == china {
 		$char: "\E011";
 	}
-		@if $filename == coin {
+		@if $filename == clean {
 		$char: "\E012";
 	}
-		@if $filename == customer {
+		@if $filename == clock {
 		$char: "\E013";
 	}
-		@if $filename == date {
+		@if $filename == cocktail {
 		$char: "\E014";
 	}
-		@if $filename == down {
+		@if $filename == code {
 		$char: "\E015";
 	}
-		@if $filename == download {
+		@if $filename == coin {
 		$char: "\E016";
 	}
-		@if $filename == edu {
+		@if $filename == customer {
 		$char: "\E017";
 	}
-		@if $filename == envelope {
+		@if $filename == date {
 		$char: "\E018";
 	}
-		@if $filename == exist {
+		@if $filename == down {
 		$char: "\E019";
 	}
-		@if $filename == exit {
+		@if $filename == download {
 		$char: "\E01A";
 	}
-		@if $filename == expand {
+		@if $filename == edu {
 		$char: "\E01B";
 	}
-		@if $filename == export {
+		@if $filename == envelope {
 		$char: "\E01C";
 	}
-		@if $filename == express {
+		@if $filename == exist {
 		$char: "\E01D";
 	}
-		@if $filename == eye {
+		@if $filename == exit {
 		$char: "\E01E";
 	}
-		@if $filename == facebook {
+		@if $filename == expand {
 		$char: "\E01F";
 	}
-		@if $filename == gp {
+		@if $filename == export {
 		$char: "\E020";
 	}
-		@if $filename == haert-fill {
+		@if $filename == express {
 		$char: "\E021";
 	}
-		@if $filename == heart-filed {
+		@if $filename == eye {
 		$char: "\E022";
 	}
-		@if $filename == heart {
+		@if $filename == facebook {
 		$char: "\E023";
 	}
-		@if $filename == hospital {
+		@if $filename == france {
 		$char: "\E024";
 	}
-		@if $filename == hq {
+		@if $filename == furniture {
 		$char: "\E025";
 	}
-		@if $filename == instagram {
+		@if $filename == gp {
 		$char: "\E026";
 	}
-		@if $filename == iran {
+		@if $filename == haert-fill {
 		$char: "\E027";
 	}
-		@if $filename == label {
+		@if $filename == heart-filed {
 		$char: "\E028";
 	}
-		@if $filename == left {
+		@if $filename == heart {
 		$char: "\E029";
 	}
-		@if $filename == level {
+		@if $filename == hookah {
 		$char: "\E02A";
 	}
-		@if $filename == linkedin {
+		@if $filename == hospital {
 		$char: "\E02B";
 	}
-		@if $filename == location {
+		@if $filename == hq {
 		$char: "\E02C";
 	}
-		@if $filename == lock {
+		@if $filename == instagram {
 		$char: "\E02D";
 	}
-		@if $filename == mail {
+		@if $filename == iran {
 		$char: "\E02E";
 	}
-		@if $filename == master {
+		@if $filename == italy {
 		$char: "\E02F";
 	}
-		@if $filename == MIN {
+		@if $filename == label {
 		$char: "\E030";
 	}
-		@if $filename == minus {
+		@if $filename == left {
 		$char: "\E031";
 	}
-		@if $filename == money {
+		@if $filename == level {
 		$char: "\E032";
 	}
-		@if $filename == moon {
+		@if $filename == linkedin {
 		$char: "\E033";
 	}
-		@if $filename == movie {
+		@if $filename == location {
 		$char: "\E034";
 	}
-		@if $filename == order {
+		@if $filename == lock {
 		$char: "\E035";
 	}
-		@if $filename == pack {
+		@if $filename == mail {
 		$char: "\E036";
 	}
-		@if $filename == pause {
+		@if $filename == master {
 		$char: "\E037";
 	}
-		@if $filename == people {
+		@if $filename == MIN {
 		$char: "\E038";
 	}
-		@if $filename == pizza {
+		@if $filename == minus {
 		$char: "\E039";
 	}
-		@if $filename == plau {
+		@if $filename == money {
 		$char: "\E03A";
 	}
-		@if $filename == play {
+		@if $filename == moon {
 		$char: "\E03B";
 	}
-		@if $filename == plus {
+		@if $filename == movie {
 		$char: "\E03C";
 	}
-		@if $filename == price {
+		@if $filename == music {
 		$char: "\E03D";
 	}
-		@if $filename == print {
+		@if $filename == order {
 		$char: "\E03E";
 	}
-		@if $filename == quality {
+		@if $filename == pack {
 		$char: "\E03F";
 	}
-		@if $filename == report {
+		@if $filename == pause {
 		$char: "\E040";
 	}
-		@if $filename == research {
+		@if $filename == people {
 		$char: "\E041";
 	}
-		@if $filename == right {
+		@if $filename == pizza {
 		$char: "\E042";
 	}
-		@if $filename == room {
+		@if $filename == plau {
 		$char: "\E043";
 	}
-		@if $filename == ruller {
+		@if $filename == play {
 		$char: "\E044";
 	}
-		@if $filename == search {
+		@if $filename == plus {
 		$char: "\E045";
 	}
-		@if $filename == services {
+		@if $filename == price {
 		$char: "\E046";
 	}
-		@if $filename == share {
+		@if $filename == print {
 		$char: "\E047";
 	}
-		@if $filename == shipping {
+		@if $filename == quality {
 		$char: "\E048";
 	}
-		@if $filename == shop {
+		@if $filename == report {
 		$char: "\E049";
 	}
-		@if $filename == software {
+		@if $filename == research {
 		$char: "\E04A";
 	}
-		@if $filename == star {
+		@if $filename == right {
 		$char: "\E04B";
 	}
-		@if $filename == sun {
+		@if $filename == room {
 		$char: "\E04C";
 	}
-		@if $filename == support {
+		@if $filename == ruller {
 		$char: "\E04D";
 	}
-		@if $filename == tell {
+		@if $filename == search {
 		$char: "\E04E";
 	}
-		@if $filename == tick {
+		@if $filename == services {
 		$char: "\E04F";
 	}
-		@if $filename == times {
+		@if $filename == share {
 		$char: "\E050";
 	}
-		@if $filename == top {
+		@if $filename == shipping {
 		$char: "\E051";
 	}
-		@if $filename == trash {
+		@if $filename == shop {
 		$char: "\E052";
 	}
-		@if $filename == truck {
+		@if $filename == software {
 		$char: "\E053";
 	}
-		@if $filename == twitter {
+		@if $filename == star {
 		$char: "\E054";
 	}
-		@if $filename == type {
+		@if $filename == sun {
 		$char: "\E055";
 	}
-		@if $filename == update {
+		@if $filename == support {
 		$char: "\E056";
 	}
-		@if $filename == user {
+		@if $filename == tell {
 		$char: "\E057";
 	}
-		@if $filename == userl {
+		@if $filename == tick {
 		$char: "\E058";
 	}
-		@if $filename == videos {
+		@if $filename == times {
 		$char: "\E059";
 	}
-		@if $filename == warranty {
+		@if $filename == top {
 		$char: "\E05A";
 	}
-		@if $filename == water {
+		@if $filename == trash {
 		$char: "\E05B";
 	}
-		@if $filename == whatsapp {
+		@if $filename == truck {
 		$char: "\E05C";
 	}
-		@if $filename == zoom {
+		@if $filename == tv {
 		$char: "\E05D";
+	}
+		@if $filename == twitter {
+		$char: "\E05E";
+	}
+		@if $filename == type {
+		$char: "\E05F";
+	}
+		@if $filename == update {
+		$char: "\E060";
+	}
+		@if $filename == user {
+		$char: "\E061";
+	}
+		@if $filename == userl {
+		$char: "\E062";
+	}
+		@if $filename == videos {
+		$char: "\E063";
+	}
+		@if $filename == warranty {
+		$char: "\E064";
+	}
+		@if $filename == water {
+		$char: "\E065";
+	}
+		@if $filename == whatsapp {
+		$char: "\E066";
+	}
+		@if $filename == zoom {
+		$char: "\E067";
 	}
 
 	@return $char;
@@ -339,6 +369,12 @@
 .icon-basket {
 	@include icon(basket);
 }
+.icon-birthday {
+	@include icon(birthday);
+}
+.icon-book {
+	@include icon(book);
+}
 .icon-bottom {
 	@include icon(bottom);
 }
@@ -363,11 +399,17 @@
 .icon-certificate {
 	@include icon(certificate);
 }
+.icon-china {
+	@include icon(china);
+}
 .icon-clean {
 	@include icon(clean);
 }
 .icon-clock {
 	@include icon(clock);
+}
+.icon-cocktail {
+	@include icon(cocktail);
 }
 .icon-code {
 	@include icon(code);
@@ -414,6 +456,12 @@
 .icon-facebook {
 	@include icon(facebook);
 }
+.icon-france {
+	@include icon(france);
+}
+.icon-furniture {
+	@include icon(furniture);
+}
 .icon-gp {
 	@include icon(gp);
 }
@@ -426,6 +474,9 @@
 .icon-heart {
 	@include icon(heart);
 }
+.icon-hookah {
+	@include icon(hookah);
+}
 .icon-hospital {
 	@include icon(hospital);
 }
@@ -437,6 +488,9 @@
 }
 .icon-iran {
 	@include icon(iran);
+}
+.icon-italy {
+	@include icon(italy);
 }
 .icon-label {
 	@include icon(label);
@@ -476,6 +530,9 @@
 }
 .icon-movie {
 	@include icon(movie);
+}
+.icon-music {
+	@include icon(music);
 }
 .icon-order {
 	@include icon(order);
@@ -569,6 +626,9 @@
 }
 .icon-truck {
 	@include icon(truck);
+}
+.icon-tv {
+	@include icon(tv);
 }
 .icon-twitter {
 	@include icon(twitter);
