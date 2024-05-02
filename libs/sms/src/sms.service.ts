@@ -12,7 +12,6 @@ export class SmsService {
       this.username,
       this.password,
       message,
-      this.bodyId,
     );
   }
 }

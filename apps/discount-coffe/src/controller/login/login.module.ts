@@ -19,7 +19,6 @@ import { MeliPayamakService } from '@rahino/sms/services/melipayamak.servie';
     SmsModule.register({
       token: 'meli_payamak',
       smsProvider: new MeliPayamakService(),
-      bodyId: '203509',
     }),
   ],
   controllers: [LoginController],

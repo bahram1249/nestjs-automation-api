@@ -5,6 +5,9 @@ import { InjectModel } from '@nestjs/sequelize';
 import { RedisRepository } from '@rahino/redis-client/repository';
 import { AuthService } from '@rahino/core/auth/auth.service';
 import * as _ from 'lodash';
+import { SmsService } from '@rahino/sms/sms.service';
+import { ConfigService } from '@nestjs/config';
+import { getIntegerRandomArbitrary } from '@rahino/commontools';
 
 @Injectable()
 export class LoginService {
@@ -13,19 +16,29 @@ export class LoginService {
     private authService: AuthService,
     @InjectModel(User)
     private readonly userRepository: typeof User,
+    @Inject('sms')
+    private readonly smsService: SmsService,
+    private readonly config: ConfigService,
   ) {}
   async login(dto: LoginDto) {
-    const randomCode = '123456';
+    const rand = getIntegerRandomArbitrary(100000, 999999).toString();
     const findUser = await this.userRepository.findOne({
       where: {
         phoneNumber: dto.phoneNumber,
       },
     });
+
+    await this.smsService.sendMessage({
+      text: rand,
+      to: dto.phoneNumber,
+      bodyId: this.config.get('ECOMMERCE_LOGIN_SMS_CODE'),
+    });
+
     await this.redisRepository.setWithExpiry(
       'usercode',
       dto.phoneNumber,
-      randomCode,
-      120,
+      rand,
+      180,
     );
     return {
       result: dto.phoneNumber,

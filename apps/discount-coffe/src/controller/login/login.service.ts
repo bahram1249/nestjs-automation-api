@@ -51,7 +51,11 @@ export class LoginService {
     const rand = getIntegerRandomArbitrary(100000, 999999).toString();
     req.session.userId = user.id;
     req.session.verifyCode = rand;
-    await this.smsService.sendMessage({ text: rand, to: dto.phoneNumber });
+    await this.smsService.sendMessage({
+      text: rand,
+      to: dto.phoneNumber,
+      bodyId: '203509',
+    });
     var queryString =
       redirectUrl.length > 0 ? '?redirectUrl=' + redirectUrl : '';
     return res.redirect(302, '/login/code' + queryString);
