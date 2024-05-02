@@ -67,6 +67,16 @@ export class TotalOrderController {
     return await this.service.removeDetail(detailId, user);
   }
 
+  @ApiOperation({ description: 'decrease detail order' })
+  @CheckPermission({
+    permissionSymbol: 'ecommerce.admin.totalorders.decreasedetail',
+  })
+  @Delete('/decreaseDetail/:id')
+  @HttpCode(HttpStatus.OK)
+  async decreaseDetail(@Param('id') detailId: bigint, @GetUser() user: User) {
+    return await this.service.decreaseDetail(detailId, user);
+  }
+
   @ApiOperation({ description: 'delete order by given id' })
   @CheckPermission({
     permissionSymbol: 'ecommerce.admin.totalorders.delete',

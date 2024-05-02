@@ -56,6 +56,7 @@ export class StockPriceService {
     result.couponCode = couponCode;
     result.totalProductPrice = result.basePrice * stock.qty;
     result.totalPrice = result.afterDiscount * stock.qty;
+    result.discountFeePerItem = result.basePrice - result.afterDiscount;
     result.discountFee = (result.basePrice - result.afterDiscount) * stock.qty;
     result.weight = stock.product.inventories[0].weight;
     result.vendorId = stock.product.inventories[0].vendorId;

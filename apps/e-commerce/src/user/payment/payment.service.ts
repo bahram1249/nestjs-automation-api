@@ -342,6 +342,7 @@ export class PaymentService {
           stockId: stock.stockId,
           qty: stock.qty,
           productPrice: stock.basePrice,
+          discountFeePerItem: stock.discountFeePerItem,
           discountFee: stock.discountFee,
           discountId: stock.discountId,
           totalPrice: stock.totalPrice,

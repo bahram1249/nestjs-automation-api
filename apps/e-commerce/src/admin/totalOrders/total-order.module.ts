@@ -10,6 +10,8 @@ import { ECOrderDetail } from '@rahino/database/models/ecommerce-eav/ec-order-de
 import { SnappayModule } from '@rahino/ecommerce/user/payment/provider/snappay.module';
 import { ECPayment } from '@rahino/database/models/ecommerce-eav/ec-payment-entity';
 import { ECPaymentGateway } from '@rahino/database/models/ecommerce-eav/ec-payment-gateway.entity';
+import { RoleUtilModule } from '@rahino/core/user/role-util/user-role.module';
+import { UserVendorModule } from '@rahino/ecommerce/user/vendor/user-vendor.module';
 
 @Module({
   imports: [
@@ -24,6 +26,8 @@ import { ECPaymentGateway } from '@rahino/database/models/ecommerce-eav/ec-payme
     SequelizeModule,
     UtilOrderModule,
     SnappayModule,
+    RoleUtilModule,
+    UserVendorModule,
   ],
   controllers: [TotalOrderController],
   providers: [TotalOrderService],

@@ -14,6 +14,7 @@ import { PermissionGroupModule } from './admin/permission-group/permission-group
 import { ProfileModule } from './user/profile/profile.module';
 import { MenuModule as UserMenuModule } from './user/menu/menu.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { RoleUtilModule } from './user/role-util/user-role.module';
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
     MenuModule,
     PermissionGroupModule,
     UserRoleModule,
+    RoleUtilModule,
     ProfileModule,
     UserMenuModule,
   ],

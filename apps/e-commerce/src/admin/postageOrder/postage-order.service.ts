@@ -12,6 +12,7 @@ import { PostProcessDto } from './dto';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import { Sequelize } from 'sequelize';
 import { Op } from 'sequelize';
+import { OrderUtilService } from '../utilOrder/service/order-util.service';
 
 @Injectable()
 export class PostageOrderService {
@@ -19,6 +20,7 @@ export class PostageOrderService {
     @InjectModel(ECOrder)
     private readonly repository: typeof ECOrder,
     private orderQueryBuilder: OrderQueryBuilder,
+    private orderUtilService: OrderUtilService,
   ) {}
 
   async findAll(user: User, filter: ListFilter) {
@@ -40,8 +42,11 @@ export class PostageOrderService {
       .limit(filter.limit)
       .order({ orderBy: filter.orderBy, sortOrder: filter.sortOrder });
 
+    let result = await this.repository.findAll(builder.build());
+    result = await this.orderUtilService.recalculateOrdersPrices(result);
+
     return {
-      result: await this.repository.findAll(builder.build()),
+      result: result,
       total: count,
     };
   }
@@ -59,8 +64,11 @@ export class PostageOrderService {
       .addAddress()
       .addUser();
 
+    let result = await this.repository.findOne(builder.build());
+    result = await this.orderUtilService.recalculateOrderPrices(result);
+
     return {
-      result: await this.repository.findOne(builder.build()),
+      result: result,
     };
   }
 

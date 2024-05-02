@@ -81,20 +81,20 @@ export class OrderQueryBuilder {
     return this;
   }
 
-  addOnlyVendor(vendorId: number) {
+  addOnlyVendor(vendors: number[]) {
     this.builder = this.builder.filter(
       Sequelize.literal(
         `EXISTS (
         SELECT 1
         FROM ECOrderDetails EOD
-        WHERE EOD.orderId = ECOrder.id AND EOD.vendorId = ${vendorId}
+        WHERE EOD.orderId = ECOrder.id AND EOD.vendorId IN (${vendors.toString()})
       )`.replaceAll(/\s\s+/g, ' '),
       ),
     );
     return this;
   }
 
-  addOrderDetails(vendorId?: number) {
+  addOrderDetails(vendors?: number[]) {
     let includeBuilder = new IncludeOptionsBuilder({
       model: ECOrderDetail,
       as: 'details',
@@ -197,9 +197,11 @@ export class OrderQueryBuilder {
         },
       ),
     );
-    if (vendorId) {
+    if (vendors) {
       includeBuilder = includeBuilder.filter({
-        vendorId: vendorId,
+        vendorId: {
+          [Op.in]: vendors,
+        },
       });
     }
     this.builder = this.builder.thenInlcude(includeBuilder.build());

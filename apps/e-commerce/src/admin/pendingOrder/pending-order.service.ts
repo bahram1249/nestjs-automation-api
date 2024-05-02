@@ -17,6 +17,7 @@ import {
 import { ECOrderDetail } from '@rahino/database/models/ecommerce-eav/ec-order-detail.entity';
 import { UserVendorService } from '@rahino/ecommerce/user/vendor/user-vendor.service';
 import { OrderQueryBuilder } from '../utilOrder/service/order-query-builder.service';
+import { OrderUtilService } from '../utilOrder/service/order-util.service';
 
 @Injectable()
 export class PendingOrderService {
@@ -27,6 +28,7 @@ export class PendingOrderService {
     private readonly orderDetailRepository: typeof ECOrderDetail,
     private readonly userVendorService: UserVendorService,
     private orderQueryBuilder: OrderQueryBuilder,
+    private orderUtilService: OrderUtilService,
   ) {}
 
   async findAll(user: User, filter: GetOrderDto) {
@@ -42,13 +44,13 @@ export class PendingOrderService {
     builder = builder
       .nonDeletedOrder()
       .addOrderStatus(OrderStatusEnum.Paid)
-      .addOnlyVendor(filter.vendorId);
+      .addOnlyVendor([filter.vendorId]);
 
     const count = await this.repository.count(builder.build());
 
     builder = builder
       .subQuery(false)
-      .addOrderDetails(filter.vendorId)
+      .addOrderDetails([filter.vendorId])
       .addOrderShipmentWay()
       .addAddress()
       .addUser()
@@ -56,8 +58,11 @@ export class PendingOrderService {
       .offset(filter.offset)
       .order({ orderBy: filter.orderBy, sortOrder: filter.sortOrder });
 
+    let result = await this.repository.findAll(builder.build());
+    result = await this.orderUtilService.recalculateOrdersPrices(result);
+
     return {
-      result: await this.repository.findAll(builder.build()),
+      result: result,
       total: count,
     };
   }
@@ -78,13 +83,16 @@ export class PendingOrderService {
       .addOrderId(id)
       .addOrderShipmentWay()
       .addOrderStatus(OrderStatusEnum.Paid)
-      .addOnlyVendor(filter.vendorId)
-      .addOrderDetails(filter.vendorId)
+      .addOnlyVendor([filter.vendorId])
+      .addOrderDetails([filter.vendorId])
       .addAddress()
       .addUser();
 
+    let result = await this.repository.findOne(builder.build());
+    result = await this.orderUtilService.recalculateOrderPrices(result);
+
     return {
-      result: await this.repository.findOne(builder.build()),
+      result: result,
     };
   }
 

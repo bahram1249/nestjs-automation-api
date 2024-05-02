@@ -12,6 +12,7 @@ export interface StockPriceInterface {
   discountId?: bigint;
   couponCode?: string;
   totalPrice?: number;
+  discountFeePerItem?: number;
   discountFee?: number;
   totalProductPrice?: number;
   qty?: number;

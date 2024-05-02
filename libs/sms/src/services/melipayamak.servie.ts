@@ -19,6 +19,5 @@ export class MeliPayamakService implements SmsProviderInterface {
         bodyId: bodyId,
       },
     );
-    console.log(request.data);
   }
 }

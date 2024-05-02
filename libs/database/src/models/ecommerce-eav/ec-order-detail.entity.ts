@@ -110,6 +110,13 @@ export class ECOrderDetail extends Model {
     allowNull: true,
   })
   discountFee?: bigint;
+
+  @Column({
+    type: DataType.BIGINT,
+    allowNull: true,
+  })
+  discountFeePerItem?: bigint;
+
   @Column({
     type: DataType.BIGINT,
     allowNull: true,

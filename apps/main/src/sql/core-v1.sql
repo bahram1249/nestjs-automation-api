@@ -2913,6 +2913,25 @@ END
 GO
 
 
+-- ec-order-details-v3
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ec-order-details-v3' 
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'SITE_NAME' AND [value] IN ('ecommerce'))
+		)
+BEGIN
+
+
+	ALTER TABLE ECOrderDetails 
+	ADD discountFeePerItem bigint null;
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'ec-order-details-v3', GETDATE(), GETDATE()
+END
+
+GO
+
 -- ec-payment-status
 IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ec-payment-status-v1' 
 			)
@@ -11219,6 +11238,7 @@ BEGIN
 	DECLARE @permissionSymbolGetAll nvarchar(512) = @groupName + '.getall';
 	DECLARE @permissionSymbolGetOne nvarchar(512) = @groupName + '.getone';
 	DECLARE @permissionSymbolRemoveDetail nvarchar(512) = @groupName + '.removedetail';
+	DECLARE @permissionSymbolDecreaseDetail nvarchar(512) = @groupName + '.decreasedetail';
 	DECLARE @permissionSymbolDelete nvarchar(512) = @groupName + '.delete';
 
 
@@ -11249,6 +11269,13 @@ BEGIN
 	INSERT INTO Permissions(permissionName ,permissionSymbol,permissionGroupId,  createdAt, updatedAt)
 	OUTPUT inserted.id INTO @PermissionTemp(permissionId)
 	SELECT 'RemoveDetail_' + @entityName, @permissionSymbolRemoveDetail, @groupId, GETDATE(), GETDATE()
+
+
+	INSERT INTO Permissions(permissionName ,permissionSymbol,permissionGroupId,  createdAt, updatedAt)
+	OUTPUT inserted.id INTO @PermissionTemp(permissionId)
+	SELECT 'DecreaseDetail_' + @entityName, @permissionSymbolDecreaseDetail, @groupId, GETDATE(), GETDATE()
+
+	
 	
 	INSERT INTO Permissions(permissionName ,permissionSymbol,permissionGroupId,  createdAt, updatedAt)
 	OUTPUT inserted.id INTO @PermissionTemp(permissionId)
