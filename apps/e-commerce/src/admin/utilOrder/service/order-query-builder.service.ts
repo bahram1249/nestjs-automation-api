@@ -109,6 +109,7 @@ export class OrderQueryBuilder {
         'qty',
         'productPrice',
         'discountFee',
+        'discountFeePerItem',
         'discountId',
         'totalPrice',
         'userId',
