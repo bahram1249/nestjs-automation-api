@@ -383,4 +383,113 @@ export class AddressService {
       ]),
     };
   }
+
+  async updateByAnyUser(user: User, entityId: bigint, dto: AddressDto) {
+    const item = await this.repository.findOne(
+      new QueryOptionsBuilder()
+        .filter({ id: entityId })
+        .filter(
+          Sequelize.where(
+            Sequelize.fn('isnull', Sequelize.col('ECAddress.isDeleted'), 0),
+            {
+              [Op.eq]: 0,
+            },
+          ),
+        )
+        .build(),
+    );
+    if (!item) {
+      throw new NotFoundException('the item with this given id not founded!');
+    }
+
+    const province = await this.provinceRepository.findOne(
+      new QueryOptionsBuilder()
+        .filter({ id: dto.provinceId })
+        .filter(
+          Sequelize.where(
+            Sequelize.fn('isnull', Sequelize.col('ECProvince.isDeleted'), 0),
+            {
+              [Op.eq]: 0,
+            },
+          ),
+        )
+        .build(),
+    );
+
+    if (!province) {
+      throw new BadRequestException('the given provinceId not founded!');
+    }
+
+    const city = await this.cityRepository.findOne(
+      new QueryOptionsBuilder()
+        .filter({ id: dto.cityId })
+        .filter({ provinceId: dto.provinceId })
+        .filter(
+          Sequelize.where(
+            Sequelize.fn('isnull', Sequelize.col('ECCity.isDeleted'), 0),
+            {
+              [Op.eq]: 0,
+            },
+          ),
+        )
+        .build(),
+    );
+    if (!city) {
+      throw new BadRequestException('the given cityId not founded!');
+    }
+
+    if (city.neighborhoodBase === true) {
+      if (!dto.neighborhoodId) {
+        throw new BadRequestException('neighborhood must be select it!');
+      }
+      const neighborhood = await this.neighborhoodRepository.findOne(
+        new QueryOptionsBuilder()
+          .filter({ id: dto.neighborhoodId })
+          .filter({ cityId: dto.cityId })
+          .filter(
+            Sequelize.where(
+              Sequelize.fn(
+                'isnull',
+                Sequelize.col('ECNeighborhood.isDeleted'),
+                0,
+              ),
+              {
+                [Op.eq]: 0,
+              },
+            ),
+          )
+          .build(),
+      );
+      if (!neighborhood) {
+        throw new BadRequestException('the given neighborhood not founded!');
+      }
+    }
+
+    const mappedItem = this.mapper.map(dto, AddressDto, ECAddress);
+    const result = await this.repository.update(
+      _.omit(mappedItem.toJSON(), ['id']),
+      {
+        where: {
+          id: entityId,
+        },
+        returning: true,
+      },
+    );
+    return {
+      result: _.pick(result[1][0], [
+        'id',
+        'name',
+        'latitude',
+        'longitude',
+        'provinceId',
+        'cityId',
+        'neighborhoodId',
+        'street',
+        'alley',
+        'plaque',
+        'floorNumber',
+        'postalCode',
+      ]),
+    };
+  }
 }

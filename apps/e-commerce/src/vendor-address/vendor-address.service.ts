@@ -309,7 +309,11 @@ export class VendorAddressService {
     }
 
     // update address item
-    await this.addressService.update(user, vendorAddress.addressId, dto);
+    await this.addressService.updateByAnyUser(
+      user,
+      vendorAddress.addressId,
+      dto,
+    );
 
     // query with included things
     vendorAddress = await this.vendorAddressRepository.findOne(
