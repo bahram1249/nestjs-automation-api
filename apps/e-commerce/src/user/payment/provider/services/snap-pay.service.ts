@@ -216,7 +216,8 @@ export class SnapPayService implements PayInterface {
       }
       const token = await this.generateToken(paymentGateway);
       const eligeble = await axios.get(
-        this.baseUrl + `/api/online/offer/v1/eligible?amount=${totalPrice}`,
+        this.baseUrl +
+          `/api/online/offer/v1/eligible?amount=${totalPrice * 10}`,
         {
           headers: {
             Authorization: 'Bearer ' + token,
