@@ -20,4 +20,16 @@ export class WalletService implements PayInterface {
     throw new NotImplementedException();
     return null;
   }
+
+  async eligbleRequest(totalPrice: number): Promise<{
+    eligibleCheck: boolean;
+    titleMessage?: string;
+    description?: string;
+  }> {
+    return {
+      eligibleCheck: true,
+      titleMessage: null,
+      description: null,
+    };
+  }
 }

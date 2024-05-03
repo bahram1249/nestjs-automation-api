@@ -127,6 +127,18 @@ export class ZarinPalService implements PayInterface {
     }
   }
 
+  async eligbleRequest(totalPrice: number): Promise<{
+    eligibleCheck: boolean;
+    titleMessage?: string;
+    description?: string;
+  }> {
+    return {
+      eligibleCheck: true,
+      titleMessage: null,
+      description: null,
+    };
+  }
+
   async verify(res: any, query: ZarinPalDto) {
     const paymentGateway = await this.paymentGateway.findOne(
       new QueryOptionsBuilder()

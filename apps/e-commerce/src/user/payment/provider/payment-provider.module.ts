@@ -7,6 +7,7 @@ import { ECPaymentGateway } from '@rahino/database/models/ecommerce-eav/ec-payme
 import { ECPayment } from '@rahino/database/models/ecommerce-eav/ec-payment-entity';
 import { ECOrder } from '@rahino/database/models/ecommerce-eav/ec-order.entity';
 import { InventoryModule } from '@rahino/ecommerce/inventory/inventory.module';
+import { PaymentServiceManualProviderFactory } from './factory/payment-service-manual-provider.factory';
 
 @Module({
   imports: [
@@ -22,11 +23,15 @@ import { InventoryModule } from '@rahino/ecommerce/inventory/inventory.module';
       },
       inject: [PaymentServiceProviderFactory],
     },
+    PaymentServiceManualProviderFactory,
     PaymentServiceProviderFactory,
     SnapPayService,
     ZarinPalService,
     WalletService,
   ],
-  exports: [ECOMMERCE_PAYMENT_PROVIDER_TOKEN],
+  exports: [
+    ECOMMERCE_PAYMENT_PROVIDER_TOKEN,
+    PaymentServiceManualProviderFactory,
+  ],
 })
 export class PaymentServiceProviderModule {}

@@ -2664,8 +2664,8 @@ END
 GO
 
 
--- ec-paymentgateways-v2
-IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ec-paymentgateways-v2' 
+-- ec-paymentgateways-v3
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ec-paymentgateways-v3' 
 			)
 	AND EXISTS (
 		SELECT 1 FROM Settings 
@@ -2679,6 +2679,24 @@ BEGIN
 
 	INSERT INTO Migrations(version, createdAt, updatedAt)
 	SELECT 'ec-paymentgateways-v3', GETDATE(), GETDATE()
+END
+
+GO
+
+-- ec-paymentgateways-v4
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ec-paymentgateways-v4' 
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'SITE_NAME' AND [value] IN ('ecommerce'))
+		)
+BEGIN
+
+	ALTER TABLE ECPaymentGateways
+		ADD eligibleRequest bit null
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'ec-paymentgateways-v4', GETDATE(), GETDATE()
 END
 
 GO
@@ -2835,6 +2853,45 @@ BEGIN
 
 	INSERT INTO Migrations(version, createdAt, updatedAt)
 	SELECT 'ec-orders-v2', GETDATE(), GETDATE()
+END
+
+GO
+
+
+
+-- ec-orders
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ec-orders-v3' 
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'SITE_NAME' AND [value] IN ('ecommerce'))
+		)
+BEGIN
+
+	ALTER TABLE ECOrders
+	ADD transactionId nvarchar(256) null
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'ec-orders-v3', GETDATE(), GETDATE()
+END
+
+GO
+
+
+-- ec-orders
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ec-orders-v4' 
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'SITE_NAME' AND [value] IN ('ecommerce'))
+		)
+BEGIN
+
+	ALTER TABLE ECOrders
+	ADD paymentId bigint null
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'ec-orders-v4', GETDATE(), GETDATE()
 END
 
 GO

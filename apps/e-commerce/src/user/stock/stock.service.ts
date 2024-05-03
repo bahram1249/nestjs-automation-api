@@ -39,6 +39,7 @@ import { StockPriceService } from './services/price';
 import { ShipmentInteface } from './services/shipment-price/interface';
 import { ECDiscount } from '@rahino/database/models/ecommerce-eav/ec-discount.entity';
 import { ApplyDiscountService } from '@rahino/ecommerce/product/service';
+import { PaymentServiceManualProviderFactory } from '../payment/provider/factory/payment-service-manual-provider.factory';
 
 @Injectable()
 export class StockService {
@@ -66,6 +67,7 @@ export class StockService {
     @Inject('SHIPMENT_SERVICE')
     private readonly shipmentService: ShipmentInteface,
     private readonly applyDiscountService: ApplyDiscountService,
+    private readonly paymentServiceProvider: PaymentServiceManualProviderFactory,
   ) {}
 
   async findAll(session: ECUserSession) {
@@ -216,7 +218,13 @@ export class StockService {
       const totalProductPrice = variationPriceStock.stocks
         .map((stock) => stock.totalProductPrice)
         .reduce((prev, current) => prev + current, 0);
-      const payments = await this.paymentGatewayRepository.findAll(
+
+      const shipment = await this.shipmentService.cal(
+        variationPriceStock.stocks,
+        query.addressId,
+      );
+
+      let payments = await this.paymentGatewayRepository.findAll(
         new QueryOptionsBuilder()
           .attributes(['id', 'name'])
           .filter({ variationPriceId: variationPriceStock.variationPrice.id })
@@ -234,10 +242,26 @@ export class StockService {
           )
           .build(),
       );
-      const shipment = await this.shipmentService.cal(
-        variationPriceStock.stocks,
-        query.addressId,
-      );
+
+      for (let index = 0; index < payments.length; index++) {
+        const payment = payments[index];
+
+        const paymentService = await this.paymentServiceProvider.create(
+          payment.id,
+        );
+        const eligbleRequest = await paymentService.eligbleRequest(
+          totalPrice + Number(shipment.price),
+        );
+
+        payment.set('eligibleCheck', eligbleRequest.eligibleCheck);
+        payment.set('titleMessage', eligbleRequest.titleMessage);
+        payment.set('description', eligbleRequest.description);
+
+        payments[index] = payment;
+      }
+
+      payments = payments.filter((payment) => payment.eligibleCheck == true);
+
       resultList.push({
         variationPriceId: variationPriceStock.variationPrice.id,
         variationPriceName: variationPriceStock.variationPrice.name,

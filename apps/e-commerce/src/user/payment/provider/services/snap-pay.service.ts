@@ -41,6 +41,7 @@ export class SnapPayService implements PayInterface {
     this.baseUrl =
       'https://fms-gateway-staging.apps.public.okd4.teh-1.snappcloud.io';
   }
+
   async requestPayment(
     totalPrice: number,
     discountAmount: number,
@@ -188,6 +189,54 @@ export class SnapPayService implements PayInterface {
       };
     } catch (error) {
       throw new InternalServerErrorException('something failed in payment');
+    }
+  }
+
+  async eligbleRequest(totalPrice: number): Promise<{
+    eligibleCheck: boolean;
+    titleMessage?: string;
+    description?: string;
+  }> {
+    try {
+      const paymentGateway = await this.paymentGateway.findOne(
+        new QueryOptionsBuilder()
+          .filter({ serviceName: 'SnapPayService' })
+          .filter(
+            Sequelize.where(
+              Sequelize.fn('isnull', Sequelize.col('isDeleted'), 0),
+              {
+                [Op.eq]: 0,
+              },
+            ),
+          )
+          .build(),
+      );
+      if (!paymentGateway) {
+        throw new BadRequestException('invalid payment');
+      }
+      const token = await this.generateToken(paymentGateway);
+      const eligeble = await axios.get(
+        this.baseUrl + `/api/online/offer/v1/eligible?amount=${totalPrice}`,
+        {
+          headers: {
+            Authorization: 'Bearer ' + token,
+          },
+        },
+      );
+      if (eligeble.data.response.eligible != true) {
+        return {
+          eligibleCheck: false,
+          titleMessage: eligeble.data.response.title_message,
+          description: eligeble.data.response.description,
+        };
+      }
+      return {
+        eligibleCheck: true,
+        titleMessage: eligeble.data.response.title_message,
+        description: eligeble.data.response.description,
+      };
+    } catch {
+      return { eligibleCheck: false, titleMessage: null, description: null };
     }
   }
 

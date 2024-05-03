@@ -67,4 +67,28 @@ export class ECPaymentGateway extends Model {
     allowNull: true,
   })
   secret?: string;
+
+  @Column({
+    type: DataType.BOOLEAN,
+    allowNull: true,
+  })
+  eligibleRequest?: boolean;
+
+  @Column({
+    type: DataType.VIRTUAL,
+    allowNull: true,
+  })
+  eligibleCheck?: boolean;
+
+  @Column({
+    type: DataType.VIRTUAL,
+    allowNull: true,
+  })
+  titleMessage?: string;
+
+  @Column({
+    type: DataType.VIRTUAL,
+    allowNull: true,
+  })
+  description?: string;
 }

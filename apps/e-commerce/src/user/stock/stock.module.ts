@@ -29,6 +29,7 @@ import { StockPriceService } from './services/price';
 import { ECVariationPrice } from '@rahino/database/models/ecommerce-eav/ec-variation-prices';
 import { ECProvince } from '@rahino/database/models/ecommerce-eav/ec-province.entity';
 import { ShipmentModule } from './services/shipment-price';
+import { PaymentServiceProviderModule } from '../payment/provider/payment-provider.module';
 
 @Module({
   imports: [
@@ -46,6 +47,7 @@ import { ShipmentModule } from './services/shipment-price';
     InventoryModule,
     ProductModule,
     DBLoggerModule,
+    PaymentServiceProviderModule,
     BullModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
