@@ -112,7 +112,7 @@ export class OrderQueryBuilder {
     return this;
   }
 
-  addOrderDetails(vendors?: number[]) {
+  addAdminOrderDetails(vendors?: number[]) {
     let includeBuilder = new IncludeOptionsBuilder({
       model: ECOrderDetail,
       as: 'details',
@@ -159,7 +159,7 @@ export class OrderQueryBuilder {
                 'colorId',
                 'guaranteeId',
                 'guaranteeMonthId',
-                // 'description',
+                'description',
                 'weight',
               ],
               model: ECInventory,
@@ -223,6 +223,96 @@ export class OrderQueryBuilder {
         },
       });
     }
+    this.builder = this.builder.thenInlcude(includeBuilder.build());
+    return this;
+  }
+
+  addUserOrderDetails() {
+    let includeBuilder = new IncludeOptionsBuilder({
+      model: ECOrderDetail,
+      as: 'details',
+      required: false,
+      attributes: [
+        'id',
+        'orderId',
+        'orderDetailStatusId',
+        'vendorId',
+        'productId',
+        'inventoryId',
+        'qty',
+        'productPrice',
+        'discountFee',
+        'discountFeePerItem',
+        'discountId',
+        'totalPrice',
+        'userId',
+        'createdAt',
+        'updatedAt',
+      ],
+      include: [
+        {
+          attributes: ['id', 'name', 'slug'],
+          model: ECVendor,
+          as: 'vendor',
+          required: false,
+        },
+        {
+          attributes: ['id', 'title', 'slug', 'sku'],
+          model: ECProduct,
+          as: 'product',
+          required: false,
+          include: [
+            {
+              attributes: ['id', 'colorId', 'guaranteeId', 'guaranteeMonthId'],
+              model: ECInventory,
+              as: 'inventories',
+              required: false,
+              where: Sequelize.where(Sequelize.col('details.inventoryId'), {
+                [Op.eq]: Sequelize.col('details.product.inventories.id'),
+              }),
+              include: [
+                {
+                  attributes: ['id', 'name', 'hexCode'],
+                  model: ECColor,
+                  as: 'color',
+                  required: false,
+                },
+                {
+                  attributes: ['id', 'name', 'slug'],
+                  model: ECGuarantee,
+                  as: 'guarantee',
+                  required: false,
+                },
+                {
+                  attributes: ['id', 'name'],
+                  model: ECGuaranteeMonth,
+                  as: 'guaranteeMonth',
+                  required: false,
+                },
+              ],
+            },
+            {
+              attributes: ['id', 'fileName'],
+              through: {
+                attributes: [],
+              },
+              model: Attachment,
+              as: 'attachments',
+              required: false,
+            },
+          ],
+        },
+      ],
+    });
+    includeBuilder = includeBuilder.filter(
+      Sequelize.where(
+        Sequelize.fn('isnull', Sequelize.col('details.isDeleted'), 0),
+        {
+          [Op.eq]: 0,
+        },
+      ),
+    );
+
     this.builder = this.builder.thenInlcude(includeBuilder.build());
     return this;
   }

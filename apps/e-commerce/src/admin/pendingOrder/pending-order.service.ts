@@ -50,8 +50,8 @@ export class PendingOrderService {
     const count = await this.repository.count(builder.build());
 
     builder = builder
-      .subQuery(false)
-      .addOrderDetails([filter.vendorId])
+      .subQuery(true)
+      .addAdminOrderDetails([filter.vendorId])
       .addOrderShipmentWay()
       .addAddress()
       .addUser()
@@ -85,7 +85,7 @@ export class PendingOrderService {
       .addOrderShipmentWay()
       .addOrderStatus(OrderStatusEnum.Paid)
       .addOnlyVendor([filter.vendorId])
-      .addOrderDetails([filter.vendorId])
+      .addAdminOrderDetails([filter.vendorId])
       .addAddress()
       .addUser();
 

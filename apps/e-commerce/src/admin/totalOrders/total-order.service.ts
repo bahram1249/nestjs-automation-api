@@ -59,13 +59,13 @@ export class TotalOrderService {
     const count = await this.repository.count(builder.build());
 
     if (isSuperAdmin) {
-      builder = builder.addOrderDetails();
+      builder = builder.addAdminOrderDetails();
     } else {
-      builder = builder.addOrderDetails(vendorIds);
+      builder = builder.addAdminOrderDetails(vendorIds);
     }
 
     builder = builder
-      .subQuery(false)
+      .subQuery(true)
       .addOrderShipmentWay()
       .addAddress()
       .addUser()
@@ -89,9 +89,11 @@ export class TotalOrderService {
     let builder = this.orderQueryBuilder;
 
     if (!isSuperAdmin) {
-      builder = builder.addOnlyVendor(vendorIds).addOrderDetails(vendorIds);
+      builder = builder
+        .addOnlyVendor(vendorIds)
+        .addAdminOrderDetails(vendorIds);
     } else {
-      builder = builder.addOrderDetails();
+      builder = builder.addAdminOrderDetails();
     }
 
     builder = builder

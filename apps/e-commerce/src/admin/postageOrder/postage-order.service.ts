@@ -34,9 +34,9 @@ export class PostageOrderService {
     const count = await this.repository.count(builder.build());
 
     builder = builder
-      .subQuery(false)
+      .subQuery(true)
       .addOrderShipmentWay()
-      .addOrderDetails()
+      .addAdminOrderDetails()
       .addAddress()
       .addUser()
       .offset(filter.offset)
@@ -61,7 +61,7 @@ export class PostageOrderService {
       .orderShipmentWay(OrderShipmentwayEnum.post)
       .addOrderId(id)
       .addOrderStatus(OrderStatusEnum.OrderHasBeenProcessed)
-      .addOrderDetails()
+      .addAdminOrderDetails()
       .addAddress()
       .addUser();
 
