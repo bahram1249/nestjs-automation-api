@@ -55,7 +55,9 @@ export class OrderQueryBuilder {
           },
         },
         {
-          id: text,
+          id: {
+            [Op.like]: text,
+          },
         },
       ],
     });
