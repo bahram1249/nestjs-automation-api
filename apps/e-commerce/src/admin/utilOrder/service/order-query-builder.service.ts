@@ -130,7 +130,7 @@ export class OrderQueryBuilder {
           required: false,
         },
         {
-          attributes: ['id', 'title', 'slug'],
+          attributes: ['id', 'title', 'slug', 'sku'],
           model: ECProduct,
           as: 'product',
           required: false,
@@ -141,7 +141,7 @@ export class OrderQueryBuilder {
                 'colorId',
                 'guaranteeId',
                 'guaranteeMonthId',
-                'description',
+                // 'description',
                 'weight',
               ],
               model: ECInventory,
