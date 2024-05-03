@@ -46,6 +46,11 @@ export class OrderQueryBuilder {
     return this;
   }
 
+  addOnlyUser(userId: bigint) {
+    this.builder = this.builder.filter({ userId: userId });
+    return this;
+  }
+
   search(text: string) {
     this.builder = this.builder.filter({
       [Op.or]: [
