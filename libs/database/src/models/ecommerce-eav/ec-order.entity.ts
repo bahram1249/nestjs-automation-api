@@ -106,4 +106,16 @@ export class ECOrder extends Model {
     allowNull: true,
   })
   postReceipt?: string;
+
+  @Column({
+    type: DataType.STRING,
+    allowNull: true,
+  })
+  transactionId?: string;
+
+  @Column({
+    type: DataType.BIGINT,
+    allowNull: true,
+  })
+  paymentId?: bigint;
 }

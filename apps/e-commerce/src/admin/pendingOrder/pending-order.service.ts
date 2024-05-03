@@ -44,7 +44,8 @@ export class PendingOrderService {
     builder = builder
       .nonDeletedOrder()
       .addOrderStatus(OrderStatusEnum.Paid)
-      .addOnlyVendor([filter.vendorId]);
+      .addOnlyVendor([filter.vendorId])
+      .search(filter.search);
 
     const count = await this.repository.count(builder.build());
 

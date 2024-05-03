@@ -276,7 +276,11 @@ export class SnapPayService implements PayInterface {
             )
           )[1][0];
           await this.orderRepository.update(
-            { orderStatusId: OrderStatusEnum.Paid },
+            {
+              orderStatusId: OrderStatusEnum.Paid,
+              transactionId: payment.transactionId,
+              paymentId: payment.id,
+            },
             {
               where: {
                 id: payment.orderId,

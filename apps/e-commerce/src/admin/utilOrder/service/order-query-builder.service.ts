@@ -46,6 +46,22 @@ export class OrderQueryBuilder {
     return this;
   }
 
+  search(text: string) {
+    this.builder = this.builder.filter({
+      [Op.or]: [
+        {
+          transactionId: {
+            [Op.like]: text,
+          },
+        },
+        {
+          id: text,
+        },
+      ],
+    });
+    return this;
+  }
+
   subQuery(enable: boolean) {
     this.builder = this.builder.subQuery(enable);
     return this;

@@ -192,7 +192,7 @@ export class ZarinPalService implements PayInterface {
           )
         )[1][0];
         await this.orderRepository.update(
-          { orderStatusId: OrderStatusEnum.Paid },
+          { orderStatusId: OrderStatusEnum.Paid, paymentId: payment.id },
           {
             where: {
               id: payment.orderId,

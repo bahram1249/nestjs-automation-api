@@ -28,7 +28,8 @@ export class PostageOrderService {
     builder = builder
       .nonDeletedOrder()
       .orderShipmentWay(OrderShipmentwayEnum.post)
-      .addOrderStatus(OrderStatusEnum.OrderHasBeenProcessed);
+      .addOrderStatus(OrderStatusEnum.OrderHasBeenProcessed)
+      .search(filter.search);
 
     const count = await this.repository.count(builder.build());
 

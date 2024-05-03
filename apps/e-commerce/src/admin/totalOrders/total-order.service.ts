@@ -49,6 +49,7 @@ export class TotalOrderService {
 
     let builder = this.orderQueryBuilder
       .nonDeletedOrder()
+      .search(filter.search)
       .addNegativeOrderStatus(OrderStatusEnum.WaitingForPayment);
 
     if (!isSuperAdmin) {
