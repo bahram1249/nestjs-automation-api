@@ -90,6 +90,9 @@ export class PendingOrderService {
       .addUser();
 
     let result = await this.repository.findOne(builder.build());
+    if (!result) {
+      throw new NotFoundException('the item with this given id not found!');
+    }
     result = await this.orderUtilService.recalculateOrderPrices(result);
 
     return {

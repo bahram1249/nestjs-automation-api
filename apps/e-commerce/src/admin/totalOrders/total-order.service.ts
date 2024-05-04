@@ -105,6 +105,9 @@ export class TotalOrderService {
       .addUser();
 
     let result = await this.repository.findOne(builder.build());
+    if (!result) {
+      throw new NotFoundException('the item with this given id not founded!');
+    }
     result = await this.orderUtilService.recalculateOrderPrices(result);
 
     return {
