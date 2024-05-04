@@ -13,6 +13,6 @@ export class PaymentServiceProviderFactory {
 
   async create() {
     const paymentId = Number(this.request?.body?.paymentId);
-    await this.provider.create(paymentId);
+    return await this.provider.create(paymentId);
   }
 }
