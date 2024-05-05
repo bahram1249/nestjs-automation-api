@@ -23,3 +23,7 @@ $('.searchFilter').on('click', () => {
 
   window.location.href = '/buffet/list?' + params;
 });
+
+$(document).ready(function () {
+  $('select').select2();
+});
