@@ -594,15 +594,12 @@ img.super-lux-img {
   padding-bottom: 20px;
 }
 
-h1,
-h2,
-h3,
-h4,
-h5,
-h6,
-p,
 ul.sidebar-nav {
   margin: 18px;
+}
+
+.camera {
+  padding-bottom: 10px;
 }
 
 #navmenu-nav li.account-menu.active .navbar-link,
@@ -796,4 +793,9 @@ label.upload-label {
     font-size: 22px;
     margin: 0;
   }
+}
+
+#navmenu-nav .navbar-link {
+  white-space: nowrap;
+  padding: 20px !important;
 }

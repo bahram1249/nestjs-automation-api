@@ -16,7 +16,7 @@
             <div class='profile-siderbar'>
               <img
                 {{#if (isnotnull currentUser.profileAttachment)}}
-                src='/v1/api/core/user/profile/photo/{{currentUser.profileAttachment.fileName}}'
+                src='/v1/api/core/user/profile/photo/{{user.profileAttachment.fileName}}'
                 {{else}}
                 src='/src/discountcoffe/img/profile.jpg'
                 {{/if}}
