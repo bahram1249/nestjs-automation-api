@@ -11,6 +11,7 @@ import { RolePermission } from '@rahino/database/models/core/rolePermission.enti
 import { PermissionMenu } from '@rahino/database/models/core/permission-menu.entity';
 import { Op, Sequelize } from 'sequelize';
 import { Role } from '@rahino/database/models/core/role.entity';
+import { Attachment } from '@rahino/database/models/core/attachment.entity';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
@@ -55,6 +56,12 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
           {
             model: Role,
             as: 'roles',
+            required: false,
+          },
+          {
+            model: Attachment,
+            as: 'profileAttachment',
+            required: false,
           },
         ],
         where: {

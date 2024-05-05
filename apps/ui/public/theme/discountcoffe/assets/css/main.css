@@ -2344,6 +2344,7 @@ p.yith-ywot-tracking-info-header {
 .icon-france:before,
 .icon-furniture:before,
 .icon-gp:before,
+.icon-green-leaf:before,
 .icon-haert-fill:before,
 .icon-heart-filed:before,
 .icon-heart:before,
@@ -2353,6 +2354,7 @@ p.yith-ywot-tracking-info-header {
 .icon-instagram:before,
 .icon-iran:before,
 .icon-italy:before,
+.icon-kid:before,
 .icon-label:before,
 .icon-left:before,
 .icon-level:before,
@@ -2369,6 +2371,7 @@ p.yith-ywot-tracking-info-header {
 .icon-music:before,
 .icon-order:before,
 .icon-pack:before,
+.icon-parking:before,
 .icon-pause:before,
 .icon-people:before,
 .icon-pizza:before,
@@ -2381,6 +2384,7 @@ p.yith-ywot-tracking-info-header {
 .icon-report:before,
 .icon-research:before,
 .icon-right:before,
+.icon-roof-garden:before,
 .icon-room:before,
 .icon-ruller:before,
 .icon-search:before,
@@ -2393,6 +2397,7 @@ p.yith-ywot-tracking-info-header {
 .icon-sun:before,
 .icon-support:before,
 .icon-tell:before,
+.icon-theater:before,
 .icon-tick:before,
 .icon-times:before,
 .icon-top:before,
@@ -2570,264 +2575,284 @@ p.yith-ywot-tracking-info-header {
   content: "";
 }
 
-.icon-haert-fill:before {
+.icon-green-leaf:before {
   content: "";
 }
 
-.icon-heart-filed:before {
+.icon-haert-fill:before {
   content: "";
 }
 
-.icon-heart:before {
+.icon-heart-filed:before {
   content: "";
 }
 
-.icon-hookah:before {
+.icon-heart:before {
   content: "";
 }
 
-.icon-hospital:before {
+.icon-hookah:before {
   content: "";
 }
 
-.icon-hq:before {
+.icon-hospital:before {
   content: "";
 }
 
-.icon-instagram:before {
+.icon-hq:before {
   content: "";
 }
 
-.icon-iran:before {
+.icon-instagram:before {
   content: "";
 }
 
-.icon-italy:before {
+.icon-iran:before {
   content: "";
 }
 
-.icon-label:before {
+.icon-italy:before {
   content: "";
 }
 
-.icon-left:before {
+.icon-kid:before {
   content: "";
 }
 
-.icon-level:before {
+.icon-label:before {
   content: "";
 }
 
-.icon-linkedin:before {
+.icon-left:before {
   content: "";
 }
 
-.icon-location:before {
+.icon-level:before {
   content: "";
 }
 
-.icon-lock:before {
+.icon-linkedin:before {
   content: "";
 }
 
-.icon-mail:before {
+.icon-location:before {
   content: "";
 }
 
-.icon-master:before {
+.icon-lock:before {
   content: "";
 }
 
-.icon-MIN:before {
+.icon-mail:before {
   content: "";
 }
 
-.icon-minus:before {
+.icon-master:before {
   content: "";
 }
 
-.icon-money:before {
+.icon-MIN:before {
   content: "";
 }
 
-.icon-moon:before {
+.icon-minus:before {
   content: "";
 }
 
-.icon-movie:before {
+.icon-money:before {
   content: "";
 }
 
-.icon-music:before {
+.icon-moon:before {
   content: "";
 }
 
-.icon-order:before {
+.icon-movie:before {
   content: "";
 }
 
-.icon-pack:before {
+.icon-music:before {
   content: "";
 }
 
-.icon-pause:before {
+.icon-order:before {
   content: "";
 }
 
-.icon-people:before {
+.icon-pack:before {
   content: "";
 }
 
-.icon-pizza:before {
+.icon-parking:before {
   content: "";
 }
 
-.icon-plau:before {
+.icon-pause:before {
   content: "";
 }
 
-.icon-play:before {
+.icon-people:before {
   content: "";
 }
 
-.icon-plus:before {
+.icon-pizza:before {
   content: "";
 }
 
-.icon-price:before {
+.icon-plau:before {
   content: "";
 }
 
-.icon-print:before {
+.icon-play:before {
   content: "";
 }
 
-.icon-quality:before {
+.icon-plus:before {
   content: "";
 }
 
-.icon-report:before {
+.icon-price:before {
   content: "";
 }
 
-.icon-research:before {
+.icon-print:before {
   content: "";
 }
 
-.icon-right:before {
+.icon-quality:before {
   content: "";
 }
 
-.icon-room:before {
+.icon-report:before {
   content: "";
 }
 
-.icon-ruller:before {
+.icon-research:before {
   content: "";
 }
 
-.icon-search:before {
+.icon-right:before {
   content: "";
 }
 
-.icon-services:before {
+.icon-roof-garden:before {
   content: "";
 }
 
-.icon-share:before {
+.icon-room:before {
   content: "";
 }
 
-.icon-shipping:before {
+.icon-ruller:before {
   content: "";
 }
 
-.icon-shop:before {
+.icon-search:before {
   content: "";
 }
 
-.icon-software:before {
+.icon-services:before {
   content: "";
 }
 
-.icon-star:before {
+.icon-share:before {
   content: "";
 }
 
-.icon-sun:before {
+.icon-shipping:before {
   content: "";
 }
 
-.icon-support:before {
+.icon-shop:before {
   content: "";
 }
 
-.icon-tell:before {
+.icon-software:before {
   content: "";
 }
 
-.icon-tick:before {
+.icon-star:before {
   content: "";
 }
 
-.icon-times:before {
+.icon-sun:before {
   content: "";
 }
 
-.icon-top:before {
+.icon-support:before {
   content: "";
 }
 
-.icon-trash:before {
+.icon-tell:before {
   content: "";
 }
 
-.icon-truck:before {
+.icon-theater:before {
   content: "";
 }
 
-.icon-tv:before {
+.icon-tick:before {
   content: "";
 }
 
-.icon-twitter:before {
+.icon-times:before {
   content: "";
 }
 
-.icon-type:before {
+.icon-top:before {
   content: "";
 }
 
-.icon-update:before {
+.icon-trash:before {
   content: "";
 }
 
-.icon-user:before {
+.icon-truck:before {
   content: "";
 }
 
-.icon-userl:before {
+.icon-tv:before {
   content: "";
 }
 
-.icon-videos:before {
+.icon-twitter:before {
   content: "";
 }
 
-.icon-warranty:before {
+.icon-type:before {
   content: "";
 }
 
-.icon-water:before {
+.icon-update:before {
   content: "";
 }
 
-.icon-whatsapp:before {
+.icon-user:before {
   content: "";
 }
 
-.icon-zoom:before {
+.icon-userl:before {
   content: "";
+}
+
+.icon-videos:before {
+  content: "";
+}
+
+.icon-warranty:before {
+  content: "";
+}
+
+.icon-water:before {
+  content: "";
+}
+
+.icon-whatsapp:before {
+  content: "";
+}
+
+.icon-zoom:before {
+  content: "";
 }
 
 .logoBox {

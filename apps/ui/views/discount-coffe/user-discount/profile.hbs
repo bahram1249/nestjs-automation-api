@@ -13,6 +13,30 @@
         <div class='sidebar sticky-bar p-4 rounded shadow'>
 
           <div class='widget mt-4'>
+            <div class='profile-siderbar'>
+              <img
+                {{#if (isnotnull currentUser.profileAttachment)}}
+                src='/v1/api/core/user/profile/photo/{{currentUser.profileAttachment.fileName}}'
+                {{else}}
+                src='/src/discountcoffe/img/profile.jpg'
+                {{/if}}
+                width='150'
+                height='150'
+                id='img'
+                alt=''
+              />
+              <div class='camera'>
+                <label for='file' class='upload-label mt-2'>آپلود عکس</label>
+                <input
+                  style='display: none;'
+                  type='file'
+                  accept='.jpg,.png'
+                  id='file'
+                  name='file'
+                />
+              </div>
+              <h4>{{currentUser.firstname}} {{currentUser.lastname}}</h4>
+            </div>
             <ul class='list-unstyled sidebar-nav mb-0' id='navmenu-nav'>
               <li class='navbar-item account-menu px-0 active'>
                 <a
@@ -159,49 +183,12 @@
             </div>
           </div>
         </div>
-        <!-- <form action='/user/profile' method='post'>
-          <div class='row'>
-
-            <div class='col-xs-12 col-xl-12'>
-              <div class='basic-form'>
-                <div class='form-row'>
-                  <div class='form-group col-md-6'>
-                    <label>نام کاربر</label>
-                    <input
-                      id='firstname'
-                      name='firstname'
-                      type='text'
-                      class='form-control'
-                      value='{{user.firstname}}'
-                      placeholder='نام کاربر'
-                    />
-                  </div>
-                  <div class='form-group col-md-6'>
-                    <label>نام خانوادگی</label>
-                    <input
-                      id='lastname'
-                      name='lastname'
-                      type='text'
-                      class='form-control'
-                      value='{{user.lastname}}'
-                      placeholder='نام خانوادگی'
-                    />
-                  </div>
-
-                  <div class='form-group col-md-6'>
-                    <button
-                      class='btn btn-sm btn-success rounded-3'
-                      type='submit'
-                    >ذخیره</button>
-                  </div>
-
-                </div>
-
-              </div>
-            </div>
-          </div>
-        </form> -->
       </div>
     </div>
   </div>
 </section>
+
+{{#section 'footer'}}
+  <script src='/src/core/util/custom.js'></script>
+  <script src='/src/discountcoffe/js/profile.js'></script>
+{{/section}}
