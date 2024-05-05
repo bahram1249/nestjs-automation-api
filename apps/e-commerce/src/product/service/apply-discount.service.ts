@@ -481,6 +481,7 @@ export class ApplyDiscountService {
             AND conditionTbl.conditionTypeId = ${conditionType}
             AND conditionTbl.conditionValue = ${value}
             AND ISNULL(conditionTbl.isDeleted, 0) = 0
+            AND ISNULL(conditionTbl.isDefault, 0) = 0
         )`.replaceAll(/\s\s+/g, ' '),
           ),
         )
