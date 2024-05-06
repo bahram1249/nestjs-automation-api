@@ -123,11 +123,11 @@ export class AppModule implements NestModule {
     app.useGlobalFilters(new HttpExceptionFilter(this.logger));
 
     app.useGlobalPipes(
-      new I18nValidationPipe(),
       new ValidationPipe({
         whitelist: true,
         transform: true,
       }),
+      new I18nValidationPipe(),
     );
 
     app.use(
