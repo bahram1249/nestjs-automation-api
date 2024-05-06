@@ -27,6 +27,9 @@ import * as session from 'express-session';
 import { DynamicProviderModule } from '../dynamic-provider/dynamic-provider.module';
 import { ThrottlerBehindProxyGuard } from '@rahino/commontools/guard';
 import { APP_GUARD } from '@nestjs/core';
+import { AcceptLanguageResolver, I18nModule, QueryResolver } from 'nestjs-i18n';
+import * as path from 'path';
+import { AppLanguageResolver } from '../i18nResolver/AppLanguageResolver';
 
 @Module({
   imports: [
@@ -66,7 +69,25 @@ import { APP_GUARD } from '@nestjs/core';
     CoreModule,
     UIModule,
     DynamicProviderModule.register(),
-
+    I18nModule.forRoot({
+      fallbackLanguage: 'en',
+      loaderOptions: {
+        path: [path.join(__dirname, '../../../i18n/')],
+        watch: true,
+      },
+      resolvers: [
+        AppLanguageResolver,
+        {
+          use: QueryResolver,
+          options: ['lang'],
+        },
+        AcceptLanguageResolver,
+      ],
+      typesOutputPath: path.join(
+        __dirname,
+        '../../../apps/main/src/generated/i18n.generated.ts',
+      ),
+    }),
     DevtoolsModule.register({
       http: process.env.NODE_ENV !== 'production',
     }),

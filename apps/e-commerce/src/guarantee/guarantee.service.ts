@@ -18,6 +18,8 @@ import * as fs from 'fs';
 import { User } from '@rahino/database/models/core/user.entity';
 import { MinioClientService } from '@rahino/minio-client';
 import { ThumbnailService } from '@rahino/thumbnail';
+import { I18nContext, I18nService } from 'nestjs-i18n';
+import { I18nTranslations } from 'apps/main/src/generated/i18n.generated';
 
 @Injectable()
 export class GuaranteeService {
@@ -29,6 +31,7 @@ export class GuaranteeService {
     @InjectMapper()
     private readonly mapper: Mapper,
     private readonly thumbnailService: ThumbnailService,
+    private readonly i18n: I18nService<I18nTranslations>,
   ) {}
 
   async findAll(filter: GetGuaranteeDto) {
@@ -108,7 +111,11 @@ export class GuaranteeService {
         .build(),
     );
     if (!guarantee) {
-      throw new NotFoundException('the item with this given id not founded!');
+      throw new NotFoundException(
+        this.i18n.t('core.not_found_id', {
+          lang: I18nContext.current().lang,
+        }),
+      );
     }
     return {
       result: guarantee,
@@ -131,7 +138,9 @@ export class GuaranteeService {
     );
     if (item) {
       throw new BadRequestException(
-        'the item with this slug is exists before !',
+        this.i18n.translate('core.the_given_slug_is_exists_before', {
+          lang: I18nContext.current().lang,
+        }),
       );
     }
 
@@ -167,7 +176,11 @@ export class GuaranteeService {
         .build(),
     );
     if (!item) {
-      throw new NotFoundException('the item with this given id not founded!');
+      throw new NotFoundException(
+        this.i18n.t('core.not_found_id', {
+          lang: I18nContext.current().lang,
+        }),
+      );
     }
     const searchSlug = await this.repository.findOne(
       new QueryOptionsBuilder()
@@ -189,7 +202,9 @@ export class GuaranteeService {
     );
     if (searchSlug) {
       throw new BadRequestException(
-        'the item with this slug is exists before !',
+        this.i18n.t('core.the_given_slug_is_exists_before', {
+          lang: I18nContext.current().lang,
+        }),
       );
     }
     const mappedItem = this.mapper.map(dto, GuaranteeDto, ECGuarantee);
@@ -230,7 +245,11 @@ export class GuaranteeService {
         .build(),
     );
     if (!item) {
-      throw new NotFoundException('the item with this given id not founded!');
+      throw new NotFoundException(
+        this.i18n.t('core.not_found_id', {
+          lang: I18nContext.current().lang,
+        }),
+      );
     }
     item.isDeleted = true;
     await item.save();
@@ -262,7 +281,11 @@ export class GuaranteeService {
         .build(),
     );
     if (!item) {
-      throw new NotFoundException('the item with this given slug not founded!');
+      throw new NotFoundException(
+        this.i18n.t('core.not_found_slug', {
+          lang: I18nContext.current().lang,
+        }),
+      );
     }
     return {
       result: _.pick(item, [
@@ -293,7 +316,9 @@ export class GuaranteeService {
         .build(),
     );
     if (!item) {
-      throw new NotFoundException('the item with this given id not founded!');
+      throw new NotFoundException(
+        this.i18n.t('core.not_found_id', { lang: I18nContext.current().lang }),
+      );
     }
 
     // upload to s3 cloud
@@ -373,7 +398,11 @@ export class GuaranteeService {
         .build(),
     );
     if (!attachment) {
-      throw new ForbiddenException("You don't have access to this file!");
+      throw new ForbiddenException(
+        this.i18n.t('core.dont_access_to_this_file', {
+          lang: I18nContext.current().lang,
+        }),
+      );
     }
     const accessUrl = await this.minioClientService.generateDownloadUrl(
       attachment.bucketName,
