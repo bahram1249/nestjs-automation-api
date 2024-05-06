@@ -27,7 +27,12 @@ import * as session from 'express-session';
 import { DynamicProviderModule } from '../dynamic-provider/dynamic-provider.module';
 import { ThrottlerBehindProxyGuard } from '@rahino/commontools/guard';
 import { APP_GUARD } from '@nestjs/core';
-import { AcceptLanguageResolver, I18nModule, QueryResolver } from 'nestjs-i18n';
+import {
+  AcceptLanguageResolver,
+  I18nModule,
+  I18nValidationPipe,
+  QueryResolver,
+} from 'nestjs-i18n';
 import * as path from 'path';
 import { AppLanguageResolver } from '../i18nResolver/AppLanguageResolver';
 
@@ -118,6 +123,7 @@ export class AppModule implements NestModule {
     app.useGlobalFilters(new HttpExceptionFilter(this.logger));
 
     app.useGlobalPipes(
+      new I18nValidationPipe(),
       new ValidationPipe({
         whitelist: true,
         transform: true,
