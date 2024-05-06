@@ -12,6 +12,7 @@ import * as bcrypt from 'bcrypt';
 import { UserRole } from './userRole.entity';
 import { Attachment } from './attachment.entity';
 import { Role } from './role.entity';
+import { AutoMap } from 'automapper-classes';
 //import { AutoMap } from '@automapper/classes';
 
 @Table
@@ -42,14 +43,14 @@ export class User extends Model {
     type: DataType.STRING,
     allowNull: true,
   })
-  //@AutoMap()
+  @AutoMap()
   firstname: string;
 
   @Column({
     type: DataType.STRING,
     allowNull: true,
   })
-  //@AutoMap()
+  @AutoMap()
   lastname: string;
 
   @Column({
@@ -62,7 +63,7 @@ export class User extends Model {
     type: DataType.STRING,
     allowNull: true,
   })
-  //@AutoMap()
+  @AutoMap()
   username: string;
 
   @Column({
@@ -78,6 +79,7 @@ export class User extends Model {
   })
   password: string;
 
+  @AutoMap()
   @Column({
     type: DataType.STRING,
     allowNull: true,

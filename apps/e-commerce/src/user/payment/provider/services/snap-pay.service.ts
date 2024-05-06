@@ -23,8 +23,6 @@ import { ECOrder } from '@rahino/database/models/ecommerce-eav/ec-order.entity';
 import { Response } from 'express';
 import { ConfigService } from '@nestjs/config';
 import { RevertInventoryQtyService } from '@rahino/ecommerce/inventory/services';
-import { v4 as uuidv4 } from 'uuid';
-import ShortUniqueId from 'short-unique-id';
 
 export class SnapPayService implements PayInterface {
   private baseUrl = '';
@@ -292,6 +290,7 @@ export class SnapPayService implements PayInterface {
             headers: {
               Authorization: 'Bearer ' + token,
             },
+            timeout: 60000,
           },
         );
         if (result.data.successful != true) {
@@ -311,6 +310,7 @@ export class SnapPayService implements PayInterface {
             headers: {
               Authorization: 'Bearer ' + token,
             },
+            timeout: 60000,
           },
         );
         if (finalRequest.data.successful == true) {

@@ -398,9 +398,15 @@ export class TotalOrderService {
       if (detail.qty <= 1) {
         throw new BadRequestException(`the quantity cannot be decrease`);
       }
-
+      const newQty = detail.qty - 1;
       await this.orderDetailRepository.update(
-        { qty: detail.qty - 1 },
+        {
+          qty: newQty,
+          discountFee: Number(detail.discountFeePerItem) * newQty,
+          totalPrice:
+            Number(detail.productPrice) * newQty -
+            Number(detail.discountFeePerItem) * newQty,
+        },
         {
           where: {
             id: detailId,
