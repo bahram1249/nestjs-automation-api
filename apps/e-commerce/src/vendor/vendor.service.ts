@@ -451,8 +451,8 @@ export class VendorService {
       const mappedUserItem = this.mapper.map(dto.user, VendorUserDto, User);
       const updateUserItem = _.omit(mappedUserItem.toJSON(), ['id']);
       updateUserItem.username = mappedUserItem.phoneNumber;
-      const defaultUser = await this.userRepository.update(updateUserItem, {
-        where: { userId: defaultVendorUser.user.id },
+      await this.userRepository.update(updateUserItem, {
+        where: { id: defaultVendorUser.user.id },
         returning: true,
       });
     }
