@@ -127,7 +127,7 @@ export class AppModule implements NestModule {
         whitelist: true,
         transform: true,
       }),
-      new I18nValidationPipe(),
+      //new I18nValidationPipe(),
     );
 
     app.use(
