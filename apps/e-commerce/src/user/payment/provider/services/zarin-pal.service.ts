@@ -134,8 +134,8 @@ export class ZarinPalService implements PayInterface {
   }> {
     return {
       eligibleCheck: true,
-      titleMessage: null,
-      description: null,
+      titleMessage: 'پرداخت نقدی با زرین پال',
+      description: 'پرداخت مستقیم با تمامی کارت های عضو شتاب',
     };
   }
 
