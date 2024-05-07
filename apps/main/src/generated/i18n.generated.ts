@@ -10,10 +10,16 @@ export type I18nTranslations = {
         "not_found_slug": string;
         "the_given_slug_is_exists_before": string;
         "dont_access_to_this_file": string;
-        "validation": {
-            "is_not_empty": string;
-        };
         "success": string;
+    };
+    "validation": {
+        "NOT_EMPTY": string;
+        "INVALID_EMAIL": string;
+        "INVALID_BOOLEAN": string;
+        "MIN": string;
+        "MAX": string;
+        "STRING": string;
+        "NUMBER": string;
     };
 };
 /* prettier-ignore */

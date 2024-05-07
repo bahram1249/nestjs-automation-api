@@ -30,11 +30,14 @@ import { APP_GUARD } from '@nestjs/core';
 import {
   AcceptLanguageResolver,
   I18nModule,
+  I18nService,
+  I18nValidationExceptionFilter,
   I18nValidationPipe,
   QueryResolver,
 } from 'nestjs-i18n';
 import * as path from 'path';
 import { AppLanguageResolver } from '../i18nResolver/AppLanguageResolver';
+import { I18nTranslations } from '../generated/i18n.generated';
 
 @Module({
   imports: [
@@ -77,7 +80,7 @@ import { AppLanguageResolver } from '../i18nResolver/AppLanguageResolver';
     I18nModule.forRoot({
       fallbackLanguage: 'en',
       loaderOptions: {
-        path: [path.join(__dirname, '../../../i18n/')],
+        path: [path.join(__dirname, '/i18n/')],
         watch: true,
       },
       resolvers: [
@@ -108,6 +111,7 @@ export class AppModule implements NestModule {
   constructor(
     private readonly logger: DBLogger,
     private readonly config: ConfigService,
+    private readonly i18n: I18nService,
   ) {}
   app: NestExpressApplication;
   async configure(consumer: MiddlewareConsumer) {}
@@ -120,14 +124,21 @@ export class AppModule implements NestModule {
     app.enableVersioning({
       type: VersioningType.URI,
     });
-    app.useGlobalFilters(new HttpExceptionFilter(this.logger));
 
     app.useGlobalPipes(
-      new ValidationPipe({
-        whitelist: true,
+      // new ValidationPipe({
+      //   whitelist: true,
+      //   transform: true,
+      // }),
+      new I18nValidationPipe({
         transform: true,
+        whitelist: true,
       }),
-      //new I18nValidationPipe(),
+    );
+
+    app.useGlobalFilters(
+      //new I18nValidationExceptionFilter(),
+      new HttpExceptionFilter(this.logger),
     );
 
     app.use(

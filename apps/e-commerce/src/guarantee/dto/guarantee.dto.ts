@@ -13,20 +13,28 @@ import {
 import { i18nValidationMessage } from 'nestjs-i18n';
 
 export class GuaranteeDto {
-  @MinLength(3)
-  @MaxLength(256)
+  @MinLength(3, {
+    message: i18nValidationMessage<I18nTranslations>('validation.MIN'),
+  })
+  @MaxLength(256, {
+    message: i18nValidationMessage<I18nTranslations>('validation.MAX'),
+  })
   @IsNotEmpty({
-    message: i18nValidationMessage<I18nTranslations>(
-      'core.validation.is_not_empty',
-    ),
+    message: i18nValidationMessage<I18nTranslations>('validation.NOT_EMPTY'),
   })
   @AutoMap()
   name: string;
 
   @Transform(({ value }) => replaceCharacterSlug(value))
-  @MinLength(3)
-  @MaxLength(256)
-  @IsNotEmpty()
+  @MinLength(3, {
+    message: i18nValidationMessage<I18nTranslations>('validation.MIN'),
+  })
+  @MaxLength(256, {
+    message: i18nValidationMessage<I18nTranslations>('validation.MAX'),
+  })
+  @IsNotEmpty({
+    message: i18nValidationMessage<I18nTranslations>('validation.NOT_EMPTY'),
+  })
   @AutoMap()
   slug: string;
 
@@ -36,7 +44,9 @@ export class GuaranteeDto {
 
   @AutoMap()
   @IsOptional()
-  @IsString()
+  @IsString({
+    message: i18nValidationMessage<I18nTranslations>('validation.STRING'),
+  })
   @ApiProperty({
     required: true,
     type: String,
@@ -46,7 +56,9 @@ export class GuaranteeDto {
 
   @AutoMap()
   @IsOptional()
-  @IsString()
+  @IsString({
+    message: i18nValidationMessage<I18nTranslations>('validation.STRING'),
+  })
   @ApiProperty({
     required: true,
     type: String,
@@ -56,7 +68,9 @@ export class GuaranteeDto {
 
   @AutoMap()
   @IsOptional()
-  @IsString()
+  @IsString({
+    message: i18nValidationMessage<I18nTranslations>('validation.STRING'),
+  })
   @ApiProperty({
     required: true,
     type: String,

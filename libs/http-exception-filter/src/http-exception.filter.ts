@@ -6,8 +6,12 @@ import {
   HttpStatus,
 } from '@nestjs/common';
 import { DBLogger } from '@rahino/logger';
+import { I18nTranslations } from 'apps/main/src/generated/i18n.generated';
+import { ValidationError } from 'class-validator';
 import { Request, Response } from 'express';
 import * as _ from 'lodash';
+import { I18nContext, I18nService, I18nValidationError } from 'nestjs-i18n';
+import { formatI18nErrors } from 'nestjs-i18n/dist/utils';
 
 @Catch()
 export class HttpExceptionFilter implements ExceptionFilter {
@@ -53,6 +57,17 @@ export class HttpExceptionFilter implements ExceptionFilter {
       }
     }
 
+    const i18n = I18nContext.current();
+
+    const errors = formatI18nErrors(exception['errors'] ?? [], i18n.service, {
+      lang: i18n.lang,
+    });
+
+    const errMsg = [];
+    errors.forEach((error: ValidationError) => {
+      errMsg.push(...[...Object.values(error.constraints)]);
+    });
+
     // if the request send it to api
     response.status(status).json({
       statusCode: status,
@@ -60,12 +75,10 @@ export class HttpExceptionFilter implements ExceptionFilter {
         status == HttpStatus.INTERNAL_SERVER_ERROR
           ? 'Internal Server Error'
           : exception.message,
-      errors:
-        status == HttpStatus.BAD_REQUEST
-          ? exception.getResponse().valueOf()['message']
-          : [],
+      errors: status == HttpStatus.BAD_REQUEST ? errMsg : [],
       timestamp: new Date().toISOString(),
       path: request.url,
     });
+    //exception.getResponse().valueOf()['message']
   }
 }

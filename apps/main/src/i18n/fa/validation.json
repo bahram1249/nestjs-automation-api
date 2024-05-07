@@ -1,0 +1,9 @@
+{
+  "NOT_EMPTY": "{property} نمیتواند خالی باشد",
+  "INVALID_EMAIL": "ایمیل معتبر نیست",
+  "INVALID_BOOLEAN": "{property} باید از جنس بولین باشد",
+  "MIN": "{property} با مقدار: \"{value}\" باید بیشتر از {constraints.0} باشد",
+  "MAX": "{property} با مقدار: \"{value}\" باید کوچک تر از {constraints.0} باشد",
+  "STRING": "{property} باید یک متن باشد",
+  "NUMBER": "{property} باید یک عدد باشد"
+}
