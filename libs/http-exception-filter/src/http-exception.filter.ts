@@ -10,12 +10,32 @@ import { I18nTranslations } from 'apps/main/src/generated/i18n.generated';
 import { ValidationError } from 'class-validator';
 import { Request, Response } from 'express';
 import * as _ from 'lodash';
-import { I18nContext, I18nService, I18nValidationError } from 'nestjs-i18n';
-import { formatI18nErrors } from 'nestjs-i18n/dist/utils';
+import {
+  I18nContext,
+  I18nService,
+  I18nValidationError,
+  I18nValidationException,
+  I18nValidationExceptionFilterDetailedErrorsOption,
+  I18nValidationExceptionFilterErrorFormatterOption,
+} from 'nestjs-i18n';
+import {
+  formatI18nErrors,
+  mapChildrenToValidationErrors,
+} from 'nestjs-i18n/dist/utils';
+import iterate from 'iterare';
+
+type I18nValidationExceptionFilterOptions =
+  | I18nValidationExceptionFilterDetailedErrorsOption
+  | I18nValidationExceptionFilterErrorFormatterOption;
 
 @Catch()
 export class HttpExceptionFilter implements ExceptionFilter {
-  constructor(private readonly logger: DBLogger) {}
+  constructor(
+    private readonly logger: DBLogger,
+    private readonly options: I18nValidationExceptionFilterOptions = {
+      detailedErrors: false,
+    },
+  ) {}
   async catch(exception: HttpException, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
     const response = ctx.getResponse<Response>();
@@ -57,28 +77,103 @@ export class HttpExceptionFilter implements ExceptionFilter {
       }
     }
 
-    const i18n = I18nContext.current();
+    let errors;
+    let responseBody;
+    if (exception instanceof I18nValidationException) {
+      const i18n = I18nContext.current();
+      errors = formatI18nErrors(exception.errors ?? [], i18n.service, {
+        lang: i18n.lang,
+      });
+      let normalizedErrors = this.normalizeValidationErrors(errors);
+      responseBody = this.buildResponseBody(host, exception, normalizedErrors);
+    } else {
+      errors = exception.getResponse().valueOf()['message'];
+    }
 
-    const errors = formatI18nErrors(exception['errors'] ?? [], i18n.service, {
-      lang: i18n.lang,
-    });
+    if (responseBody) {
+      response
+        .status(this.options.errorHttpStatusCode || exception.getStatus())
+        .send(responseBody);
+    } else {
+      // if the request send it to api
+      response.status(status).json({
+        statusCode: status,
+        message:
+          status == HttpStatus.INTERNAL_SERVER_ERROR
+            ? 'Internal Server Error'
+            : exception.message,
+        errors:
+          status == HttpStatus.BAD_REQUEST
+            ? exception.getResponse().valueOf()['message']
+            : [exception.message],
+        timestamp: new Date().toISOString(),
+        path: request.url,
+      });
+    }
 
-    const errMsg = [];
-    errors.forEach((error: ValidationError) => {
-      errMsg.push(...[...Object.values(error.constraints)]);
-    });
-
-    // if the request send it to api
-    response.status(status).json({
-      statusCode: status,
-      message:
-        status == HttpStatus.INTERNAL_SERVER_ERROR
-          ? 'Internal Server Error'
-          : exception.message,
-      errors: status == HttpStatus.BAD_REQUEST ? errMsg : [],
-      timestamp: new Date().toISOString(),
-      path: request.url,
-    });
     //exception.getResponse().valueOf()['message']
+  }
+
+  private isWithErrorFormatter(
+    options: I18nValidationExceptionFilterOptions,
+  ): options is I18nValidationExceptionFilterErrorFormatterOption {
+    return 'errorFormatter' in options;
+  }
+
+  protected normalizeValidationErrors(
+    validationErrors: ValidationError[],
+  ): string[] | I18nValidationError[] | object {
+    if (
+      this.isWithErrorFormatter(this.options) &&
+      !('detailedErrors' in this.options)
+    )
+      return this.options.errorFormatter(validationErrors);
+
+    if (
+      !this.isWithErrorFormatter(this.options) &&
+      !this.options.detailedErrors
+    )
+      return this.flattenValidationErrors(validationErrors);
+
+    return validationErrors;
+  }
+
+  protected flattenValidationErrors(
+    validationErrors: ValidationError[],
+  ): string[] {
+    return iterate(validationErrors)
+      .map((error) => mapChildrenToValidationErrors(error))
+      .flatten()
+      .filter((item) => !!item.constraints)
+      .map((item) => Object.values(item.constraints))
+      .flatten()
+      .toArray();
+  }
+
+  protected buildResponseBody(
+    host: ArgumentsHost,
+    exc: I18nValidationException,
+    errors: string[] | I18nValidationError[] | object,
+  ) {
+    if ('responseBodyFormatter' in this.options) {
+      return this.options.responseBodyFormatter(host, exc, errors);
+    } else {
+      const ctx = host.switchToHttp();
+      const request = ctx.getRequest<Request>();
+      const status =
+        exc instanceof HttpException
+          ? exc.getStatus()
+          : HttpStatus.INTERNAL_SERVER_ERROR;
+      return {
+        statusCode: status,
+        message:
+          status == HttpStatus.INTERNAL_SERVER_ERROR
+            ? 'Internal Server Error'
+            : exc.message,
+        errors: status == HttpStatus.BAD_REQUEST ? errors : [],
+        timestamp: new Date().toISOString(),
+        path: request.url,
+      };
+    }
   }
 }

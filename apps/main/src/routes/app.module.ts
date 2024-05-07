@@ -38,6 +38,7 @@ import {
 import * as path from 'path';
 import { AppLanguageResolver } from '../i18nResolver/AppLanguageResolver';
 import { I18nTranslations } from '../generated/i18n.generated';
+import { CustomI18nValidationExceptionFilter } from '@rahino/http-exception-filter/custom-i18n-validation-exception.filter';
 
 @Module({
   imports: [
@@ -138,6 +139,8 @@ export class AppModule implements NestModule {
 
     app.useGlobalFilters(
       //new I18nValidationExceptionFilter(),
+      //new
+      //new CustomI18nValidationExceptionFilter(),
       new HttpExceptionFilter(this.logger),
     );
 
