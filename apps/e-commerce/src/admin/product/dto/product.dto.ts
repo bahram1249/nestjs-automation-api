@@ -27,7 +27,9 @@ export class ProductDto {
   @MaxLength(512, {
     message: i18nValidationMessage<I18nTranslations>('validation.MAX'),
   })
-  @IsNotEmpty()
+  @IsNotEmpty({
+    message: i18nValidationMessage<I18nTranslations>('validation.NOT_EMPTY'),
+  })
   title: string;
 
   @AutoMap()
@@ -47,21 +49,30 @@ export class ProductDto {
   slug: string;
 
   @AutoMap()
-  @IsNumber(null, {
-    message: i18nValidationMessage<I18nTranslations>('validation.NUMBER'),
-  })
+  @IsNumber(
+    {},
+    {
+      message: i18nValidationMessage<I18nTranslations>('validation.NUMBER'),
+    },
+  )
   entityTypeId: number;
 
   @AutoMap()
-  @IsNumber(null, {
-    message: i18nValidationMessage<I18nTranslations>('validation.NUMBER'),
-  })
+  @IsNumber(
+    {},
+    {
+      message: i18nValidationMessage<I18nTranslations>('validation.NUMBER'),
+    },
+  )
   publishStatusId: number;
 
   @AutoMap()
-  @IsNumber(null, {
-    message: i18nValidationMessage<I18nTranslations>('validation.NUMBER'),
-  })
+  @IsNumber(
+    {},
+    {
+      message: i18nValidationMessage<I18nTranslations>('validation.NUMBER'),
+    },
+  )
   @IsOptional()
   brandId?: number;
 
