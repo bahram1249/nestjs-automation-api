@@ -21,6 +21,7 @@ import { ConfigService } from '@nestjs/config';
 import { ECDiscountType } from '@rahino/database/models/ecommerce-eav/ec-discount-type.entity';
 import { parseValue } from '@rahino/commontools/functions/parse-value';
 import { ECStock } from '@rahino/database/models/ecommerce-eav/ec-stocks.entity';
+import { defaultValueIsNull } from '@rahino/commontools/functions/default-value-isnull';
 
 @Injectable()
 export class ApplyDiscountService {
@@ -509,8 +510,10 @@ export class ApplyDiscountService {
     stocks: ECStock[],
     discount: ECDiscount,
   ) {
-    const available = discount.limit - discount.used;
-    if (available < 0) {
+    const available =
+      defaultValueIsNull(discount.limit, 0) -
+      defaultValueIsNull(discount.used, 0);
+    if (discount.limit != null && available <= 0) {
       throw new BadRequestException('مجاز به استفاده از این کد تخفیف نیستید');
     }
     const promises = [];
@@ -528,7 +531,7 @@ export class ApplyDiscountService {
         'کد تخفیفی برای کالای های مورد نظر یافت نشد',
       );
     }
-    if (appliedItem > available) {
+    if (appliedItem > available && discount.limit != null) {
       throw new BadRequestException(
         'میزان استفاده از این کد تخفیف به اتمام رسیده است',
       );
