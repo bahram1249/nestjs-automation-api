@@ -15,43 +15,69 @@ import { ProductPhotoDto } from './product-photo.dto';
 import { ProductAttributeDto } from './product-attribute.dto';
 import { InventoryDto } from '@rahino/ecommerce/inventory/dto';
 import { ApiProperty } from '@nestjs/swagger';
+import { I18nTranslations } from 'apps/main/src/generated/i18n.generated';
+import { i18nValidationMessage } from 'nestjs-i18n';
 
 export class ProductDto {
   @AutoMap()
   @IsString()
-  @MinLength(3)
-  @MaxLength(512)
+  @MinLength(3, {
+    message: i18nValidationMessage<I18nTranslations>('validation.MIN'),
+  })
+  @MaxLength(512, {
+    message: i18nValidationMessage<I18nTranslations>('validation.MAX'),
+  })
   @IsNotEmpty()
   title: string;
 
   @AutoMap()
-  @MinLength(3)
-  @MaxLength(512)
-  @IsString()
-  @IsNotEmpty()
+  @MinLength(3, {
+    message: i18nValidationMessage<I18nTranslations>('validation.MIN'),
+  })
+  @MaxLength(512, {
+    message: i18nValidationMessage<I18nTranslations>('validation.MAX'),
+  })
+  @IsString({
+    message: i18nValidationMessage<I18nTranslations>('validation.STRING'),
+  })
+  @IsNotEmpty({
+    message: i18nValidationMessage<I18nTranslations>('validation.NOT_EMPTY'),
+  })
   @Transform(({ value }) => replaceCharacterSlug(value))
   slug: string;
 
   @AutoMap()
-  @IsNumber()
+  @IsNumber(null, {
+    message: i18nValidationMessage<I18nTranslations>('validation.NUMBER'),
+  })
   entityTypeId: number;
 
   @AutoMap()
-  @IsNumber()
+  @IsNumber(null, {
+    message: i18nValidationMessage<I18nTranslations>('validation.NUMBER'),
+  })
   publishStatusId: number;
 
   @AutoMap()
-  @IsNumber()
+  @IsNumber(null, {
+    message: i18nValidationMessage<I18nTranslations>('validation.NUMBER'),
+  })
   @IsOptional()
   brandId?: number;
 
   @AutoMap()
-  @IsString()
+  @IsString({
+    message: i18nValidationMessage<I18nTranslations>('validation.STRING'),
+  })
   @IsOptional()
   description?: string;
 
   @AutoMap()
-  @IsBoolean()
+  @IsBoolean({
+    message: i18nValidationMessage<I18nTranslations>(
+      'validation.INVALID_BOOLEAN',
+    ),
+  })
   @IsOptional()
   colorBased?: boolean;
 
@@ -69,7 +95,9 @@ export class ProductDto {
 
   @AutoMap()
   @IsOptional()
-  @IsString()
+  @IsString({
+    message: i18nValidationMessage<I18nTranslations>('validation.STRING'),
+  })
   @ApiProperty({
     required: true,
     type: String,
@@ -79,7 +107,9 @@ export class ProductDto {
 
   @AutoMap()
   @IsOptional()
-  @IsString()
+  @IsString({
+    message: i18nValidationMessage<I18nTranslations>('validation.STRING'),
+  })
   @ApiProperty({
     required: true,
     type: String,
@@ -89,7 +119,9 @@ export class ProductDto {
 
   @AutoMap()
   @IsOptional()
-  @IsString()
+  @IsString({
+    message: i18nValidationMessage<I18nTranslations>('validation.STRING'),
+  })
   @ApiProperty({
     required: true,
     type: String,
