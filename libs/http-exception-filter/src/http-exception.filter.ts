@@ -110,8 +110,6 @@ export class HttpExceptionFilter implements ExceptionFilter {
         path: request.url,
       });
     }
-
-    //exception.getResponse().valueOf()['message']
   }
 
   private isWithErrorFormatter(
