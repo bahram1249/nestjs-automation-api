@@ -77,17 +77,14 @@ export class HttpExceptionFilter implements ExceptionFilter {
       }
     }
 
-    let errors;
     let responseBody;
     if (exception instanceof I18nValidationException) {
       const i18n = I18nContext.current();
-      errors = formatI18nErrors(exception.errors ?? [], i18n.service, {
+      const errors = formatI18nErrors(exception.errors ?? [], i18n.service, {
         lang: i18n.lang,
       });
       let normalizedErrors = this.normalizeValidationErrors(errors);
       responseBody = this.buildResponseBody(host, exception, normalizedErrors);
-    } else {
-      errors = exception.getResponse().valueOf()['message'];
     }
 
     if (responseBody) {
