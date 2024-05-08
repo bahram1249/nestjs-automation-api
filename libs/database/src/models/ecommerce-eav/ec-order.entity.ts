@@ -12,6 +12,8 @@ import { ECOrderStatus } from './ec-order-status.entity';
 import { User } from '../core/user.entity';
 import { ECAddress } from './ec-address.entity';
 import { ECOrderDetail } from './ec-order-detail.entity';
+import { ECPayment } from './ec-payment-entity';
+import { ECPaymentGateway } from './ec-payment-gateway.entity';
 
 @Table({ tableName: 'ECOrders' })
 export class ECOrder extends Model {
@@ -117,5 +119,9 @@ export class ECOrder extends Model {
     type: DataType.BIGINT,
     allowNull: true,
   })
+  @ForeignKey(() => ECPayment)
   paymentId?: bigint;
+
+  @BelongsTo(() => ECPayment, { as: 'payment', foreignKey: 'paymentId' })
+  payment?: ECPayment;
 }

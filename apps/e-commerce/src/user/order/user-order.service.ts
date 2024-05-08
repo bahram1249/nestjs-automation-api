@@ -5,12 +5,15 @@ import { ECOrder } from '@rahino/database/models/ecommerce-eav/ec-order.entity';
 import { OrderQueryBuilder } from '@rahino/ecommerce/admin/utilOrder/service/order-query-builder.service';
 import { OrderStatusEnum } from '@rahino/ecommerce/util/enum';
 import { ListFilter } from '@rahino/query-filter';
+import { I18nTranslations } from 'apps/main/src/generated/i18n.generated';
+import { I18nContext, I18nService } from 'nestjs-i18n';
 
 @Injectable()
 export class UserOrderService {
   constructor(
     @InjectModel(ECOrder) private readonly repository: typeof ECOrder,
     private readonly orderQueryBuilder: OrderQueryBuilder,
+    private readonly i18n: I18nService<I18nTranslations>,
   ) {}
 
   async findAll(user: User, filter: ListFilter) {
@@ -25,6 +28,7 @@ export class UserOrderService {
     builder = builder
       .subQuery(true)
       .includeOrderStatus()
+      .includePaymentGateway()
       .addUserOrderDetails()
       .addOrderShipmentWay()
       .addAddress()
@@ -49,11 +53,16 @@ export class UserOrderService {
       .addOrderShipmentWay()
       .addAddress()
       .addUser()
+      .includePaymentGateway()
       .includeOrderStatus();
 
     const result = await this.repository.findOne(builder.build());
     if (!result) {
-      throw new NotFoundException('the item with this given id not founded!');
+      throw new NotFoundException(
+        this.i18n.t('core.not_found_id', {
+          lang: I18nContext.current().lang,
+        }),
+      );
     }
     return {
       result: result,

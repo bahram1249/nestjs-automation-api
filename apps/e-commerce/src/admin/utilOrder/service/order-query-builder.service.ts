@@ -13,6 +13,8 @@ import { ECOrderDetailStatus } from '@rahino/database/models/ecommerce-eav/ec-or
 import { ECOrderDetail } from '@rahino/database/models/ecommerce-eav/ec-order-detail.entity';
 import { ECOrderShipmentWay } from '@rahino/database/models/ecommerce-eav/ec-order-shipmentway.entity';
 import { ECOrderStatus } from '@rahino/database/models/ecommerce-eav/ec-order-status.entity';
+import { ECPayment } from '@rahino/database/models/ecommerce-eav/ec-payment-entity';
+import { ECPaymentGateway } from '@rahino/database/models/ecommerce-eav/ec-payment-gateway.entity';
 import { ECProduct } from '@rahino/database/models/ecommerce-eav/ec-product.entity';
 import { ECProvince } from '@rahino/database/models/ecommerce-eav/ec-province.entity';
 import { ECVendor } from '@rahino/database/models/ecommerce-eav/ec-vendor.entity';
@@ -385,6 +387,22 @@ export class OrderQueryBuilder {
       attributes: ['id', 'name'],
       model: ECOrderStatus,
       as: 'orderStatus',
+    });
+    return this;
+  }
+
+  includePaymentGateway() {
+    this.builder = this.builder.thenInlcude({
+      attributes: ['id', 'totalprice', 'paymentGatewayId'],
+      model: ECPayment,
+      as: 'payment',
+      include: [
+        {
+          attributes: ['id', 'name'],
+          model: ECPaymentGateway,
+          as: 'paymentGateway',
+        },
+      ],
     });
     return this;
   }
