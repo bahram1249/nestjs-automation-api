@@ -7,10 +7,14 @@ import { Path } from "nestjs-i18n";
 export type I18nTranslations = {
     "core": {
         "not_found_id": string;
+        "not_found_role": string;
         "not_found_slug": string;
         "the_given_slug_is_exists_before": string;
         "dont_access_to_this_file": string;
         "success": string;
+    };
+    "ecommerce": {
+        "user_exists_before": string;
     };
     "validation": {
         "NOT_EMPTY": string;

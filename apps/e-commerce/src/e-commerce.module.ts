@@ -47,6 +47,7 @@ import { PendingOrderModule } from './admin/pendingOrder/pending-order.module';
 import { PostageOrderModule } from './admin/postageOrder/postage-order.module';
 import { TotalOrderModule } from './admin/totalOrders/total-order.module';
 import { UserOrderModule } from './user/order/user-order.module';
+import { CourierModule } from './admin/courier/courier.module';
 
 @Module({
   imports: [
@@ -97,6 +98,7 @@ import { UserOrderModule } from './user/order/user-order.module';
     PostageOrderModule,
     TotalOrderModule,
     UserOrderModule,
+    CourierModule,
   ],
   providers: [
     {

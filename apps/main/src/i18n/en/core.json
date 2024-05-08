@@ -1,5 +1,6 @@
 {
   "not_found_id": "the item with this given id not founded !",
+  "not_found_role": "the role not founded !",
   "not_found_slug": "the item with this given slug not founded !",
   "the_given_slug_is_exists_before": "the item with this given slug is exists before",
   "dont_access_to_this_file": "You don't have access to this file !",
