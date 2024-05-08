@@ -74,6 +74,9 @@ export class EntityAttributeValueService {
         (entityAttribute) =>
           entityAttribute.id == valueBasedAttribute.attributeId,
       );
+      // if is exists in database but not existing in dto, it's mean new field created on same time
+      // so ignore the field
+      if (!findItem) continue;
       const attributeValue = await this.attributeValueRepository.findOne(
         new QueryOptionsBuilder()
           .filter({
