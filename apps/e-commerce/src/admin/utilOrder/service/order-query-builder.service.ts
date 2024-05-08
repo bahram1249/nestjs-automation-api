@@ -80,7 +80,7 @@ export class OrderQueryBuilder {
     return this;
   }
 
-  orderShipmentWay(orderShipmentWay: OrderShipmentwayEnum.post) {
+  orderShipmentWay(orderShipmentWay: OrderShipmentwayEnum) {
     this.builder = this.builder.filter({
       orderShipmentWayId: orderShipmentWay,
     });
