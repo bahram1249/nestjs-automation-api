@@ -12,6 +12,7 @@ import { ECNeighborhood } from '@rahino/database/models/ecommerce-eav/ec-neighbo
 import { ECOrderDetailStatus } from '@rahino/database/models/ecommerce-eav/ec-order-detail-status.entity';
 import { ECOrderDetail } from '@rahino/database/models/ecommerce-eav/ec-order-detail.entity';
 import { ECOrderShipmentWay } from '@rahino/database/models/ecommerce-eav/ec-order-shipmentway.entity';
+import { ECOrderStatus } from '@rahino/database/models/ecommerce-eav/ec-order-status.entity';
 import { ECProduct } from '@rahino/database/models/ecommerce-eav/ec-product.entity';
 import { ECProvince } from '@rahino/database/models/ecommerce-eav/ec-province.entity';
 import { ECVendor } from '@rahino/database/models/ecommerce-eav/ec-vendor.entity';
@@ -375,6 +376,15 @@ export class OrderQueryBuilder {
       attributes: ['id', 'name'],
       model: ECOrderShipmentWay,
       as: 'orderShipmentWay',
+    });
+    return this;
+  }
+
+  includeOrderStatus() {
+    this.builder = this.builder.thenInlcude({
+      attributes: ['id', 'name'],
+      model: ECOrderStatus,
+      as: 'orderStatus',
     });
     return this;
   }

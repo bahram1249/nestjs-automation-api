@@ -24,6 +24,7 @@ export class UserOrderService {
 
     builder = builder
       .subQuery(true)
+      .includeOrderStatus()
       .addUserOrderDetails()
       .addOrderShipmentWay()
       .addAddress()
@@ -47,7 +48,8 @@ export class UserOrderService {
       .addUserOrderDetails()
       .addOrderShipmentWay()
       .addAddress()
-      .addUser();
+      .addUser()
+      .includeOrderStatus();
 
     const result = await this.repository.findOne(builder.build());
     if (!result) {
