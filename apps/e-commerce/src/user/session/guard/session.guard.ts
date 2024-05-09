@@ -13,6 +13,9 @@ export class SessionGuard implements CanActivate {
     const session = request.headers['x-session-id'];
     // if session not provided
     if (!session) return false;
-    return await this.validateSessionService.validate(request, session);
+    return await this.validateSessionService.validateIgnoreUser(
+      request,
+      session,
+    );
   }
 }
