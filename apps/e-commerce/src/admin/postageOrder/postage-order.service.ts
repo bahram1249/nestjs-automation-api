@@ -13,6 +13,8 @@ import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builde
 import { Sequelize } from 'sequelize';
 import { Op } from 'sequelize';
 import { OrderUtilService } from '../utilOrder/service/order-util.service';
+import { I18nContext, I18nService } from 'nestjs-i18n';
+import { I18nTranslations } from 'apps/main/src/generated/i18n.generated';
 
 @Injectable()
 export class PostageOrderService {
@@ -21,6 +23,7 @@ export class PostageOrderService {
     private readonly repository: typeof ECOrder,
     private orderQueryBuilder: OrderQueryBuilder,
     private orderUtilService: OrderUtilService,
+    private readonly i18n: I18nService<I18nTranslations>,
   ) {}
 
   async findAll(user: User, filter: ListFilter) {
@@ -67,7 +70,11 @@ export class PostageOrderService {
 
     let result = await this.repository.findOne(builder.build());
     if (!result) {
-      throw new NotFoundException('the item with this given id not founded!');
+      throw new NotFoundException(
+        this.i18n.t('core.not_found_id', {
+          lang: I18nContext.current().lang,
+        }),
+      );
     }
     result = await this.orderUtilService.recalculateOrderPrices(result);
 
@@ -93,7 +100,11 @@ export class PostageOrderService {
         .build(),
     );
     if (!item) {
-      throw new NotFoundException('the item with this given id not founded!');
+      throw new NotFoundException(
+        this.i18n.t('core.not_found_id', {
+          lang: I18nContext.current().lang,
+        }),
+      );
     }
     item.orderStatusId = OrderStatusEnum.SendByPost;
     item.postReceipt = dto.postReceipt;

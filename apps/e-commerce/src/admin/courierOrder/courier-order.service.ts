@@ -77,7 +77,11 @@ export class CourierOrderService {
 
     let result = await this.repository.findOne(builder.build());
     if (!result) {
-      throw new NotFoundException('the item with this given id not founded!');
+      throw new NotFoundException(
+        this.i18n.t('core.not_found_id', {
+          lang: I18nContext.current().lang,
+        }),
+      );
     }
     result = await this.orderUtilService.recalculateOrderPrices(result);
 
