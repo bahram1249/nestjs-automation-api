@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { User } from '@rahino/database/models/core/user.entity';
 import { ECOrder } from '@rahino/database/models/ecommerce-eav/ec-order.entity';
@@ -8,26 +12,32 @@ import {
 } from '@rahino/ecommerce/util/enum';
 import { OrderQueryBuilder } from '../utilOrder/service/order-query-builder.service';
 import { ListFilter } from '@rahino/query-filter';
-import { PostProcessDto } from './dto';
+import { CourierProcessDto } from './dto';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import { Sequelize } from 'sequelize';
 import { Op } from 'sequelize';
 import { OrderUtilService } from '../utilOrder/service/order-util.service';
+import { I18nContext, I18nService } from 'nestjs-i18n';
+import { I18nTranslations } from 'apps/main/src/generated/i18n.generated';
+import { ECCourier } from '@rahino/database/models/ecommerce-eav/ec-courier.entity';
 
 @Injectable()
-export class PostageOrderService {
+export class CourierOrderService {
   constructor(
     @InjectModel(ECOrder)
     private readonly repository: typeof ECOrder,
+    @InjectModel(ECCourier)
+    private readonly courierRepository: typeof ECCourier,
     private orderQueryBuilder: OrderQueryBuilder,
     private orderUtilService: OrderUtilService,
+    private readonly i18n: I18nService<I18nTranslations>,
   ) {}
 
   async findAll(user: User, filter: ListFilter) {
     let builder = this.orderQueryBuilder;
     builder = builder
       .nonDeletedOrder()
-      .orderShipmentWay(OrderShipmentwayEnum.post)
+      .orderShipmentWay(OrderShipmentwayEnum.delivery)
       .addOrderStatus(OrderStatusEnum.OrderHasBeenProcessed)
       .search(filter.search);
 
@@ -58,7 +68,7 @@ export class PostageOrderService {
     builder = builder
       .nonDeletedOrder()
       .addOrderShipmentWay()
-      .orderShipmentWay(OrderShipmentwayEnum.post)
+      .orderShipmentWay(OrderShipmentwayEnum.delivery)
       .addOrderId(id)
       .addOrderStatus(OrderStatusEnum.OrderHasBeenProcessed)
       .addAdminOrderDetails()
@@ -76,12 +86,12 @@ export class PostageOrderService {
     };
   }
 
-  async processPost(orderId: bigint, user: User, dto: PostProcessDto) {
+  async processCourier(orderId: bigint, user: User, dto: CourierProcessDto) {
     let item = await this.repository.findOne(
       new QueryOptionsBuilder()
         .filter({ id: orderId })
         .filter({ orderStatusId: OrderStatusEnum.OrderHasBeenProcessed })
-        .filter({ orderShipmentWayId: OrderShipmentwayEnum.post })
+        .filter({ orderShipmentWayId: OrderShipmentwayEnum.delivery })
         .filter(
           Sequelize.where(
             Sequelize.fn('isnull', Sequelize.col('ECOrder.isDeleted'), 0),
@@ -93,11 +103,37 @@ export class PostageOrderService {
         .build(),
     );
     if (!item) {
-      throw new NotFoundException('the item with this given id not founded!');
+      throw new NotFoundException(
+        this.i18n.t('core.not_found_id', {
+          lang: I18nContext.current().lang,
+        }),
+      );
     }
-    item.orderStatusId = OrderStatusEnum.SendByPost;
-    item.postReceipt = dto.postReceipt;
+    const courier = await this.courierRepository.findOne(
+      new QueryOptionsBuilder()
+        .filter({ userId: dto.userId })
+        .filter(
+          Sequelize.where(
+            Sequelize.fn('isnull', Sequelize.col('ECCourier.isDeleted'), 0),
+            {
+              [Op.eq]: 0,
+            },
+          ),
+        )
+        .build(),
+    );
+    if (courier) {
+      throw new NotFoundException(
+        this.i18n.t('ecommerce.courier_not_found', {
+          lang: I18nContext.current().lang,
+        }),
+      );
+    }
+
+    item.orderStatusId = OrderStatusEnum.SendByCourier;
     item.deliveryDate = new Date();
+    item.courierUserId = dto.userId;
+
     item = await item.save();
     return {
       result: item,

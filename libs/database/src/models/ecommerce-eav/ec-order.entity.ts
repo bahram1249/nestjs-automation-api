@@ -124,4 +124,20 @@ export class ECOrder extends Model {
 
   @BelongsTo(() => ECPayment, { as: 'payment', foreignKey: 'paymentId' })
   payment?: ECPayment;
+
+  @Column({
+    type: DataType.BIGINT,
+    allowNull: true,
+  })
+  @ForeignKey(() => User)
+  courierUserId?: bigint;
+
+  @BelongsTo(() => User, { as: 'courierUser', foreignKey: 'courierUserId' })
+  courierUser?: User;
+
+  @Column({
+    type: DataType.DATE,
+    allowNull: true,
+  })
+  deliveryDate?: Date;
 }

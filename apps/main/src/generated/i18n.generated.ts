@@ -15,6 +15,7 @@ export type I18nTranslations = {
     };
     "ecommerce": {
         "user_exists_before": string;
+        "courier_not_found": string;
     };
     "validation": {
         "NOT_EMPTY": string;
