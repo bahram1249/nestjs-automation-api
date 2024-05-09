@@ -52,9 +52,11 @@ export class JahizanShipmentPrice implements ShipmentInteface {
             type: QueryTypes.SELECT,
           },
         );
-        const km = Math.floor(Number(result[0]['distance']));
+        const km = Math.ceil(Number(result[0]['distance']));
+        console.log(km);
         const price =
-          Number(baseCourierPrice.value) + km * Number(courierPriceByKilometer);
+          Number(baseCourierPrice.value) +
+          km * Number(courierPriceByKilometer.value);
         return { price: price, type: OrderShipmentwayEnum.delivery };
       }
     }
