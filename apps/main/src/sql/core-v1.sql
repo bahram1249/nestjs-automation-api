@@ -45,6 +45,15 @@ END
 
 GO
 
+CREATE FUNCTION dbo.fnCalcDistanceKM(@lat1 FLOAT = null, @lat2 FLOAT=null, @lon1 FLOAT=null, @lon2 FLOAT=null)  
+RETURNS FLOAT   
+AS  
+BEGIN  
+	IF(@lat1 IS NULL OR @lat2 IS NULL OR @lon1 IS NULL OR @lon2 IS NULL) RETURN 0;  
+	RETURN ACOS(SIN(PI()*@lat1/180.0)*SIN(PI()*@lat2/180.0)+COS(PI()*@lat1/180.0)*COS(PI()*@lat2/180.0)*COS(PI()*@lon2/180.0-PI()*@lon1/180.0))*6371  
+END  
+GO
+
 -- Core Tables
 
 IF NOT EXISTS ((SELECT 1 FROM Migrations WHERE version = 'CORE-Users-v1' 
@@ -3124,6 +3133,8 @@ BEGIN
 END
 
 GO
+
+
 
 
 
