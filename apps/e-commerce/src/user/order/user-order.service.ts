@@ -48,6 +48,7 @@ export class UserOrderService {
       .subQuery(true)
       .nonDeletedOrder()
       .addOnlyUser(user.id)
+      .addOrderId(id)
       .addNegativeOrderStatus(OrderStatusEnum.WaitingForPayment)
       .addUserOrderDetails()
       .addOrderShipmentWay()
