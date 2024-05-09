@@ -84,6 +84,7 @@ import { ECPaymentType } from './models/ecommerce-eav/ec-payment-type.entity';
 import { ECPayment } from './models/ecommerce-eav/ec-payment-entity';
 import { ECOrderDetail } from './models/ecommerce-eav/ec-order-detail.entity';
 import { Setting } from './models/core/setting.entity';
+import { ECCourier } from './models/ecommerce-eav/ec-courier.entity';
 
 @Module({
   imports: [
@@ -164,6 +165,7 @@ import { Setting } from './models/core/setting.entity';
           ECPaymentType,
           ECPayment,
           ECOrderDetail,
+          ECCourier,
           Buffet,
           BuffetGallery,
           BuffetType,
