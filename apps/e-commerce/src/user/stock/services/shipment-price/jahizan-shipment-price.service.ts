@@ -26,36 +26,39 @@ export class JahizanShipmentPrice implements ShipmentInteface {
     stockPrices: StockPriceInterface[],
     addressId?: bigint,
   ): Promise<{ type: OrderShipmentwayEnum; price: number }> {
-    const address = await this.addressRepository.findOne(
-      new QueryOptionsBuilder().filter({ id: addressId }).build(),
-    );
-    if (address.cityId == 215) {
-      const baseCourierPrice = await this.settingRepository.findOne(
-        new QueryOptionsBuilder()
-          .filter({ key: CourierPriceEnum.BASE_COURIER_PRICE })
-          .build(),
+    if (addressId) {
+      const address = await this.addressRepository.findOne(
+        new QueryOptionsBuilder().filter({ id: addressId }).build(),
       );
-      const courierPriceByKilometer = await this.settingRepository.findOne(
-        new QueryOptionsBuilder()
-          .filter({ key: CourierPriceEnum.COURIER_PRICE_BY_KILOMETRE })
-          .build(),
-      );
+      if (address.cityId == 215) {
+        const baseCourierPrice = await this.settingRepository.findOne(
+          new QueryOptionsBuilder()
+            .filter({ key: CourierPriceEnum.BASE_COURIER_PRICE })
+            .build(),
+        );
+        const courierPriceByKilometer = await this.settingRepository.findOne(
+          new QueryOptionsBuilder()
+            .filter({ key: CourierPriceEnum.COURIER_PRICE_BY_KILOMETRE })
+            .build(),
+        );
 
-      const result = await this.sequelize.query(
-        `SELECT dbo.fnCalcDistanceKM(:lat, 35.6547943591637, :long, 51.430869822087814) as distance`,
-        {
-          replacements: {
-            lat: address.latitude,
-            long: address.longitude,
+        const result = await this.sequelize.query(
+          `SELECT dbo.fnCalcDistanceKM(:lat, 35.6547943591637, :long, 51.430869822087814) as distance`,
+          {
+            replacements: {
+              lat: address.latitude,
+              long: address.longitude,
+            },
+            type: QueryTypes.SELECT,
           },
-          type: QueryTypes.SELECT,
-        },
-      );
-      const km = Math.floor(Number(result[0]['distance']));
-      const price =
-        Number(baseCourierPrice.value) + km * Number(courierPriceByKilometer);
-      return { price: price, type: OrderShipmentwayEnum.delivery };
+        );
+        const km = Math.floor(Number(result[0]['distance']));
+        const price =
+          Number(baseCourierPrice.value) + km * Number(courierPriceByKilometer);
+        return { price: price, type: OrderShipmentwayEnum.delivery };
+      }
     }
+
     return await this.postShipmentService.cal(stockPrices, addressId);
   }
 }

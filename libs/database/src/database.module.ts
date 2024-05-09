@@ -83,6 +83,7 @@ import { ECPaymentStatus } from './models/ecommerce-eav/ec-payment-status.entity
 import { ECPaymentType } from './models/ecommerce-eav/ec-payment-type.entity';
 import { ECPayment } from './models/ecommerce-eav/ec-payment-entity';
 import { ECOrderDetail } from './models/ecommerce-eav/ec-order-detail.entity';
+import { Setting } from './models/core/setting.entity';
 
 @Module({
   imports: [
@@ -109,6 +110,7 @@ import { ECOrderDetail } from './models/ecommerce-eav/ec-order-detail.entity';
           AttachmentType,
           Attachment,
           PermissionMenu,
+          Setting,
           WinstonLog,
           PersianDate,
           PCMPeriodType,
