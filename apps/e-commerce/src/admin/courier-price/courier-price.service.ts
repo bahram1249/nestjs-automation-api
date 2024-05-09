@@ -37,7 +37,7 @@ export class CourierPriceService {
         .filter({ key: CourierPriceEnum.BASE_COURIER_PRICE })
         .build(),
     );
-    baseCourierPrice.value = String(dto.BaseCourierPrice);
+    baseCourierPrice.value = String(dto.baseCourierPrice);
     baseCourierPrice = await baseCourierPrice.save();
 
     let courierPriceByKilometer = await this.repository.findOne(
@@ -45,13 +45,13 @@ export class CourierPriceService {
         .filter({ key: CourierPriceEnum.COURIER_PRICE_BY_KILOMETRE })
         .build(),
     );
-    courierPriceByKilometer.value = String(dto.CourierPriceByKilometre);
+    courierPriceByKilometer.value = String(dto.courierPriceByKilometre);
     courierPriceByKilometer = await courierPriceByKilometer.save();
 
     return {
       result: {
-        baseCourierPrice: dto.BaseCourierPrice,
-        courierPriceByKilometer: dto.CourierPriceByKilometre,
+        baseCourierPrice: dto.baseCourierPrice,
+        courierPriceByKilometer: dto.courierPriceByKilometre,
       },
     };
   }

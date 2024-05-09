@@ -9,12 +9,12 @@ export class CourierPriceDto {
     { message: i18nValidationMessage<I18nTranslations>('validation.NUMBER') },
   )
   @AutoMap()
-  BaseCourierPrice: number;
+  baseCourierPrice: number;
 
   @IsNumber(
     {},
     { message: i18nValidationMessage<I18nTranslations>('validation.NUMBER') },
   )
   @AutoMap()
-  CourierPriceByKilometre: number;
+  courierPriceByKilometre: number;
 }
