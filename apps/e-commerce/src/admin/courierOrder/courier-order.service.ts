@@ -126,7 +126,7 @@ export class CourierOrderService {
         )
         .build(),
     );
-    if (courier) {
+    if (!courier) {
       throw new NotFoundException(
         this.i18n.t('ecommerce.courier_not_found', {
           lang: I18nContext.current().lang,
