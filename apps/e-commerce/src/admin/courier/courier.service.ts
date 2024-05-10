@@ -15,7 +15,7 @@ import { I18nTranslations } from 'apps/main/src/generated/i18n.generated';
 import { InjectMapper } from 'automapper-nestjs';
 import { Mapper } from 'automapper-core';
 import { UserCourierDto } from './dto/user-courier-dto';
-import _ from 'lodash';
+import * as _ from 'lodash';
 import { UserRoleService } from '@rahino/core/admin/user-role/user-role.service';
 import { Role } from '@rahino/database/models/core/role.entity';
 
