@@ -197,7 +197,7 @@ export class CourierService {
       );
     }
     await this.userRoleService.removeRoleFromUser(role, user);
-
+    item.isDeleted = true;
     item = await item.save();
 
     return {
