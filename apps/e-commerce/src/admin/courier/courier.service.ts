@@ -57,6 +57,10 @@ export class CourierService {
             'lastname',
             'username',
             'phoneNumber',
+            [
+              Sequelize.literal("user.firstname + ' ' + user.lastname"),
+              'fullName',
+            ],
           ],
         },
       ])
@@ -82,6 +86,10 @@ export class CourierService {
             'lastname',
             'username',
             'phoneNumber',
+            [
+              Sequelize.literal("user.firstname + ' ' + user.lastname"),
+              'fullName',
+            ],
           ],
         },
       ])
