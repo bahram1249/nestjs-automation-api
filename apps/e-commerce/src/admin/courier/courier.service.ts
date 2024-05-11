@@ -58,7 +58,12 @@ export class CourierService {
             'username',
             'phoneNumber',
             [
-              Sequelize.literal("user.firstname + ' ' + user.lastname"),
+              Sequelize.fn(
+                'CONCAT',
+                Sequelize.col('user.firstname'),
+                ' ',
+                Sequelize.col('user.lastname'),
+              ),
               'fullName',
             ],
           ],
@@ -87,7 +92,12 @@ export class CourierService {
             'username',
             'phoneNumber',
             [
-              Sequelize.literal("user.firstname + ' ' + user.lastname"),
+              Sequelize.fn(
+                'CONCAT',
+                Sequelize.col('user.firstname'),
+                ' ',
+                Sequelize.col('user.lastname'),
+              ),
               'fullName',
             ],
           ],
