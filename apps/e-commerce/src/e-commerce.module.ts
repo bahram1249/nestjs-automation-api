@@ -50,6 +50,7 @@ import { UserOrderModule } from './user/order/user-order.module';
 import { CourierModule } from './admin/courier/courier.module';
 import { CourierPriceModule } from './admin/courier-price/courier-price.module';
 import { CourierOrderModule } from './admin/courierOrder/courier-order.module';
+import { DeliveryOrderModule } from './admin/deliveryOrder/delivery-order.module';
 
 @Module({
   imports: [
@@ -103,6 +104,7 @@ import { CourierOrderModule } from './admin/courierOrder/courier-order.module';
     CourierModule,
     CourierPriceModule,
     CourierOrderModule,
+    DeliveryOrderModule,
   ],
   providers: [
     {

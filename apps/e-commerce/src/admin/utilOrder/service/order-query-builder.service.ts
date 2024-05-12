@@ -120,6 +120,11 @@ export class OrderQueryBuilder {
     return this;
   }
 
+  addOnlyCourier(userId: bigint) {
+    this.builder = this.builder.filter({ courierUserId: userId });
+    return this;
+  }
+
   addAdminOrderDetails(vendors?: number[]) {
     let includeBuilder = new IncludeOptionsBuilder({
       model: ECOrderDetail,

@@ -140,4 +140,16 @@ export class ECOrder extends Model {
     allowNull: true,
   })
   deliveryDate?: Date;
+
+  @Column({
+    type: DataType.DATE,
+    allowNull: true,
+  })
+  sendToCustomerDate?: Date;
+
+  @Column({
+    type: DataType.BIGINT,
+    allowNull: true,
+  })
+  sendToCustomerBy?: bigint;
 }

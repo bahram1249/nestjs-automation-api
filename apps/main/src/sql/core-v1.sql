@@ -2943,6 +2943,25 @@ END
 
 GO
 
+-- ec-orders
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ec-orders-v7' 
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'SITE_NAME' AND [value] IN ('ecommerce'))
+		)
+BEGIN
+
+	ALTER TABLE ECOrders
+	ADD sendToCustomerDate datetime null,
+		sendToCustomerBy bigint null
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'ec-orders-v7', GETDATE(), GETDATE()
+END
+
+GO
+
 -- ec-order-details
 IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ec-order-details-v1' 
 			)
