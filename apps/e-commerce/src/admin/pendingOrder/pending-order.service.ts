@@ -51,10 +51,10 @@ export class PendingOrderService {
 
     builder = builder
       .subQuery(true)
-      .addAdminOrderDetails([filter.vendorId])
-      .addOrderShipmentWay()
-      .addAddress()
-      .addUser()
+      .includeAdminOrderDetails([filter.vendorId])
+      .includeOrderShipmentWay()
+      .includeAddress()
+      .includeUser()
       .limit(filter.limit)
       .offset(filter.offset)
       .order({ orderBy: filter.orderBy, sortOrder: filter.sortOrder });
@@ -82,12 +82,12 @@ export class PendingOrderService {
     builder = builder
       .nonDeletedOrder()
       .addOrderId(id)
-      .addOrderShipmentWay()
+      .includeOrderShipmentWay()
       .addOrderStatus(OrderStatusEnum.Paid)
       .addOnlyVendor([filter.vendorId])
-      .addAdminOrderDetails([filter.vendorId])
-      .addAddress()
-      .addUser();
+      .includeAdminOrderDetails([filter.vendorId])
+      .includeAddress()
+      .includeUser();
 
     let result = await this.repository.findOne(builder.build());
     if (!result) {

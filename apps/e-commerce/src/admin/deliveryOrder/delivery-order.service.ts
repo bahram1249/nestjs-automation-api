@@ -41,10 +41,10 @@ export class DeliveryOrderService {
 
     builder = builder
       .subQuery(true)
-      .addOrderShipmentWay()
-      .addAdminOrderDetails()
-      .addAddress()
-      .addUser()
+      .includeOrderShipmentWay()
+      .includeAdminOrderDetails()
+      .includeAddress()
+      .includeUser()
       .offset(filter.offset)
       .limit(filter.limit)
       .order({ orderBy: filter.orderBy, sortOrder: filter.sortOrder });
@@ -65,13 +65,13 @@ export class DeliveryOrderService {
 
     builder = builder
       .nonDeletedOrder()
-      .addOrderShipmentWay()
+      .includeOrderShipmentWay()
       .orderShipmentWay(OrderShipmentwayEnum.delivery)
       .addOrderId(id)
       .addOrderStatus(OrderStatusEnum.SendByCourier)
-      .addAdminOrderDetails()
-      .addAddress()
-      .addUser();
+      .includeAdminOrderDetails()
+      .includeAddress()
+      .includeUser();
 
     if (!isSuperAdmin) {
       builder = builder.addOnlyCourier(user.id);
@@ -98,13 +98,13 @@ export class DeliveryOrderService {
     let builder = this.orderQueryBuilder;
     builder = builder
       .nonDeletedOrder()
-      .addOrderShipmentWay()
+      .includeOrderShipmentWay()
       .orderShipmentWay(OrderShipmentwayEnum.delivery)
       .addOrderId(orderId)
       .addOrderStatus(OrderStatusEnum.SendByCourier)
-      .addAdminOrderDetails()
-      .addAddress()
-      .addUser();
+      .includeAdminOrderDetails()
+      .includeAddress()
+      .includeUser();
 
     if (!isSuperAdmin) {
       builder = builder.addOnlyCourier(user.id);

@@ -59,16 +59,16 @@ export class TotalOrderService {
     const count = await this.repository.count(builder.build());
 
     if (isSuperAdmin) {
-      builder = builder.addAdminOrderDetails();
+      builder = builder.includeAdminOrderDetails();
     } else {
-      builder = builder.addAdminOrderDetails(vendorIds);
+      builder = builder.includeAdminOrderDetails(vendorIds);
     }
 
     builder = builder
       .subQuery(true)
-      .addOrderShipmentWay()
-      .addAddress()
-      .addUser()
+      .includeOrderShipmentWay()
+      .includeAddress()
+      .includeUser()
       .offset(filter.offset)
       .limit(filter.limit)
       .order({ orderBy: filter.orderBy, sortOrder: filter.sortOrder });
@@ -91,18 +91,18 @@ export class TotalOrderService {
     if (!isSuperAdmin) {
       builder = builder
         .addOnlyVendor(vendorIds)
-        .addAdminOrderDetails(vendorIds);
+        .includeAdminOrderDetails(vendorIds);
     } else {
-      builder = builder.addAdminOrderDetails();
+      builder = builder.includeAdminOrderDetails();
     }
 
     builder = builder
       .nonDeletedOrder()
-      .addOrderShipmentWay()
+      .includeOrderShipmentWay()
       .addOrderId(id)
       .addNegativeOrderStatus(OrderStatusEnum.WaitingForPayment)
-      .addAddress()
-      .addUser();
+      .includeAddress()
+      .includeUser();
 
     let result = await this.repository.findOne(builder.build());
     if (!result) {

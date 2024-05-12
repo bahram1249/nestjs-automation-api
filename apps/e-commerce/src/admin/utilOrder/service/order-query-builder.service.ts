@@ -125,7 +125,7 @@ export class OrderQueryBuilder {
     return this;
   }
 
-  addAdminOrderDetails(vendors?: number[]) {
+  includeAdminOrderDetails(vendors?: number[]) {
     let includeBuilder = new IncludeOptionsBuilder({
       model: ECOrderDetail,
       as: 'details',
@@ -240,7 +240,7 @@ export class OrderQueryBuilder {
     return this;
   }
 
-  addUserOrderDetails() {
+  includeUserOrderDetails() {
     let includeBuilder = new IncludeOptionsBuilder({
       model: ECOrderDetail,
       as: 'details',
@@ -330,7 +330,7 @@ export class OrderQueryBuilder {
     return this;
   }
 
-  addAddress() {
+  includeAddress() {
     this.builder = this.builder.thenInlcude({
       attributes: [
         'id',
@@ -369,7 +369,7 @@ export class OrderQueryBuilder {
     return this;
   }
 
-  addUser() {
+  includeUser() {
     this.builder = this.builder.thenInlcude({
       attributes: ['id', 'firstname', 'lastname', 'username', 'phoneNumber'],
       model: User,
@@ -378,7 +378,7 @@ export class OrderQueryBuilder {
     return this;
   }
 
-  addOrderShipmentWay() {
+  includeOrderShipmentWay() {
     this.builder = this.builder.thenInlcude({
       attributes: ['id', 'name'],
       model: ECOrderShipmentWay,

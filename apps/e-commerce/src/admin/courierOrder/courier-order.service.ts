@@ -45,10 +45,10 @@ export class CourierOrderService {
 
     builder = builder
       .subQuery(true)
-      .addOrderShipmentWay()
-      .addAdminOrderDetails()
-      .addAddress()
-      .addUser()
+      .includeOrderShipmentWay()
+      .includeAdminOrderDetails()
+      .includeAddress()
+      .includeUser()
       .offset(filter.offset)
       .limit(filter.limit)
       .order({ orderBy: filter.orderBy, sortOrder: filter.sortOrder });
@@ -67,13 +67,13 @@ export class CourierOrderService {
 
     builder = builder
       .nonDeletedOrder()
-      .addOrderShipmentWay()
+      .includeOrderShipmentWay()
       .orderShipmentWay(OrderShipmentwayEnum.delivery)
       .addOrderId(id)
       .addOrderStatus(OrderStatusEnum.OrderHasBeenProcessed)
-      .addAdminOrderDetails()
-      .addAddress()
-      .addUser();
+      .includeAdminOrderDetails()
+      .includeAddress()
+      .includeUser();
 
     let result = await this.repository.findOne(builder.build());
     if (!result) {
