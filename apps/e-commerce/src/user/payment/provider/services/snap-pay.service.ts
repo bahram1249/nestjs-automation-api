@@ -36,8 +36,7 @@ export class SnapPayService implements PayInterface {
     private readonly config: ConfigService,
     private readonly revertInventoryQtyService: RevertInventoryQtyService,
   ) {
-    this.baseUrl =
-      'https://fms-gateway-staging.apps.public.okd4.teh-1.snappcloud.io';
+    this.baseUrl = 'https://api.snapppay.ir';
   }
 
   async requestPayment(
