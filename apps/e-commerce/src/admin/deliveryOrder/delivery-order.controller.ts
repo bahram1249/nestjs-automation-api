@@ -64,7 +64,7 @@ export class DeliveryOrderController {
 
   @ApiOperation({ description: 'change order to customer' })
   @CheckPermission({
-    permissionSymbol: 'ecommerce.admin.deliveryorders.processcourier',
+    permissionSymbol: 'ecommerce.admin.deliveryorders.processdeliver',
   })
   @Patch('/processDelivery/:id')
   @HttpCode(HttpStatus.OK)
