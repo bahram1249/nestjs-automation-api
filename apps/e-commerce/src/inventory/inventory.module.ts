@@ -11,7 +11,6 @@ import {
   DecreaseInventoryService,
   InventoryService,
   InventoryValidationService,
-  RevertInventoryQtyService,
   inventoryStatusService,
 } from './services';
 import { ECInventory } from '@rahino/database/models/ecommerce-eav/ec-inventory.entity';
@@ -34,6 +33,8 @@ import {
 import { ECPayment } from '@rahino/database/models/ecommerce-eav/ec-payment-entity';
 import { ECOrder } from '@rahino/database/models/ecommerce-eav/ec-order.entity';
 import { RevertInventoryQtyProcessor } from './processor/revert-inventory-qty.processor';
+import { PaymentServiceProviderModule } from '../user/payment/provider/payment-provider.module';
+import { RevertInventoryModule } from './revert-inventory.module';
 
 @Module({
   imports: [
@@ -73,6 +74,8 @@ import { RevertInventoryQtyProcessor } from './processor/revert-inventory-qty.pr
     BullModule.registerQueue({
       name: REVERT_INVENTORY_QTY_QUEUE,
     }),
+    PaymentServiceProviderModule,
+    RevertInventoryModule,
   ],
   providers: [
     InventoryValidationService,
@@ -82,7 +85,6 @@ import { RevertInventoryQtyProcessor } from './processor/revert-inventory-qty.pr
     ProductInventoryStatusProcessor,
     DecreaseInventoryService,
     DecreaseInventoryProcessor,
-    RevertInventoryQtyService,
     RevertInventoryQtyProcessor,
   ],
   exports: [
@@ -90,7 +92,6 @@ import { RevertInventoryQtyProcessor } from './processor/revert-inventory-qty.pr
     InventoryService,
     inventoryStatusService,
     DecreaseInventoryService,
-    RevertInventoryQtyService,
   ],
 })
 export class InventoryModule {}

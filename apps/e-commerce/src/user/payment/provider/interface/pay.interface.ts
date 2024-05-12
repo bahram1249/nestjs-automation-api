@@ -20,4 +20,6 @@ export interface PayInterface {
     titleMessage?: string;
     description?: string;
   }>;
+
+  eligbleToRevert(paymentId: bigint): Promise<boolean>;
 }

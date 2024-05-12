@@ -10,7 +10,6 @@ import { ECOrderDetail } from '@rahino/database/models/ecommerce-eav/ec-order-de
 import {
   BadRequestException,
   InternalServerErrorException,
-  NotImplementedException,
 } from '@nestjs/common';
 import { ECPaymentGateway } from '@rahino/database/models/ecommerce-eav/ec-payment-gateway.entity';
 import { InjectModel } from '@nestjs/sequelize';
@@ -36,6 +35,9 @@ export class ZarinPalService implements PayInterface {
   ) {
     this.baseUrl = 'https://api.zarinpal.com';
     //this.baseUrl = 'https://sandbox.zarinpal.com';
+  }
+  async eligbleToRevert(paymentId: bigint): Promise<boolean> {
+    return true;
   }
   async requestPayment(
     totalPrice: number,
@@ -211,6 +213,15 @@ export class ZarinPalService implements PayInterface {
             },
           },
         );
+      } else {
+        payment = (
+          await this.paymentRepository.update(
+            { paymentStatusId: PaymentStatusEnum.FailedPayment },
+            { where: { id: payment.id }, returning: true },
+          )
+        )[1][0];
+        // revert qty
+        await this.revertInventoryQtyService.revertQty(payment.id);
       }
     }
     const frontUrl = this.config.get('BASE_FRONT_URL');

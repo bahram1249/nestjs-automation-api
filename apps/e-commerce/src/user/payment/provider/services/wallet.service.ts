@@ -7,6 +7,9 @@ import { ECOrderDetail } from '@rahino/database/models/ecommerce-eav/ec-order-de
 
 export class WalletService implements PayInterface {
   constructor() {}
+  async eligbleToRevert(paymentId: bigint): Promise<boolean> {
+    return true;
+  }
   async requestPayment(
     totalPrice: number,
     discountAmount: number,

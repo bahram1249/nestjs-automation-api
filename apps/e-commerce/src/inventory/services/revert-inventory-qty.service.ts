@@ -1,8 +1,4 @@
-import {
-  BadRequestException,
-  Injectable,
-  InternalServerErrorException,
-} from '@nestjs/common';
+import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { ECInventory } from '@rahino/database/models/ecommerce-eav/ec-inventory.entity';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';

@@ -6,12 +6,12 @@ import { SequelizeModule } from '@nestjs/sequelize';
 import { ECPaymentGateway } from '@rahino/database/models/ecommerce-eav/ec-payment-gateway.entity';
 import { ECPayment } from '@rahino/database/models/ecommerce-eav/ec-payment-entity';
 import { ECOrder } from '@rahino/database/models/ecommerce-eav/ec-order.entity';
-import { InventoryModule } from '@rahino/ecommerce/inventory/inventory.module';
 import { PaymentServiceManualProviderFactory } from './factory/payment-service-manual-provider.factory';
+import { RevertInventoryModule } from '@rahino/ecommerce/inventory/revert-inventory.module';
 
 @Module({
   imports: [
-    InventoryModule,
+    RevertInventoryModule,
     SequelizeModule.forFeature([ECPaymentGateway, ECPayment, ECOrder]),
   ],
   providers: [

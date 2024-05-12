@@ -11,6 +11,7 @@ import {
   PaymentTypeEnum,
 } from '@rahino/ecommerce/util/enum';
 import { Op, Sequelize } from 'sequelize';
+import { PaymentServiceManualProviderFactory } from '@rahino/ecommerce/user/payment/provider/factory/payment-service-manual-provider.factory';
 
 @Processor(REVERT_INVENTORY_QTY_QUEUE)
 export class RevertInventoryQtyProcessor extends WorkerHost {
@@ -19,6 +20,7 @@ export class RevertInventoryQtyProcessor extends WorkerHost {
     @InjectModel(ECPayment)
     private readonly paymentRepository: typeof ECPayment,
     private readonly revertInventoryQtyService: RevertInventoryQtyService,
+    private readonly paymentServiceManualProviderFactory: PaymentServiceManualProviderFactory,
   ) {
     super();
   }
@@ -29,7 +31,7 @@ export class RevertInventoryQtyProcessor extends WorkerHost {
     }
     const paymentId = job.data.paymentId;
     try {
-      const payment = await this.paymentRepository.findOne(
+      let payment = await this.paymentRepository.findOne(
         new QueryOptionsBuilder()
           .filter({ id: paymentId })
           .filter({ paymentStatusId: PaymentStatusEnum.WaitingForPayment })
@@ -45,7 +47,22 @@ export class RevertInventoryQtyProcessor extends WorkerHost {
           .build(),
       );
       if (payment) {
-        await this.revertInventoryQtyService.revertQty(paymentId);
+        const paymentService =
+          await this.paymentServiceManualProviderFactory.create(
+            payment.paymentGatewayId,
+          );
+        const eligbleToRevert = await paymentService.eligbleToRevert(
+          payment.id,
+        );
+        if (eligbleToRevert) {
+          await this.revertInventoryQtyService.revertQty(paymentId);
+          payment = (
+            await this.paymentRepository.update(
+              { paymentStatusId: PaymentStatusEnum.FailedPayment },
+              { where: { id: payment.id }, returning: true },
+            )
+          )[1][0];
+        }
       }
     } catch (error) {
       return Promise.reject(paymentId);

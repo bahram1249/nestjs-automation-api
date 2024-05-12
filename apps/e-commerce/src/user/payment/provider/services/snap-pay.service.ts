@@ -293,11 +293,29 @@ export class SnapPayService implements PayInterface {
           },
         );
         if (result.data.successful != true) {
+          payment = (
+            await this.paymentRepository.update(
+              { paymentStatusId: PaymentStatusEnum.FailedPayment },
+              { where: { id: payment.id }, returning: true },
+            )
+          )[1][0];
+          // revert qty
+          await this.revertInventoryQtyService.revertQty(payment.id);
+
           throw new BadRequestException('invalid payment');
         }
         if (
           result.data.response.transactionId != payment.transactionId.toString()
         ) {
+          payment = (
+            await this.paymentRepository.update(
+              { paymentStatusId: PaymentStatusEnum.FailedPayment },
+              { where: { id: payment.id }, returning: true },
+            )
+          )[1][0];
+          // revert qty
+          await this.revertInventoryQtyService.revertQty(payment.id);
+
           throw new BadRequestException('invalid payment');
         }
         const finalRequest = await axios.post(
@@ -344,6 +362,111 @@ export class SnapPayService implements PayInterface {
       301,
       frontUrl + `/payment/transaction?transactionId=${payment.id}`,
     );
+  }
+
+  async eligbleToRevert(paymentId: bigint): Promise<boolean> {
+    const paymentGateway = await this.paymentGateway.findOne(
+      new QueryOptionsBuilder()
+        .filter({ serviceName: 'SnapPayService' })
+        .filter(
+          Sequelize.where(
+            Sequelize.fn('isnull', Sequelize.col('isDeleted'), 0),
+            {
+              [Op.eq]: 0,
+            },
+          ),
+        )
+        .build(),
+    );
+    if (!paymentGateway) {
+      throw new BadRequestException('invalid payment');
+    }
+
+    let payment = await this.paymentRepository.findOne(
+      new QueryOptionsBuilder()
+        .filter({ paymentGatewayId: paymentGateway.id })
+        .filter({ id: paymentId })
+        .filter({ paymentStatusId: PaymentStatusEnum.WaitingForPayment })
+        .build(),
+    );
+    if (!payment) {
+      throw new BadRequestException('invalid payment');
+    }
+    const token = await this.generateToken(paymentGateway);
+
+    const statusRequest = await axios.get(
+      this.baseUrl +
+        `/api/online/payment/v1/status?paymentToken=${payment.paymentToken}`,
+      {
+        headers: {
+          Authorization: 'Bearer ' + token,
+        },
+        timeout: 60000,
+      },
+    );
+    if (statusRequest.data.successful == false) {
+      return true;
+    }
+
+    const result = await axios.post(
+      this.baseUrl + '/api/online/payment/v1/verify',
+      {
+        paymentToken: payment.paymentToken,
+      },
+      {
+        headers: {
+          Authorization: 'Bearer ' + token,
+        },
+        timeout: 60000,
+      },
+    );
+    if (result.data.successful != true) {
+      return true;
+    }
+    if (
+      result.data.response.transactionId != payment.transactionId.toString()
+    ) {
+      return true;
+    }
+    const finalRequest = await axios.post(
+      this.baseUrl + '/api/online/payment/v1/settle',
+      {
+        paymentToken: payment.paymentToken,
+      },
+      {
+        headers: {
+          Authorization: 'Bearer ' + token,
+        },
+        timeout: 60000,
+      },
+    );
+    if (finalRequest.data.successful == true) {
+      payment = (
+        await this.paymentRepository.update(
+          { paymentStatusId: PaymentStatusEnum.SuccessPayment },
+          {
+            where: {
+              id: payment.id,
+            },
+            returning: true,
+          },
+        )
+      )[1][0];
+      await this.orderRepository.update(
+        {
+          orderStatusId: OrderStatusEnum.Paid,
+          transactionId: payment.transactionId,
+          paymentId: payment.id,
+        },
+        {
+          where: {
+            id: payment.orderId,
+          },
+        },
+      );
+      return false;
+    }
+    return true;
   }
 
   async update(
