@@ -1,5 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { I18nTranslations } from 'apps/main/src/generated/i18n.generated';
 import { IsNumber, IsOptional, IsString } from 'class-validator';
+import { i18nValidationMessage } from 'nestjs-i18n';
 
 export class StockPriceDto {
   @IsOptional()
@@ -8,11 +10,15 @@ export class StockPriceDto {
     type: Number,
     description: 'addressId',
   })
-  @IsNumber()
+  @IsNumber(null, {
+    message: i18nValidationMessage<I18nTranslations>('validation.NUMBER'),
+  })
   addressId?: bigint;
 
   @IsOptional()
-  @IsString()
+  @IsString({
+    message: i18nValidationMessage<I18nTranslations>('validation.STRING'),
+  })
   @ApiProperty({
     required: false,
     description: 'couponCode',

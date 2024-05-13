@@ -256,6 +256,14 @@ export class BrandService {
   async findBySlug(slug: string) {
     const item = await this.repository.findOne(
       new QueryOptionsBuilder()
+        .attributes([
+          'id',
+          'name',
+          'slug',
+          'metaTitle',
+          'metaKeywords',
+          'metaDescription',
+        ])
         .include([
           {
             attributes: ['id', 'fileName'],
@@ -279,14 +287,7 @@ export class BrandService {
       throw new NotFoundException('the item with this given slug not founded!');
     }
     return {
-      result: _.pick(item, [
-        'id',
-        'name',
-        'slug',
-        'metaTitle',
-        'metaKeywords',
-        'metaDescription',
-      ]),
+      result: item,
     };
   }
 

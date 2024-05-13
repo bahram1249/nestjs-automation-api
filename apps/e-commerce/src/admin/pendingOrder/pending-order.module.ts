@@ -8,12 +8,18 @@ import { Permission } from '@rahino/database/models/core/permission.entity';
 import { ECOrder } from '@rahino/database/models/ecommerce-eav/ec-order.entity';
 import { UtilOrderModule } from '../utilOrder/util-order.module';
 import { ECOrderDetail } from '@rahino/database/models/ecommerce-eav/ec-order-detail.entity';
+import { SmsModule } from '@rahino/sms/sms.module';
+import { MeliPayamakService } from '@rahino/sms/services/melipayamak.servie';
 
 @Module({
   imports: [
     UserVendorModule,
     SequelizeModule.forFeature([User, Permission, ECOrder, ECOrderDetail]),
     UtilOrderModule,
+    SmsModule.register({
+      token: 'sms',
+      smsProvider: new MeliPayamakService(),
+    }),
   ],
   controllers: [PendingOrderController],
   providers: [PendingOrderService],

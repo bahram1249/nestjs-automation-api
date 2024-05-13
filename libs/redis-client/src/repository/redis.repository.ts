@@ -60,4 +60,14 @@ export class RedisRepository
   async hgetall(key: string) {
     return await this.redisClient.hgetall(key);
   }
+
+  async removeKeysByPattern(pattern: string) {
+    // maybe block
+    const keys = await this.redisClient.keys(pattern);
+    var pipeline = this.redisClient.pipeline();
+    keys.forEach(function (key) {
+      pipeline.del(key);
+    });
+    return await pipeline.exec();
+  }
 }

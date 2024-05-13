@@ -15,6 +15,7 @@ export class VerifyDto {
 
   @IsString()
   @IsOptional()
+  @Matches(new RegExp('^(?!undefined).*$'))
   @ApiProperty({
     required: false,
     type: IsString,
@@ -25,6 +26,7 @@ export class VerifyDto {
 
   @IsString()
   @IsOptional()
+  @Matches(new RegExp('^(?!undefined).*$'))
   @ApiProperty({
     required: false,
     type: IsString,

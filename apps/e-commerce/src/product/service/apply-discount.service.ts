@@ -54,7 +54,7 @@ export class ApplyDiscountService {
   async applyInventory(product: ECProduct, inventory: ECInventory) {
     // 15 minutes
     const expire = this.config.get<number>('EXPIRE_DISCOUNT') || 900;
-    const key = `product:${product.id}::inventory:${inventory.id}`;
+    const key = `discount::product:${product.id}::inventory:${inventory.id}`;
     const foundItem = await this.redisRepository.hgetall(key);
     // not yet read it before
     if (Object.keys(foundItem).length === 0) {
@@ -182,6 +182,7 @@ export class ApplyDiscountService {
         expire,
       );
     }
+
     if (inventory.firstPrice) {
       inventory.firstPrice = await this._applyDiscountPrice(
         inventory.firstPrice,
@@ -202,6 +203,12 @@ export class ApplyDiscountService {
     discountApplied?: DiscountInterface,
   ) {
     if (discountApplied == null) {
+      inventoryPrice.set('appliedDiscount', null);
+      return inventoryPrice;
+    }
+    // if we get elapsed time discounts, only cache !!! not apllied to price
+    const now = new Date();
+    if (discountApplied.startDate > now || discountApplied.endDate < now) {
       inventoryPrice.set('appliedDiscount', null);
       return inventoryPrice;
     }
@@ -644,9 +651,14 @@ export class ApplyDiscountService {
                 Sequelize.fn('getdate'),
               ),
               Sequelize.fn(
-                'isnull',
-                Sequelize.col('ECDiscount.endDate'),
-                Sequelize.fn('getdate'),
+                'dateadd',
+                Sequelize.literal('minute'),
+                Sequelize.literal('15'),
+                Sequelize.fn(
+                  'isnull',
+                  Sequelize.col('ECDiscount.endDate'),
+                  Sequelize.fn('getdate'),
+                ),
               ),
             ],
           }),

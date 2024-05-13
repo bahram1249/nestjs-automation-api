@@ -185,7 +185,9 @@ export class SnapPayService implements PayInterface {
         paymentId: payment.id,
       };
     } catch (error) {
-      throw new InternalServerErrorException('something failed in payment');
+      console.log(error);
+      console.log(error.response.data.errorData);
+      throw new InternalServerErrorException(error.message);
     }
   }
 
@@ -394,40 +396,49 @@ export class SnapPayService implements PayInterface {
     }
     const token = await this.generateToken(paymentGateway);
 
-    const statusRequest = await axios.get(
-      this.baseUrl +
-        `/api/online/payment/v1/status?paymentToken=${payment.paymentToken}`,
-      {
-        headers: {
-          Authorization: 'Bearer ' + token,
+    try {
+      const statusRequest = await axios.get(
+        this.baseUrl +
+          `/api/online/payment/v1/status?paymentToken=${payment.paymentToken}`,
+        {
+          headers: {
+            Authorization: 'Bearer ' + token,
+          },
+          timeout: 60000,
         },
-        timeout: 60000,
-      },
-    );
-    if (statusRequest.data.successful == false) {
+      );
+      if (statusRequest.data.successful == false) {
+        return true;
+      }
+    } catch {
       return true;
     }
 
-    const result = await axios.post(
-      this.baseUrl + '/api/online/payment/v1/verify',
-      {
-        paymentToken: payment.paymentToken,
-      },
-      {
-        headers: {
-          Authorization: 'Bearer ' + token,
+    try {
+      const result = await axios.post(
+        this.baseUrl + '/api/online/payment/v1/verify',
+        {
+          paymentToken: payment.paymentToken,
         },
-        timeout: 60000,
-      },
-    );
-    if (result.data.successful != true) {
+        {
+          headers: {
+            Authorization: 'Bearer ' + token,
+          },
+          timeout: 60000,
+        },
+      );
+      if (result.data.successful != true) {
+        return true;
+      }
+      if (
+        result.data.response.transactionId != payment.transactionId.toString()
+      ) {
+        return true;
+      }
+    } catch {
       return true;
     }
-    if (
-      result.data.response.transactionId != payment.transactionId.toString()
-    ) {
-      return true;
-    }
+
     const finalRequest = await axios.post(
       this.baseUrl + '/api/online/payment/v1/settle',
       {

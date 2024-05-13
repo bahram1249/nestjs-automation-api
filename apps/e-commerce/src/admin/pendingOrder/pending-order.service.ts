@@ -1,5 +1,6 @@
 import {
   ForbiddenException,
+  Inject,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
@@ -18,6 +19,8 @@ import { ECOrderDetail } from '@rahino/database/models/ecommerce-eav/ec-order-de
 import { UserVendorService } from '@rahino/ecommerce/user/vendor/user-vendor.service';
 import { OrderQueryBuilder } from '../utilOrder/service/order-query-builder.service';
 import { OrderUtilService } from '../utilOrder/service/order-util.service';
+import { SmsService } from '@rahino/sms/sms.service';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class PendingOrderService {
@@ -29,6 +32,9 @@ export class PendingOrderService {
     private readonly userVendorService: UserVendorService,
     private orderQueryBuilder: OrderQueryBuilder,
     private orderUtilService: OrderUtilService,
+    @Inject('sms')
+    private readonly smsService: SmsService,
+    private readonly config: ConfigService,
   ) {}
 
   async findAll(user: User, filter: GetOrderDto) {
@@ -159,6 +165,14 @@ export class PendingOrderService {
       );
       order.orderStatusId = OrderStatusEnum.OrderHasBeenProcessed;
       order = await order.save();
+
+      // sms here
+
+      await this.smsService.sendMessage({
+        text: `${order.id}`,
+        to: user.phoneNumber,
+        bodyId: this.config.get('ECOMMERCE_PROCESSED_SMS_CODE'),
+      });
     }
 
     return {
