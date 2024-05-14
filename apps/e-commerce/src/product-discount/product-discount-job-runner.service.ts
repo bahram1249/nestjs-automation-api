@@ -23,10 +23,10 @@ export class ProductDiscountJobRunnerService {
       {
         removeOnComplete: true,
         //delay: delay,
-        // backoff: {
-        //   delay: 10000, //3600000,
-        //   type: 'fixed',
-        // },
+        backoff: {
+          delay: 600000, //3600000,
+          type: 'fixed',
+        },
         repeat: {
           pattern: '*/15 * * * *',
         },

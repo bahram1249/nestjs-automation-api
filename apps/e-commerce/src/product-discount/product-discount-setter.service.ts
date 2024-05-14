@@ -53,7 +53,6 @@ export class ProductDiscountSetterService {
     let finalDiscountList: ECDiscount[] = Array.from(discounts).sort(
       (item) => item.priority,
     );
-    console.log(discounts);
 
     let discountApplied: DiscountInterface = null;
 
