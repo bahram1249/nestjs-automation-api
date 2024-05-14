@@ -10,9 +10,12 @@ export class StockPriceDto {
     type: Number,
     description: 'addressId',
   })
-  @IsNumber(null, {
-    message: i18nValidationMessage<I18nTranslations>('validation.NUMBER'),
-  })
+  @IsNumber(
+    {},
+    {
+      message: i18nValidationMessage<I18nTranslations>('validation.NUMBER'),
+    },
+  )
   addressId?: bigint;
 
   @IsOptional()
