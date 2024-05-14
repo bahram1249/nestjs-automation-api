@@ -1,4 +1,9 @@
 {
   "user_exists_before": "کاربر مورد نظر از قبل موجود میباشد",
-  "courier_not_found": "پیک یافت نشد"
+  "courier_not_found": "پیک یافت نشد",
+  "address_name": "یک نام آدرس وارد بفرمایید مانند: خانه",
+  "address_street": "آدرس را به صورت کامل بنویسید",
+  "address_plaque": "یک پلاک وارد بفرمایید",
+  "address_floor": "یک طبقه وارد بفرمایید",
+  "address_postalcode": "یک کد پستی وارد بفرمایید"
 }

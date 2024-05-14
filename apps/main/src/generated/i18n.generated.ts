@@ -16,6 +16,11 @@ export type I18nTranslations = {
     "ecommerce": {
         "user_exists_before": string;
         "courier_not_found": string;
+        "address_name": string;
+        "address_street": string;
+        "address_plaque": string;
+        "address_floor": string;
+        "address_postalcode": string;
     };
     "validation": {
         "NOT_EMPTY": string;
