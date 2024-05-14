@@ -69,6 +69,12 @@ export class ProductQueryBuilderService {
       });
     // .filter({ inventoryStatusId: InventoryStatusEnum.available });
 
+    if (filter.inventoryStatusId) {
+      queryBuilder = queryBuilder.filter({
+        inventoryStatusId: filter.inventoryStatusId,
+      });
+    }
+
     if (slug) {
       queryBuilder = queryBuilder.filter({ slug: slug });
     }

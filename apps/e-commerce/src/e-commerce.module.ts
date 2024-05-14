@@ -51,6 +51,8 @@ import { CourierModule } from './admin/courier/courier.module';
 import { CourierPriceModule } from './admin/courier-price/courier-price.module';
 import { CourierOrderModule } from './admin/courierOrder/courier-order.module';
 import { DeliveryOrderModule } from './admin/deliveryOrder/delivery-order.module';
+import { ProductDiscountModule } from './product-discount/product-discount.module';
+import { ProductDiscountJobRunnerService } from './product-discount/product-discount-job-runner.service';
 
 @Module({
   imports: [
@@ -105,6 +107,7 @@ import { DeliveryOrderModule } from './admin/deliveryOrder/delivery-order.module
     CourierPriceModule,
     CourierOrderModule,
     DeliveryOrderModule,
+    ProductDiscountModule,
   ],
   providers: [
     {
@@ -133,5 +136,6 @@ export class ECommerceModule implements NestModule {
     SwaggerModule.setup('api/ecommerce', this.app, coreDocument);
 
     app.get(ProductImageRemovalService).run();
+    app.get(ProductDiscountJobRunnerService).run();
   }
 }

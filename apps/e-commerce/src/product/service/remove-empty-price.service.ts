@@ -1,6 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { ECProduct } from '@rahino/database/models/ecommerce-eav/ec-product.entity';
 
+/*
+when we filtering based price
+product return it self but some inventories have no price
+*/
 @Injectable()
 export class RemoveEmptyPriceService {
   constructor() {}

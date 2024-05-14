@@ -6,6 +6,7 @@ import { ColorFilterDto } from './color-filter.dto';
 import { VendorFilterDto } from './vendor-filter.dto';
 import { AttributeFilterDto } from './attribute.filter.dto';
 import { InventoryFilterDto } from './inventory-filter.dto';
+import { InventoryStatusDto } from './inventory-status.dto';
 
 export class GetUnPriceDto extends IntersectionType(
   ListFilter,
@@ -15,4 +16,5 @@ export class GetUnPriceDto extends IntersectionType(
   VendorFilterDto,
   InventoryFilterDto,
   AttributeFilterDto,
+  InventoryStatusDto,
 ) {}

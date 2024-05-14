@@ -2255,6 +2255,28 @@ END
 GO
 
 
+
+-- ecommerce inventories
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ecommerce-inventories-v2' 
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'SITE_NAME' AND [value] IN ('ecommerce'))
+		)
+BEGIN
+
+	ALTER TABLE ECInventories
+		ADD discountTypeId int null,
+			discountStartDate datetime null,
+			discountEndDate datetime null
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'ecommerce-inventories-v2', GETDATE(), GETDATE()
+END
+
+GO
+
+
 -- ecommerce inventory-prices
 IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ecommerce-inventory-prices-v1' 
 			)

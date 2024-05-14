@@ -594,7 +594,7 @@ export class ApplyDiscountService {
     return { inventory, applied };
   }
 
-  private async _findSingleInventoryDiscount(
+  public async _findSingleInventoryDiscount(
     product: ECProduct,
     inventory: ECInventory,
     discount: ECDiscount,

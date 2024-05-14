@@ -198,4 +198,20 @@ export class ECInventory extends Model {
     },
   })
   secondaryPrice?: ECInventoryPrice;
+
+  @Column({
+    type: DataType.INTEGER,
+    allowNull: true,
+  })
+  discountTypeId?: number;
+  @Column({
+    type: DataType.DATE,
+    allowNull: true,
+  })
+  discountStartDate?: Date;
+  @Column({
+    type: DataType.DATE,
+    allowNull: true,
+  })
+  discountEndDate?: Date;
 }
