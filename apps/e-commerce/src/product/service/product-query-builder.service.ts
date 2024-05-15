@@ -422,6 +422,41 @@ export class ProductQueryBuilderService {
       });
     }
 
+    if (filter.discountTypeId != null) {
+      const discountTypeFiltered = Sequelize.literal(
+        `EXISTS (
+            SELECT 1
+            FROM ECInventories AS ECI
+            WHERE [ECProduct].id = [ECI].productId
+              AND ISNULL([ECI].isDeleted, 0) = 0
+              AND ECI.inventoryStatusId = ${InventoryStatusEnum.available}
+              AND ECI.discountTypeId = ${filter.discountTypeId}
+              AND getdate() between isnull(ECI.discountStartDate, getdate())
+                AND isnull(ECI.discountEndDate, getdate())
+            )`.replaceAll(/\s\s+/g, ' '),
+      );
+      queryBuilder = queryBuilder.filter(discountTypeFiltered);
+      queryResultBuilder = queryResultBuilder.filter(discountTypeFiltered);
+      inventoryIncludeBuilder
+        .filter({ discountTypeId: filter.discountTypeId })
+        .filter(
+          Sequelize.where(Sequelize.fn('getdate'), {
+            [Op.between]: [
+              Sequelize.fn(
+                'isnull',
+                Sequelize.col('inventories.discountStartDate'),
+                Sequelize.fn('getdate'),
+              ),
+              Sequelize.fn(
+                'isnull',
+                Sequelize.col('inventories.discountEndDate'),
+                Sequelize.fn('getdate'),
+              ),
+            ],
+          }),
+        );
+    }
+
     if (filter.vendorId) {
       // AND [ECI].inventoryStatusId = ${InventoryStatusEnum.available}
       const vendorFiltered = Sequelize.literal(
@@ -479,6 +514,7 @@ export class ProductQueryBuilderService {
           'inventoryStatusId',
           'publishStatusId',
           'viewCount',
+          'lastPrice',
         ];
     if (slug) {
       resultQueryAttributes.push('description');
