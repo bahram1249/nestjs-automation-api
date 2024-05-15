@@ -60,16 +60,16 @@ export class StockController {
     return await this.service.price(session, body, user);
   }
 
-  @UseGuards(OptionalJwtGuard, SessionGuard)
-  @ApiOperation({ description: 'show stock by given id' })
-  @Get('/:id')
-  @HttpCode(HttpStatus.OK)
-  async findById(
-    @GetECSession() session: ECUserSession,
-    @Param('id') entityId: bigint,
-  ) {
-    return await this.service.findById(session, entityId);
-  }
+  // @UseGuards(OptionalJwtGuard, SessionGuard)
+  // @ApiOperation({ description: 'show stock by given id' })
+  // @Get('/:id')
+  // @HttpCode(HttpStatus.OK)
+  // async findById(
+  //   @GetECSession() session: ECUserSession,
+  //   @Param('id') entityId: bigint,
+  // ) {
+  //   return await this.service.findById(session, entityId);
+  // }
 
   @UseGuards(OptionalJwtGuard, SessionGuard)
   @ApiOperation({ description: 'set new stock' })
