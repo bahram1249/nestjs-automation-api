@@ -35,6 +35,8 @@ export class PendingOrderService {
     @Inject('sms')
     private readonly smsService: SmsService,
     private readonly config: ConfigService,
+    @InjectModel(User)
+    private readonly userRepository: typeof User,
   ) {}
 
   async findAll(user: User, filter: GetOrderDto) {
@@ -167,12 +169,19 @@ export class PendingOrderService {
       order = await order.save();
 
       // sms here
-
-      await this.smsService.sendMessage({
-        text: `${order.id}`,
-        to: user.phoneNumber,
-        bodyId: this.config.get('ECOMMERCE_PROCESSED_SMS_CODE'),
-      });
+      const activeSms = await this.config.get(
+        'ECOMMERCE_PROCESSED_SMS_CODE_STATUS',
+      );
+      if (activeSms == true) {
+        const userPaid = await this.userRepository.findOne(
+          new QueryOptionsBuilder().filter({ id: order.userId }).build(),
+        );
+        await this.smsService.sendMessage({
+          text: `${order.id}`,
+          to: userPaid.phoneNumber,
+          bodyId: this.config.get('ECOMMERCE_PROCESSED_SMS_CODE'),
+        });
+      }
     }
 
     return {
