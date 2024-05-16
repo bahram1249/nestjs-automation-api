@@ -344,21 +344,7 @@ export class VendorService {
       );
 
       const variationPrices = await this.variationPriceRepository.findAll(
-        new QueryOptionsBuilder()
-          .filter(
-            Sequelize.where(
-              Sequelize.fn(
-                'isnull',
-                Sequelize.col('ECVariationPrice.required'),
-                0,
-              ),
-              {
-                [Op.eq]: 1,
-              },
-            ),
-          )
-          .transaction(transaction)
-          .build(),
+        new QueryOptionsBuilder().transaction(transaction).build(),
       );
 
       if (variationPrices.length > 0) {
@@ -673,21 +659,7 @@ export class VendorService {
       )[1][0];
 
       const variationPrices = await this.variationPriceRepository.findAll(
-        new QueryOptionsBuilder()
-          .filter(
-            Sequelize.where(
-              Sequelize.fn(
-                'isnull',
-                Sequelize.col('ECVariationPrice.required'),
-                0,
-              ),
-              {
-                [Op.eq]: 1,
-              },
-            ),
-          )
-          .transaction(transaction)
-          .build(),
+        new QueryOptionsBuilder().transaction(transaction).build(),
       );
 
       if (variationPrices.length > 0) {
