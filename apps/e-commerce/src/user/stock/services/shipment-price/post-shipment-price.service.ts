@@ -17,7 +17,11 @@ export class PostShipmentPriceService implements ShipmentInteface {
   async cal(
     stockPrices: StockPriceInterface[],
     addressId?: bigint,
-  ): Promise<{ type: OrderShipmentwayEnum; price: number }> {
+  ): Promise<{
+    type: OrderShipmentwayEnum;
+    price: number;
+    realShipmentPrice: number;
+  }> {
     const weights = stockPrices.map((stock) => stock.weight);
     const totalWeight = weights.reduce((prev, current) => prev + current, 0);
     let postageFee = await this.postageFeeRepository.findOne(
@@ -39,9 +43,40 @@ export class PostShipmentPriceService implements ShipmentInteface {
           .build(),
       );
     }
+
+    const calfreeWeight = stockPrices.map((stock) =>
+      stock.freeShipment ? 0 : stock.weight,
+    );
+    const calFreetotalWeight = calfreeWeight.reduce(
+      (prev, current) => prev + current,
+      0,
+    );
+    let calFreePostageFee = await this.postageFeeRepository.findOne(
+      new QueryOptionsBuilder()
+        .filter(
+          Sequelize.where(Sequelize.literal(`${calFreetotalWeight}`), {
+            [Op.between]: [
+              Sequelize.col('ECPostageFee.fromWeight'),
+              Sequelize.col('ECPostageFee.toWeight'),
+            ],
+          }),
+        )
+        .build(),
+    );
+    if (!calFreePostageFee) {
+      calFreePostageFee = await this.postageFeeRepository.findOne(
+        new QueryOptionsBuilder()
+          .order({ orderBy: 'id', sortOrder: 'DESC' })
+          .build(),
+      );
+    }
     return {
       type: OrderShipmentwayEnum.post,
-      price: Number(postageFee.allProvincePrice),
+      price:
+        calFreetotalWeight == 0
+          ? 0
+          : Number(calFreePostageFee.allProvincePrice),
+      realShipmentPrice: Number(postageFee.allProvincePrice),
     };
   }
 }

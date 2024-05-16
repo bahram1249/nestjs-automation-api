@@ -81,6 +81,7 @@ export class DiscountService {
         'isActive',
         'startDate',
         'endDate',
+        'freeShipment',
       ])
       .include([
         {
@@ -127,6 +128,7 @@ export class DiscountService {
         'isActive',
         'startDate',
         'endDate',
+        'freeShipment',
       ])
       .include([
         {
@@ -283,6 +285,7 @@ export class DiscountService {
         'isActive',
         'startDate',
         'endDate',
+        'freeShipment',
       ])
       .filter({
         id: entityId,
@@ -319,6 +322,7 @@ export class DiscountService {
         'isActive',
         'startDate',
         'endDate',
+        'freeShipment',
       ]),
     };
   }

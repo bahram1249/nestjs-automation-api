@@ -40,6 +40,12 @@ export class ECOrder extends Model {
   totalShipmentPrice?: bigint;
 
   @Column({
+    type: DataType.BIGINT,
+    allowNull: true,
+  })
+  realShipmentPrice?: bigint;
+
+  @Column({
     type: DataType.INTEGER,
     allowNull: true,
   })

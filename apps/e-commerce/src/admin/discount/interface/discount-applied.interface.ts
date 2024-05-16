@@ -8,4 +8,5 @@ export interface DiscountAppliedInterface {
   newPrice: number;
   startDate?: Date;
   endDate?: Date;
+  freeShipment?: boolean;
 }

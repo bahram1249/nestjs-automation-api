@@ -5,5 +5,9 @@ export interface ShipmentInteface {
   cal(
     stockPrices: StockPriceInterface[],
     addressId?: bigint,
-  ): Promise<{ type: OrderShipmentwayEnum; price: number }>;
+  ): Promise<{
+    type: OrderShipmentwayEnum;
+    price: number;
+    realShipmentPrice: number;
+  }>;
 }

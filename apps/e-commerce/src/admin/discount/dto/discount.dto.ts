@@ -76,4 +76,9 @@ export class DiscountDto {
   @IsDateString()
   @IsOptional()
   endDate?: Date;
+
+  @AutoMap()
+  @IsBoolean()
+  @IsOptional()
+  freeShipment?: boolean;
 }

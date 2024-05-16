@@ -7,4 +7,5 @@ export interface DiscountInterface {
   discountTypeName: string;
   startDate?: Date;
   endDate?: Date;
+  freeShipment?: boolean;
 }

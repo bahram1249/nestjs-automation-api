@@ -242,6 +242,7 @@ export class ApplyDiscountService {
       maxValue: discountApplied.maxValue,
       startDate: discountApplied.startDate,
       endDate: discountApplied.endDate,
+      freeShipment: discountApplied.freeShipment,
     });
 
     return inventoryPrice;
@@ -278,6 +279,7 @@ export class ApplyDiscountService {
         discountTypeName: discount.discountType.name,
         startDate: discount.startDate,
         endDate: discount.endDate,
+        freeShipment: discount.freeShipment,
       };
     }
     return discountApplied;
@@ -338,6 +340,7 @@ export class ApplyDiscountService {
         discountTypeName: discount.discountType.name,
         startDate: discount.startDate,
         endDate: discount.endDate,
+        freeShipment: discount.freeShipment,
       };
     }
     return discountApplied;

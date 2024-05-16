@@ -25,7 +25,11 @@ export class JahizanShipmentPrice implements ShipmentInteface {
   async cal(
     stockPrices: StockPriceInterface[],
     addressId?: bigint,
-  ): Promise<{ type: OrderShipmentwayEnum; price: number }> {
+  ): Promise<{
+    type: OrderShipmentwayEnum;
+    price: number;
+    realShipmentPrice: number;
+  }> {
     if (addressId) {
       const address = await this.addressRepository.findOne(
         new QueryOptionsBuilder().filter({ id: addressId }).build(),
@@ -53,11 +57,24 @@ export class JahizanShipmentPrice implements ShipmentInteface {
           },
         );
         const km = Math.ceil(Number(result[0]['distance']));
-        console.log(km);
+
+        const freeShipmnetCount = stockPrices.filter(
+          (stockPrice) => stockPrice.freeShipment == true,
+        ).length;
+        let shipmentPrice: boolean = null;
+        if (freeShipmnetCount == stockPrices.length) {
+          shipmentPrice = true;
+        }
+
         const price =
           Number(baseCourierPrice.value) +
           km * Number(courierPriceByKilometer.value);
-        return { price: price, type: OrderShipmentwayEnum.delivery };
+        const applyShipmentPrice = shipmentPrice ? 0 : price;
+        return {
+          price: applyShipmentPrice,
+          type: OrderShipmentwayEnum.delivery,
+          realShipmentPrice: price,
+        };
       }
     }
 

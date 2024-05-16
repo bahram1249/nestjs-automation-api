@@ -184,6 +184,7 @@ export class PaymentService {
         totalDiscount,
         totalProductPrice,
         shipment.price,
+        shipment.realShipmentPrice,
         shipment.type,
         session.id,
         user.id,
@@ -295,6 +296,7 @@ export class PaymentService {
     totalDiscount: number,
     totalProductPrice: number,
     totalShipmentPrice: number,
+    realShipmentPrice: number,
     shipmentWay: OrderShipmentwayEnum,
     sessionId: string,
     userId: bigint,
@@ -307,6 +309,7 @@ export class PaymentService {
         totalProductPrice: totalProductPrice,
         totalDiscountFee: totalDiscount,
         totalShipmentPrice: totalShipmentPrice,
+        realShipmentPrice: realShipmentPrice,
         orderShipmentWayId: shipmentWay,
         // total price after discount and multiple by qty + shipment
         totalPrice: totalPrice + totalShipmentPrice,

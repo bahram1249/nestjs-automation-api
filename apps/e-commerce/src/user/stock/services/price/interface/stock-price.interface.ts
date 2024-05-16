@@ -15,6 +15,7 @@ export interface StockPriceInterface {
   discountFeePerItem?: number;
   discountFee?: number;
   totalProductPrice?: number;
+  freeShipment?: boolean;
   qty?: number;
   error?: number;
   weight?: number;

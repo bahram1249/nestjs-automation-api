@@ -151,4 +151,11 @@ export class ECDiscount extends Model {
     as: 'conditions',
   })
   conditions?: ECDiscountCondition[];
+
+  @AutoMap()
+  @Column({
+    type: DataType.BOOLEAN,
+    allowNull: true,
+  })
+  freeShipment?: boolean;
 }

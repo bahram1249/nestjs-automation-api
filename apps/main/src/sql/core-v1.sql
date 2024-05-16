@@ -2554,6 +2554,26 @@ END
 GO
 
 
+
+-- ec-discounts-v2
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ec-discounts-v2' 
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'SITE_NAME' AND [value] IN ('ecommerce'))
+		)
+BEGIN
+
+	ALTER TABLE ECDiscounts
+		ADD freeShipment bit null
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'ec-discounts-v2', GETDATE(), GETDATE()
+END
+
+GO
+
+
 -- ec-discount-condition-types-v1
 IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ec-discount-condition-types-v1' 
 			)
@@ -2984,6 +3004,24 @@ END
 
 GO
 
+
+-- ec-orders
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ec-orders-v8' 
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'SITE_NAME' AND [value] IN ('ecommerce'))
+		)
+BEGIN
+
+	ALTER TABLE ECOrders
+		ADD realShipmentPrice bigint null
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'ec-orders-v8', GETDATE(), GETDATE()
+END
+
+GO
 -- ec-order-details
 IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ec-order-details-v1' 
 			)
