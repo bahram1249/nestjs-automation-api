@@ -1,5 +1,6 @@
 import { AutoMap } from 'automapper-classes';
 import {
+  IsArray,
   IsNotEmpty,
   IsNumber,
   IsObject,
@@ -15,6 +16,7 @@ import { VendorUserDto } from './vendor-user.dto';
 import { replaceCharacterSlug } from '@rahino/commontools';
 import { Transform } from 'class-transformer';
 import { ApiProperty } from '@nestjs/swagger';
+import { CommissionDto } from './commission.dto';
 
 export class VendorDto {
   @MinLength(3)
@@ -78,4 +80,7 @@ export class VendorDto {
     description: 'metaDescription',
   })
   public metaDescription?: string;
+
+  @IsArray()
+  commissions: CommissionDto[];
 }

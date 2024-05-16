@@ -6,11 +6,13 @@ import {
   ForeignKey,
   BelongsTo,
   HasOne,
+  HasMany,
 } from 'sequelize-typescript';
 import { Attachment } from '../core/attachment.entity';
 import { User } from '../core/user.entity';
 import { AutoMap } from 'automapper-classes';
 import { ECVendorUser } from './ec-vendor-user.entity';
+import { ECVendorCommission } from './ec-vendor-commision.entity';
 
 @Table({ tableName: 'ECVendors' })
 export class ECVendor extends Model {
@@ -108,4 +110,10 @@ export class ECVendor extends Model {
   })
   @AutoMap()
   metaDescription?: string;
+
+  @HasMany(() => ECVendorCommission, {
+    foreignKey: 'vendorId',
+    sourceKey: 'id',
+  })
+  commissions: ECVendorCommission[];
 }

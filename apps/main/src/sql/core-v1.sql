@@ -1831,6 +1831,7 @@ END
 GO
 
 
+
 IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ecommerce-vendorusers-v1' 
 			)
 	AND EXISTS (
@@ -2627,6 +2628,69 @@ BEGIN
 END
 
 GO
+
+
+
+
+-- vendorcommissiontypess
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ecommerce-vendorcommissiontypes-v1' 
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'SITE_NAME' AND [value] IN ('ecommerce'))
+		)
+BEGIN
+
+	CREATE TABLE ECVendorCommissionTypes (
+		id							int							PRIMARY KEY,
+		name						nvarchar(256)				NOT NULL,
+		[createdAt]					datetimeoffset				NOT NULL,
+		[updatedAt]					datetimeoffset				NOT NULL,
+	);
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'ecommerce-vendorcommissiontypes-v1', GETDATE(), GETDATE()
+END
+
+GO
+
+
+-- vendorcommissions
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ecommerce-vendorcommissions-v1' 
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'SITE_NAME' AND [value] IN ('ecommerce'))
+		)
+BEGIN
+
+	CREATE TABLE ECVendorCommissions (
+		id							bigint	identity(1,1)		PRIMARY KEY,
+		vendorId					int							NOT NULL
+			CONSTRAINT FK_ECVendorCommissions_VendorId
+				FOREIGN KEY REFERENCES ECVendors(id),
+		variationPriceId			int							NOT NULL
+			CONSTRAINT FK_ECVendorCommissions_VariationPriceId
+				FOREIGN KEY REFERENCES ECVariationPrices(id),
+		commissionTypeId			int							NOT NULL
+			CONSTRAINT FK_ECVendorComissions_ComissionTypeId
+				FOREIGN KEY REFERENCES ECVendorCommissionTypes(id),
+		[amount]					bigint						NOT NULL,
+		isDeleted					bit							NULL,
+		[createdAt]					datetimeoffset				NOT NULL,
+		[updatedAt]					datetimeoffset				NOT NULL,
+	);
+
+	CREATE NONCLUSTERED INDEX NIX_ECVendorCommissions_VendorId ON ECVendorCommissions(vendorId, variationPriceId)
+	INCLUDE (id, commissionTypeId, amount, isDeleted)
+
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'ecommerce-vendorcommissions-v1', GETDATE(), GETDATE()
+END
+
+GO
+
 
 
 -- ec-stocks-v1
@@ -3492,6 +3556,28 @@ BEGIN
 END
 
 GO
+
+
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ec-vendor-commissiontypes-Data-v1' 
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'SITE_NAME' AND [value] IN ('ecommerce'))
+		)
+BEGIN
+
+	INSERT INTO ECVendorCommissionTypes(id, name,createdAt, updatedAt)
+	VALUES (1, N'درصدی(Percentage)', GETDATE(), GETDATE())
+			,(2, N'مقدار ثابت(FixedAmount)', GETDATE(), GETDATE())
+		
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'ec-vendor-commissiontypes-Data-v1', GETDATE(), GETDATE()
+END
+
+GO
+
+
 
 -- ec discount-condition-types
 IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ec-discount-condition-types-Data-v1' 

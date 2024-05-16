@@ -20,6 +20,8 @@ import { Attachment } from '@rahino/database/models/core/attachment.entity';
 import { ThumbnailModule } from '@rahino/thumbnail';
 import { ConfigService } from '@nestjs/config';
 import { SessionModule } from '../user/session/session.module';
+import { ECVariationPrice } from '@rahino/database/models/ecommerce-eav/ec-variation-prices';
+import { ECVendorCommission } from '@rahino/database/models/ecommerce-eav/ec-vendor-commision.entity';
 
 @Module({
   imports: [
@@ -33,7 +35,10 @@ import { SessionModule } from '../user/session/session.module';
       ECVendor,
       ECVendorUser,
       Attachment,
+      ECVariationPrice,
+      ECVendorCommission,
     ]),
+    SequelizeModule,
     ThumbnailModule.registerAsync({
       inject: [ConfigService],
       useFactory: (config: ConfigService) => ({

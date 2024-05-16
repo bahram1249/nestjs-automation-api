@@ -2,12 +2,13 @@ import {
   BadRequestException,
   ForbiddenException,
   Injectable,
+  InternalServerErrorException,
   NotFoundException,
 } from '@nestjs/common';
 import { VendorDto, GetVendorDto, VendorUserDto } from './dto';
-import { InjectModel } from '@nestjs/sequelize';
+import { InjectConnection, InjectModel } from '@nestjs/sequelize';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
-import { Op, Sequelize } from 'sequelize';
+import { Op, Sequelize, Transaction } from 'sequelize';
 import { InjectMapper } from 'automapper-nestjs';
 import { Mapper } from 'automapper-core';
 import * as _ from 'lodash';
@@ -20,6 +21,9 @@ import { Attachment } from '@rahino/database/models/core/attachment.entity';
 import { MinioClientService } from '@rahino/minio-client';
 import * as fs from 'fs';
 import { ThumbnailService } from '@rahino/thumbnail';
+import { ECVendorCommission } from '@rahino/database/models/ecommerce-eav/ec-vendor-commision.entity';
+import { ECVariationPrice } from '@rahino/database/models/ecommerce-eav/ec-variation-prices';
+import { ECVendorCommissionType } from '@rahino/database/models/ecommerce-eav/ec-vendor-commission-type.entity';
 
 @Injectable()
 export class VendorService {
@@ -37,9 +41,15 @@ export class VendorService {
     private readonly attachmentRepository: typeof Attachment,
     @InjectMapper()
     private readonly mapper: Mapper,
+    @InjectConnection()
+    private readonly sequelize: Sequelize,
     private readonly userRoleService: UserRoleService,
     private readonly minioClientService: MinioClientService,
     private readonly thumbnailService: ThumbnailService,
+    @InjectModel(ECVendorCommission)
+    private readonly commissionRepository: typeof ECVendorCommission,
+    @InjectModel(ECVariationPrice)
+    private readonly variationPriceRepository: typeof ECVariationPrice,
   ) {}
 
   async findAll(filter: GetVendorDto) {
@@ -110,6 +120,35 @@ export class VendorService {
             ],
           },
         },
+        {
+          attributes: [
+            'id',
+            'vendorId',
+            'variationPriceId',
+            'amount',
+            'commissionTypeId',
+          ],
+          model: ECVendorCommission,
+          as: 'commissions',
+          where: Sequelize.where(
+            Sequelize.fn('isnull', Sequelize.col('commissions.isDeleted'), 0),
+            {
+              [Op.eq]: 0,
+            },
+          ),
+          include: [
+            {
+              attributes: ['id', 'name'],
+              model: ECVariationPrice,
+              as: 'variationPrice',
+            },
+            {
+              attributes: ['id', 'name'],
+              model: ECVendorCommissionType,
+              as: 'commissionType',
+            },
+          ],
+        },
       ])
       .limit(filter.limit)
       .offset(filter.offset)
@@ -177,6 +216,35 @@ export class VendorService {
               ],
             },
           },
+          {
+            attributes: [
+              'id',
+              'vendorId',
+              'variationPriceId',
+              'amount',
+              'commissionTypeId',
+            ],
+            model: ECVendorCommission,
+            as: 'commissions',
+            where: Sequelize.where(
+              Sequelize.fn('isnull', Sequelize.col('commissions.isDeleted'), 0),
+              {
+                [Op.eq]: 0,
+              },
+            ),
+            include: [
+              {
+                attributes: ['id', 'name'],
+                model: ECVariationPrice,
+                as: 'variationPrice',
+              },
+              {
+                attributes: ['id', 'name'],
+                model: ECVendorCommissionType,
+                as: 'commissionType',
+              },
+            ],
+          },
         ])
         .filter({ id: entityId })
         .filter(
@@ -233,30 +301,113 @@ export class VendorService {
         .filter({ phoneNumber: dto.user.phoneNumber })
         .build(),
     );
-    if (!userVendor) {
-      const mappedUserItem = this.mapper.map(dto.user, VendorUserDto, User);
-      const insertUserItem = _.omit(mappedUserItem.toJSON(), ['id']);
-      insertUserItem.username = mappedUserItem.phoneNumber;
-      userVendor = await this.userRepository.create(insertUserItem);
-    }
 
-    // insert vendor role to user
-    await this.userRoleService.insertRoleToUser(vendorRole, userVendor);
-
-    // mapped vendor item
-    const mappedItem = this.mapper.map(dto, VendorDto, ECVendor);
-    const insertItem = _.omit(mappedItem.toJSON(), ['id']);
-    insertItem.userId = user.id;
-
-    // create vendor
-    let vendor = await this.repository.create(insertItem);
-
-    // insert default vendor user
-    const vendorUser = await this.vendorUserRepository.create({
-      userId: userVendor.id,
-      vendorId: vendor.id,
-      isDefault: true,
+    const transaction = await this.sequelize.transaction({
+      isolationLevel: Transaction.ISOLATION_LEVELS.READ_COMMITTED,
     });
+    let vendor: ECVendor = null;
+    try {
+      if (!userVendor) {
+        const mappedUserItem = this.mapper.map(dto.user, VendorUserDto, User);
+        const insertUserItem = _.omit(mappedUserItem.toJSON(), ['id']);
+        insertUserItem.username = mappedUserItem.phoneNumber;
+        userVendor = await this.userRepository.create(insertUserItem, {
+          transaction: transaction,
+        });
+      }
+
+      // insert vendor role to user
+      await this.userRoleService.insertRoleToUser(
+        vendorRole,
+        userVendor,
+        transaction,
+      );
+
+      // mapped vendor item
+      const mappedItem = this.mapper.map(dto, VendorDto, ECVendor);
+      const insertItem = _.omit(mappedItem.toJSON(), ['id']);
+      insertItem.userId = user.id;
+
+      // create vendor
+      vendor = await this.repository.create(insertItem, {
+        transaction: transaction,
+      });
+
+      // insert default vendor user
+      const vendorUser = await this.vendorUserRepository.create(
+        {
+          userId: userVendor.id,
+          vendorId: vendor.id,
+          isDefault: true,
+        },
+        { transaction: transaction },
+      );
+
+      const variationPrices = await this.variationPriceRepository.findAll(
+        new QueryOptionsBuilder()
+          .filter(
+            Sequelize.where(
+              Sequelize.fn(
+                'isnull',
+                Sequelize.col('ECVariationPrice.required'),
+                0,
+              ),
+              {
+                [Op.eq]: 1,
+              },
+            ),
+          )
+          .transaction(transaction)
+          .build(),
+      );
+
+      if (variationPrices.length > 0) {
+        const requiedItems = dto.commissions.filter(
+          (commission) =>
+            variationPrices.findIndex(
+              (variationPrice) =>
+                variationPrice.id == commission.variationPriceId,
+            ) != -1,
+        );
+        if (requiedItems.length != variationPrices.length) {
+          throw new BadRequestException(
+            'the required commission types not send!',
+          );
+        }
+      }
+
+      await this.commissionRepository.update(
+        {
+          isDeleted: true,
+        },
+        {
+          where: {
+            vendorId: vendor.id,
+          },
+          transaction: transaction,
+        },
+      );
+
+      for (let index = 0; index < dto.commissions.length; index++) {
+        const commission = dto.commissions[index];
+        await this.commissionRepository.create(
+          {
+            vendorId: vendor.id,
+            commissionTypeId: 1,
+            amount: commission.amount,
+            variationPriceId: commission.variationPriceId,
+          },
+          {
+            transaction: transaction,
+          },
+        );
+      }
+
+      await transaction.commit();
+    } catch (error) {
+      await transaction.rollback();
+      throw new BadRequestException(error.message);
+    }
 
     vendor = await this.repository.findOne(
       new QueryOptionsBuilder()
@@ -299,6 +450,35 @@ export class VendorService {
                 ),
               ],
             },
+          },
+          {
+            attributes: [
+              'id',
+              'vendorId',
+              'variationPriceId',
+              'amount',
+              'commissionTypeId',
+            ],
+            model: ECVendorCommission,
+            as: 'commissions',
+            where: Sequelize.where(
+              Sequelize.fn('isnull', Sequelize.col('commissions.isDeleted'), 0),
+              {
+                [Op.eq]: 0,
+              },
+            ),
+            include: [
+              {
+                attributes: ['id', 'name'],
+                model: ECVariationPrice,
+                as: 'variationPrice',
+              },
+              {
+                attributes: ['id', 'name'],
+                model: ECVendorCommissionType,
+                as: 'commissionType',
+              },
+            ],
           },
         ])
         .build(),
@@ -393,81 +573,170 @@ export class VendorService {
       );
     }
 
-    if (defaultVendorUser.user.phoneNumber != dto.user.phoneNumber) {
-      // remove default user of this vendor
-      defaultVendorUser.isDeleted = true;
-      defaultVendorUser = await defaultVendorUser.save();
+    const transaction = await this.sequelize.transaction({
+      isolationLevel: Transaction.ISOLATION_LEVELS.READ_COMMITTED,
+    });
+    let vendor: ECVendor = null;
+    try {
+      if (defaultVendorUser.user.phoneNumber != dto.user.phoneNumber) {
+        // remove default user of this vendor
+        defaultVendorUser.isDeleted = true;
+        defaultVendorUser = await defaultVendorUser.save({
+          transaction: transaction,
+        });
 
-      // remove vendor role from this old user if is not exists in another vendor
-      const existsInAnotherVendor = await this.vendorUserRepository.findOne(
+        // remove vendor role from this old user if is not exists in another vendor
+        const existsInAnotherVendor = await this.vendorUserRepository.findOne(
+          new QueryOptionsBuilder()
+            .filter({ userId: defaultVendorUser.user.id })
+            .filter(
+              Sequelize.where(
+                Sequelize.fn(
+                  'isnull',
+                  Sequelize.col('ECVendorUser.isDeleted'),
+                  0,
+                ),
+                {
+                  [Op.eq]: 0,
+                },
+              ),
+            )
+            .transaction(transaction)
+            .build(),
+        );
+        if (!existsInAnotherVendor) {
+          // remove vendor role
+          await this.userRoleService.removeRoleFromUser(
+            vendorRole,
+            defaultVendorUser.user,
+            transaction,
+          );
+        }
+
+        // find user if exists before
+        let userVendor = await this.userRepository.findOne(
+          new QueryOptionsBuilder()
+            .filter({ phoneNumber: dto.user.phoneNumber })
+            .transaction(transaction)
+            .build(),
+        );
+        if (!userVendor) {
+          // insert user if is not exists before
+          const mappedUserItem = this.mapper.map(dto.user, VendorUserDto, User);
+          const insertUserItem = _.omit(mappedUserItem.toJSON(), ['id']);
+          insertUserItem.username = mappedUserItem.phoneNumber;
+          userVendor = await this.userRepository.create(insertUserItem, {
+            transaction: transaction,
+          });
+        }
+
+        // insert vendor role to user
+        await this.userRoleService.insertRoleToUser(
+          vendorRole,
+          userVendor,
+          transaction,
+        );
+
+        // insert user to this vendor as default
+        const vendorUser = await this.vendorUserRepository.create(
+          {
+            userId: userVendor.id,
+            vendorId: item.id,
+            isDefault: true,
+          },
+          {
+            transaction: transaction,
+          },
+        );
+      } else {
+        const mappedUserItem = this.mapper.map(dto.user, VendorUserDto, User);
+        const updateUserItem = _.omit(mappedUserItem.toJSON(), ['id']);
+        updateUserItem.username = mappedUserItem.phoneNumber;
+        await this.userRepository.update(updateUserItem, {
+          where: { id: defaultVendorUser.user.id },
+          transaction: transaction,
+          returning: true,
+        });
+      }
+
+      // mapped vendor item
+      const mappedItem = this.mapper.map(dto, VendorDto, ECVendor);
+      // update vendor item
+      vendor = (
+        await this.repository.update(_.omit(mappedItem.toJSON(), ['id']), {
+          where: {
+            id: entityId,
+          },
+          transaction: transaction,
+          returning: true,
+        })
+      )[1][0];
+
+      const variationPrices = await this.variationPriceRepository.findAll(
         new QueryOptionsBuilder()
-          .filter({ userId: defaultVendorUser.user.id })
           .filter(
             Sequelize.where(
               Sequelize.fn(
                 'isnull',
-                Sequelize.col('ECVendorUser.isDeleted'),
+                Sequelize.col('ECVariationPrice.required'),
                 0,
               ),
               {
-                [Op.eq]: 0,
+                [Op.eq]: 1,
               },
             ),
           )
+          .transaction(transaction)
           .build(),
       );
-      if (!existsInAnotherVendor) {
-        // remove vendor role
-        await this.userRoleService.removeRoleFromUser(
-          vendorRole,
-          defaultVendorUser.user,
+
+      if (variationPrices.length > 0) {
+        const requiedItems = dto.commissions.filter(
+          (commission) =>
+            variationPrices.findIndex(
+              (variationPrice) =>
+                variationPrice.id == commission.variationPriceId,
+            ) != -1,
+        );
+        if (requiedItems.length != variationPrices.length) {
+          throw new BadRequestException(
+            'the required commission types not send!',
+          );
+        }
+      }
+
+      await this.commissionRepository.update(
+        {
+          isDeleted: true,
+        },
+        {
+          where: {
+            vendorId: vendor.id,
+          },
+          transaction: transaction,
+        },
+      );
+
+      for (let index = 0; index < dto.commissions.length; index++) {
+        const commission = dto.commissions[index];
+        await this.commissionRepository.create(
+          {
+            vendorId: vendor.id,
+            commissionTypeId: 1,
+            amount: commission.amount,
+            variationPriceId: commission.variationPriceId,
+          },
+          {
+            transaction: transaction,
+          },
         );
       }
 
-      // find user if exists before
-      let userVendor = await this.userRepository.findOne(
-        new QueryOptionsBuilder()
-          .filter({ phoneNumber: dto.user.phoneNumber })
-          .build(),
-      );
-      if (!userVendor) {
-        // insert user if is not exists before
-        const mappedUserItem = this.mapper.map(dto.user, VendorUserDto, User);
-        const insertUserItem = _.omit(mappedUserItem.toJSON(), ['id']);
-        insertUserItem.username = mappedUserItem.phoneNumber;
-        userVendor = await this.userRepository.create(insertUserItem);
-      }
-
-      // insert vendor role to user
-      await this.userRoleService.insertRoleToUser(vendorRole, userVendor);
-
-      // insert user to this vendor as default
-      const vendorUser = await this.vendorUserRepository.create({
-        userId: userVendor.id,
-        vendorId: item.id,
-        isDefault: true,
-      });
-    } else {
-      const mappedUserItem = this.mapper.map(dto.user, VendorUserDto, User);
-      const updateUserItem = _.omit(mappedUserItem.toJSON(), ['id']);
-      updateUserItem.username = mappedUserItem.phoneNumber;
-      await this.userRepository.update(updateUserItem, {
-        where: { id: defaultVendorUser.user.id },
-        returning: true,
-      });
+      await transaction.commit();
+    } catch (error) {
+      await transaction.rollback();
+      throw new BadRequestException(error.message);
     }
-
-    // mapped vendor item
-    const mappedItem = this.mapper.map(dto, VendorDto, ECVendor);
-    // update vendor item
-    let vendor = (
-      await this.repository.update(_.omit(mappedItem.toJSON(), ['id']), {
-        where: {
-          id: entityId,
-        },
-        returning: true,
-      })
-    )[1][0];
 
     vendor = await this.repository.findOne(
       new QueryOptionsBuilder()
@@ -510,6 +779,35 @@ export class VendorService {
                 ),
               ],
             },
+          },
+          {
+            attributes: [
+              'id',
+              'vendorId',
+              'variationPriceId',
+              'amount',
+              'commissionTypeId',
+            ],
+            model: ECVendorCommission,
+            as: 'commissions',
+            where: Sequelize.where(
+              Sequelize.fn('isnull', Sequelize.col('commissions.isDeleted'), 0),
+              {
+                [Op.eq]: 0,
+              },
+            ),
+            include: [
+              {
+                attributes: ['id', 'name'],
+                model: ECVariationPrice,
+                as: 'variationPrice',
+              },
+              {
+                attributes: ['id', 'name'],
+                model: ECVendorCommissionType,
+                as: 'commissionType',
+              },
+            ],
           },
         ])
         .build(),
