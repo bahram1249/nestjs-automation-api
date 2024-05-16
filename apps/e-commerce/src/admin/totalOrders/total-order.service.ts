@@ -69,6 +69,7 @@ export class TotalOrderService {
       .includeOrderShipmentWay()
       .includeAddress()
       .includeUser()
+      .includeOrderStatus()
       .offset(filter.offset)
       .limit(filter.limit)
       .order({ orderBy: filter.orderBy, sortOrder: filter.sortOrder });
@@ -100,6 +101,7 @@ export class TotalOrderService {
       .nonDeletedOrder()
       .includeOrderShipmentWay()
       .addOrderId(id)
+      .includeOrderStatus()
       .addNegativeOrderStatus(OrderStatusEnum.WaitingForPayment)
       .includeAddress()
       .includeUser();
