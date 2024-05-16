@@ -18,14 +18,35 @@ export class TransactionService {
   ) {}
 
   async findAll(user: User, filter: ListFilter) {
-    let queryBuilder = new QueryOptionsBuilder().filter(
-      Sequelize.where(
-        Sequelize.fn('isnull', Sequelize.col('ECPayment.isDeleted'), 0),
+    let queryBuilder = new QueryOptionsBuilder()
+      .include([
         {
-          [Op.eq]: 0,
+          attributes: ['id', 'firstname', 'lastname', 'phoneNumber'],
+          model: User,
+          as: 'user',
         },
-      ),
-    );
+      ])
+      .filter(
+        Sequelize.where(
+          Sequelize.fn('isnull', Sequelize.col('ECPayment.isDeleted'), 0),
+          {
+            [Op.eq]: 0,
+          },
+        ),
+      )
+      .filter({
+        [Op.or]: [
+          Sequelize.where(Sequelize.col('user.phoneNumber'), {
+            [Op.like]: filter.search,
+          }),
+          Sequelize.where(Sequelize.col('ECPayment.id'), {
+            [Op.like]: filter.search,
+          }),
+          Sequelize.where(Sequelize.col('ECPayment.orderId'), {
+            [Op.like]: filter.search,
+          }),
+        ],
+      });
     const count = await this.repository.count(queryBuilder.build());
     queryBuilder = queryBuilder
       .attributes([
@@ -40,28 +61,21 @@ export class TransactionService {
         'createdAt',
         'updatedAt',
       ])
-      .include([
-        {
-          attributes: ['id', 'firstname', 'lastname', 'phoneNumber'],
-          model: User,
-          as: 'user',
-        },
-        {
-          attributes: ['id', 'name'],
-          model: ECPaymentType,
-          as: 'paymentType',
-        },
-        {
-          attributes: ['id', 'name'],
-          model: ECPaymentStatus,
-          as: 'paymentStatus',
-        },
-        {
-          attributes: ['id', 'name'],
-          model: ECPaymentGateway,
-          as: 'paymentGateway',
-        },
-      ])
+      .thenInlcude({
+        attributes: ['id', 'name'],
+        model: ECPaymentType,
+        as: 'paymentType',
+      })
+      .thenInlcude({
+        attributes: ['id', 'name'],
+        model: ECPaymentStatus,
+        as: 'paymentStatus',
+      })
+      .thenInlcude({
+        attributes: ['id', 'name'],
+        model: ECPaymentGateway,
+        as: 'paymentGateway',
+      })
       .limit(filter.limit)
       .offset(filter.offset)
       .order({ orderBy: filter.orderBy, sortOrder: filter.sortOrder });
