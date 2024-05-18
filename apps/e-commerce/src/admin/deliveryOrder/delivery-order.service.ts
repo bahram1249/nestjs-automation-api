@@ -121,7 +121,7 @@ export class DeliveryOrderService {
 
     result.orderStatusId = OrderStatusEnum.DeliveredToTheCustomer;
     result.sendToCustomerDate = new Date();
-    result.userId = user.id;
+    result.sendToCustomerBy = user.id;
     // item.deliveryDate = new Date();
     result = await result.save();
 
