@@ -172,21 +172,25 @@ export class ProductDiscountSetterService {
           },
         ])
         .filter(
-          Sequelize.where(
-            Sequelize.fn(
-              'dateadd',
-              Sequelize.literal('minute'),
-              Sequelize.literal('10'),
+          Sequelize.where(Sequelize.fn('getdate'), {
+            [Op.between]: [
               Sequelize.fn(
                 'isnull',
-                Sequelize.col('ECDiscount.endDate'),
+                Sequelize.col('ECDiscount.startDate'),
                 Sequelize.fn('getdate'),
               ),
-            ),
-            {
-              [Op.gte]: Sequelize.fn('getdate'),
-            },
-          ),
+              Sequelize.fn(
+                'dateadd',
+                Sequelize.literal('day'),
+                Sequelize.literal('1'),
+                Sequelize.fn(
+                  'isnull',
+                  Sequelize.col('ECDiscount.endDate'),
+                  Sequelize.fn('getdate'),
+                ),
+              ),
+            ],
+          }),
         )
         .filter(
           Sequelize.where(
