@@ -420,6 +420,47 @@ export class ApplyDiscountService {
   ) {
     return await this.repository.findAll(
       new QueryOptionsBuilder()
+        .attributes([
+          'id',
+          'name',
+          'description',
+          'discountTypeId',
+          'discountActionTypeId',
+          'discountValue',
+          'maxValue',
+          'discountActionRuleId',
+          'userId',
+          'priority',
+          'limit',
+          'used',
+          'isActive',
+          'isDeleted',
+          [
+            Sequelize.fn(
+              'isnull',
+              Sequelize.col('ECDiscount.startDate'),
+              Sequelize.fn('getdate'),
+            ),
+            'startDate',
+          ],
+          [
+            Sequelize.fn(
+              'isnull',
+              Sequelize.col('ECDiscount.endDate'),
+              Sequelize.fn(
+                'dateadd',
+                Sequelize.literal('day'),
+                Sequelize.literal('1'),
+                Sequelize.fn('getdate'),
+              ),
+            ),
+            'endDate',
+          ],
+          'couponCode',
+          'freeShipment',
+          'createdAt',
+          'updatedAt',
+        ])
         .include([
           {
             model: ECDiscountCondition,
@@ -442,9 +483,14 @@ export class ApplyDiscountService {
           Sequelize.where(Sequelize.fn('getdate'), {
             [Op.between]: [
               Sequelize.fn(
-                'isnull',
-                Sequelize.col('ECDiscount.startDate'),
-                Sequelize.fn('getdate'),
+                'dateadd',
+                Sequelize.literal('minute'),
+                Sequelize.literal('-16'),
+                Sequelize.fn(
+                  'isnull',
+                  Sequelize.col('ECDiscount.startDate'),
+                  Sequelize.fn('getdate'),
+                ),
               ),
               Sequelize.fn(
                 'isnull',

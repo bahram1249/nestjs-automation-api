@@ -153,6 +153,28 @@ export class ProductDiscountSetterService {
   ) {
     return await this.discountRepository.findAll(
       new QueryOptionsBuilder()
+        .attributes([
+          'id',
+          'name',
+          'description',
+          'discountTypeId',
+          'discountActionTypeId',
+          'discountValue',
+          'maxValue',
+          'discountActionRuleId',
+          'userId',
+          'priority',
+          'limit',
+          'used',
+          'isActive',
+          'isDeleted',
+          'startDate',
+          'endDate',
+          'couponCode',
+          'freeShipment',
+          'createdAt',
+          'updatedAt',
+        ])
         .include([
           {
             model: ECDiscountCondition,

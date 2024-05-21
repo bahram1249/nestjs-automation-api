@@ -24,8 +24,8 @@ export class ProductDiscountService {
           _.merge(filter, { inventoryStatusId: InventoryStatusEnum.available }),
         );
       let results = await this.repository.findAll(resultQuery);
-      await this.productDiscountSetterService.applyProducts(results);
       const total = await this.repository.count(countQuery);
+      await this.productDiscountSetterService.applyProducts(results);
       if (filter.limit + filter.offset >= total) {
         more = false;
       }
