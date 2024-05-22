@@ -192,27 +192,27 @@ export class ProductDiscountSetterService {
             required: true,
           },
         ])
-        .filter(
-          Sequelize.where(
-            Sequelize.fn(
-              'isnull',
-              Sequelize.col('ECDiscount.startDate'),
-              Sequelize.fn('getdate'),
-            ),
-            {
-              [Op.between]: [
-                Sequelize.fn('getdate'),
-                // we check only start date
-                Sequelize.fn(
-                  'dateadd',
-                  Sequelize.literal('day'),
-                  Sequelize.literal('1'),
-                  Sequelize.fn('getdate'),
-                ),
-              ],
-            },
-          ),
-        )
+        // .filter(
+        //   Sequelize.where(
+        //     Sequelize.fn(
+        //       'isnull',
+        //       Sequelize.col('ECDiscount.startDate'),
+        //       Sequelize.fn('getdate'),
+        //     ),
+        //     {
+        //       [Op.between]: [
+        //         Sequelize.fn('getdate'),
+        //         // we check only start date
+        //         Sequelize.fn(
+        //           'dateadd',
+        //           Sequelize.literal('day'),
+        //           Sequelize.literal('1'),
+        //           Sequelize.fn('getdate'),
+        //         ),
+        //       ],
+        //     },
+        //   ),
+        // )
         .filter(
           Sequelize.where(Sequelize.fn('getdate'), {
             [Op.lte]: Sequelize.fn(
