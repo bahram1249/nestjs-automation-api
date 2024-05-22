@@ -72,7 +72,6 @@ export class ProductDiscountSetterService {
         break;
       }
     }
-
     if (discountApplied == null && inventory.discountTypeId != null) {
       await this.inventoryRepository.update(
         {
@@ -194,24 +193,33 @@ export class ProductDiscountSetterService {
           },
         ])
         .filter(
-          Sequelize.where(Sequelize.fn('getdate'), {
-            [Op.between]: [
-              Sequelize.fn(
-                'isnull',
-                Sequelize.col('ECDiscount.startDate'),
+          Sequelize.where(
+            Sequelize.fn(
+              'isnull',
+              Sequelize.col('ECDiscount.startDate'),
+              Sequelize.fn('getdate'),
+            ),
+            {
+              [Op.between]: [
                 Sequelize.fn('getdate'),
-              ),
-              Sequelize.fn(
-                'dateadd',
-                Sequelize.literal('day'),
-                Sequelize.literal('1'),
+                // we check only start date
                 Sequelize.fn(
-                  'isnull',
-                  Sequelize.col('ECDiscount.endDate'),
+                  'dateadd',
+                  Sequelize.literal('day'),
+                  Sequelize.literal('1'),
                   Sequelize.fn('getdate'),
                 ),
-              ),
-            ],
+              ],
+            },
+          ),
+        )
+        .filter(
+          Sequelize.where(Sequelize.fn('getdate'), {
+            [Op.lte]: Sequelize.fn(
+              'isnull',
+              Sequelize.col('ECDiscount.endDate'),
+              Sequelize.fn('getdate'),
+            ),
           }),
         )
         .filter(

@@ -18,7 +18,6 @@ export class LoginController {
   @Post('/verifyCode')
   @HttpCode(HttpStatus.OK)
   async verifyCode(@Body() dto: VerifyDto) {
-    console.log(dto);
     return await this.service.verifyCode(dto);
   }
 }

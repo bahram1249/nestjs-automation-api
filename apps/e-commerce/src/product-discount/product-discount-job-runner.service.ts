@@ -16,7 +16,6 @@ export class ProductDiscountJobRunnerService {
     // const tommorow = new Date(new Date().setDate(new Date().getDate() + 1));
     // const targetTime = new Date(tommorow.setHours(3, 15, 0, 0));
     // const delay = Number(targetTime) - Number(new Date());
-
     return this.productDiscountQueue.add(
       PRODUCT_DISCOUNT_JOB,
       {},

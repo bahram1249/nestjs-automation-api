@@ -8,7 +8,7 @@
   "scripts": {
     "build": "nest build",
     "format": "prettier --write \"apps/**/*.ts\" \"libs/**/*.ts\"",
-    "start": "nest start",
+    "start": "node dist/apps/main/main",
     "start:dev": "nest start --watch",
     "start:debug": "nest start --debug --watch",
     "start:prod": "node dist/apps/main/main",
@@ -68,6 +68,7 @@
     "sequelize-typescript": "^2.1.6",
     "sharp": "^0.32.6",
     "short-unique-id": "^5.0.3",
+    "soap": "^1.0.3",
     "swagger-ui-express": "^5.0.0",
     "uuidv4": "^6.2.13"
   },

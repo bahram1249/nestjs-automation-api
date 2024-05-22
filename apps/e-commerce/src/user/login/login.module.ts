@@ -12,7 +12,8 @@ import { RolePermission } from '@rahino/database/models/core/rolePermission.enti
 import { PermissionMenu } from '@rahino/database/models/core/permission-menu.entity';
 import { SmsModule } from '@rahino/sms/sms.module';
 import { ConfigService } from '@nestjs/config';
-import { MeliPayamakService } from '@rahino/sms/services/melipayamak.servie';
+import { MeliPayamakService } from '@rahino/sms/services/melipayamak.service';
+import { MeliPayamakV2Service } from '@rahino/sms/services/melipayamakv2.service';
 
 @Module({
   imports: [

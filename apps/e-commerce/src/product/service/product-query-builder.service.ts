@@ -255,6 +255,9 @@ export class ProductQueryBuilderService {
               'vendorAddressId',
               'weight',
               'inventoryStatusId',
+              'discountTypeId',
+              'discountStartDate',
+              'discountEndDate',
             ],
       )
       .include([
@@ -266,7 +269,7 @@ export class ProductQueryBuilderService {
         },
       ])
       .thenInlcude({
-        attributes: priceRangeQuery ? [] : ['id', 'name'],
+        attributes: priceRangeQuery ? [] : ['id', 'name', 'priorityOrder'],
         model: ECVendor,
         as: 'vendor',
         required: false,

@@ -207,7 +207,10 @@ export class ApplyDiscountService {
       return inventoryPrice;
     }
     // if we get elapsed time discounts, only cache !!! not apllied to price
-    const now = new Date();
+    // but nodejs instance date current time with sql server, They are almost a second apart
+    let now = new Date();
+    let elapsed = 1;
+    now.setSeconds(now.getSeconds() + elapsed);
     if (discountApplied.startDate > now || discountApplied.endDate < now) {
       inventoryPrice.set('appliedDiscount', null);
       return inventoryPrice;

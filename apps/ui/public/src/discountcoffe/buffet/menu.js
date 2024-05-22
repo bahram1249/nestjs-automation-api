@@ -90,7 +90,6 @@ function onMenuAddClick() {
   $('#menuSection').html('');
   $('#menuSection').show();
   var buffetId = $('#buffetId').text();
-  console.log(buffetId);
   $.ajax({
     url: '/discountcoffe/admin/menus/create/' + buffetId,
     type: 'GET',
