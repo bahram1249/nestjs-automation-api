@@ -8,6 +8,9 @@ import { ListFilter } from '@rahino/query-filter';
 import { ECVendor } from '@rahino/database/models/ecommerce-eav/ec-vendor.entity';
 import { ECVendorUser } from '@rahino/database/models/ecommerce-eav/ec-vendor-user.entity';
 import { Attachment } from '@rahino/database/models/core/attachment.entity';
+import { ECVendorCommission } from '@rahino/database/models/ecommerce-eav/ec-vendor-commision.entity';
+import { ECVariationPrice } from '@rahino/database/models/ecommerce-eav/ec-variation-prices';
+import { ECVendorCommissionType } from '@rahino/database/models/ecommerce-eav/ec-vendor-commission-type.entity';
 
 @Injectable()
 export class UserVendorService {
@@ -85,7 +88,38 @@ export class UserVendorService {
           as: 'attachment',
           required: false,
         },
+        {
+          attributes: [
+            'id',
+            'vendorId',
+            'variationPriceId',
+            'amount',
+            'commissionTypeId',
+          ],
+          model: ECVendorCommission,
+          as: 'commissions',
+          required: false,
+          where: Sequelize.where(
+            Sequelize.fn('isnull', Sequelize.col('commissions.isDeleted'), 0),
+            {
+              [Op.eq]: 0,
+            },
+          ),
+          include: [
+            {
+              attributes: ['id', 'name'],
+              model: ECVariationPrice,
+              as: 'variationPrice',
+            },
+            {
+              attributes: ['id', 'name'],
+              model: ECVendorCommissionType,
+              as: 'commissionType',
+            },
+          ],
+        },
       ])
+
       .limit(filter.limit)
       .offset(filter.offset)
       .order({ orderBy: filter.orderBy, sortOrder: filter.sortOrder });
