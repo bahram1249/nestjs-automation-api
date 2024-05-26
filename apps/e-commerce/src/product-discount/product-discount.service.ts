@@ -22,7 +22,9 @@ export class ProductDiscountService {
       console.log('page', page);
       const { resultQuery, countQuery } =
         await this.productQueryBuilderService.findAllAndCountQuery(
-          _.merge(filter, { inventoryStatusId: InventoryStatusEnum.available }),
+          _.extend(filter, {
+            inventoryStatusId: InventoryStatusEnum.available,
+          }),
         );
       let results = await this.repository.findAll(resultQuery);
       const total = await this.repository.count(countQuery);
