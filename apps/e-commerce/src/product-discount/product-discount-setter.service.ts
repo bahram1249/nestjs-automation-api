@@ -72,6 +72,12 @@ export class ProductDiscountSetterService {
         break;
       }
     }
+
+    console.log(inventory.id);
+    if (discountApplied != null) {
+      console.log(discountApplied);
+    }
+
     if (discountApplied == null && inventory.discountTypeId != null) {
       await this.inventoryRepository.update(
         {

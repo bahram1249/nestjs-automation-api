@@ -23,6 +23,7 @@ export class ProductDiscountProcessor extends WorkerHost {
     const listFilter = _.cloneDeep(this.emptyListFilter);
     listFilter.limit = 10;
     listFilter.offset = 0;
+    console.log('initial list filter', listFilter);
     await this.productDiscountService.fetchAndApplyDiscountTime(listFilter);
     return Promise.resolve();
   }
