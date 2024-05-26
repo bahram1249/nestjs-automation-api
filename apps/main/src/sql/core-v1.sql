@@ -3086,6 +3086,48 @@ BEGIN
 END
 
 GO
+
+
+
+
+-- ec-orders
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ec-orders-v9' 
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'SITE_NAME' AND [value] IN ('ecommerce'))
+		)
+BEGIN
+
+	ALTER TABLE ECOrders
+	drop constraint FK_ECOrders_SessionId
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'ec-orders-v9', GETDATE(), GETDATE()
+END
+
+GO
+
+
+
+-- ec-orders
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ec-orders-v10' 
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'SITE_NAME' AND [value] IN ('ecommerce'))
+		)
+BEGIN
+
+	ALTER TABLE ECOrders
+	alter column sessionId nvarchar(256) null
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'ec-orders-v10', GETDATE(), GETDATE()
+END
+
+GO
+
 -- ec-order-details
 IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ec-order-details-v1' 
 			)
