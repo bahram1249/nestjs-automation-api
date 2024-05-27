@@ -53,6 +53,7 @@ import { CourierOrderModule } from './admin/courierOrder/courier-order.module';
 import { DeliveryOrderModule } from './admin/deliveryOrder/delivery-order.module';
 import { ProductDiscountModule } from './product-discount/product-discount.module';
 import { ProductDiscountJobRunnerService } from './product-discount/product-discount-job-runner.service';
+import { VariationPriceModule } from './admin/variation-price/variation-price.module';
 
 @Module({
   imports: [
@@ -108,6 +109,7 @@ import { ProductDiscountJobRunnerService } from './product-discount/product-disc
     CourierOrderModule,
     DeliveryOrderModule,
     ProductDiscountModule,
+    VariationPriceModule,
   ],
   providers: [
     {
