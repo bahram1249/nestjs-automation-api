@@ -319,7 +319,7 @@ export class StockService {
       throw new NotFoundException('the item with this given id not founded!');
     }
     const queryItem = await this.productRepositoryService.findById(
-      _.merge(this.emptyListFilter, { inventoryId: stock.inventoryId }),
+      _.extend(this.emptyListFilter, { inventoryId: stock.inventoryId }),
       stock.productId,
     );
     stock.set('product', queryItem.result);

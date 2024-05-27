@@ -3,24 +3,20 @@ import { Job } from 'bullmq';
 import { DBLogger } from '@rahino/logger';
 import { PRODUCT_DISCOUNT_QUEUE } from './constansts';
 import { ProductDiscountService } from './product-discount.service';
-import { emptyListFilter } from '@rahino/query-filter/provider/constants';
-import { Inject } from '@nestjs/common';
-import { ListFilter } from '@rahino/query-filter';
-import * as _ from 'lodash';
+import { ListFilterV2Factory } from '@rahino/query-filter/provider/list-filter-v2.factory';
 
 @Processor(PRODUCT_DISCOUNT_QUEUE)
 export class ProductDiscountProcessor extends WorkerHost {
   constructor(
     private readonly productDiscountService: ProductDiscountService,
-    @Inject(emptyListFilter)
-    private emptyListFilter: ListFilter,
+    private listFilterFactory: ListFilterV2Factory,
     private logger: DBLogger,
   ) {
     super();
   }
 
   async process(job: Job<any, any, string>, token?: string): Promise<any> {
-    const listFilter = _.cloneDeep(this.emptyListFilter);
+    const listFilter = await this.listFilterFactory.create();
     listFilter.limit = 10;
     listFilter.offset = 0;
     console.log('initial list filter', listFilter);
