@@ -19,7 +19,6 @@ export class ProductDiscountService {
     let more = true;
     let page = 1;
     while (more) {
-      console.log('page', page);
       const { resultQuery, countQuery } =
         await this.productQueryBuilderService.findAllAndCountQuery(
           _.extend(filter, {
