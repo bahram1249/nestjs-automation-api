@@ -2,8 +2,6 @@ import {
   MiddlewareConsumer,
   Module,
   NestModule,
-  RequestMethod,
-  ValidationPipe,
   VersioningType,
 } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
@@ -31,14 +29,13 @@ import {
   AcceptLanguageResolver,
   I18nModule,
   I18nService,
-  I18nValidationExceptionFilter,
   I18nValidationPipe,
   QueryResolver,
 } from 'nestjs-i18n';
 import * as path from 'path';
 import { AppLanguageResolver } from '../i18nResolver/AppLanguageResolver';
-import { I18nTranslations } from '../generated/i18n.generated';
-import { CustomI18nValidationExceptionFilter } from '@rahino/http-exception-filter/custom-i18n-validation-exception.filter';
+import { ECommerceSmsModule } from '@rahino/ecommerce/util/sms/ecommerce-sms.module';
+import { ECommmerceSmsService } from '@rahino/ecommerce/util/sms/ecommerce-sms.service';
 
 @Module({
   imports: [
@@ -100,6 +97,7 @@ import { CustomI18nValidationExceptionFilter } from '@rahino/http-exception-filt
     DevtoolsModule.register({
       http: process.env.NODE_ENV !== 'production',
     }),
+    ECommerceSmsModule,
   ],
   providers: [
     {
@@ -113,6 +111,7 @@ export class AppModule implements NestModule {
     private readonly logger: DBLogger,
     private readonly config: ConfigService,
     private readonly i18n: I18nService,
+    private readonly smsService: ECommmerceSmsService,
   ) {}
   app: NestExpressApplication;
   async configure(consumer: MiddlewareConsumer) {}

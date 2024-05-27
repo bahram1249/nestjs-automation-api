@@ -43,9 +43,8 @@ export class ECommmerceSmsService {
     /*
       سفارش شما به شماره {0} درحال آماده سازی میباشد و بزودی ارسال میشود
     */
-    const activeSms = await this.config.get(
-      'ECOMMERCE_PROCESSED_SMS_CODE_STATUS',
-    );
+    const activeSms =
+      (await this.config.get('ECOMMERCE_PROCESSED_SMS_CODE_STATUS')) == 'true';
     if (activeSms == true) {
       const body = this.config.get('ECOMMERCE_PROCESSED_SMS_CODE');
       await this.smsService.sendMessage({
@@ -60,9 +59,9 @@ export class ECommmerceSmsService {
     /*
     {0} {1} عزیز، سفارش شما توسط {2} با کدپیگیری {3} با موفقیت ارسال شد
     */
-    const activeSms = await this.config.get(
-      'ECOMMERCE_COURIER_SEND_SMS_CODE_STATUS',
-    );
+    const activeSms =
+      (await this.config.get('ECOMMERCE_COURIER_SEND_SMS_CODE_STATUS')) ==
+      'true';
     if (activeSms == true) {
       const body = this.config.get('ECOMMERCE_COURIER_SEND_SMS_CODE');
       await this.smsService.sendMessage({
@@ -77,9 +76,9 @@ export class ECommmerceSmsService {
     /*
     {0} {1} عزیز سفارش شما با شماره {2} در تاریخ {3} ثبت و پرداخت شد. جهیزان
     */
-    const activeSms = await this.config.get(
-      'ECOMMERCE_SUSSESSFUL_PAYMENT_SMS_CODE_STATUS',
-    );
+    const activeSms =
+      (await this.config.get('ECOMMERCE_SUSSESSFUL_PAYMENT_SMS_CODE_STATUS')) ==
+      'true';
     if (activeSms == true) {
       const body = this.config.get('ECOMMERCE_SUSSESSFUL_PAYMENT_SMS_CODE');
       await this.smsService.sendMessage({
@@ -91,9 +90,9 @@ export class ECommmerceSmsService {
   }
 
   async successfulOrderToVendor(paymentId: bigint) {
-    const activeSms = await this.config.get(
-      'ECOMMERCE_SUSSESSFUL_ORDER_SMS_STATUS',
-    );
+    const activeSms =
+      (await this.config.get('ECOMMERCE_SUSSESSFUL_ORDER_SMS_STATUS')) ==
+      'true';
     if (activeSms == true) {
       const payment = await this.paymentRepository.findOne(
         new QueryOptionsBuilder().filter({ id: paymentId }).build(),

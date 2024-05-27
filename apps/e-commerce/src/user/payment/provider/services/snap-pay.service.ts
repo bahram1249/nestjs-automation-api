@@ -377,8 +377,8 @@ export class SnapPayService implements PayInterface {
           );
 
           // send sms to vendors
-          // waiting for accept from melipayamak
-          // await this.smsService.successfulOrderToVendor(payment.id);
+
+          await this.smsService.successfulOrderToVendor(payment.id);
         }
       }
     }
