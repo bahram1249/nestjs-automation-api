@@ -20,6 +20,7 @@ import { OrderUtilService } from '../utilOrder/service/order-util.service';
 import { I18nContext, I18nService } from 'nestjs-i18n';
 import { I18nTranslations } from 'apps/main/src/generated/i18n.generated';
 import { ECCourier } from '@rahino/database/models/ecommerce-eav/ec-courier.entity';
+import { ECommmerceSmsService } from '@rahino/ecommerce/util/sms/ecommerce-sms.service';
 
 @Injectable()
 export class CourierOrderService {
@@ -30,6 +31,7 @@ export class CourierOrderService {
     private readonly courierRepository: typeof ECCourier,
     private orderQueryBuilder: OrderQueryBuilder,
     private orderUtilService: OrderUtilService,
+    private readonly smsService: ECommmerceSmsService,
     private readonly i18n: I18nService<I18nTranslations>,
   ) {}
 
@@ -104,6 +106,12 @@ export class CourierOrderService {
             },
           ),
         )
+        .include([
+          {
+            model: User,
+            as: 'user',
+          },
+        ])
         .build(),
     );
     if (!item) {
@@ -124,6 +132,12 @@ export class CourierOrderService {
             },
           ),
         )
+        .include([
+          {
+            model: User,
+            as: 'user',
+          },
+        ])
         .build(),
     );
     if (!courier) {
@@ -139,6 +153,11 @@ export class CourierOrderService {
     item.courierUserId = dto.userId;
 
     item = await item.save();
+    await this.smsService.sendByCourier(
+      `${user.firstname};${user.lastname};${courier.user.phoneNumber};${orderId}`,
+      item.user.phoneNumber,
+    );
+
     return {
       result: item,
     };

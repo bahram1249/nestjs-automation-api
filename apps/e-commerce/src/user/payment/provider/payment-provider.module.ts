@@ -8,11 +8,14 @@ import { ECPayment } from '@rahino/database/models/ecommerce-eav/ec-payment-enti
 import { ECOrder } from '@rahino/database/models/ecommerce-eav/ec-order.entity';
 import { PaymentServiceManualProviderFactory } from './factory/payment-service-manual-provider.factory';
 import { RevertInventoryModule } from '@rahino/ecommerce/inventory/revert-inventory.module';
+import { ECommerceSmsModule } from '@rahino/ecommerce/util/sms/ecommerce-sms.module';
+import { User } from '@rahino/database/models/core/user.entity';
 
 @Module({
   imports: [
     RevertInventoryModule,
-    SequelizeModule.forFeature([ECPaymentGateway, ECPayment, ECOrder]),
+    SequelizeModule.forFeature([ECPaymentGateway, ECPayment, ECOrder, User]),
+    ECommerceSmsModule,
   ],
   providers: [
     {

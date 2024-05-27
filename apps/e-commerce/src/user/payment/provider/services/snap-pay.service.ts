@@ -1,4 +1,3 @@
-import { User } from '@rahino/database/models/core/user.entity';
 import { PayInterface } from '../interface';
 import {
   OrderStatusEnum,
@@ -23,6 +22,9 @@ import { ECOrder } from '@rahino/database/models/ecommerce-eav/ec-order.entity';
 import { Response } from 'express';
 import { ConfigService } from '@nestjs/config';
 import { RevertInventoryQtyService } from '@rahino/ecommerce/inventory/services';
+import { ECommmerceSmsService } from '@rahino/ecommerce/util/sms/ecommerce-sms.service';
+import { User } from '@rahino/database/models/core/user.entity';
+import * as moment from 'moment-jalaali';
 
 export class SnapPayService implements PayInterface {
   private baseUrl = '';
@@ -33,8 +35,11 @@ export class SnapPayService implements PayInterface {
     private readonly paymentRepository: typeof ECPayment,
     @InjectModel(ECOrder)
     private readonly orderRepository: typeof ECOrder,
+    @InjectModel(User)
+    private readonly userRepository: typeof User,
     private readonly config: ConfigService,
     private readonly revertInventoryQtyService: RevertInventoryQtyService,
+    private readonly smsService: ECommmerceSmsService,
   ) {
     this.baseUrl = 'https://api.snapppay.ir';
   }
@@ -356,6 +361,24 @@ export class SnapPayService implements PayInterface {
               },
             },
           );
+
+          // here to send sms
+          const userPaid = await this.userRepository.findOne(
+            new QueryOptionsBuilder().filter({ id: payment.userId }).build(),
+          );
+          await this.smsService.successfulPayment(
+            `${userPaid.firstname};${userPaid.lastname};${
+              payment.orderId
+            };${moment()
+              .tz('Asia/Tehran', false)
+              .locale('fa')
+              .format('jYYYY-jMM-jDD HH:mm:ss')}`,
+            userPaid.phoneNumber,
+          );
+
+          // send sms to vendors
+          // waiting for accept from melipayamak
+          // await this.smsService.successfulOrderToVendor(payment.id);
         }
       }
     }

@@ -7,11 +7,13 @@ import { Permission } from '@rahino/database/models/core/permission.entity';
 import { ECOrder } from '@rahino/database/models/ecommerce-eav/ec-order.entity';
 import { UtilOrderModule } from '../utilOrder/util-order.module';
 import { ECCourier } from '@rahino/database/models/ecommerce-eav/ec-courier.entity';
+import { ECommerceSmsModule } from '@rahino/ecommerce/util/sms/ecommerce-sms.module';
 
 @Module({
   imports: [
     SequelizeModule.forFeature([User, Permission, ECOrder, ECCourier]),
     UtilOrderModule,
+    ECommerceSmsModule,
   ],
   controllers: [CourierOrderController],
   providers: [CourierOrderService],
