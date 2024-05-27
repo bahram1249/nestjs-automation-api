@@ -1,5 +1,7 @@
+import { Injectable } from '@nestjs/common';
 import { MessageInterface, SmsProviderInterface } from './interface';
 
+@Injectable()
 export class SmsService {
   constructor(
     private readonly username: string,

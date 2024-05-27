@@ -10,20 +10,14 @@ import { JwtModule } from '@nestjs/jwt';
 import { Menu } from '@rahino/database/models/core/menu.entity';
 import { RolePermission } from '@rahino/database/models/core/rolePermission.entity';
 import { PermissionMenu } from '@rahino/database/models/core/permission-menu.entity';
-import { SmsModule } from '@rahino/sms/sms.module';
-import { ConfigService } from '@nestjs/config';
-import { MeliPayamakService } from '@rahino/sms/services/melipayamak.service';
-import { MeliPayamakV2Service } from '@rahino/sms/services/melipayamakv2.service';
+import { ECommerceSmsModule } from '@rahino/ecommerce/util/sms/ecommerce-sms.module';
 
 @Module({
   imports: [
     JwtModule.register({}),
     RedisClientModule,
     SequelizeModule.forFeature([User, Menu, RolePermission, PermissionMenu]),
-    SmsModule.register({
-      token: 'sms',
-      smsProvider: new MeliPayamakService(),
-    }),
+    ECommerceSmsModule,
   ],
   controllers: [LoginController],
   providers: [AuthService, JwtStrategy, LoginService],

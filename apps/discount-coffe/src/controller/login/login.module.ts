@@ -16,10 +16,11 @@ import { MeliPayamakService } from '@rahino/sms/services/melipayamak.service';
   imports: [
     JwtModule.register({}),
     SequelizeModule.forFeature([User, Menu, RolePermission, PermissionMenu]),
-    SmsModule.register({
-      token: 'meli_payamak',
-      smsProvider: new MeliPayamakService(),
-    }),
+    SmsModule,
+    // SmsModule.register({
+    //   token: 'meli_payamak',
+    //   smsProvider: new MeliPayamakService(),
+    // }),
   ],
   controllers: [LoginController],
   providers: [JwtWebStrategy, LoginService, AuthService],

@@ -11,6 +11,7 @@ import { AuthService } from '@rahino/core/auth/auth.service';
 import { InjectModel } from '@nestjs/sequelize';
 import { SmsService } from '@rahino/sms/sms.service';
 import { getIntegerRandomArbitrary } from '@rahino/commontools';
+import { SMS_SERVICE } from '@rahino/sms/contants';
 
 @Injectable()
 export class LoginService {
@@ -18,7 +19,7 @@ export class LoginService {
     @InjectModel(User)
     private readonly userRepository: typeof User,
     private authService: AuthService,
-    @Inject('meli_payamak') private readonly smsService: SmsService,
+    @Inject(SMS_SERVICE) private readonly smsService: SmsService,
   ) {}
 
   async login(redirectUrl?: string) {

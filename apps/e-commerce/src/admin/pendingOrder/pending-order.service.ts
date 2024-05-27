@@ -1,6 +1,5 @@
 import {
   ForbiddenException,
-  Inject,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
@@ -19,8 +18,8 @@ import { ECOrderDetail } from '@rahino/database/models/ecommerce-eav/ec-order-de
 import { UserVendorService } from '@rahino/ecommerce/user/vendor/user-vendor.service';
 import { OrderQueryBuilder } from '../utilOrder/service/order-query-builder.service';
 import { OrderUtilService } from '../utilOrder/service/order-util.service';
-import { SmsService } from '@rahino/sms/sms.service';
 import { ConfigService } from '@nestjs/config';
+import { ECommmerceSmsService } from '@rahino/ecommerce/util/sms/ecommerce-sms.service';
 
 @Injectable()
 export class PendingOrderService {
@@ -32,8 +31,7 @@ export class PendingOrderService {
     private readonly userVendorService: UserVendorService,
     private orderQueryBuilder: OrderQueryBuilder,
     private orderUtilService: OrderUtilService,
-    @Inject('sms')
-    private readonly smsService: SmsService,
+    private readonly smsService: ECommmerceSmsService,
     private readonly config: ConfigService,
     @InjectModel(User)
     private readonly userRepository: typeof User,
@@ -169,19 +167,11 @@ export class PendingOrderService {
       order = await order.save();
 
       // sms here
-      const activeSms = await this.config.get(
-        'ECOMMERCE_PROCESSED_SMS_CODE_STATUS',
+
+      const userPaid = await this.userRepository.findOne(
+        new QueryOptionsBuilder().filter({ id: order.userId }).build(),
       );
-      if (activeSms == true) {
-        const userPaid = await this.userRepository.findOne(
-          new QueryOptionsBuilder().filter({ id: order.userId }).build(),
-        );
-        await this.smsService.sendMessage({
-          text: `${order.id}`,
-          to: userPaid.phoneNumber,
-          bodyId: this.config.get('ECOMMERCE_PROCESSED_SMS_CODE'),
-        });
-      }
+      await this.smsService.processOrder(`${order.id}`, userPaid.phoneNumber);
     }
 
     return {
