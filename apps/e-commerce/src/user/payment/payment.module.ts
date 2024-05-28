@@ -22,6 +22,8 @@ import {
 import { InventoryModule } from '@rahino/ecommerce/inventory/inventory.module';
 import { ECDiscount } from '@rahino/database/models/ecommerce-eav/ec-discount.entity';
 import { ProductModule } from '@rahino/ecommerce/product/product.module';
+import { ECInventoryPrice } from '@rahino/database/models/ecommerce-eav/ec-inventory-price.entity';
+import { ECVendorCommission } from '@rahino/database/models/ecommerce-eav/ec-vendor-commision.entity';
 
 @Module({
   imports: [
@@ -34,6 +36,8 @@ import { ProductModule } from '@rahino/ecommerce/product/product.module';
       ECOrderDetail,
       ECStock,
       ECDiscount,
+      ECInventoryPrice,
+      ECVendorCommission,
     ]),
     PaymentServiceProviderModule,
     SequelizeModule,

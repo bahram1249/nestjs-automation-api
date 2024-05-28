@@ -15,6 +15,7 @@ import { ECInventoryPrice } from './ec-inventory-price.entity';
 import { ECStock } from './ec-stocks.entity';
 import { ECDiscount } from './ec-discount.entity';
 import { User } from '../core/user.entity';
+import { ECVendorCommission } from './ec-vendor-commision.entity';
 
 @Table({ tableName: 'ECOrderDetails' })
 export class ECOrderDetail extends Model {
@@ -147,4 +148,18 @@ export class ECOrderDetail extends Model {
     allowNull: true,
   })
   isDeleted?: boolean;
+
+  @Column({
+    type: DataType.BIGINT,
+    allowNull: true,
+  })
+  @ForeignKey(() => ECVendorCommission)
+  vendorCommissionId?: bigint;
+  @BelongsTo(() => ECVendorCommission, {
+    as: 'vendorCommission',
+    foreignKey: 'vendorCommissionId',
+  })
+  vendorCommission?: ECVendorCommission;
+
+  commissionAmount?: bigint;
 }

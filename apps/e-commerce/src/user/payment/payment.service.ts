@@ -28,6 +28,7 @@ import {
   OrderShipmentwayEnum,
   OrderStatusEnum,
   PaymentTypeEnum,
+  VendorCommissionTypeEnum,
 } from '@rahino/ecommerce/util/enum';
 import { ECOrder } from '@rahino/database/models/ecommerce-eav/ec-order.entity';
 import { ECOrderDetail } from '@rahino/database/models/ecommerce-eav/ec-order-detail.entity';
@@ -43,6 +44,8 @@ import { InjectQueue } from '@nestjs/bullmq';
 import { ConfigService } from '@nestjs/config';
 import { DecreaseInventoryService } from '@rahino/ecommerce/inventory/services';
 import { ApplyDiscountService } from '@rahino/ecommerce/product/service';
+import { ECInventoryPrice } from '@rahino/database/models/ecommerce-eav/ec-inventory-price.entity';
+import { ECVendorCommission } from '@rahino/database/models/ecommerce-eav/ec-vendor-commision.entity';
 
 @Injectable()
 export class PaymentService {
@@ -75,6 +78,10 @@ export class PaymentService {
     private readonly config: ConfigService,
     private readonly decreaseInventoryService: DecreaseInventoryService,
     private readonly applyDiscountService: ApplyDiscountService,
+    @InjectModel(ECInventoryPrice)
+    private readonly inventoryPriceRepository: typeof ECInventoryPrice,
+    @InjectModel(ECVendorCommission)
+    private readonly vendorCommissionRepository: typeof ECVendorCommission,
   ) {}
 
   async stock(session: ECUserSession, body: StockPaymentDto, user: User) {
@@ -334,6 +341,43 @@ export class PaymentService {
     const orderDetails: ECOrderDetail[] = [];
     for (let index = 0; index < variationStock.stocks.length; index++) {
       const stock = variationStock.stocks[index];
+      const inventoryPrice = await this.inventoryPriceRepository.findOne(
+        new QueryOptionsBuilder()
+          .filter({ id: stock.inventoryPriceId })
+          .transaction(transaction)
+          .build(),
+      );
+      const vendorCommission = await this.vendorCommissionRepository.findOne(
+        new QueryOptionsBuilder()
+          .filter({ vendorId: stock.vendorId })
+          .filter({ variationPriceId: inventoryPrice.variationPriceId })
+          .filter(
+            Sequelize.where(
+              Sequelize.fn(
+                'isnull',
+                Sequelize.col('ECVendorCommission.isDeleted'),
+                0,
+              ),
+              {
+                [Op.eq]: 0,
+              },
+            ),
+          )
+          .transaction(transaction)
+          .build(),
+      );
+      let commissionAmount: number;
+      if (
+        vendorCommission.commissionTypeId ==
+        VendorCommissionTypeEnum.byPercentage
+      ) {
+        commissionAmount =
+          (stock.totalPrice * Number(vendorCommission.amount)) / 100;
+      } else if (
+        vendorCommission.commissionTypeId == VendorCommissionTypeEnum.byAmount
+      ) {
+        commissionAmount = Number(vendorCommission.amount);
+      }
       let orderDetail = await this.orderDetailRepository.create(
         {
           orderId: order.id,
@@ -349,6 +393,8 @@ export class PaymentService {
           discountFee: stock.discountFee,
           discountId: stock.discountId,
           totalPrice: stock.totalPrice,
+          commissionAmount: commissionAmount,
+          vendorCommissionId: vendorCommission.id,
           userId: user.id,
         },
         {
