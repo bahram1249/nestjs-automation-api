@@ -33,7 +33,6 @@ export class CourierOrderService {
     private orderUtilService: OrderUtilService,
     private readonly smsService: ECommmerceSmsService,
     private readonly i18n: I18nService<I18nTranslations>,
-    private readonly userRepository: typeof User,
   ) {}
 
   async findAll(user: User, filter: ListFilter) {
