@@ -578,6 +578,10 @@ export class ProductQueryBuilderService {
       }
       const orderItem: OrderItem = orders as OrderItem;
       queryBuilder = queryBuilder.order(orderItem);
+    }
+    if (filter.orderBy.startsWith('randomize')) {
+      // this is very expensive
+      queryBuilder = queryBuilder.order(Sequelize.literal('NEWID()'));
     } else {
       queryBuilder = queryBuilder.order({
         orderBy: filter.orderBy,
