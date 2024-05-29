@@ -1,6 +1,8 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { I18nTranslations } from 'apps/main/src/generated/i18n.generated';
 import { Transform } from 'class-transformer';
-import { IsEnum, IsNumber, IsOptional, IsString } from 'class-validator';
+import { IsEnum, IsNumber, IsOptional, IsString, Max } from 'class-validator';
+import { i18nValidationMessage } from 'nestjs-i18n';
 
 export enum SortOrder {
   ASC = 'ASC',
@@ -20,6 +22,9 @@ export class ListFilter {
   })
   public offset? = 0;
 
+  @Max(100, {
+    message: i18nValidationMessage<I18nTranslations>('validation.MAX'),
+  })
   @Transform(({ value }) => Math.max(Number(value), 1))
   @IsNumber()
   @IsOptional()
