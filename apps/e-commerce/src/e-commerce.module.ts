@@ -54,6 +54,7 @@ import { DeliveryOrderModule } from './admin/deliveryOrder/delivery-order.module
 import { ProductDiscountModule } from './product-discount/product-discount.module';
 import { ProductDiscountJobRunnerService } from './product-discount/product-discount-job-runner.service';
 import { VariationPriceModule } from './admin/variation-price/variation-price.module';
+import { TorobProductModule } from './torob-product/torob-product.module';
 
 @Module({
   imports: [
@@ -110,6 +111,7 @@ import { VariationPriceModule } from './admin/variation-price/variation-price.mo
     DeliveryOrderModule,
     ProductDiscountModule,
     VariationPriceModule,
+    TorobProductModule,
   ],
   providers: [
     {
