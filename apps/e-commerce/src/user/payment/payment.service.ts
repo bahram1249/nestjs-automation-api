@@ -46,6 +46,7 @@ import { DecreaseInventoryService } from '@rahino/ecommerce/inventory/services';
 import { ApplyDiscountService } from '@rahino/ecommerce/product/service';
 import { ECInventoryPrice } from '@rahino/database/models/ecommerce-eav/ec-inventory-price.entity';
 import { ECVendorCommission } from '@rahino/database/models/ecommerce-eav/ec-vendor-commision.entity';
+import * as moment from 'moment-jalaali';
 
 @Injectable()
 export class PaymentService {
@@ -324,6 +325,10 @@ export class PaymentService {
         sessionId: sessionId,
         userId: userId,
         addressId: addressId,
+        gregorianAtPersian: moment()
+          .tz('Asia/Tehran', false)
+          .locale('en')
+          .format('YYYY-MM-DD HH:mm:ss'),
       },
       {
         transaction: transaction,
@@ -396,6 +401,10 @@ export class PaymentService {
           commissionAmount: commissionAmount,
           vendorCommissionId: vendorCommission.id,
           userId: user.id,
+          gregorianAtPersian: moment()
+            .tz('Asia/Tehran', false)
+            .locale('en')
+            .format('YYYY-MM-DD HH:mm:ss'),
         },
         {
           transaction: transaction,

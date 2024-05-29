@@ -158,4 +158,10 @@ export class ECOrder extends Model {
     allowNull: true,
   })
   sendToCustomerBy?: bigint;
+
+  @Column({
+    type: DataType.STRING,
+    allowNull: true,
+  })
+  gregorianAtPersian?: string;
 }
