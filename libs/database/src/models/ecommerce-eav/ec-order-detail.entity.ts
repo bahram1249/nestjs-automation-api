@@ -161,5 +161,9 @@ export class ECOrderDetail extends Model {
   })
   vendorCommission?: ECVendorCommission;
 
+  @Column({
+    type: DataType.BIGINT,
+    allowNull: true,
+  })
   commissionAmount?: bigint;
 }
