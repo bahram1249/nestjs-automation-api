@@ -21,6 +21,7 @@ export type I18nTranslations = {
         "address_plaque": string;
         "address_floor": string;
         "address_postalcode": string;
+        "date_is_invalid": string;
     };
     "validation": {
         "NOT_EMPTY": string;

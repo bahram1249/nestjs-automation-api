@@ -55,6 +55,8 @@ import { ProductDiscountModule } from './product-discount/product-discount.modul
 import { ProductDiscountJobRunnerService } from './product-discount/product-discount-job-runner.service';
 import { VariationPriceModule } from './admin/variation-price/variation-price.module';
 import { TorobProductModule } from './torob-product/torob-product.module';
+import { AdminSaleModule } from './report/admin-sale/admin-sale.module';
+import { PersianDateMonthModule } from './persiandate/bymonth/persian-date-month.module';
 
 @Module({
   imports: [
@@ -112,6 +114,8 @@ import { TorobProductModule } from './torob-product/torob-product.module';
     ProductDiscountModule,
     VariationPriceModule,
     TorobProductModule,
+    AdminSaleModule,
+    PersianDateMonthModule,
   ],
   providers: [
     {
