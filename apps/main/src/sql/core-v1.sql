@@ -12450,7 +12450,7 @@ BEGIN
 	DECLARE @groupName nvarchar(256) = N'ecommerce.report.adminsales'
 	DECLARE @findParentMenu bit = 0;
 	DECLARE @parentMenuName nvarchar(256) = N'گزارشات'
-	DECLARE @menuName nvarchar(256) = N'میزان فروش و درآمد'
+	DECLARE @menuName nvarchar(256) = N'میزان فروش و درآمد (ادمین)'
 	DECLARE @menuUrl nvarchar(512) = N'/admin/ecommerce/report/adminSales'
 
 	DECLARE @permissionSymbolShowMenu nvarchar(512) = @groupName + '.showmenu';

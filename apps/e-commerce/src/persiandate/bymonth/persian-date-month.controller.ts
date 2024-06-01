@@ -8,13 +8,14 @@ import {
 } from '@nestjs/common';
 
 import { JsonResponseTransformInterceptor } from '@rahino/response/interceptor';
-import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { PersianDateMonthService } from './persian-date-month.service';
 import { JwtGuard } from '@rahino/auth/guard';
 
 @ApiTags('PersianDate-Month')
+@ApiBearerAuth()
 @Controller({
-  path: '/api/ecommerce/persiandate/month/',
+  path: '/api/ecommerce/persiandate/month',
   version: ['1'],
 })
 @UseGuards(JwtGuard)
