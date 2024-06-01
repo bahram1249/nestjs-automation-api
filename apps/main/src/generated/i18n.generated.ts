@@ -22,6 +22,7 @@ export type I18nTranslations = {
         "address_floor": string;
         "address_postalcode": string;
         "date_is_invalid": string;
+        "dont_access_to_this_vendor": string;
     };
     "validation": {
         "NOT_EMPTY": string;

@@ -6,5 +6,6 @@
   "address_plaque": "یک پلاک وارد بفرمایید",
   "address_floor": "یک طبقه وارد بفرمایید",
   "address_postalcode": "یک کد پستی وارد بفرمایید",
-  "date_is_invalid": "تاریخ معتبر نیست"
+  "date_is_invalid": "تاریخ معتبر نیست",
+  "dont_access_to_this_vendor": "شما به این فروشگاه دسترسی ندارید"
 }

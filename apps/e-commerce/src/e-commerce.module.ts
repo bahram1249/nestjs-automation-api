@@ -57,6 +57,7 @@ import { VariationPriceModule } from './admin/variation-price/variation-price.mo
 import { TorobProductModule } from './torob-product/torob-product.module';
 import { AdminSaleModule } from './report/admin-sale/admin-sale.module';
 import { PersianDateMonthModule } from './persiandate/bymonth/persian-date-month.module';
+import { VendorSaleModule } from './report/vendor-sale/vendor-sale.module';
 
 @Module({
   imports: [
@@ -115,6 +116,7 @@ import { PersianDateMonthModule } from './persiandate/bymonth/persian-date-month
     VariationPriceModule,
     TorobProductModule,
     AdminSaleModule,
+    VendorSaleModule,
     PersianDateMonthModule,
   ],
   providers: [
