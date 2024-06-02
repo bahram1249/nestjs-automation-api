@@ -58,6 +58,7 @@ import { TorobProductModule } from './torob-product/torob-product.module';
 import { AdminSaleModule } from './report/admin-sale/admin-sale.module';
 import { PersianDateMonthModule } from './persiandate/bymonth/persian-date-month.module';
 import { VendorSaleModule } from './report/vendor-sale/vendor-sale.module';
+import { AdminCourierReportModule } from './report/admin-courier/admin-courier.module';
 
 @Module({
   imports: [
@@ -117,6 +118,7 @@ import { VendorSaleModule } from './report/vendor-sale/vendor-sale.module';
     TorobProductModule,
     AdminSaleModule,
     VendorSaleModule,
+    AdminCourierReportModule,
     PersianDateMonthModule,
   ],
   providers: [
