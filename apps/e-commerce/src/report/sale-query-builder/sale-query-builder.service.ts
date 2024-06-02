@@ -13,7 +13,7 @@ import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builde
 import { FindAttributeOptions, Op, Sequelize } from 'sequelize';
 
 @Injectable({ scope: Scope.REQUEST })
-export class AdminSaleQueryBuilderService {
+export class SaleQueryBuilderService {
   private builder: QueryOptionsBuilder;
   private groupByQuery = false;
   constructor() {

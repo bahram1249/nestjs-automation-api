@@ -9,7 +9,7 @@ import { PersianDate } from '@rahino/database/models/core/view/persiandate.entit
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import { I18nContext, I18nService } from 'nestjs-i18n';
 import { I18nTranslations } from 'apps/main/src/generated/i18n.generated';
-import { AdminSaleQueryBuilderService } from '../admin-sale-query-builder/admin-sale-query-builder.service';
+import { SaleQueryBuilderService } from '../sale-query-builder/sale-query-builder.service';
 import { ECOrderDetail } from '@rahino/database/models/ecommerce-eav/ec-order-detail.entity';
 import { Sequelize } from 'sequelize';
 import { User } from '@rahino/database/models/core/user.entity';
@@ -23,7 +23,7 @@ export class VendorSaleService {
     @InjectModel(ECOrderDetail)
     private readonly orderDetailRepository: typeof ECOrderDetail,
     private readonly i18n: I18nService<I18nTranslations>,
-    private readonly adminSaleQueryBuilder: AdminSaleQueryBuilderService,
+    private readonly adminSaleQueryBuilder: SaleQueryBuilderService,
     private readonly userVendorService: UserVendorService,
   ) {}
 
