@@ -60,6 +60,7 @@ import { PersianDateMonthModule } from './persiandate/bymonth/persian-date-month
 import { VendorSaleModule } from './report/vendor-sale/vendor-sale.module';
 import { AdminCourierReportModule } from './report/admin-courier/admin-courier.module';
 import { AdminPostReportModule } from './report/admin-post/admin-post.module';
+import { CourierReportModule } from './report/courier/courier-report.module';
 
 @Module({
   imports: [
@@ -121,6 +122,7 @@ import { AdminPostReportModule } from './report/admin-post/admin-post.module';
     VendorSaleModule,
     AdminCourierReportModule,
     AdminPostReportModule,
+    CourierReportModule,
     PersianDateMonthModule,
   ],
   providers: [
