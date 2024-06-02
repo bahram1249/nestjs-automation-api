@@ -124,6 +124,7 @@ export class AdminPostService {
 
     queryBuilder = queryBuilder
       .attributes([
+        [Sequelize.fn('count', Sequelize.col('ECOrder.id')), 'cntOrder'],
         [
           Sequelize.fn(
             'isnull',
