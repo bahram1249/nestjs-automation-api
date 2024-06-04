@@ -87,6 +87,8 @@ import { Setting } from './models/core/setting.entity';
 import { ECCourier } from './models/ecommerce-eav/ec-courier.entity';
 import { ECVendorCommissionType } from './models/ecommerce-eav/ec-vendor-commission-type.entity';
 import { ECVendorCommission } from './models/ecommerce-eav/ec-vendor-commision.entity';
+import { ECPaymentGatewayCommissionType } from './models/ecommerce-eav/ec-paymentgateway-commissiontype.entity';
+import { ECPaymentGatewayCommission } from './models/ecommerce-eav/ec-paymentgateway-commission.entity';
 
 @Module({
   imports: [
@@ -170,6 +172,8 @@ import { ECVendorCommission } from './models/ecommerce-eav/ec-vendor-commision.e
           ECCourier,
           ECVendorCommissionType,
           ECVendorCommission,
+          ECPaymentGatewayCommissionType,
+          ECPaymentGatewayCommission,
           Buffet,
           BuffetGallery,
           BuffetType,

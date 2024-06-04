@@ -22,9 +22,8 @@ import { ECOrder } from '@rahino/database/models/ecommerce-eav/ec-order.entity';
 import { Response } from 'express';
 import { ConfigService } from '@nestjs/config';
 import { RevertInventoryQtyService } from '@rahino/ecommerce/inventory/services';
-import { ECommmerceSmsService } from '@rahino/ecommerce/util/sms/ecommerce-sms.service';
 import { User } from '@rahino/database/models/core/user.entity';
-import * as moment from 'moment-jalaali';
+import { FinalizedPaymentService } from '../../util/finalized-payment/finalized-payment.service';
 
 export class SnapPayService implements PayInterface {
   private baseUrl = '';
@@ -35,11 +34,9 @@ export class SnapPayService implements PayInterface {
     private readonly paymentRepository: typeof ECPayment,
     @InjectModel(ECOrder)
     private readonly orderRepository: typeof ECOrder,
-    @InjectModel(User)
-    private readonly userRepository: typeof User,
     private readonly config: ConfigService,
     private readonly revertInventoryQtyService: RevertInventoryQtyService,
-    private readonly smsService: ECommmerceSmsService,
+    private readonly finalizedPaymentService: FinalizedPaymentService,
   ) {
     this.baseUrl = 'https://api.snapppay.ir';
   }
@@ -338,47 +335,7 @@ export class SnapPayService implements PayInterface {
           },
         );
         if (finalRequest.data.successful == true) {
-          payment = (
-            await this.paymentRepository.update(
-              { paymentStatusId: PaymentStatusEnum.SuccessPayment },
-              {
-                where: {
-                  id: payment.id,
-                },
-                returning: true,
-              },
-            )
-          )[1][0];
-          await this.orderRepository.update(
-            {
-              orderStatusId: OrderStatusEnum.Paid,
-              transactionId: payment.transactionId,
-              paymentId: payment.id,
-            },
-            {
-              where: {
-                id: payment.orderId,
-              },
-            },
-          );
-
-          // here to send sms
-          const userPaid = await this.userRepository.findOne(
-            new QueryOptionsBuilder().filter({ id: payment.userId }).build(),
-          );
-          await this.smsService.successfulPayment(
-            `${userPaid.firstname};${userPaid.lastname};${
-              payment.orderId
-            };${moment()
-              .tz('Asia/Tehran', false)
-              .locale('fa')
-              .format('jYYYY-jMM-jDD HH:mm:ss')}`,
-            userPaid.phoneNumber,
-          );
-
-          // send sms to vendors
-
-          await this.smsService.successfulOrderToVendor(payment.id);
+          await this.finalizedPaymentService.successfulSnapPay(payment.id);
         }
       }
     }

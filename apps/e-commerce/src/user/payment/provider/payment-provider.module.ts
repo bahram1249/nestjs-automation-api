@@ -10,12 +10,14 @@ import { PaymentServiceManualProviderFactory } from './factory/payment-service-m
 import { RevertInventoryModule } from '@rahino/ecommerce/inventory/revert-inventory.module';
 import { ECommerceSmsModule } from '@rahino/ecommerce/util/sms/ecommerce-sms.module';
 import { User } from '@rahino/database/models/core/user.entity';
+import { FinalizedPaymentModule } from '../util/finalized-payment/finalized-payment.module';
 
 @Module({
   imports: [
     RevertInventoryModule,
     SequelizeModule.forFeature([ECPaymentGateway, ECPayment, ECOrder, User]),
     ECommerceSmsModule,
+    FinalizedPaymentModule,
   ],
   providers: [
     {

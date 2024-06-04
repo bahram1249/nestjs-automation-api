@@ -20,6 +20,7 @@ import axios from 'axios';
 import { ZarinPalDto } from '@rahino/ecommerce/verify-payment/dto';
 import { ECOrder } from '@rahino/database/models/ecommerce-eav/ec-order.entity';
 import { RevertInventoryQtyService } from '@rahino/ecommerce/inventory/services';
+import { FinalizedPaymentService } from '../../util/finalized-payment/finalized-payment.service';
 
 export class ZarinPalService implements PayInterface {
   private baseUrl = '';
@@ -32,6 +33,7 @@ export class ZarinPalService implements PayInterface {
     @InjectModel(ECOrder)
     private readonly orderRepository: typeof ECOrder,
     private readonly revertInventoryQtyService: RevertInventoryQtyService,
+    private readonly finalizedPaymentService: FinalizedPaymentService,
   ) {
     this.baseUrl = 'https://api.zarinpal.com';
     //this.baseUrl = 'https://sandbox.zarinpal.com';
@@ -189,29 +191,11 @@ export class ZarinPalService implements PayInterface {
         },
       );
       if (verifyRequest.data.data.code == 100) {
-        payment = (
-          await this.paymentRepository.update(
-            {
-              paymentStatusId: PaymentStatusEnum.SuccessPayment,
-              transactionReceipt: verifyRequest.data.data.ref_id,
-              cardPan: verifyRequest.data.data.card_pan,
-              cardHash: verifyRequest.data.data.card_hash,
-            },
-            {
-              where: {
-                id: payment.id,
-              },
-              returning: true,
-            },
-          )
-        )[1][0];
-        await this.orderRepository.update(
-          { orderStatusId: OrderStatusEnum.Paid, paymentId: payment.id },
-          {
-            where: {
-              id: payment.orderId,
-            },
-          },
+        await this.finalizedPaymentService.successfulZarinPal(
+          payment.id,
+          verifyRequest.data.data.ref_id,
+          verifyRequest.data.data.card_pan,
+          verifyRequest.data.data.card_hash,
         );
       } else {
         payment = (

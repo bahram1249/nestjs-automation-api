@@ -1,5 +1,5 @@
 declare @Result nvarchar(max) = ''
-declare @TableName nvarchar(max) = 'Users'
+declare @TableName nvarchar(max) = 'ECPaymentGatewayCommissions'
 
 SELECT @Result = @Result +
   '@Column({' 

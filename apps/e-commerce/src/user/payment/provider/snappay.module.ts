@@ -7,12 +7,14 @@ import { ECOrder } from '@rahino/database/models/ecommerce-eav/ec-order.entity';
 import { RevertInventoryModule } from '@rahino/ecommerce/inventory/revert-inventory.module';
 import { ECommerceSmsModule } from '@rahino/ecommerce/util/sms/ecommerce-sms.module';
 import { User } from '@rahino/database/models/core/user.entity';
+import { FinalizedPaymentModule } from '../util/finalized-payment/finalized-payment.module';
 
 @Module({
   imports: [
     SequelizeModule.forFeature([ECPaymentGateway, ECPayment, ECOrder, User]),
     RevertInventoryModule,
     ECommerceSmsModule,
+    FinalizedPaymentModule,
   ],
   providers: [SnapPayService],
   exports: [SnapPayService],

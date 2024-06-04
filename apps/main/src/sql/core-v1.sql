@@ -2824,6 +2824,65 @@ END
 
 GO
 
+
+
+
+-- paymentgatewayscommissiontypes
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ecommerce-paymentgatewayscommissiontypes-v1' 
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'SITE_NAME' AND [value] IN ('ecommerce'))
+		)
+BEGIN
+
+	CREATE TABLE ECPaymentGatewayCommissionTypes (
+		id							int							PRIMARY KEY,
+		name						nvarchar(256)				NOT NULL,
+		[createdAt]					datetimeoffset				NOT NULL,
+		[updatedAt]					datetimeoffset				NOT NULL,
+	);
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'ecommerce-paymentgatewayscommissiontypes-v1', GETDATE(), GETDATE()
+END
+
+GO
+
+
+-- paymentGatewaycommissions
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ecommerce-paymentgatewaycommission-v1' 
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'SITE_NAME' AND [value] IN ('ecommerce'))
+		)
+BEGIN
+
+	CREATE TABLE ECPaymentGatewayCommissions (
+		id							int	identity(1,1)			PRIMARY KEY,
+		paymentGatewayId			int							NOT NULL
+			CONSTRAINT FK_ECPaymentGatewayComission_PaymentGateways
+				FOREIGN KEY REFERENCES ECPaymentGateways(id),
+		commissionTypeId			int							NOT NULL
+			CONSTRAINT FK_ECPaymentGatewayCommisssion_CommissionTypes
+				FOREIGN KEY REFERENCES ECPaymentGatewayCommissionTypes(id),
+		[amount]					bigint						NOT NULL,
+		isDeleted					bit							NULL,
+		[createdAt]					datetimeoffset				NOT NULL,
+		[updatedAt]					datetimeoffset				NOT NULL,
+	);
+
+	CREATE NONCLUSTERED INDEX NIX_ECPaymentGatewayCommissions_PaymentGatewayId ON ECPaymentGatewayCommissions(paymentGatewayId, commissionTypeId)
+	INCLUDE (id, isDeleted, amount)
+
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'ecommerce-paymentgatewaycommission-v1', GETDATE(), GETDATE()
+END
+
+GO
+
 -- ec-postage-fee-v1
 IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ec-postage-fee-v1' 
 			)
