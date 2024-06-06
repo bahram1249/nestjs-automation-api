@@ -1,6 +1,7 @@
 import { Injectable, Scope } from '@nestjs/common';
 import { User } from '@rahino/database/models/core/user.entity';
 import { ECOrderStatus } from '@rahino/database/models/ecommerce-eav/ec-order-status.entity';
+import { ECPayment } from '@rahino/database/models/ecommerce-eav/ec-payment-entity';
 import {
   OrderShipmentwayEnum,
   OrderStatusEnum,
@@ -9,7 +10,7 @@ import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builde
 import { FindAttributeOptions, Op, Sequelize } from 'sequelize';
 
 @Injectable({ scope: Scope.REQUEST })
-export class ShipmentQueryBuilderService {
+export class OrderQueryBuilderService {
   private builder: QueryOptionsBuilder;
   private groupByQuery = false;
   constructor() {
@@ -80,6 +81,15 @@ export class ShipmentQueryBuilderService {
     return this;
   }
 
+  addPaymentGatewayId(paymentGatewayId: number) {
+    this.builder = this.builder.filter(
+      Sequelize.where(Sequelize.col('payment.paymentGatewayId'), {
+        [Op.eq]: paymentGatewayId,
+      }),
+    );
+    return this;
+  }
+
   addOrderId(orderId: bigint) {
     this.builder = this.builder.filter({ id: orderId });
     return this;
@@ -102,6 +112,18 @@ export class ShipmentQueryBuilderService {
         : ['id', 'firstname', 'lastname', 'username', 'phoneNumber'],
       model: User,
       as: 'courierUser',
+      required: false,
+    });
+    return this;
+  }
+
+  includePayment() {
+    this.builder = this.builder.thenInlcude({
+      attributes: this.groupByQuery
+        ? []
+        : ['id', 'paymentGatewayId', 'paymentStatusId'],
+      model: ECPayment,
+      as: 'payment',
       required: false,
     });
     return this;

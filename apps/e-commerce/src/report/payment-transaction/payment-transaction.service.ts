@@ -1,5 +1,5 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { GetAdminPostDto } from './dto';
+import { GetPaymentTransactionDto } from './dto';
 import { InjectModel } from '@nestjs/sequelize';
 import { ECOrder } from '@rahino/database/models/ecommerce-eav/ec-order.entity';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
@@ -7,24 +7,21 @@ import { PersianDate } from '@rahino/database/models/core/view/persiandate.entit
 import { I18nContext, I18nService } from 'nestjs-i18n';
 import { I18nTranslations } from 'apps/main/src/generated/i18n.generated';
 import { OrderQueryBuilderService } from '../order-query-builder/order-query-builder.service';
-import {
-  OrderShipmentwayEnum,
-  OrderStatusEnum,
-} from '@rahino/ecommerce/util/enum';
+import { OrderStatusEnum } from '@rahino/ecommerce/util/enum';
 import { Sequelize } from 'sequelize';
 
 @Injectable()
-export class AdminPostService {
+export class PaymentTransactionService {
   constructor(
     @InjectModel(ECOrder)
     private readonly orderRepository: typeof ECOrder,
     @InjectModel(PersianDate)
     private readonly persianDateRepository: typeof PersianDate,
     private readonly i18n: I18nService<I18nTranslations>,
-    private readonly shipmentQueryBuilder: OrderQueryBuilderService,
+    private readonly orderQueryBuilder: OrderQueryBuilderService,
   ) {}
 
-  async findAll(filter: GetAdminPostDto) {
+  async findAll(filter: GetPaymentTransactionDto) {
     const isValidBeginDate = await this.isValidDate(filter.beginDate);
     if (!isValidBeginDate) {
       throw new BadRequestException(
@@ -42,45 +39,56 @@ export class AdminPostService {
       );
     }
 
-    let queryBuilder = this.shipmentQueryBuilder
+    let queryBuilder = this.orderQueryBuilder
       .init(false)
       .nonDeleted()
       .addNegativeOrderStatus(OrderStatusEnum.WaitingForPayment)
-      .addShipmentWay(OrderShipmentwayEnum.post)
       .addBeginDate(filter.beginDate)
-      .addEndDate(filter.endDate);
+      .addEndDate(filter.endDate)
+      .includePayment();
 
+    if (filter.paymentGatewayId) {
+      queryBuilder = queryBuilder.addPaymentGatewayId(filter.paymentGatewayId);
+    }
     if (filter.orderId) {
       queryBuilder = queryBuilder.addOrderId(filter.orderId);
     }
 
     const count = await this.orderRepository.count(queryBuilder.build());
+
     queryBuilder = queryBuilder
       .attributes([
         'id',
         'orderStatusId',
-        'courierUserId',
-        'deliveryDate',
-        'sendToCustomerDate',
-        'postReceipt',
+        'orderShipmentwayId',
+        'transactionId',
         [
           Sequelize.fn('isnull', Sequelize.col('ECOrder.realShipmentPrice'), 0),
           'realShipmentPrice',
         ],
         [
+          Sequelize.fn('isnull', Sequelize.col('ECOrder.totalDiscountFee'), 0),
+          'totalDiscountFee',
+        ],
+        [
+          Sequelize.fn('isnull', Sequelize.col('ECOrder.totalPrice'), 0),
+          'totalPrice',
+        ],
+        [
           Sequelize.fn(
             'isnull',
-            Sequelize.col('ECOrder.totalShipmentPrice'),
+            Sequelize.col('ECOrder.paymentCommissionAmount'),
             0,
           ),
-          'totalShipmentPrice',
+          'paymentCommissionAmount',
         ],
         [
           Sequelize.literal(
-            'isnull(ECOrder.totalShipmentPrice, 0) - isnull(ECOrder.realShipmentPrice, 0)',
+            'isnull(ECOrder.totalPrice, 0) - isnull(ECOrder.paymentCommissionAmount, 0)',
           ),
-          'profitAmount',
+          'receivedAmount',
         ],
+        'createdAt',
       ])
       .includeOrderStatus()
       .offset(filter.offset)
@@ -92,7 +100,7 @@ export class AdminPostService {
     };
   }
 
-  async total(filter: GetAdminPostDto) {
+  async total(filter: GetPaymentTransactionDto) {
     const isValidBeginDate = await this.isValidDate(filter.beginDate);
     if (!isValidBeginDate) {
       throw new BadRequestException(
@@ -110,14 +118,17 @@ export class AdminPostService {
       );
     }
 
-    let queryBuilder = this.shipmentQueryBuilder
+    let queryBuilder = this.orderQueryBuilder
       .init(true)
       .nonDeleted()
       .addNegativeOrderStatus(OrderStatusEnum.WaitingForPayment)
-      .addShipmentWay(OrderShipmentwayEnum.post)
       .addBeginDate(filter.beginDate)
-      .addEndDate(filter.endDate);
+      .addEndDate(filter.endDate)
+      .includePayment();
 
+    if (filter.paymentGatewayId) {
+      queryBuilder = queryBuilder.addPaymentGatewayId(filter.paymentGatewayId);
+    }
     if (filter.orderId) {
       queryBuilder = queryBuilder.addOrderId(filter.orderId);
     }
@@ -136,20 +147,38 @@ export class AdminPostService {
         [
           Sequelize.fn(
             'isnull',
-            Sequelize.literal('sum(isnull(ECOrder.totalShipmentPrice, 0))'),
+            Sequelize.literal('sum(isnull(ECOrder.totalDiscountFee, 0))'),
             0,
           ),
-          'totalShipmentPrice',
+          'totalDiscountFee',
+        ],
+        [
+          Sequelize.fn(
+            'isnull',
+            Sequelize.literal('sum(isnull(ECOrder.totalPrice, 0))'),
+            0,
+          ),
+          'totalPrice',
         ],
         [
           Sequelize.fn(
             'isnull',
             Sequelize.literal(
-              'SUM(isnull(ECOrder.totalShipmentPrice, 0) - isnull(ECOrder.realShipmentPrice, 0))',
+              'sum(isnull(ECOrder.paymentCommissionAmount, 0))',
             ),
             0,
           ),
-          'profitAmount',
+          'paymentCommissionAmount',
+        ],
+        [
+          Sequelize.fn(
+            'isnull',
+            Sequelize.literal(
+              'SUM(isnull(ECOrder.totalPrice, 0) - isnull(ECOrder.paymentCommissionAmount, 0))',
+            ),
+            0,
+          ),
+          'receivedAmount',
         ],
       ])
       .rawQuery(true);

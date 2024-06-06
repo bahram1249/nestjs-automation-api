@@ -61,6 +61,8 @@ import { VendorSaleModule } from './report/vendor-sale/vendor-sale.module';
 import { AdminCourierReportModule } from './report/admin-courier/admin-courier.module';
 import { AdminPostReportModule } from './report/admin-post/admin-post.module';
 import { CourierReportModule } from './report/courier/courier-report.module';
+import { PaymentTransactionReportModule } from './report/payment-transaction/payment-transaction.module';
+import { PaymentGatewayModule } from './admin/payment-gateway/payment-gateway.module';
 
 @Module({
   imports: [
@@ -124,6 +126,8 @@ import { CourierReportModule } from './report/courier/courier-report.module';
     AdminPostReportModule,
     CourierReportModule,
     PersianDateMonthModule,
+    PaymentTransactionReportModule,
+    PaymentGatewayModule,
   ],
   providers: [
     {

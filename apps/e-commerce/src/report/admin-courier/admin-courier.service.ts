@@ -6,7 +6,7 @@ import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builde
 import { PersianDate } from '@rahino/database/models/core/view/persiandate.entity';
 import { I18nContext, I18nService } from 'nestjs-i18n';
 import { I18nTranslations } from 'apps/main/src/generated/i18n.generated';
-import { ShipmentQueryBuilderService } from '../shipment-query-builder/shipment-query-builder.service';
+import { OrderQueryBuilderService } from '../order-query-builder/order-query-builder.service';
 import {
   OrderShipmentwayEnum,
   OrderStatusEnum,
@@ -21,7 +21,7 @@ export class AdminCourierService {
     @InjectModel(PersianDate)
     private readonly persianDateRepository: typeof PersianDate,
     private readonly i18n: I18nService<I18nTranslations>,
-    private readonly shipmentQueryBuilder: ShipmentQueryBuilderService,
+    private readonly shipmentQueryBuilder: OrderQueryBuilderService,
   ) {}
 
   async findAll(filter: GetAdminCourierDto) {
