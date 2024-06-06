@@ -5,6 +5,7 @@
   "compilerOptions": {
     "deleteOutDir": true,
     "webpack": true,
+    "builder": "swc",
     "tsConfigPath": "apps/main/tsconfig.app.json",
     "plugins": ["@nestjs/swagger/plugin"],
     "assets": [

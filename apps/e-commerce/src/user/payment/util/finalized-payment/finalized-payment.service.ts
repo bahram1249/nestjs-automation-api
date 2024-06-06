@@ -102,7 +102,7 @@ export class FinalizedPaymentService {
           Sequelize.where(
             Sequelize.fn(
               'isnull',
-              Sequelize.col('ECPaymentGatewayCommisssion.isDeleted'),
+              Sequelize.col('ECPaymentGatewayCommission.isDeleted'),
               0,
             ),
             {
