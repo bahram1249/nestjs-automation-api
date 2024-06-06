@@ -22,6 +22,7 @@ import { EAVEntityType } from '@rahino/database/models/eav/eav-entity-type.entit
 import { RoleUtilService } from '@rahino/core/user/role-util/role-util.service';
 import { UserVendorService } from '@rahino/ecommerce/user/vendor/user-vendor.service';
 import { OrderUtilService } from '../utilOrder/service/order-util.service';
+import { FinalizedPaymentService } from '@rahino/ecommerce/user/payment/util/finalized-payment/finalized-payment.service';
 
 @Injectable()
 export class TotalOrderService {
@@ -37,10 +38,11 @@ export class TotalOrderService {
     @InjectModel(ECPaymentGateway)
     private readonly paymentGatewayRepository: typeof ECPaymentGateway,
     private orderQueryBuilder: OrderQueryBuilder,
-    private snapPayService: SnapPayService,
-    private roleUtilService: RoleUtilService,
-    private userVendorService: UserVendorService,
-    private orderUtilService: OrderUtilService,
+    private readonly snapPayService: SnapPayService,
+    private readonly roleUtilService: RoleUtilService,
+    private readonly userVendorService: UserVendorService,
+    private readonly orderUtilService: OrderUtilService,
+    private readonly finalizedPaymentService: FinalizedPaymentService,
   ) {}
 
   async findAll(user: User, filter: ListFilter) {
@@ -267,7 +269,10 @@ export class TotalOrderService {
       resultQuery.subQuery = false;
       const totalPrice = await this.orderDetailRepository.findOne(resultQuery);
       let order = await this.repository.findOne(
-        new QueryOptionsBuilder().filter({ id: detail.orderId }).build(),
+        new QueryOptionsBuilder()
+          .filter({ id: detail.orderId })
+          .transaction(transaction)
+          .build(),
       );
       await this.repository.update(
         {
@@ -284,6 +289,10 @@ export class TotalOrderService {
           },
           transaction: transaction,
         },
+      );
+      await this.finalizedPaymentService.applyPaymentGatewayCommisssion(
+        order.id,
+        transaction,
       );
 
       const payment = await this.paymentRepository.findOne(

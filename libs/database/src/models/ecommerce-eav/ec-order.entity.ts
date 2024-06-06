@@ -164,4 +164,10 @@ export class ECOrder extends Model {
     allowNull: true,
   })
   gregorianAtPersian?: string;
+
+  @Column({
+    type: DataType.BIGINT,
+    allowNull: true,
+  })
+  paymentCommissionAmount?: bigint;
 }

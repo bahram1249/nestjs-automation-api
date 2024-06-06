@@ -3,13 +3,17 @@ import { InjectModel } from '@nestjs/sequelize';
 import { User } from '@rahino/database/models/core/user.entity';
 import { ECOrder } from '@rahino/database/models/ecommerce-eav/ec-order.entity';
 import { ECPayment } from '@rahino/database/models/ecommerce-eav/ec-payment-entity';
+import { ECPaymentGatewayCommission } from '@rahino/database/models/ecommerce-eav/ec-paymentgateway-commission.entity';
 import {
   OrderStatusEnum,
   PaymentStatusEnum,
 } from '@rahino/ecommerce/util/enum';
+import { PaymentGatewayCommissionTypeEnum } from '@rahino/ecommerce/util/enum/payment-gateway-commission-type.enum';
 import { ECommmerceSmsService } from '@rahino/ecommerce/util/sms/ecommerce-sms.service';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import * as moment from 'moment-jalaali';
+import { Op, Transaction } from 'sequelize';
+import { Sequelize } from 'sequelize';
 
 @Injectable()
 export class FinalizedPaymentService {
@@ -20,6 +24,8 @@ export class FinalizedPaymentService {
     private readonly orderRepository: typeof ECOrder,
     @InjectModel(User)
     private readonly userRepository: typeof User,
+    @InjectModel(ECPaymentGatewayCommission)
+    private readonly paymentGatewayCommissionRepository: typeof ECPaymentGatewayCommission,
     private readonly smsService: ECommmerceSmsService,
   ) {}
 
@@ -39,6 +45,7 @@ export class FinalizedPaymentService {
     await this.successfulOrderStatus(payment);
     await this.sendSuccessfulPaymentSms(payment);
     await this.sendSuccessfulPaymentSmsToVendor(payment);
+    await this.applyPaymentGatewayCommisssion(payment.orderId);
   }
 
   async successfulZarinPal(
@@ -66,6 +73,63 @@ export class FinalizedPaymentService {
     await this.successfulOrderStatus(payment);
     await this.sendSuccessfulPaymentSms(payment);
     await this.sendSuccessfulPaymentSmsToVendor(payment);
+    await this.applyPaymentGatewayCommisssion(payment.orderId);
+  }
+
+  async applyPaymentGatewayCommisssion(
+    orderId: bigint,
+    transaction?: Transaction,
+  ) {
+    let order = await this.orderRepository.findOne(
+      new QueryOptionsBuilder()
+        .filter({ id: orderId })
+        .transaction(transaction)
+        .build(),
+    );
+    const payment = await this.paymentRepository.findOne(
+      new QueryOptionsBuilder()
+        .filter({ id: order.paymentId })
+        .transaction(transaction)
+        .build(),
+    );
+    let amount = 0;
+    const commisssion = await this.paymentGatewayCommissionRepository.findOne(
+      new QueryOptionsBuilder()
+        .filter({
+          paymentGatewayId: payment.paymentGatewayId,
+        })
+        .filter(
+          Sequelize.where(
+            Sequelize.fn(
+              'isnull',
+              Sequelize.col('ECPaymentGatewayCommisssion.isDeleted'),
+              0,
+            ),
+            {
+              [Op.eq]: 0,
+            },
+          ),
+        )
+        .transaction(transaction)
+        .build(),
+    );
+
+    if (
+      commisssion &&
+      commisssion.commissionTypeId ==
+        PaymentGatewayCommissionTypeEnum.byPercentage
+    ) {
+      amount = (Number(order.totalPrice) * Number(commisssion.amount)) / 100;
+    } else if (
+      commisssion &&
+      commisssion.commissionTypeId == PaymentGatewayCommissionTypeEnum.byAmount
+    ) {
+      amount = Number(commisssion.amount);
+    }
+    await this.orderRepository.update(
+      { paymentCommissionAmount: amount },
+      { where: { id: orderId }, transaction: transaction },
+    );
   }
 
   async successfulOrderStatus(payment: ECPayment) {

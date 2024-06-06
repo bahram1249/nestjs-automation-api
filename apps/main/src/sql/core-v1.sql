@@ -3752,6 +3752,26 @@ END
 GO
 
 
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ec-paymentgateway-commissiontypes-Data-v1' 
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'SITE_NAME' AND [value] IN ('ecommerce'))
+		)
+BEGIN
+
+	INSERT INTO ECPaymentGatewayCommissionTypes(id, name,createdAt, updatedAt)
+	VALUES (1, N'درصدی(Percentage)', GETDATE(), GETDATE())
+			,(2, N'مقدار ثابت(FixedAmount)', GETDATE(), GETDATE())
+		
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'ec-paymentgateway-commissiontypes-Data-v1', GETDATE(), GETDATE()
+END
+
+GO
+
+
 
 -- ec discount-condition-types
 IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ec-discount-condition-types-Data-v1' 
