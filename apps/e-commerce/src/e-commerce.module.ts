@@ -64,6 +64,7 @@ import { CourierReportModule } from './report/courier/courier-report.module';
 import { PaymentTransactionReportModule } from './report/payment-transaction/payment-transaction.module';
 import { PaymentGatewayModule } from './admin/payment-gateway/payment-gateway.module';
 import { InventoryReportModule } from './report/inventory/inventory-report.module';
+import { InventoryStatusModule } from './admin/inventory-status/inventory-status.module';
 
 @Module({
   imports: [
@@ -130,6 +131,7 @@ import { InventoryReportModule } from './report/inventory/inventory-report.modul
     PaymentTransactionReportModule,
     PaymentGatewayModule,
     InventoryReportModule,
+    InventoryStatusModule,
   ],
   providers: [
     {
