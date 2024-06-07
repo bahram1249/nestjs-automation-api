@@ -63,6 +63,7 @@ import { AdminPostReportModule } from './report/admin-post/admin-post.module';
 import { CourierReportModule } from './report/courier/courier-report.module';
 import { PaymentTransactionReportModule } from './report/payment-transaction/payment-transaction.module';
 import { PaymentGatewayModule } from './admin/payment-gateway/payment-gateway.module';
+import { InventoryReportModule } from './report/inventory/inventory-report.module';
 
 @Module({
   imports: [
@@ -128,6 +129,7 @@ import { PaymentGatewayModule } from './admin/payment-gateway/payment-gateway.mo
     PersianDateMonthModule,
     PaymentTransactionReportModule,
     PaymentGatewayModule,
+    InventoryReportModule,
   ],
   providers: [
     {
