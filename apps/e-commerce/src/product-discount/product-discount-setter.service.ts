@@ -84,6 +84,7 @@ export class ProductDiscountSetterService {
           where: {
             id: inventory.id,
           },
+          silent: true,
         },
       );
       return inventory;
@@ -101,6 +102,7 @@ export class ProductDiscountSetterService {
         where: {
           id: inventory.id,
         },
+        silent: true,
       },
     );
 
