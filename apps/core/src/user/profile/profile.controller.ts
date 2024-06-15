@@ -6,6 +6,7 @@ import {
   Param,
   ParseFilePipeBuilder,
   Post,
+  Put,
   Res,
   StreamableFile,
   UploadedFile,
@@ -27,6 +28,7 @@ import { profileFileOptions } from './file-options';
 import type { Response } from 'express';
 import { JwtGuard } from '@rahino/auth/guard';
 import { GetUser } from '@rahino/auth/decorator';
+import { EditProfileDto } from './dto';
 
 @ApiTags('User-Profile')
 @Controller({
@@ -35,6 +37,17 @@ import { GetUser } from '@rahino/auth/decorator';
 })
 export class ProfileController {
   constructor(private service: ProfileService) {}
+
+  @ApiBearerAuth()
+  @UseGuards(JwtGuard)
+  @ApiOperation({ description: 'edit profile user' })
+  @UseInterceptors(JsonResponseTransformInterceptor)
+  @Put('/')
+  @HttpCode(HttpStatus.OK)
+  async editProfile(@GetUser() user: User, dto: EditProfileDto) {
+    return await this.service.editProfile(user, dto);
+  }
+
   @ApiBearerAuth()
   @UseGuards(JwtGuard)
   @ApiOperation({ description: 'upload profile photo by user' })

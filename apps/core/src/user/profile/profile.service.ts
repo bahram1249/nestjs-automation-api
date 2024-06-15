@@ -15,6 +15,8 @@ import { Op } from 'sequelize';
 import type { Response } from 'express';
 import { FileService } from '@rahino/file/file.service';
 import { ThumbnailService } from '@rahino/thumbnail';
+import { EditProfileDto } from './dto';
+import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 
 @Injectable()
 export class ProfileService {
@@ -28,6 +30,27 @@ export class ProfileService {
     private readonly fileService: FileService,
     private readonly thumbnailService: ThumbnailService,
   ) {}
+
+  async editProfile(user: User, dto: EditProfileDto) {
+    await this.userRepoisitory.update(
+      { firstname: dto.firstname, lastname: dto.lastname },
+      {
+        where: {
+          id: user.id,
+        },
+      },
+    );
+    const editedUser = await this.userRepoisitory.findOne(
+      new QueryOptionsBuilder()
+        .attributes(['id', 'firstname', 'lastname'])
+        .filter({ id: user.id })
+        .build(),
+    );
+    return {
+      result: editedUser,
+    };
+  }
+
   async upload(userId: bigint, file: Express.Multer.File) {
     // check attachment Type
     const attachmentTypeId = 1;
@@ -123,6 +146,7 @@ export class ProfileService {
       result: user,
     };
   }
+
   async getPhoto(res: Response, fileName: string): Promise<StreamableFile> {
     const attachment = await this.repository.findOne({
       where: {
