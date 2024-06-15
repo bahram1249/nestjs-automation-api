@@ -3509,6 +3509,34 @@ END
 GO
 
 
+-- ec-entityTypeFactors-v1
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ec-entityTypeFactors-v1' 
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'SITE_NAME' AND [value] IN ('ecommerce'))
+		)
+BEGIN
+
+
+	CREATE TABLE ECEntityTypeFactors(
+		id								int	identity(1,1)			PRIMARY KEY,
+		[name]							nvarchar(256)				NOT NULL,
+		entityTypeId					int							NOT NULL
+			CONSTRAINT FC_EntityTypeFactors_EntityTypeId
+				FOREIGN KEY REFERENCES EAVEntityTypes(id),
+		[priority]						int							NULL,
+		isDeleted						bit							NULL,
+		[createdAt]						datetimeoffset				NOT NULL,
+		[updatedAt]						datetimeoffset				NOT NULL,
+	);
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'ec-entityTypeFactors-v1', GETDATE(), GETDATE()
+END
+
+GO
+
 
 
 
@@ -13531,6 +13559,85 @@ BEGIN
 
 	INSERT INTO Migrations(version, createdAt, updatedAt)
 	SELECT 'CORE-Permissions-Data-v52', GETDATE(), GETDATE()
+END
+
+GO
+
+
+
+-- ecommerce/admin/entityTypeFactors
+IF NOT EXISTS ((SELECT 1 FROM Migrations WHERE version = 'CORE-Permissions-Data-v53' 
+			))
+	AND EXISTS (
+		SELECT 1 FROM Settings WHERE 1=1
+		AND ([key] = 'SITE_NAME' AND [value] IN ('ecommerce'))
+	)
+BEGIN
+	
+	DECLARE @roleId int = (SELECT TOP 1 id FROM Roles WHERE static_id = 1)
+	DECLARE @userId bigint = (SELECT TOP 1 id FROM Users WHERE static_id = 1)
+
+	DECLARE @GroupTemp TABLE (
+		gorupId int
+	);
+
+	DECLARE @groupId int = null;
+
+	DECLARE @entityName nvarchar(256) = N'EntityTypeFactors'
+	DECLARE @groupName nvarchar(256) = N'ecommerce.admin.entitytypefactors'
+	DECLARE @menuUrl nvarchar(512) = N'/admin/ecommerce/entityTypeFactors'
+
+
+	DECLARE @permissionSymbolGetAll nvarchar(512) = @groupName + '.getall';
+	DECLARE @permissionSymbolGetOne nvarchar(512) = @groupName + '.getone';
+	DECLARE @permissionSymbolCreate nvarchar(512) = @groupName + '.create';
+	DECLARE @permissionSymbolDelete nvarchar(512) = @groupName + '.delete';
+
+
+
+	-- permission groups
+	INSERT INTO PermissionGroups(permissionGroupName, [visibility], createdAt, updatedAt)
+	OUTPUT inserted.id INTO @GroupTemp(gorupId)
+	SELECT @groupName, 1, GETDATE(), GETDATE();
+
+	SELECT  @groupId = gorupId FROM @GroupTemp
+
+
+	-- permissions
+
+	
+	DECLARE @PermissionTemp TABLE (
+		permissionId int
+	);
+
+	INSERT INTO Permissions(permissionName ,permissionSymbol,permissionGroupId,  createdAt, updatedAt)
+	OUTPUT inserted.id INTO @PermissionTemp(permissionId)
+	SELECT 'GETALL_' + @entityName, @permissionSymbolGetAll, @groupId, GETDATE(), GETDATE()
+															
+	INSERT INTO Permissions(permissionName ,permissionSymbol,permissionGroupId,  createdAt, updatedAt)
+	OUTPUT inserted.id INTO @PermissionTemp(permissionId)
+	SELECT 'GETONE_' + @entityName, @permissionSymbolGetOne, @groupId, GETDATE(), GETDATE()
+															 
+	INSERT INTO Permissions(permissionName ,permissionSymbol,permissionGroupId,  createdAt, updatedAt)
+	OUTPUT inserted.id INTO @PermissionTemp(permissionId)
+	SELECT 'CREATE_' + @entityName, @permissionSymbolCreate, @groupId, GETDATE(), GETDATE()
+															 
+
+															
+	INSERT INTO Permissions(permissionName ,permissionSymbol,permissionGroupId,  createdAt, updatedAt)
+	OUTPUT inserted.id INTO @PermissionTemp(permissionId)
+	SELECT 'DELETE_' + @entityName, @permissionSymbolDelete, @groupId, GETDATE(), GETDATE()
+
+
+	-- CRUD THIS Enity FOR super-admin
+	INSERT INTO RolePermissions(roleId, permissionId, createdAt, updatedAt)
+	SELECT @roleId, permissionId, GETDATE(), GETDATE()
+	FROM @PermissionTemp
+
+	DELETE FROM @PermissionTemp
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'CORE-Permissions-Data-v53', GETDATE(), GETDATE()
 END
 
 GO

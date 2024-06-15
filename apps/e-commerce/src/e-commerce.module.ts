@@ -65,6 +65,7 @@ import { PaymentTransactionReportModule } from './report/payment-transaction/pay
 import { PaymentGatewayModule } from './admin/payment-gateway/payment-gateway.module';
 import { InventoryReportModule } from './report/inventory/inventory-report.module';
 import { InventoryStatusModule } from './admin/inventory-status/inventory-status.module';
+import { EntityTypeFactorModule } from './admin/entity-type-factor/entity-type-factor.module';
 
 @Module({
   imports: [
@@ -132,6 +133,7 @@ import { InventoryStatusModule } from './admin/inventory-status/inventory-status
     PaymentGatewayModule,
     InventoryReportModule,
     InventoryStatusModule,
+    EntityTypeFactorModule,
   ],
   providers: [
     {
