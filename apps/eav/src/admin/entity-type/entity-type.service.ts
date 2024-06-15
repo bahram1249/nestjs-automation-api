@@ -134,6 +134,8 @@ export class EntityTypeService {
         'metaTitle',
         'metaKeywords',
         'metaDescription',
+        'createdAt',
+        'updatedAt',
       ])
       .limit(filter.limit, filter.ignorePaging)
       .offset(filter.offset, filter.ignorePaging)
@@ -156,6 +158,8 @@ export class EntityTypeService {
         'metaTitle',
         'metaKeywords',
         'metaDescription',
+        'createdAt',
+        'updatedAt',
       ])
       .include([
         {
@@ -210,6 +214,8 @@ export class EntityTypeService {
         'metaTitle',
         'metaKeywords',
         'metaDescription',
+        'createdAt',
+        'updatedAt',
       ])
       .include([
         {
@@ -257,6 +263,8 @@ export class EntityTypeService {
         'metaTitle',
         'metaKeywords',
         'metaDescription',
+        'createdAt',
+        'updatedAt',
       ])
       .include([
         {
@@ -361,6 +369,8 @@ export class EntityTypeService {
         'metaTitle',
         'metaKeywords',
         'metaDescription',
+        'createdAt',
+        'updatedAt',
       ])
       .filter({ id: entityType.id })
       .include([

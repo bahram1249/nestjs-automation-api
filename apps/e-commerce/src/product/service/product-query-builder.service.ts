@@ -518,6 +518,8 @@ export class ProductQueryBuilderService {
           'publishStatusId',
           'viewCount',
           'lastPrice',
+          'createdAt',
+          'updatedAt',
         ];
     if (slug) {
       resultQueryAttributes.push('description');

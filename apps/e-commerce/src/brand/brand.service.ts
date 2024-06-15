@@ -66,6 +66,8 @@ export class BrandService {
         'metaTitle',
         'metaKeywords',
         'metaDescription',
+        'createdAt',
+        'updatedAt',
       ])
       .include([
         {
@@ -96,6 +98,8 @@ export class BrandService {
           'metaTitle',
           'metaKeywords',
           'metaDescription',
+          'createdAt',
+          'updatedAt',
         ])
         .include([
           {
@@ -156,6 +160,8 @@ export class BrandService {
         'metaTitle',
         'metaKeywords',
         'metaDescription',
+        'createdAt',
+        'updatedAt',
       ]),
     };
   }
@@ -218,6 +224,8 @@ export class BrandService {
         'metaTitle',
         'metaKeywords',
         'metaDescription',
+        'createdAt',
+        'updatedAt',
       ]),
     };
   }
@@ -249,6 +257,8 @@ export class BrandService {
         'metaTitle',
         'metaKeywords',
         'metaDescription',
+        'createdAt',
+        'updatedAt',
       ]),
     };
   }
@@ -263,6 +273,8 @@ export class BrandService {
           'metaTitle',
           'metaKeywords',
           'metaDescription',
+          'createdAt',
+          'updatedAt',
         ])
         .include([
           {
