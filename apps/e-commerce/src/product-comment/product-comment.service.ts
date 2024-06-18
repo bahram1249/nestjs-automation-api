@@ -77,6 +77,7 @@ export class ProductCommentService {
           },
         ),
       )
+      .order({ orderBy: 'priority', sortOrder: 'ASC' })
       .build();
 
     const count = await this.entityTypeFactorRepository.count(queryOptions);
