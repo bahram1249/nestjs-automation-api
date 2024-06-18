@@ -15,6 +15,7 @@ import { Op } from 'sequelize';
 import { OrderUtilService } from '../utilOrder/service/order-util.service';
 import { I18nContext, I18nService } from 'nestjs-i18n';
 import { I18nTranslations } from 'apps/main/src/generated/i18n.generated';
+import { ECommmerceSmsService } from '@rahino/ecommerce/util/sms/ecommerce-sms.service';
 
 @Injectable()
 export class PostageOrderService {
@@ -23,6 +24,7 @@ export class PostageOrderService {
     private readonly repository: typeof ECOrder,
     private orderQueryBuilder: OrderQueryBuilder,
     private orderUtilService: OrderUtilService,
+    private readonly smsService: ECommmerceSmsService,
     private readonly i18n: I18nService<I18nTranslations>,
   ) {}
 
@@ -97,6 +99,12 @@ export class PostageOrderService {
             },
           ),
         )
+        .include([
+          {
+            model: User,
+            as: 'user',
+          },
+        ])
         .build(),
     );
     if (!item) {
@@ -110,6 +118,12 @@ export class PostageOrderService {
     item.postReceipt = dto.postReceipt;
     item.deliveryDate = new Date();
     item = await item.save();
+
+    await this.smsService.sendByPost(
+      `${item.user.firstname};${item.user.lastname};اداره پست;${dto.postReceipt}`,
+      item.user.phoneNumber,
+    );
+
     return {
       result: item,
     };

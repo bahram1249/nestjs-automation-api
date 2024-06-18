@@ -41,7 +41,7 @@ export class ProductCommentController {
   @ApiOperation({ description: 'show all possible factors' })
   @Get('/possibleFactor/:productId')
   @HttpCode(HttpStatus.OK)
-  async possibleFactors(@Param('id') productId: bigint) {
+  async possibleFactors(@Param('productId') productId: bigint) {
     return await this.service.possibleFactors(productId);
   }
 

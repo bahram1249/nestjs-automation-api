@@ -72,6 +72,22 @@ export class ECommmerceSmsService {
     }
   }
 
+  async sendByPost(text: string, to: string) {
+    /*
+    {0} {1} عزیز، سفارش شما توسط {2} با کدپیگیری {3} با موفقیت ارسال شد
+    */
+    const activeSms =
+      (await this.config.get('ECOMMERCE_POST_SEND_SMS_CODE_STATUS')) == 'true';
+    if (activeSms == true) {
+      const body = this.config.get('ECOMMERCE_POST_SEND_SMS_CODE');
+      await this.smsService.sendMessage({
+        text: text,
+        to: to,
+        bodyId: body,
+      });
+    }
+  }
+
   async successfulPayment(text: string, to: string) {
     /*
     {0} {1} عزیز سفارش شما با شماره {2} در تاریخ {3} ثبت و پرداخت شد. جهیزان
