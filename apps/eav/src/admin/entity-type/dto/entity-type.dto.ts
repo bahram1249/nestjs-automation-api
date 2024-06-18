@@ -72,4 +72,14 @@ export class EntityTypeDto {
     description: 'metaDescription',
   })
   public metaDescription?: string;
+
+  @AutoMap()
+  @IsOptional()
+  @IsString()
+  @ApiProperty({
+    required: true,
+    type: String,
+    description: 'description',
+  })
+  public description?: string;
 }

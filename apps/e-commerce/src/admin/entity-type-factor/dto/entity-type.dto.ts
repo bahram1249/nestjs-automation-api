@@ -13,14 +13,4 @@ export class EntityTypeDto {
     description: 'entityTypeId',
   })
   entityTypeId: number;
-
-  @AutoMap()
-  @IsOptional()
-  @IsString()
-  @ApiProperty({
-    required: true,
-    type: String,
-    description: 'description',
-  })
-  public description?: string;
 }

@@ -34,6 +34,7 @@ import { EAVEntityAttributeValue } from '@rahino/database/models/eav/eav-entity-
 import { EAVAttribute } from '@rahino/database/models/eav/eav-attribute.entity';
 import { EAVAttributeValue } from '@rahino/database/models/eav/eav-attribute-value';
 import { InjectModel } from '@nestjs/sequelize';
+import { SortOrder } from '@rahino/query-filter';
 
 @Injectable()
 export class ProductQueryBuilderService {
@@ -535,12 +536,12 @@ export class ProductQueryBuilderService {
       .offset(filter.offset)
       .order({ orderBy: 'inventoryStatusId', sortOrder: 'ASC' });
     queryResultBuilder = await this.parseOrder(filter, queryResultBuilder);
-    // queryResultBuilder = queryResultBuilder.order([
-    //   { model: ECInventory, as: 'inventories' },
-    //   { model: ECVendor, as: 'vendor' },
-    //   'priorityOrder',
-    //   'asc',
-    // ]);
+    queryResultBuilder = queryResultBuilder.order([
+      { model: ECInventory, as: 'inventories' },
+      { model: ECInventoryPrice, as: 'firstPrice' },
+      'price',
+      'asc',
+    ]);
     return {
       resultQuery: queryResultBuilder.build(),
       countQuery: queryBuilder.build(),
@@ -579,12 +580,20 @@ export class ProductQueryBuilderService {
           }
         }
       }
+      console.log(orders);
       const orderItem: OrderItem = orders as OrderItem;
       queryBuilder = queryBuilder.order(orderItem);
     }
     if (filter.orderBy.startsWith('randomize')) {
       // this is very expensive
+      const orders = [];
+
+      let orderItemAssociation = { model: Attachment, as: 'attachments' };
+
+      orders.push(...[orderItemAssociation, 'id', 'ASC']);
+      const orderItemV2: OrderItem = orders as OrderItem;
       queryBuilder = queryBuilder.order(Sequelize.literal('NEWID()'));
+      queryBuilder = queryBuilder.order(orderItemV2);
     } else {
       queryBuilder = queryBuilder.order({
         orderBy: filter.orderBy,
