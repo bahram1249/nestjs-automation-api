@@ -90,6 +90,9 @@ import { ECVendorCommission } from './models/ecommerce-eav/ec-vendor-commision.e
 import { ECPaymentGatewayCommissionType } from './models/ecommerce-eav/ec-paymentgateway-commissiontype.entity';
 import { ECPaymentGatewayCommission } from './models/ecommerce-eav/ec-paymentgateway-commission.entity';
 import { ECEntityTypeFactor } from './models/ecommerce-eav/ec-entitytype-factor.entity';
+import { ECProductCommentStatus } from './models/ecommerce-eav/ec-comment-status.entity';
+import { ECProductComment } from './models/ecommerce-eav/ec-product-comment.entity';
+import { ECProductCommentFactor } from './models/ecommerce-eav/ec-product-comment-factor.entity';
 
 @Module({
   imports: [
@@ -176,6 +179,9 @@ import { ECEntityTypeFactor } from './models/ecommerce-eav/ec-entitytype-factor.
           ECPaymentGatewayCommissionType,
           ECPaymentGatewayCommission,
           ECEntityTypeFactor,
+          ECProductCommentStatus,
+          ECProductComment,
+          ECProductCommentFactor,
           Buffet,
           BuffetGallery,
           BuffetType,

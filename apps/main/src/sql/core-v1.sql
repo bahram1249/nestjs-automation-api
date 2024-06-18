@@ -3538,6 +3538,101 @@ END
 GO
 
 
+-- ec-productcommentstatuses-v1
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ec-productcommentstatuses-v1' 
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'SITE_NAME' AND [value] IN ('ecommerce'))
+		)
+BEGIN
+
+	CREATE TABLE ECProductCommentStatuses(
+		id								int								PRIMARY KEY,
+		[name]							nvarchar(256)					NOT NULL,
+		[createdAt]						datetimeoffset					NOT NULL,
+		[updatedAt]						datetimeoffset					NOT NULL,
+	);
+
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'ec-productcommentstatuses-v1', GETDATE(), GETDATE()
+END
+
+GO
+
+
+
+-- ec-productcomments-v1
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ec-productcomments-v1' 
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'SITE_NAME' AND [value] IN ('ecommerce'))
+		)
+BEGIN
+
+	CREATE TABLE ECProductComments(
+		id								bigint identity(1,1)			PRIMARY KEY,
+
+		entityId						bigint							NULL
+			CONSTRAINT FK_ECProductComments_EntityId
+				FOREIGN KEY REFERENCES EAVEntities(entityId),
+		statusId						int								NULL
+			CONSTRAINT FK_ECProductComments_StatusId
+				FOREIGN KEY REFERENCES ECProductCommentStatuses(id),
+		userId							bigint							NULL
+			CONSTRAINT FK_ECProductComments_UserId
+				FOREIGN KEY REFERENCES Users(id),
+		[description]					nvarchar(1024)					NULL,
+		isDeleted						bit								NULL,
+		replyId							bigint							NULL
+			CONSTRAINT FK_ECProductComments_ReplyId
+				FOREIGN KEY REFERENCES ECProductComments(id),
+		[createdAt]						datetimeoffset					NOT NULL,
+		[updatedAt]						datetimeoffset					NOT NULL,
+	);
+
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'ec-productcomments-v1', GETDATE(), GETDATE()
+END
+
+GO
+
+
+-- ec-productcommentfactors-v1
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ec-productcommentfactors-v1' 
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'SITE_NAME' AND [value] IN ('ecommerce'))
+		)
+BEGIN
+
+	CREATE TABLE ECProductCommentFactors(
+		id								bigint identity(1,1)			PRIMARY KEY,
+		commentId						bigint							NOT NULL
+			CONSTRAINT FK_ECProductCommentFactors_CommentId
+				FOREIGN KEY REFERENCES ECProductComments(id),
+		entityId						bigint							NOT NULL
+			CONSTRAINT FK_ECProductCommentFactors_EntityId
+				FOREIGN KEY REFERENCES EAVEntities(entityId),
+		factorId						int								NOT NULL
+			CONSTRAINT FK_ECProdutCommentFactors_FactorId
+				FOREIGN KEY REFERENCES ECEntityTypeFactors(id),
+		score							int								NOT NULL,
+		[createdAt]						datetimeoffset					NOT NULL,
+		[updatedAt]						datetimeoffset					NOT NULL,
+	);
+
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'ec-productcommentfactors-v1', GETDATE(), GETDATE()
+END
+
+GO
+
 
 
 
@@ -6057,8 +6152,24 @@ END
 
 GO
 
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ecommerce-commentstatuses-Data-v1' 
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'SITE_NAME' AND [value] IN ('ecommerce'))
+		)
+BEGIN
+	
+	INSERT INTO ECProductCommentStatuses(id, [name], createdAt, updatedAt)
+	VALUES (1, N'منتشر شده', GETDATE(), GETDATE())
+			,(2, N'منتشر نشده', GETDATE(), GETDATE())
+	
 
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'ecommerce-commentstatuses-Data-v1', GETDATE(), GETDATE()
+END
 
+GO
 
 
 
@@ -13591,6 +13702,7 @@ BEGIN
 	DECLARE @permissionSymbolGetAll nvarchar(512) = @groupName + '.getall';
 	DECLARE @permissionSymbolGetOne nvarchar(512) = @groupName + '.getone';
 	DECLARE @permissionSymbolCreate nvarchar(512) = @groupName + '.create';
+	DECLARE @permissionSymbolUpdate nvarchar(512) = @groupName + '.update';
 	DECLARE @permissionSymbolDelete nvarchar(512) = @groupName + '.delete';
 
 
@@ -13622,7 +13734,10 @@ BEGIN
 	OUTPUT inserted.id INTO @PermissionTemp(permissionId)
 	SELECT 'CREATE_' + @entityName, @permissionSymbolCreate, @groupId, GETDATE(), GETDATE()
 															 
-
+	INSERT INTO Permissions(permissionName ,permissionSymbol,permissionGroupId,  createdAt, updatedAt)
+	OUTPUT inserted.id INTO @PermissionTemp(permissionId)
+	SELECT 'UPDATE_' + @entityName, @permissionSymbolCreate, @groupId, GETDATE(), GETDATE()
+		
 															
 	INSERT INTO Permissions(permissionName ,permissionSymbol,permissionGroupId,  createdAt, updatedAt)
 	OUTPUT inserted.id INTO @PermissionTemp(permissionId)
