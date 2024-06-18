@@ -123,6 +123,7 @@ export class ProductService {
         'metaTitle',
         'metaKeywords',
         'metaDescription',
+        'weight',
       ])
       .include([
         {
@@ -396,6 +397,7 @@ export class ProductService {
           'metaTitle',
           'metaKeywords',
           'metaDescription',
+          'weight',
         ])
         .include([
           {
@@ -682,6 +684,7 @@ export class ProductService {
           'metaTitle',
           'metaKeywords',
           'metaDescription',
+          'weight',
         ])
         .include([
           {
@@ -1095,6 +1098,7 @@ export class ProductService {
           'metaTitle',
           'metaKeywords',
           'metaDescription',
+          'weight',
         ])
         .filter(
           Sequelize.where(
@@ -1327,6 +1331,7 @@ export class ProductService {
           'metaTitle',
           'metaKeywords',
           'metaDescription',
+          'weight',
         ])
         .include([
           {

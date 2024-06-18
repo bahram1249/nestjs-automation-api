@@ -518,6 +518,7 @@ export class ProductQueryBuilderService {
           'publishStatusId',
           'viewCount',
           'lastPrice',
+          'weight',
           'createdAt',
           'updatedAt',
         ];

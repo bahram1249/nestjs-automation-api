@@ -2183,6 +2183,28 @@ END
 
 GO
 
+
+-- ecommerce products
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ecommerce-products-v4' 
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'SITE_NAME' AND [value] IN ('ecommerce'))
+		)
+BEGIN
+
+	ALTER TABLE ECProducts
+		ADD [weight]				float(53)						NULL
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'ecommerce-products-v4', GETDATE(), GETDATE()
+END
+
+GO
+
+
+
+
 -- ecommerce variationprices
 IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ecommerce-variationprices-v1' 
 			)
@@ -13736,7 +13758,7 @@ BEGIN
 															 
 	INSERT INTO Permissions(permissionName ,permissionSymbol,permissionGroupId,  createdAt, updatedAt)
 	OUTPUT inserted.id INTO @PermissionTemp(permissionId)
-	SELECT 'UPDATE_' + @entityName, @permissionSymbolCreate, @groupId, GETDATE(), GETDATE()
+	SELECT 'UPDATE_' + @entityName, @permissionSymbolUpdate, @groupId, GETDATE(), GETDATE()
 		
 															
 	INSERT INTO Permissions(permissionName ,permissionSymbol,permissionGroupId,  createdAt, updatedAt)

@@ -139,4 +139,9 @@ export class ProductDto {
     description: 'metaDescription',
   })
   public metaDescription?: string;
+
+  @AutoMap()
+  @IsOptional()
+  @IsNumber()
+  weight?: number;
 }

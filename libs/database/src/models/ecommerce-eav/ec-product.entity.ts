@@ -16,7 +16,6 @@ import { User } from '../core/user.entity';
 import { AutoMap } from 'automapper-classes';
 import { EAVEntityAttributeValue } from '../eav/eav-entity-attribute-value.entity';
 import { ECInventory } from './ec-inventory.entity';
-import { Op, Sequelize } from 'sequelize';
 import { Attachment } from '../core/attachment.entity';
 import { EAVEntityPhoto } from '../eav/eav-entity-photo.entity';
 
@@ -188,4 +187,11 @@ export class ECProduct extends Model {
   })
   @AutoMap()
   metaDescription?: string;
+
+  @AutoMap()
+  @Column({
+    type: DataType.FLOAT,
+    allowNull: true,
+  })
+  weight?: number;
 }
