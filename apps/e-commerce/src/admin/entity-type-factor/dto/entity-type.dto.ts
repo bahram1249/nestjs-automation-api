@@ -1,6 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { AutoMap } from 'automapper-classes';
 import { Type } from 'class-transformer';
-import { IsInt, IsNumber } from 'class-validator';
+import { IsInt, IsNumber, IsOptional, IsString } from 'class-validator';
 
 export class EntityTypeDto {
   @IsInt()
@@ -12,4 +13,14 @@ export class EntityTypeDto {
     description: 'entityTypeId',
   })
   entityTypeId: number;
+
+  @AutoMap()
+  @IsOptional()
+  @IsString()
+  @ApiProperty({
+    required: true,
+    type: String,
+    description: 'description',
+  })
+  public description?: string;
 }

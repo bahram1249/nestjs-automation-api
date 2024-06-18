@@ -10,6 +10,8 @@ import {
 import { EAVEntityModel } from './eav-entity-model.entity';
 import { AutoMap } from 'automapper-classes';
 import { Attachment } from '../core/attachment.entity';
+import { IsOptional, IsString } from 'class-validator';
+import { ApiProperty } from '@nestjs/swagger';
 
 @Table({ tableName: 'EAVEntityTypes' })
 export class EAVEntityType extends Model {
@@ -98,4 +100,14 @@ export class EAVEntityType extends Model {
   })
   @AutoMap()
   metaDescription?: string;
+
+  @AutoMap()
+  @IsOptional()
+  @IsString()
+  @ApiProperty({
+    required: true,
+    type: String,
+    description: 'description',
+  })
+  public description?: string;
 }

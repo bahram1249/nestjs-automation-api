@@ -67,4 +67,11 @@ export class ECBrand extends Model {
   })
   @AutoMap()
   metaDescription?: string;
+
+  @AutoMap()
+  @Column({
+    type: DataType.STRING,
+    allowNull: true,
+  })
+  description?: string;
 }

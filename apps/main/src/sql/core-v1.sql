@@ -1431,6 +1431,23 @@ END
 
 GO
 
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'eav-entitytype-v4' 
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'SITE_NAME' AND [value] IN ('ecommerce'))
+		)
+BEGIN
+
+	ALTER TABLE EAVEntityTypes 
+		ADD [description]	nvarchar(max) NULL 
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'eav-entitytype-v4', GETDATE(), GETDATE()
+END
+
+GO
+
 
 IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'eav-attributetype-v1' 
 			)
@@ -1641,6 +1658,25 @@ BEGIN
 
 	INSERT INTO Migrations(version, createdAt, updatedAt)
 	SELECT 'ecommerce-brands-v3', GETDATE(), GETDATE()
+END
+
+GO
+
+
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ecommerce-brands-v4' 
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'SITE_NAME' AND [value] IN ('ecommerce'))
+		)
+BEGIN
+
+	ALTER TABLE ECBrands 
+		ADD [description]	nvarchar(max) NULL
+
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'ecommerce-brands-v4', GETDATE(), GETDATE()
 END
 
 GO
@@ -2125,7 +2161,7 @@ BEGIN
 			CONSTRAINT FK_ECProducts_BrandId
 				FOREIGN KEY REFERENCES ECBrands(id),
 		colorBased					bit							NULL,
-		description					ntext						NULL,
+		description					nvarchar(max)				NULL,
 		viewCount					bigint						NULL,
 		userId						bigint						NULL
 			CONSTRAINT FK_ECProducts_UserId
