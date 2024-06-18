@@ -40,6 +40,53 @@ export class ProductCommentService {
     private readonly i18n: I18nService<I18nTranslations>,
   ) {}
 
+  async possibleFactors(productId: bigint) {
+    const product = await this.productRepository.findOne(
+      new QueryOptionsBuilder()
+        .filter({ id: productId })
+        .filter(
+          Sequelize.where(
+            Sequelize.fn('isnull', Sequelize.col('ECProduct.isDeleted'), 0),
+            {
+              [Op.eq]: 0,
+            },
+          ),
+        )
+        .filter({ publishStatusId: PublishStatusEnum.publish })
+        .build(),
+    );
+    if (!product) {
+      throw new NotFoundException(
+        this.i18n.t('core.not_found_id', {
+          lang: I18nContext.current().lang,
+        }),
+      );
+    }
+
+    let queryOptions = new QueryOptionsBuilder()
+      .filter({ entityTypeId: product.entityTypeId })
+      .filter(
+        Sequelize.where(
+          Sequelize.fn(
+            'isnull',
+            Sequelize.col('ECEntityTypeFactor.isDeleted'),
+            0,
+          ),
+          {
+            [Op.eq]: 0,
+          },
+        ),
+      )
+      .build();
+
+    const count = await this.entityTypeFactorRepository.count(queryOptions);
+    const result = await this.entityTypeFactorRepository.findAll(queryOptions);
+    return {
+      result: result,
+      total: count,
+    };
+  }
+
   async findAll(productId: bigint, filter: ListFilter) {
     let queryBuilder = new QueryOptionsBuilder()
       .filter(

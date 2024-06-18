@@ -38,6 +38,14 @@ export class ProductCommentController {
 
   // public url
 
+  @ApiOperation({ description: 'show all possible factors' })
+  @Get('/possibleFactor/:productId')
+  @HttpCode(HttpStatus.OK)
+  async possibleFactors(@Param('id') productId: bigint) {
+    return await this.service.possibleFactors(productId);
+  }
+
+  // public url
   @ApiOperation({ description: 'show all product comments' })
   @Get('/product/:id')
   @ApiQuery({
