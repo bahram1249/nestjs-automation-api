@@ -3,7 +3,7 @@ import { AutoMap } from 'automapper-classes';
 import { IsNumber, Max, Min } from 'class-validator';
 import { i18nValidationMessage } from 'nestjs-i18n';
 
-export class EntityTypeFactorDto {
+export class UserEntityTypeFactorDto {
   @AutoMap()
   @IsNumber(
     {},

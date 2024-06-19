@@ -9,7 +9,7 @@ import {
   MinLength,
 } from 'class-validator';
 import { i18nValidationMessage } from 'nestjs-i18n';
-import { EntityTypeFactorDto } from './entity-type-factor.dto';
+import { UserEntityTypeFactorDto } from './entity-type-factor.dto';
 
 export class ProductCommentDto {
   @MinLength(3, {
@@ -33,5 +33,5 @@ export class ProductCommentDto {
 
   @IsArray()
   @IsOptional()
-  entityTypeFactors?: EntityTypeFactorDto[];
+  entityTypeFactors?: UserEntityTypeFactorDto[];
 }
