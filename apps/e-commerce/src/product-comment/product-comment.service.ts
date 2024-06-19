@@ -116,10 +116,24 @@ export class ProductCommentService {
       ])
       .include([
         {
-          attributes: ['id', 'description'],
+          attributes: [
+            'id',
+            'description',
+            'statusId',
+            'createdAt',
+            'updatedAt',
+          ],
           model: ECProductComment,
           as: 'replies',
           required: false,
+          include: [
+            {
+              attributes: ['id', 'name'],
+              model: ECProductCommentStatus,
+              as: 'status',
+              required: false,
+            },
+          ],
         },
         {
           attributes: ['id', 'name'],
@@ -128,7 +142,7 @@ export class ProductCommentService {
           required: false,
         },
         {
-          attributes: ['id', 'commnetId', 'factorId', 'score'],
+          attributes: ['id', 'commentId', 'factorId', 'score'],
           model: ECProductCommentFactor,
           as: 'commentFactors',
           include: [
@@ -139,6 +153,12 @@ export class ProductCommentService {
               required: false,
             },
           ],
+          required: false,
+        },
+        {
+          attributes: ['id', 'firstname', 'lastname'],
+          model: User,
+          as: 'user',
           required: false,
         },
       ])
