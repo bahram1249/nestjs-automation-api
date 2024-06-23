@@ -6231,6 +6231,26 @@ GO
 
 
 
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ecommerce-commentstatuses-Data-v2' 
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'SITE_NAME' AND [value] IN ('ecommerce'))
+		)
+BEGIN
+	
+	INSERT INTO ECProductCommentStatuses(id, [name], createdAt, updatedAt)
+	VALUES (3, N'پاسخ توسط ادمین', GETDATE(), GETDATE())
+	
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'ecommerce-commentstatuses-Data-v2', GETDATE(), GETDATE()
+END
+
+GO
+
+
+
 -- data takhfif
 -- buffetType
 IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'DiscountCoffe-buffetType-Data-v1' 

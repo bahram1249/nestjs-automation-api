@@ -102,12 +102,9 @@ export class EAVEntityType extends Model {
   metaDescription?: string;
 
   @AutoMap()
-  @IsOptional()
-  @IsString()
-  @ApiProperty({
-    required: true,
-    type: String,
-    description: 'description',
+  @Column({
+    type: DataType.STRING,
+    allowNull: true,
   })
   public description?: string;
 }
