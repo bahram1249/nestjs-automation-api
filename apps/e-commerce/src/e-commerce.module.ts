@@ -70,6 +70,7 @@ import { ProductCommentModule } from './product-comment/product-comment.module';
 import { AdminProductCommentModule } from './admin/product-comment/product-comment.module';
 import { ProductCommentStatusModule } from './admin/product-comment-status/product-comment-status.module';
 import { OrderStatusModule } from './admin/order-status/order-status.module';
+import { OrderShipmentWayModule } from './admin/order-shipmentway/order-shipmentway.module';
 
 @Module({
   imports: [
@@ -142,6 +143,7 @@ import { OrderStatusModule } from './admin/order-status/order-status.module';
     AdminProductCommentModule,
     ProductCommentStatusModule,
     OrderStatusModule,
+    OrderShipmentWayModule,
   ],
   providers: [
     {
