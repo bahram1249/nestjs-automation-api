@@ -44,7 +44,7 @@ export class CalculateCommentScoreService {
       );
     }
     // calculate score of factor, otherwise set 5 as default
-    const result = await this.factorRepository.findOne(
+    const result = await this.factorRepository.findAll(
       new QueryOptionsBuilder()
         .attributes([
           [
@@ -64,8 +64,8 @@ export class CalculateCommentScoreService {
         .raw(true)
         .build(),
     );
-    comment.score = result['score'];
-    comment.cntFactor = result['cntFactor'];
+    comment.score = result[0]['score'];
+    comment.cntFactor = result[0]['cntFactor'];
     comment = await comment.save();
     return await this.calcualteProductCommentScore(comment.entityId);
   }
@@ -79,7 +79,7 @@ export class CalculateCommentScoreService {
         'the product with this given id not founded!',
       );
     }
-    const comment = await this.repository.findOne(
+    const comment = await this.repository.findAll(
       new QueryOptionsBuilder()
         .attributes([
           [
@@ -97,8 +97,8 @@ export class CalculateCommentScoreService {
         .raw(true)
         .build(),
     );
-    product.score = comment['score'];
-    product.cntComment = comment['cntComment'];
+    product.score = comment[0]['score'];
+    product.cntComment = comment[0]['cntComment'];
     return await product.save();
   }
 }

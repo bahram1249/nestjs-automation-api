@@ -85,8 +85,8 @@ export class ProductCommentController {
   async rejectComment(
     @Param('id') commentId: bigint,
     @GetUser() user: User,
-    @Body() dto: ConfirmCommentDto,
+    //@Body() dto: ConfirmCommentDto,
   ) {
-    return await this.service.rejectComment(commentId, user, dto);
+    return await this.service.rejectComment(commentId, user);
   }
 }

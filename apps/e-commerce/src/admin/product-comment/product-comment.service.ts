@@ -171,7 +171,7 @@ export class ProductCommentService {
     };
   }
 
-  async rejectComment(commentId: bigint, user: User, dto: ConfirmCommentDto) {
+  async rejectComment(commentId: bigint, user: User) {
     let comment = await this.repository.findOne(
       new QueryOptionsBuilder()
         .filter({ id: commentId })
