@@ -23,6 +23,7 @@ export type I18nTranslations = {
         "address_postalcode": string;
         "date_is_invalid": string;
         "dont_access_to_this_vendor": string;
+        "neighborhood_must_be_select_it": string;
     };
     "validation": {
         "NOT_EMPTY": string;

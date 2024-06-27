@@ -15,6 +15,8 @@ import { User } from '@rahino/database/models/core/user.entity';
 import { ECProvince } from '@rahino/database/models/ecommerce-eav/ec-province.entity';
 import { ECCity } from '@rahino/database/models/ecommerce-eav/ec-city.entity';
 import { ECNeighborhood } from '@rahino/database/models/ecommerce-eav/ec-neighborhood.entity';
+import { I18nTranslations } from 'apps/main/src/generated/i18n.generated';
+import { I18nContext, I18nService } from 'nestjs-i18n';
 
 @Injectable()
 export class AddressService {
@@ -25,6 +27,7 @@ export class AddressService {
     @InjectModel(ECNeighborhood)
     private neighborhoodRepository: typeof ECNeighborhood,
     @InjectMapper() private readonly mapper: Mapper,
+    private readonly i18n: I18nService<I18nTranslations>,
   ) {}
 
   async findAll(user: User, filter: GetAddressDto) {
@@ -184,7 +187,11 @@ export class AddressService {
 
     if (city.neighborhoodBase === true) {
       if (!dto.neighborhoodId) {
-        throw new BadRequestException('neighborhood must be select it!');
+        throw new BadRequestException(
+          this.i18n.translate('ecommerce.neighborhood_must_be_select_it', {
+            lang: I18nContext.current().lang,
+          }),
+        );
       }
       const neighborhood = await this.neighborhoodRepository.findOne(
         new QueryOptionsBuilder()
