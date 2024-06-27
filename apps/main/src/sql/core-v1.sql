@@ -2239,6 +2239,25 @@ END
 GO
 
 
+-- ecommerce products
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ecommerce-products-v5' 
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'SITE_NAME' AND [value] IN ('ecommerce'))
+		)
+BEGIN
+
+	ALTER TABLE ECProducts
+		ADD score	float(53)  NULL,
+			cntComment		int null
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'ecommerce-products-v5', GETDATE(), GETDATE()
+END
+
+GO
+
 
 
 -- ecommerce variationprices
@@ -13852,6 +13871,148 @@ BEGIN
 
 	INSERT INTO Migrations(version, createdAt, updatedAt)
 	SELECT 'CORE-Permissions-Data-v53', GETDATE(), GETDATE()
+END
+
+GO
+
+
+
+-- ecommerce/admin/productcomments
+IF NOT EXISTS ((SELECT 1 FROM Migrations WHERE version = 'CORE-Permissions-Data-v54' 
+			))
+	AND EXISTS (
+		SELECT 1 FROM Settings WHERE 1=1
+		AND ([key] = 'SITE_NAME' AND [value] IN ('ecommerce'))
+	)
+BEGIN
+	
+	DECLARE @roleId int = (SELECT TOP 1 id FROM Roles WHERE static_id = 1)
+	DECLARE @userId bigint = (SELECT TOP 1 id FROM Users WHERE static_id = 1)
+
+	DECLARE @GroupTemp TABLE (
+		gorupId int
+	);
+
+	DECLARE @groupId int = null;
+
+	DECLARE @entityName nvarchar(256) = N'ProductComments'
+	DECLARE @groupName nvarchar(256) = N'ecommerce.admin.productcomments'
+	DECLARE @findParentMenu bit = 0;
+	DECLARE @parentMenuName nvarchar(256) = N'کامنت و بازخورد'
+	DECLARE @menuName nvarchar(256) = N'کامنت ها'
+	DECLARE @menuUrl nvarchar(512) = N'/admin/ecommerce/productComments'
+
+	DECLARE @permissionSymbolShowMenu nvarchar(512) = @groupName + '.showmenu';
+	DECLARE @permissionSymbolGetAll nvarchar(512) = @groupName + '.getall';
+	DECLARE @permissionSymbolGetOne nvarchar(512) = @groupName + '.getone';
+	DECLARE @permissionSymbolConfirmComment nvarchar(512) = @groupName + '.confirmcomment';
+	DECLARE @permissionSymbolRejectComment nvarchar(512) = @groupName + '.rejectcomment';
+	
+
+
+
+	-- permission groups
+	INSERT INTO PermissionGroups(permissionGroupName, [visibility], createdAt, updatedAt)
+	OUTPUT inserted.id INTO @GroupTemp(gorupId)
+	SELECT @groupName, 1, GETDATE(), GETDATE();
+
+	SELECT  @groupId = gorupId FROM @GroupTemp
+
+
+	-- permissions
+
+	
+	DECLARE @PermissionTemp TABLE (
+		permissionId int
+	);
+
+	INSERT INTO Permissions(permissionName ,permissionSymbol,permissionGroupId,  createdAt, updatedAt)
+	OUTPUT inserted.id INTO @PermissionTemp(permissionId)
+	SELECT 'GETALL_' + @entityName, @permissionSymbolGetAll, @groupId, GETDATE(), GETDATE()
+															
+	INSERT INTO Permissions(permissionName ,permissionSymbol,permissionGroupId,  createdAt, updatedAt)
+	OUTPUT inserted.id INTO @PermissionTemp(permissionId)
+	SELECT 'GETONE_' + @entityName, @permissionSymbolGetOne, @groupId, GETDATE(), GETDATE()
+															
+	INSERT INTO Permissions(permissionName ,permissionSymbol,permissionGroupId,  createdAt, updatedAt)
+	OUTPUT inserted.id INTO @PermissionTemp(permissionId)
+	SELECT 'ConfrimComment_' + @entityName, @permissionSymbolConfirmComment, @groupId, GETDATE(), GETDATE()
+	
+
+	INSERT INTO Permissions(permissionName ,permissionSymbol,permissionGroupId,  createdAt, updatedAt)
+	OUTPUT inserted.id INTO @PermissionTemp(permissionId)
+	SELECT 'RejectComment_' + @entityName, @permissionSymbolRejectComment, @groupId, GETDATE(), GETDATE()
+
+	-- CRUD THIS Enity FOR super-admin
+	INSERT INTO RolePermissions(roleId, permissionId, createdAt, updatedAt)
+	SELECT @roleId, permissionId, GETDATE(), GETDATE()
+	FROM @PermissionTemp
+
+	DELETE FROM @PermissionTemp
+
+	INSERT INTO Permissions(permissionName ,permissionSymbol, permissionGroupId,createdAt, updatedAt)
+	OUTPUT inserted.id INTO @PermissionTemp(permissionId)
+	SELECT 'SHOWMENU_' + @entityName, @permissionSymbolShowMenu, @groupId,GETDATE(), GETDATE()
+
+	INSERT INTO RolePermissions(roleId, permissionId, createdAt, updatedAt)
+	SELECT @roleId, permissionId, GETDATE(), GETDATE()
+	FROM @PermissionTemp
+
+	DECLARE @permissionId int = null
+	SELECT @permissionId = permissionId FROM @PermissionTemp
+
+
+
+
+	DECLARE @parentMenuId int = null
+	
+
+
+	IF @findParentMenu = 0
+	BEGIN
+		-- INSERT ParentMenu
+		DECLARE @ParentMenuTemp TABLE (
+			menuId int
+		);
+
+		INSERT INTO Menus(title, url, className, visibility, createdAt, updatedAt)
+		OUTPUT inserted.id INTO @ParentMenuTemp(menuId)
+		SELECT @parentMenuName, null, null, null, GETDATE(), GETDATE()
+
+		SELECT @parentMenuId = menuId FROM @ParentMenuTemp
+
+	END
+	ELSE
+	BEGIN
+		SELECT @parentMenuId = id
+		FROM Menus
+		WHERE title = @parentMenuName
+	END
+
+	IF @parentMenuId IS NOT NULL
+		AND NOT EXISTS (SELECT 1 FROM PermissionMenus WHERE permissionId = @permissionId AND menuId = @parentMenuId)
+	BEGIN
+		INSERT INTO PermissionMenus(permissionId, menuId, createdAt, updatedAt)
+		SELECT @permissionId, @parentMenuId, getdate(), getdate()
+		
+	END
+
+	DECLARE @MenuTemp TABLE (
+			menuId int
+		);
+	DECLARE @menuId int = null
+
+	INSERT INTO Menus(title, url, parentMenuId, className, visibility, createdAt, updatedAt)
+	OUTPUT inserted.id INTO @MenuTemp(menuId)
+	SELECT @menuName, @menuUrl, @parentMenuId,null, null, GETDATE(), GETDATE()
+
+	SELECT @menuId = menuId FROM @MenuTemp
+
+	INSERT INTO PermissionMenus(permissionId, menuId, createdAt, updatedAt)
+	SELECT @permissionId, @menuId, getdate(), getdate()
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'CORE-Permissions-Data-v54', GETDATE(), GETDATE()
 END
 
 GO

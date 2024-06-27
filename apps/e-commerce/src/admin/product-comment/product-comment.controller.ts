@@ -64,7 +64,7 @@ export class ProductCommentController {
 
   @ApiOperation({ description: 'confirm comment by id' })
   @CheckPermission({
-    permissionSymbol: 'ecommerce.admin.productcomments.condfirmcomment',
+    permissionSymbol: 'ecommerce.admin.productcomments.confirmcomment',
   })
   @Patch('/confirmComment/:id')
   @HttpCode(HttpStatus.OK)

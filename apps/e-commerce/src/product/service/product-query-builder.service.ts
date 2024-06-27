@@ -592,7 +592,9 @@ export class ProductQueryBuilderService {
         { type: QueryTypes.SELECT, raw: true },
       );
       const offset = Math.round(offsetRandom[0]['offset']);
-      queryBuilder = queryBuilder.offset(offset);
+      queryBuilder = queryBuilder
+        .offset(offset)
+        .filter({ inventoryStatusId: InventoryStatusEnum.available });
     } else {
       queryBuilder = queryBuilder.order({
         orderBy: filter.orderBy,
