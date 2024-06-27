@@ -54,7 +54,7 @@ export class ProductCommentService {
       ])
       .include([
         {
-          attributes: ['id', 'title'],
+          attributes: ['id', 'name'],
           model: ECProductCommentStatus,
           as: 'status',
           required: false,
@@ -123,7 +123,7 @@ export class ProductCommentService {
       ])
       .include([
         {
-          attributes: ['id', 'title'],
+          attributes: ['id', 'name'],
           model: ECProductCommentStatus,
           as: 'status',
           required: false,
