@@ -25,7 +25,7 @@ import { CheckPermission } from '@rahino/permission-checker/decorator';
 import { ConfirmCommentDto, GetProductCommentDto } from './dto';
 import { ProductCommentService } from './product-comment.service';
 
-@ApiTags('Product-Comment')
+@ApiTags('Product-Comment-Admin')
 @UseGuards(JwtGuard, PermissionGuard)
 @ApiBearerAuth()
 @UseInterceptors(JsonResponseTransformInterceptor)
