@@ -68,6 +68,7 @@ import { InventoryStatusModule } from './admin/inventory-status/inventory-status
 import { EntityTypeFactorModule } from './admin/entity-type-factor/entity-type-factor.module';
 import { ProductCommentModule } from './product-comment/product-comment.module';
 import { AdminProductCommentModule } from './admin/product-comment/product-comment.module';
+import { ProductCommentStatusModule } from './admin/product-comment-status/product-comment-status.module';
 
 @Module({
   imports: [
@@ -138,6 +139,7 @@ import { AdminProductCommentModule } from './admin/product-comment/product-comme
     EntityTypeFactorModule,
     ProductCommentModule,
     AdminProductCommentModule,
+    ProductCommentStatusModule,
   ],
   providers: [
     {
