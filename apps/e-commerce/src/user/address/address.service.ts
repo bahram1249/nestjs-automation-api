@@ -298,7 +298,11 @@ export class AddressService {
 
     if (city.neighborhoodBase === true) {
       if (!dto.neighborhoodId) {
-        throw new BadRequestException('neighborhood must be select it!');
+        throw new BadRequestException(
+          this.i18n.translate('ecommerce.neighborhood_must_be_select_it', {
+            lang: I18nContext.current().lang,
+          }),
+        );
       }
       const neighborhood = await this.neighborhoodRepository.findOne(
         new QueryOptionsBuilder()
@@ -447,7 +451,11 @@ export class AddressService {
 
     if (city.neighborhoodBase === true) {
       if (!dto.neighborhoodId) {
-        throw new BadRequestException('neighborhood must be select it!');
+        throw new BadRequestException(
+          this.i18n.translate('ecommerce.neighborhood_must_be_select_it', {
+            lang: I18nContext.current().lang,
+          }),
+        );
       }
       const neighborhood = await this.neighborhoodRepository.findOne(
         new QueryOptionsBuilder()
