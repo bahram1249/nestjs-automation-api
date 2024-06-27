@@ -6,6 +6,7 @@ import {
   Op,
   Order,
   OrderItem,
+  QueryTypes,
   Sequelize,
 } from 'sequelize';
 import { GetProductDto } from '../dto';
@@ -33,14 +34,15 @@ import * as _ from 'lodash';
 import { EAVEntityAttributeValue } from '@rahino/database/models/eav/eav-entity-attribute-value.entity';
 import { EAVAttribute } from '@rahino/database/models/eav/eav-attribute.entity';
 import { EAVAttributeValue } from '@rahino/database/models/eav/eav-attribute-value';
-import { InjectModel } from '@nestjs/sequelize';
-import { SortOrder } from '@rahino/query-filter';
+import { InjectConnection, InjectModel } from '@nestjs/sequelize';
 
 @Injectable()
 export class ProductQueryBuilderService {
   constructor(
     @InjectModel(EAVEntityType)
     private readonly entityTypeRepository: typeof EAVEntityType,
+    @InjectConnection()
+    private readonly sequelize: Sequelize,
   ) {}
   async findAllAndCountQuery(
     filter: GetProductDto,
@@ -580,20 +582,17 @@ export class ProductQueryBuilderService {
           }
         }
       }
-      console.log(orders);
       const orderItem: OrderItem = orders as OrderItem;
       queryBuilder = queryBuilder.order(orderItem);
     }
     if (filter.orderBy.startsWith('randomize')) {
-      // this is very expensive
-      const orders = [];
-
-      let orderItemAssociation = { model: Attachment, as: 'attachments' };
-
-      orders.push(...[orderItemAssociation, 'id', 'ASC']);
-      const orderItemV2: OrderItem = orders as OrderItem;
-      queryBuilder = queryBuilder.order(Sequelize.literal('NEWID()'));
-      queryBuilder = queryBuilder.order(orderItemV2);
+      const offsetRandom = await this.sequelize.query(
+        `SELECT RAND(CHECKSUM(NEWID()))*SUM([rows]) as offset FROM sys.partitions
+        WHERE index_id IN (0, 1) AND [object_id]=OBJECT_ID('dbo.ECProducts')`,
+        { type: QueryTypes.SELECT, raw: true },
+      );
+      const offset = Math.round(offsetRandom[0]['offset']);
+      queryBuilder = queryBuilder.offset(offset);
     } else {
       queryBuilder = queryBuilder.order({
         orderBy: filter.orderBy,
