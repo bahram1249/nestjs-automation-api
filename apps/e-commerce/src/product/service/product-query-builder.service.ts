@@ -586,11 +586,18 @@ export class ProductQueryBuilderService {
       queryBuilder = queryBuilder.order(orderItem);
     }
     if (filter.orderBy.startsWith('randomize')) {
+      // const offsetRandom = await this.sequelize.query(
+      //   `SELECT RAND(CHECKSUM(NEWID()))*SUM([rows]) as offset FROM sys.partitions
+      //   WHERE index_id IN (0, 1) AND [object_id]=OBJECT_ID('dbo.ECProducts')`,
+      //   { type: QueryTypes.SELECT, raw: true },
+      // );
+
       const offsetRandom = await this.sequelize.query(
-        `SELECT RAND(CHECKSUM(NEWID()))*SUM([rows]) as offset FROM sys.partitions
-        WHERE index_id IN (0, 1) AND [object_id]=OBJECT_ID('dbo.ECProducts')`,
+        `SELECT RAND(CHECKSUM(NEWID()))* count(*) as offset FROM ECProducts
+        WHERE inventoryStatusId = ${InventoryStatusEnum.available}`,
         { type: QueryTypes.SELECT, raw: true },
       );
+
       const offset = Math.round(offsetRandom[0]['offset']);
       queryBuilder = queryBuilder
         .offset(offset)
