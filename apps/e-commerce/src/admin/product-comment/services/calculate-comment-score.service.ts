@@ -1,0 +1,104 @@
+import { Injectable, InternalServerErrorException } from '@nestjs/common';
+import { InjectModel } from '@nestjs/sequelize';
+import { ECProductCommentFactor } from '@rahino/database/models/ecommerce-eav/ec-product-comment-factor.entity';
+import { ECProductComment } from '@rahino/database/models/ecommerce-eav/ec-product-comment.entity';
+import { ECProduct } from '@rahino/database/models/ecommerce-eav/ec-product.entity';
+import { ProductCommentStatusEnum } from '@rahino/ecommerce/util/enum';
+import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
+import { Op } from 'sequelize';
+import { Sequelize } from 'sequelize';
+
+@Injectable()
+export class CalculateCommentScoreService {
+  constructor(
+    @InjectModel(ECProductComment)
+    private readonly repository: typeof ECProductComment,
+    @InjectModel(ECProductCommentFactor)
+    private readonly factorRepository: typeof ECProductCommentFactor,
+    @InjectModel(ECProduct)
+    private readonly productRepository: typeof ECProduct,
+  ) {}
+
+  async calculateCommentScore(commentId: bigint) {
+    let comment = await this.repository.findOne(
+      new QueryOptionsBuilder()
+        .filter({ id: commentId })
+        .filter({ statusId: ProductCommentStatusEnum.confirm })
+        .filter(
+          Sequelize.where(
+            Sequelize.fn(
+              'isnull',
+              Sequelize.col('ECProductComment.isDeleted'),
+              0,
+            ),
+            {
+              [Op.eq]: 0,
+            },
+          ),
+        )
+        .build(),
+    );
+    if (!comment) {
+      throw new InternalServerErrorException(
+        'the comment with this given id not founded!',
+      );
+    }
+    // calculate score of factor, otherwise set 5 as default
+    const result = await this.factorRepository.findOne(
+      new QueryOptionsBuilder()
+        .attributes([
+          [
+            Sequelize.fn(
+              'isnull',
+              Sequelize.fn(
+                'avg',
+                Sequelize.col('ECProductCommentFactor.score'),
+              ),
+              5,
+            ),
+            'score',
+          ],
+          [Sequelize.fn('count', '*'), 'cntFactor'],
+        ])
+        .filter({ commentId: comment.id })
+        .raw(true)
+        .build(),
+    );
+    comment.score = result['score'];
+    comment.cntFactor = result['cntFactor'];
+    comment = await comment.save();
+    return await this.calcualteProductCommentScore(comment.entityId);
+  }
+
+  async calcualteProductCommentScore(productId: bigint) {
+    let product = await this.productRepository.findOne(
+      new QueryOptionsBuilder().filter({ id: productId }).build(),
+    );
+    if (!product) {
+      throw new InternalServerErrorException(
+        'the product with this given id not founded!',
+      );
+    }
+    const comment = await this.repository.findOne(
+      new QueryOptionsBuilder()
+        .attributes([
+          [
+            Sequelize.fn(
+              'isnull',
+              Sequelize.fn('avg', Sequelize.col('ECProductComment.score')),
+              5,
+            ),
+            'score',
+          ],
+          [Sequelize.fn('count', '*'), 'cntComment'],
+        ])
+        .filter({ entityId: product.id })
+        .filter({ statusId: ProductCommentStatusEnum.confirm })
+        .raw(true)
+        .build(),
+    );
+    product.score = comment['score'];
+    product.cntComment = comment['cntComment'];
+    return await product.save();
+  }
+}

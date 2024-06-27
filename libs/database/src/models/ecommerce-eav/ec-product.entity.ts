@@ -194,4 +194,15 @@ export class ECProduct extends Model {
     allowNull: true,
   })
   weight?: number;
+
+  @Column({
+    type: DataType.FLOAT,
+    allowNull: true,
+  })
+  score?: number;
+  @Column({
+    type: DataType.INTEGER,
+    allowNull: true,
+  })
+  cntComment?: number;
 }

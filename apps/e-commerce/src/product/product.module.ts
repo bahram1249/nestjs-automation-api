@@ -44,6 +44,7 @@ import { EAVEntityType } from '@rahino/database/models/eav/eav-entity-type.entit
       ECInventoryStatus,
       EAVEntityType,
     ]),
+    SequelizeModule,
   ],
   controllers: [ProductController],
   providers: [

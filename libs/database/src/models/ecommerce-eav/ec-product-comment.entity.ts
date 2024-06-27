@@ -80,4 +80,15 @@ export class ECProductComment extends Model {
     foreignKey: 'commentId',
   })
   commentFactors?: ECProductCommentFactor[];
+
+  @Column({
+    type: DataType.FLOAT,
+    allowNull: true,
+  })
+  score?: number;
+  @Column({
+    type: DataType.INTEGER,
+    allowNull: true,
+  })
+  cntFactor?: number;
 }
