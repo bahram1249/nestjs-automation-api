@@ -12055,6 +12055,9 @@ BEGIN
 	DECLARE @permissionSymbolGetOne nvarchar(512) = @groupName + '.getone';
 	DECLARE @permissionSymbolRemoveDetail nvarchar(512) = @groupName + '.removedetail';
 	DECLARE @permissionSymbolDecreaseDetail nvarchar(512) = @groupName + '.decreasedetail';
+	DECLARE @permissionSymbolChangeShipmentWay nvarchar(512) = @groupName + '.changeshipmentway';
+	DECLARE @permissionSymbolChangeOrderStatus nvarchar(512) = @groupName + '.changeorderstatus';
+
 	DECLARE @permissionSymbolDelete nvarchar(512) = @groupName + '.delete';
 
 
@@ -12090,6 +12093,20 @@ BEGIN
 	INSERT INTO Permissions(permissionName ,permissionSymbol,permissionGroupId,  createdAt, updatedAt)
 	OUTPUT inserted.id INTO @PermissionTemp(permissionId)
 	SELECT 'DecreaseDetail_' + @entityName, @permissionSymbolDecreaseDetail, @groupId, GETDATE(), GETDATE()
+
+
+	
+
+	INSERT INTO Permissions(permissionName ,permissionSymbol,permissionGroupId,  createdAt, updatedAt)
+	OUTPUT inserted.id INTO @PermissionTemp(permissionId)
+	SELECT 'ChangeShipmentWay_' + @entityName, @permissionSymbolChangeShipmentWay, @groupId, GETDATE(), GETDATE()
+
+
+	
+
+	INSERT INTO Permissions(permissionName ,permissionSymbol,permissionGroupId,  createdAt, updatedAt)
+	OUTPUT inserted.id INTO @PermissionTemp(permissionId)
+	SELECT 'ChangeOrderStatus_' + @entityName, @permissionSymbolChangeOrderStatus, @groupId, GETDATE(), GETDATE()
 
 	
 	

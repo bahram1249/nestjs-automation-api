@@ -1,5 +1,6 @@
 import {
   BadRequestException,
+  ForbiddenException,
   Injectable,
   InternalServerErrorException,
   NotFoundException,
@@ -23,6 +24,9 @@ import { RoleUtilService } from '@rahino/core/user/role-util/role-util.service';
 import { UserVendorService } from '@rahino/ecommerce/user/vendor/user-vendor.service';
 import { OrderUtilService } from '../utilOrder/service/order-util.service';
 import { FinalizedPaymentService } from '@rahino/ecommerce/user/payment/util/finalized-payment/finalized-payment.service';
+import { ChangeOrderStatusDto, ChangeShipmentWayDto } from './dto';
+import { ECOrderStatus } from '@rahino/database/models/ecommerce-eav/ec-order-status.entity';
+import { ECOrderShipmentWay } from '@rahino/database/models/ecommerce-eav/ec-order-shipmentway.entity';
 
 @Injectable()
 export class TotalOrderService {
@@ -37,6 +41,11 @@ export class TotalOrderService {
     private readonly paymentRepository: typeof ECPayment,
     @InjectModel(ECPaymentGateway)
     private readonly paymentGatewayRepository: typeof ECPaymentGateway,
+    @InjectModel(ECOrderStatus)
+    private readonly orderStatusRepository: typeof ECOrderStatus,
+    @InjectModel(ECOrderShipmentWay)
+    private readonly orderShipmentWayRepository: typeof ECOrderShipmentWay,
+
     private orderQueryBuilder: OrderQueryBuilder,
     private readonly snapPayService: SnapPayService,
     private readonly roleUtilService: RoleUtilService,
@@ -572,6 +581,70 @@ export class TotalOrderService {
 
     return {
       result: 'ok',
+    };
+  }
+
+  async changeOrderStatus(id: bigint, dto: ChangeOrderStatusDto) {
+    const orderStatus = await this.orderStatusRepository.findOne(
+      new QueryOptionsBuilder().filter({ id: dto.orderStatusId }).build(),
+    );
+    if (!orderStatus) {
+      throw new ForbiddenException(
+        "you don't have permitted to operate this function",
+      );
+    }
+    let order = await this.repository.findOne(
+      new QueryOptionsBuilder()
+        .filter({ id: id })
+        .filter(
+          Sequelize.where(
+            Sequelize.fn('isnull', Sequelize.col('ECOrder.isDeleted'), 0),
+            {
+              [Op.eq]: 0,
+            },
+          ),
+        )
+        .build(),
+    );
+    if (!order) {
+      throw new NotFoundException('the order with this given id not founded!');
+    }
+    order.orderStatusId = dto.orderStatusId;
+    order = await order.save();
+    return {
+      result: order,
+    };
+  }
+
+  async changeShipmentWay(id: bigint, dto: ChangeShipmentWayDto) {
+    const shipmentway = await this.orderShipmentWayRepository.findOne(
+      new QueryOptionsBuilder().filter({ id: dto.shipmentWayId }).build(),
+    );
+    if (!shipmentway) {
+      throw new ForbiddenException(
+        "you don't have permitted to operate this function",
+      );
+    }
+    let order = await this.repository.findOne(
+      new QueryOptionsBuilder()
+        .filter({ id: id })
+        .filter(
+          Sequelize.where(
+            Sequelize.fn('isnull', Sequelize.col('ECOrder.isDeleted'), 0),
+            {
+              [Op.eq]: 0,
+            },
+          ),
+        )
+        .build(),
+    );
+    if (!order) {
+      throw new NotFoundException('the order with this given id not founded!');
+    }
+    order.orderShipmentWayId = dto.shipmentWayId;
+    order = await order.save();
+    return {
+      result: order,
     };
   }
 }

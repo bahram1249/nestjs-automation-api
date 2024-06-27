@@ -6,12 +6,14 @@ import {
 } from '@nestjs/swagger';
 import { TotalOrderService } from './total-order.service';
 import {
+  Body,
   Controller,
   Delete,
   Get,
   HttpCode,
   HttpStatus,
   Param,
+  Patch,
   Query,
   UseGuards,
   UseInterceptors,
@@ -23,6 +25,7 @@ import { User } from '@rahino/database/models/core/user.entity';
 import { PermissionGuard } from '@rahino/permission-checker/guard';
 import { CheckPermission } from '@rahino/permission-checker/decorator';
 import { ListFilter } from '@rahino/query-filter';
+import { ChangeOrderStatusDto, ChangeShipmentWayDto } from './dto';
 
 @ApiTags('Total-Orders')
 @UseGuards(JwtGuard, PermissionGuard)
@@ -85,5 +88,33 @@ export class TotalOrderController {
   @HttpCode(HttpStatus.OK)
   async removeById(@Param('id') id: bigint, @GetUser() user: User) {
     return await this.service.removeById(id);
+  }
+
+  @ApiOperation({ description: 'change shipment way order by given id' })
+  @CheckPermission({
+    permissionSymbol: 'ecommerce.admin.totalorders.changeshipmentway',
+  })
+  @Patch('/changeShipmentWay/:id')
+  @HttpCode(HttpStatus.OK)
+  async changeShipmentWay(
+    @Param('id') id: bigint,
+    @GetUser() user: User,
+    @Body() dto: ChangeShipmentWayDto,
+  ) {
+    return await this.service.changeShipmentWay(id, dto);
+  }
+
+  @ApiOperation({ description: 'change order status by given id' })
+  @CheckPermission({
+    permissionSymbol: 'ecommerce.admin.totalorders.changeorderstatus',
+  })
+  @Patch('/changeOrderStatus/:id')
+  @HttpCode(HttpStatus.OK)
+  async changeOrderStatus(
+    @Param('id') id: bigint,
+    @GetUser() user: User,
+    @Body() dto: ChangeOrderStatusDto,
+  ) {
+    return await this.service.changeOrderStatus(id, dto);
   }
 }

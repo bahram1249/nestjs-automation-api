@@ -13,6 +13,8 @@ import { ECPaymentGateway } from '@rahino/database/models/ecommerce-eav/ec-payme
 import { RoleUtilModule } from '@rahino/core/user/role-util/role-util.module';
 import { UserVendorModule } from '@rahino/ecommerce/user/vendor/user-vendor.module';
 import { FinalizedPaymentModule } from '@rahino/ecommerce/user/payment/util/finalized-payment/finalized-payment.module';
+import { ECOrderStatus } from '@rahino/database/models/ecommerce-eav/ec-order-status.entity';
+import { ECOrderShipmentWay } from '@rahino/database/models/ecommerce-eav/ec-order-shipmentway.entity';
 
 @Module({
   imports: [
@@ -23,6 +25,8 @@ import { FinalizedPaymentModule } from '@rahino/ecommerce/user/payment/util/fina
       ECOrderDetail,
       ECPayment,
       ECPaymentGateway,
+      ECOrderStatus,
+      ECOrderShipmentWay,
     ]),
     SequelizeModule,
     UtilOrderModule,
