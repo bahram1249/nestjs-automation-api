@@ -11,6 +11,7 @@ import { EAVEntity } from '../eav/eav-entity.entity';
 import { ECProductCommentStatus } from './ec-comment-status.entity';
 import { User } from '../core/user.entity';
 import { ECProductCommentFactor } from './ec-product-comment-factor.entity';
+import { ECProduct } from './ec-product.entity';
 @Table({ tableName: 'ECProductComments' })
 export class ECProductComment extends Model {
   @Column({
@@ -23,11 +24,11 @@ export class ECProductComment extends Model {
     type: DataType.BIGINT,
     allowNull: true,
   })
-  @ForeignKey(() => EAVEntity)
+  @ForeignKey(() => ECProduct)
   entityId?: bigint;
 
-  @BelongsTo(() => EAVEntity, { as: 'entity', foreignKey: 'entityId' })
-  entity?: EAVEntity;
+  @BelongsTo(() => ECProduct, { as: 'product', foreignKey: 'entityId' })
+  product?: ECProduct;
 
   @Column({
     type: DataType.INTEGER,

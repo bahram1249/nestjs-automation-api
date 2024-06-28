@@ -15,6 +15,7 @@ import { ProductCommentStatusEnum } from '@rahino/ecommerce/util/enum/product-co
 import { SCORE_COMMENT_JOB, SCORE_COMMENT_QUEUE } from './constants';
 import { InjectQueue } from '@nestjs/bullmq';
 import { Queue } from 'bullmq';
+import { ECProduct } from '@rahino/database/models/ecommerce-eav/ec-product.entity';
 
 @Injectable()
 export class ProductCommentService {
@@ -57,6 +58,12 @@ export class ProductCommentService {
           attributes: ['id', 'name'],
           model: ECProductCommentStatus,
           as: 'status',
+          required: false,
+        },
+        {
+          attributes: ['id', 'title', 'sku'],
+          model: ECProduct,
+          as: 'product',
           required: false,
         },
         {
@@ -126,6 +133,12 @@ export class ProductCommentService {
           attributes: ['id', 'name'],
           model: ECProductCommentStatus,
           as: 'status',
+          required: false,
+        },
+        {
+          attributes: ['id', 'title', 'sku'],
+          model: ECProduct,
+          as: 'product',
           required: false,
         },
         {
