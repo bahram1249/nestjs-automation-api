@@ -522,6 +522,8 @@ export class ProductQueryBuilderService {
           'viewCount',
           'lastPrice',
           'weight',
+          'cntComment',
+          'score',
           'createdAt',
           'updatedAt',
         ];
