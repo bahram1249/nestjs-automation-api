@@ -15,7 +15,7 @@ export class ProductCommentDto {
   @MinLength(3, {
     message: i18nValidationMessage<I18nTranslations>('validation.MIN'),
   })
-  @MaxLength(256, {
+  @MaxLength(1024, {
     message: i18nValidationMessage<I18nTranslations>('validation.MAX'),
   })
   @IsNotEmpty({
