@@ -60,8 +60,13 @@ export class VendorSaleService {
       .init(false)
       .nonDeleted()
       .onlyPaid()
+      .includeInventoryPrice()
       .addBeginDate(filter.beginDate)
       .addEndDate(filter.endDate);
+
+    if (filter.variationPriceId) {
+      queryBuilder = queryBuilder.addVariationPriceId(filter.variationPriceId);
+    }
 
     if (filter.vendorId) {
       queryBuilder = queryBuilder.onlyVendor(filter.vendorId);
@@ -113,7 +118,7 @@ export class VendorSaleService {
       .includeProduct()
       .includeInventory()
       .includeVendor()
-      .includeInventoryPrice()
+
       .offset(filter.offset)
       .limit(filter.limit);
 
@@ -156,11 +161,16 @@ export class VendorSaleService {
       .init(true)
       .nonDeleted()
       .onlyPaid()
+      .includeInventoryPrice()
       .addBeginDate(filter.beginDate)
       .addEndDate(filter.endDate);
 
     if (filter.vendorId) {
       queryBuilder = queryBuilder.onlyVendor(filter.vendorId);
+    }
+
+    if (filter.variationPriceId) {
+      queryBuilder = queryBuilder.addVariationPriceId(filter.variationPriceId);
     }
 
     queryBuilder = queryBuilder
@@ -247,7 +257,6 @@ export class VendorSaleService {
           'profitAmount',
         ],
       ])
-      .includeInventoryPrice()
       .rawQuery(true);
 
     const findOptions = queryBuilder.build();

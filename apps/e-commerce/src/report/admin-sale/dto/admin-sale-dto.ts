@@ -32,4 +32,16 @@ export class AdminSaleDto {
   })
   @Type(() => Number)
   vendorId?: number;
+
+  @ApiProperty({
+    required: true,
+    type: IsNumber,
+    description: 'variationPriceId',
+  })
+  @IsInt({
+    message: i18nValidationMessage<I18nTranslations>('validation.NUMBER'),
+  })
+  @Type(() => Number)
+  @IsOptional()
+  variationPriceId?: number;
 }

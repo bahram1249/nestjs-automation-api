@@ -9,8 +9,9 @@ import { ECOrder } from '@rahino/database/models/ecommerce-eav/ec-order.entity';
 import { ECProduct } from '@rahino/database/models/ecommerce-eav/ec-product.entity';
 import { ECVendor } from '@rahino/database/models/ecommerce-eav/ec-vendor.entity';
 import { OrderStatusEnum } from '@rahino/ecommerce/util/enum';
+import { Order } from '@rahino/query-filter';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
-import { FindAttributeOptions, Op, Sequelize } from 'sequelize';
+import { FindAttributeOptions, GroupOption, Op, Sequelize } from 'sequelize';
 
 @Injectable({ scope: Scope.REQUEST })
 export class SaleQueryBuilderService {
@@ -48,6 +49,15 @@ export class SaleQueryBuilderService {
     this.builder = this.builder.filter(
       Sequelize.where(Sequelize.col('order.orderStatusId'), {
         [Op.ne]: OrderStatusEnum.WaitingForPayment,
+      }),
+    );
+    return this;
+  }
+
+  addVariationPriceId(variationPriceId: number) {
+    this.builder = this.builder.filter(
+      Sequelize.where(Sequelize.col('inventoryPrice.variationPriceId'), {
+        [Op.eq]: variationPriceId,
       }),
     );
     return this;
@@ -167,7 +177,9 @@ export class SaleQueryBuilderService {
 
   includeInventoryPrice() {
     this.builder = this.builder.thenInlcude({
-      attributes: this.groupByQuery ? [] : ['id', 'buyPrice'],
+      attributes: this.groupByQuery
+        ? []
+        : ['id', 'buyPrice', 'variationPriceId'],
       model: ECInventoryPrice,
       as: 'inventoryPrice',
       required: true,
@@ -177,6 +189,16 @@ export class SaleQueryBuilderService {
 
   rawQuery(flag: boolean) {
     this.builder = this.builder.raw(flag);
+    return this;
+  }
+
+  group(group: GroupOption) {
+    this.builder = this.builder.group(group);
+    return this;
+  }
+
+  order(orderArg: Order) {
+    this.builder = this.builder.order(orderArg);
     return this;
   }
 

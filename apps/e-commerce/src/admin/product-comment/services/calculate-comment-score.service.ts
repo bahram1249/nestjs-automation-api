@@ -24,18 +24,6 @@ export class CalculateCommentScoreService {
       new QueryOptionsBuilder()
         .filter({ id: commentId })
         .filter({ statusId: ProductCommentStatusEnum.confirm })
-        .filter(
-          Sequelize.where(
-            Sequelize.fn(
-              'isnull',
-              Sequelize.col('ECProductComment.isDeleted'),
-              0,
-            ),
-            {
-              [Op.eq]: 0,
-            },
-          ),
-        )
         .build(),
     );
     if (!comment) {
@@ -94,6 +82,18 @@ export class CalculateCommentScoreService {
         ])
         .filter({ entityId: product.id })
         .filter({ statusId: ProductCommentStatusEnum.confirm })
+        .filter(
+          Sequelize.where(
+            Sequelize.fn(
+              'isnull',
+              Sequelize.col('ECProductComment.isDeleted'),
+              0,
+            ),
+            {
+              [Op.eq]: 0,
+            },
+          ),
+        )
         .raw(true)
         .build(),
     );

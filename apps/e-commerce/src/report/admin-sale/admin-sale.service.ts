@@ -42,11 +42,16 @@ export class AdminSaleService {
       .init(false)
       .nonDeleted()
       .onlyPaid()
+      .includeInventoryPrice()
       .addBeginDate(filter.beginDate)
       .addEndDate(filter.endDate);
 
     if (filter.vendorId) {
       queryBuilder = queryBuilder.onlyVendor(filter.vendorId);
+    }
+
+    if (filter.variationPriceId) {
+      queryBuilder = queryBuilder.addVariationPriceId(filter.variationPriceId);
     }
 
     const count = await this.orderDetailRepository.count(queryBuilder.build());
@@ -95,7 +100,7 @@ export class AdminSaleService {
       .includeProduct()
       .includeInventory()
       .includeVendor()
-      .includeInventoryPrice()
+
       .offset(filter.offset)
       .limit(filter.limit);
 
@@ -127,11 +132,16 @@ export class AdminSaleService {
       .init(true)
       .nonDeleted()
       .onlyPaid()
+      .includeInventoryPrice()
       .addBeginDate(filter.beginDate)
       .addEndDate(filter.endDate);
 
     if (filter.vendorId) {
       queryBuilder = queryBuilder.onlyVendor(filter.vendorId);
+    }
+
+    if (filter.variationPriceId) {
+      queryBuilder = queryBuilder.addVariationPriceId(filter.variationPriceId);
     }
 
     queryBuilder = queryBuilder
@@ -218,7 +228,6 @@ export class AdminSaleService {
           'profitAmount',
         ],
       ])
-      .includeInventoryPrice()
       .rawQuery(true);
 
     const findOptions = queryBuilder.build();

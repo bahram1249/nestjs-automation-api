@@ -60,7 +60,8 @@ export class QueryOptionsBuilder {
     this.options.subQuery = flag;
     return this;
   }
-  build(): Omit<FindAndCountOptions<any>, 'group'> {
+  build(): FindAndCountOptions<any> {
+    //Omit<FindAndCountOptions<any>, 'group'> {
     return this.options;
   }
   transaction(transaction: Transaction) {
