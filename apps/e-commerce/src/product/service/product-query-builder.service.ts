@@ -272,7 +272,9 @@ export class ProductQueryBuilderService {
         },
       ])
       .thenInlcude({
-        attributes: priceRangeQuery ? [] : ['id', 'name', 'priorityOrder'],
+        attributes: priceRangeQuery
+          ? []
+          : ['id', 'name', 'slug', 'priorityOrder'],
         model: ECVendor,
         as: 'vendor',
         required: false,
