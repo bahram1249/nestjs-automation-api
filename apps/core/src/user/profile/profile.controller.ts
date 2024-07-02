@@ -1,4 +1,5 @@
 import {
+  Body,
   Controller,
   Get,
   HttpCode,
@@ -44,7 +45,7 @@ export class ProfileController {
   @UseInterceptors(JsonResponseTransformInterceptor)
   @Put('/')
   @HttpCode(HttpStatus.OK)
-  async editProfile(@GetUser() user: User, dto: EditProfileDto) {
+  async editProfile(@GetUser() user: User, @Body() dto: EditProfileDto) {
     return await this.service.editProfile(user, dto);
   }
 
