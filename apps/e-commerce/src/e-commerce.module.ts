@@ -73,6 +73,7 @@ import { OrderStatusModule } from './admin/order-status/order-status.module';
 import { OrderShipmentWayModule } from './admin/order-shipmentway/order-shipmentway.module';
 import { AdminAddressModule } from './admin/address/address.module';
 import { ProductSaleModule } from './report/product-sale/product-sale.module';
+import { InventoryHistoryModule } from './admin/inventory-history/inventory-history.module';
 
 @Module({
   imports: [
@@ -148,6 +149,7 @@ import { ProductSaleModule } from './report/product-sale/product-sale.module';
     OrderShipmentWayModule,
     AdminAddressModule,
     ProductSaleModule,
+    InventoryHistoryModule,
   ],
   providers: [
     {
