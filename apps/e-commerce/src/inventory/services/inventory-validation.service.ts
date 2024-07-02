@@ -172,9 +172,9 @@ export class InventoryValidationService {
       if (inventoryDto.guaranteeId == null && inventoryDto.guaranteeMonthId) {
         throw new BadRequestException('guarantee month is not valid !');
       }
-      if (inventoryDto.guaranteeMonthId == null && inventoryDto.guaranteeId) {
-        throw new BadRequestException('guarantee month must be send it !');
-      }
+      // if (inventoryDto.guaranteeMonthId == null && inventoryDto.guaranteeId) {
+      //   throw new BadRequestException('guarantee month must be send it !');
+      // }
       if (inventoryDto.guaranteeId) {
         const guarantee = await this.guaranteeRepository.findOne(
           new QueryOptionsBuilder()

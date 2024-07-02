@@ -3,6 +3,7 @@ import { InjectModel } from '@nestjs/sequelize';
 import { User } from '@rahino/database/models/core/user.entity';
 import { ECInventoryHistory } from '@rahino/database/models/ecommerce-eav/ec-inventory-history.entity';
 import { ECInventoryTrackChangeStatus } from '@rahino/database/models/ecommerce-eav/ec-inventory-track-change-status.entity';
+import { ECInventory } from '@rahino/database/models/ecommerce-eav/ec-inventory.entity';
 import { ECProduct } from '@rahino/database/models/ecommerce-eav/ec-product.entity';
 import { ListFilter } from '@rahino/query-filter';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
@@ -12,10 +13,12 @@ export class InventoryHistoryService {
   constructor(
     @InjectModel(ECInventoryHistory)
     private readonly repository: typeof ECInventoryHistory,
+    @InjectModel(ECInventory)
+    private readonly inventoryRepository: typeof ECInventory,
   ) {}
 
   async findAll(user: User, inventoryId: bigint, filter: ListFilter) {
-    let inventory = await this.repository.findOne(
+    let inventory = await this.inventoryRepository.findOne(
       new QueryOptionsBuilder().filter({ id: inventoryId }).build(),
     );
     if (!inventory) {

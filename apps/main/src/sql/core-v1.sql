@@ -3777,9 +3777,13 @@ BEGIN
 			CONSTRAINT FK_ECInventoryHistory_InventoryTrackChangeStatusId
 				FOREIGN KEY REFERENCES ECInventoryTrackChangeStatuses(id),
 		qty								int								NOT NULL,
+		orderId							bigint							NULL
+			CONSTRAINT FK_ECInventoryHistories_OrderId
+				FOREIGN KEY REFERENCES ECOrders(id),
 		[createdAt]						datetimeoffset					NOT NULL,
 		[updatedAt]						datetimeoffset					NOT NULL,
 	);
+
 
 
 	INSERT INTO Migrations(version, createdAt, updatedAt)
@@ -6345,6 +6349,28 @@ END
 
 GO
 
+
+
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ecommerce-inventorytrackchangestatuses-Data-v1' 
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'SITE_NAME' AND [value] IN ('ecommerce'))
+		)
+BEGIN
+	
+	INSERT INTO ECInventoryTrackChangeStatuses(id, [name], createdAt, updatedAt)
+	VALUES (1, N'ثبت موجودی', GETDATE(), GETDATE())
+			,(2, N'بروزرسانی موجودی', GETDATE(), GETDATE())
+			,(3, N'کاهش موجودی به منظور ثبت سفارش', GETDATE(), GETDATE())
+			,(4, N'بازگشت موجودی به منظور سفارش پرداخت نشده', GETDATE(), GETDATE())
+	
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'ecommerce-inventorytrackchangestatuses-Data-v1', GETDATE(), GETDATE()
+END
+
+GO
 
 
 -- data takhfif
@@ -14485,6 +14511,75 @@ BEGIN
 END
 
 GO
+
+
+
+
+-- ecommerce/admin/inventoryhistories
+IF NOT EXISTS ((SELECT 1 FROM Migrations WHERE version = 'CORE-Permissions-Data-v60' 
+			))
+	AND EXISTS (
+		SELECT 1 FROM Settings WHERE 1=1
+		AND ([key] = 'SITE_NAME' AND [value] IN ('ecommerce'))
+	)
+BEGIN
+	
+	DECLARE @roleId int = (SELECT TOP 1 id FROM Roles WHERE static_id = 1)
+	DECLARE @userId bigint = (SELECT TOP 1 id FROM Users WHERE static_id = 1)
+
+	DECLARE @GroupTemp TABLE (
+		gorupId int
+	);
+
+	DECLARE @groupId int = null;
+
+	DECLARE @entityName nvarchar(256) = N'InventoryHistories'
+	DECLARE @groupName nvarchar(256) = N'ecommerce.admin.inventoryhistories'
+
+
+	DECLARE @permissionSymbolGetAll nvarchar(512) = @groupName + '.getall';
+	DECLARE @permissionSymbolGetOne nvarchar(512) = @groupName + '.getone';
+
+
+
+	-- permission groups
+	INSERT INTO PermissionGroups(permissionGroupName, [visibility], createdAt, updatedAt)
+	OUTPUT inserted.id INTO @GroupTemp(gorupId)
+	SELECT @groupName, 1, GETDATE(), GETDATE();
+
+	SELECT  @groupId = gorupId FROM @GroupTemp
+
+
+	-- permissions
+
+	
+	DECLARE @PermissionTemp TABLE (
+		permissionId int
+	);
+
+	INSERT INTO Permissions(permissionName ,permissionSymbol,permissionGroupId,  createdAt, updatedAt)
+	OUTPUT inserted.id INTO @PermissionTemp(permissionId)
+	SELECT 'GETALL_' + @entityName, @permissionSymbolGetAll, @groupId, GETDATE(), GETDATE()
+															
+	INSERT INTO Permissions(permissionName ,permissionSymbol,permissionGroupId,  createdAt, updatedAt)
+	OUTPUT inserted.id INTO @PermissionTemp(permissionId)
+	SELECT 'GETONE_' + @entityName, @permissionSymbolGetOne, @groupId, GETDATE(), GETDATE()
+															
+
+	-- CRUD THIS Enity FOR super-admin
+	INSERT INTO RolePermissions(roleId, permissionId, createdAt, updatedAt)
+	SELECT @roleId, permissionId, GETDATE(), GETDATE()
+	FROM @PermissionTemp
+
+	DELETE FROM @PermissionTemp
+
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'CORE-Permissions-Data-v60', GETDATE(), GETDATE()
+END
+
+GO
+
 
 -- period types
 IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'PCMPeriodTypes-Data-v1' 
