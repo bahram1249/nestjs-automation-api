@@ -5,12 +5,13 @@ import { InventoryTrackChangeStatusEnum } from '../util/enum';
 import { Transaction } from 'sequelize';
 import { ECInventory } from '@rahino/database/models/ecommerce-eav/ec-inventory.entity';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
+import { ECInventoryHistory } from '@rahino/database/models/ecommerce-eav/ec-inventory-history.entity';
 
 @Injectable()
 export class InventoryTrackChangeService {
   constructor(
-    @InjectModel(ECInventoryTrackChangeStatus)
-    private readonly repository: typeof ECInventoryTrackChangeStatus,
+    @InjectModel(ECInventoryHistory)
+    private readonly repository: typeof ECInventoryHistory,
     @InjectModel(ECInventory)
     private readonly inventoryRepository: typeof ECInventory,
   ) {}
