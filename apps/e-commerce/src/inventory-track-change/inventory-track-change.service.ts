@@ -24,7 +24,10 @@ export class InventoryTrackChangeService {
     transaction?: Transaction,
   ) {
     const inventory = await this.inventoryRepository.findOne(
-      new QueryOptionsBuilder().filter({ id: inventoryId }).build(),
+      new QueryOptionsBuilder()
+        .filter({ id: inventoryId })
+        .transaction(transaction)
+        .build(),
     );
 
     await this.repository.create(
