@@ -100,7 +100,6 @@ export class AdminSaleService {
       .includeProduct()
       .includeInventory()
       .includeVendor()
-
       .offset(filter.offset)
       .limit(filter.limit);
 

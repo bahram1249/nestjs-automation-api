@@ -72,6 +72,7 @@ import { ProductCommentStatusModule } from './admin/product-comment-status/produ
 import { OrderStatusModule } from './admin/order-status/order-status.module';
 import { OrderShipmentWayModule } from './admin/order-shipmentway/order-shipmentway.module';
 import { AdminAddressModule } from './admin/address/address.module';
+import { ProductSaleModule } from './report/product-sale/product-sale.module';
 
 @Module({
   imports: [
@@ -146,6 +147,7 @@ import { AdminAddressModule } from './admin/address/address.module';
     OrderStatusModule,
     OrderShipmentWayModule,
     AdminAddressModule,
+    ProductSaleModule,
   ],
   providers: [
     {

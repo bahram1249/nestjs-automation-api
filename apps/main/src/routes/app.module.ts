@@ -36,6 +36,7 @@ import * as path from 'path';
 import { AppLanguageResolver } from '../i18nResolver/AppLanguageResolver';
 import { ECommerceSmsModule } from '@rahino/ecommerce/util/sms/ecommerce-sms.module';
 import { ECommmerceSmsService } from '@rahino/ecommerce/util/sms/ecommerce-sms.service';
+import { KnexModule } from 'nestjs-knex';
 
 @Module({
   imports: [
@@ -68,6 +69,22 @@ import { ECommmerceSmsService } from '@rahino/ecommerce/util/sms/ecommerce-sms.s
       ],
     }),
     DatabaseModule,
+    KnexModule.forRootAsync({
+      useFactory: (config: ConfigService) => ({
+        config: {
+          client: 'mssql',
+          useNullAsDefault: true,
+          connection: {
+            host: config.get<string>('DB_HOST'),
+            port: Number(config.get<number>('DB_PORT')),
+            user: config.get<string>('DB_USER'),
+            password: config.get<string>('DB_PASS'),
+            database: config.get<string>('DB_NAME_DEVELOPMENT'),
+          },
+        },
+      }),
+      inject: [ConfigService],
+    }),
     DBLoggerModule,
     AutomapperModule.forRoot({
       strategyInitializer: classes(),

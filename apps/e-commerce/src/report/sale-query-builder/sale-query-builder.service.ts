@@ -192,6 +192,11 @@ export class SaleQueryBuilderService {
     return this;
   }
 
+  nest(flag: boolean) {
+    this.builder = this.builder.nest(flag);
+    return this;
+  }
+
   group(group: GroupOption) {
     this.builder = this.builder.group(group);
     return this;

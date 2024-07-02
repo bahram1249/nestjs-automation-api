@@ -85,6 +85,11 @@ export class QueryOptionsBuilder {
     this.options.raw = flag;
     return this;
   }
+
+  nest(flag: boolean) {
+    this.options.nest = flag;
+    return this;
+  }
 }
 
 function isOrderCol(x: any) {
