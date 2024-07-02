@@ -21,6 +21,8 @@ import { ECGuarantee } from '@rahino/database/models/ecommerce-eav/ec-guarantee.
 import { ECGuaranteeMonth } from '@rahino/database/models/ecommerce-eav/ec-guarantee-month.entity';
 import { ECProvince } from '@rahino/database/models/ecommerce-eav/ec-province.entity';
 import { ECVariationPrice } from '@rahino/database/models/ecommerce-eav/ec-variation-prices';
+import { InventoryTrackChangeService } from '@rahino/ecommerce/inventory-track-change/inventory-track-change.service';
+import { InventoryTrackChangeStatusEnum } from '@rahino/ecommerce/util/enum';
 
 @Injectable()
 export class InventoryService {
@@ -29,6 +31,7 @@ export class InventoryService {
     private readonly repository: typeof ECInventory,
     @InjectModel(ECInventoryPrice)
     private readonly inventoryPriceRepository: typeof ECInventoryPrice,
+    private readonly inventoryTrackChangeService: InventoryTrackChangeService,
     @InjectMapper() private readonly mapper: Mapper,
   ) {}
 
@@ -161,6 +164,15 @@ export class InventoryService {
       const inventoryInsert = await this.repository.create(insertItem, {
         transaction: transaction,
       });
+
+      await this.inventoryTrackChangeService.changeStatus(
+        inventoryInsert.id,
+        InventoryTrackChangeStatusEnum.Create,
+        inventoryInsert.qty,
+        null,
+        transaction,
+      );
+
       if (inventory.firstPrice) {
         await this.inventoryPriceRepository.create(
           {
@@ -229,6 +241,14 @@ export class InventoryService {
         inventory.qty > 0
           ? InventoryStatusEnum.available
           : InventoryStatusEnum.unavailable;
+
+      await this.inventoryTrackChangeService.changeStatus(
+        updateItem.id,
+        InventoryTrackChangeStatusEnum.Update,
+        inventory.qty,
+        null,
+        transaction,
+      );
 
       // deleted all prices
       await this.inventoryPriceRepository.update(

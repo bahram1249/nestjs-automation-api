@@ -6,10 +6,14 @@ import { Op } from 'sequelize';
 import { Sequelize } from 'sequelize';
 import { InventoryStatusEnum } from '../enum';
 import { ECPayment } from '@rahino/database/models/ecommerce-eav/ec-payment-entity';
-import { PaymentTypeEnum } from '@rahino/ecommerce/util/enum';
+import {
+  InventoryTrackChangeStatusEnum,
+  PaymentTypeEnum,
+} from '@rahino/ecommerce/util/enum';
 import { ECOrder } from '@rahino/database/models/ecommerce-eav/ec-order.entity';
 import { ECOrderDetail } from '@rahino/database/models/ecommerce-eav/ec-order-detail.entity';
 import { inventoryStatusService } from './inventory-status.service';
+import { InventoryTrackChangeService } from '@rahino/ecommerce/inventory-track-change/inventory-track-change.service';
 
 @Injectable()
 export class RevertInventoryQtyService {
@@ -20,6 +24,7 @@ export class RevertInventoryQtyService {
     private readonly paymentRepository: typeof ECPayment,
     @InjectModel(ECOrder)
     private readonly orderRepository: typeof ECOrder,
+    private readonly inventoryTrackChangeService: InventoryTrackChangeService,
     private readonly inventoryStatusService: inventoryStatusService,
   ) {}
 
@@ -73,6 +78,13 @@ export class RevertInventoryQtyService {
         inventory.inventoryStatusId = InventoryStatusEnum.available;
       }
       inventory = await inventory.save();
+
+      await this.inventoryTrackChangeService.changeStatus(
+        inventory.id,
+        InventoryTrackChangeStatusEnum.IncreaseQtyForOrderUnpaidOrder,
+        inventory.qty,
+        order.id,
+      );
       await this.inventoryStatusService.productInventoryStatusUpdate(
         detail.productId,
       );

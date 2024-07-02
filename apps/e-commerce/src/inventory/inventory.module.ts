@@ -35,6 +35,7 @@ import { ECOrder } from '@rahino/database/models/ecommerce-eav/ec-order.entity';
 import { RevertInventoryQtyProcessor } from './processor/revert-inventory-qty.processor';
 import { PaymentServiceProviderModule } from '../user/payment/provider/payment-provider.module';
 import { RevertInventoryModule } from './revert-inventory.module';
+import { InventoryTrackChangeModule } from '../inventory-track-change/inventory-track-change.module';
 
 @Module({
   imports: [
@@ -54,6 +55,7 @@ import { RevertInventoryModule } from './revert-inventory.module';
     VendorAddressModule,
     QueryFilterModule,
     DBLoggerModule,
+    InventoryTrackChangeModule,
     BullModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],

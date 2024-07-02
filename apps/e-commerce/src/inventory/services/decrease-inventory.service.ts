@@ -11,12 +11,14 @@ import { Sequelize, Transaction } from 'sequelize';
 import { InventoryStatusEnum } from '../enum';
 import { ECPayment } from '@rahino/database/models/ecommerce-eav/ec-payment-entity';
 import {
+  InventoryTrackChangeStatusEnum,
   PaymentStatusEnum,
   PaymentTypeEnum,
 } from '@rahino/ecommerce/util/enum';
 import { ECOrder } from '@rahino/database/models/ecommerce-eav/ec-order.entity';
 import { ECOrderDetail } from '@rahino/database/models/ecommerce-eav/ec-order-detail.entity';
 import { inventoryStatusService } from './inventory-status.service';
+import { InventoryTrackChangeService } from '@rahino/ecommerce/inventory-track-change/inventory-track-change.service';
 
 @Injectable()
 export class DecreaseInventoryService {
@@ -28,6 +30,7 @@ export class DecreaseInventoryService {
     @InjectModel(ECOrder)
     private readonly orderRepository: typeof ECOrder,
     private readonly inventoryStatusService: inventoryStatusService,
+    private readonly inventoryTrackChangeService: InventoryTrackChangeService,
   ) {}
 
   async decreaseByPayment(paymentId: bigint, transaction?: Transaction) {
@@ -86,15 +89,30 @@ export class DecreaseInventoryService {
       if (inventory.qty == 0) {
         inventory.inventoryStatusId = InventoryStatusEnum.unavailable;
       }
-      await this.inventoryRepository.update(
-        { qty: inventory.qty, inventoryStatusId: inventory.inventoryStatusId },
-        {
-          where: {
-            id: inventory.id,
+      inventory = (
+        await this.inventoryRepository.update(
+          {
+            qty: inventory.qty,
+            inventoryStatusId: inventory.inventoryStatusId,
           },
-          transaction: transaction,
-        },
+          {
+            where: {
+              id: inventory.id,
+            },
+            transaction: transaction,
+            returning: true,
+          },
+        )
+      )[1][0];
+
+      await this.inventoryTrackChangeService.changeStatus(
+        inventory.id,
+        InventoryTrackChangeStatusEnum.DecreaseQtyForOrderPurpose,
+        inventory.qty,
+        order.id,
+        transaction,
       );
+
       await this.inventoryStatusService.productInventoryStatusUpdate(
         detail.productId,
         transaction,

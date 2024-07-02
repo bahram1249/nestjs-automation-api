@@ -3732,6 +3732,62 @@ END
 GO
 
 
+-- ec-inventorytrackchangestatuses
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ec-inventorytrackchangestatuses-v1' 
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'SITE_NAME' AND [value] IN ('ecommerce'))
+		)
+BEGIN
+
+	CREATE TABLE ECInventoryTrackChangeStatuses(
+		id								int								PRIMARY KEY,
+		[name]							nvarchar(256)					NOT NULL,
+		[createdAt]						datetimeoffset					NOT NULL,
+		[updatedAt]						datetimeoffset					NOT NULL,
+	);
+
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'ec-inventorytrackchangestatuses-v1', GETDATE(), GETDATE()
+END
+
+GO
+
+
+-- ec-inventoryhistories-v1
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ec-inventoryhistories-v1' 
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'SITE_NAME' AND [value] IN ('ecommerce'))
+		)
+BEGIN
+
+	CREATE TABLE ECInventoryHistories(
+		id								bigint identity(1,1)			PRIMARY KEY,
+		inventoryId						bigint							NOT NULL
+			CONSTRAINT FK_ECInventoryHistory_Inventoryid
+				FOREIGN KEY REFERENCES ECInventories(id),
+		productId						bigint							NOT NULL
+			CONSTRAINT FK_ECInventoryHistory_ProductId
+				FOREIGN KEY REFERENCES ECProducts(id),
+		inventoryTrackChangeStatusId	int								NOT NULL
+			CONSTRAINT FK_ECInventoryHistory_InventoryTrackChangeStatusId
+				FOREIGN KEY REFERENCES ECInventoryTrackChangeStatuses(id),
+		qty								int								NOT NULL,
+		[createdAt]						datetimeoffset					NOT NULL,
+		[updatedAt]						datetimeoffset					NOT NULL,
+	);
+
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'ec-inventoryhistories-v1', GETDATE(), GETDATE()
+END
+
+GO
+
 
 
 /*

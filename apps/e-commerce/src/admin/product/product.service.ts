@@ -57,6 +57,7 @@ import {
 } from '@rahino/ecommerce/inventory/constants';
 import { InjectQueue } from '@nestjs/bullmq';
 import { Queue } from 'bullmq';
+import { InventoryTrackChangeService } from '@rahino/ecommerce/inventory-track-change/inventory-track-change.service';
 
 @Injectable()
 export class ProductService {

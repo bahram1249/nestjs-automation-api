@@ -93,6 +93,8 @@ import { ECEntityTypeFactor } from './models/ecommerce-eav/ec-entitytype-factor.
 import { ECProductCommentStatus } from './models/ecommerce-eav/ec-comment-status.entity';
 import { ECProductComment } from './models/ecommerce-eav/ec-product-comment.entity';
 import { ECProductCommentFactor } from './models/ecommerce-eav/ec-product-comment-factor.entity';
+import { ECInventoryTrackChangeStatus } from './models/ecommerce-eav/ec-inventory-track-change-status.entity';
+import { ECInventoryHistory } from './models/ecommerce-eav/ec-inventory-history.entity';
 
 @Module({
   imports: [
@@ -182,6 +184,8 @@ import { ECProductCommentFactor } from './models/ecommerce-eav/ec-product-commen
           ECProductCommentStatus,
           ECProductComment,
           ECProductCommentFactor,
+          ECInventoryTrackChangeStatus,
+          ECInventoryHistory,
           Buffet,
           BuffetGallery,
           BuffetType,
