@@ -213,6 +213,15 @@ export class ProductCommentService {
     comment.isDeleted = true;
     comment = await comment.save();
 
+    // calculate score comment
+    await this.scoreCommentQueue.add(
+      SCORE_COMMENT_JOB,
+      {
+        commentId: comment.id,
+      },
+      { removeOnComplete: true },
+    );
+
     return {
       result: comment,
     };
