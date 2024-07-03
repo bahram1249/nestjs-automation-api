@@ -75,6 +75,7 @@ import { AdminAddressModule } from './admin/address/address.module';
 import { ProductSaleModule } from './report/product-sale/product-sale.module';
 import { InventoryHistoryModule } from './admin/inventory-history/inventory-history.module';
 import { AdminPageModule } from './admin/page/page.module';
+import { PageModule } from './page/page.module';
 
 @Module({
   imports: [
@@ -152,6 +153,7 @@ import { AdminPageModule } from './admin/page/page.module';
     ProductSaleModule,
     InventoryHistoryModule,
     AdminPageModule,
+    PageModule,
   ],
   providers: [
     {

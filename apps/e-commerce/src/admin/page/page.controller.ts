@@ -32,7 +32,7 @@ import { ListFilter } from '@rahino/query-filter';
 @UseGuards(JwtGuard, PermissionGuard)
 @ApiBearerAuth()
 @Controller({
-  path: '/api/ecommerce/pages',
+  path: '/api/ecommerce/admin/pages',
   version: ['1'],
 })
 export class PageController {
