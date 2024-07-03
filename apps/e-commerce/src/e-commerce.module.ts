@@ -74,6 +74,7 @@ import { OrderShipmentWayModule } from './admin/order-shipmentway/order-shipment
 import { AdminAddressModule } from './admin/address/address.module';
 import { ProductSaleModule } from './report/product-sale/product-sale.module';
 import { InventoryHistoryModule } from './admin/inventory-history/inventory-history.module';
+import { AdminPageModule } from './admin/page/page.module';
 
 @Module({
   imports: [
@@ -150,6 +151,7 @@ import { InventoryHistoryModule } from './admin/inventory-history/inventory-hist
     AdminAddressModule,
     ProductSaleModule,
     InventoryHistoryModule,
+    AdminPageModule,
   ],
   providers: [
     {

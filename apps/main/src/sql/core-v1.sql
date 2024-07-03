@@ -3794,6 +3794,41 @@ GO
 
 
 
+-- ec-pages-v1
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ec-pages-v1' 
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'SITE_NAME' AND [value] IN ('ecommerce'))
+		)
+BEGIN
+
+	CREATE TABLE ECPages(
+		id								bigint identity(1,1)			PRIMARY KEY,
+		title							nvarchar(256)					NOT NULL,
+		slug							nvarchar(512)					NOT NULL,
+		[description]					ntext							NULL,
+		metaTitle						nvarchar(256)					NULL,
+		metaDescription					nvarchar(512)					NULL,
+		metaKeywords					nvarchar(512)					NULL,
+		userId							bigint							NULL
+			CONSTRAINT FK_ECPages_UserId
+				FOREIGN KEY REFERENCES Users(id),
+		isDeleted						bit								NULL,
+		[createdAt]						datetimeoffset					NOT NULL,
+		[updatedAt]						datetimeoffset					NOT NULL,
+	);
+
+
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'ec-pages-v1', GETDATE(), GETDATE()
+END
+
+GO
+
+
+
 /*
 
 Data

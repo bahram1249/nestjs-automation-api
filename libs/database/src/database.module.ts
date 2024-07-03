@@ -95,6 +95,7 @@ import { ECProductComment } from './models/ecommerce-eav/ec-product-comment.enti
 import { ECProductCommentFactor } from './models/ecommerce-eav/ec-product-comment-factor.entity';
 import { ECInventoryTrackChangeStatus } from './models/ecommerce-eav/ec-inventory-track-change-status.entity';
 import { ECInventoryHistory } from './models/ecommerce-eav/ec-inventory-history.entity';
+import { ECPage } from './models/ecommerce-eav/ec-page.entity';
 
 @Module({
   imports: [
@@ -186,6 +187,7 @@ import { ECInventoryHistory } from './models/ecommerce-eav/ec-inventory-history.
           ECProductCommentFactor,
           ECInventoryTrackChangeStatus,
           ECInventoryHistory,
+          ECPage,
           Buffet,
           BuffetGallery,
           BuffetType,
