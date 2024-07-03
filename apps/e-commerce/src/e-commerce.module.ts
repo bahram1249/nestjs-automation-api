@@ -76,6 +76,7 @@ import { ProductSaleModule } from './report/product-sale/product-sale.module';
 import { InventoryHistoryModule } from './admin/inventory-history/inventory-history.module';
 import { AdminPageModule } from './admin/page/page.module';
 import { PageModule } from './page/page.module';
+import { DashboardModule } from './user/dashboard/dashboard.module';
 
 @Module({
   imports: [
@@ -154,6 +155,7 @@ import { PageModule } from './page/page.module';
     InventoryHistoryModule,
     AdminPageModule,
     PageModule,
+    DashboardModule,
   ],
   providers: [
     {
