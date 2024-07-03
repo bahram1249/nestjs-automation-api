@@ -4,11 +4,13 @@ import {
   HttpCode,
   HttpStatus,
   Param,
+  Query,
   UseInterceptors,
 } from '@nestjs/common';
 import { JsonResponseTransformInterceptor } from '@rahino/response/interceptor';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { PageService } from './page.service';
+import { ListFilter } from '@rahino/query-filter';
 
 @ApiTags('Pages')
 @Controller({
@@ -18,6 +20,13 @@ import { PageService } from './page.service';
 @UseInterceptors(JsonResponseTransformInterceptor)
 export class PageController {
   constructor(private service: PageService) {}
+
+  @ApiOperation({ description: 'show total pages' })
+  @Get('/')
+  @HttpCode(HttpStatus.OK)
+  async findAll(@Query() filter: ListFilter) {
+    return await this.service.findAll(filter);
+  }
 
   @ApiOperation({ description: 'show page by given id' })
   @Get('/slug/:slug')
