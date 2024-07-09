@@ -77,6 +77,7 @@ import { InventoryHistoryModule } from './admin/inventory-history/inventory-hist
 import { AdminPageModule } from './admin/page/page.module';
 import { PageModule } from './page/page.module';
 import { DashboardModule } from './user/dashboard/dashboard.module';
+import { CancellOrderModule } from './admin/cancell-order/cancell-order.module';
 
 @Module({
   imports: [
@@ -156,6 +157,7 @@ import { DashboardModule } from './user/dashboard/dashboard.module';
     AdminPageModule,
     PageModule,
     DashboardModule,
+    CancellOrderModule,
   ],
   providers: [
     {

@@ -26,6 +26,7 @@ import { PermissionGuard } from '@rahino/permission-checker/guard';
 import { CheckPermission } from '@rahino/permission-checker/decorator';
 import { ListFilter } from '@rahino/query-filter';
 import { ChangeOrderStatusDto, ChangeShipmentWayDto } from './dto';
+import { GetTotalOrderFilterDto } from './dto/get-total-order.dto';
 
 @ApiTags('Total-Orders')
 @UseGuards(JwtGuard, PermissionGuard)
@@ -43,12 +44,15 @@ export class TotalOrderController {
   @Get('/')
   @ApiQuery({
     name: 'filter',
-    type: ListFilter,
+    type: GetTotalOrderFilterDto,
     style: 'deepObject',
     explode: true,
   })
   @HttpCode(HttpStatus.OK)
-  async findAll(@GetUser() user: User, @Query() filter: ListFilter) {
+  async findAll(
+    @GetUser() user: User,
+    @Query() filter: GetTotalOrderFilterDto,
+  ) {
     return await this.service.findAll(user, filter);
   }
 

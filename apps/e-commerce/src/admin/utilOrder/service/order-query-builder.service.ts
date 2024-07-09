@@ -49,6 +49,18 @@ export class OrderQueryBuilder {
     return this;
   }
 
+  deletedOrder() {
+    this.builder = this.builder.filter(
+      Sequelize.where(
+        Sequelize.fn('isnull', Sequelize.col('ECOrder.isDeleted'), 0),
+        {
+          [Op.eq]: 1,
+        },
+      ),
+    );
+    return this;
+  }
+
   addOnlyUser(userId: bigint) {
     this.builder = this.builder.filter({ userId: userId });
     return this;
