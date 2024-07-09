@@ -78,6 +78,7 @@ import { AdminPageModule } from './admin/page/page.module';
 import { PageModule } from './page/page.module';
 import { DashboardModule } from './user/dashboard/dashboard.module';
 import { CancellOrderModule } from './admin/cancell-order/cancell-order.module';
+import { UserCommentModule } from './user/comment/comment.module';
 
 @Module({
   imports: [
@@ -158,6 +159,7 @@ import { CancellOrderModule } from './admin/cancell-order/cancell-order.module';
     PageModule,
     DashboardModule,
     CancellOrderModule,
+    UserCommentModule,
   ],
   providers: [
     {
