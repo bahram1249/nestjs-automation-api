@@ -72,6 +72,20 @@ export class OrderQueryBuilder {
     return this;
   }
 
+  filterPhoneNumber(text: string) {
+    this.builder = this.builder.filter(
+      Sequelize.where(Sequelize.col('user.phoneNumber'), {
+        [Op.like]: text,
+      }),
+    );
+    return this;
+  }
+
+  filterOrderId(orderId: bigint) {
+    this.builder = this.builder.filter({ id: orderId });
+    return this;
+  }
+
   subQuery(enable: boolean) {
     this.builder = this.builder.subQuery(enable);
     return this;
@@ -374,6 +388,7 @@ export class OrderQueryBuilder {
       attributes: ['id', 'firstname', 'lastname', 'username', 'phoneNumber'],
       model: User,
       as: 'user',
+      required: true,
     });
     return this;
   }

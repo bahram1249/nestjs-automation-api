@@ -27,6 +27,7 @@ import { FinalizedPaymentService } from '@rahino/ecommerce/user/payment/util/fin
 import { ChangeOrderStatusDto, ChangeShipmentWayDto } from './dto';
 import { ECOrderStatus } from '@rahino/database/models/ecommerce-eav/ec-order-status.entity';
 import { ECOrderShipmentWay } from '@rahino/database/models/ecommerce-eav/ec-order-shipmentway.entity';
+import { GetTotalOrderFilterDto } from './dto/get-total-order.dto';
 
 @Injectable()
 export class TotalOrderService {
@@ -54,17 +55,26 @@ export class TotalOrderService {
     private readonly finalizedPaymentService: FinalizedPaymentService,
   ) {}
 
-  async findAll(user: User, filter: ListFilter) {
+  async findAll(user: User, filter: GetTotalOrderFilterDto) {
     const isSuperAdmin = await this.roleUtilService.isSuperAdmin(user);
     const vendorIds = await this.userVendorService.findVendorIds(user);
 
     let builder = this.orderQueryBuilder
       .nonDeletedOrder()
       .search(filter.search)
+      .includeUser()
       .addNegativeOrderStatus(OrderStatusEnum.WaitingForPayment);
 
     if (!isSuperAdmin) {
       builder = builder.addOnlyVendor(vendorIds);
+    }
+
+    if (filter.phoneNumber) {
+      builder = builder.filterPhoneNumber(filter.phoneNumber);
+    }
+
+    if (filter.orderId) {
+      builder = builder.filterOrderId(filter.orderId);
     }
 
     const count = await this.repository.count(builder.build());
@@ -79,7 +89,6 @@ export class TotalOrderService {
       .subQuery(true)
       .includeOrderShipmentWay()
       .includeAddress()
-      .includeUser()
       .includeOrderStatus()
       .offset(filter.offset)
       .limit(filter.limit)
