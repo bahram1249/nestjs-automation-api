@@ -26,12 +26,12 @@ import { PermissionGuard } from '@rahino/permission-checker/guard';
 import { CheckPermission } from '@rahino/permission-checker/decorator';
 import { GetTotalOrderFilterDto } from './dto/get-total-order.dto';
 
-@ApiTags('Total-Orders')
+@ApiTags('Cancell-Orders')
 @UseGuards(JwtGuard, PermissionGuard)
 @ApiBearerAuth()
 @UseInterceptors(JsonResponseTransformInterceptor)
 @Controller({
-  path: '/api/ecommerce/admin/totalOrders',
+  path: '/api/ecommerce/admin/cancellOrders',
   version: ['1'],
 })
 export class CancellOrderController {
