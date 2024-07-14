@@ -180,7 +180,9 @@ export class ZarinPalService implements PayInterface {
         )
       )[1][0];
       // revert qty
-      await this.revertInventoryQtyService.revertQty(payment.id);
+      if (payment.paymentTypeId == PaymentTypeEnum.ForOrder) {
+        await this.revertInventoryQtyService.revertQty(payment.id);
+      }
     } else {
       const verifyRequest = await axios.post(
         this.baseUrl + '/pg/v4/payment/verify.json',
@@ -204,8 +206,10 @@ export class ZarinPalService implements PayInterface {
             { where: { id: payment.id }, returning: true },
           )
         )[1][0];
-        // revert qty
-        await this.revertInventoryQtyService.revertQty(payment.id);
+        if (payment.paymentTypeId == PaymentTypeEnum.ForOrder) {
+          // revert qty
+          await this.revertInventoryQtyService.revertQty(payment.id);
+        }
       }
     }
     const frontUrl = this.config.get('BASE_FRONT_URL');

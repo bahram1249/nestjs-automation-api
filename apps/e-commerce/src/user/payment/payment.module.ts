@@ -24,6 +24,10 @@ import { ECDiscount } from '@rahino/database/models/ecommerce-eav/ec-discount.en
 import { ProductModule } from '@rahino/ecommerce/product/product.module';
 import { ECInventoryPrice } from '@rahino/database/models/ecommerce-eav/ec-inventory-price.entity';
 import { ECVendorCommission } from '@rahino/database/models/ecommerce-eav/ec-vendor-commision.entity';
+import { REVERT_PAYMENT_QUEUE } from './revert-payment/revert-payment.constants';
+import { RevertPaymentProcessor } from './revert-payment/revert-payment.processor';
+import { ECPayment } from '@rahino/database/models/ecommerce-eav/ec-payment-entity';
+import { DBLoggerModule } from '@rahino/logger';
 
 @Module({
   imports: [
@@ -32,6 +36,7 @@ import { ECVendorCommission } from '@rahino/database/models/ecommerce-eav/ec-ven
       ECProvince,
       ECVariationPrice,
       ECPaymentGateway,
+      ECPayment,
       ECOrder,
       ECOrderDetail,
       ECStock,
@@ -46,6 +51,7 @@ import { ECVendorCommission } from '@rahino/database/models/ecommerce-eav/ec-ven
     AddressModule,
     InventoryModule,
     ProductModule,
+    DBLoggerModule,
     BullModule.registerQueueAsync({
       name: DECREASE_INVENTORY_QUEUE,
       inject: [ConfigService],
@@ -68,8 +74,19 @@ import { ECVendorCommission } from '@rahino/database/models/ecommerce-eav/ec-ven
         },
       }),
     }),
+    BullModule.registerQueueAsync({
+      name: REVERT_PAYMENT_QUEUE,
+      inject: [ConfigService],
+      useFactory: (config: ConfigService) => ({
+        connection: {
+          host: config.get<string>('REDIS_ADDRESS'),
+          port: config.get<number>('REDIS_PORT'),
+          password: config.get<string>('REDIS_PASSWORD'),
+        },
+      }),
+    }),
   ],
   controllers: [PaymentController],
-  providers: [PaymentService],
+  providers: [PaymentService, RevertPaymentProcessor],
 })
 export class PaymentModule {}

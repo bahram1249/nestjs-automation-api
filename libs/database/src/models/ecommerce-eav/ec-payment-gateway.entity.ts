@@ -75,6 +75,12 @@ export class ECPaymentGateway extends Model {
   eligibleRequest?: boolean;
 
   @Column({
+    type: DataType.BOOLEAN,
+    allowNull: true,
+  })
+  eligibleChargeWallet?: boolean;
+
+  @Column({
     type: DataType.VIRTUAL,
     allowNull: true,
   })

@@ -6,6 +6,7 @@ import { ECOrder } from '@rahino/database/models/ecommerce-eav/ec-order.entity';
 import { ECommerceSmsModule } from '@rahino/ecommerce/util/sms/ecommerce-sms.module';
 import { User } from '@rahino/database/models/core/user.entity';
 import { ECPaymentGatewayCommission } from '@rahino/database/models/ecommerce-eav/ec-paymentgateway-commission.entity';
+import { ECWallet } from '@rahino/database/models/ecommerce-eav/ec-wallet.entity';
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { ECPaymentGatewayCommission } from '@rahino/database/models/ecommerce-ea
       ECOrder,
       User,
       ECPaymentGatewayCommission,
+      ECWallet,
     ]),
     ECommerceSmsModule,
   ],

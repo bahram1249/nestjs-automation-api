@@ -6,7 +6,7 @@ import {
 } from '@nestjs/common';
 import { User } from '@rahino/database/models/core/user.entity';
 import { ECUserSession } from '@rahino/database/models/ecommerce-eav/ec-user-session.entity';
-import { StockPaymentDto } from './dto';
+import { StockPaymentDto, WalletPaymentDto } from './dto';
 import { ECOMMERCE_PAYMENT_PROVIDER_TOKEN } from './provider/constants';
 import { PayInterface } from './provider/interface';
 import { StockService } from '../stock/stock.service';
@@ -47,6 +47,10 @@ import { ApplyDiscountService } from '@rahino/ecommerce/product/service';
 import { ECInventoryPrice } from '@rahino/database/models/ecommerce-eav/ec-inventory-price.entity';
 import { ECVendorCommission } from '@rahino/database/models/ecommerce-eav/ec-vendor-commision.entity';
 import * as moment from 'moment-jalaali';
+import {
+  REVERT_PAYMENT_JOB,
+  REVERT_PAYMENT_QUEUE,
+} from './revert-payment/revert-payment.constants';
 
 @Injectable()
 export class PaymentService {
@@ -76,6 +80,8 @@ export class PaymentService {
     // private readonly decreaseInventoryQueue: Queue,
     @InjectQueue(REVERT_INVENTORY_QTY_QUEUE)
     private readonly revertInventoryQueue: Queue,
+    @InjectQueue(REVERT_PAYMENT_QUEUE)
+    private readonly revertPaymentQueue: Queue,
     private readonly config: ConfigService,
     private readonly decreaseInventoryService: DecreaseInventoryService,
     private readonly applyDiscountService: ApplyDiscountService,
@@ -431,5 +437,50 @@ export class PaymentService {
       orderDetails.push(orderDetail);
     }
     return orderDetails;
+  }
+
+  async walletCharging(user: User, body: WalletPaymentDto) {
+    const payment = await this.paymentGatewayRepository.findOne(
+      new QueryOptionsBuilder()
+        .filter({ eligibleChargeWallet: true })
+        .filter({ id: body.paymentId })
+        .build(),
+    );
+    if (!payment) {
+      throw new BadRequestException(
+        "this payment gateway isn't eligble for charging wallet",
+      );
+    }
+    const result = await this.paymentProviderService.requestPayment(
+      body.amount,
+      0,
+      0,
+      user,
+      PaymentTypeEnum.TopUpWallet,
+    );
+
+    const hour = 1;
+    const now = new Date();
+    const targetTime = new Date().setTime(
+      now.getTime() + hour * 60 * 60 * 1000,
+    );
+    const delay = Number(targetTime) - Number(new Date());
+
+    this.revertPaymentQueue.add(
+      REVERT_PAYMENT_JOB,
+      {
+        paymentId: result.paymentId,
+      },
+      {
+        removeOnComplete: true,
+        delay: delay,
+      },
+    );
+
+    return {
+      result: {
+        redirectUrl: result.redirectUrl,
+      },
+    };
   }
 }

@@ -14794,7 +14794,7 @@ END
 GO
 
 
--- ecommerce/admin/totalOrders
+-- ecommerce/admin/cancellorders
 IF NOT EXISTS ((SELECT 1 FROM Migrations WHERE version = 'CORE-Permissions-Data-v62' 
 			))
 	AND EXISTS (
@@ -14816,7 +14816,7 @@ BEGIN
 	DECLARE @groupName nvarchar(256) = N'ecommerce.admin.cancellorders'
 	DECLARE @findParentMenu bit = 1;
 	DECLARE @parentMenuName nvarchar(256) = N'فروشنده'
-	DECLARE @menuName nvarchar(256) = N'همه ی سفارشات'
+	DECLARE @menuName nvarchar(256) = N'سفارشات کنسل شده'
 	DECLARE @menuUrl nvarchar(512) = N'/admin/ecommerce/cancellOrders'
 
 	DECLARE @permissionSymbolShowMenu nvarchar(512) = @groupName + '.showmenu';

@@ -4,9 +4,11 @@ import { User } from '@rahino/database/models/core/user.entity';
 import { ECOrder } from '@rahino/database/models/ecommerce-eav/ec-order.entity';
 import { ECPayment } from '@rahino/database/models/ecommerce-eav/ec-payment-entity';
 import { ECPaymentGatewayCommission } from '@rahino/database/models/ecommerce-eav/ec-paymentgateway-commission.entity';
+import { ECWallet } from '@rahino/database/models/ecommerce-eav/ec-wallet.entity';
 import {
   OrderStatusEnum,
   PaymentStatusEnum,
+  PaymentTypeEnum,
 } from '@rahino/ecommerce/util/enum';
 import { PaymentGatewayCommissionTypeEnum } from '@rahino/ecommerce/util/enum/payment-gateway-commission-type.enum';
 import { ECommmerceSmsService } from '@rahino/ecommerce/util/sms/ecommerce-sms.service';
@@ -24,6 +26,9 @@ export class FinalizedPaymentService {
     private readonly orderRepository: typeof ECOrder,
     @InjectModel(User)
     private readonly userRepository: typeof User,
+    @InjectModel(ECWallet)
+    private readonly walletRepository: typeof ECWallet,
+
     @InjectModel(ECPaymentGatewayCommission)
     private readonly paymentGatewayCommissionRepository: typeof ECPaymentGatewayCommission,
     private readonly smsService: ECommmerceSmsService,
@@ -70,10 +75,30 @@ export class FinalizedPaymentService {
         },
       )
     )[1][0];
-    await this.successfulOrderStatus(payment);
-    await this.sendSuccessfulPaymentSms(payment);
-    await this.sendSuccessfulPaymentSmsToVendor(payment);
-    await this.applyPaymentGatewayCommisssion(payment.orderId);
+    if (payment.paymentTypeId == PaymentTypeEnum.ForOrder) {
+      await this.successfulOrderStatus(payment);
+      await this.sendSuccessfulPaymentSms(payment);
+      await this.sendSuccessfulPaymentSmsToVendor(payment);
+      await this.applyPaymentGatewayCommisssion(payment.orderId);
+    } else if (payment.paymentTypeId == PaymentTypeEnum.TopUpWallet) {
+      let wallet = await this.walletRepository.findOne(
+        new QueryOptionsBuilder()
+          .filter({ userId: payment.userId })
+          .filter(
+            Sequelize.where(
+              Sequelize.fn('isnull', Sequelize.col('ECWallet.isDeleted'), 0),
+              {
+                [Op.eq]: 0,
+              },
+            ),
+          )
+          .build(),
+      );
+      wallet.currentAmount = BigInt(
+        Number(wallet.currentAmount) + Number(payment.totalprice) / 10,
+      );
+      wallet = await wallet.save();
+    }
   }
 
   async applyPaymentGatewayCommisssion(
