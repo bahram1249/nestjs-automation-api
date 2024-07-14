@@ -36,6 +36,7 @@ import { RevertInventoryQtyProcessor } from './processor/revert-inventory-qty.pr
 import { PaymentServiceProviderModule } from '../user/payment/provider/payment-provider.module';
 import { RevertInventoryModule } from './revert-inventory.module';
 import { InventoryTrackChangeModule } from '../inventory-track-change/inventory-track-change.module';
+import { ECWallet } from '@rahino/database/models/ecommerce-eav/ec-wallet.entity';
 
 @Module({
   imports: [
@@ -50,6 +51,7 @@ import { InventoryTrackChangeModule } from '../inventory-track-change/inventory-
       ECProduct,
       ECPayment,
       ECOrder,
+      ECWallet,
     ]),
     UserVendorModule,
     VendorAddressModule,

@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { User } from '@rahino/database/models/core/user.entity';
 import { ECOrder } from '@rahino/database/models/ecommerce-eav/ec-order.entity';
@@ -58,6 +58,7 @@ export class FinalizedPaymentService {
     refId: string,
     cardPan: string,
     cardHash: string,
+    transaction?: Transaction,
   ) {
     const payment = (
       await this.paymentRepository.update(
@@ -72,14 +73,15 @@ export class FinalizedPaymentService {
             id: paymentId,
           },
           returning: true,
+          transaction: transaction,
         },
       )
     )[1][0];
     if (payment.paymentTypeId == PaymentTypeEnum.ForOrder) {
-      await this.successfulOrderStatus(payment);
+      await this.successfulOrderStatus(payment, transaction);
       await this.sendSuccessfulPaymentSms(payment);
-      await this.sendSuccessfulPaymentSmsToVendor(payment);
-      await this.applyPaymentGatewayCommisssion(payment.orderId);
+      await this.sendSuccessfulPaymentSmsToVendor(payment, transaction);
+      await this.applyPaymentGatewayCommisssion(payment.orderId, transaction);
     } else if (payment.paymentTypeId == PaymentTypeEnum.TopUpWallet) {
       let wallet = await this.walletRepository.findOne(
         new QueryOptionsBuilder()
@@ -98,6 +100,37 @@ export class FinalizedPaymentService {
         Number(wallet.currentAmount) + Number(payment.totalprice) / 10,
       );
       wallet = await wallet.save();
+    }
+  }
+
+  async successfulWallet(paymentId: bigint, transaction?: Transaction) {
+    const payment = await this.paymentRepository.findOne(
+      new QueryOptionsBuilder()
+        .filter({ id: paymentId })
+        .filter({ paymentStatusId: PaymentStatusEnum.DecreaseAmountOfWallet })
+        .filter(
+          Sequelize.where(
+            Sequelize.fn('isnull', Sequelize.col('ECPayment.isDeleted'), 0),
+            {
+              [Op.eq]: 0,
+            },
+          ),
+        )
+        .transaction(transaction)
+        .build(),
+    );
+
+    if (!payment) {
+      throw new NotFoundException(
+        'the payment with this given id not founded!',
+      );
+    }
+
+    if (payment.paymentTypeId == PaymentTypeEnum.ForOrder) {
+      await this.successfulOrderStatus(payment, transaction);
+      await this.sendSuccessfulPaymentSms(payment);
+      await this.sendSuccessfulPaymentSmsToVendor(payment, transaction);
+      await this.applyPaymentGatewayCommisssion(payment.orderId, transaction);
     }
   }
 
@@ -157,7 +190,7 @@ export class FinalizedPaymentService {
     );
   }
 
-  async successfulOrderStatus(payment: ECPayment) {
+  async successfulOrderStatus(payment: ECPayment, transaction?: Transaction) {
     await this.orderRepository.update(
       {
         orderStatusId: OrderStatusEnum.Paid,
@@ -168,6 +201,7 @@ export class FinalizedPaymentService {
         where: {
           id: payment.orderId,
         },
+        transaction: transaction,
       },
     );
   }
@@ -186,7 +220,10 @@ export class FinalizedPaymentService {
     );
   }
 
-  async sendSuccessfulPaymentSmsToVendor(payment: ECPayment) {
-    await this.smsService.successfulOrderToVendor(payment.id);
+  async sendSuccessfulPaymentSmsToVendor(
+    payment: ECPayment,
+    transaction?: Transaction,
+  ) {
+    await this.smsService.successfulOrderToVendor(payment.id, transaction);
   }
 }

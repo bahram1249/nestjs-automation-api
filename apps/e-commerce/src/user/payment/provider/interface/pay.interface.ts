@@ -15,7 +15,10 @@ export interface PayInterface {
     orderDetails?: ECOrderDetail[],
   ): Promise<{ redirectUrl: string; paymentId: bigint }>;
 
-  eligbleRequest(totalPrice: number): Promise<{
+  eligbleRequest(
+    totalPrice: number,
+    user?: User,
+  ): Promise<{
     eligibleCheck: boolean;
     titleMessage?: string;
     description?: string;

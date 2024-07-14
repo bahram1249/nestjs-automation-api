@@ -251,6 +251,7 @@ export class StockService {
         );
         const eligbleRequest = await paymentService.eligbleRequest(
           totalPrice + Number(shipment.price),
+          user,
         );
 
         payment.set('eligibleCheck', eligbleRequest.eligibleCheck);

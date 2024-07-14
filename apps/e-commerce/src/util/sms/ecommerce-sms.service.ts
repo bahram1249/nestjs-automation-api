@@ -10,7 +10,7 @@ import { ECVendor } from '@rahino/database/models/ecommerce-eav/ec-vendor.entity
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import { SMS_SERVICE } from '@rahino/sms/contants';
 import { SmsService } from '@rahino/sms/sms.service';
-import { Op, Sequelize } from 'sequelize';
+import { Op, Sequelize, Transaction } from 'sequelize';
 import * as moment from 'moment-jalaali';
 
 @Injectable()
@@ -105,13 +105,16 @@ export class ECommmerceSmsService {
     }
   }
 
-  async successfulOrderToVendor(paymentId: bigint) {
+  async successfulOrderToVendor(paymentId: bigint, transaction?: Transaction) {
     const activeSms =
       (await this.config.get('ECOMMERCE_SUSSESSFUL_ORDER_SMS_STATUS')) ==
       'true';
     if (activeSms == true) {
       const payment = await this.paymentRepository.findOne(
-        new QueryOptionsBuilder().filter({ id: paymentId }).build(),
+        new QueryOptionsBuilder()
+          .filter({ id: paymentId })
+          .transaction(transaction)
+          .build(),
       );
       const order = await this.orderRepository.findOne(
         new QueryOptionsBuilder()
@@ -122,6 +125,7 @@ export class ECommmerceSmsService {
               as: 'details',
             },
           ])
+          .transaction(transaction)
           .build(),
       );
       const vendorIds = Array.from(

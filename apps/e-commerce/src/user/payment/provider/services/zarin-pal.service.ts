@@ -131,7 +131,10 @@ export class ZarinPalService implements PayInterface {
     }
   }
 
-  async eligbleRequest(totalPrice: number): Promise<{
+  async eligbleRequest(
+    totalPrice: number,
+    user?: User,
+  ): Promise<{
     eligibleCheck: boolean;
     titleMessage?: string;
     description?: string;

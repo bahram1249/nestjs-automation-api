@@ -112,4 +112,17 @@ export class ECPayment extends Model {
     allowNull: true,
   })
   cardHash?: string;
+
+  @Column({
+    type: DataType.BIGINT,
+    allowNull: true,
+  })
+  @ForeignKey(() => ECPayment)
+  parentPaymentId?: bigint;
+
+  @BelongsTo(() => ECPayment, {
+    as: 'parentPayment',
+    foreignKey: 'parentPaymentId',
+  })
+  parentPayment?: ECPayment;
 }
