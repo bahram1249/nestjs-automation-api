@@ -226,7 +226,7 @@ export class StockService {
 
       let payments = await this.paymentGatewayRepository.findAll(
         new QueryOptionsBuilder()
-          .attributes(['id', 'name'])
+          .attributes(['id', 'name', 'imageUrl'])
           .filter({ variationPriceId: variationPriceStock.variationPrice.id })
           .filter(
             Sequelize.where(
