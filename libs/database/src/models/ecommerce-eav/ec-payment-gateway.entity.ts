@@ -81,6 +81,12 @@ export class ECPaymentGateway extends Model {
   eligibleChargeWallet?: boolean;
 
   @Column({
+    type: DataType.STRING,
+    allowNull: true,
+  })
+  imageUrl?: string;
+
+  @Column({
     type: DataType.VIRTUAL,
     allowNull: true,
   })

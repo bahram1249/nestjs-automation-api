@@ -16,10 +16,9 @@ import { GetECSession } from 'apps/main/src/decorator';
 import { ECUserSession } from '@rahino/database/models/ecommerce-eav/ec-user-session.entity';
 import { GetUser } from '@rahino/auth/decorator';
 import { User } from '@rahino/database/models/core/user.entity';
-import { StockPaymentDto } from './dto';
+import { StockPaymentDto, WalletPaymentDto } from './dto';
 
 @ApiTags('payments')
-@UseGuards(JwtGuard, SessionGuard)
 @ApiBearerAuth()
 @UseInterceptors(JsonResponseTransformInterceptor)
 @Controller({
@@ -29,6 +28,7 @@ import { StockPaymentDto } from './dto';
 export class PaymentController {
   constructor(private readonly service: PaymentService) {}
 
+  @UseGuards(JwtGuard, SessionGuard)
   @ApiOperation({ description: 'request stock payment' })
   @Post('/stock')
   @HttpCode(HttpStatus.OK)
@@ -38,5 +38,13 @@ export class PaymentController {
     @GetUser() user: User,
   ) {
     return await this.service.stock(session, body, user);
+  }
+
+  @UseGuards(JwtGuard)
+  @ApiOperation({ description: 'request charging wallet payment' })
+  @Post('/walletCharging')
+  @HttpCode(HttpStatus.OK)
+  async walletCharging(@Body() body: WalletPaymentDto, @GetUser() user: User) {
+    return await this.service.walletCharging(user, body);
   }
 }

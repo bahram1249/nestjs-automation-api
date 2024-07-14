@@ -79,6 +79,7 @@ import { PageModule } from './page/page.module';
 import { DashboardModule } from './user/dashboard/dashboard.module';
 import { CancellOrderModule } from './admin/cancell-order/cancell-order.module';
 import { UserCommentModule } from './user/comment/comment.module';
+import { ChargingWalletPaymentModule } from './user/charging-wallet-payment/charging-wallet-payment.module';
 
 @Module({
   imports: [
@@ -160,6 +161,7 @@ import { UserCommentModule } from './user/comment/comment.module';
     DashboardModule,
     CancellOrderModule,
     UserCommentModule,
+    ChargingWalletPaymentModule,
   ],
   providers: [
     {
