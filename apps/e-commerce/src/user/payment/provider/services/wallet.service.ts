@@ -140,7 +140,11 @@ export class WalletService implements PayInterface {
       if (!paymentGateway) {
         throw new ForbiddenException('the payment for charging not founded!');
       }
+      console.log('current amount', wallet.currentAmount);
+      console.log('totalprice', totalPrice);
       const mustBePaid = totalPrice - Number(wallet.currentAmount);
+
+      console.log('must be paid', mustBePaid);
 
       // we must send (must be paid) instead of total price
 
