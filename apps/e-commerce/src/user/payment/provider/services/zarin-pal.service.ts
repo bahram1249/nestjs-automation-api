@@ -21,6 +21,7 @@ import { ZarinPalDto } from '@rahino/ecommerce/verify-payment/dto';
 import { ECOrder } from '@rahino/database/models/ecommerce-eav/ec-order.entity';
 import { RevertInventoryQtyService } from '@rahino/ecommerce/inventory/services';
 import { FinalizedPaymentService } from '../../util/finalized-payment/finalized-payment.service';
+import { RevertPaymentQtyService } from '@rahino/ecommerce/inventory/services/revert-payment-qty.service';
 
 export class ZarinPalService implements PayInterface {
   private baseUrl = '';
@@ -32,7 +33,7 @@ export class ZarinPalService implements PayInterface {
     private readonly config: ConfigService,
     @InjectModel(ECOrder)
     private readonly orderRepository: typeof ECOrder,
-    private readonly revertInventoryQtyService: RevertInventoryQtyService,
+    private readonly revertInventoryQtyService: RevertPaymentQtyService,
     private readonly finalizedPaymentService: FinalizedPaymentService,
   ) {
     this.baseUrl = 'https://api.zarinpal.com';
@@ -176,15 +177,9 @@ export class ZarinPalService implements PayInterface {
     }
 
     if (query.Status != 'OK') {
-      payment = (
-        await this.paymentRepository.update(
-          { paymentStatusId: PaymentStatusEnum.FailedPayment },
-          { where: { id: payment.id }, returning: true },
-        )
-      )[1][0];
       // revert qty
       if (payment.paymentTypeId == PaymentTypeEnum.ForOrder) {
-        await this.revertInventoryQtyService.revertQty(payment.id);
+        await this.revertInventoryQtyService.revertPaymentAndQty(payment.id);
       }
     } else {
       const verifyRequest = await axios.post(
@@ -203,15 +198,9 @@ export class ZarinPalService implements PayInterface {
           verifyRequest.data.data.card_hash,
         );
       } else {
-        payment = (
-          await this.paymentRepository.update(
-            { paymentStatusId: PaymentStatusEnum.FailedPayment },
-            { where: { id: payment.id }, returning: true },
-          )
-        )[1][0];
         if (payment.paymentTypeId == PaymentTypeEnum.ForOrder) {
           // revert qty
-          await this.revertInventoryQtyService.revertQty(payment.id);
+          await this.revertInventoryQtyService.revertPaymentAndQty(payment.id);
         }
       }
     }

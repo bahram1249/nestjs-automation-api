@@ -4,10 +4,10 @@ import { SequelizeModule } from '@nestjs/sequelize';
 import { ECPaymentGateway } from '@rahino/database/models/ecommerce-eav/ec-payment-gateway.entity';
 import { ECPayment } from '@rahino/database/models/ecommerce-eav/ec-payment-entity';
 import { ECOrder } from '@rahino/database/models/ecommerce-eav/ec-order.entity';
-import { RevertInventoryModule } from '@rahino/ecommerce/inventory/revert-inventory.module';
 import { FinalizedPaymentModule } from '../util/finalized-payment/finalized-payment.module';
 import { ECWallet } from '@rahino/database/models/ecommerce-eav/ec-wallet.entity';
 import { PaymentWalletServiceProviderModule } from './payment-wallet-provider.module';
+import { RevertPaymentQtyModule } from '@rahino/ecommerce/inventory/revert-payment-qty.module';
 
 @Module({
   imports: [
@@ -17,7 +17,7 @@ import { PaymentWalletServiceProviderModule } from './payment-wallet-provider.mo
       ECOrder,
       ECWallet,
     ]),
-    RevertInventoryModule,
+    RevertPaymentQtyModule,
     FinalizedPaymentModule,
     PaymentWalletServiceProviderModule,
   ],

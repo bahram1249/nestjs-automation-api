@@ -13,6 +13,7 @@ import {
 import { Op, Sequelize } from 'sequelize';
 import { PaymentServiceManualProviderFactory } from '@rahino/ecommerce/user/payment/provider/factory/payment-service-manual-provider.factory';
 import { ECWallet } from '@rahino/database/models/ecommerce-eav/ec-wallet.entity';
+import { RevertPaymentQtyService } from '../services/revert-payment-qty.service';
 
 @Processor(REVERT_INVENTORY_QTY_QUEUE)
 export class RevertInventoryQtyProcessor extends WorkerHost {
@@ -22,7 +23,7 @@ export class RevertInventoryQtyProcessor extends WorkerHost {
     private readonly paymentRepository: typeof ECPayment,
     @InjectModel(ECWallet)
     private readonly walletRepository: typeof ECWallet,
-    private readonly revertInventoryQtyService: RevertInventoryQtyService,
+    private readonly revertInventoryQtyService: RevertPaymentQtyService,
     private readonly paymentServiceManualProviderFactory: PaymentServiceManualProviderFactory,
   ) {
     super();
@@ -58,74 +59,13 @@ export class RevertInventoryQtyProcessor extends WorkerHost {
           payment.id,
         );
         if (eligbleToRevert) {
-          await this.revertInventoryQtyService.revertQty(paymentId);
+          await this.revertInventoryQtyService.revertPaymentAndQty(paymentId);
           payment = (
             await this.paymentRepository.update(
               { paymentStatusId: PaymentStatusEnum.FailedPayment },
               { where: { id: payment.id }, returning: true },
             )
           )[1][0];
-
-          // if the payment has child revert those to wallets
-
-          const childPayments = await this.paymentRepository.findAll(
-            new QueryOptionsBuilder()
-              .filter({ parentPaymentId: payment.id })
-              .filter(
-                Sequelize.where(
-                  Sequelize.fn(
-                    'isnull',
-                    Sequelize.col('ECPayment.isDeleted'),
-                    0,
-                  ),
-                  {
-                    [Op.eq]: 0,
-                  },
-                ),
-              )
-              .build(),
-          );
-
-          for (let index = 0; index < childPayments.length; index++) {
-            const childPayment = childPayments[index];
-            const refundPrice = Number(childPayment.totalprice) / 10;
-
-            const refundPayment = await this.paymentRepository.create({
-              paymentGatewayId: childPayment.paymentGatewayId,
-              paymentTypeId: childPayment.paymentTypeId,
-              paymentStatusId: PaymentStatusEnum.RefundAmountOfWallet,
-              totalprice: childPayment.totalprice,
-              orderId: childPayment.orderId,
-              userId: childPayment.userId,
-              parentPaymentId: childPayment.id,
-            });
-
-            let wallet = await this.walletRepository.findOne(
-              new QueryOptionsBuilder()
-                .filter({ userId: payment.userId })
-                .filter(
-                  Sequelize.where(
-                    Sequelize.fn(
-                      'isnull',
-                      Sequelize.col('ECWallet.isDeleted'),
-                      0,
-                    ),
-                    {
-                      [Op.eq]: 0,
-                    },
-                  ),
-                )
-                .build(),
-            );
-
-            wallet.currentAmount = BigInt(
-              Number(wallet.currentAmount) + refundPrice,
-            );
-            wallet.suspendedAmount = BigInt(
-              Number(wallet.suspendedAmount) - refundPrice,
-            );
-            await wallet.save();
-          }
         }
       }
     } catch (error) {

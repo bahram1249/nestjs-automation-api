@@ -34,9 +34,9 @@ import { ECPayment } from '@rahino/database/models/ecommerce-eav/ec-payment-enti
 import { ECOrder } from '@rahino/database/models/ecommerce-eav/ec-order.entity';
 import { RevertInventoryQtyProcessor } from './processor/revert-inventory-qty.processor';
 import { PaymentServiceProviderModule } from '../user/payment/provider/payment-provider.module';
-import { RevertInventoryModule } from './revert-inventory.module';
 import { InventoryTrackChangeModule } from '../inventory-track-change/inventory-track-change.module';
 import { ECWallet } from '@rahino/database/models/ecommerce-eav/ec-wallet.entity';
+import { RevertPaymentQtyModule } from './revert-payment-qty.module';
 
 @Module({
   imports: [
@@ -79,7 +79,7 @@ import { ECWallet } from '@rahino/database/models/ecommerce-eav/ec-wallet.entity
       name: REVERT_INVENTORY_QTY_QUEUE,
     }),
     PaymentServiceProviderModule,
-    RevertInventoryModule,
+    RevertPaymentQtyModule,
   ],
   providers: [
     InventoryValidationService,

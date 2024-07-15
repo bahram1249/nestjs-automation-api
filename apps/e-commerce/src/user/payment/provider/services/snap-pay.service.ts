@@ -21,9 +21,9 @@ import { SnapPayDto } from '@rahino/ecommerce/verify-payment/dto';
 import { ECOrder } from '@rahino/database/models/ecommerce-eav/ec-order.entity';
 import { Response } from 'express';
 import { ConfigService } from '@nestjs/config';
-import { RevertInventoryQtyService } from '@rahino/ecommerce/inventory/services';
 import { User } from '@rahino/database/models/core/user.entity';
 import { FinalizedPaymentService } from '../../util/finalized-payment/finalized-payment.service';
+import { RevertPaymentQtyService } from '@rahino/ecommerce/inventory/services/revert-payment-qty.service';
 
 export class SnapPayService implements PayInterface {
   private baseUrl = '';
@@ -35,7 +35,7 @@ export class SnapPayService implements PayInterface {
     @InjectModel(ECOrder)
     private readonly orderRepository: typeof ECOrder,
     private readonly config: ConfigService,
-    private readonly revertInventoryQtyService: RevertInventoryQtyService,
+    private readonly revertInventoryQtyService: RevertPaymentQtyService,
     private readonly finalizedPaymentService: FinalizedPaymentService,
   ) {
     this.baseUrl = 'https://api.snapppay.ir';
@@ -275,14 +275,8 @@ export class SnapPayService implements PayInterface {
     }
 
     if (query.state == 'FAILED') {
-      payment = (
-        await this.paymentRepository.update(
-          { paymentStatusId: PaymentStatusEnum.FailedPayment },
-          { where: { id: payment.id }, returning: true },
-        )
-      )[1][0];
       // revert qty
-      await this.revertInventoryQtyService.revertQty(payment.id);
+      await this.revertInventoryQtyService.revertPaymentAndQty(payment.id);
     } else if (query.state == 'OK') {
       if (Number(query.amount) == Number(payment.totalprice)) {
         const token = await this.generateToken(paymentGateway);
@@ -300,28 +294,16 @@ export class SnapPayService implements PayInterface {
           },
         );
         if (result.data.successful != true) {
-          payment = (
-            await this.paymentRepository.update(
-              { paymentStatusId: PaymentStatusEnum.FailedPayment },
-              { where: { id: payment.id }, returning: true },
-            )
-          )[1][0];
           // revert qty
-          await this.revertInventoryQtyService.revertQty(payment.id);
+          await this.revertInventoryQtyService.revertPaymentAndQty(payment.id);
 
           throw new BadRequestException('invalid payment');
         }
         if (
           result.data.response.transactionId != payment.transactionId.toString()
         ) {
-          payment = (
-            await this.paymentRepository.update(
-              { paymentStatusId: PaymentStatusEnum.FailedPayment },
-              { where: { id: payment.id }, returning: true },
-            )
-          )[1][0];
           // revert qty
-          await this.revertInventoryQtyService.revertQty(payment.id);
+          await this.revertInventoryQtyService.revertPaymentAndQty(payment.id);
 
           throw new BadRequestException('invalid payment');
         }
