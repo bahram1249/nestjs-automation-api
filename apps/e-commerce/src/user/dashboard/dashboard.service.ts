@@ -3,6 +3,7 @@ import { InjectModel } from '@nestjs/sequelize';
 import { User } from '@rahino/database/models/core/user.entity';
 import { ECOrder } from '@rahino/database/models/ecommerce-eav/ec-order.entity';
 import { ECProductComment } from '@rahino/database/models/ecommerce-eav/ec-product-comment.entity';
+import { ECWallet } from '@rahino/database/models/ecommerce-eav/ec-wallet.entity';
 import {
   OrderStatusEnum,
   ProductCommentStatusEnum,
@@ -18,6 +19,8 @@ export class DashboardService {
     private readonly productCommentRepository: typeof ECProductComment,
     @InjectModel(ECOrder)
     private readonly orderRepository: typeof ECOrder,
+    @InjectModel(ECWallet)
+    private readonly walletRepository: typeof ECWallet,
   ) {}
 
   async totalComments(user: User) {
@@ -69,8 +72,21 @@ export class DashboardService {
   }
 
   async totalWalletAmounts(user: User) {
+    const wallet = await this.walletRepository.findOne(
+      new QueryOptionsBuilder()
+        .filter({ userId: user.id })
+        .filter(
+          Sequelize.where(
+            Sequelize.fn('isnull', Sequelize.col('ECWallet.isDeleted'), 0),
+            {
+              [Op.eq]: 0,
+            },
+          ),
+        )
+        .build(),
+    );
     return {
-      result: 0,
+      result: wallet.currentAmount,
     };
   }
 }
