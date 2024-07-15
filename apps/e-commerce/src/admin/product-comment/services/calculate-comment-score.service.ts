@@ -23,7 +23,7 @@ export class CalculateCommentScoreService {
     let comment = await this.repository.findOne(
       new QueryOptionsBuilder()
         .filter({ id: commentId })
-        .filter({ statusId: ProductCommentStatusEnum.confirm })
+        //.filter({ statusId: ProductCommentStatusEnum.confirm })
         .build(),
     );
     if (!comment) {
