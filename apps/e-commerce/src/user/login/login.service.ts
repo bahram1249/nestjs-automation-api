@@ -8,6 +8,7 @@ import * as _ from 'lodash';
 import { ConfigService } from '@nestjs/config';
 import { getIntegerRandomArbitrary } from '@rahino/commontools';
 import { ECommmerceSmsService } from '@rahino/ecommerce/util/sms/ecommerce-sms.service';
+import { ECWallet } from '@rahino/database/models/ecommerce-eav/ec-wallet.entity';
 
 @Injectable()
 export class LoginService {
@@ -16,6 +17,8 @@ export class LoginService {
     private authService: AuthService,
     @InjectModel(User)
     private readonly userRepository: typeof User,
+    @InjectModel(ECWallet)
+    private readonly walletRepository: typeof ECWallet,
     private readonly smsService: ECommmerceSmsService,
     private readonly config: ConfigService,
   ) {}
@@ -63,6 +66,12 @@ export class LoginService {
         username: dto.phoneNumber,
         firstname: dto.firstname,
         lastname: dto.lastname,
+      });
+
+      const wallet = await this.walletRepository.create({
+        userId: user.id,
+        currentAmount: 0,
+        suspendedAmount: 0,
       });
     }
     const signToken = await this.authService.signToken(user);

@@ -38,7 +38,7 @@ export class ChargingWalletPaymentController {
   @ApiOperation({ description: 'show total payment gateways' })
   @Get('/')
   @HttpCode(HttpStatus.OK)
-  async totalOrders(@Query() filter: ListFilter) {
+  async findAll(@Query() filter: ListFilter) {
     return await this.service.findAll(filter);
   }
 }

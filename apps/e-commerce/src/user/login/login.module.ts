@@ -11,12 +11,19 @@ import { Menu } from '@rahino/database/models/core/menu.entity';
 import { RolePermission } from '@rahino/database/models/core/rolePermission.entity';
 import { PermissionMenu } from '@rahino/database/models/core/permission-menu.entity';
 import { ECommerceSmsModule } from '@rahino/ecommerce/util/sms/ecommerce-sms.module';
+import { ECWallet } from '@rahino/database/models/ecommerce-eav/ec-wallet.entity';
 
 @Module({
   imports: [
     JwtModule.register({}),
     RedisClientModule,
-    SequelizeModule.forFeature([User, Menu, RolePermission, PermissionMenu]),
+    SequelizeModule.forFeature([
+      User,
+      ECWallet,
+      Menu,
+      RolePermission,
+      PermissionMenu,
+    ]),
     ECommerceSmsModule,
   ],
   controllers: [LoginController],
