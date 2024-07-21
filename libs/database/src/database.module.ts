@@ -97,6 +97,8 @@ import { ECInventoryTrackChangeStatus } from './models/ecommerce-eav/ec-inventor
 import { ECInventoryHistory } from './models/ecommerce-eav/ec-inventory-history.entity';
 import { ECPage } from './models/ecommerce-eav/ec-page.entity';
 import { ECWallet } from './models/ecommerce-eav/ec-wallet.entity';
+import { ECHomePage } from './models/ecommerce-eav/ec-home-page.entity';
+import { ECEntityTypeSort } from './models/ecommerce-eav/ec-entityType-sort.entity';
 
 @Module({
   imports: [
@@ -190,6 +192,8 @@ import { ECWallet } from './models/ecommerce-eav/ec-wallet.entity';
           ECInventoryHistory,
           ECPage,
           ECWallet,
+          ECHomePage,
+          ECEntityTypeSort,
           Buffet,
           BuffetGallery,
           BuffetType,

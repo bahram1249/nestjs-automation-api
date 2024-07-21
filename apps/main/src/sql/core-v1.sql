@@ -2904,6 +2904,45 @@ GO
 
 
 
+-- ec-paymentgateways-v5
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ec-paymentgateways-v5' 
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'SITE_NAME' AND [value] IN ('ecommerce'))
+		)
+BEGIN
+
+	ALTER TABLE ECPaymentGateways
+		ADD eligibleChargeWallet bit null
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'ec-paymentgateways-v5', GETDATE(), GETDATE()
+END
+
+GO
+
+
+-- ec-paymentgateways-v6
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ec-paymentgateways-v6' 
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'SITE_NAME' AND [value] IN ('ecommerce'))
+		)
+BEGIN
+
+	ALTER TABLE ECPaymentGateways
+		ADD imageUrl nvarchar(256) null
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'ec-paymentgateways-v6', GETDATE(), GETDATE()
+END
+
+GO
+
+
+
 -- paymentgatewayscommissiontypes
 IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ecommerce-paymentgatewayscommissiontypes-v1' 
 			)
@@ -3559,6 +3598,31 @@ END
 
 GO
 
+
+
+-- ec-payments-v3
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ec-payments-v3' 
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'SITE_NAME' AND [value] IN ('ecommerce'))
+		)
+BEGIN
+
+
+	ALTER TABLE ECPayments
+		ADD parentPaymentId bigint
+			CONSTRAINT FK_ECPayments_ParentPaymentId
+				FOREIGN KEY REFERENCES ECPayments(id)
+			
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'ec-payments-v3', GETDATE(), GETDATE()
+END
+
+GO
+
+
 -- ec-courier
 IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ec-couriers-v1' 
 			)
@@ -3859,6 +3923,64 @@ END
 GO
 
 
+-- ec-homepages
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ec-homepages-v1' 
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'SITE_NAME' AND [value] IN ('ecommerce'))
+		)
+BEGIN
+
+	CREATE TABLE ECHomePages(
+		id								bigint identity(1,1)			NOT NULL,
+		userId							bigint							NULL
+			CONSTRAINT FK_ECHomePages_UserId
+				FOREIGN KEY REFERENCES Users(id),
+		isDeleted						bit								NOT NULL,
+		[priority]						int								NULL,
+		[jsonContent]					nvarchar(1024)					NULL,
+		[createdAt]						datetimeoffset					NOT NULL,
+		[updatedAt]						datetimeoffset					NOT NULL,
+		CONSTRAINT PK_ECHomePages_isDeleted_Id PRIMARY KEY CLUSTERED (isDeleted, id)
+	);
+
+	
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'ec-homepages-v1', GETDATE(), GETDATE()
+END
+
+GO
+
+
+-- ec-entityTypeSorts
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ec-entityTypeSorts-v1' 
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'SITE_NAME' AND [value] IN ('ecommerce'))
+		)
+BEGIN
+
+	CREATE TABLE ECEntityTypeSorts(
+		id								int								PRIMARY KEY,
+		[title]							nvarchar(256)					NOT NULL,
+		[sortField]						nvarchar(256)					NOT NULL,
+		[sortOrder]						nvarchar(256)					NOT NULL,
+		[createdAt]						datetimeoffset					NOT NULL,
+		[updatedAt]						datetimeoffset					NOT NULL,
+	);
+
+	
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'ec-entityTypeSorts-v1', GETDATE(), GETDATE()
+END
+
+GO
+
+
 
 /*
 
@@ -3935,6 +4057,27 @@ BEGIN
 
 	INSERT INTO Migrations(version, createdAt, updatedAt)
 	SELECT 'ec-payment-status-Data-v1', GETDATE(), GETDATE()
+END
+
+GO
+
+
+
+-- ec-payment-status-Data-v2
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ec-payment-status-Data-v2' 
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'SITE_NAME' AND [value] IN ('ecommerce'))
+		)
+BEGIN
+
+	INSERT INTO ECPaymentStatus(id, name ,createdAt, updatedAt)
+	VALUES (5, N'کسر از موجودی کیف پول', GETDATE(), GETDATE())
+		,(6, N'بازگشت موجودی به کیف پول', GETDATE(), GETDATE())
+			
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'ec-payment-status-Data-v2', GETDATE(), GETDATE()
 END
 
 GO
@@ -6439,6 +6582,27 @@ END
 GO
 
 
+
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ecommerce-entityTypeSorts-Data-v1' 
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'SITE_NAME' AND [value] IN ('ecommerce'))
+		)
+BEGIN
+	
+	INSERT INTO ECEntityTypeSorts(id, [title], [sortField], [sortOrder], createdAt, updatedAt)
+	VALUES (1, N'جدید ترین ها', 'id', 'DESC', GETDATE(), GETDATE())
+		,(2, N'قدیمی ترین ها', 'id', 'ASC', GETDATE(), GETDATE())
+		,(3, N'گران ترین ها', 'lastPrice', 'DESC', GETDATE(), GETDATE())
+		,(4, N'ارزان ترین ها', 'lastPrice', 'ASC', GETDATE(), GETDATE())
+			
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'ecommerce-entityTypeSorts-Data-v1', GETDATE(), GETDATE()
+END
+
+GO
+
 -- data takhfif
 -- buffetType
 IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'DiscountCoffe-buffetType-Data-v1' 
@@ -7495,6 +7659,22 @@ BEGIN
 
 	INSERT INTO Migrations(version, createdAt, updatedAt)
 	SELECT 'CORE-AttachmentTypes-Data-v11', GETDATE(), GETDATE()
+END
+
+GO
+
+
+-- ecommerce banner or slider
+IF NOT EXISTS ((SELECT 1 FROM Migrations WHERE version = 'CORE-AttachmentTypes-Data-v12' 
+			))
+BEGIN
+	
+
+	INSERT INTO AttachmentTypes(id, typeName, createdAt, updatedAt)
+	SELECT 13, N'bannder-slider', getdate(), getdate()
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'CORE-AttachmentTypes-Data-v12', GETDATE(), GETDATE()
 END
 
 GO
@@ -14921,6 +15101,203 @@ BEGIN
 
 	INSERT INTO Migrations(version, createdAt, updatedAt)
 	SELECT 'CORE-Permissions-Data-v62', GETDATE(), GETDATE()
+END
+
+GO
+
+-- ecommerce/admin/homePages
+IF NOT EXISTS ((SELECT 1 FROM Migrations WHERE version = 'CORE-Permissions-Data-v63' 
+			))
+	AND EXISTS (
+		SELECT 1 FROM Settings WHERE 1=1
+		AND ([key] = 'SITE_NAME' AND [value] IN ('ecommerce'))
+	)
+BEGIN
+	
+	DECLARE @roleId int = (SELECT TOP 1 id FROM Roles WHERE static_id = 1)
+	DECLARE @userId bigint = (SELECT TOP 1 id FROM Users WHERE static_id = 1)
+
+	DECLARE @GroupTemp TABLE (
+		gorupId int
+	);
+
+	DECLARE @groupId int = null;
+
+	DECLARE @entityName nvarchar(256) = N'HomePages'
+	DECLARE @groupName nvarchar(256) = N'ecommerce.admin.homepages'
+	DECLARE @findParentMenu bit = 1;
+	DECLARE @parentMenuName nvarchar(256) = N'مدیریت'
+	DECLARE @menuName nvarchar(256) = N'تنظیمات صفحه اصلی'
+	DECLARE @menuUrl nvarchar(512) = N'/admin/ecommerce/homePages'
+
+	DECLARE @permissionSymbolShowMenu nvarchar(512) = @groupName + '.showmenu';
+	DECLARE @permissionSymbolGetAll nvarchar(512) = @groupName + '.getall';
+	DECLARE @permissionSymbolCreate nvarchar(512) = @groupName + '.create';
+	
+
+
+
+	-- permission groups
+	INSERT INTO PermissionGroups(permissionGroupName, [visibility], createdAt, updatedAt)
+	OUTPUT inserted.id INTO @GroupTemp(gorupId)
+	SELECT @groupName, 1, GETDATE(), GETDATE();
+
+	SELECT  @groupId = gorupId FROM @GroupTemp
+
+
+	-- permissions
+
+	
+	DECLARE @PermissionTemp TABLE (
+		permissionId int
+	);
+
+	INSERT INTO Permissions(permissionName ,permissionSymbol,permissionGroupId,  createdAt, updatedAt)
+	OUTPUT inserted.id INTO @PermissionTemp(permissionId)
+	SELECT 'GETALL_' + @entityName, @permissionSymbolGetAll, @groupId, GETDATE(), GETDATE()
+															
+	INSERT INTO Permissions(permissionName ,permissionSymbol,permissionGroupId,  createdAt, updatedAt)
+	OUTPUT inserted.id INTO @PermissionTemp(permissionId)
+	SELECT 'CREATE_' + @entityName, @permissionSymbolCreate, @groupId, GETDATE(), GETDATE()
+	
+
+
+	-- CRUD THIS Enity FOR super-admin
+	INSERT INTO RolePermissions(roleId, permissionId, createdAt, updatedAt)
+	SELECT @roleId, permissionId, GETDATE(), GETDATE()
+	FROM @PermissionTemp
+
+	DELETE FROM @PermissionTemp
+
+	INSERT INTO Permissions(permissionName ,permissionSymbol, permissionGroupId,createdAt, updatedAt)
+	OUTPUT inserted.id INTO @PermissionTemp(permissionId)
+	SELECT 'SHOWMENU_' + @entityName, @permissionSymbolShowMenu, @groupId,GETDATE(), GETDATE()
+
+	INSERT INTO RolePermissions(roleId, permissionId, createdAt, updatedAt)
+	SELECT @roleId, permissionId, GETDATE(), GETDATE()
+	FROM @PermissionTemp
+
+	DECLARE @permissionId int = null
+	SELECT @permissionId = permissionId FROM @PermissionTemp
+
+
+
+
+	DECLARE @parentMenuId int = null
+	
+
+
+	IF @findParentMenu = 0
+	BEGIN
+		-- INSERT ParentMenu
+		DECLARE @ParentMenuTemp TABLE (
+			menuId int
+		);
+
+		INSERT INTO Menus(title, url, className, visibility, createdAt, updatedAt)
+		OUTPUT inserted.id INTO @ParentMenuTemp(menuId)
+		SELECT @parentMenuName, null, null, null, GETDATE(), GETDATE()
+
+		SELECT @parentMenuId = menuId FROM @ParentMenuTemp
+
+	END
+	ELSE
+	BEGIN
+		SELECT @parentMenuId = id
+		FROM Menus
+		WHERE title = @parentMenuName
+	END
+
+	IF @parentMenuId IS NOT NULL
+		AND NOT EXISTS (SELECT 1 FROM PermissionMenus WHERE permissionId = @permissionId AND menuId = @parentMenuId)
+	BEGIN
+		INSERT INTO PermissionMenus(permissionId, menuId, createdAt, updatedAt)
+		SELECT @permissionId, @parentMenuId, getdate(), getdate()
+		
+	END
+
+	DECLARE @MenuTemp TABLE (
+			menuId int
+		);
+	DECLARE @menuId int = null
+
+	INSERT INTO Menus(title, url, parentMenuId, className, visibility, createdAt, updatedAt)
+	OUTPUT inserted.id INTO @MenuTemp(menuId)
+	SELECT @menuName, @menuUrl, @parentMenuId,null, null, GETDATE(), GETDATE()
+
+	SELECT @menuId = menuId FROM @MenuTemp
+
+	INSERT INTO PermissionMenus(permissionId, menuId, createdAt, updatedAt)
+	SELECT @permissionId, @menuId, getdate(), getdate()
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'CORE-Permissions-Data-v63', GETDATE(), GETDATE()
+END
+
+GO
+
+-- ecommerce/admin/homepagephotos
+IF NOT EXISTS ((SELECT 1 FROM Migrations WHERE version = 'CORE-Permissions-Data-v64' 
+			))
+	AND EXISTS (
+		SELECT 1 FROM Settings WHERE 1=1
+		AND ([key] = 'SITE_NAME' AND [value] IN ('ecommerce'))
+	)
+BEGIN
+	
+	DECLARE @roleId int = (SELECT TOP 1 id FROM Roles WHERE static_id = 1)
+	DECLARE @userId bigint = (SELECT TOP 1 id FROM Users WHERE static_id = 1)
+
+	DECLARE @GroupTemp TABLE (
+		gorupId int
+	);
+
+	DECLARE @groupId int = null;
+
+	DECLARE @entityName nvarchar(256) = N'HomePagePhotoss'
+	DECLARE @groupName nvarchar(256) = N'ecommerce.admin.homepagephotos'
+	
+	DECLARE @permissionSymbolUploadImage nvarchar(512) = @groupName + '.uploadImage';
+	DECLARE @permissionSymbolShowImage nvarchar(512) = @groupName + '.showImage';
+	
+
+
+
+	-- permission groups
+	INSERT INTO PermissionGroups(permissionGroupName, [visibility], createdAt, updatedAt)
+	OUTPUT inserted.id INTO @GroupTemp(gorupId)
+	SELECT @groupName, 1, GETDATE(), GETDATE();
+
+	SELECT  @groupId = gorupId FROM @GroupTemp
+
+
+	-- permissions
+
+	
+	DECLARE @PermissionTemp TABLE (
+		permissionId int
+	);
+
+	INSERT INTO Permissions(permissionName ,permissionSymbol,permissionGroupId,  createdAt, updatedAt)
+	OUTPUT inserted.id INTO @PermissionTemp(permissionId)
+	SELECT 'UPLOADIMAGE_' + @entityName, @permissionSymbolUploadImage, @groupId, GETDATE(), GETDATE()
+															
+	INSERT INTO Permissions(permissionName ,permissionSymbol,permissionGroupId,  createdAt, updatedAt)
+	OUTPUT inserted.id INTO @PermissionTemp(permissionId)
+	SELECT 'SHOWIMAGE_' + @entityName, @permissionSymbolShowImage, @groupId, GETDATE(), GETDATE()
+	
+
+
+	-- CRUD THIS Enity FOR super-admin
+	INSERT INTO RolePermissions(roleId, permissionId, createdAt, updatedAt)
+	SELECT @roleId, permissionId, GETDATE(), GETDATE()
+	FROM @PermissionTemp
+
+	DELETE FROM @PermissionTemp
+
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'CORE-Permissions-Data-v64', GETDATE(), GETDATE()
 END
 
 GO

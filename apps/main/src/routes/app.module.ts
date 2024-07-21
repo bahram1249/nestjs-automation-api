@@ -37,6 +37,7 @@ import { AppLanguageResolver } from '../i18nResolver/AppLanguageResolver';
 import { ECommerceSmsModule } from '@rahino/ecommerce/util/sms/ecommerce-sms.module';
 import { ECommmerceSmsService } from '@rahino/ecommerce/util/sms/ecommerce-sms.service';
 import { KnexModule } from 'nestjs-knex';
+import { useContainer } from 'class-validator';
 
 @Module({
   imports: [
@@ -152,6 +153,8 @@ export class AppModule implements NestModule {
         whitelist: true,
       }),
     );
+
+    useContainer(app.select(AppModule), { fallbackOnErrors: true });
 
     app.useGlobalFilters(
       //new I18nValidationExceptionFilter(),

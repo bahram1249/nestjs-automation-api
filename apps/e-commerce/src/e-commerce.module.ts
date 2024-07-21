@@ -80,6 +80,8 @@ import { DashboardModule } from './user/dashboard/dashboard.module';
 import { CancellOrderModule } from './admin/cancell-order/cancell-order.module';
 import { UserCommentModule } from './user/comment/comment.module';
 import { ChargingWalletPaymentModule } from './user/charging-wallet-payment/charging-wallet-payment.module';
+import { AdminHomePageModule } from './admin/home-page/home-page.module';
+import { HomePagePhotoModule } from './admin/home-page-photo/home-page-photo.module';
 
 @Module({
   imports: [
@@ -162,6 +164,8 @@ import { ChargingWalletPaymentModule } from './user/charging-wallet-payment/char
     CancellOrderModule,
     UserCommentModule,
     ChargingWalletPaymentModule,
+    AdminHomePageModule,
+    HomePagePhotoModule,
   ],
   providers: [
     {
