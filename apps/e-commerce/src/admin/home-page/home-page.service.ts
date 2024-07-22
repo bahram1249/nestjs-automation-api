@@ -23,7 +23,7 @@ export class HomePageService {
     );
     const result = items
       .sort((item) => item.priority)
-      .map((item) => item.jsonContent);
+      .map((item) => JSON.parse(item.jsonContent));
     return {
       result: result,
     };
