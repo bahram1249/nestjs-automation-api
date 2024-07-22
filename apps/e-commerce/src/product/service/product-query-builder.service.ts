@@ -598,7 +598,9 @@ export class ProductQueryBuilderService {
 
       const offsetRandom = await this.sequelize.query(
         `SELECT RAND(CHECKSUM(NEWID()))* count(*) as offset FROM ECProducts
-        WHERE inventoryStatusId = ${InventoryStatusEnum.available}`,
+        WHERE inventoryStatusId = ${InventoryStatusEnum.available}
+          AND isnull(ECProducts.isDeleted, 0) = 0
+          AND ECProducts.publishStatusId = ${PublishStatusEnum.publish}`,
         { type: QueryTypes.SELECT, raw: true },
       );
 
