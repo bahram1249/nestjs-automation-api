@@ -9,6 +9,7 @@ import { HomePageValidatorService } from './home-page-validator.service';
 import { Attachment } from '@rahino/database/models/core/attachment.entity';
 import { EAVEntityType } from '@rahino/database/models/eav/eav-entity-type.entity';
 import { ECEntityTypeSort } from '@rahino/database/models/ecommerce-eav/ec-entityType-sort.entity';
+import { ECBrand } from '@rahino/database/models/ecommerce-eav/ec-brand.entity';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { ECEntityTypeSort } from '@rahino/database/models/ecommerce-eav/ec-entit
       Attachment,
       EAVEntityType,
       ECEntityTypeSort,
+      ECBrand,
     ]),
   ],
   controllers: [HomePageController],

@@ -6596,6 +6596,7 @@ BEGIN
 		,(2, N'قدیمی ترین ها', 'id', 'ASC', GETDATE(), GETDATE())
 		,(3, N'گران ترین ها', 'lastPrice', 'DESC', GETDATE(), GETDATE())
 		,(4, N'ارزان ترین ها', 'lastPrice', 'ASC', GETDATE(), GETDATE())
+		,(5, N'تصادفی', 'randomize', 'ASC', GETDATE(), GETDATE())
 			
 	INSERT INTO Migrations(version, createdAt, updatedAt)
 	SELECT 'ecommerce-entityTypeSorts-Data-v1', GETDATE(), GETDATE()

@@ -12,6 +12,8 @@ import { Op } from 'sequelize';
 import { ECEntityTypeSort } from '@rahino/database/models/ecommerce-eav/ec-entityType-sort.entity';
 import { ProductBrandContentDto } from './dto/content/product-brand-content.dto';
 import { ECBrand } from '@rahino/database/models/ecommerce-eav/ec-brand.entity';
+import { CategoryContentDto } from './dto/content/category-content.dto';
+import { BrandContentDto } from './dto/content/brand-content.dto';
 
 @Injectable()
 export class HomePageValidatorService {
@@ -117,6 +119,14 @@ export class HomePageValidatorService {
         `the entityTypeSortBy-> ${productContent.sortBy} not founded!`,
       );
     }
+  }
+
+  async categoryValidator(dto: HomePageDataDto) {
+    const categoryContent = dto.content as unknown as CategoryContentDto;
+  }
+
+  async brandValidator(dto: HomePageDataDto) {
+    const brandContent = dto.content as unknown as BrandContentDto;
   }
 
   private async findAttachment(attachmentId: number) {

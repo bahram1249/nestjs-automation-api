@@ -3,4 +3,6 @@ export enum HomePageTypeEnum {
   BANNER = 'banner',
   PRODUCTCATEGORY = 'productCategory',
   PRODUCTBRAND = 'productBrand',
+  BRAND = 'brand',
+  CATEGORY = 'category',
 }

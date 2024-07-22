@@ -40,6 +40,10 @@ export class HomePageService {
         await this.homePageValidatorService.productCategoryValidator(item);
       } else if (item.type == HomePageTypeEnum.PRODUCTBRAND) {
         await this.homePageValidatorService.productBrandValidator(item);
+      } else if (item.type == HomePageTypeEnum.CATEGORY) {
+        await this.homePageValidatorService.categoryValidator(item);
+      } else if (item.type == HomePageTypeEnum.BRAND) {
+        await this.homePageValidatorService.brandValidator(item);
       }
     }
 
