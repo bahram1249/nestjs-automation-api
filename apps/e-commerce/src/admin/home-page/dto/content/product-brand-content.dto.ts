@@ -7,7 +7,7 @@ import {
   MinLength,
 } from 'class-validator';
 
-export class ProductCategoryContentDto {
+export class ProductBrandContentDto {
   @IsNotEmpty()
   @IsString()
   @MinLength(3)
@@ -17,7 +17,7 @@ export class ProductCategoryContentDto {
 
   @IsNumber()
   @AutoMap()
-  public entityTypeId: number;
+  public brandId: number;
 
   @IsNumber()
   @AutoMap()

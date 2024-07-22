@@ -10,6 +10,8 @@ import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builde
 import { Sequelize } from 'sequelize';
 import { Op } from 'sequelize';
 import { ECEntityTypeSort } from '@rahino/database/models/ecommerce-eav/ec-entityType-sort.entity';
+import { ProductBrandContentDto } from './dto/content/product-brand-content.dto';
+import { ECBrand } from '@rahino/database/models/ecommerce-eav/ec-brand.entity';
 
 @Injectable()
 export class HomePageValidatorService {
@@ -19,6 +21,8 @@ export class HomePageValidatorService {
     private readonly attachmentRepository: typeof Attachment,
     @InjectModel(EAVEntityType)
     private readonly entityTypeRepository: typeof EAVEntityType,
+    @InjectModel(ECBrand)
+    private readonly brandRepository: typeof ECBrand,
     @InjectModel(ECEntityTypeSort)
     private readonly entityTypeSortRepository: typeof ECEntityTypeSort,
   ) {}
@@ -75,13 +79,42 @@ export class HomePageValidatorService {
     }
 
     const sort = await this.entityTypeSortRepository.findOne(
-      new QueryOptionsBuilder()
-        .filter({ id: productContent.entityTypeSortBy })
-        .build(),
+      new QueryOptionsBuilder().filter({ id: productContent.sortBy }).build(),
     );
     if (!sort) {
       throw new BadRequestException(
-        `the entityTypeSortBy-> ${productContent.entityTypeSortBy} not founded!`,
+        `the entityTypeSortBy-> ${productContent.sortBy} not founded!`,
+      );
+    }
+  }
+
+  async productBrandValidator(dto: HomePageDataDto) {
+    const productContent = dto.content as unknown as ProductBrandContentDto;
+    const brand = await this.brandRepository.findOne(
+      new QueryOptionsBuilder()
+        .filter({ id: productContent.brandId })
+        .filter(
+          Sequelize.where(
+            Sequelize.fn('isnull', Sequelize.col('ECBrand.isDeleted'), 0),
+            {
+              [Op.eq]: 0,
+            },
+          ),
+        )
+        .build(),
+    );
+    if (!brand) {
+      throw new BadRequestException(
+        `the brandId with this given id (${productContent.brandId}) is not founded!`,
+      );
+    }
+
+    const sort = await this.entityTypeSortRepository.findOne(
+      new QueryOptionsBuilder().filter({ id: productContent.sortBy }).build(),
+    );
+    if (!sort) {
+      throw new BadRequestException(
+        `the entityTypeSortBy-> ${productContent.sortBy} not founded!`,
       );
     }
   }

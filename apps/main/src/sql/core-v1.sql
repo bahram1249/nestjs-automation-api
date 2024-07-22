@@ -15255,7 +15255,7 @@ BEGIN
 	DECLARE @groupId int = null;
 
 	DECLARE @entityName nvarchar(256) = N'HomePagePhotoss'
-	DECLARE @groupName nvarchar(256) = N'ecommerce.admin.homepagephotos'
+	DECLARE @groupName nvarchar(256) = N'ecommerce.homepagephotos'
 	
 	DECLARE @permissionSymbolUploadImage nvarchar(512) = @groupName + '.uploadImage';
 	DECLARE @permissionSymbolShowImage nvarchar(512) = @groupName + '.showImage';

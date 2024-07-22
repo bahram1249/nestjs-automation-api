@@ -18,8 +18,14 @@ export class CustomContentValidator implements ValidatorConstraintInterface {
     const bannerContent = await this.isBannerContent(params);
     const sliderContent = await this.isSliderContent(params);
     const productContent = await this.isProductCategoryContent(params);
+    const productBrandContent = await this.isProductBrandContent(params);
 
-    if (bannerContent || sliderContent || productContent) {
+    if (
+      bannerContent ||
+      sliderContent ||
+      productContent ||
+      productBrandContent
+    ) {
       flag = true;
     }
 
@@ -50,7 +56,15 @@ export class CustomContentValidator implements ValidatorConstraintInterface {
     return (
       typeof obj.title == 'string' &&
       typeof obj.entityTypeId == 'number' &&
-      typeof obj.entityTypeSortBy == 'number'
+      typeof obj.sortBy == 'number'
+    );
+  }
+
+  private async isProductBrandContent(obj: any) {
+    return (
+      typeof obj.title == 'string' &&
+      typeof obj.brandId == 'number' &&
+      typeof obj.sortBy == 'number'
     );
   }
 }

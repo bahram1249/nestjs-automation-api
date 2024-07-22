@@ -31,8 +31,6 @@ import { imageOptions } from './file-options';
 import { GetUser } from '@rahino/auth/decorator';
 import { User } from '@rahino/database/models/core/user.entity';
 
-@ApiBearerAuth()
-@UseGuards(JwtGuard, PermissionGuard)
 @ApiTags('HomePagePhotos')
 @Controller({
   path: '/api/ecommerce/homePagePhotos',
@@ -41,6 +39,8 @@ import { User } from '@rahino/database/models/core/user.entity';
 export class HomePagePhotoController {
   constructor(private service: HomePagePhotoService) {}
 
+  @ApiBearerAuth()
+  @UseGuards(JwtGuard, PermissionGuard)
   @UseInterceptors(JsonResponseTransformInterceptor)
   @CheckPermission({ permissionSymbol: 'ecommerce.homepagephotos.uploadImage' })
   @UseInterceptors(FileInterceptor('file', imageOptions()))
@@ -75,7 +75,7 @@ export class HomePagePhotoController {
     return await this.service.uploadImage(user, file);
   }
 
-  @CheckPermission({ permissionSymbol: 'ecommerce.homepagephotos.showImage' })
+  //@CheckPermission({ permissionSymbol: 'ecommerce.homepagephotos.showImage' })
   @ApiOperation({ description: 'show home page photo by id' })
   @Get('/image/:id')
   @HttpCode(HttpStatus.OK)

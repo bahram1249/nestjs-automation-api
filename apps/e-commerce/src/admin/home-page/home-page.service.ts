@@ -38,6 +38,8 @@ export class HomePageService {
         await this.homePageValidatorService.bannerValidator(item);
       } else if (item.type == HomePageTypeEnum.PRODUCTCATEGORY) {
         await this.homePageValidatorService.productCategoryValidator(item);
+      } else if (item.type == HomePageTypeEnum.PRODUCTBRAND) {
+        await this.homePageValidatorService.productBrandValidator(item);
       }
     }
 
