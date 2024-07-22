@@ -8,7 +8,7 @@ import {
   MaxLength,
   MinLength,
 } from 'class-validator';
-import { HomePageTypeEnum } from './home-page-type.enum';
+import { HomePageTypeEnum } from '../../../util/enum/home-page-type.enum';
 import { ContentDtoType } from './content';
 import { isValidContent } from '../decorator';
 

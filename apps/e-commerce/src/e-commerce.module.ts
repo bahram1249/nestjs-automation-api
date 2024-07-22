@@ -84,6 +84,8 @@ import { AdminHomePageModule } from './admin/home-page/home-page.module';
 import { HomePagePhotoModule } from './admin/home-page-photo/home-page-photo.module';
 import { EntityTypeSortModule } from './admin/entity-type-sort/entity-type-sort.module';
 import { HomePhotoModule } from './home-photo/home-photo.module';
+import { HomePageModule } from './home/home.module';
+import { ProcessHomeRunnerService } from './home/process-home-runner.service';
 
 @Module({
   imports: [
@@ -170,6 +172,7 @@ import { HomePhotoModule } from './home-photo/home-photo.module';
     HomePagePhotoModule,
     EntityTypeSortModule,
     HomePhotoModule,
+    HomePageModule,
   ],
   providers: [
     {
@@ -199,5 +202,6 @@ export class ECommerceModule implements NestModule {
 
     app.get(ProductImageRemovalService).run();
     app.get(ProductDiscountJobRunnerService).run();
+    app.get(ProcessHomeRunnerService).run();
   }
 }

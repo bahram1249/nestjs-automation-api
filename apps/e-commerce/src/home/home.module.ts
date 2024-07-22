@@ -1,29 +1,30 @@
-import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
-import { HomePageController } from './home-page.controller';
-import { HomePageService } from './home-page.service';
+import { Module } from '@nestjs/common';
+import { HomePageController } from './home.controller';
+import { HomePageService } from './home.service';
 import { SequelizeModule } from '@nestjs/sequelize';
-import { Permission } from '@rahino/database/models/core/permission.entity';
-import { User } from '@rahino/database/models/core/user.entity';
+import { SessionModule } from '../user/session/session.module';
 import { ECHomePage } from '@rahino/database/models/ecommerce-eav/ec-home-page.entity';
-import { HomePageValidatorService } from './home-page-validator.service';
-import { Attachment } from '@rahino/database/models/core/attachment.entity';
-import { EAVEntityType } from '@rahino/database/models/eav/eav-entity-type.entity';
+import { ProcessHomeService } from './process-home.service';
 import { ECEntityTypeSort } from '@rahino/database/models/ecommerce-eav/ec-entityType-sort.entity';
+import { EAVEntityType } from '@rahino/database/models/eav/eav-entity-type.entity';
 import { ECBrand } from '@rahino/database/models/ecommerce-eav/ec-brand.entity';
+import { Attachment } from '@rahino/database/models/core/attachment.entity';
+import { HomePageProcessor } from './processor';
 import { BullModule } from '@nestjs/bullmq';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { HOME_PAGE_QUEUE } from '@rahino/ecommerce/home/constants';
+import { HOME_PAGE_QUEUE } from './constants';
+import { ProcessHomeRunnerService } from './process-home-runner.service';
+import { RedisClientModule } from '@rahino/redis-client';
 
 @Module({
   imports: [
+    SessionModule,
     SequelizeModule.forFeature([
-      User,
-      Permission,
       ECHomePage,
-      Attachment,
-      EAVEntityType,
       ECEntityTypeSort,
+      EAVEntityType,
       ECBrand,
+      Attachment,
     ]),
     BullModule.forRootAsync({
       imports: [ConfigModule],
@@ -39,10 +40,14 @@ import { HOME_PAGE_QUEUE } from '@rahino/ecommerce/home/constants';
     BullModule.registerQueueAsync({
       name: HOME_PAGE_QUEUE,
     }),
+    RedisClientModule,
   ],
   controllers: [HomePageController],
-  providers: [HomePageService, HomePageValidatorService],
+  providers: [
+    HomePageService,
+    ProcessHomeService,
+    HomePageProcessor,
+    ProcessHomeRunnerService,
+  ],
 })
-export class AdminHomePageModule implements NestModule {
-  configure(consumer: MiddlewareConsumer) {}
-}
+export class HomePageModule {}

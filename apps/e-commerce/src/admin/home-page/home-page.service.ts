@@ -5,9 +5,15 @@ import { User } from '@rahino/database/models/core/user.entity';
 import { ListFilter } from '@rahino/query-filter';
 import { HomePageDto } from './dto/home-page.dto';
 import { ECHomePage } from '@rahino/database/models/ecommerce-eav/ec-home-page.entity';
-import { HomePageTypeEnum } from './dto/home-page-type.enum';
+import { HomePageTypeEnum } from '../../util/enum/home-page-type.enum';
 import { HomePageValidatorService } from './home-page-validator.service';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
+import {
+  HOME_PAGE_JOB,
+  HOME_PAGE_QUEUE,
+} from '@rahino/ecommerce/home/constants';
+import { Queue } from 'bullmq';
+import { InjectQueue } from '@nestjs/bullmq';
 
 @Injectable()
 export class HomePageService {
@@ -15,6 +21,8 @@ export class HomePageService {
     @InjectModel(ECHomePage)
     private readonly repository: typeof ECHomePage,
     private readonly homePageValidatorService: HomePageValidatorService,
+    @InjectQueue(HOME_PAGE_QUEUE)
+    private readonly homePageQueue: Queue,
   ) {}
 
   async findAll(filter: ListFilter) {
@@ -67,6 +75,14 @@ export class HomePageService {
         priority: item.priority,
       });
     }
+
+    this.homePageQueue.add(
+      HOME_PAGE_JOB,
+      {},
+      {
+        removeOnComplete: true,
+      },
+    );
 
     return {
       result: 'ok',

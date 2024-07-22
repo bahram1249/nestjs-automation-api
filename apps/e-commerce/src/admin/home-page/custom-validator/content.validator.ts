@@ -46,7 +46,9 @@ export class CustomContentValidator implements ValidatorConstraintInterface {
 
   private async isBannerContent(obj: any) {
     return (
-      typeof obj.link == 'string' && typeof obj.imageAttachmentId == 'number'
+      typeof (obj.alt == 'string' || obj.alt == null) &&
+      typeof obj.link == 'string' &&
+      typeof obj.imageAttachmentId == 'number'
     );
   }
 

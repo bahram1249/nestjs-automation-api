@@ -1690,7 +1690,7 @@ IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ecommerce-brands-v4'
 BEGIN
 
 	ALTER TABLE ECBrands 
-		ADD [priority]	int NULL
+		ADD [description]	nvarchar(max) NULL
 
 
 	INSERT INTO Migrations(version, createdAt, updatedAt)
@@ -1708,8 +1708,9 @@ IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ecommerce-brands-v5'
 		)
 BEGIN
 
+	
 	ALTER TABLE ECBrands 
-		ADD 
+		ADD [priority]	int NULL
 
 
 	INSERT INTO Migrations(version, createdAt, updatedAt)
