@@ -8,7 +8,6 @@ import { MinioClientService } from '@rahino/minio-client';
 import * as fs from 'fs';
 import { Attachment } from '@rahino/database/models/core/attachment.entity';
 import { Response } from 'express';
-import { ThumbnailService } from '@rahino/thumbnail';
 import axios from 'axios';
 
 @Injectable()
@@ -17,15 +16,15 @@ export class HomePagePhotoService {
   constructor(
     private minioClientService: MinioClientService,
     @InjectModel(Attachment)
-    private attachmentRepository: typeof Attachment,
-    private readonly thumbnailService: ThumbnailService,
+    private attachmentRepository: typeof Attachment, //private readonly thumbnailService: ThumbnailService,
   ) {}
 
   async uploadImage(user: User, file: Express.Multer.File) {
     // upload to s3 cloud
     const bucketName = 'homepages';
     await this.minioClientService.createBucket(bucketName);
-    const buffer = await this.thumbnailService.resize(file.path);
+    //const buffer = await this.thumbnailService.resize(file.path);
+    const buffer = fs.readFileSync(file.path);
     const uploadResult = await this.minioClientService.upload(
       bucketName,
       file.filename,

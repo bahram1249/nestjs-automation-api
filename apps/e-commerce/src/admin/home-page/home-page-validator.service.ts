@@ -58,6 +58,15 @@ export class HomePageValidatorService {
           `the attachment with this given id (${sliderContent.imageAttachmentId}) is not founded!`,
         );
       }
+
+      const findMobileAttachment = await this.findAttachment(
+        sliderContent.mobileImageAttachmentId,
+      );
+      if (!findMobileAttachment) {
+        throw new BadRequestException(
+          `the attachment with this given id (${sliderContent.mobileImageAttachmentId}) is not founded!`,
+        );
+      }
     }
   }
 

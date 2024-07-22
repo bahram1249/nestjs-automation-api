@@ -21,4 +21,8 @@ export class SliderContentDto {
   @IsNumber()
   @AutoMap()
   public imageAttachmentId: number;
+
+  @IsNumber()
+  @AutoMap()
+  public mobileImageAttachmentId: number;
 }

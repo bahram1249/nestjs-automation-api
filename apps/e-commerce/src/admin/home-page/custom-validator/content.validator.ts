@@ -58,7 +58,8 @@ export class CustomContentValidator implements ValidatorConstraintInterface {
     return (
       typeof (obj.alt == 'string' || obj.alt == null) &&
       typeof obj.link == 'string' &&
-      typeof obj.imageAttachmentId == 'number'
+      typeof obj.imageAttachmentId == 'number' &&
+      typeof obj.mobileImageAttachmentId == 'number'
     );
   }
 

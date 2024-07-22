@@ -125,7 +125,8 @@ export class ProcessHomeService {
       type: HomePageTypeEnum.BRAND,
       title: input.title,
       link:
-        baseUrl + `/v1/api/ecommerce/brands?orderBy=priority&sortOrder=DESC`,
+        baseUrl +
+        `/v1/api/ecommerce/brands?orderBy=priority&sortOrder=DESC&limit=20`,
       totalLink: frontUrl + '/brands',
       requestBased: true,
     };
@@ -139,7 +140,7 @@ export class ProcessHomeService {
       type: HomePageTypeEnum.CATEGORY,
       link:
         baseUrl +
-        `/v1/api/eav/admin/entityTypes?orderBy=priority&sortOrder=DESC`,
+        `/v1/api/eav/admin/entityTypes?orderBy=priority&sortOrder=DESC&limit=8`,
       totalLink: null,
       requestBased: true,
     };
@@ -295,10 +296,30 @@ export class ProcessHomeService {
       if (!findAttachment) {
         throw new InternalServerErrorException('cannot find the attachment');
       }
+
+      const findMobileAttachment = await this.attachmentRepository.findOne(
+        new QueryOptionsBuilder()
+          .filter({ id: item.mobileImageAttachmentId })
+          .filter({ attachmentTypeId: this.homeAttachmentTypeId })
+          .filter(
+            Sequelize.where(
+              Sequelize.fn('isnull', Sequelize.col('Attachment.isDeleted'), 0),
+              {
+                [Op.eq]: 0,
+              },
+            ),
+          )
+          .build(),
+      );
+      if (!findMobileAttachment) {
+        throw new InternalServerErrorException('cannot find the attachment');
+      }
       list.push({
         link: item.link,
         alt: item.alt,
         imageUrl: baseImageUrl + `/homepages/${findAttachment.fileName}`,
+        mobileImageUrl:
+          baseImageUrl + `/homepages/${findMobileAttachment.fileName}`,
       });
     }
 
