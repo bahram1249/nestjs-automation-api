@@ -602,7 +602,10 @@ export class ProductQueryBuilderService {
         { type: QueryTypes.SELECT, raw: true },
       );
 
-      const offset = Math.round(offsetRandom[0]['offset']);
+      let offset = Math.round(offsetRandom[0]['offset']) - filter.limit;
+      if (offset < 0) {
+        offset = 0;
+      }
       queryBuilder = queryBuilder
         .offset(offset)
         .filter({ inventoryStatusId: InventoryStatusEnum.available });
