@@ -17,20 +17,22 @@ export class CustomContentValidator implements ValidatorConstraintInterface {
 
     const bannerContent = await this.isBannerContent(params);
     const sliderContent = await this.isSliderContent(params);
-    const productContent = await this.isProductCategoryContent(params);
+    const productCategoryContent = await this.isProductCategoryContent(params);
     const productBrandContent = await this.isProductBrandContent(params);
     const categoryContent = await this.isCategory(params);
     const brandContent = await this.isBrand(params);
     const amazingContent = await this.isAmazingContent(params);
+    const productContent = await this.isProductContent(params);
 
     if (
       bannerContent ||
       sliderContent ||
-      productContent ||
+      productCategoryContent ||
       productBrandContent ||
       categoryContent ||
       brandContent ||
-      amazingContent
+      amazingContent ||
+      productContent
     ) {
       flag = true;
     }
@@ -85,6 +87,10 @@ export class CustomContentValidator implements ValidatorConstraintInterface {
   }
 
   private async isAmazingContent(obj: any) {
+    return typeof obj.title == 'string' && typeof obj.sortBy == 'number';
+  }
+
+  private async isProductContent(obj: any) {
     return typeof obj.title == 'string' && typeof obj.sortBy == 'number';
   }
 }

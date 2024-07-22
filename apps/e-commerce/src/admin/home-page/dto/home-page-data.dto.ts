@@ -13,6 +13,10 @@ import { ContentDtoType } from './content';
 import { isValidContent } from '../decorator';
 
 export class HomePageDataDto {
+  @IsNotEmpty()
+  @AutoMap()
+  public id?: string;
+
   @MinLength(3)
   @MaxLength(256)
   @IsNotEmpty()

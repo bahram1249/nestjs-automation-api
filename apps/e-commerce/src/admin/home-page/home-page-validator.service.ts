@@ -15,6 +15,7 @@ import { ECBrand } from '@rahino/database/models/ecommerce-eav/ec-brand.entity';
 import { CategoryContentDto } from './dto/content/category-content.dto';
 import { BrandContentDto } from './dto/content/brand-content.dto';
 import { AmazingContentDto } from './dto/content/amazing-content.dto';
+import { ProductContentDto } from './dto/content/product-content.dto';
 
 @Injectable()
 export class HomePageValidatorService {
@@ -125,6 +126,18 @@ export class HomePageValidatorService {
       );
     }
 
+    const sort = await this.entityTypeSortRepository.findOne(
+      new QueryOptionsBuilder().filter({ id: productContent.sortBy }).build(),
+    );
+    if (!sort) {
+      throw new BadRequestException(
+        `the entityTypeSortBy-> ${productContent.sortBy} not founded!`,
+      );
+    }
+  }
+
+  async productValidator(dto: HomePageDataDto) {
+    const productContent = dto.content as unknown as ProductContentDto;
     const sort = await this.entityTypeSortRepository.findOne(
       new QueryOptionsBuilder().filter({ id: productContent.sortBy }).build(),
     );

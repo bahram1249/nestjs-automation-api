@@ -54,6 +54,8 @@ export class HomePageService {
         await this.homePageValidatorService.brandValidator(item);
       } else if (item.type == HomePageTypeEnum.AMAZING) {
         await this.homePageValidatorService.amazingContentValidator(item);
+      } else if (item.type == HomePageTypeEnum.PRODUCT) {
+        await this.homePageValidatorService.productValidator(item);
       }
     }
 

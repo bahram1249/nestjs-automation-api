@@ -16,6 +16,7 @@ import { AmazingContentDto } from '../admin/home-page/dto/content/amazing-conten
 import { SliderContentDto } from '../admin/home-page/dto/content/slider-content.dto';
 import { Attachment } from '@rahino/database/models/core/attachment.entity';
 import { BannerContentDto } from '../admin/home-page/dto/content/banner-content.dto';
+import { ProductContentDto } from '../admin/home-page/dto/content/product-content.dto';
 
 @Injectable()
 export class ProcessHomeService {
@@ -78,6 +79,12 @@ export class ProcessHomeService {
         resultObj = await this.processAmazing(
           parseObj.priority,
           parseObj.content as AmazingContentDto,
+        );
+        break;
+      case HomePageTypeEnum.PRODUCT:
+        resultObj = await this.processProduct(
+          parseObj.priority,
+          parseObj.content as ProductContentDto,
         );
         break;
       case HomePageTypeEnum.CATEGORY:
@@ -237,6 +244,28 @@ export class ProcessHomeService {
           sort.sortField
         }&sortOrder=${sort.sortOrder}`,
       totalLink: frontUrl + `/amazing`,
+      requestBased: true,
+    };
+  }
+
+  async processProduct(priority: number, input: ProductContentDto) {
+    const baseUrl = this.config.get('BASE_URL');
+    const frontUrl = this.config.get('BASE_FRONT_URL');
+    const sort = await this.entityTypeSortRepository.findOne(
+      new QueryOptionsBuilder().filter({ id: input.sortBy }).build(),
+    );
+    if (!sort) {
+      throw new InternalServerErrorException('the sort key not founded!');
+    }
+
+    return {
+      priority: priority,
+      title: input.title,
+      type: HomePageTypeEnum.PRODUCT,
+      link:
+        baseUrl +
+        `/v1/api/ecommerce/products?orderBy=${sort.sortField}&sortOrder=${sort.sortOrder}`,
+      totalLink: frontUrl + `/search`,
       requestBased: true,
     };
   }
