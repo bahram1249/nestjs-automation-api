@@ -600,13 +600,21 @@ export class ProductQueryBuilderService {
         `SELECT RAND(CHECKSUM(NEWID()))* count(*) as offset FROM ECProducts
         WHERE inventoryStatusId = ${InventoryStatusEnum.available}
            AND isnull(ECProducts.isDeleted, 0) = 0
-           AND ECProducts.publishStatusId = ${PublishStatusEnum.publish}` +
-          filter.entityTypeId
-          ? ` AND ECProducts.entityTypeId = ${filter.entityTypeId}`
-          : ' AND 1=1' + (filter.brands.length > 0)
-          ? ` AND ECProducts.brandId IN (${filter.brands.toString()})`
-          : ' AND 1=1',
-        { type: QueryTypes.SELECT, raw: true },
+           AND ECProducts.publishStatusId = ${PublishStatusEnum.publish}`
+          .concat(
+            filter.entityTypeId != undefined
+              ? ` AND ECProducts.entityTypeId = ${filter.entityTypeId}`
+              : ' AND 1=1',
+          )
+          .concat(
+            filter.brands.length > 0
+              ? ` AND ECProducts.brandId IN (${filter.brands.toString()})`
+              : ' AND 1=1',
+          ),
+        {
+          type: QueryTypes.SELECT,
+          raw: true,
+        },
       );
 
       let offset = Math.round(offsetRandom[0]['offset']) - filter.limit;
