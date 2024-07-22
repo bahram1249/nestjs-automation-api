@@ -1,3 +1,4 @@
+import { AmazingContentDto } from './amazing-content.dto';
 import { BannerContentDto } from './banner-content.dto';
 import { BrandContentDto } from './brand-content.dto';
 import { CategoryContentDto } from './category-content.dto';
@@ -9,4 +10,5 @@ export type ContentDtoType =
   | BannerContentDto[]
   | ProductCategoryContentDto
   | CategoryContentDto
-  | BrandContentDto;
+  | BrandContentDto
+  | AmazingContentDto;

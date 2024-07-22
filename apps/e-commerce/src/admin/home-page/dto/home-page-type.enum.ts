@@ -5,4 +5,5 @@ export enum HomePageTypeEnum {
   PRODUCTBRAND = 'productBrand',
   BRAND = 'brand',
   CATEGORY = 'category',
+  AMAZING = 'amazing',
 }
