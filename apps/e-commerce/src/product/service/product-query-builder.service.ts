@@ -603,9 +603,9 @@ export class ProductQueryBuilderService {
            AND ECProducts.publishStatusId = ${PublishStatusEnum.publish}` +
           filter.entityTypeId
           ? ` AND ECProducts.entityTypeId = ${filter.entityTypeId}`
-          : ' 1=1' + (filter.brands.length > 0)
+          : ' AND 1=1' + (filter.brands.length > 0)
           ? ` AND ECProducts.brandId IN (${filter.brands.toString()})`
-          : ' 1=1',
+          : ' AND 1=1',
         { type: QueryTypes.SELECT, raw: true },
       );
 
