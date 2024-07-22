@@ -74,4 +74,11 @@ export class ECBrand extends Model {
     allowNull: true,
   })
   description?: string;
+
+  @AutoMap()
+  @Column({
+    type: DataType.INTEGER,
+    allowNull: true,
+  })
+  priority?: number;
 }

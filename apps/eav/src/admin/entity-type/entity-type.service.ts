@@ -131,6 +131,7 @@ export class EntityTypeService {
         'slug',
         'parentEntityTypeId',
         'entityModelId',
+        'priority',
         'createdAt',
         'updatedAt',
       ])
@@ -156,6 +157,7 @@ export class EntityTypeService {
         'metaKeywords',
         'metaDescription',
         'description',
+        'priority',
         'createdAt',
         'updatedAt',
       ])
@@ -213,6 +215,7 @@ export class EntityTypeService {
         'metaKeywords',
         'metaDescription',
         'description',
+        'priority',
         'createdAt',
         'updatedAt',
       ])
@@ -263,6 +266,7 @@ export class EntityTypeService {
         'metaKeywords',
         'metaDescription',
         'description',
+        'priority',
         'createdAt',
         'updatedAt',
       ])
@@ -370,6 +374,7 @@ export class EntityTypeService {
         'metaKeywords',
         'metaDescription',
         'description',
+        'priority',
         'createdAt',
         'updatedAt',
       ])

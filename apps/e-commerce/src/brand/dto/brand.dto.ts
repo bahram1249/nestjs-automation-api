@@ -63,4 +63,13 @@ export class BrandDto {
     description: 'description',
   })
   public description?: string;
+
+  @AutoMap()
+  @IsOptional()
+  @ApiProperty({
+    required: true,
+    type: Number,
+    description: 'priority',
+  })
+  public priority?: number;
 }

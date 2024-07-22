@@ -1449,6 +1449,24 @@ END
 GO
 
 
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'eav-entitytype-v5' 
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'SITE_NAME' AND [value] IN ('ecommerce'))
+		)
+BEGIN
+
+	ALTER TABLE EAVEntityTypes 
+		ADD [priority]	int NULL 
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'eav-entitytype-v5', GETDATE(), GETDATE()
+END
+
+GO
+
+
 IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'eav-attributetype-v1' 
 			)
 	AND EXISTS (
@@ -1672,11 +1690,30 @@ IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ecommerce-brands-v4'
 BEGIN
 
 	ALTER TABLE ECBrands 
-		ADD [description]	nvarchar(max) NULL
+		ADD [priority]	int NULL
 
 
 	INSERT INTO Migrations(version, createdAt, updatedAt)
 	SELECT 'ecommerce-brands-v4', GETDATE(), GETDATE()
+END
+
+GO
+
+
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ecommerce-brands-v5' 
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'SITE_NAME' AND [value] IN ('ecommerce'))
+		)
+BEGIN
+
+	ALTER TABLE ECBrands 
+		ADD 
+
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'ecommerce-brands-v5', GETDATE(), GETDATE()
 END
 
 GO

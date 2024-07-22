@@ -66,6 +66,7 @@ export class BrandService {
         'metaTitle',
         'metaKeywords',
         'metaDescription',
+        'priority',
         'createdAt',
         'updatedAt',
       ])
@@ -99,6 +100,7 @@ export class BrandService {
           'metaKeywords',
           'metaDescription',
           'description',
+          'priority',
           'createdAt',
           'updatedAt',
         ])
@@ -162,6 +164,7 @@ export class BrandService {
         'metaKeywords',
         'metaDescription',
         'description',
+        'priority',
         'createdAt',
         'updatedAt',
       ]),
@@ -227,6 +230,7 @@ export class BrandService {
         'metaKeywords',
         'metaDescription',
         'description',
+        'priority',
         'createdAt',
         'updatedAt',
       ]),
@@ -261,6 +265,7 @@ export class BrandService {
         'metaKeywords',
         'metaDescription',
         'description',
+        'priority',
         'createdAt',
         'updatedAt',
       ]),
@@ -278,6 +283,7 @@ export class BrandService {
           'metaKeywords',
           'metaDescription',
           'description',
+          'priority',
           'createdAt',
           'updatedAt',
         ])

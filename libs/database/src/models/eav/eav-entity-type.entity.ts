@@ -107,4 +107,11 @@ export class EAVEntityType extends Model {
     allowNull: true,
   })
   public description?: string;
+
+  @AutoMap()
+  @Column({
+    type: DataType.INTEGER,
+    allowNull: true,
+  })
+  public priority?: number;
 }

@@ -82,4 +82,14 @@ export class EntityTypeDto {
     description: 'description',
   })
   public description?: string;
+
+  @AutoMap()
+  @IsOptional()
+  @IsNumber()
+  @ApiProperty({
+    required: true,
+    type: Number,
+    description: 'priority',
+  })
+  public priority?: number;
 }
