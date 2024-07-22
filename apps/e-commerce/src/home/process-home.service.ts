@@ -136,7 +136,7 @@ export class ProcessHomeService {
     return {
       priority: priority,
       title: input.title,
-      type: HomePageTypeEnum.BRAND,
+      type: HomePageTypeEnum.CATEGORY,
       link:
         baseUrl +
         `/v1/api/eav/admin/entityTypes?orderBy=priority&sortOrder=DESC`,
