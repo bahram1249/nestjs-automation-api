@@ -83,6 +83,7 @@ import { ChargingWalletPaymentModule } from './user/charging-wallet-payment/char
 import { AdminHomePageModule } from './admin/home-page/home-page.module';
 import { HomePagePhotoModule } from './admin/home-page-photo/home-page-photo.module';
 import { EntityTypeSortModule } from './admin/entity-type-sort/entity-type-sort.module';
+import { HomePhotoModule } from './home-photo/home-photo.module';
 
 @Module({
   imports: [
@@ -168,6 +169,7 @@ import { EntityTypeSortModule } from './admin/entity-type-sort/entity-type-sort.
     AdminHomePageModule,
     HomePagePhotoModule,
     EntityTypeSortModule,
+    HomePhotoModule,
   ],
   providers: [
     {
