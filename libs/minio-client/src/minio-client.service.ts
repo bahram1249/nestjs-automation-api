@@ -23,14 +23,14 @@ export class MinioClientService {
     bucketName: string,
     objectName: string,
     stream: string | internal.Readable | Buffer,
-    itemBucketMetadata?: any,
+    itemBucketMetadata?: Record<any, any>,
   ) {
     return await this.client.putObject(
       bucketName,
       objectName,
       stream,
       null,
-      itemBucketMetadata ? Object.fromEntries(itemBucketMetadata) : null,
+      itemBucketMetadata ? itemBucketMetadata : null,
     );
   }
 
