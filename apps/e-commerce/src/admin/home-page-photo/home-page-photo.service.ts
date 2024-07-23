@@ -29,6 +29,9 @@ export class HomePagePhotoService {
       bucketName,
       file.filename,
       buffer,
+      {
+        'Content-Type': file.mimetype,
+      },
     );
 
     // create new one

@@ -329,6 +329,9 @@ export class GuaranteeService {
       bucketName,
       file.filename,
       buffer,
+      {
+        'Content-Type': file.mimetype,
+      },
     );
 
     // remove old one if exists

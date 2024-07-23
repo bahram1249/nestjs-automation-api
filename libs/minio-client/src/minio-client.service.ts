@@ -23,8 +23,15 @@ export class MinioClientService {
     bucketName: string,
     objectName: string,
     stream: string | internal.Readable | Buffer,
+    itemBucketMetadata?: any,
   ) {
-    return await this.client.putObject(bucketName, objectName, stream);
+    return await this.client.putObject(
+      bucketName,
+      objectName,
+      stream,
+      null,
+      itemBucketMetadata ? Object.fromEntries(itemBucketMetadata) : null,
+    );
   }
 
   async generateDownloadUrl(

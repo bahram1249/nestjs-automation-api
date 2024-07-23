@@ -38,6 +38,9 @@ export class ProductPhotoService {
       bucketName,
       file.filename,
       buffer,
+      {
+        'Content-Type': file.mimetype,
+      },
     );
 
     // create new one
