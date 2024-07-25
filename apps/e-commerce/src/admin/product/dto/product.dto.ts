@@ -11,7 +11,7 @@ import {
   MaxLength,
   MinLength,
 } from 'class-validator';
-import { ProductPhotoDto } from './product-photo.dto';
+import { ProductAttachmentDto } from './product-attachment.dto';
 import { ProductAttributeDto } from './product-attribute.dto';
 import { InventoryDto } from '@rahino/ecommerce/inventory/dto';
 import { ApiProperty } from '@nestjs/swagger';
@@ -94,7 +94,11 @@ export class ProductDto {
 
   @IsArray()
   @IsOptional()
-  photos?: ProductPhotoDto[];
+  photos?: ProductAttachmentDto[];
+
+  @IsArray()
+  @IsOptional()
+  videos?: ProductAttachmentDto[];
 
   @IsArray()
   @IsOptional()

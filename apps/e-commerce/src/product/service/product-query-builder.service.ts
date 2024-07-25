@@ -194,6 +194,15 @@ export class ProductQueryBuilderService {
         model: Attachment,
         as: 'attachments',
         required: false,
+      })
+      .thenInlcude({
+        attributes: priceRangeQuery ? [] : ['id', 'fileName'],
+        through: {
+          attributes: [],
+        },
+        model: Attachment,
+        as: 'videoAttachments',
+        required: false,
       });
 
     if (includeAttributes) {

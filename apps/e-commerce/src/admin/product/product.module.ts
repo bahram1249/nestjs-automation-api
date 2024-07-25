@@ -17,6 +17,7 @@ import { BullModule } from '@nestjs/bullmq';
 import { PRODUCT_INVENTORY_STATUS_QUEUE } from '@rahino/ecommerce/inventory/constants';
 import { ConfigService } from '@nestjs/config';
 import { DBLoggerModule } from '@rahino/logger';
+import { ProductVideoModule } from '@rahino/ecommerce/product-video/product-video.module';
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { DBLoggerModule } from '@rahino/logger';
     EntityAttributeValueModule,
     EntityModule,
     ProductPhotoModule,
+    ProductVideoModule,
     InventoryModule,
     UserVendorModule,
     QueryFilterModule,

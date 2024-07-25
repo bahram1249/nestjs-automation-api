@@ -86,6 +86,7 @@ import { EntityTypeSortModule } from './admin/entity-type-sort/entity-type-sort.
 import { HomePhotoModule } from './home-photo/home-photo.module';
 import { HomePageModule } from './home/home.module';
 import { ProcessHomeRunnerService } from './home/process-home-runner.service';
+import { ProductVideoModule } from './product-video/product-video.module';
 
 @Module({
   imports: [
@@ -173,6 +174,7 @@ import { ProcessHomeRunnerService } from './home/process-home-runner.service';
     EntityTypeSortModule,
     HomePhotoModule,
     HomePageModule,
+    ProductVideoModule,
   ],
   providers: [
     {

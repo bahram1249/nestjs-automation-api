@@ -28,7 +28,7 @@ import { EAVEntityAttributeValue } from '@rahino/database/models/eav/eav-entity-
 import { EAVAttribute } from '@rahino/database/models/eav/eav-attribute.entity';
 import { EAVAttributeValue } from '@rahino/database/models/eav/eav-attribute-value';
 import { ProductPhotoService } from '@rahino/ecommerce/product-photo/product-photo.service';
-import { ProductPhotoDto } from './dto/product-photo.dto';
+import { ProductAttachmentDto } from './dto/product-attachment.dto';
 import { PhotoDto } from '@rahino/ecommerce/product-photo/dto';
 import { InventoryStatusEnum } from '@rahino/ecommerce/inventory/enum';
 import {
@@ -57,7 +57,8 @@ import {
 } from '@rahino/ecommerce/inventory/constants';
 import { InjectQueue } from '@nestjs/bullmq';
 import { Queue } from 'bullmq';
-import { InventoryTrackChangeService } from '@rahino/ecommerce/inventory-track-change/inventory-track-change.service';
+import { ProductVideoService } from '@rahino/ecommerce/product-video/product-video.service';
+import { VideoDto } from '@rahino/ecommerce/product-video/dto';
 
 @Injectable()
 export class ProductService {
@@ -71,6 +72,7 @@ export class ProductService {
     private readonly entityAttributeValueService: EntityAttributeValueService,
     private readonly entityService: EntityService,
     private readonly productPhotoService: ProductPhotoService,
+    private readonly productVideoService: ProductVideoService,
     private readonly inventoryValidationService: InventoryValidationService,
     private readonly inventoryService: InventoryService,
     private readonly userVendorService: UserVendorService,
@@ -357,6 +359,12 @@ export class ProductService {
           as: 'attachments',
           required: false,
         },
+        {
+          attributes: ['id', 'fileName'],
+          model: Attachment,
+          as: 'videoAttachments',
+          required: false,
+        },
       ])
       .subQuery(true)
       .limit(filter.limit)
@@ -629,6 +637,12 @@ export class ProductService {
             attributes: ['id', 'fileName'],
             model: Attachment,
             as: 'attachments',
+            required: false,
+          },
+          {
+            attributes: ['id', 'fileName'],
+            model: Attachment,
+            as: 'videoAttachments',
             required: false,
           },
         ])
@@ -918,6 +932,12 @@ export class ProductService {
             as: 'attachments',
             required: false,
           },
+          {
+            attributes: ['id', 'fileName'],
+            model: Attachment,
+            as: 'videoAttachments',
+            required: false,
+          },
         ])
         .subQuery(true)
         .filter({
@@ -997,9 +1017,16 @@ export class ProductService {
 
     // validation of photos
     const mappedPhotos = _.map(dto.photos, (photo) =>
-      this.mapper.map(photo, ProductPhotoDto, PhotoDto),
+      this.mapper.map(photo, ProductAttachmentDto, PhotoDto),
     );
     await this.productPhotoService.validationExistsPhoto(mappedPhotos);
+
+    // validation of videos
+    const mappedVideos = _.map(dto.videos, (video) =>
+      this.mapper.map(video, ProductAttachmentDto, VideoDto),
+    );
+
+    await this.productVideoService.validationExistsVideo(mappedVideos);
 
     // validation of inventories
     await this.inventoryValidationService.validation(
@@ -1042,6 +1069,13 @@ export class ProductService {
       await this.productPhotoService.insert(
         product.id,
         mappedPhotos,
+        transaction,
+      );
+
+      // insert new product videos
+      await this.productVideoService.insert(
+        product.id,
+        mappedVideos,
         transaction,
       );
 
@@ -1179,9 +1213,15 @@ export class ProductService {
 
     // validation of photos
     const mappedPhotos = _.map(dto.photos, (photo) =>
-      this.mapper.map(photo, ProductPhotoDto, PhotoDto),
+      this.mapper.map(photo, ProductAttachmentDto, PhotoDto),
     );
     await this.productPhotoService.validationExistsPhoto(mappedPhotos);
+
+    // validation of videos
+    const mappedVideos = _.map(dto.videos, (video) =>
+      this.mapper.map(video, ProductAttachmentDto, VideoDto),
+    );
+    await this.productVideoService.validationExistsVideo(mappedVideos);
 
     // validation of inventories
     await this.inventoryValidationService.validation(
@@ -1222,6 +1262,19 @@ export class ProductService {
       await this.productPhotoService.insert(
         product.id,
         mappedPhotos,
+        transaction,
+      );
+
+      // remove videos
+      await this.productVideoService.removeVideosByProductId(
+        product.id,
+        transaction,
+      );
+
+      // insert product videos
+      await this.productVideoService.insert(
+        product.id,
+        mappedVideos,
         transaction,
       );
 
@@ -1318,22 +1371,22 @@ export class ProductService {
   async deleteById(entityId: bigint) {
     let product = await this.repository.findOne(
       new QueryOptionsBuilder()
-        .attributes([
-          'id',
-          'title',
-          'sku',
-          'description',
-          'slug',
-          'entityTypeId',
-          'colorBased',
-          'brandId',
-          'publishStatusId',
-          'viewCount',
-          'metaTitle',
-          'metaKeywords',
-          'metaDescription',
-          'weight',
-        ])
+        // .attributes([
+        //   'id',
+        //   'title',
+        //   'sku',
+        //   'description',
+        //   'slug',
+        //   'entityTypeId',
+        //   'colorBased',
+        //   'brandId',
+        //   'publishStatusId',
+        //   'viewCount',
+        //   'metaTitle',
+        //   'metaKeywords',
+        //   'metaDescription',
+        //   'weight',
+        // ])
         .include([
           {
             attributes: ['id', 'name'],
@@ -1375,7 +1428,22 @@ export class ProductService {
     product.isDeleted = true;
     product = await product.save();
     return {
-      result: product,
+      result: _.pick(product, [
+        'id',
+        'title',
+        'sku',
+        'description',
+        'slug',
+        'entityTypeId',
+        'colorBased',
+        'brandId',
+        'publishStatusId',
+        'viewCount',
+        'metaTitle',
+        'metaKeywords',
+        'metaDescription',
+        'weight',
+      ]),
     };
   }
 }

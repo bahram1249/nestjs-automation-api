@@ -18,6 +18,7 @@ import { EAVEntityAttributeValue } from '../eav/eav-entity-attribute-value.entit
 import { ECInventory } from './ec-inventory.entity';
 import { Attachment } from '../core/attachment.entity';
 import { EAVEntityPhoto } from '../eav/eav-entity-photo.entity';
+import { EAVEntityVideo } from '../eav/eav-entity-video.entity';
 
 @Table({ tableName: 'ECProducts' })
 export class ECProduct extends Model {
@@ -160,6 +161,22 @@ export class ECProduct extends Model {
     'attachmentId',
   )
   attachments?: Attachment[];
+
+  @BelongsToMany(
+    () => Attachment,
+    () => EAVEntityVideo,
+    'entityId',
+    'attachmentId',
+  )
+  videos?: Attachment[];
+
+  @BelongsToMany(
+    () => Attachment,
+    () => EAVEntityVideo,
+    'entityId',
+    'attachmentId',
+  )
+  videoAttachments?: Attachment[];
 
   @Column({
     type: DataType.BIGINT,

@@ -5,8 +5,9 @@ import { Mapper, createMap, forMember, ignore } from 'automapper-core';
 import { ECProduct } from '@rahino/database/models/ecommerce-eav/ec-product.entity';
 import { ProductAttributeDto } from '../dto/product-attribute.dto';
 import { EntityAttributeValueDto } from '@rahino/eav/admin/entity-attribute-value/dto';
-import { ProductPhotoDto } from '../dto/product-photo.dto';
+import { ProductAttachmentDto } from '../dto/product-attachment.dto';
 import { PhotoDto } from '@rahino/ecommerce/product-photo/dto';
+import { VideoDto } from '@rahino/ecommerce/product-video/dto';
 
 @Injectable()
 export class ProductProfile extends AutomapperProfile {
@@ -25,7 +26,9 @@ export class ProductProfile extends AutomapperProfile {
 
       createMap(mapper, ProductAttributeDto, EntityAttributeValueDto);
 
-      createMap(mapper, ProductPhotoDto, PhotoDto);
+      createMap(mapper, ProductAttachmentDto, PhotoDto);
+
+      createMap(mapper, ProductAttachmentDto, VideoDto);
     };
   }
 }

@@ -3,7 +3,7 @@ import { AutoMap } from 'automapper-classes';
 import { IsNumber } from 'class-validator';
 import { i18nValidationMessage } from 'nestjs-i18n';
 
-export class ProductPhotoDto {
+export class ProductAttachmentDto {
   @AutoMap()
   @IsNumber(
     {},

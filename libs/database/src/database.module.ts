@@ -99,6 +99,7 @@ import { ECPage } from './models/ecommerce-eav/ec-page.entity';
 import { ECWallet } from './models/ecommerce-eav/ec-wallet.entity';
 import { ECHomePage } from './models/ecommerce-eav/ec-home-page.entity';
 import { ECEntityTypeSort } from './models/ecommerce-eav/ec-entityType-sort.entity';
+import { EAVEntityVideo } from './models/eav/eav-entity-video.entity';
 
 @Module({
   imports: [
@@ -143,6 +144,7 @@ import { ECEntityTypeSort } from './models/ecommerce-eav/ec-entityType-sort.enti
           EAVAttributeValue,
           EAVEntityAttributeValue,
           EAVEntityPhoto,
+          EAVEntityVideo,
           ECPublishStatus,
           ECInventoryStatus,
           ECRequestLog,
