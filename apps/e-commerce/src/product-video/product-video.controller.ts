@@ -56,7 +56,7 @@ export class ProductVideoController {
       },
     },
   })
-  @Post('/image')
+  @Post('/upload')
   @HttpCode(HttpStatus.OK)
   async uploadImage(
     @GetUser() user: User,
