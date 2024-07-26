@@ -87,6 +87,7 @@ import { HomePhotoModule } from './home-photo/home-photo.module';
 import { HomePageModule } from './home/home.module';
 import { ProcessHomeRunnerService } from './home/process-home-runner.service';
 import { ProductVideoModule } from './product-video/product-video.module';
+import { ProductVideoRemovalService } from './product-video-removal/product-video-removal.service';
 
 @Module({
   imports: [
@@ -202,8 +203,16 @@ export class ECommerceModule implements NestModule {
 
     SwaggerModule.setup('api/ecommerce', this.app, coreDocument);
 
+    // add product image removal job
     app.get(ProductImageRemovalService).run();
+
+    // add product video removal job
+    app.get(ProductVideoRemovalService).run();
+
+    // add discount cacher
     app.get(ProductDiscountJobRunnerService).run();
+
+    // add dynamic cacher of home page elements
     app.get(ProcessHomeRunnerService).run();
   }
 }
