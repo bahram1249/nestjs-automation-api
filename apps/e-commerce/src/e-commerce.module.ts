@@ -88,6 +88,8 @@ import { HomePageModule } from './home/home.module';
 import { ProcessHomeRunnerService } from './home/process-home-runner.service';
 import { ProductVideoModule } from './product-video/product-video.module';
 import { ProductVideoRemovalService } from './product-video-removal/product-video-removal.service';
+import { ProductFavoriteModule } from './user/product-favorite/product-favorite.module';
+import { ProductVideoRemovalModule } from './product-video-removal/product-video-removal.module';
 
 @Module({
   imports: [
@@ -116,6 +118,7 @@ import { ProductVideoRemovalService } from './product-video-removal/product-vide
     AddressModule,
     ProductPhotoModule,
     ProductImageRemovalModule,
+    ProductVideoRemovalModule,
     VendorModule,
     UserVendorModule,
     VendorAddressModule,
@@ -176,6 +179,7 @@ import { ProductVideoRemovalService } from './product-video-removal/product-vide
     HomePhotoModule,
     HomePageModule,
     ProductVideoModule,
+    ProductFavoriteModule,
   ],
   providers: [
     {
@@ -207,7 +211,7 @@ export class ECommerceModule implements NestModule {
     app.get(ProductImageRemovalService).run();
 
     // add product video removal job
-    //app.get(ProductVideoRemovalService).run();
+    app.get(ProductVideoRemovalService).run();
 
     // add discount cacher
     app.get(ProductDiscountJobRunnerService).run();

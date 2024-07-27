@@ -2471,7 +2471,7 @@ END
 GO
 
 
--- eav products
+-- eav product photos
 IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'eav-product-photos-v1' 
 			)
 	AND EXISTS (
@@ -2492,6 +2492,32 @@ BEGIN
 
 	INSERT INTO Migrations(version, createdAt, updatedAt)
 	SELECT 'eav-product-photos-v1', GETDATE(), GETDATE()
+END
+
+GO
+
+
+-- eav products videos
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'eav-product-videos-v1' 
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'SITE_NAME' AND [value] IN ('ecommerce'))
+		)
+BEGIN
+
+	CREATE TABLE EAVEntityVideos (
+		entityId					bigint						NOT NULL,
+		attachmentId				bigint						NOT NULL,
+		[createdAt]					datetimeoffset				NOT NULL,
+		[updatedAt]					datetimeoffset				NOT NULL,
+		PRIMARY KEY CLUSTERED(entityId, attachmentId),
+	);
+
+
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'eav-product-videos-v1', GETDATE(), GETDATE()
 END
 
 GO
@@ -7714,6 +7740,25 @@ BEGIN
 
 	INSERT INTO Migrations(version, createdAt, updatedAt)
 	SELECT 'CORE-AttachmentTypes-Data-v12', GETDATE(), GETDATE()
+END
+
+GO
+
+
+
+-- ecommerce product-video
+IF NOT EXISTS ((SELECT 1 FROM Migrations WHERE version = 'CORE-AttachmentTypes-Data-v13' 
+			))
+BEGIN
+	
+	INSERT INTO AttachmentTypes(id, typeName, createdAt, updatedAt)
+	SELECT 14, N'productTempVideo', getdate(), getdate()
+
+	INSERT INTO AttachmentTypes(id, typeName, createdAt, updatedAt)
+	SELECT 15, N'product-video', getdate(), getdate()
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'CORE-AttachmentTypes-Data-v13', GETDATE(), GETDATE()
 END
 
 GO
@@ -15337,6 +15382,68 @@ BEGIN
 
 	INSERT INTO Migrations(version, createdAt, updatedAt)
 	SELECT 'CORE-Permissions-Data-v64', GETDATE(), GETDATE()
+END
+
+GO
+
+
+-- ecommerce/productvideos
+IF NOT EXISTS ((SELECT 1 FROM Migrations WHERE version = 'CORE-Permissions-Data-v65' 
+			))
+	AND EXISTS (
+		SELECT 1 FROM Settings WHERE 1=1
+		AND ([key] = 'SITE_NAME' AND [value] IN ('ecommerce'))
+	)
+BEGIN
+	
+	DECLARE @roleId int = (SELECT TOP 1 id FROM Roles WHERE static_id = 1)
+	DECLARE @userId bigint = (SELECT TOP 1 id FROM Users WHERE static_id = 1)
+
+	DECLARE @GroupTemp TABLE (
+		gorupId int
+	);
+
+	DECLARE @groupId int = null;
+
+	DECLARE @entityName nvarchar(256) = N'ProductVideos'
+	DECLARE @groupName nvarchar(256) = N'ecommerce.productvideos'
+	
+
+	DECLARE @permissionSymbolUploadImage nvarchar(512) = @groupName + '.uploadVideo';
+
+
+
+	-- permission groups
+	INSERT INTO PermissionGroups(permissionGroupName, [visibility], createdAt, updatedAt)
+	OUTPUT inserted.id INTO @GroupTemp(gorupId)
+	SELECT @groupName, 1, GETDATE(), GETDATE();
+
+	SELECT  @groupId = gorupId FROM @GroupTemp
+
+
+	-- permissions
+
+	
+	DECLARE @PermissionTemp TABLE (
+		permissionId int
+	);
+
+	
+
+	INSERT INTO Permissions(permissionName ,permissionSymbol,permissionGroupId,  createdAt, updatedAt)
+	OUTPUT inserted.id INTO @PermissionTemp(permissionId)
+	SELECT 'UPLOADVIDEO_' + @entityName, @permissionSymbolUploadImage, @groupId, GETDATE(), GETDATE()
+
+	-- CRUD THIS Enity FOR super-admin
+	INSERT INTO RolePermissions(roleId, permissionId, createdAt, updatedAt)
+	SELECT @roleId, permissionId, GETDATE(), GETDATE()
+	FROM @PermissionTemp
+
+	DELETE FROM @PermissionTemp
+
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'CORE-Permissions-Data-v65', GETDATE(), GETDATE()
 END
 
 GO
