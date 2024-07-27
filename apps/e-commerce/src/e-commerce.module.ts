@@ -207,7 +207,7 @@ export class ECommerceModule implements NestModule {
     app.get(ProductImageRemovalService).run();
 
     // add product video removal job
-    app.get(ProductVideoRemovalService).run();
+    //app.get(ProductVideoRemovalService).run();
 
     // add discount cacher
     app.get(ProductDiscountJobRunnerService).run();
