@@ -33,4 +33,12 @@ export class StockPaymentDto {
   })
   @IsNumber()
   variationPriceId: number;
+
+  @ApiProperty({
+    required: false,
+    type: String,
+    description: 'noteDescription',
+  })
+  @IsString()
+  noteDescription?: string;
 }

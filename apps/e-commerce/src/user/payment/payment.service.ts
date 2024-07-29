@@ -203,6 +203,7 @@ export class PaymentService {
         session.id,
         user.id,
         body.addressId,
+        body.noteDescription,
         transaction,
       );
       // create order details
@@ -315,6 +316,7 @@ export class PaymentService {
     sessionId: string,
     userId: bigint,
     addressId: bigint,
+    noteDescription?: string,
     transaction?: Transaction,
   ) {
     const order = await this.orderRepository.create(
@@ -331,6 +333,7 @@ export class PaymentService {
         sessionId: sessionId,
         userId: userId,
         addressId: addressId,
+        noteDescription: noteDescription,
         gregorianAtPersian: moment()
           .tz('Asia/Tehran', false)
           .locale('en')
