@@ -27,7 +27,7 @@ export class ECSlugVersion extends Model {
 
   @BelongsTo(() => ECSlugVersionType, {
     as: 'slugVersionType',
-    foreignKey: 'slugVerisonTypeId',
+    foreignKey: 'slugVersionTypeId',
   })
   slugVersionType?: ECSlugVersionType;
 

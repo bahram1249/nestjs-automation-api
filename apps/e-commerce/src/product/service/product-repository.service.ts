@@ -12,6 +12,7 @@ import { ConfigService } from '@nestjs/config';
 import { ECSlugVersion } from '@rahino/database/models/ecommerce-eav/ec-slug-version.entity';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import { RedirectException } from '@rahino/ecommerce/util/exception';
+import { SlugVersionTypeEnum } from '@rahino/ecommerce/util/enum';
 
 @Injectable()
 export class ProductRepositoryService {
@@ -40,7 +41,10 @@ export class ProductRepositoryService {
     let product = await this.repository.findOne(resultQuery);
     if (!product) {
       const isExistsBefore = await this.slugVersionRepository.findOne(
-        new QueryOptionsBuilder().filter({ slug: slug }).build(),
+        new QueryOptionsBuilder()
+          .filter({ slug: slug })
+          .filter({ slugVersionTypeId: SlugVersionTypeEnum.Product })
+          .build(),
       );
       if (isExistsBefore) {
         const oldItem = await this.findById({}, isExistsBefore.entityId);
