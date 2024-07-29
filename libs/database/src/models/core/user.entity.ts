@@ -105,6 +105,12 @@ export class User extends Model {
   static_id: number;
 
   @Column({
+    type: DataType.DATE,
+    allowNull: true,
+  })
+  birthDate?: Date;
+
+  @Column({
     type: DataType.BIGINT,
     allowNull: true,
   })
@@ -118,10 +124,4 @@ export class User extends Model {
   userRoles: UserRole[];
   @BelongsToMany(() => Role, () => UserRole)
   roles: Role[];
-
-  @Column({
-    type: DataType.DATE,
-    allowNull: true,
-  })
-  birthDate?: Date;
 }

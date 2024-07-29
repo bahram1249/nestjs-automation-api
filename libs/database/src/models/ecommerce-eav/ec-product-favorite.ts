@@ -8,7 +8,7 @@ import {
 } from 'sequelize-typescript';
 import { User } from '../core/user.entity';
 import { ECProduct } from './ec-product.entity';
-@Table({ tableName: 'ECProductFavorite' })
+@Table({ tableName: 'ECProductFavorites' })
 export class ECProductFavorite extends Model {
   @Column({
     type: DataType.BIGINT,

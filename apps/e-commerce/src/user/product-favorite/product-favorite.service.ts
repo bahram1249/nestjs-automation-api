@@ -1,20 +1,11 @@
-import {
-  BadRequestException,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { ProductFavoriteDto, GetProductFavoriteDto } from './dto';
 import { InjectModel } from '@nestjs/sequelize';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
-import { Op, Sequelize } from 'sequelize';
 import * as _ from 'lodash';
-import { ECAddress } from '@rahino/database/models/ecommerce-eav/ec-address.entity';
 import { User } from '@rahino/database/models/core/user.entity';
-import { ECProvince } from '@rahino/database/models/ecommerce-eav/ec-province.entity';
-import { ECCity } from '@rahino/database/models/ecommerce-eav/ec-city.entity';
-import { ECNeighborhood } from '@rahino/database/models/ecommerce-eav/ec-neighborhood.entity';
 import { I18nTranslations } from 'apps/main/src/generated/i18n.generated';
-import { I18nContext, I18nService } from 'nestjs-i18n';
+import { I18nService } from 'nestjs-i18n';
 import { ECProductFavorite } from '@rahino/database/models/ecommerce-eav/ec-product-favorite';
 import { ProductRepositoryService } from '@rahino/ecommerce/product/service/product-repository.service';
 
@@ -22,8 +13,8 @@ import { ProductRepositoryService } from '@rahino/ecommerce/product/service/prod
 export class ProductFavoriteService {
   constructor(
     @InjectModel(ECProductFavorite)
-    private repository: typeof ECProductFavorite,
-    private productRepositoryService: ProductRepositoryService,
+    private readonly repository: typeof ECProductFavorite,
+    private readonly productRepositoryService: ProductRepositoryService,
     private readonly i18n: I18nService<I18nTranslations>,
   ) {}
 
@@ -50,6 +41,7 @@ export class ProductFavoriteService {
   }
 
   async statusByProductId(user: User, entityId: bigint) {
+    console.log('here');
     const item = await this.repository.findOne(
       new QueryOptionsBuilder()
         .filter({
