@@ -13,6 +13,7 @@ import { ECSlugVersion } from '@rahino/database/models/ecommerce-eav/ec-slug-ver
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import { RedirectException } from '@rahino/ecommerce/util/exception';
 import { SlugVersionTypeEnum } from '@rahino/ecommerce/util/enum';
+import { ListFilterV2Factory } from '@rahino/query-filter/provider/list-filter-v2.factory';
 
 @Injectable()
 export class ProductRepositoryService {
@@ -25,6 +26,7 @@ export class ProductRepositoryService {
     private readonly applyDiscountService: ApplyDiscountService,
     private readonly applyInventoryStatus: ApplyInventoryStatus,
     private readonly removeEmptyPriceService: RemoveEmptyPriceService,
+    private listFilterFactory: ListFilterV2Factory,
 
     private readonly config: ConfigService,
   ) {}
@@ -47,7 +49,10 @@ export class ProductRepositoryService {
           .build(),
       );
       if (isExistsBefore) {
-        const oldItem = await this.findById({}, isExistsBefore.entityId);
+        const oldItem = await this.findById(
+          await this.listFilterFactory.create(),
+          isExistsBefore.entityId,
+        );
         if (oldItem) {
           throw new RedirectException(
             `/product/${oldItem.result.sku}/${oldItem.result.slug}`,

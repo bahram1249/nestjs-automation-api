@@ -20,6 +20,7 @@ import { ApplyInventoryStatus } from './service/apply-inventory-status.service';
 import { ECInventoryStatus } from '@rahino/database/models/ecommerce-eav/ec-inventory-status.entity';
 import { EAVEntityType } from '@rahino/database/models/eav/eav-entity-type.entity';
 import { ECSlugVersion } from '@rahino/database/models/ecommerce-eav/ec-slug-version.entity';
+import { QueryFilterModule } from '@rahino/query-filter';
 
 @Module({
   imports: [
@@ -47,6 +48,7 @@ import { ECSlugVersion } from '@rahino/database/models/ecommerce-eav/ec-slug-ver
       ECSlugVersion,
     ]),
     SequelizeModule,
+    QueryFilterModule,
   ],
   controllers: [ProductController],
   providers: [
