@@ -10,7 +10,6 @@ import { User } from '@rahino/database/models/core/user.entity';
 import { ECOrder } from '@rahino/database/models/ecommerce-eav/ec-order.entity';
 import { OrderStatusEnum } from '@rahino/ecommerce/util/enum';
 import { OrderQueryBuilder } from '../utilOrder/service/order-query-builder.service';
-import { ListFilter } from '@rahino/query-filter';
 import { ECOrderDetail } from '@rahino/database/models/ecommerce-eav/ec-order-detail.entity';
 import { Sequelize, Transaction } from 'sequelize';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
@@ -24,7 +23,11 @@ import { RoleUtilService } from '@rahino/core/user/role-util/role-util.service';
 import { UserVendorService } from '@rahino/ecommerce/user/vendor/user-vendor.service';
 import { OrderUtilService } from '../utilOrder/service/order-util.service';
 import { FinalizedPaymentService } from '@rahino/ecommerce/user/payment/util/finalized-payment/finalized-payment.service';
-import { ChangeOrderStatusDto, ChangeShipmentWayDto } from './dto';
+import {
+  ChangeOrderStatusDto,
+  ChangeShipmentWayDto,
+  EditReceiptPostDto,
+} from './dto';
 import { ECOrderStatus } from '@rahino/database/models/ecommerce-eav/ec-order-status.entity';
 import { ECOrderShipmentWay } from '@rahino/database/models/ecommerce-eav/ec-order-shipmentway.entity';
 import { GetTotalOrderFilterDto } from './dto/get-total-order.dto';
@@ -651,6 +654,30 @@ export class TotalOrderService {
       throw new NotFoundException('the order with this given id not founded!');
     }
     order.orderShipmentWayId = dto.shipmentWayId;
+    order = await order.save();
+    return {
+      result: order,
+    };
+  }
+
+  async editReceiptPost(id: bigint, dto: EditReceiptPostDto) {
+    let order = await this.repository.findOne(
+      new QueryOptionsBuilder()
+        .filter({ id: id })
+        .filter(
+          Sequelize.where(
+            Sequelize.fn('isnull', Sequelize.col('ECOrder.isDeleted'), 0),
+            {
+              [Op.eq]: 0,
+            },
+          ),
+        )
+        .build(),
+    );
+    if (!order) {
+      throw new NotFoundException('the order with this given id not founded!');
+    }
+    order.postReceipt = dto.receipt;
     order = await order.save();
     return {
       result: order,

@@ -25,7 +25,11 @@ import { User } from '@rahino/database/models/core/user.entity';
 import { PermissionGuard } from '@rahino/permission-checker/guard';
 import { CheckPermission } from '@rahino/permission-checker/decorator';
 import { ListFilter } from '@rahino/query-filter';
-import { ChangeOrderStatusDto, ChangeShipmentWayDto } from './dto';
+import {
+  ChangeOrderStatusDto,
+  ChangeShipmentWayDto,
+  EditReceiptPostDto,
+} from './dto';
 import { GetTotalOrderFilterDto } from './dto/get-total-order.dto';
 
 @ApiTags('Total-Orders')
@@ -120,5 +124,19 @@ export class TotalOrderController {
     @Body() dto: ChangeOrderStatusDto,
   ) {
     return await this.service.changeOrderStatus(id, dto);
+  }
+
+  @ApiOperation({ description: 'edit receipt post by given id' })
+  @CheckPermission({
+    permissionSymbol: 'ecommerce.admin.totalorders.editreceiptpost',
+  })
+  @Patch('/editReceiptPost/:id')
+  @HttpCode(HttpStatus.OK)
+  async editReceiptPost(
+    @Param('id') id: bigint,
+    @GetUser() user: User,
+    @Body() dto: EditReceiptPostDto,
+  ) {
+    return await this.service.editReceiptPost(id, dto);
   }
 }

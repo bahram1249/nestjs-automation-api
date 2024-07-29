@@ -12612,6 +12612,7 @@ BEGIN
 	DECLARE @permissionSymbolDecreaseDetail nvarchar(512) = @groupName + '.decreasedetail';
 	DECLARE @permissionSymbolChangeShipmentWay nvarchar(512) = @groupName + '.changeshipmentway';
 	DECLARE @permissionSymbolChangeOrderStatus nvarchar(512) = @groupName + '.changeorderstatus';
+	DECLARE @permissionSymbolEditReceiptPost nvarchar(512) = @groupName + '.editreceiptpost';
 
 	DECLARE @permissionSymbolDelete nvarchar(512) = @groupName + '.delete';
 
@@ -12669,7 +12670,13 @@ BEGIN
 	OUTPUT inserted.id INTO @PermissionTemp(permissionId)
 	SELECT 'DELETE_' + @entityName, @permissionSymbolDelete, @groupId, GETDATE(), GETDATE()
 
+	
+	INSERT INTO Permissions(permissionName ,permissionSymbol,permissionGroupId,  createdAt, updatedAt)
+	OUTPUT inserted.id INTO @PermissionTemp(permissionId)
+	SELECT 'EditReceiptPost_' + @entityName, @permissionSymbolEditReceiptPost, @groupId, GETDATE(), GETDATE()
 
+
+	
 	-- CRUD THIS Enity FOR super-admin
 	INSERT INTO RolePermissions(roleId, permissionId, createdAt, updatedAt)
 	SELECT @roleId, permissionId, GETDATE(), GETDATE()

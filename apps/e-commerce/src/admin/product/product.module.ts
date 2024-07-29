@@ -18,10 +18,17 @@ import { PRODUCT_INVENTORY_STATUS_QUEUE } from '@rahino/ecommerce/inventory/cons
 import { ConfigService } from '@nestjs/config';
 import { DBLoggerModule } from '@rahino/logger';
 import { ProductVideoModule } from '@rahino/ecommerce/product-video/product-video.module';
+import { ECSlugVersion } from '@rahino/database/models/ecommerce-eav/ec-slug-version.entity';
 
 @Module({
   imports: [
-    SequelizeModule.forFeature([ECProduct, User, Permission, EAVEntityType]),
+    SequelizeModule.forFeature([
+      ECProduct,
+      User,
+      Permission,
+      EAVEntityType,
+      ECSlugVersion,
+    ]),
     EntityAttributeValueModule,
     EntityModule,
     ProductPhotoModule,
