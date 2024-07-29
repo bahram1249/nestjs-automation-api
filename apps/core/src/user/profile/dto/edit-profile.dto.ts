@@ -1,6 +1,12 @@
 import { I18nTranslations } from 'apps/main/src/generated/i18n.generated';
 import { AutoMap } from 'automapper-classes';
-import { IsNotEmpty, MaxLength, MinLength } from 'class-validator';
+import {
+  IsDateString,
+  IsNotEmpty,
+  IsOptional,
+  MaxLength,
+  MinLength,
+} from 'class-validator';
 import { i18nValidationMessage } from 'nestjs-i18n';
 
 export class EditProfileDto {
@@ -27,4 +33,9 @@ export class EditProfileDto {
   })
   @AutoMap()
   lastname: string;
+
+  @AutoMap()
+  @IsDateString()
+  @IsOptional()
+  birthDate?: Date;
 }

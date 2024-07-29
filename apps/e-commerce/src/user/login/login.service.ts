@@ -87,6 +87,7 @@ export class LoginService {
         'lastname',
         'username',
         'phoneNumber',
+        'birthDate',
       ]),
     };
   }

@@ -118,4 +118,10 @@ export class User extends Model {
   userRoles: UserRole[];
   @BelongsToMany(() => Role, () => UserRole)
   roles: Role[];
+
+  @Column({
+    type: DataType.DATE,
+    allowNull: true,
+  })
+  birthDate?: Date;
 }

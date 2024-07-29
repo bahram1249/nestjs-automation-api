@@ -33,7 +33,11 @@ export class ProfileService {
 
   async editProfile(user: User, dto: EditProfileDto) {
     await this.userRepoisitory.update(
-      { firstname: dto.firstname, lastname: dto.lastname },
+      {
+        firstname: dto.firstname,
+        lastname: dto.lastname,
+        birthDate: dto.birthDate,
+      },
       {
         where: {
           id: user.id,
@@ -42,7 +46,7 @@ export class ProfileService {
     );
     const editedUser = await this.userRepoisitory.findOne(
       new QueryOptionsBuilder()
-        .attributes(['id', 'firstname', 'lastname'])
+        .attributes(['id', 'firstname', 'lastname', 'birthDate'])
         .filter({ id: user.id })
         .build(),
     );

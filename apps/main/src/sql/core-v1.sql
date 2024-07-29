@@ -100,6 +100,28 @@ END
 
 GO
 
+
+
+IF NOT EXISTS ((SELECT 1 FROM Migrations WHERE version = 'CORE-Users-v2' 
+					
+			))
+	AND EXISTS (
+		SELECT 1 FROM Settings WHERE 1=1
+		OR ([key] = 'SITE_NAME' AND [value] IN ('SITE_NAME'))
+	)
+BEGIN
+
+	ALTER TABLE Users 
+		ADD birthDate					date						 NULL;
+	
+
+	
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'CORE-Users-v2', GETDATE(), GETDATE()
+END
+
+GO
+
 IF NOT EXISTS ((SELECT 1 FROM Migrations WHERE version = 'CORE-AttachmentTypes-v1' 
 					
 			))
