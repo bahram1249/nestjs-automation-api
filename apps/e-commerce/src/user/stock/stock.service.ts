@@ -2,7 +2,6 @@ import {
   BadRequestException,
   Inject,
   Injectable,
-  InternalServerErrorException,
   NotFoundException,
 } from '@nestjs/common';
 import { ECUserSession } from '@rahino/database/models/ecommerce-eav/ec-user-session.entity';
@@ -37,7 +36,6 @@ import { ECProvince } from '@rahino/database/models/ecommerce-eav/ec-province.en
 import { ECVariationPrice } from '@rahino/database/models/ecommerce-eav/ec-variation-prices';
 import { StockPriceService } from './services/price';
 import { ShipmentInteface } from './services/shipment-price/interface';
-import { ECDiscount } from '@rahino/database/models/ecommerce-eav/ec-discount.entity';
 import { ApplyDiscountService } from '@rahino/ecommerce/product/service';
 import { PaymentServiceManualProviderFactory } from '../payment/provider/factory/payment-service-manual-provider.factory';
 
@@ -271,6 +269,7 @@ export class StockService {
         totalPrice: totalPrice + Number(shipment.price),
         totalShipmentPrice: shipment.price,
         shipmentType: shipment.type,
+        shipmentTypeName: shipment.typeName,
         payments: payments,
       });
     }

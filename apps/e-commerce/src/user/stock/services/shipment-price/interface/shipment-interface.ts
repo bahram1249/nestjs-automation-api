@@ -7,6 +7,7 @@ export interface ShipmentInteface {
     addressId?: bigint,
   ): Promise<{
     type: OrderShipmentwayEnum;
+    typeName: string;
     price: number;
     realShipmentPrice: number;
   }>;

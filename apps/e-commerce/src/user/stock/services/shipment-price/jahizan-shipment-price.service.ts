@@ -27,6 +27,7 @@ export class JahizanShipmentPrice implements ShipmentInteface {
     addressId?: bigint,
   ): Promise<{
     type: OrderShipmentwayEnum;
+    typeName: string;
     price: number;
     realShipmentPrice: number;
   }> {
@@ -72,6 +73,7 @@ export class JahizanShipmentPrice implements ShipmentInteface {
         const applyShipmentPrice = shipmentPrice ? 0 : price;
         return {
           price: applyShipmentPrice,
+          typeName: 'از طریق پیک',
           type: OrderShipmentwayEnum.delivery,
           realShipmentPrice: price,
         };

@@ -19,6 +19,7 @@ export class PostShipmentPriceService implements ShipmentInteface {
     addressId?: bigint,
   ): Promise<{
     type: OrderShipmentwayEnum;
+    typeName: string;
     price: number;
     realShipmentPrice: number;
   }> {
@@ -72,6 +73,7 @@ export class PostShipmentPriceService implements ShipmentInteface {
     }
     return {
       type: OrderShipmentwayEnum.post,
+      typeName: 'از طریق پست',
       price:
         calFreetotalWeight == 0
           ? 0
