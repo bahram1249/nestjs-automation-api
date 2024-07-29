@@ -3416,6 +3416,25 @@ END
 
 GO
 
+
+-- ec-orders
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ec-orders-v13' 
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'SITE_NAME' AND [value] IN ('ecommerce'))
+		)
+BEGIN
+
+	ALTER TABLE ECOrders
+		ADD  noteDescription nvarchar(1024) null;
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'ec-orders-v13', GETDATE(), GETDATE()
+END
+
+GO
+
 -- ec-order-details
 IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ec-order-details-v1' 
 			)

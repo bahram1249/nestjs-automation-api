@@ -170,4 +170,10 @@ export class ECOrder extends Model {
     allowNull: true,
   })
   paymentCommissionAmount?: bigint;
+
+  @Column({
+    type: DataType.STRING,
+    allowNull: true,
+  })
+  noteDescription?: string;
 }
