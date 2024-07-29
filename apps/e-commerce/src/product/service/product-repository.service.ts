@@ -9,16 +9,22 @@ import { ApplyInventoryStatus } from './apply-inventory-status.service';
 import { RemoveEmptyPriceService } from './remove-empty-price.service';
 import { Sequelize } from 'sequelize';
 import { ConfigService } from '@nestjs/config';
+import { ECSlugVersion } from '@rahino/database/models/ecommerce-eav/ec-slug-version.entity';
+import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
+import { RedirectException } from '@rahino/ecommerce/util/exception';
 
 @Injectable()
 export class ProductRepositoryService {
   constructor(
     @InjectModel(ECProduct)
     private readonly repository: typeof ECProduct,
+    @InjectModel(ECSlugVersion)
+    private readonly slugVersionRepository: typeof ECSlugVersion,
     private readonly productQueryBuilderService: ProductQueryBuilderService,
     private readonly applyDiscountService: ApplyDiscountService,
     private readonly applyInventoryStatus: ApplyInventoryStatus,
     private readonly removeEmptyPriceService: RemoveEmptyPriceService,
+
     private readonly config: ConfigService,
   ) {}
 
@@ -33,8 +39,20 @@ export class ProductRepositoryService {
 
     let product = await this.repository.findOne(resultQuery);
     if (!product) {
+      const isExistsBefore = await this.slugVersionRepository.findOne(
+        new QueryOptionsBuilder().filter({ slug: slug }).build(),
+      );
+      if (isExistsBefore) {
+        const oldItem = await this.findById({}, isExistsBefore.entityId);
+        if (oldItem) {
+          throw new RedirectException(
+            `/product/${oldItem.result.sku}/${oldItem.result.slug}`,
+          );
+        }
+      }
       throw new NotFoundException('the item with this given slug not founded!');
     }
+
     product = await this.removeEmptyPriceService.applyProduct(product);
     product = await this.applyInventoryStatus.applyProduct(product);
     return {

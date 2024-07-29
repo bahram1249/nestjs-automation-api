@@ -100,6 +100,8 @@ import { ECWallet } from './models/ecommerce-eav/ec-wallet.entity';
 import { ECHomePage } from './models/ecommerce-eav/ec-home-page.entity';
 import { ECEntityTypeSort } from './models/ecommerce-eav/ec-entityType-sort.entity';
 import { EAVEntityVideo } from './models/eav/eav-entity-video.entity';
+import { ECSlugVersion } from './models/ecommerce-eav/ec-slug-version.entity';
+import { ECSlugVersionType } from './models/ecommerce-eav/ec-slug-version-type.entity';
 
 @Module({
   imports: [
@@ -196,6 +198,8 @@ import { EAVEntityVideo } from './models/eav/eav-entity-video.entity';
           ECWallet,
           ECHomePage,
           ECEntityTypeSort,
+          ECSlugVersion,
+          ECSlugVersionType,
           Buffet,
           BuffetGallery,
           BuffetType,

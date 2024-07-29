@@ -59,6 +59,9 @@ import { InjectQueue } from '@nestjs/bullmq';
 import { Queue } from 'bullmq';
 import { ProductVideoService } from '@rahino/ecommerce/product-video/product-video.service';
 import { VideoDto } from '@rahino/ecommerce/product-video/dto';
+import { ECSlugVersionType } from '@rahino/database/models/ecommerce-eav/ec-slug-version-type.entity';
+import { ECSlugVersion } from '@rahino/database/models/ecommerce-eav/ec-slug-version.entity';
+import { SlugVersionTypeEnum } from '@rahino/ecommerce/util/enum';
 
 @Injectable()
 export class ProductService {
@@ -67,6 +70,8 @@ export class ProductService {
     private readonly repository: typeof ECProduct,
     @InjectModel(EAVEntityType)
     private readonly entityType: typeof EAVEntityType,
+    @InjectModel(ECSlugVersion)
+    private readonly slugVersionRepository: typeof ECSlugVersion,
     @InjectMapper()
     private readonly mapper: Mapper,
     private readonly entityAttributeValueService: EntityAttributeValueService,
@@ -1065,6 +1070,17 @@ export class ProductService {
         transaction: transaction,
       });
 
+      await this.slugVersionRepository.create(
+        {
+          entityId: product.id,
+          slug: product.slug,
+          slugVersionTypeId: SlugVersionTypeEnum.Product,
+        },
+        {
+          transaction: transaction,
+        },
+      );
+
       // insert new product photos
       await this.productPhotoService.insert(
         product.id,
@@ -1251,6 +1267,26 @@ export class ProductService {
         transaction: transaction,
       });
       product = updated[1][0];
+
+      const findSlug = await this.slugVersionRepository.findOne(
+        new QueryOptionsBuilder()
+          .filter({ entityId: product.id })
+          .filter({ slugVersionTypeId: SlugVersionTypeEnum.Product })
+          .filter({ slug: product.slug })
+          .build(),
+      );
+      if (!findSlug) {
+        await this.slugVersionRepository.create(
+          {
+            entityId: product.id,
+            slug: product.slug,
+            slugVersionTypeId: SlugVersionTypeEnum.Product,
+          },
+          {
+            transaction: transaction,
+          },
+        );
+      }
 
       // remove photos
       await this.productPhotoService.removePhotosByProductId(

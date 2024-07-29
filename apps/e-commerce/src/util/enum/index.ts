@@ -7,3 +7,4 @@ export * from './vendor-commission-type.enum';
 export * from './product-comment-status.enum';
 export * from './inventory-track-change-status.enum';
 export * from './home-page-type.enum';
+export * from './slug-version-type.enum';

@@ -204,6 +204,13 @@ export class WalletService implements PayInterface {
     titleMessage?: string;
     description?: string;
   }> {
+    if (!user) {
+      return {
+        eligibleCheck: false,
+        titleMessage: 'پرداخت با کیف پول',
+        description: '',
+      };
+    }
     const wallet = await this.walletRepository.findOne(
       new QueryOptionsBuilder()
         .filter({ userId: user.id })

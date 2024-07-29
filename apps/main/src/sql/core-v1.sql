@@ -4045,6 +4045,86 @@ END
 GO
 
 
+-- ec-productfavorites
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ec-productfavorites-v1' 
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'SITE_NAME' AND [value] IN ('ecommerce'))
+		)
+BEGIN
+
+	CREATE TABLE ECProductFavorites(
+		userId							bigint							NOT NULL
+			CONSTRAINT FK_ECProductFavorites_UserId
+				FOREIGN KEY REFERENCES Users(id),
+		productId						bigint							NOT NULL
+			CONSTRAINT FK_ECProductFavorites_ProductId
+				FOREIGN KEY REFERENCES ECProducts(id),
+		[createdAt]						datetimeoffset					NOT NULL,
+		[updatedAt]						datetimeoffset					NOT NULL,
+		PRIMARY KEY CLUSTERED (userId, productId)
+	);
+
+	
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'ec-productfavorites-v1', GETDATE(), GETDATE()
+END
+
+GO
+
+
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ec-slugversiontypes-v1' 
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'SITE_NAME' AND [value] IN ('ecommerce'))
+		)
+BEGIN
+
+	CREATE TABLE ECSlugVersionTypes(
+		id								int								PRIMARY KEY,
+		title							nvarchar(256)					NOT NULL,
+		[createdAt]						datetimeoffset					NOT NULL,
+		[updatedAt]						datetimeoffset					NOT NULL
+	);
+
+	
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'ec-slugversiontypes-v1', GETDATE(), GETDATE()
+END
+
+GO
+
+
+--ec-slugversion-v1
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ec-slugversion-v1' 
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'SITE_NAME' AND [value] IN ('ecommerce'))
+		)
+BEGIN
+
+	CREATE TABLE ECSlugVersions(
+		id								bigint identity(1,1)			PRIMARY KEY,
+		slug							nvarchar(256)					NOT NULL,
+		slugVersionTypeId				int								NOT NULL
+			CONSTRAINT FK_ECSlugVersions_SlugVersionTypeId
+				FOREIGN KEY REFERENCES ECSlugVersionTypes(id),
+		entityId						bigint							NOT NULL,
+		[createdAt]						datetimeoffset					NOT NULL,
+		[updatedAt]						datetimeoffset					NOT NULL
+	);
+
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'ec-slugversion-v1', GETDATE(), GETDATE()
+END
+
+GO
 
 /*
 
@@ -4190,6 +4270,28 @@ END
 
 GO
 
+
+-- ec-slug-version-types-Data-v1
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ec-slug-version-types-Data-v1' 
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'SITE_NAME' AND [value] IN ('ecommerce'))
+		)
+BEGIN
+
+	INSERT INTO ECSlugVersionTypes(id, title ,createdAt, updatedAt)
+	VALUES (1, N'محصول', GETDATE(), GETDATE())
+			,(2, N'دسته بندی', GETDATE(), GETDATE())
+			,(3, N'برند', GETDATE(), GETDATE())
+			,(4, N'گارانتی', GETDATE(), GETDATE())
+			
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'ec-slug-version-types-Data-v1', GETDATE(), GETDATE()
+END
+
+GO
 
 -- ec-postage-fee-Data-v1
 IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ec-postage-fee-Data-v1' 

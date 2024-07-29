@@ -19,6 +19,7 @@ import { QueryNextPageProductProcessor } from './processor';
 import { ApplyInventoryStatus } from './service/apply-inventory-status.service';
 import { ECInventoryStatus } from '@rahino/database/models/ecommerce-eav/ec-inventory-status.entity';
 import { EAVEntityType } from '@rahino/database/models/eav/eav-entity-type.entity';
+import { ECSlugVersion } from '@rahino/database/models/ecommerce-eav/ec-slug-version.entity';
 
 @Module({
   imports: [
@@ -43,6 +44,7 @@ import { EAVEntityType } from '@rahino/database/models/eav/eav-entity-type.entit
       ECDiscount,
       ECInventoryStatus,
       EAVEntityType,
+      ECSlugVersion,
     ]),
     SequelizeModule,
   ],
