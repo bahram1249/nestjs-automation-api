@@ -8,6 +8,7 @@ import { I18nTranslations } from 'apps/main/src/generated/i18n.generated';
 import { I18nService } from 'nestjs-i18n';
 import { ECProductFavorite } from '@rahino/database/models/ecommerce-eav/ec-product-favorite';
 import { ProductRepositoryService } from '@rahino/ecommerce/product/service/product-repository.service';
+import { ListFilterV2Factory } from '@rahino/query-filter/provider/list-filter-v2.factory';
 
 @Injectable()
 export class ProductFavoriteService {
@@ -16,6 +17,7 @@ export class ProductFavoriteService {
     private readonly repository: typeof ECProductFavorite,
     private readonly productRepositoryService: ProductRepositoryService,
     private readonly i18n: I18nService<I18nTranslations>,
+    private listFilterFactory: ListFilterV2Factory,
   ) {}
 
   async findAll(user: User, filter: GetProductFavoriteDto) {
