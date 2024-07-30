@@ -40,5 +40,6 @@ export class StockPaymentDto {
     description: 'noteDescription',
   })
   @IsString()
+  @IsOptional()
   noteDescription?: string;
 }
