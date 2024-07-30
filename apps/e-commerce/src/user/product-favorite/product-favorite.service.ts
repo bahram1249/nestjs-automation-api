@@ -31,7 +31,10 @@ export class ProductFavoriteService {
       const product = products[index];
       product.set(
         'product',
-        await this.productRepositoryService.findById({}, product.id),
+        await this.productRepositoryService.findById(
+          await this.listFilterFactory.create(),
+          product.id,
+        ),
       );
       products[index] = product;
     }
