@@ -26,21 +26,21 @@ export class ProductFavoriteService {
     });
     const count = await this.repository.count(queryBuilder.build());
 
-    let products = await this.repository.findAll(queryBuilder.build());
-    for (let index = 0; index < products.length; index++) {
-      const product = products[index];
-      product.set(
+    let favorites = await this.repository.findAll(queryBuilder.build());
+    for (let index = 0; index < favorites.length; index++) {
+      const favorite = favorites[index];
+      favorite.set(
         'product',
         await this.productRepositoryService.findById(
           await this.listFilterFactory.create(),
-          product.id,
+          favorite.productId,
         ),
       );
-      products[index] = product;
+      favorites[index] = favorite;
     }
 
     return {
-      result: products,
+      result: favorites,
       total: count,
     };
   }
