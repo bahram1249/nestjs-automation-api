@@ -59,9 +59,9 @@ import { InjectQueue } from '@nestjs/bullmq';
 import { Queue } from 'bullmq';
 import { ProductVideoService } from '@rahino/ecommerce/product-video/product-video.service';
 import { VideoDto } from '@rahino/ecommerce/product-video/dto';
-import { ECSlugVersionType } from '@rahino/database/models/ecommerce-eav/ec-slug-version-type.entity';
 import { ECSlugVersion } from '@rahino/database/models/ecommerce-eav/ec-slug-version.entity';
 import { SlugVersionTypeEnum } from '@rahino/ecommerce/util/enum';
+import { PermissionService } from '@rahino/core/user/permission/permission.service';
 
 @Injectable()
 export class ProductService {
@@ -81,6 +81,7 @@ export class ProductService {
     private readonly inventoryValidationService: InventoryValidationService,
     private readonly inventoryService: InventoryService,
     private readonly userVendorService: UserVendorService,
+    private readonly permissionService: PermissionService,
     @Inject(emptyListFilter)
     private readonly listFilter: ListFilter,
     @InjectConnection()
@@ -1168,53 +1169,61 @@ export class ProductService {
       throw new NotFoundException('the item with this given id not founded!');
     }
 
-    // find the slug if exists before
-    const slugSearch = await this.repository.findOne(
-      new QueryOptionsBuilder()
-        .filter(
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('isDeleted'), 0),
-            {
-              [Op.eq]: 0,
-            },
-          ),
-        )
-        .filter({
-          id: {
-            [Op.ne]: entityId,
-          },
-        })
-        .filter({ slug: dto.slug })
-        .build(),
+    const superEditSymbol = 'ecommerce.admin.products.superedit';
+    const { result: superEditAccess } = await this.permissionService.isAccess(
+      user,
+      superEditSymbol,
     );
-    if (slugSearch) {
-      throw new BadRequestException(
-        'the item with this given slug is exists before !',
-      );
-    }
 
-    // validation of entityType is linked to ecommerce model
-    const ecommerceEntityModel = 1;
-    const entityType = await this.entityType.findOne(
-      new QueryOptionsBuilder()
-        .filter({ id: dto.entityTypeId })
-        .filter(
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('isDeleted'), 0),
-            {
-              [Op.eq]: 0,
+    if (superEditAccess) {
+      // find the slug if exists before
+      const slugSearch = await this.repository.findOne(
+        new QueryOptionsBuilder()
+          .filter(
+            Sequelize.where(
+              Sequelize.fn('isnull', Sequelize.col('isDeleted'), 0),
+              {
+                [Op.eq]: 0,
+              },
+            ),
+          )
+          .filter({
+            id: {
+              [Op.ne]: entityId,
             },
-          ),
-        )
-        .filter({
-          entityModelId: ecommerceEntityModel,
-        })
-        .build(),
-    );
-    if (!entityType) {
-      throw new BadRequestException(
-        `the given entityType->${dto.entityTypeId} isn't exists`,
+          })
+          .filter({ slug: dto.slug })
+          .build(),
       );
+      if (slugSearch) {
+        throw new BadRequestException(
+          'the item with this given slug is exists before !',
+        );
+      }
+
+      // validation of entityType is linked to ecommerce model
+      const ecommerceEntityModel = 1;
+      const entityType = await this.entityType.findOne(
+        new QueryOptionsBuilder()
+          .filter({ id: dto.entityTypeId })
+          .filter(
+            Sequelize.where(
+              Sequelize.fn('isnull', Sequelize.col('isDeleted'), 0),
+              {
+                [Op.eq]: 0,
+              },
+            ),
+          )
+          .filter({
+            entityModelId: ecommerceEntityModel,
+          })
+          .build(),
+      );
+      if (!entityType) {
+        throw new BadRequestException(
+          `the given entityType->${dto.entityTypeId} isn't exists`,
+        );
+      }
     }
 
     // validation of attributes
@@ -1252,81 +1261,83 @@ export class ProductService {
     });
     let product: ECProduct = null;
     try {
-      // map item to product
-      const mappedItem = this.mapper.map(dto, ProductDto, ECProduct);
-      // update product item
-      const updateItem = _.omit(mappedItem.toJSON(), ['id']);
-      if (dto.inventories.length > 0) {
-        updateItem.lastPrice = dto.inventories[0].firstPrice;
-      }
-      const updated = await this.repository.update(updateItem, {
-        where: {
-          id: entityId,
-        },
-        returning: true,
-        transaction: transaction,
-      });
-      product = updated[1][0];
+      if (superEditAccess) {
+        // map item to product
+        const mappedItem = this.mapper.map(dto, ProductDto, ECProduct);
+        // update product item
+        const updateItem = _.omit(mappedItem.toJSON(), ['id']);
+        if (dto.inventories.length > 0) {
+          updateItem.lastPrice = dto.inventories[0].firstPrice;
+        }
+        const updated = await this.repository.update(updateItem, {
+          where: {
+            id: entityId,
+          },
+          returning: true,
+          transaction: transaction,
+        });
+        product = updated[1][0];
 
-      const findSlug = await this.slugVersionRepository.findOne(
-        new QueryOptionsBuilder()
-          .filter({ entityId: product.id })
-          .filter({ slugVersionTypeId: SlugVersionTypeEnum.Product })
-          .filter({ slug: product.slug })
-          .build(),
-      );
-      if (!findSlug) {
-        await this.slugVersionRepository.create(
-          {
-            entityId: product.id,
-            slug: product.slug,
-            slugVersionTypeId: SlugVersionTypeEnum.Product,
-          },
-          {
-            transaction: transaction,
-          },
+        const findSlug = await this.slugVersionRepository.findOne(
+          new QueryOptionsBuilder()
+            .filter({ entityId: product.id })
+            .filter({ slugVersionTypeId: SlugVersionTypeEnum.Product })
+            .filter({ slug: product.slug })
+            .build(),
+        );
+        if (!findSlug) {
+          await this.slugVersionRepository.create(
+            {
+              entityId: product.id,
+              slug: product.slug,
+              slugVersionTypeId: SlugVersionTypeEnum.Product,
+            },
+            {
+              transaction: transaction,
+            },
+          );
+        }
+
+        // remove photos
+        await this.productPhotoService.removePhotosByProductId(
+          product.id,
+          transaction,
+        );
+
+        // insert product photos
+        await this.productPhotoService.insert(
+          product.id,
+          mappedPhotos,
+          transaction,
+        );
+
+        // remove videos
+        await this.productVideoService.removeVideosByProductId(
+          product.id,
+          transaction,
+        );
+
+        // insert product videos
+        await this.productVideoService.insert(
+          product.id,
+          mappedVideos,
+          transaction,
+        );
+
+        // remove attributes
+
+        await this.entityAttributeValueService.removeByEntityId(
+          product.id,
+          transaction,
+        );
+
+        // insert attributes
+        await this.entityAttributeValueService.insert(
+          product.id,
+          mappedAttributes,
+          transaction,
         );
       }
-
-      // remove photos
-      await this.productPhotoService.removePhotosByProductId(
-        product.id,
-        transaction,
-      );
-
-      // insert product photos
-      await this.productPhotoService.insert(
-        product.id,
-        mappedPhotos,
-        transaction,
-      );
-
-      // remove videos
-      await this.productVideoService.removeVideosByProductId(
-        product.id,
-        transaction,
-      );
-
-      // insert product videos
-      await this.productVideoService.insert(
-        product.id,
-        mappedVideos,
-        transaction,
-      );
-
-      // remove attributes
-
-      await this.entityAttributeValueService.removeByEntityId(
-        product.id,
-        transaction,
-      );
-
-      // insert attributes
-      await this.entityAttributeValueService.insert(
-        product.id,
-        mappedAttributes,
-        transaction,
-      );
 
       // all vendor this user have access
       const vendorResult = await this.userVendorService.findAll(

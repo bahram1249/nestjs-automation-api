@@ -19,6 +19,7 @@ import { ConfigService } from '@nestjs/config';
 import { DBLoggerModule } from '@rahino/logger';
 import { ProductVideoModule } from '@rahino/ecommerce/product-video/product-video.module';
 import { ECSlugVersion } from '@rahino/database/models/ecommerce-eav/ec-slug-version.entity';
+import { PermissionModule } from '@rahino/core/user/permission/permission.module';
 
 @Module({
   imports: [
@@ -38,6 +39,7 @@ import { ECSlugVersion } from '@rahino/database/models/ecommerce-eav/ec-slug-ver
     QueryFilterModule,
     SequelizeModule,
     DBLoggerModule,
+    PermissionModule,
     BullModule.registerQueueAsync({
       name: PRODUCT_INVENTORY_STATUS_QUEUE,
       inject: [ConfigService],

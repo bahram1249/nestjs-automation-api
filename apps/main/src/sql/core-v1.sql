@@ -11071,7 +11071,7 @@ BEGIN
 	DECLARE @permissionSymbolCreate nvarchar(512) = @groupName + '.create';
 	DECLARE @permissionSymbolUpdate nvarchar(512) = @groupName + '.update';
 	DECLARE @permissionSymbolDelete nvarchar(512) = @groupName + '.delete';
-
+	DECLARE @permissionSymbolSuperEdit nvarchar(512) = @groupName + '.superedit';
 
 
 	-- permission groups
@@ -11109,6 +11109,12 @@ BEGIN
 	OUTPUT inserted.id INTO @PermissionTemp(permissionId)
 	SELECT 'DELETE_' + @entityName, @permissionSymbolDelete, @groupId, GETDATE(), GETDATE()
 
+														
+	INSERT INTO Permissions(permissionName ,permissionSymbol,permissionGroupId,  createdAt, updatedAt)
+	OUTPUT inserted.id INTO @PermissionTemp(permissionId)
+	SELECT 'SUPEREDIT_' + @entityName, @permissionSymbolSuperEdit, @groupId, GETDATE(), GETDATE()
+
+	
 
 	-- CRUD THIS Enity FOR super-admin
 	INSERT INTO RolePermissions(roleId, permissionId, createdAt, updatedAt)
