@@ -19,6 +19,7 @@ import { User } from '@rahino/database/models/core/user.entity';
 import { UserVendorService } from '@rahino/ecommerce/user/vendor/user-vendor.service';
 import { ECDiscountCondition } from '@rahino/database/models/ecommerce-eav/ec-discount-condition.entity';
 import { DiscountConditionTypeEnum } from '../discount-condition-type/enum';
+import { PermissionService } from '@rahino/core/user/permission/permission.service';
 
 @Injectable()
 export class DiscountService {
@@ -34,6 +35,7 @@ export class DiscountService {
     @InjectConnection()
     private readonly sequelize: Sequelize,
     private readonly userVendorService: UserVendorService,
+    private readonly permissionService: PermissionService,
   ) {}
 
   async findAll(user: User, filter: GetDiscountDto) {
@@ -183,8 +185,18 @@ export class DiscountService {
       throw new BadRequestException("You don't have access to this vendor");
     }
 
+    const editPermissionSymbol = 'ecommerce.admin.discounts.superedit';
+    const { result: superEditAccess } = await this.permissionService.isAccess(
+      user,
+      editPermissionSymbol,
+    );
+
     const mappedItem = this.mapper.map(dto, DiscountDto, ECDiscount);
+    if (!superEditAccess) {
+      mappedItem.freeShipment = false;
+    }
     const insertItem = _.omit(mappedItem.toJSON(), ['id']);
+
     insertItem.userId = user.id;
 
     const transaction = await this.sequelize.transaction({
@@ -253,7 +265,17 @@ export class DiscountService {
     if (!item) {
       throw new NotFoundException('the item with this given id not founded!');
     }
+
+    const editPermissionSymbol = 'ecommerce.admin.discounts.superedit';
+    const { result: superEditAccess } = await this.permissionService.isAccess(
+      user,
+      editPermissionSymbol,
+    );
+
     const mappedItem = this.mapper.map(dto, DiscountDto, ECDiscount);
+    if (!superEditAccess) {
+      mappedItem.freeShipment = false;
+    }
     const updateItem = _.omit(mappedItem.toJSON(), ['id']);
     await this.repository.update(updateItem, {
       where: {

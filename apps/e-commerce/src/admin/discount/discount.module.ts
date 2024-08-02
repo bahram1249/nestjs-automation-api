@@ -9,6 +9,7 @@ import { User } from '@rahino/database/models/core/user.entity';
 import { ECDiscountType } from '@rahino/database/models/ecommerce-eav/ec-discount-type.entity';
 import { UserVendorModule } from '@rahino/ecommerce/user/vendor/user-vendor.module';
 import { ECDiscountCondition } from '@rahino/database/models/ecommerce-eav/ec-discount-condition.entity';
+import { PermissionModule } from '@rahino/core/user/permission/permission.module';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { ECDiscountCondition } from '@rahino/database/models/ecommerce-eav/ec-di
       ECDiscountCondition,
     ]),
     SequelizeModule,
+    PermissionModule,
   ],
   controllers: [DiscountController],
   providers: [DiscountService, DiscountProfile],
