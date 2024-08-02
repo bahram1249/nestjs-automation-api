@@ -8,6 +8,7 @@ import { AuthModule } from './auth/auth.module';
 import { UserModule } from './admin/user/user.module';
 import { RoleModule } from './admin/role/role.module';
 import { RoleModule as UserRoleModule } from './user/role/role.module';
+import { PermissionModule as UserPermissionModule } from './user/permission/permission.module';
 import { PermissionModule } from './admin/permission/permission.module';
 import { MenuModule } from './admin/menu/menu.module';
 import { PermissionGroupModule } from './admin/permission-group/permission-group.module';
@@ -28,6 +29,7 @@ import { RoleUtilModule } from './user/role-util/role-util.module';
     RoleUtilModule,
     ProfileModule,
     UserMenuModule,
+    UserPermissionModule,
   ],
 })
 export class CoreModule implements NestModule {
