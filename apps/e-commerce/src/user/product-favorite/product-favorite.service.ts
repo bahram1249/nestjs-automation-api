@@ -46,7 +46,6 @@ export class ProductFavoriteService {
   }
 
   async statusByProductId(user: User, entityId: bigint) {
-    console.log('here');
     const item = await this.repository.findOne(
       new QueryOptionsBuilder()
         .filter({
