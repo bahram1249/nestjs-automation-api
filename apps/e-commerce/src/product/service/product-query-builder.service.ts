@@ -557,6 +557,11 @@ export class ProductQueryBuilderService {
       'price',
       'asc',
     ]);
+    queryResultBuilder = queryResultBuilder.order([
+      { model: Attachment, as: 'attachments' },
+      'id',
+      'asc',
+    ]);
     return {
       resultQuery: queryResultBuilder.build(),
       countQuery: queryBuilder.build(),
@@ -590,6 +595,9 @@ export class ProductQueryBuilderService {
               orderItemAssociation = { model: ECInventoryPrice, as: order };
               orders.push(orderItemAssociation);
               break;
+            case 'attachments':
+              orderItemAssociation = { model: Attachment, as: order };
+              orders.push(orderItemAssociation);
             default:
               throw new BadRequestException('the given format is not valid');
           }
