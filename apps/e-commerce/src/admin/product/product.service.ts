@@ -1399,9 +1399,9 @@ export class ProductService {
         'PRODUCT_INVENTORY_STATUS_KEEPJOBS',
       );
       await this.productInventoryQueue.add(
-        Constants.productInventoryStatusJob(product.id.toString()),
+        Constants.productInventoryStatusJob(entityId.toString()),
         {
-          productId: product.id,
+          productId: entityId,
         },
         { removeOnComplete: keepJobs },
       );
@@ -1411,7 +1411,7 @@ export class ProductService {
     }
 
     return {
-      result: (await this.findById(user, product.id)).result,
+      result: (await this.findById(user, entityId)).result,
     };
   }
 
