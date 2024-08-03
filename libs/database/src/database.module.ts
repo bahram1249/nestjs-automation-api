@@ -103,6 +103,7 @@ import { EAVEntityVideo } from './models/eav/eav-entity-video.entity';
 import { ECSlugVersion } from './models/ecommerce-eav/ec-slug-version.entity';
 import { ECSlugVersionType } from './models/ecommerce-eav/ec-slug-version-type.entity';
 import { ECProductFavorite } from './models/ecommerce-eav/ec-product-favorite';
+import { ECNotification } from './models/ecommerce-eav/ec-notification.entity';
 
 @Module({
   imports: [
@@ -202,6 +203,7 @@ import { ECProductFavorite } from './models/ecommerce-eav/ec-product-favorite';
           ECProductFavorite,
           ECSlugVersion,
           ECSlugVersionType,
+          ECNotification,
           Buffet,
           BuffetGallery,
           BuffetType,

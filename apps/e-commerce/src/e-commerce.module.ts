@@ -90,6 +90,8 @@ import { ProductVideoModule } from './product-video/product-video.module';
 import { ProductVideoRemovalService } from './product-video-removal/product-video-removal.service';
 import { ProductFavoriteModule } from './user/product-favorite/product-favorite.module';
 import { ProductVideoRemovalModule } from './product-video-removal/product-video-removal.module';
+import { AdminNotificationModule } from './admin/notification/notification.module';
+import { NotificationModule } from './user/notification/notification.module';
 
 @Module({
   imports: [
@@ -180,6 +182,8 @@ import { ProductVideoRemovalModule } from './product-video-removal/product-video
     HomePageModule,
     ProductVideoModule,
     ProductFavoriteModule,
+    AdminNotificationModule,
+    NotificationModule,
   ],
   providers: [
     {
