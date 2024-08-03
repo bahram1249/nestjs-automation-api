@@ -45,7 +45,7 @@ export class CourierReportService {
 
     let queryBuilder = this.shipmentQueryBuilder
       .init(false)
-      .nonDeleted()
+      //.nonDeleted()
       .addNegativeOrderStatus(OrderStatusEnum.WaitingForPayment)
       .addShipmentWay(OrderShipmentwayEnum.delivery)
       .addCourier(user.id)
@@ -115,7 +115,7 @@ export class CourierReportService {
 
     let queryBuilder = this.shipmentQueryBuilder
       .init(true)
-      .nonDeleted()
+      //.nonDeleted()
       .addNegativeOrderStatus(OrderStatusEnum.WaitingForPayment)
       .addShipmentWay(OrderShipmentwayEnum.delivery)
       .addCourier(user.id)
