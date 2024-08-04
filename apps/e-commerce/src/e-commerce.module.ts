@@ -92,6 +92,7 @@ import { ProductFavoriteModule } from './user/product-favorite/product-favorite.
 import { ProductVideoRemovalModule } from './product-video-removal/product-video-removal.module';
 import { AdminNotificationModule } from './admin/notification/notification.module';
 import { NotificationModule } from './user/notification/notification.module';
+import { AdminHeaderNotificationModule } from './admin/header-notification/notification.module';
 
 @Module({
   imports: [
@@ -184,6 +185,7 @@ import { NotificationModule } from './user/notification/notification.module';
     ProductFavoriteModule,
     AdminNotificationModule,
     NotificationModule,
+    AdminHeaderNotificationModule,
   ],
   providers: [
     {

@@ -64,6 +64,26 @@ GO
 
 -- Core Tables
 
+IF NOT EXISTS ((SELECT 1 FROM Migrations WHERE version = 'CORE-Settings-v2' 
+					
+			))
+	AND EXISTS (
+		SELECT 1 FROM Settings WHERE 1=1
+		OR ([key] = 'SITE_NAME' AND [value] IN ('SITE_NAME'))
+	)
+BEGIN
+
+	ALTER TABLE Settings
+	ALTER COLUMN [value] nvarchar(max) NULL;
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'CORE-Settings-v2', GETDATE(), GETDATE()
+END
+
+GO
+
+
+
 IF NOT EXISTS ((SELECT 1 FROM Migrations WHERE version = 'CORE-Users-v1' 
 					
 			))
@@ -7955,6 +7975,25 @@ BEGIN
 
 	INSERT INTO Migrations(version, createdAt, updatedAt)
 	SELECT 'ec-couriersettings-Data-v1', GETDATE(), GETDATE()
+END
+
+GO
+
+IF NOT EXISTS ( SELECT 1 FROM Migrations WHERE version = 'ec-headernotification-Data-v1' 
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'SITE_NAME' AND [value] IN ('ECommerce'))
+		)
+	
+BEGIN
+	
+	INSERT INTO Settings([key], [value], [type], createdAt, updatedAt)
+	SELECT N'HEADER_NOTIFICATION_TEXT', NULL, N'string', getdate(), getdate()
+
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'ec-headernotification-Data-v1', GETDATE(), GETDATE()
 END
 
 GO
