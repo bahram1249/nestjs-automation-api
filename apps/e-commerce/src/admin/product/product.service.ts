@@ -1388,7 +1388,7 @@ export class ProductService {
       // insert new inventories
       await this.inventoryService.bulkInsert(
         user,
-        product.id,
+        entityId,
         newItemInventories,
         transaction,
       );
