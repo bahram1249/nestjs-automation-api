@@ -2,10 +2,8 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { HeaderNotificationDto } from './dto';
 import { InjectModel } from '@nestjs/sequelize';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
-import { Op, Sequelize } from 'sequelize';
 import * as _ from 'lodash';
 import { User } from '@rahino/database/models/core/user.entity';
-import { ECNotification } from '@rahino/database/models/ecommerce-eav/ec-notification.entity';
 import { Setting } from '@rahino/database/models/core/setting.entity';
 
 @Injectable()
