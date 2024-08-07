@@ -93,6 +93,7 @@ import { ProductVideoRemovalModule } from './product-video-removal/product-video
 import { AdminNotificationModule } from './admin/notification/notification.module';
 import { NotificationModule } from './user/notification/notification.module';
 import { AdminHeaderNotificationModule } from './admin/header-notification/notification.module';
+import { UserHeaderNotificationModule } from './user/header-notification/notification.module';
 
 @Module({
   imports: [
@@ -186,6 +187,7 @@ import { AdminHeaderNotificationModule } from './admin/header-notification/notif
     AdminNotificationModule,
     NotificationModule,
     AdminHeaderNotificationModule,
+    UserHeaderNotificationModule,
   ],
   providers: [
     {

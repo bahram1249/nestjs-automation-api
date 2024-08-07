@@ -1,9 +1,7 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
-import { HeaderNotificationDto } from './dto';
+import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import * as _ from 'lodash';
-import { User } from '@rahino/database/models/core/user.entity';
 import { Setting } from '@rahino/database/models/core/setting.entity';
 
 @Injectable()
@@ -43,43 +41,6 @@ export class HeaderNotificationService {
         textColor: notificationTextColor.value,
         backgroundColor: notificationBackgroundColor.value,
       },
-    };
-  }
-
-  async update(dto: HeaderNotificationDto, user: User) {
-    let headerNotificationText = await this.repository.findOne(
-      new QueryOptionsBuilder()
-        .filter({
-          key: this.HEADER_NOTIFICATION_TEXT,
-        })
-        .build(),
-    );
-    headerNotificationText.value = dto.message;
-    headerNotificationText = await headerNotificationText.save();
-
-    let headerNotificationTextColor = await this.repository.findOne(
-      new QueryOptionsBuilder()
-        .filter({
-          key: this.HEADER_NOTIFICATION_TEXT_COLOR,
-        })
-        .build(),
-    );
-    headerNotificationTextColor.value = dto.textColor;
-    headerNotificationTextColor = await headerNotificationTextColor.save();
-
-    let headerNotificationBackgroundColor = await this.repository.findOne(
-      new QueryOptionsBuilder()
-        .filter({
-          key: this.HEADER_NOTIFICATION_BACKGROUND_COLOR,
-        })
-        .build(),
-    );
-    headerNotificationBackgroundColor.value = dto.backgroundColor;
-    headerNotificationBackgroundColor =
-      await headerNotificationBackgroundColor.save();
-
-    return {
-      result: 'ok',
     };
   }
 }

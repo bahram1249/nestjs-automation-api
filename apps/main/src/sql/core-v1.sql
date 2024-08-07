@@ -7999,6 +7999,27 @@ END
 GO
 
 
+IF NOT EXISTS ( SELECT 1 FROM Migrations WHERE version = 'ec-headernotification-Data-v2' 
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'SITE_NAME' AND [value] IN ('ECommerce'))
+		)
+	
+BEGIN
+	
+	INSERT INTO Settings([key], [value], [type], createdAt, updatedAt)
+	SELECT N'HEADER_NOTIFICATION_TEXT', NULL, N'string', getdate(), getdate()
+
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'ec-headernotification-Data-v2', GETDATE(), GETDATE()
+END
+
+GO
+
+
+
 -- auth/admin/users
 IF NOT EXISTS ((SELECT 1 FROM Migrations WHERE version = 'CORE-Permissions-Data-v1' 
 			))

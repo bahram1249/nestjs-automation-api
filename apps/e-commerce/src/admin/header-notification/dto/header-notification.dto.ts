@@ -7,4 +7,16 @@ export class HeaderNotificationDto {
   @IsOptional()
   @AutoMap()
   message?: string;
+
+  @MinLength(3)
+  @MaxLength(2048)
+  @IsOptional()
+  @AutoMap()
+  textColor?: string;
+
+  @MinLength(3)
+  @MaxLength(2048)
+  @IsOptional()
+  @AutoMap()
+  backgroundColor?: string;
 }
