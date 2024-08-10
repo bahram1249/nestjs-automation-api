@@ -134,13 +134,6 @@ export class ECProduct extends Model {
   })
   isDeleted?: boolean;
 
-  @HasMany(() => EAVEntityAttributeValue, {
-    foreignKey: 'entityId',
-    sourceKey: 'id',
-    as: 'productAttributeValues',
-  })
-  productAttributeValues?: EAVEntityAttributeValue[];
-
   @HasMany(() => ECInventory, {
     as: 'inventories',
     foreignKey: 'productId',
@@ -177,6 +170,13 @@ export class ECProduct extends Model {
     'attachmentId',
   )
   videoAttachments?: Attachment[];
+
+  @HasMany(() => EAVEntityAttributeValue, {
+    foreignKey: 'entityId',
+    sourceKey: 'id',
+    as: 'productAttributeValues',
+  })
+  productAttributeValues?: EAVEntityAttributeValue[];
 
   @Column({
     type: DataType.BIGINT,
