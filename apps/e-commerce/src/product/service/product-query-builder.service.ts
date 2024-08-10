@@ -205,47 +205,7 @@ export class ProductQueryBuilderService {
         required: false,
       });
 
-    if (includeAttributes) {
-      let attributeIncludeBuilder = new IncludeOptionsBuilder({
-        model: EAVEntityAttributeValue,
-        as: 'productAttributeValues',
-        required: false,
-      });
-      attributeIncludeBuilder = attributeIncludeBuilder
-        .attributes(
-          priceRangeQuery
-            ? []
-            : [
-                'attributeId',
-                [
-                  Sequelize.fn(
-                    'isnull',
-                    Sequelize.col('productAttributeValues.val'),
-                    Sequelize.col(
-                      'productAttributeValues.attributeValue.value',
-                    ),
-                  ),
-                  'val',
-                ],
-                [Sequelize.col('attributeValueId'), 'attributeValueId'],
-              ],
-        )
-        .include([
-          {
-            attributes: priceRangeQuery
-              ? []
-              : ['id', 'name', 'attributeTypeId'],
-            model: EAVAttribute,
-            as: 'attribute',
-          },
-          {
-            attributes: priceRangeQuery ? [] : ['id', 'attributeId', 'value'],
-            model: EAVAttributeValue,
-            as: 'attributeValue',
-          },
-        ]);
-      queryResultBuilder.thenInlcude(attributeIncludeBuilder.build());
-    }
+    
     let inventoryIncludeBuilder = new IncludeOptionsBuilder({
       model: ECInventory,
       as: 'inventories',
@@ -490,6 +450,48 @@ export class ProductQueryBuilderService {
       inventoryIncludeBuilder.filter({ vendorId: filter.vendorId });
     }
 
+    if (includeAttributes) {
+      let attributeIncludeBuilder = new IncludeOptionsBuilder({
+        model: EAVEntityAttributeValue,
+        as: 'productAttributeValues',
+        required: false,
+      });
+      attributeIncludeBuilder = attributeIncludeBuilder
+        .attributes(
+          priceRangeQuery
+            ? []
+            : [
+                'attributeId',
+                [
+                  Sequelize.fn(
+                    'isnull',
+                    Sequelize.col('productAttributeValues.val'),
+                    Sequelize.col(
+                      'productAttributeValues.attributeValue.value',
+                    ),
+                  ),
+                  'val',
+                ],
+                [Sequelize.col('attributeValueId'), 'attributeValueId'],
+              ],
+        )
+        .include([
+          {
+            attributes: priceRangeQuery
+              ? []
+              : ['id', 'name', 'attributeTypeId'],
+            model: EAVAttribute,
+            as: 'attribute',
+          },
+          {
+            attributes: priceRangeQuery ? [] : ['id', 'attributeId', 'value'],
+            model: EAVAttributeValue,
+            as: 'attributeValue',
+          },
+        ]);
+      queryResultBuilder.thenInlcude(attributeIncludeBuilder.build());
+    }
+    
     if (filter.attributes != null && filter.attributes.length > 0) {
       for (let index = 0; index < filter.attributes.length; index++) {
         const attribute = filter.attributes[index];

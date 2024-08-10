@@ -102,7 +102,9 @@ export class HttpExceptionFilter implements ExceptionFilter {
         errors:
           status == HttpStatus.BAD_REQUEST
             ? exception.getResponse().valueOf()['message']
-            : [exception.message],
+            : status != HttpStatus.INTERNAL_SERVER_ERROR
+            ? [exception.message]
+            : [],
         timestamp: new Date().toISOString(),
         path: request.url,
       });

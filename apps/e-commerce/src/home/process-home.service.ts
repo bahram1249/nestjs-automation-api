@@ -219,7 +219,7 @@ export class ProcessHomeService {
       type: HomePageTypeEnum.PRODUCTBRAND,
       link:
         baseUrl +
-        `/v1/api/ecommerce/products?brandId=${input.brandId}&orderBy=${sort.sortField}&sortOrder=${sort.sortOrder}`,
+        `/v1/api/ecommerce/products?brands=${input.brandId}&orderBy=${sort.sortField}&sortOrder=${sort.sortOrder}`,
       totalLink: frontUrl + `/brand/${brand.slug}`,
       requestBased: true,
     };
