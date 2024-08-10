@@ -26,7 +26,7 @@ import { ThrottlerBehindProxyGuard } from '@rahino/commontools/guard';
 export class SessionController {
   constructor(private service: SessionService) {}
 
-  @Throttle({ default: { limit: 10, ttl: 60000 } })
+  @Throttle({ default: { limit: 1500, ttl: 60000 } })
   @ApiOperation({
     description:
       'generate or get a session, if user is authenticated, return session based user',
