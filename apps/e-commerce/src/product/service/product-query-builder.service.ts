@@ -205,7 +205,6 @@ export class ProductQueryBuilderService {
         required: false,
       });
 
-    
     let inventoryIncludeBuilder = new IncludeOptionsBuilder({
       model: ECInventory,
       as: 'inventories',
@@ -450,6 +449,15 @@ export class ProductQueryBuilderService {
       inventoryIncludeBuilder.filter({ vendorId: filter.vendorId });
     }
 
+    // add first price
+    inventoryIncludeBuilder = inventoryIncludeBuilder.thenInlcude(
+      firstPriceIncludeBuilder.build(),
+    );
+
+    queryResultBuilder = queryResultBuilder.thenInlcude(
+      inventoryIncludeBuilder.build(),
+    );
+
     if (includeAttributes) {
       let attributeIncludeBuilder = new IncludeOptionsBuilder({
         model: EAVEntityAttributeValue,
@@ -491,7 +499,7 @@ export class ProductQueryBuilderService {
         ]);
       queryResultBuilder.thenInlcude(attributeIncludeBuilder.build());
     }
-    
+
     if (filter.attributes != null && filter.attributes.length > 0) {
       for (let index = 0; index < filter.attributes.length; index++) {
         const attribute = filter.attributes[index];
@@ -509,15 +517,6 @@ export class ProductQueryBuilderService {
         queryResultBuilder.filter(attributeFilter);
       }
     }
-
-    // add first price
-    inventoryIncludeBuilder = inventoryIncludeBuilder.thenInlcude(
-      firstPriceIncludeBuilder.build(),
-    );
-
-    queryResultBuilder = queryResultBuilder.thenInlcude(
-      inventoryIncludeBuilder.build(),
-    );
 
     const resultQueryAttributes = priceRangeQuery
       ? []
