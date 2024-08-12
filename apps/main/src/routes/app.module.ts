@@ -38,6 +38,8 @@ import { ECommerceSmsModule } from '@rahino/ecommerce/util/sms/ecommerce-sms.mod
 import { ECommmerceSmsService } from '@rahino/ecommerce/util/sms/ecommerce-sms.service';
 import { KnexModule } from 'nestjs-knex';
 import { useContainer } from 'class-validator';
+const cluster = require('cluster');
+import * as os from 'os';
 
 @Module({
   imports: [
@@ -189,10 +191,27 @@ export class AppModule implements NestModule {
       app.get(PCMModule).setApp(app);
     }
 
-    const port = this.config.get('HOST_PORT');
-    const host = this.config.get('HOST_NAME');
-    await app.listen(port, host, () => {
-      this.logger.warn(`listening on http://${host}:${port}`);
-    });
+    const numCpu = Number(
+      this.config.get<string>('CLUSTER_COUNT') || os.cpus().length,
+    );
+
+    if (cluster.isPrimary) {
+      for (let i = 0; i < numCpu; i++) {
+        cluster.fork();
+      }
+      cluster.on('exit', (worker, code, signal) => {
+        this.logger.warn(`worker exit ${worker.process.pid} !`);
+        cluster.fork();
+      });
+    } else {
+      const port = this.config.get('HOST_PORT');
+      const host = this.config.get('HOST_NAME');
+
+      await app.listen(port, host, () => {
+        this.logger.warn(
+          `listening on http://${host}:${port} with pid ${process.pid}`,
+        );
+      });
+    }
   }
 }
