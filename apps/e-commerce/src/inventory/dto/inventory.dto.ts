@@ -27,6 +27,7 @@ export class InventoryDto {
 
   @AutoMap()
   @IsNumber()
+  @IsOptional()
   buyPrice: bigint;
 
   @AutoMap()

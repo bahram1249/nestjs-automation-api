@@ -20,6 +20,7 @@ import { DBLoggerModule } from '@rahino/logger';
 import { ProductVideoModule } from '@rahino/ecommerce/product-video/product-video.module';
 import { ECSlugVersion } from '@rahino/database/models/ecommerce-eav/ec-slug-version.entity';
 import { PermissionModule } from '@rahino/core/user/permission/permission.module';
+import { CalPriceFactoryModule } from './price-cal-factory/cal-price-factory.module';
 
 @Module({
   imports: [
@@ -51,6 +52,7 @@ import { PermissionModule } from '@rahino/core/user/permission/permission.module
         },
       }),
     }),
+    CalPriceFactoryModule,
   ],
   controllers: [ProductController],
   providers: [ProductService, ProductProfile],
