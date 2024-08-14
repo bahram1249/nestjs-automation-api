@@ -30,7 +30,10 @@ import { EAVAttributeValue } from '@rahino/database/models/eav/eav-attribute-val
 import { ProductPhotoService } from '@rahino/ecommerce/product-photo/product-photo.service';
 import { ProductAttachmentDto } from './dto/product-attachment.dto';
 import { PhotoDto } from '@rahino/ecommerce/product-photo/dto';
-import { InventoryStatusEnum } from '@rahino/ecommerce/inventory/enum';
+import {
+  InventoryStatusEnum,
+  VariationPriceIdEnum,
+} from '@rahino/ecommerce/inventory/enum';
 import {
   InventoryService,
   InventoryValidationService,
@@ -967,6 +970,25 @@ export class ProductService {
   }
 
   async create(user: User, dto: ProductDto) {
+    // add symbol price to inventoryPrices
+    for (let i = 0; i < dto.inventories.length; i++) {
+      if (dto.inventories[i].inventoryPrices == null) {
+        dto.inventories[i].inventoryPrices = [];
+      }
+      if (dto.inventories[i].firstPrice) {
+        dto.inventories[i].inventoryPrices.push({
+          variationPriceId: VariationPriceIdEnum.firstPrice,
+          price: dto.inventories[i].firstPrice,
+        });
+      }
+      if (dto.inventories[i].secondaryPrice) {
+        dto.inventories[i].inventoryPrices.push({
+          variationPriceId: VariationPriceIdEnum.secondaryPrice,
+          price: dto.inventories[i].secondaryPrice,
+        });
+      }
+    }
+
     // find the slug if exists before
     const slugSearch = await this.repository.findOne(
       new QueryOptionsBuilder()
@@ -1107,6 +1129,7 @@ export class ProductService {
       await this.inventoryService.bulkInsert(
         user,
         product.id,
+        dto,
         dto.inventories,
         transaction,
       );
@@ -1134,6 +1157,25 @@ export class ProductService {
   }
 
   async update(entityId: bigint, user: User, dto: ProductDto) {
+    // add symbol price to inventoryPrices
+    for (let i = 0; i < dto.inventories.length; i++) {
+      if (dto.inventories[i].inventoryPrices == null) {
+        dto.inventories[i].inventoryPrices = [];
+      }
+      if (dto.inventories[i].firstPrice) {
+        dto.inventories[i].inventoryPrices.push({
+          variationPriceId: VariationPriceIdEnum.firstPrice,
+          price: dto.inventories[i].firstPrice,
+        });
+      }
+      if (dto.inventories[i].secondaryPrice) {
+        dto.inventories[i].inventoryPrices.push({
+          variationPriceId: VariationPriceIdEnum.secondaryPrice,
+          price: dto.inventories[i].secondaryPrice,
+        });
+      }
+    }
+
     const item = await this.repository.findOne(
       new QueryOptionsBuilder()
         .attributes([
@@ -1381,6 +1423,7 @@ export class ProductService {
       // updating old items
       await this.inventoryService.bulkUpdate(
         user,
+        dto,
         oldItemInventories,
         transaction,
       );
@@ -1389,6 +1432,7 @@ export class ProductService {
       await this.inventoryService.bulkInsert(
         user,
         entityId,
+        dto,
         newItemInventories,
         transaction,
       );

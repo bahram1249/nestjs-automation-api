@@ -1,4 +1,4 @@
-﻿import { Injectable } from '@nestjs/common';
+﻿import { Inject, Injectable } from '@nestjs/common';
 import { InventoryDto } from '../dto';
 import { Sequelize, Transaction } from 'sequelize';
 import { InjectModel } from '@nestjs/sequelize';
@@ -7,10 +7,7 @@ import { InjectMapper } from 'automapper-nestjs';
 import { Mapper } from 'automapper-core';
 import * as _ from 'lodash';
 import { User } from '@rahino/database/models/core/user.entity';
-import {
-  InventoryStatusEnum,
-  VariationPriceIdEnum,
-} from '@rahino/ecommerce/inventory/enum';
+import { InventoryStatusEnum } from '@rahino/ecommerce/inventory/enum';
 import { ECInventoryPrice } from '@rahino/database/models/ecommerce-eav/ec-inventory-price.entity';
 import { Op } from 'sequelize';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
@@ -23,6 +20,9 @@ import { ECProvince } from '@rahino/database/models/ecommerce-eav/ec-province.en
 import { ECVariationPrice } from '@rahino/database/models/ecommerce-eav/ec-variation-prices';
 import { InventoryTrackChangeService } from '@rahino/ecommerce/inventory-track-change/inventory-track-change.service';
 import { InventoryTrackChangeStatusEnum } from '@rahino/ecommerce/util/enum';
+import { CAL_PRICE_PROVIDER_TOKEN } from '@rahino/ecommerce/admin/product/price-cal-factory/constants';
+import { ICalPrice } from '@rahino/ecommerce/admin/product/price-cal-factory/interface/cal-price.interface';
+import { ProductDto } from '@rahino/ecommerce/admin/product/dto';
 
 @Injectable()
 export class InventoryService {
@@ -32,7 +32,10 @@ export class InventoryService {
     @InjectModel(ECInventoryPrice)
     private readonly inventoryPriceRepository: typeof ECInventoryPrice,
     private readonly inventoryTrackChangeService: InventoryTrackChangeService,
-    @InjectMapper() private readonly mapper: Mapper,
+    @Inject(CAL_PRICE_PROVIDER_TOKEN)
+    private readonly calPriceService: ICalPrice,
+    @InjectMapper()
+    private readonly mapper: Mapper,
   ) {}
 
   async findById(id: bigint) {
@@ -149,6 +152,7 @@ export class InventoryService {
   async bulkInsert(
     user: User,
     productId: bigint,
+    productDto: ProductDto,
     inventories: InventoryDto[],
     transaction?: Transaction,
   ) {
@@ -173,28 +177,20 @@ export class InventoryService {
         transaction,
       );
 
-      if (inventory.firstPrice) {
-        await this.inventoryPriceRepository.create(
-          {
-            inventoryId: inventoryInsert.id,
-            variationPriceId: VariationPriceIdEnum.firstPrice,
-            buyPrice: inventory.buyPrice,
-            price: inventory.firstPrice,
-            userId: user.id,
-          },
-          {
-            transaction: transaction,
-          },
+      for (let index = 0; index < inventory.inventoryPrices.length; index++) {
+        inventory.inventoryPrices[index] = await this.calPriceService.getPrice(
+          productDto,
+          inventory.inventoryPrices[index],
         );
       }
 
-      if (inventory.secondaryPrice) {
+      for (let index = 0; index < inventory.inventoryPrices.length; index++) {
         await this.inventoryPriceRepository.create(
           {
             inventoryId: inventoryInsert.id,
-            variationPriceId: VariationPriceIdEnum.secondaryPrice,
+            variationPriceId: inventory.inventoryPrices[index].variationPriceId,
             buyPrice: inventory.buyPrice,
-            price: inventory.secondaryPrice,
+            price: inventory.inventoryPrices[index].price,
             userId: user.id,
           },
           {
@@ -230,6 +226,7 @@ export class InventoryService {
 
   async bulkUpdate(
     user: User,
+    productDto: ProductDto,
     inventories: InventoryDto[],
     transaction?: Transaction,
   ) {
@@ -267,28 +264,20 @@ export class InventoryService {
         },
         transaction: transaction,
       });
-      if (inventory.firstPrice) {
-        await this.inventoryPriceRepository.create(
-          {
-            inventoryId: inventory.id,
-            variationPriceId: VariationPriceIdEnum.firstPrice,
-            price: inventory.firstPrice,
-            buyPrice: inventory.buyPrice,
-            userId: user.id,
-          },
-          {
-            transaction: transaction,
-          },
+      for (let index = 0; index < inventory.inventoryPrices.length; index++) {
+        inventory.inventoryPrices[index] = await this.calPriceService.getPrice(
+          productDto,
+          inventory.inventoryPrices[index],
         );
       }
 
-      if (inventory.secondaryPrice) {
+      for (let index = 0; index < inventory.inventoryPrices.length; index++) {
         await this.inventoryPriceRepository.create(
           {
             inventoryId: inventory.id,
-            variationPriceId: VariationPriceIdEnum.secondaryPrice,
-            price: inventory.secondaryPrice,
+            variationPriceId: inventory.inventoryPrices[index].variationPriceId,
             buyPrice: inventory.buyPrice,
+            price: inventory.inventoryPrices[index].price,
             userId: user.id,
           },
           {

@@ -1,6 +1,9 @@
-import { ECInventory } from '@rahino/database/models/ecommerce-eav/ec-inventory.entity';
-import { ECProduct } from '@rahino/database/models/ecommerce-eav/ec-product.entity';
+import { ProductDto } from '../../dto';
+import { InventoryPriceDto } from '@rahino/ecommerce/inventory/dto/inventory-price.dto';
 
 export interface ICalPrice {
-  getPrice(product: ECProduct, inventory: ECInventory);
+  getPrice(
+    productDto: Pick<ProductDto, 'weight'>,
+    inventoryPriceDto: InventoryPriceDto,
+  ): Promise<InventoryPriceDto>;
 }

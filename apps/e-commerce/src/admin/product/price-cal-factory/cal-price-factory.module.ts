@@ -10,7 +10,7 @@ import { GeneralCalPriceModule } from './general-cal-price.module';
   providers: [
     {
       provide: CAL_PRICE_PROVIDER_TOKEN,
-      scope: Scope.REQUEST,
+      scope: Scope.TRANSIENT,
       useFactory(
         config: ConfigService,
         providerFactory: CalPriceManualProviderFactory,
@@ -18,7 +18,7 @@ import { GeneralCalPriceModule } from './general-cal-price.module';
         const customerName = config.get<string>('CUSTOMER_NAME');
         return providerFactory.create(customerName);
       },
-      inject: [ConfigService],
+      inject: [ConfigService, CalPriceManualProviderFactory],
     },
     CalPriceManualProviderFactory,
   ],

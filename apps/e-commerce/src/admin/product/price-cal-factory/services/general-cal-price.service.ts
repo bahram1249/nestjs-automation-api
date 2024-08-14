@@ -1,12 +1,15 @@
 import { Injectable } from '@nestjs/common';
 import { ICalPrice } from '../interface/cal-price.interface';
-import { ECInventory } from '@rahino/database/models/ecommerce-eav/ec-inventory.entity';
-import { ECProduct } from '@rahino/database/models/ecommerce-eav/ec-product.entity';
+import { ProductDto } from '../../dto';
+import { InventoryPriceDto } from '@rahino/ecommerce/inventory/dto/inventory-price.dto';
 
 @Injectable()
 export class GeneralCalPriceService implements ICalPrice {
   constructor() {}
-  async getPrice(product: ECProduct, inventory: ECInventory) {
-    throw new Error('Method not implemented.');
+  async getPrice(
+    dto: Pick<ProductDto, 'weight'>,
+    inventoryPrice: InventoryPriceDto,
+  ): Promise<InventoryPriceDto> {
+    return inventoryPrice;
   }
 }

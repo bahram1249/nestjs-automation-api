@@ -2129,6 +2129,28 @@ END
 
 GO
 
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ecommerce-addresses-v3' 
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'SITE_NAME' AND [value] IN ('ecommerce'))
+		)
+BEGIN
+
+	ALTER TABLE ECAddresses
+		ALTER COLUMN latitude nvarchar(128) null
+
+	ALTER TABLE ECAddresses
+		ALTER COLUMN longitude nvarchar(128) null
+
+
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'ecommerce-addresses-v3', GETDATE(), GETDATE()
+END
+
+GO
+
 IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ecommerce-vendoraddresses-v1' 
 			)
 	AND EXISTS (

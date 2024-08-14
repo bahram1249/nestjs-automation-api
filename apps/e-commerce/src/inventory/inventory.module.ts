@@ -37,6 +37,7 @@ import { PaymentServiceProviderModule } from '../user/payment/provider/payment-p
 import { InventoryTrackChangeModule } from '../inventory-track-change/inventory-track-change.module';
 import { ECWallet } from '@rahino/database/models/ecommerce-eav/ec-wallet.entity';
 import { RevertPaymentQtyModule } from './revert-payment-qty.module';
+import { CalPriceFactoryModule } from '../admin/product/price-cal-factory/cal-price-factory.module';
 
 @Module({
   imports: [
@@ -80,6 +81,7 @@ import { RevertPaymentQtyModule } from './revert-payment-qty.module';
     }),
     PaymentServiceProviderModule,
     RevertPaymentQtyModule,
+    CalPriceFactoryModule,
   ],
   providers: [
     InventoryValidationService,

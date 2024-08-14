@@ -1,5 +1,6 @@
-﻿import { IsNumber, IsOptional, IsString } from 'class-validator';
+﻿import { IsArray, IsNumber, IsOptional, IsString } from 'class-validator';
 import { AutoMap } from 'automapper-classes';
+import { InventoryPriceDto } from './inventory-price.dto';
 
 export class InventoryDto {
   @IsOptional()
@@ -60,4 +61,8 @@ export class InventoryDto {
   @IsOptional()
   @IsNumber()
   secondaryPrice?: bigint;
+
+  @IsOptional()
+  @IsArray()
+  inventoryPrices?: InventoryPriceDto[] = [];
 }

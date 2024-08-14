@@ -52,7 +52,6 @@ import { CalPriceFactoryModule } from './price-cal-factory/cal-price-factory.mod
         },
       }),
     }),
-    CalPriceFactoryModule,
   ],
   controllers: [ProductController],
   providers: [ProductService, ProductProfile],
