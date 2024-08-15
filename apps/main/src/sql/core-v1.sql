@@ -2236,6 +2236,30 @@ END
 
 GO
 
+
+
+-- ecommerce products-price-formulas
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ecommerce-product-price-formulas-v1' 
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'SITE_NAME' AND [value] IN ('ecommerce'))
+		)
+BEGIN
+
+	CREATE TABLE ECProductPriceFormulas (
+		id							int							PRIMARY KEY,
+		title						nvarchar(512)				NOT NULL,
+		[createdAt]					datetimeoffset				NOT NULL,
+		[updatedAt]					datetimeoffset				NOT NULL,
+	);
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'ecommerce-product-price-formulas-v1', GETDATE(), GETDATE()
+END
+
+GO
+
 -- ecommerce products
 IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ecommerce-products-v1' 
 			)
@@ -2356,6 +2380,30 @@ BEGIN
 
 	INSERT INTO Migrations(version, createdAt, updatedAt)
 	SELECT 'ecommerce-products-v5', GETDATE(), GETDATE()
+END
+
+GO
+
+
+-- ecommerce products
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ecommerce-products-v6' 
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'SITE_NAME' AND [value] IN ('ecommerce'))
+		)
+BEGIN
+
+	ALTER TABLE ECProducts
+		ADD productFormulaId int null
+				CONSTRAINT FK_ECProducts_ProductFormulaId
+					FOREIGN KEY REFERENCES ECProductPriceFormulas(id),
+			wages int null,
+			stoneMoney bigint null
+			
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'ecommerce-products-v6', GETDATE(), GETDATE()
 END
 
 GO
@@ -4624,6 +4672,25 @@ END
 
 GO
 
+-- ecommerce
+-- product-price-formulas
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ecommerce-product-price-formulas-Data-v1' 
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'SITE_NAME' AND [value] IN ('ecommerce'))
+		)
+BEGIN
+
+	INSERT INTO ECProductPriceFormulas(id, title, createdAt, updatedAt)
+	VALUES (1, N'فرمول 0 تا 2 گرم', getdate(), getdate())
+			,(2, N'فرمول 2 گرم به بالا', getdate(), getdate())
+			
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'ecommerce-product-price-formulas-Data-v1', GETDATE(), GETDATE()
+END
+
+GO
 
 
 -- ecommerce
