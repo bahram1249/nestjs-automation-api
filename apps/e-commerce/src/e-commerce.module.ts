@@ -94,6 +94,7 @@ import { AdminNotificationModule } from './admin/notification/notification.modul
 import { NotificationModule } from './user/notification/notification.module';
 import { AdminHeaderNotificationModule } from './admin/header-notification/notification.module';
 import { UserHeaderNotificationModule } from './user/header-notification/notification.module';
+import { CustomerCustomizeMoudle } from './customer-customize/customer-customize.module';
 
 @Module({
   imports: [
@@ -188,6 +189,7 @@ import { UserHeaderNotificationModule } from './user/header-notification/notific
     NotificationModule,
     AdminHeaderNotificationModule,
     UserHeaderNotificationModule,
+    CustomerCustomizeMoudle,
   ],
   providers: [
     {

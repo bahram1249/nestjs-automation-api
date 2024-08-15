@@ -15,7 +15,7 @@ import { GeneralCalPriceModule } from './general-cal-price.module';
         config: ConfigService,
         providerFactory: CalPriceManualProviderFactory,
       ) {
-        const customerName = config.get<string>('CUSTOMER_NAME');
+        const customerName = config.get<string>('SITE_NAME');
         return providerFactory.create(customerName);
       },
       inject: [ConfigService, CalPriceManualProviderFactory],
