@@ -8031,11 +8031,60 @@ IF NOT EXISTS ( SELECT 1 FROM Migrations WHERE version = 'ec-headernotification-
 BEGIN
 	
 	INSERT INTO Settings([key], [value], [type], createdAt, updatedAt)
-	SELECT N'HEADER_NOTIFICATION_TEXT', NULL, N'string', getdate(), getdate()
+	SELECT N'HEADER_NOTIFICATION_TEXT_COLOR', NULL, N'string', getdate(), getdate()
 
 
 	INSERT INTO Migrations(version, createdAt, updatedAt)
 	SELECT 'ec-headernotification-Data-v2', GETDATE(), GETDATE()
+END
+
+GO
+
+
+IF NOT EXISTS ( SELECT 1 FROM Migrations WHERE version = 'ec-headernotification-Data-v3' 
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'SITE_NAME' AND [value] IN ('ECommerce'))
+		)
+	
+BEGIN
+	
+	INSERT INTO Settings([key], [value], [type], createdAt, updatedAt)
+	SELECT N'HEADER_NOTIFICATION_BACKGROUND_COLOR', NULL, N'string', getdate(), getdate()
+
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'ec-headernotification-Data-v3', GETDATE(), GETDATE()
+END
+
+GO
+
+
+
+
+IF NOT EXISTS ( SELECT 1 FROM Migrations WHERE version = 'gold-currentPrices-Data-v1' 
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'SITE_NAME' AND [value] IN ('ECommerce'))
+		)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'CUSTOMER_NAME' AND [value] IN ('goldongallery'))
+		)
+	
+BEGIN
+	
+	INSERT INTO Settings([key], [value], [type], createdAt, updatedAt)
+	SELECT N'GOLD_CURRENT_PRICE', '1', N'bigint', getdate(), getdate()
+
+	INSERT INTO Settings([key], [value], [type], createdAt, updatedAt)
+	SELECT N'GOLD_CURRENT_PRICE_JOB_STATUS', 'true', N'boolean', getdate(), getdate()
+
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'gold-currentPrices-Data-v1', GETDATE(), GETDATE()
 END
 
 GO
