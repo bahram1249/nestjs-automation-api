@@ -222,4 +222,25 @@ export class ECProduct extends Model {
     allowNull: true,
   })
   cntComment?: number;
+
+  @AutoMap()
+  @Column({
+    type: DataType.INTEGER,
+    allowNull: true,
+  })
+  productFormulaId?: number;
+
+  @AutoMap()
+  @Column({
+    type: DataType.INTEGER,
+    allowNull: true,
+  })
+  wages?: number;
+
+  @AutoMap()
+  @Column({
+    type: DataType.BIGINT,
+    allowNull: true,
+  })
+  stoneMoney?: bigint;
 }

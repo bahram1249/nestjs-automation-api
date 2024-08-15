@@ -148,4 +148,19 @@ export class ProductDto {
   @IsOptional()
   @IsNumber()
   weight?: number;
+
+  @AutoMap()
+  @IsOptional()
+  @IsNumber()
+  productFormulaId?: number;
+
+  @AutoMap()
+  @IsOptional()
+  @IsNumber()
+  wages?: number;
+
+  @AutoMap()
+  @IsOptional()
+  @IsNumber()
+  stoneMoney?: bigint;
 }
