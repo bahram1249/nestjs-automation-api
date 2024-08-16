@@ -253,6 +253,18 @@ export class ProductDiscountSetterService {
             },
           ),
         )
+        .filter(
+          Sequelize.where(
+            Sequelize.fn(
+              'isnull',
+              Sequelize.col('discountType.isFactorBased'),
+              0,
+            ),
+            {
+              [Op.ne]: 1,
+            },
+          ),
+        )
         // has one releated condition to this given product or inventory
         .filter(
           Sequelize.literal(

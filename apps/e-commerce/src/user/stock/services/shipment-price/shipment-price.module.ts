@@ -7,10 +7,11 @@ import { ECPostageFee } from '@rahino/database/models/ecommerce-eav/ec-postage-f
 import { SequelizeModule } from '@nestjs/sequelize';
 import { ECAddress } from '@rahino/database/models/ecommerce-eav/ec-address.entity';
 import { Setting } from '@rahino/database/models/core/setting.entity';
+import { ECDiscount } from '@rahino/database/models/ecommerce-eav/ec-discount.entity';
 
 @Module({
   imports: [
-    SequelizeModule.forFeature([ECPostageFee, ECAddress, Setting]),
+    SequelizeModule.forFeature([ECPostageFee, ECAddress, Setting, ECDiscount]),
     SequelizeModule,
   ],
   providers: [JahizanShipmentPrice, PostShipmentPriceService],

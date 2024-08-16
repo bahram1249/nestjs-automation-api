@@ -7,9 +7,11 @@ import { InjectConnection, InjectModel } from '@nestjs/sequelize';
 import { ECAddress } from '@rahino/database/models/ecommerce-eav/ec-address.entity';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import { Sequelize } from 'sequelize-typescript';
-import { QueryTypes } from 'sequelize';
+import { Op, QueryTypes } from 'sequelize';
 import { Setting } from '@rahino/database/models/core/setting.entity';
 import { CourierPriceEnum } from '@rahino/ecommerce/admin/courier-price/enum';
+import { ECDiscount } from '@rahino/database/models/ecommerce-eav/ec-discount.entity';
+import { ECDiscountType } from '@rahino/database/models/ecommerce-eav/ec-discount-type.entity';
 
 @Injectable()
 export class JahizanShipmentPrice implements ShipmentInteface {
@@ -19,6 +21,8 @@ export class JahizanShipmentPrice implements ShipmentInteface {
     private readonly postShipmentService: PostShipmentPriceService,
     @InjectModel(Setting)
     private readonly settingRepository: typeof Setting,
+    @InjectModel(ECDiscount)
+    private readonly discountRepository: typeof ECDiscount,
     @InjectConnection()
     private readonly sequelize: Sequelize,
   ) {}
@@ -64,6 +68,66 @@ export class JahizanShipmentPrice implements ShipmentInteface {
         ).length;
         let shipmentPrice: boolean = null;
         if (freeShipmnetCount == stockPrices.length) {
+          shipmentPrice = true;
+        }
+
+        const totalStockPrice = stockPrices
+          .map((stock) => stock.totalPrice)
+          .reduce((prev, current) => prev + current, 0);
+
+        const discount = await this.discountRepository.findOne(
+          new QueryOptionsBuilder()
+            .filter(
+              Sequelize.where(
+                Sequelize.fn(
+                  'isnull',
+                  Sequelize.col('ECDiscount.isDeleted'),
+                  0,
+                ),
+                {
+                  [Op.eq]: 0,
+                },
+              ),
+            )
+            .filter(
+              Sequelize.where(
+                Sequelize.fn('isnull', Sequelize.col('ECDiscount.isActive'), 0),
+                {
+                  [Op.eq]: 1,
+                },
+              ),
+            )
+            .filter(
+              Sequelize.where(
+                Sequelize.fn(
+                  'isnull',
+                  Sequelize.col('discountType.isFactorBased'),
+                  0,
+                ),
+                {
+                  [Op.eq]: 1,
+                },
+              ),
+            )
+            .filter(
+              Sequelize.where(Sequelize.literal(`${totalStockPrice}`), {
+                [Op.between]: [
+                  Sequelize.col('ECDiscount.minPrice'),
+                  Sequelize.col('ECDiscount.maxPrice'),
+                ],
+              }),
+            )
+            .include([
+              {
+                model: ECDiscountType,
+                as: 'discountType',
+                required: true,
+              },
+            ])
+
+            .build(),
+        );
+        if (discount) {
           shipmentPrice = true;
         }
 

@@ -4,6 +4,7 @@ import { ECStock } from '@rahino/database/models/ecommerce-eav/ec-stocks.entity'
 import { ECVariationPrice } from '@rahino/database/models/ecommerce-eav/ec-variation-prices';
 import { StockPriceInterface, VariationStockInterface } from './interface';
 import * as _ from 'lodash';
+import { VariationPriceEnum } from '../../enum';
 
 @Injectable()
 export class StockPriceService {
@@ -22,14 +23,14 @@ export class StockPriceService {
     };
     let price: ECInventoryPrice = null;
     if (
-      variationPrice.id == 1 &&
+      variationPrice.id == VariationPriceEnum.firstPrice &&
       stock.product.inventories[0].firstPrice == null
     ) {
       result.error = 100;
       return result;
     }
     if (
-      variationPrice.id == 2 &&
+      variationPrice.id == VariationPriceEnum.secondaryPrice &&
       stock.product.inventories[0].secondaryPrice == null
     ) {
       result.error = 100;
