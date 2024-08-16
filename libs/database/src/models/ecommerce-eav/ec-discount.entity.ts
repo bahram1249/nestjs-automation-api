@@ -51,9 +51,10 @@ export class ECDiscount extends Model {
   @AutoMap()
   @Column({
     type: DataType.INTEGER,
+    allowNull: true,
   })
   @ForeignKey(() => ECDiscountActionType)
-  discountActionTypeId: number;
+  discountActionTypeId?: number;
 
   @BelongsTo(() => ECDiscountActionType, {
     as: 'actionType',
@@ -64,8 +65,9 @@ export class ECDiscount extends Model {
   @AutoMap()
   @Column({
     type: DataType.DECIMAL,
+    allowNull: true,
   })
-  discountValue: number;
+  discountValue?: number;
 
   @AutoMap()
   @Column({
@@ -77,9 +79,10 @@ export class ECDiscount extends Model {
   @AutoMap()
   @Column({
     type: DataType.INTEGER,
+    allowNull: true,
   })
   @ForeignKey(() => ECDiscountActionRule)
-  discountActionRuleId: number;
+  discountActionRuleId?: number;
 
   @BelongsTo(() => ECDiscountActionRule, {
     as: 'actionRule',
@@ -158,4 +161,18 @@ export class ECDiscount extends Model {
     allowNull: true,
   })
   freeShipment?: boolean;
+
+  @AutoMap()
+  @Column({
+    type: DataType.BIGINT,
+    allowNull: true,
+  })
+  minPrice?: bigint;
+
+  @AutoMap()
+  @Column({
+    type: DataType.BIGINT,
+    allowNull: true,
+  })
+  maxPrice?: bigint;
 }

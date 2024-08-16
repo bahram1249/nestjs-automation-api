@@ -96,6 +96,7 @@ import { AdminHeaderNotificationModule } from './admin/header-notification/notif
 import { UserHeaderNotificationModule } from './user/header-notification/notification.module';
 import { CustomerCustomizeMoudle } from './customer-customize/customer-customize.module';
 import { GoldModule } from './customer-customize/gold/gold.module';
+import { FactorDiscountModule } from './admin/factor-discount/factor-discount.module';
 
 @Module({
   imports: [
@@ -191,6 +192,7 @@ import { GoldModule } from './customer-customize/gold/gold.module';
     AdminHeaderNotificationModule,
     UserHeaderNotificationModule,
     CustomerCustomizeMoudle,
+    FactorDiscountModule,
   ],
   providers: [
     {
