@@ -31,8 +31,9 @@ export class CurrentPriceService {
 
     return {
       result: {
-        currentPrice: currentPrice.value,
-        currentPriceJobStatus: currentPriceJobStatus.value,
+        currentPrice: Number(currentPrice.value),
+        currentPriceJobStatus:
+          currentPriceJobStatus.value == 'true' ? true : false,
       },
     };
   }
@@ -45,7 +46,7 @@ export class CurrentPriceService {
         })
         .build(),
     );
-    currentPrice.value = dto.currentPrice;
+    currentPrice.value = dto.currentPrice.toString();
     currentPrice = await currentPrice.save();
 
     let currentPriceJobStatus = await this.repository.findOne(
@@ -55,7 +56,7 @@ export class CurrentPriceService {
         })
         .build(),
     );
-    currentPriceJobStatus.value = dto.currentPriceJobStatus;
+    currentPriceJobStatus.value = dto.currentPriceJobStatus ? 'true' : 'false';
     currentPriceJobStatus = await currentPriceJobStatus.save();
     return {
       result: 'ok',
