@@ -3,7 +3,10 @@ import { InventoryPriceDto } from '@rahino/ecommerce/inventory/dto/inventory-pri
 
 export interface ICalPrice {
   getPrice(
-    productDto: Pick<ProductDto, 'weight'>,
+    productDto: Pick<
+      ProductDto,
+      'weight' | 'productFormulaId' | 'wages' | 'stoneMoney'
+    >,
     inventoryPriceDto: InventoryPriceDto,
   ): Promise<InventoryPriceDto>;
 }

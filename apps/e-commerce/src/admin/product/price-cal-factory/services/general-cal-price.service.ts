@@ -7,7 +7,10 @@ import { InventoryPriceDto } from '@rahino/ecommerce/inventory/dto/inventory-pri
 export class GeneralCalPriceService implements ICalPrice {
   constructor() {}
   async getPrice(
-    dto: Pick<ProductDto, 'weight'>,
+    dto: Pick<
+      ProductDto,
+      'weight' | 'productFormulaId' | 'wages' | 'stoneMoney'
+    >,
     inventoryPrice: InventoryPriceDto,
   ): Promise<InventoryPriceDto> {
     return inventoryPrice;
