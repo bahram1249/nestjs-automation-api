@@ -95,6 +95,7 @@ import { NotificationModule } from './user/notification/notification.module';
 import { AdminHeaderNotificationModule } from './admin/header-notification/notification.module';
 import { UserHeaderNotificationModule } from './user/header-notification/notification.module';
 import { CustomerCustomizeMoudle } from './customer-customize/customer-customize.module';
+import { GoldModule } from './customer-customize/gold/gold.module';
 
 @Module({
   imports: [
@@ -211,7 +212,7 @@ export class ECommerceModule implements NestModule {
       .addBearerAuth()
       .build();
     const coreDocument = SwaggerModule.createDocument(this.app, coreConfig, {
-      include: [ECommerceModule],
+      include: [ECommerceModule, GoldModule],
       deepScanRoutes: true,
     });
 
