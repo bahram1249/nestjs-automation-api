@@ -970,6 +970,12 @@ export class ProductService {
   }
 
   async create(user: User, dto: ProductDto) {
+    const customerName = this.config.get<string>('SITE_NAME');
+    if (customerName == 'goldongallery') {
+      for (let i = 0; i < dto.inventories.length; i++) {
+        dto.inventories[i].firstPrice = BigInt(0);
+      }
+    }
     // add symbol price to inventoryPrices
     for (let i = 0; i < dto.inventories.length; i++) {
       if (dto.inventories[i].inventoryPrices == null) {
@@ -1157,6 +1163,13 @@ export class ProductService {
   }
 
   async update(entityId: bigint, user: User, dto: ProductDto) {
+    const customerName = this.config.get<string>('SITE_NAME');
+    if (customerName == 'goldongallery') {
+      for (let i = 0; i < dto.inventories.length; i++) {
+        dto.inventories[i].firstPrice = BigInt(0);
+      }
+    }
+
     // add symbol price to inventoryPrices
     for (let i = 0; i < dto.inventories.length; i++) {
       if (dto.inventories[i].inventoryPrices == null) {
