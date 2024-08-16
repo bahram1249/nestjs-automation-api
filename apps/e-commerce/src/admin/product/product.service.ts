@@ -990,13 +990,13 @@ export class ProductService {
       if (dto.inventories[i].inventoryPrices == null) {
         dto.inventories[i].inventoryPrices = [];
       }
-      if (dto.inventories[i].firstPrice) {
+      if (dto.inventories[i].firstPrice != null) {
         dto.inventories[i].inventoryPrices.push({
           variationPriceId: VariationPriceIdEnum.firstPrice,
           price: dto.inventories[i].firstPrice,
         });
       }
-      if (dto.inventories[i].secondaryPrice) {
+      if (dto.inventories[i].secondaryPrice != null) {
         dto.inventories[i].inventoryPrices.push({
           variationPriceId: VariationPriceIdEnum.secondaryPrice,
           price: dto.inventories[i].secondaryPrice,
@@ -1178,19 +1178,18 @@ export class ProductService {
         dto.inventories[i].firstPrice = BigInt(0);
       }
     }
-
     // add symbol price to inventoryPrices
     for (let i = 0; i < dto.inventories.length; i++) {
       if (dto.inventories[i].inventoryPrices == null) {
         dto.inventories[i].inventoryPrices = [];
       }
-      if (dto.inventories[i].firstPrice) {
+      if (dto.inventories[i].firstPrice != null) {
         dto.inventories[i].inventoryPrices.push({
           variationPriceId: VariationPriceIdEnum.firstPrice,
           price: dto.inventories[i].firstPrice,
         });
       }
-      if (dto.inventories[i].secondaryPrice) {
+      if (dto.inventories[i].secondaryPrice != null) {
         dto.inventories[i].inventoryPrices.push({
           variationPriceId: VariationPriceIdEnum.secondaryPrice,
           price: dto.inventories[i].secondaryPrice,
