@@ -2718,6 +2718,25 @@ END
 
 GO
 
+-- ec-discount-types-v2
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ec-discount-types-v2' 
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'SITE_NAME' AND [value] IN ('ecommerce'))
+		)
+BEGIN
+
+	ALTER TABLE ECDiscountTypes
+		ADD isFactorBased bit	NULL
+	
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'ec-discount-types-v2', GETDATE(), GETDATE()
+END
+
+GO
+
 
 -- ec-discount-action-rules-v1
 IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ec-discount-condition-action-rules-v1' 
@@ -4519,6 +4538,25 @@ BEGIN
 
 	INSERT INTO Migrations(version, createdAt, updatedAt)
 	SELECT 'ec-discount-types-Data-v1', GETDATE(), GETDATE()
+END
+
+GO
+
+-- ec discount-types
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ec-discount-types-Data-v2' 
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'SITE_NAME' AND [value] IN ('ecommerce'))
+		)
+BEGIN
+
+	INSERT INTO ECDiscountTypes(id, name, isCouponBased, isFactorBased ,createdAt, updatedAt)
+	VALUES (5, N'بر اساس فاکتور', 0, 1,GETDATE(), GETDATE())
+		
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'ec-discount-types-Data-v2', GETDATE(), GETDATE()
 END
 
 GO

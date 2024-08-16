@@ -55,6 +55,14 @@ export class DiscountService {
         ),
       )
       .filter(
+        Sequelize.where(
+          Sequelize.fn('isnull', Sequelize.col('ECDiscount.discountTypeId'), 0),
+          {
+            [Op.ne]: 5,
+          },
+        ),
+      )
+      .filter(
         Sequelize.literal(` EXISTS (
         SELECT 1
         FROM ECDiscountConditions Basetbl
@@ -154,6 +162,14 @@ export class DiscountService {
           Sequelize.fn('isnull', Sequelize.col('ECDiscount.isDeleted'), 0),
           {
             [Op.eq]: 0,
+          },
+        ),
+      )
+      .filter(
+        Sequelize.where(
+          Sequelize.fn('isnull', Sequelize.col('ECDiscount.discountTypeId'), 0),
+          {
+            [Op.ne]: 5,
           },
         ),
       )
