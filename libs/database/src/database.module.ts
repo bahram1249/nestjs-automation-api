@@ -104,6 +104,7 @@ import { ECSlugVersion } from './models/ecommerce-eav/ec-slug-version.entity';
 import { ECSlugVersionType } from './models/ecommerce-eav/ec-slug-version-type.entity';
 import { ECProductFavorite } from './models/ecommerce-eav/ec-product-favorite';
 import { ECNotification } from './models/ecommerce-eav/ec-notification.entity';
+import { ECProductPriceFormula } from './models/ecommerce-eav/ec-product-price-formula';
 
 @Module({
   imports: [
@@ -204,6 +205,7 @@ import { ECNotification } from './models/ecommerce-eav/ec-notification.entity';
           ECSlugVersion,
           ECSlugVersionType,
           ECNotification,
+          ECProductPriceFormula,
           Buffet,
           BuffetGallery,
           BuffetType,
