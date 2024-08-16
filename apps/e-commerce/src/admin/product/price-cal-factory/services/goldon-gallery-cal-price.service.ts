@@ -48,7 +48,9 @@ export class GoldonGalleryCalPriceService implements ICalPrice {
     stoneMoney?: bigint,
   ): Promise<bigint> {
     const goldCurrentPriceSetting = await this.settingRepository.findOne(
-      new QueryOptionsBuilder().filter({ key: 'GOLD_CURRENT_PRICE' }).build(),
+      new QueryOptionsBuilder()
+        .filter({ key: this.GOLD_CURRENT_PRICE })
+        .build(),
     );
     const goldCurrentPrice = Number(goldCurrentPriceSetting.value);
     const realWages = Number(`1.${wages.toString()}`);
@@ -65,7 +67,9 @@ export class GoldonGalleryCalPriceService implements ICalPrice {
     stoneMoney?: bigint,
   ): Promise<bigint> {
     const goldCurrentPriceSetting = await this.settingRepository.findOne(
-      new QueryOptionsBuilder().filter({ key: 'GOLD_CURRENT_PRICE' }).build(),
+      new QueryOptionsBuilder()
+        .filter({ key: this.GOLD_CURRENT_PRICE })
+        .build(),
     );
     const goldCurrentPrice = Number(goldCurrentPriceSetting.value);
     const realWages = Number(`1.${wages.toString()}`);
