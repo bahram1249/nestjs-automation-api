@@ -136,6 +136,9 @@ export class ProductService {
         'metaKeywords',
         'metaDescription',
         'weight',
+        'productFormulaId',
+        'wages',
+        'stoneMoney',
       ])
       .include([
         {
@@ -416,6 +419,9 @@ export class ProductService {
           'metaKeywords',
           'metaDescription',
           'weight',
+          'productFormulaId',
+          'wages',
+          'stoneMoney',
         ])
         .include([
           {
@@ -709,6 +715,9 @@ export class ProductService {
           'metaKeywords',
           'metaDescription',
           'weight',
+          'productFormulaId',
+          'wages',
+          'stoneMoney',
         ])
         .include([
           {
