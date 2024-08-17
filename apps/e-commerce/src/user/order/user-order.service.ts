@@ -18,7 +18,7 @@ export class UserOrderService {
 
   async findAll(user: User, filter: ListFilter) {
     let builder = this.orderQueryBuilder
-      .nonDeletedOrder()
+      //.nonDeletedOrder()
       .search(filter.search)
       .addOnlyUser(user.id)
       .addNegativeOrderStatus(OrderStatusEnum.WaitingForPayment);
@@ -46,7 +46,7 @@ export class UserOrderService {
   async findById(id: bigint, user: User) {
     const builder = this.orderQueryBuilder
       .subQuery(true)
-      .nonDeletedOrder()
+      //.nonDeletedOrder()
       .addOnlyUser(user.id)
       .addOrderId(id)
       .addNegativeOrderStatus(OrderStatusEnum.WaitingForPayment)
