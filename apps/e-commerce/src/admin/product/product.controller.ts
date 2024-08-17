@@ -11,6 +11,8 @@ import {
   Query,
   UseGuards,
   UseInterceptors,
+  UsePipes,
+  ValidationPipe,
 } from '@nestjs/common';
 import { CheckPermission } from '@rahino/permission-checker/decorator';
 import { PermissionGuard } from '@rahino/permission-checker/guard';
@@ -61,6 +63,7 @@ export class ProductController {
   @ApiOperation({ description: 'create product by admin' })
   @CheckPermission({ permissionSymbol: 'ecommerce.admin.products.create' })
   @Post('/')
+  @UsePipes(new ValidationPipe({ transform: true }))
   @HttpCode(HttpStatus.CREATED)
   async create(@GetUser() user: User, @Body() dto: ProductDto) {
     return await this.service.create(user, dto);
@@ -69,6 +72,7 @@ export class ProductController {
   @ApiOperation({ description: 'update products by admin' })
   @Put('/:id')
   @CheckPermission({ permissionSymbol: 'ecommerce.admin.products.update' })
+  @UsePipes(new ValidationPipe({ transform: true }))
   @HttpCode(HttpStatus.OK)
   async update(
     @GetUser() user: User,
