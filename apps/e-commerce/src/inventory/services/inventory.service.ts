@@ -181,6 +181,7 @@ export class InventoryService {
         inventory.inventoryPrices[index] = await this.calPriceService.getPrice(
           productDto,
           inventory.inventoryPrices[index],
+          inventory.weight,
         );
       }
 
@@ -268,6 +269,7 @@ export class InventoryService {
         inventory.inventoryPrices[index] = await this.calPriceService.getPrice(
           productDto,
           inventory.inventoryPrices[index],
+          inventory.weight,
         );
       }
 

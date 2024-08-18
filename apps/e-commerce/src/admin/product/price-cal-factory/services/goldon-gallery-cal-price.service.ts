@@ -1,11 +1,11 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { ICalPrice } from '../interface/cal-price.interface';
-import { ProductDto } from '../../dto';
 import { InventoryPriceDto } from '@rahino/ecommerce/inventory/dto/inventory-price.dto';
 import { ProductPriceFormulaEnum } from '@rahino/ecommerce/util/enum';
 import { InjectModel } from '@nestjs/sequelize';
 import { Setting } from '@rahino/database/models/core/setting.entity';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
+import { ProductPriceDto } from '../interface/ProductPriceDto.type';
 
 @Injectable()
 export class GoldonGalleryCalPriceService implements ICalPrice {
@@ -15,23 +15,21 @@ export class GoldonGalleryCalPriceService implements ICalPrice {
     private readonly settingRepository: typeof Setting,
   ) {}
   async getPrice(
-    dto: Pick<
-      ProductDto,
-      'weight' | 'productFormulaId' | 'wages' | 'stoneMoney'
-    >,
+    dto: ProductPriceDto,
     inventoryPriceDto: InventoryPriceDto,
+    inventoryWeight?: number,
   ): Promise<InventoryPriceDto> {
     switch (dto.productFormulaId) {
       case ProductPriceFormulaEnum.firstFormula:
         inventoryPriceDto.price = await this.getPriceByWeightFirstFormula(
-          dto.weight,
+          inventoryWeight,
           dto.wages,
           dto.stoneMoney,
         );
         break;
       case ProductPriceFormulaEnum.secondFormula:
         inventoryPriceDto.price = await this.getPriceByWeightSecondFormula(
-          dto.weight,
+          inventoryWeight,
           dto.wages,
           dto.stoneMoney,
         );
