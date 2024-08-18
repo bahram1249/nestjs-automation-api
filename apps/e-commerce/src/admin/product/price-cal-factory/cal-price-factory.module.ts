@@ -1,24 +1,25 @@
 import { Module, Scope } from '@nestjs/common';
 import { CalPriceManualProviderFactory } from './factory';
-import { ConfigService } from '@nestjs/config';
 import { CAL_PRICE_PROVIDER_TOKEN } from './constants';
 import { GoldonGalleryCalPriceModule } from './goldon-gallery-cal-price.module';
 import { GeneralCalPriceModule } from './general-cal-price.module';
+import { SequelizeModule } from '@nestjs/sequelize';
+import { Setting } from '@rahino/database/models/core/setting.entity';
 
 @Module({
-  imports: [GoldonGalleryCalPriceModule, GeneralCalPriceModule],
+  imports: [
+    GoldonGalleryCalPriceModule,
+    GeneralCalPriceModule,
+    SequelizeModule.forFeature([Setting]),
+  ],
   providers: [
     {
       provide: CAL_PRICE_PROVIDER_TOKEN,
       scope: Scope.TRANSIENT,
-      useFactory(
-        config: ConfigService,
-        providerFactory: CalPriceManualProviderFactory,
-      ) {
-        const customerName = config.get<string>('SITE_NAME');
-        return providerFactory.create(customerName);
+      useFactory(providerFactory: CalPriceManualProviderFactory) {
+        return providerFactory.create();
       },
-      inject: [ConfigService, CalPriceManualProviderFactory],
+      inject: [CalPriceManualProviderFactory],
     },
     CalPriceManualProviderFactory,
   ],
