@@ -8215,6 +8215,9 @@ BEGIN
 	INSERT INTO Settings([key], [value], [type], createdAt, updatedAt)
 	SELECT N'GOLD_CURRENT_PRICE_JOB_STATUS', 'true', N'boolean', getdate(), getdate()
 
+	INSERT INTO Settings([key], [value], [type], createdAt, updatedAt)
+	SELECT N'GOLD_CURRENT_PRICE_JOB_PROBLEM', 'false', N'boolean', getdate(), getdate()
+
 
 	INSERT INTO Migrations(version, createdAt, updatedAt)
 	SELECT 'gold-currentPrices-Data-v1', GETDATE(), GETDATE()
