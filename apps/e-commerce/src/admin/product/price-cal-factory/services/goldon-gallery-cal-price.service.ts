@@ -55,7 +55,9 @@ export class GoldonGalleryCalPriceService implements ICalPrice {
     const stonePrice = Number(stoneMoney) | 0;
     const profit = 500000;
     return BigInt(
-      (weight * goldCurrentPrice * realWages + profit) * 1.03 + stonePrice,
+      Math.round(
+        (weight * goldCurrentPrice * realWages + profit) * 1.03 + stonePrice,
+      ),
     );
   }
 
@@ -73,7 +75,9 @@ export class GoldonGalleryCalPriceService implements ICalPrice {
     const realWages = Number(`1.${wages.toString()}`);
     const stonePrice = Number(stoneMoney) | 0;
     return BigInt(
-      weight * goldCurrentPrice * realWages + 1.07 * 1.03 + stonePrice,
+      Math.round(
+        weight * goldCurrentPrice * realWages + 1.07 * 1.03 + stonePrice,
+      ),
     );
   }
 }
