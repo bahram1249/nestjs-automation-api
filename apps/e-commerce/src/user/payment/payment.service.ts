@@ -273,6 +273,11 @@ export class PaymentService {
           paymentId: res.paymentId,
         },
         {
+          attempts: 100,
+          backoff: {
+            type: 'exponential',
+            delay: 60000,
+          },
           removeOnComplete: true,
           delay: delay,
         },
@@ -476,6 +481,11 @@ export class PaymentService {
       },
       {
         removeOnComplete: true,
+        attempts: 100,
+        backoff: {
+          type: 'exponential',
+          delay: 60000,
+        },
         delay: delay,
       },
     );
