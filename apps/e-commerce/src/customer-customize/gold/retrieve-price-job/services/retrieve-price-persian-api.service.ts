@@ -58,7 +58,7 @@ export class RetrievePricePersianApiService {
     });
     if (this.isSuccessful(res.status)) {
       // get all items
-      const items: any[] = res.data;
+      const items: any[] = res.data.result;
       // filter gold price item
       const goldPriceItem = items.find((item) => item.key == this.gold_18_key);
       // if not founded
