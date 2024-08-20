@@ -32,7 +32,7 @@ export class RetrievePriceRunnerService {
             type: 'fixed',
           },
           repeat: {
-            pattern: '*/10 * * * *',
+            pattern: '*/2 * * * *',
           },
         },
       );
