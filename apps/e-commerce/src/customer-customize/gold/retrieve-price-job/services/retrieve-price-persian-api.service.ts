@@ -49,26 +49,32 @@ export class RetrievePricePersianApiService {
   ) {}
 
   private async callApiToGetNewPrice() {
-    const persianApiToken = this.config.get<string>('PERSIAN_API_TOKEN');
-    const res = await axios.get(this.url, {
-      headers: {
-        Authorization: persianApiToken,
-      },
-      responseType: 'json',
-    });
-    if (this.isSuccessful(res.status)) {
-      // get all items
-      const items: any[] = res.data.result;
-      // filter gold price item
-      const goldPriceItem = items.find((item) => item.key == this.gold_18_key);
-      // if not founded
-      if (goldPriceItem != null) {
+    try {
+      const persianApiToken = this.config.get<string>('PERSIAN_API_TOKEN');
+      const res = await axios.get(this.url, {
+        headers: {
+          Authorization: persianApiToken,
+        },
+        responseType: 'json',
+      });
+      if (this.isSuccessful(res.status)) {
+        // get all items
+        const items: any[] = res.data.result;
+        // filter gold price item
+        const goldPriceItem = items.find(
+          (item) => item.key == this.gold_18_key,
+        );
+        // if not founded
+        if (goldPriceItem == null) {
+          await this.enableProblem();
+          return;
+        }
+        await this.updateCurrentPrice(Number(goldPriceItem.price) / 10);
+        await this.disableProblem();
+      } else {
         await this.enableProblem();
-        return;
       }
-      await this.updateCurrentPrice(Number(goldPriceItem.price) / 10);
-      await this.disableProblem();
-    } else {
+    } catch {
       await this.enableProblem();
     }
   }
