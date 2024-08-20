@@ -29,7 +29,7 @@ export class RetrievePricePersianApiService {
     'GOLD_CURRENT_PRICE_JOB_STATUS';
   private readonly GOLD_CURRENT_PRICE_JOB_PROBLEM =
     'GOLD_CURRENT_PRICE_JOB_PROBLEM';
-  private readonly gold_18_key = 391295;
+  private readonly gold_18_key = 137120;
   private readonly url =
     'https://studio.persianapi.com/index.php/web-service/common/gold-currency-coin?format=json&page=1';
 
