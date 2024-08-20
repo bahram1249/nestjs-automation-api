@@ -97,6 +97,7 @@ import { UserHeaderNotificationModule } from './user/header-notification/notific
 import { CustomerCustomizeMoudle } from './customer-customize/customer-customize.module';
 import { GoldModule } from './customer-customize/gold/gold.module';
 import { FactorDiscountModule } from './admin/factor-discount/factor-discount.module';
+import { RetrievePriceRunnerService } from './customer-customize/gold/retrieve-price-job/services';
 
 @Module({
   imports: [
@@ -231,5 +232,8 @@ export class ECommerceModule implements NestModule {
 
     // add dynamic cacher of home page elements
     app.get(ProcessHomeRunnerService).run();
+
+    // add live job runner
+    app.get(RetrievePriceRunnerService).run();
   }
 }

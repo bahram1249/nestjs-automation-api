@@ -1,15 +1,26 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { InjectModel } from '@nestjs/sequelize';
 import { Setting } from '@rahino/database/models/core/setting.entity';
+import { ECInventoryPrice } from '@rahino/database/models/ecommerce-eav/ec-inventory-price.entity';
 import { ECInventory } from '@rahino/database/models/ecommerce-eav/ec-inventory.entity';
 import { ECProduct } from '@rahino/database/models/ecommerce-eav/ec-product.entity';
+import { CAL_PRICE_PROVIDER_TOKEN } from '@rahino/ecommerce/admin/product/price-cal-factory/constants';
+import { ICalPrice } from '@rahino/ecommerce/admin/product/price-cal-factory/interface/cal-price.interface';
+import {
+  Constants,
+  PRODUCT_INVENTORY_STATUS_QUEUE,
+} from '@rahino/ecommerce/inventory/constants';
+import { InventoryPriceDto } from '@rahino/ecommerce/inventory/dto/inventory-price.dto';
 import { InventoryStatusEnum } from '@rahino/ecommerce/inventory/enum';
+import { VariationPriceEnum } from '@rahino/ecommerce/user/stock/enum';
 import { ListFilterV2Factory } from '@rahino/query-filter/provider/list-filter-v2.factory';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import axios from 'axios';
 import { Op } from 'sequelize';
 import { Sequelize } from 'sequelize';
+import { InjectQueue } from '@nestjs/bullmq';
+import { Queue } from 'bullmq';
 
 @Injectable()
 export class RetrievePricePersianApiService {
@@ -27,6 +38,12 @@ export class RetrievePricePersianApiService {
     private readonly settingRepository: typeof Setting,
     @InjectModel(ECInventory)
     private readonly inventoryRepository: typeof ECInventory,
+    @InjectModel(ECInventoryPrice)
+    private readonly inventoryPriceRepository: typeof ECInventoryPrice,
+    @Inject(CAL_PRICE_PROVIDER_TOKEN)
+    private readonly calPriceService: ICalPrice,
+    @InjectQueue(PRODUCT_INVENTORY_STATUS_QUEUE)
+    private productInventoryQueue: Queue,
     private listFilterFactory: ListFilterV2Factory,
     private readonly config: ConfigService,
   ) {}
@@ -187,6 +204,62 @@ export class RetrievePricePersianApiService {
             inventories[index].qty > 0
               ? InventoryStatusEnum.available
               : InventoryStatusEnum.unavailable;
+
+          let oldInventoryPrices = await this.inventoryPriceRepository.findAll(
+            new QueryOptionsBuilder()
+              .filter(
+                Sequelize.where(
+                  Sequelize.fn(
+                    'isnull',
+                    Sequelize.col('ECInventoryPrice.isDeleted'),
+                    0,
+                  ),
+                  {
+                    [Op.eq]: 0,
+                  },
+                ),
+              )
+              .filter({
+                inventoryId: inventories[index].id,
+              })
+              .build(),
+          );
+
+          let inventoryPrice = new InventoryPriceDto();
+          inventoryPrice.variationPriceId = VariationPriceEnum.firstPrice;
+          inventoryPrice.price = BigInt(0);
+          inventoryPrice = await this.calPriceService.getPrice(
+            inventories[index].product,
+            inventoryPrice,
+            inventories[index].weight,
+          );
+
+          await this.inventoryPriceRepository.create({
+            inventoryId: inventories[index].id,
+            variationPriceId: inventoryPrice.variationPriceId,
+            price: inventoryPrice.price,
+            userId: 1,
+          });
+
+          for (let i = 0; i < oldInventoryPrices.length; i++) {
+            oldInventoryPrices[i].isDeleted = true;
+            await oldInventoryPrices[i].save();
+          }
+
+          inventories[index] = await inventories[index].save();
+
+          const keepJobs = this.config.get<number>(
+            'PRODUCT_INVENTORY_STATUS_KEEPJOBS',
+          );
+          await this.productInventoryQueue.add(
+            Constants.productInventoryStatusJob(
+              inventories[index].productId.toString(),
+            ),
+            {
+              productId: inventories[index].productId,
+            },
+            { removeOnComplete: keepJobs },
+          );
         }
       }
     }

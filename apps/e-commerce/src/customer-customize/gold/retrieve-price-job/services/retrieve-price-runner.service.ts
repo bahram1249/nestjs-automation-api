@@ -2,23 +2,40 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { Setting } from '@rahino/database/models/core/setting.entity';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
-import { RetrievePricePersianApiService } from './retrieve-price-persian-api.service';
+import { InjectQueue } from '@nestjs/bullmq';
+import { RETRIEVE_PRICE_JOB, RETRIEVE_PRICE_QUEUE } from '../constants';
+import { Queue } from 'bullmq';
 
 @Injectable()
 export class RetrievePriceRunnerService {
   constructor(
     @InjectModel(Setting)
     private readonly settingRepository: typeof Setting,
-    private readonly service: RetrievePricePersianApiService,
+    @InjectQueue(RETRIEVE_PRICE_QUEUE)
+    private retrievePriceQueue: Queue,
   ) {}
 
   public async run() {
     const setting = await this.settingRepository.findOne(
       new QueryOptionsBuilder().filter({ key: 'CUSTOMER_NAME' }).build(),
     );
+    console.log(setting.value);
     if (setting.value == 'goldongallery') {
-      // await this.service.getPriceThenUpdate();
-      // set time of job
+      await this.retrievePriceQueue.add(
+        RETRIEVE_PRICE_JOB,
+        {},
+        {
+          removeOnComplete: true,
+          //delay: delay,
+          backoff: {
+            delay: 600000, //3600000,
+            type: 'fixed',
+          },
+          repeat: {
+            pattern: '*/10 * * * *',
+          },
+        },
+      );
     }
   }
 }
