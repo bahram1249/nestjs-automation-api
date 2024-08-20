@@ -205,6 +205,9 @@ export class RetrievePricePersianApiService {
             .offset((page - 1) * listFilter.limit)
             .build(),
         );
+        if (inventories.length == 0) {
+          break;
+        }
         for (let index = 0; index < inventories.length; index++) {
           inventories[index].inventoryStatusId =
             inventories[index].qty > 0
@@ -267,6 +270,7 @@ export class RetrievePricePersianApiService {
             { removeOnComplete: keepJobs },
           );
         }
+        page += 1;
       }
     }
   }
