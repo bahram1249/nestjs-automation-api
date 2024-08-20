@@ -18,7 +18,8 @@ export class RetrievePriceProcessor extends WorkerHost {
       await this.retrievePricePersianApiServie.run();
       return Promise.resolve();
     } catch (error) {
-      return Promise.reject(error.message);
+      console.log(error);
+      return Promise.reject(error);
     }
   }
 
