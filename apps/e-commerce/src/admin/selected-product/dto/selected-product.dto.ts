@@ -11,12 +11,12 @@ import {
   MinLength,
 } from 'class-validator';
 
-export class BrandDto {
+export class SelectedProductDto {
   @MinLength(3)
   @MaxLength(256)
   @IsNotEmpty()
   @AutoMap()
-  name: string;
+  title: string;
 
   @Transform(({ value }) => replaceCharacterSlug(value))
   @MinLength(3)
@@ -74,4 +74,14 @@ export class BrandDto {
     description: 'priority',
   })
   public priority?: number;
+
+  @AutoMap()
+  @IsOptional()
+  @IsNumber()
+  @ApiProperty({
+    required: false,
+    type: Number,
+    description: 'selectedProductTypeId',
+  })
+  public selectedProductTypeId?: number = 1;
 }
