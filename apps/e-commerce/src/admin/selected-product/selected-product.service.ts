@@ -34,7 +34,7 @@ export class SelectedProductService {
 
   async findAll(filter: GetSelectedProductDto) {
     let queryBuilder = new QueryOptionsBuilder().filter({
-      name: {
+      title: {
         [Op.like]: filter.search,
       },
     });
