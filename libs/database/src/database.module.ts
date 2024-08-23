@@ -107,6 +107,7 @@ import { ECNotification } from './models/ecommerce-eav/ec-notification.entity';
 import { ECProductPriceFormula } from './models/ecommerce-eav/ec-product-price-formula';
 import { ECSelectedProductType } from './models/ecommerce-eav/ec-selected-product-type.entity';
 import { ECSelectedProduct } from './models/ecommerce-eav/ec-selected-product.entity';
+import { ECSelectedProductItem } from './models/ecommerce-eav/ec-selected-product-item.entity';
 
 @Module({
   imports: [
@@ -210,6 +211,7 @@ import { ECSelectedProduct } from './models/ecommerce-eav/ec-selected-product.en
           ECProductPriceFormula,
           ECSelectedProductType,
           ECSelectedProduct,
+          ECSelectedProductItem,
           Buffet,
           BuffetGallery,
           BuffetType,

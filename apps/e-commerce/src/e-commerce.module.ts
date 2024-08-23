@@ -99,6 +99,7 @@ import { GoldModule } from './customer-customize/gold/gold.module';
 import { FactorDiscountModule } from './admin/factor-discount/factor-discount.module';
 import { RetrievePriceRunnerService } from './customer-customize/gold/retrieve-price-job/services';
 import { SelectedProductModule } from './admin/selected-product/selected-product.module';
+import { SelectedProductItemModule } from './admin/selected-product-items/selected-product-item.module';
 
 @Module({
   imports: [
@@ -196,6 +197,7 @@ import { SelectedProductModule } from './admin/selected-product/selected-product
     CustomerCustomizeMoudle,
     FactorDiscountModule,
     SelectedProductModule,
+    SelectedProductItemModule,
   ],
   providers: [
     {
