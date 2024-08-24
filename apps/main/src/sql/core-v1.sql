@@ -2237,6 +2237,24 @@ END
 GO
 
 
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ecommerce-inventory-status-v2' 
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'SITE_NAME' AND [value] IN ('ecommerce'))
+		)
+BEGIN
+
+	INSERT INTO ECInventoryStatuses(id, name, createdAt, updatedAt)
+	VALUES (3, N'معلق', GETDATE(), GETDATE())
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'ecommerce-inventory-status-v2', GETDATE(), GETDATE()
+END
+
+GO
+
+
 
 -- ecommerce products-price-formulas
 IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ecommerce-product-price-formulas-v1' 
