@@ -8,9 +8,11 @@ import {
 } from 'sequelize-typescript';
 import { ECSelectedProduct } from './ec-selected-product.entity';
 import { ECProduct } from './ec-product.entity';
+import { AutoMap } from 'automapper-classes';
 
 @Table({ tableName: 'ECSelectedProductItems' })
 export class ECSelectedProductItem extends Model {
+  @AutoMap()
   @Column({
     type: DataType.INTEGER,
     primaryKey: true,
@@ -24,6 +26,7 @@ export class ECSelectedProductItem extends Model {
   })
   selectedProduct?: ECSelectedProduct;
 
+  @AutoMap()
   @Column({
     type: DataType.BIGINT,
     primaryKey: true,

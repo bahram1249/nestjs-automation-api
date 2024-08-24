@@ -16832,7 +16832,7 @@ BEGIN
 	DECLARE @groupId int = null;
 
 	DECLARE @entityName nvarchar(256) = N'SelectedProductItems'
-	DECLARE @groupName nvarchar(256) = N'ecommerce.selectedproductitems'
+	DECLARE @groupName nvarchar(256) = N'ecommerce.selectedproductsitems'
 	
 	DECLARE @permissionSymbolGetAll nvarchar(512) = @groupName + '.getall';
 	DECLARE @permissionSymbolCreate nvarchar(512) = @groupName + '.create';

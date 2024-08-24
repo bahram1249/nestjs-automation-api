@@ -18,11 +18,12 @@ import { Attachment } from '@rahino/database/models/core/attachment.entity';
 export class SelectedProductItemService {
   constructor(
     @InjectModel(ECSelectedProductItem)
-    private repository: typeof ECSelectedProductItem,
+    private readonly repository: typeof ECSelectedProductItem,
     @InjectMapper() private readonly mapper: Mapper,
   ) {}
 
   async findAll(filter: GetSelectedProductItemDto) {
+    filter.orderBy = 'selectedProductId';
     let queryBuilder = new QueryOptionsBuilder();
     if (filter.selectedProductId) {
       queryBuilder = queryBuilder.filter({
@@ -81,14 +82,13 @@ export class SelectedProductItemService {
       );
     }
 
-    const mappedItem = this.mapper.map(
-      dto,
-      SelectedProductItemDto,
-      ECSelectedProductItem,
-    );
-    const result = await this.repository.create(
-      _.omit(mappedItem.toJSON(), ['id']),
-    );
+    // const mappedItem = this.mapper.map(
+    //   dto,
+    //   SelectedProductItemDto,
+    //   ECSelectedProductItem,
+    // );
+    //console.log(mappedItem);
+    const result = await this.repository.create(_.omit(dto, ['id']));
     return {
       result: _.pick(result, [
         'selectedProductId',

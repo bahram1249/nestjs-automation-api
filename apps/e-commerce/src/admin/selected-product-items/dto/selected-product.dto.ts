@@ -19,5 +19,5 @@ export class SelectedProductItemDto {
     type: Number,
     description: 'selectedProductId',
   })
-  public selectedProductId?: bigint;
+  public selectedProductId?: number;
 }
