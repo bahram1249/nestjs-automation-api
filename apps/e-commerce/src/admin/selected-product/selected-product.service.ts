@@ -335,7 +335,7 @@ export class SelectedProductService {
     }
 
     // upload to s3 cloud
-    const bucketName = 'selectedProducts';
+    const bucketName = 'selectedproducts';
     await this.minioClientService.createBucket(bucketName);
     const buffer = await this.thumbnailService.resize(file.path);
     const uploadResult = await this.minioClientService.upload(
