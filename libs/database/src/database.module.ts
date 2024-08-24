@@ -105,6 +105,9 @@ import { ECSlugVersionType } from './models/ecommerce-eav/ec-slug-version-type.e
 import { ECProductFavorite } from './models/ecommerce-eav/ec-product-favorite';
 import { ECNotification } from './models/ecommerce-eav/ec-notification.entity';
 import { ECProductPriceFormula } from './models/ecommerce-eav/ec-product-price-formula';
+import { ECSelectedProductType } from './models/ecommerce-eav/ec-selected-product-type.entity';
+import { ECSelectedProduct } from './models/ecommerce-eav/ec-selected-product.entity';
+import { ECSelectedProductItem } from './models/ecommerce-eav/ec-selected-product-item.entity';
 
 @Module({
   imports: [
@@ -206,6 +209,9 @@ import { ECProductPriceFormula } from './models/ecommerce-eav/ec-product-price-f
           ECSlugVersionType,
           ECNotification,
           ECProductPriceFormula,
+          ECSelectedProductType,
+          ECSelectedProduct,
+          ECSelectedProductItem,
           Buffet,
           BuffetGallery,
           BuffetType,

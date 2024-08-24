@@ -449,6 +449,20 @@ export class ProductQueryBuilderService {
       inventoryIncludeBuilder.filter({ vendorId: filter.vendorId });
     }
 
+    if (filter.selectedProductId) {
+      // AND [ECI].inventoryStatusId = ${InventoryStatusEnum.available}
+      const productSelectFiltered = Sequelize.literal(
+        `EXISTS (
+            SELECT 1
+            FROM ECSelectedProductItems AS ESPI
+            WHERE [ECProduct].id = [ESPI].productId
+              AND [ESPI].selectedProductId = ${filter.selectedProductId}
+          )`.replaceAll(/\s\s+/g, ' '),
+      );
+      queryBuilder.filter(productSelectFiltered);
+      queryResultBuilder.filter(productSelectFiltered);
+    }
+
     // add first price
     inventoryIncludeBuilder = inventoryIncludeBuilder.thenInlcude(
       firstPriceIncludeBuilder.build(),

@@ -19,24 +19,20 @@ export class GoldonGalleryCalPriceService implements ICalPrice {
     inventoryPriceDto: InventoryPriceDto,
     inventoryWeight?: number,
   ): Promise<InventoryPriceDto> {
-    switch (dto.productFormulaId) {
-      case ProductPriceFormulaEnum.firstFormula:
-        inventoryPriceDto.price = await this.getPriceByWeightFirstFormula(
-          inventoryWeight,
-          dto.wages,
-          dto.stoneMoney,
-        );
-        break;
-      case ProductPriceFormulaEnum.secondFormula:
-        inventoryPriceDto.price = await this.getPriceByWeightSecondFormula(
-          inventoryWeight,
-          dto.wages,
-          dto.stoneMoney,
-        );
-        break;
-      default:
-        throw new BadRequestException('invalid formulaId');
+    if (inventoryWeight <= 2) {
+      inventoryPriceDto.price = await this.getPriceByWeightFirstFormula(
+        inventoryWeight,
+        dto.wages,
+        dto.stoneMoney,
+      );
+    } else {
+      inventoryPriceDto.price = await this.getPriceByWeightSecondFormula(
+        inventoryWeight,
+        dto.wages,
+        dto.stoneMoney,
+      );
     }
+
     return inventoryPriceDto;
   }
 

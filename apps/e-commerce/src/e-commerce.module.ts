@@ -98,6 +98,9 @@ import { CustomerCustomizeMoudle } from './customer-customize/customer-customize
 import { GoldModule } from './customer-customize/gold/gold.module';
 import { FactorDiscountModule } from './admin/factor-discount/factor-discount.module';
 import { RetrievePriceRunnerService } from './customer-customize/gold/retrieve-price-job/services';
+import { SelectedProductModule } from './admin/selected-product/selected-product.module';
+import { SelectedProductItemModule } from './admin/selected-product-items/selected-product-item.module';
+import { UserSelectedProductModule } from './user/selected-product/selected-product.module';
 
 @Module({
   imports: [
@@ -194,6 +197,9 @@ import { RetrievePriceRunnerService } from './customer-customize/gold/retrieve-p
     UserHeaderNotificationModule,
     CustomerCustomizeMoudle,
     FactorDiscountModule,
+    SelectedProductModule,
+    SelectedProductItemModule,
+    UserSelectedProductModule,
   ],
   providers: [
     {
@@ -233,7 +239,7 @@ export class ECommerceModule implements NestModule {
     // add dynamic cacher of home page elements
     app.get(ProcessHomeRunnerService).run();
 
-    // add live job runner
+    // add live price job runner
     app.get(RetrievePriceRunnerService).run();
   }
 }
