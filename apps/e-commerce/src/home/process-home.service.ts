@@ -111,6 +111,7 @@ export class ProcessHomeService {
           parseObj.priority,
           parseObj.content as BrandContentDto,
         );
+        break;
       case HomePageTypeEnum.SELECTEDPRODUCT:
         resultObj = await this.processSelectedProduct(
           parseObj.priority,
