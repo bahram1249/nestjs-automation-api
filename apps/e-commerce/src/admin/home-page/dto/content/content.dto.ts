@@ -4,6 +4,7 @@ import { BrandContentDto } from './brand-content.dto';
 import { CategoryContentDto } from './category-content.dto';
 import { ProductCategoryContentDto } from './product-category-content.dto';
 import { ProductContentDto } from './product-content.dto';
+import { SelectedProductContentDto } from './selected-product-content.dto';
 import { SliderContentDto } from './slider-content.dto';
 
 export type ContentDtoType =
@@ -13,4 +14,5 @@ export type ContentDtoType =
   | CategoryContentDto
   | BrandContentDto
   | AmazingContentDto
-  | ProductContentDto;
+  | ProductContentDto
+  | SelectedProductContentDto;

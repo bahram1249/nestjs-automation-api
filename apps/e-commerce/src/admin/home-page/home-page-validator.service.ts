@@ -16,6 +16,7 @@ import { CategoryContentDto } from './dto/content/category-content.dto';
 import { BrandContentDto } from './dto/content/brand-content.dto';
 import { AmazingContentDto } from './dto/content/amazing-content.dto';
 import { ProductContentDto } from './dto/content/product-content.dto';
+import { SelectedProductDto } from '@rahino/ecommerce/product/dto/selected-product.dto';
 
 @Injectable()
 export class HomePageValidatorService {
@@ -163,6 +164,10 @@ export class HomePageValidatorService {
 
   async brandValidator(dto: HomePageDataDto) {
     const brandContent = dto.content as unknown as BrandContentDto;
+  }
+
+  async selectedProductValidator(dto: HomePageDataDto) {
+    const selectedProductContent = dto.content as unknown as SelectedProductDto;
   }
 
   private async findAttachment(attachmentId: number) {

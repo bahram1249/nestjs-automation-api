@@ -17,6 +17,7 @@ import { SliderContentDto } from '../admin/home-page/dto/content/slider-content.
 import { Attachment } from '@rahino/database/models/core/attachment.entity';
 import { BannerContentDto } from '../admin/home-page/dto/content/banner-content.dto';
 import { ProductContentDto } from '../admin/home-page/dto/content/product-content.dto';
+import { SelectedProductContentDto } from '../admin/home-page/dto/content/selected-product-content.dto';
 
 @Injectable()
 export class ProcessHomeService {
@@ -110,6 +111,11 @@ export class ProcessHomeService {
           parseObj.priority,
           parseObj.content as BrandContentDto,
         );
+      case HomePageTypeEnum.SELECTEDPRODUCT:
+        resultObj = await this.processSelectedProduct(
+          parseObj.priority,
+          parseObj.content as SelectedProductContentDto,
+        );
         break;
       default:
         break;
@@ -141,6 +147,23 @@ export class ProcessHomeService {
       link:
         baseUrl +
         `/v1/api/eav/admin/entityTypes?orderBy=priority&sortOrder=DESC&limit=8`,
+      totalLink: null,
+      requestBased: true,
+    };
+  }
+
+  async processSelectedProduct(
+    priority: number,
+    input: SelectedProductContentDto,
+  ) {
+    const baseUrl = this.config.get('BASE_URL');
+    return {
+      priority: priority,
+      title: input.title,
+      type: HomePageTypeEnum.SELECTEDPRODUCT,
+      link:
+        baseUrl +
+        `/v1/api/ecommerce/user/selectedProducts?orderBy=priority&sortOrder=DESC&limit=20`,
       totalLink: null,
       requestBased: true,
     };
