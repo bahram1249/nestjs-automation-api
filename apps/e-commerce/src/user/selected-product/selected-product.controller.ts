@@ -35,8 +35,8 @@ export class SelectedProductController {
   }
 
   @UseInterceptors(JsonResponseTransformInterceptor)
-  @ApiOperation({ description: 'show selected products by given id' })
-  @Get('/slug/:id')
+  @ApiOperation({ description: 'show selected products by given slug' })
+  @Get('/slug/:slug')
   @HttpCode(HttpStatus.OK)
   async findBySlug(@Param('slug') slug: string) {
     return await this.service.findBySlug(slug);
