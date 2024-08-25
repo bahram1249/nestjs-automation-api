@@ -21,6 +21,7 @@ import { Op } from 'sequelize';
 import { Sequelize } from 'sequelize';
 import { InjectQueue } from '@nestjs/bullmq';
 import { Queue } from 'bullmq';
+import * as _ from 'lodash';
 
 @Injectable()
 export class RetrievePricePersianApiService {
@@ -237,16 +238,19 @@ export class RetrievePricePersianApiService {
           let inventoryPrice = new InventoryPriceDto();
           inventoryPrice.variationPriceId = VariationPriceEnum.firstPrice;
           inventoryPrice.price = BigInt(0);
-          inventoryPrice = await this.calPriceService.getPrice(
+          let newPrice = await this.calPriceService.getPrice(
             inventories[index].product,
             inventoryPrice,
+            null,
             inventories[index].weight,
           );
+          inventoryPrice = _.omit(newPrice, ['buyPrice']);
 
           await this.inventoryPriceRepository.create({
             inventoryId: inventories[index].id,
             variationPriceId: inventoryPrice.variationPriceId,
             price: inventoryPrice.price,
+            buyPrice: newPrice.buyPrice,
             userId: 1,
           });
 

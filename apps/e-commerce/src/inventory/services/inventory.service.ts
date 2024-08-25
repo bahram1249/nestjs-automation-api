@@ -178,11 +178,14 @@ export class InventoryService {
       );
 
       for (let index = 0; index < inventory.inventoryPrices.length; index++) {
-        inventory.inventoryPrices[index] = await this.calPriceService.getPrice(
+        let newPrice = await this.calPriceService.getPrice(
           productDto,
           inventory.inventoryPrices[index],
+          inventory.buyPrice,
           inventory.weight,
         );
+        inventory.inventoryPrices[index] = _.omit(newPrice, ['buyPrice']);
+        inventory.buyPrice = newPrice.buyPrice;
       }
 
       for (let index = 0; index < inventory.inventoryPrices.length; index++) {
@@ -266,11 +269,14 @@ export class InventoryService {
         transaction: transaction,
       });
       for (let index = 0; index < inventory.inventoryPrices.length; index++) {
-        inventory.inventoryPrices[index] = await this.calPriceService.getPrice(
+        let newPrice = await this.calPriceService.getPrice(
           productDto,
           inventory.inventoryPrices[index],
+          inventory.buyPrice,
           inventory.weight,
         );
+        inventory.inventoryPrices[index] = _.omit(newPrice, ['buyPrice']);
+        inventory.buyPrice = newPrice.buyPrice;
       }
 
       for (let index = 0; index < inventory.inventoryPrices.length; index++) {

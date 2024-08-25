@@ -1,11 +1,15 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { ICalPrice } from '../interface/cal-price.interface';
 import { InventoryPriceDto } from '@rahino/ecommerce/inventory/dto/inventory-price.dto';
-import { ProductPriceFormulaEnum } from '@rahino/ecommerce/util/enum';
 import { InjectModel } from '@nestjs/sequelize';
 import { Setting } from '@rahino/database/models/core/setting.entity';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import { ProductPriceDto } from '../interface/ProductPriceDto.type';
+import {
+  GoldonInventoryPriceIncludedBuyPriceInterface,
+  InventoryPriceIncludeBuyPriceDto,
+} from '../interface';
+import * as _ from 'lodash';
 
 @Injectable()
 export class GoldonGalleryCalPriceService implements ICalPrice {
@@ -17,30 +21,37 @@ export class GoldonGalleryCalPriceService implements ICalPrice {
   async getPrice(
     dto: ProductPriceDto,
     inventoryPriceDto: InventoryPriceDto,
+    buyPrice?: bigint,
     inventoryWeight?: number,
-  ): Promise<InventoryPriceDto> {
+  ): Promise<InventoryPriceIncludeBuyPriceDto> {
     if (inventoryWeight <= 2) {
-      inventoryPriceDto.price = await this.getPriceByWeightFirstFormula(
-        inventoryWeight,
-        dto.wages,
-        dto.stoneMoney,
-      );
+      let { price, buyPrice: newBuyPrice } =
+        await this.getPriceByWeightFirstFormula(
+          inventoryWeight,
+          dto.wages,
+          dto.stoneMoney,
+        );
+      inventoryPriceDto.price = price;
+      buyPrice = newBuyPrice;
     } else {
-      inventoryPriceDto.price = await this.getPriceByWeightSecondFormula(
-        inventoryWeight,
-        dto.wages,
-        dto.stoneMoney,
-      );
+      let { price, buyPrice: newBuyPrice } =
+        await this.getPriceByWeightSecondFormula(
+          inventoryWeight,
+          dto.wages,
+          dto.stoneMoney,
+        );
+      inventoryPriceDto.price = price;
+      buyPrice = newBuyPrice;
     }
 
-    return inventoryPriceDto;
+    return _.extend(inventoryPriceDto, { buyPrice: buyPrice });
   }
 
   async getPriceByWeightFirstFormula(
     weight: number,
     wages: number,
     stoneMoney?: bigint,
-  ): Promise<bigint> {
+  ): Promise<GoldonInventoryPriceIncludedBuyPriceInterface> {
     const goldCurrentPriceSetting = await this.settingRepository.findOne(
       new QueryOptionsBuilder()
         .filter({ key: this.GOLD_CURRENT_PRICE })
@@ -50,18 +61,18 @@ export class GoldonGalleryCalPriceService implements ICalPrice {
     const realWages = Number(`1.${wages.toString()}`);
     const stonePrice = Number(stoneMoney) | 0;
     const profit = 500000;
-    return BigInt(
-      Math.round(
-        (weight * goldCurrentPrice * realWages + profit) * 1.03 + stonePrice,
-      ),
+    const price = Math.round(
+      (weight * goldCurrentPrice * realWages + profit) * 1.03 + stonePrice,
     );
+    const buyPrice = price - profit;
+    return { price: BigInt(price), buyPrice: BigInt(buyPrice) };
   }
 
   async getPriceByWeightSecondFormula(
     weight: number,
     wages: number,
     stoneMoney?: bigint,
-  ): Promise<bigint> {
+  ): Promise<GoldonInventoryPriceIncludedBuyPriceInterface> {
     const goldCurrentPriceSetting = await this.settingRepository.findOne(
       new QueryOptionsBuilder()
         .filter({ key: this.GOLD_CURRENT_PRICE })
@@ -70,10 +81,14 @@ export class GoldonGalleryCalPriceService implements ICalPrice {
     const goldCurrentPrice = Number(goldCurrentPriceSetting.value);
     const realWages = Number(`1.${wages.toString()}`);
     const stonePrice = Number(stoneMoney) | 0;
-    return BigInt(
+    const price = BigInt(
       Math.round(
-        weight * goldCurrentPrice * realWages + 1.07 * 1.03 + stonePrice,
+        weight * goldCurrentPrice * realWages * 1.07 * 1.03 + stonePrice,
       ),
     );
+    const buyPrice = BigInt(
+      Math.round(weight * goldCurrentPrice * realWages * 1.03 + stonePrice),
+    );
+    return { price: price, buyPrice: buyPrice };
   }
 }
