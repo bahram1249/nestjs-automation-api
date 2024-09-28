@@ -44,7 +44,7 @@ export class AdminCourierService {
 
     let queryBuilder = this.shipmentQueryBuilder
       .init(false)
-      .nonDeleted()
+      //.nonDeleted()
       .addNegativeOrderStatus(OrderStatusEnum.WaitingForPayment)
       .addShipmentWay(OrderShipmentwayEnum.delivery)
       .addBeginDate(filter.beginDate)
@@ -116,7 +116,7 @@ export class AdminCourierService {
 
     let queryBuilder = this.shipmentQueryBuilder
       .init(true)
-      .nonDeleted()
+      //.nonDeleted()
       .addNegativeOrderStatus(OrderStatusEnum.WaitingForPayment)
       .addShipmentWay(OrderShipmentwayEnum.delivery)
       .addBeginDate(filter.beginDate)

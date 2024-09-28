@@ -36,7 +36,7 @@ export class LoginService {
       'usercode',
       dto.phoneNumber,
       rand,
-      180,
+      360,
     );
     return {
       result: dto.phoneNumber,
