@@ -653,6 +653,7 @@ export class SnapPayService implements PayInterface {
       {
         headers: {
           Authorization: authorization,
+          'Content-Type': 'application/x-www-form-urlencoded',
         },
       },
     );
