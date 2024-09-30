@@ -642,7 +642,7 @@ export class SnapPayService implements PayInterface {
     const authorization =
       'Basic ' + base64.encode(`${clientId}:${clientSecret}`);
 
-    const tokenResponse = await axios.postForm(
+    const tokenResponse = await axios.post(
       this.baseUrl + '/api/online/v1/oauth/token',
       {
         grant_type: 'password',
