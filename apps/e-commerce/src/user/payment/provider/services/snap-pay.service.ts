@@ -228,6 +228,7 @@ export class SnapPayService implements PayInterface {
           },
         },
       );
+      console.log(eligeble.data);
       if (eligeble.data.response.eligible != true) {
         console.log(eligeble.data.response);
         return {
@@ -241,7 +242,8 @@ export class SnapPayService implements PayInterface {
         titleMessage: eligeble.data.response.title_message,
         description: eligeble.data.response.description,
       };
-    } catch {
+    } catch (e) {
+      console.log(e);
       return { eligibleCheck: false, titleMessage: null, description: null };
     }
   }
@@ -657,7 +659,9 @@ export class SnapPayService implements PayInterface {
     if (tokenResponse.status < 200 || tokenResponse.status > 299) {
       throw new InternalServerErrorException('invalid token');
     }
+    console.log(tokenResponse);
     const token = tokenResponse.data.access_token;
+
     return token;
   }
 }
