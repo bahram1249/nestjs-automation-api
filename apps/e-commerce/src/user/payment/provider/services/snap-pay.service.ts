@@ -228,7 +228,6 @@ export class SnapPayService implements PayInterface {
           },
         },
       );
-      console.log(eligeble.data);
       if (eligeble.data.response.eligible != true) {
         console.log(eligeble.data.response);
         return {
@@ -660,7 +659,6 @@ export class SnapPayService implements PayInterface {
     if (tokenResponse.status < 200 || tokenResponse.status > 299) {
       throw new InternalServerErrorException('invalid token');
     }
-    console.log(tokenResponse);
     const token = tokenResponse.data.access_token;
 
     return token;
