@@ -1,5 +1,5 @@
 export enum OrderShipmentwayEnum {
   post = 1,
   delivery = 2,
-  tipax = 3,
+  tipax = 1,
 }
