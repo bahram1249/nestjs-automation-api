@@ -59,6 +59,7 @@ export class VendorSaleService {
     let queryBuilder = this.adminSaleQueryBuilder
       .init(false)
       .nonDeleted()
+      .nonDeletedOrder()
       .onlyPaid()
       .includeInventoryPrice()
       .addBeginDate(filter.beginDate)
@@ -160,6 +161,7 @@ export class VendorSaleService {
     let queryBuilder = this.adminSaleQueryBuilder
       .init(true)
       .nonDeleted()
+      .nonDeletedOrder()
       .onlyPaid()
       .includeInventoryPrice()
       .addBeginDate(filter.beginDate)

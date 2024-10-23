@@ -45,6 +45,18 @@ export class SaleQueryBuilderService {
     return this;
   }
 
+  nonDeletedOrder() {
+    this.builder = this.builder.filter(
+      Sequelize.where(
+        Sequelize.fn('isnull', Sequelize.col('order.isDeleted'), 0),
+        {
+          [Op.eq]: 0,
+        },
+      ),
+    );
+    return this;
+  }
+
   onlyPaid() {
     this.builder = this.builder.filter(
       Sequelize.where(Sequelize.col('order.orderStatusId'), {
