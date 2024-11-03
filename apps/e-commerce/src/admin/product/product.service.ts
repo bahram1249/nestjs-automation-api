@@ -974,12 +974,12 @@ export class ProductService {
           id: id,
         })
         .order({ orderBy: 'id', sortOrder: 'desc' })
-        .order([
-          { model: ECInventory, as: 'inventories' },
-          { model: ECVendor, as: 'vendor' },
-          'priorityOrder',
-          'asc',
-        ])
+        // .order([
+        //   { model: ECInventory, as: 'inventories' },
+        //   { model: ECVendor, as: 'vendor' },
+        //   'priorityOrder',
+        //   'asc',
+        // ])
         .build(),
     );
     if (!product) {
