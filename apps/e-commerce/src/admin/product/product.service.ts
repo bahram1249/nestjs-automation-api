@@ -446,35 +446,6 @@ export class ProductService {
           },
           {
             attributes: [
-              'attributeId',
-              [
-                Sequelize.fn(
-                  'isnull',
-                  Sequelize.col('productAttributeValues.val'),
-                  Sequelize.col('productAttributeValues.attributeValue.value'),
-                ),
-                'val',
-              ],
-              [Sequelize.col('attributeValueId'), 'attributeValueId'],
-            ],
-            model: EAVEntityAttributeValue,
-            as: 'productAttributeValues',
-            include: [
-              {
-                attributes: ['id', 'name', 'attributeTypeId'],
-                model: EAVAttribute,
-                as: 'attribute',
-              },
-              {
-                attributes: ['id', 'attributeId', 'value'],
-                model: EAVAttributeValue,
-                as: 'attributeValue',
-              },
-            ],
-            required: false,
-          },
-          {
-            attributes: [
               'id',
               'productId',
               'vendorId',
@@ -653,11 +624,46 @@ export class ProductService {
             model: Attachment,
             as: 'attachments',
             required: false,
+            through: {
+              attributes: [],
+            },
           },
           {
             attributes: ['id', 'fileName'],
             model: Attachment,
             as: 'videoAttachments',
+            required: false,
+            through: {
+              attributes: [],
+            },
+          },
+          {
+            attributes: [
+              'attributeId',
+              [
+                Sequelize.fn(
+                  'isnull',
+                  Sequelize.col('productAttributeValues.val'),
+                  Sequelize.col('productAttributeValues.attributeValue.value'),
+                ),
+                'val',
+              ],
+              [Sequelize.col('attributeValueId'), 'attributeValueId'],
+            ],
+            model: EAVEntityAttributeValue,
+            as: 'productAttributeValues',
+            include: [
+              {
+                attributes: ['id', 'name', 'attributeTypeId'],
+                model: EAVAttribute,
+                as: 'attribute',
+              },
+              {
+                attributes: ['id', 'attributeId', 'value'],
+                model: EAVAttributeValue,
+                as: 'attributeValue',
+              },
+            ],
             required: false,
           },
         ])
@@ -742,35 +748,6 @@ export class ProductService {
           },
           {
             attributes: [
-              'attributeId',
-              [
-                Sequelize.fn(
-                  'isnull',
-                  Sequelize.col('productAttributeValues.val'),
-                  Sequelize.col('productAttributeValues.attributeValue.value'),
-                ),
-                'val',
-              ],
-              [Sequelize.col('attributeValueId'), 'attributeValueId'],
-            ],
-            model: EAVEntityAttributeValue,
-            as: 'productAttributeValues',
-            include: [
-              {
-                attributes: ['id', 'name', 'attributeTypeId'],
-                model: EAVAttribute,
-                as: 'attribute',
-              },
-              {
-                attributes: ['id', 'attributeId', 'value'],
-                model: EAVAttributeValue,
-                as: 'attributeValue',
-              },
-            ],
-            required: false,
-          },
-          {
-            attributes: [
               'id',
               'productId',
               'vendorId',
@@ -949,11 +926,46 @@ export class ProductService {
             model: Attachment,
             as: 'attachments',
             required: false,
+            through: {
+              attributes: [],
+            },
           },
           {
             attributes: ['id', 'fileName'],
             model: Attachment,
             as: 'videoAttachments',
+            required: false,
+            through: {
+              attributes: [],
+            },
+          },
+          {
+            attributes: [
+              'attributeId',
+              [
+                Sequelize.fn(
+                  'isnull',
+                  Sequelize.col('productAttributeValues.val'),
+                  Sequelize.col('productAttributeValues.attributeValue.value'),
+                ),
+                'val',
+              ],
+              [Sequelize.col('attributeValueId'), 'attributeValueId'],
+            ],
+            model: EAVEntityAttributeValue,
+            as: 'productAttributeValues',
+            include: [
+              {
+                attributes: ['id', 'name', 'attributeTypeId'],
+                model: EAVAttribute,
+                as: 'attribute',
+              },
+              {
+                attributes: ['id', 'attributeId', 'value'],
+                model: EAVAttributeValue,
+                as: 'attributeValue',
+              },
+            ],
             required: false,
           },
         ])
