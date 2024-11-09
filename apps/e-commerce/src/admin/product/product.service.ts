@@ -381,13 +381,13 @@ export class ProductService {
       .subQuery(true)
       .limit(filter.limit)
       .offset(filter.offset)
-      .order({ orderBy: filter.orderBy, sortOrder: filter.sortOrder })
-      .order([
-        { model: ECInventory, as: 'inventories' },
-        { model: ECVendor, as: 'vendor' },
-        'priorityOrder',
-        'asc',
-      ]);
+      .order({ orderBy: filter.orderBy, sortOrder: filter.sortOrder });
+    // .order([
+    //   { model: ECInventory, as: 'inventories' },
+    //   { model: ECVendor, as: 'vendor' },
+    //   'priorityOrder',
+    //   'asc',
+    // ]);
 
     return {
       result: await this.repository.findAll(queryBuilder.build()),
