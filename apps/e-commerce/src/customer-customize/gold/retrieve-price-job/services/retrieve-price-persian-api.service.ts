@@ -70,7 +70,7 @@ export class RetrievePricePersianApiService {
           await this.enableProblem();
           return;
         }
-        await this.updateCurrentPrice(Number(goldPriceItem.price) / 10);
+        await this.updateCurrentPrice(Number(goldPriceItem['قیمت']) / 10);
         await this.disableProblem();
       } else {
         await this.enableProblem();
