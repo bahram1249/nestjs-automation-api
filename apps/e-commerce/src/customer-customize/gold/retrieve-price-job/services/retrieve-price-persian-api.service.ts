@@ -32,7 +32,7 @@ export class RetrievePricePersianApiService {
     'GOLD_CURRENT_PRICE_JOB_PROBLEM';
   private readonly gold_18_key = 137120;
   private readonly url =
-    'https://studio.persianapi.com/index.php/web-service/common/gold-currency-coin?format=json&page=1';
+    'https://studio.persianapi.com/index.php/web-service/gold?format=json&limit=30&page=1';
 
   constructor(
     @InjectModel(Setting)
@@ -60,7 +60,7 @@ export class RetrievePricePersianApiService {
       });
       if (this.isSuccessful(res.status)) {
         // get all items
-        const items: any[] = res.data.result;
+        const items: any[] = res.data.result.data;
         // filter gold price item
         const goldPriceItem = items.find(
           (item) => item.key == this.gold_18_key,
