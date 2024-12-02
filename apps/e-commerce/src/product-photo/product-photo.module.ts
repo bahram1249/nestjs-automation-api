@@ -26,8 +26,10 @@ import { ConfigService } from '@nestjs/config';
         height: parseInt(config.get('PRODUCT_PHOTO_IMAGE_HEIGHT')) || 700,
         width: parseInt(config.get('PRODUCT_PHOTO_IMAGE_WIDTH')) || 700,
         resizeOptions: {
-          withoutEnlargement: true,
+          withoutEnlargement: false,
           withoutReduction: true,
+          fit: 'fill',
+          position: 'center',
         },
       }),
     }),
