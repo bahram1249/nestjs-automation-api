@@ -229,6 +229,7 @@ export class ProductQueryBuilderService {
               'discountTypeId',
               'discountStartDate',
               'discountEndDate',
+              'wages',
             ],
       )
       .include([

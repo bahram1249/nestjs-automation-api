@@ -26,11 +26,17 @@ import * as _ from 'lodash';
 @Injectable()
 export class RetrievePricePersianApiService {
   private readonly GOLD_CURRENT_PRICE = 'GOLD_CURRENT_PRICE';
+  private readonly GOLD_740_PRICE = 'GOLD_740_PRICE';
+  private readonly GOLD_24_PRICE = 'GOLD_24_PRICE';
+  private readonly GOLD_SECOND_HAND_PRICE = 'GOLD_SECOND_HAND_PRICE';
   private readonly GOLD_CURRENT_PRICE_JOB_STATUS =
     'GOLD_CURRENT_PRICE_JOB_STATUS';
   private readonly GOLD_CURRENT_PRICE_JOB_PROBLEM =
     'GOLD_CURRENT_PRICE_JOB_PROBLEM';
   private readonly gold_18_key = 137120;
+  private readonly gold_18_740_key = 391295;
+  private readonly gold_24_key = 137121;
+  private readonly gold_second_hand_key = 391298;
   private readonly url =
     'https://studio.persianapi.com/index.php/web-service/gold?format=json&limit=30&page=1';
 
@@ -71,6 +77,41 @@ export class RetrievePricePersianApiService {
           return;
         }
         await this.updateCurrentPrice(Number(goldPriceItem['قیمت']) / 10);
+
+        const gold740PriceItem = items.find(
+          (item) => item.key == this.gold_18_740_key,
+        );
+
+        if (gold740PriceItem == null) {
+          await this.enableProblem();
+          return;
+        }
+        await this.updateGold740Price(Number(gold740PriceItem['قیمت']) / 10);
+
+        const gold24PriceItem = items.find(
+          (item) => item.key == this.gold_24_key,
+        );
+
+        if (gold24PriceItem == null) {
+          await this.enableProblem();
+          return;
+        }
+
+        await this.updateGold24Price(Number(gold24PriceItem['قیمت']) / 10);
+
+        const goldSecondHandItem = items.find(
+          (item) => item.key == this.gold_second_hand_key,
+        );
+
+        if (goldSecondHandItem == null) {
+          await this.enableProblem();
+          return;
+        }
+
+        await this.updateSecondHandGoldPrice(
+          Number(gold24PriceItem['قیمت']) / 10,
+        );
+
         await this.disableProblem();
       } else {
         await this.enableProblem();
@@ -88,6 +129,45 @@ export class RetrievePricePersianApiService {
       {
         where: {
           key: this.GOLD_CURRENT_PRICE,
+        },
+      },
+    );
+  }
+
+  private async updateGold740Price(price: number) {
+    await this.settingRepository.update(
+      {
+        value: price,
+      },
+      {
+        where: {
+          key: this.GOLD_740_PRICE,
+        },
+      },
+    );
+  }
+
+  private async updateGold24Price(price: number) {
+    await this.settingRepository.update(
+      {
+        value: price,
+      },
+      {
+        where: {
+          key: this.GOLD_24_PRICE,
+        },
+      },
+    );
+  }
+
+  private async updateSecondHandGoldPrice(price: number) {
+    await this.settingRepository.update(
+      {
+        value: price,
+      },
+      {
+        where: {
+          key: this.GOLD_SECOND_HAND_PRICE,
         },
       },
     );
