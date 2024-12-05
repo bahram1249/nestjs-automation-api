@@ -229,7 +229,6 @@ export class ProductQueryBuilderService {
               'discountTypeId',
               'discountStartDate',
               'discountEndDate',
-              'wages',
             ],
       )
       .include([
@@ -551,6 +550,7 @@ export class ProductQueryBuilderService {
           'weight',
           'cntComment',
           'score',
+          'wages',
           'createdAt',
           'updatedAt',
         ];
