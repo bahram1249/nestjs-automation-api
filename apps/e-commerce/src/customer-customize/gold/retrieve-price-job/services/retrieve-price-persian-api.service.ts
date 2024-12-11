@@ -109,7 +109,7 @@ export class RetrievePricePersianApiService {
         }
 
         await this.updateSecondHandGoldPrice(
-          Number(gold24PriceItem['قیمت']) / 10,
+          Number(goldSecondHandItem['قیمت']) / 10,
         );
 
         await this.disableProblem();

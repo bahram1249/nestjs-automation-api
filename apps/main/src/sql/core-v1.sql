@@ -8347,7 +8347,7 @@ IF NOT EXISTS ( SELECT 1 FROM Migrations WHERE version = 'gold-currentPrices-Dat
 		)
 	AND EXISTS (
 		SELECT 1 FROM Settings 
-		WHERE ([key] = 'CUSTOMER_NAME' AND [value] IN ('goldongallery'))
+		WHERE ([key] = 'CUSTOMER_NAME' AND [value] IN ('hojresaz','goldongallery'))
 		)
 	
 BEGIN
@@ -8368,6 +8368,62 @@ END
 
 GO
 
+IF NOT EXISTS ( SELECT 1 FROM Migrations WHERE version = 'gold-currentPrices-Data-v2' 
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'SITE_NAME' AND [value] IN ('ECommerce'))
+		)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'CUSTOMER_NAME' AND [value] IN ('hojresaz', 'goldongallery'))
+		)
+	
+BEGIN
+	
+	INSERT INTO Settings([key], [value], [type], createdAt, updatedAt)
+	SELECT N'GOLD_740_PRICE', '0', N'bigint', getdate(), getdate()
+
+	INSERT INTO Settings([key], [value], [type], createdAt, updatedAt)
+	SELECT N'GOLD_24_PRICE', '0', N'bigint', getdate(), getdate()
+
+	INSERT INTO Settings([key], [value], [type], createdAt, updatedAt)
+	SELECT N'GOLD_SECOND_HAND_PRICE', '0', N'bigint', getdate(), getdate()
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'gold-currentPrices-Data-v2', GETDATE(), GETDATE()
+END
+
+GO
+
+IF NOT EXISTS ( SELECT 1 FROM Migrations WHERE version = 'gold-currentPrices-Data-v3' 
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'SITE_NAME' AND [value] IN ('ECommerce'))
+		)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'CUSTOMER_NAME' AND [value] IN ('hojresaz', 'goldongallery'))
+		)
+	
+BEGIN
+	
+	INSERT INTO Settings([key], [value], [type], createdAt, updatedAt)
+	SELECT N'GOLD_STATIC_PROFIT', '500000', N'bigint', getdate(), getdate()
+
+	INSERT INTO Settings([key], [value], [type], createdAt, updatedAt)
+	SELECT N'GOLD_PROFIT', '1.07', N'bigint', getdate(), getdate()
+
+	INSERT INTO Settings([key], [value], [type], createdAt, updatedAt)
+	SELECT N'GOLD_TAX', '1.03', N'bigint', getdate(), getdate()
+	
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'gold-currentPrices-Data-v3', GETDATE(), GETDATE()
+END
+
+GO
 
 
 -- auth/admin/users

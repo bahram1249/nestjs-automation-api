@@ -7,6 +7,21 @@ export class CurrentPriceDto {
   @AutoMap()
   currentPrice?: number;
 
+  @IsOptional()
+  @IsNumber()
+  @AutoMap()
+  goldStaticProfit?: number;
+
+  @IsOptional()
+  @IsNumber()
+  @AutoMap()
+  goldProfit?: number;
+
+  @IsOptional()
+  @IsNumber()
+  @AutoMap()
+  goldTax?: number;
+
   @IsBoolean()
   @IsOptional()
   @AutoMap()

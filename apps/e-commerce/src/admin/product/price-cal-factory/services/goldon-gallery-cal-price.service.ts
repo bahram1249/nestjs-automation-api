@@ -14,6 +14,9 @@ import * as _ from 'lodash';
 @Injectable()
 export class GoldonGalleryCalPriceService implements ICalPrice {
   private readonly GOLD_CURRENT_PRICE = 'GOLD_CURRENT_PRICE';
+  private readonly GOLD_STATIC_PROFIT = 'GOLD_STATIC_PROFIT';
+  private readonly GOLD_PROFIT = 'GOLD_PROFIT';
+  private readonly GOLD_TAX = 'GOLD_TAX';
   constructor(
     @InjectModel(Setting)
     private readonly settingRepository: typeof Setting,
@@ -24,7 +27,7 @@ export class GoldonGalleryCalPriceService implements ICalPrice {
     buyPrice?: bigint,
     inventoryWeight?: number,
   ): Promise<InventoryPriceIncludeBuyPriceDto> {
-    if (inventoryWeight <= 2) {
+    if (dto.productFormulaId == 1) {
       let { price, buyPrice: newBuyPrice } =
         await this.getPriceByWeightFirstFormula(
           inventoryWeight,
@@ -58,13 +61,22 @@ export class GoldonGalleryCalPriceService implements ICalPrice {
         .build(),
     );
     const goldCurrentPrice = Number(goldCurrentPriceSetting.value);
+    const goldTaxSetting = await this.settingRepository.findOne(
+      new QueryOptionsBuilder().filter({ key: this.GOLD_TAX }).build(),
+    );
+    const goldStaticProfit = await this.settingRepository.findOne(
+      new QueryOptionsBuilder()
+        .filter({ key: this.GOLD_STATIC_PROFIT })
+        .build(),
+    );
+    const tax = Number(goldTaxSetting.value);
     const realWages = Number(`1.${wages.toString()}`);
     const stonePrice = Number(stoneMoney) | 0;
-    const profit = 500000;
+    const staticProfit = Number(goldStaticProfit.value);
     const price = Math.round(
-      (weight * goldCurrentPrice * realWages + profit) * 1.03 + stonePrice,
+      (weight * goldCurrentPrice * realWages + staticProfit) * tax + stonePrice,
     );
-    const buyPrice = price - profit;
+    const buyPrice = price - staticProfit;
     return { price: BigInt(price), buyPrice: BigInt(buyPrice) };
   }
 
@@ -79,15 +91,28 @@ export class GoldonGalleryCalPriceService implements ICalPrice {
         .build(),
     );
     const goldCurrentPrice = Number(goldCurrentPriceSetting.value);
+    const goldSettingTax = await this.settingRepository.findOne(
+      new QueryOptionsBuilder()
+        .filter({
+          key: this.GOLD_TAX,
+        })
+        .build(),
+    );
+    const goldProfitSetting = await this.settingRepository.findOne(
+      new QueryOptionsBuilder().filter({ key: this.GOLD_PROFIT }).build(),
+    );
+
     const realWages = Number(`1.${wages.toString()}`);
     const stonePrice = Number(stoneMoney) | 0;
+    const tax = Number(goldSettingTax.value);
+    const profit = Number(goldProfitSetting.value);
     const price = BigInt(
       Math.round(
-        weight * goldCurrentPrice * realWages * 1.07 * 1.03 + stonePrice,
+        weight * goldCurrentPrice * realWages * profit * tax + stonePrice,
       ),
     );
     const buyPrice = BigInt(
-      Math.round(weight * goldCurrentPrice * realWages * 1.03 + stonePrice),
+      Math.round(weight * goldCurrentPrice * realWages * tax + stonePrice),
     );
     return { price: price, buyPrice: buyPrice };
   }
