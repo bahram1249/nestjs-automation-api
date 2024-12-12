@@ -240,6 +240,6 @@ export class ECommerceModule implements NestModule {
     app.get(ProcessHomeRunnerService).run();
 
     // add live price job runner
-    app.get(RetrievePriceRunnerService).run();
+    await app.get(RetrievePriceRunnerService).run();
   }
 }
