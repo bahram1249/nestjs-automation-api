@@ -6,7 +6,7 @@ import { I18nTranslations } from 'apps/main/src/generated/i18n.generated';
 import { I18nContext, I18nService } from 'nestjs-i18n';
 import { Op } from 'sequelize';
 
-@Injectable({})
+@Injectable()
 export class GoldPriceService {
   private readonly GOLD_CURRENT_PRICE = 'GOLD_CURRENT_PRICE';
   private readonly GOLD_740_PRICE = 'GOLD_740_PRICE';

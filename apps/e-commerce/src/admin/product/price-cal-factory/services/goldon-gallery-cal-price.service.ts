@@ -70,7 +70,7 @@ export class GoldonGalleryCalPriceService implements ICalPrice {
         .build(),
     );
     const tax = Number(goldTaxSetting.value);
-    const realWages = Number(`1.${wages.toString()}`);
+    const realWages = Number(`1.${wages.toString().padStart(2, '0')}`);
     const stonePrice = Number(stoneMoney) | 0;
     const staticProfit = Number(goldStaticProfit.value);
     const price = Math.round(
@@ -102,7 +102,7 @@ export class GoldonGalleryCalPriceService implements ICalPrice {
       new QueryOptionsBuilder().filter({ key: this.GOLD_PROFIT }).build(),
     );
 
-    const realWages = Number(`1.${wages.toString()}`);
+    const realWages = Number(`1.${wages.toString().padStart(2, '0')}`);
     const stonePrice = Number(stoneMoney) | 0;
     const tax = Number(goldSettingTax.value);
     const profit = Number(goldProfitSetting.value);
