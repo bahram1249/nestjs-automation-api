@@ -27,7 +27,7 @@ export class PostShipmentPriceService implements ShipmentInteface {
     price: number;
     realShipmentPrice: number;
   }> {
-    const weights = stockPrices.map((stock) => stock.weight);
+    const weights = stockPrices.map((stock) => stock.weight * stock.qty);
     const totalWeight = weights.reduce((prev, current) => prev + current, 0);
     let postageFee = await this.postageFeeRepository.findOne(
       new QueryOptionsBuilder()
