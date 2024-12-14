@@ -50,7 +50,7 @@ export class PostShipmentPriceService implements ShipmentInteface {
     }
 
     const calfreeWeight = stockPrices.map((stock) =>
-      stock.freeShipment ? 0 : stock.weight,
+      stock.freeShipment ? 0 : stock.weight * stock.qty,
     );
     const calFreetotalWeight = calfreeWeight.reduce(
       (prev, current) => prev + current,
