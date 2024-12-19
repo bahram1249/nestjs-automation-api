@@ -101,12 +101,32 @@ export class EntityTypeService {
           model: EAVEntityType,
           as: 'subEntityTypes',
           required: false,
+          where: Sequelize.where(
+            Sequelize.fn(
+              'isnull',
+              Sequelize.col('subEntityTypes.isDeleted'),
+              0,
+            ),
+            {
+              [Op.eq]: 0,
+            },
+          ),
           include: [
             {
               attributes: ['id', 'name', 'slug'],
               model: EAVEntityType,
               as: 'subEntityTypes',
               required: false,
+              where: Sequelize.where(
+                Sequelize.fn(
+                  'isnull',
+                  Sequelize.col('subEntityTypes.subEntityTypes.isDeleted'),
+                  0,
+                ),
+                {
+                  [Op.eq]: 0,
+                },
+              ),
               include: [
                 {
                   attributes: ['id', 'fileName'],
