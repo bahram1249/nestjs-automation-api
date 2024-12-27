@@ -37,6 +37,14 @@ export class IncludeOptionsBuilder {
     this.options.where[Op.and].push(condition);
     return this;
   }
+
+  filterIf(
+    condition: boolean,
+    queryCondition: WhereOptions<any>,
+  ): IncludeOptionsBuilder {
+    if (condition) this.options.where[Op.and].push(queryCondition);
+    return this;
+  }
   attributes(attributes: FindAttributeOptions): IncludeOptionsBuilder {
     this.options.attributes = attributes;
     return this;

@@ -48,6 +48,14 @@ export class QueryOptionsBuilder {
     this.options.where[Op.and].push(condition);
     return this;
   }
+
+  filterIf(
+    condition: boolean,
+    queryCondition: WhereOptions<any>,
+  ): QueryOptionsBuilder {
+    if (condition) this.options.where[Op.and].push(queryCondition);
+    return this;
+  }
   include(include: Includeable | Includeable[]): QueryOptionsBuilder {
     this.options.include = include;
     return this;
