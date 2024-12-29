@@ -53,7 +53,7 @@ export class IncludeOptionsBuilder {
     this.options.subQuery = flag;
     return this;
   }
-  thenInlcude(include: Includeable): IncludeOptionsBuilder {
+  thenInclude(include: Includeable): IncludeOptionsBuilder {
     const included = this.options.include as Includeable[];
     included.push(include);
     return this;

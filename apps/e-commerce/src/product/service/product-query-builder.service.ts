@@ -239,7 +239,7 @@ export class ProductQueryBuilderService {
           required: false,
         },
       ])
-      .thenInlcude({
+      .thenInclude({
         attributes: priceRangeQuery
           ? []
           : ['id', 'name', 'slug', 'priorityOrder'],
@@ -247,32 +247,32 @@ export class ProductQueryBuilderService {
         as: 'vendor',
         required: false,
       })
-      .thenInlcude({
+      .thenInclude({
         attributes: priceRangeQuery ? [] : ['id', 'name', 'hexCode'],
         model: ECColor,
         as: 'color',
         required: false,
       })
-      .thenInlcude({
+      .thenInclude({
         attributes: priceRangeQuery ? [] : ['id', 'name', 'slug'],
         model: ECGuarantee,
         as: 'guarantee',
         required: false,
       })
-      .thenInlcude({
+      .thenInclude({
         attributes: priceRangeQuery ? [] : ['id', 'name'],
         model: ECGuaranteeMonth,
         as: 'guaranteeMonth',
         required: false,
       })
-      .thenInlcude({
+      .thenInclude({
         attributes: priceRangeQuery ? [] : ['id', 'name'],
         model: ECProvince,
         as: 'onlyProvince',
         required: false,
       })
 
-      .thenInlcude({
+      .thenInclude({
         attributes: priceRangeQuery ? [] : ['id', 'price'],
         model: ECInventoryPrice,
         as: 'secondaryPrice',
@@ -464,7 +464,7 @@ export class ProductQueryBuilderService {
     }
 
     // add first price
-    inventoryIncludeBuilder = inventoryIncludeBuilder.thenInlcude(
+    inventoryIncludeBuilder = inventoryIncludeBuilder.thenInclude(
       firstPriceIncludeBuilder.build(),
     );
 
