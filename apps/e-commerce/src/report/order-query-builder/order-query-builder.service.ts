@@ -96,7 +96,7 @@ export class OrderQueryBuilderService {
   }
 
   includeOrderStatus() {
-    this.builder = this.builder.thenInlcude({
+    this.builder = this.builder.thenInclude({
       attributes: this.groupByQuery ? [] : ['id', 'name'],
       model: ECOrderStatus,
       as: 'orderStatus',
@@ -106,7 +106,7 @@ export class OrderQueryBuilderService {
   }
 
   includeCourierUser() {
-    this.builder = this.builder.thenInlcude({
+    this.builder = this.builder.thenInclude({
       attributes: this.groupByQuery
         ? []
         : ['id', 'firstname', 'lastname', 'username', 'phoneNumber'],
@@ -118,7 +118,7 @@ export class OrderQueryBuilderService {
   }
 
   includePayment() {
-    this.builder = this.builder.thenInlcude({
+    this.builder = this.builder.thenInclude({
       attributes: this.groupByQuery
         ? []
         : ['id', 'paymentGatewayId', 'paymentStatusId'],

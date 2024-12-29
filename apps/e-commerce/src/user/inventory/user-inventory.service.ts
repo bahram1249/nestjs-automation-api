@@ -111,43 +111,43 @@ export class UserInventoryService {
           'inventoryStatusId',
           'description',
         ])
-        .thenInlcude({
+        .thenInclude({
           attributes: ['id', 'name'],
           model: ECInventoryStatus,
           as: 'inventoryStatus',
           required: false,
         })
-        .thenInlcude({
+        .thenInclude({
           attributes: ['id', 'name'],
           model: ECVendor,
           as: 'vendor',
           required: false,
         })
-        .thenInlcude({
+        .thenInclude({
           attributes: ['id', 'name', 'hexCode'],
           model: ECColor,
           as: 'color',
           required: false,
         })
-        .thenInlcude({
+        .thenInclude({
           attributes: ['id', 'name'],
           model: ECGuarantee,
           as: 'guarantee',
           required: false,
         })
-        .thenInlcude({
+        .thenInclude({
           attributes: ['id', 'name'],
           model: ECGuaranteeMonth,
           as: 'guaranteeMonth',
           required: false,
         })
-        .thenInlcude({
+        .thenInclude({
           attributes: ['id', 'name'],
           model: ECProvince,
           as: 'onlyProvince',
           required: false,
         })
-        .thenInlcude({
+        .thenInclude({
           attributes: ['id', 'vendorId', 'addressId'],
           model: ECVendorAddress,
           as: 'vendorAddress',
@@ -199,7 +199,7 @@ export class UserInventoryService {
             },
           ],
         })
-        .thenInlcude({
+        .thenInclude({
           attributes: ['price'],
           model: ECInventoryPrice,
           as: 'firstPrice',
@@ -218,7 +218,7 @@ export class UserInventoryService {
             },
           ),
         })
-        .thenInlcude({
+        .thenInclude({
           attributes: ['price'],
           model: ECInventoryPrice,
           as: 'secondaryPrice',
@@ -321,43 +321,43 @@ export class UserInventoryService {
           'inventoryStatusId',
           'description',
         ])
-        .thenInlcude({
+        .thenInclude({
           attributes: ['id', 'name'],
           model: ECInventoryStatus,
           as: 'inventoryStatus',
           required: false,
         })
-        .thenInlcude({
+        .thenInclude({
           attributes: ['id', 'name'],
           model: ECVendor,
           as: 'vendor',
           required: false,
         })
-        .thenInlcude({
+        .thenInclude({
           attributes: ['id', 'name', 'hexCode'],
           model: ECColor,
           as: 'color',
           required: false,
         })
-        .thenInlcude({
+        .thenInclude({
           attributes: ['id', 'name'],
           model: ECGuarantee,
           as: 'guarantee',
           required: false,
         })
-        .thenInlcude({
+        .thenInclude({
           attributes: ['id', 'name'],
           model: ECGuaranteeMonth,
           as: 'guaranteeMonth',
           required: false,
         })
-        .thenInlcude({
+        .thenInclude({
           attributes: ['id', 'name'],
           model: ECProvince,
           as: 'onlyProvince',
           required: false,
         })
-        .thenInlcude({
+        .thenInclude({
           attributes: ['id', 'vendorId', 'addressId'],
           model: ECVendorAddress,
           as: 'vendorAddress',
@@ -409,7 +409,7 @@ export class UserInventoryService {
             },
           ],
         })
-        .thenInlcude({
+        .thenInclude({
           attributes: ['price'],
           model: ECInventoryPrice,
           as: 'firstPrice',
@@ -428,7 +428,7 @@ export class UserInventoryService {
             },
           ),
         })
-        .thenInlcude({
+        .thenInclude({
           attributes: ['price'],
           model: ECInventoryPrice,
           as: 'secondaryPrice',
@@ -519,43 +519,43 @@ export class UserInventoryService {
           'inventoryStatusId',
           'description',
         ])
-        .thenInlcude({
+        .thenInclude({
           attributes: ['id', 'name'],
           model: ECInventoryStatus,
           as: 'inventoryStatus',
           required: false,
         })
-        .thenInlcude({
+        .thenInclude({
           attributes: ['id', 'name'],
           model: ECVendor,
           as: 'vendor',
           required: false,
         })
-        .thenInlcude({
+        .thenInclude({
           attributes: ['id', 'name', 'hexCode'],
           model: ECColor,
           as: 'color',
           required: false,
         })
-        .thenInlcude({
+        .thenInclude({
           attributes: ['id', 'name'],
           model: ECGuarantee,
           as: 'guarantee',
           required: false,
         })
-        .thenInlcude({
+        .thenInclude({
           attributes: ['id', 'name'],
           model: ECGuaranteeMonth,
           as: 'guaranteeMonth',
           required: false,
         })
-        .thenInlcude({
+        .thenInclude({
           attributes: ['id', 'name'],
           model: ECProvince,
           as: 'onlyProvince',
           required: false,
         })
-        .thenInlcude({
+        .thenInclude({
           attributes: ['id', 'vendorId', 'addressId'],
           model: ECVendorAddress,
           as: 'vendorAddress',
@@ -607,7 +607,7 @@ export class UserInventoryService {
             },
           ],
         })
-        .thenInlcude({
+        .thenInclude({
           attributes: ['price'],
           model: ECInventoryPrice,
           as: 'firstPrice',
@@ -626,7 +626,7 @@ export class UserInventoryService {
             },
           ),
         })
-        .thenInlcude({
+        .thenInclude({
           attributes: ['price'],
           model: ECInventoryPrice,
           as: 'secondaryPrice',

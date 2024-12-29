@@ -61,17 +61,17 @@ export class TransactionService {
         'createdAt',
         'updatedAt',
       ])
-      .thenInlcude({
+      .thenInclude({
         attributes: ['id', 'name'],
         model: ECPaymentType,
         as: 'paymentType',
       })
-      .thenInlcude({
+      .thenInclude({
         attributes: ['id', 'name'],
         model: ECPaymentStatus,
         as: 'paymentStatus',
       })
-      .thenInlcude({
+      .thenInclude({
         attributes: ['id', 'name'],
         model: ECPaymentGateway,
         as: 'paymentGateway',

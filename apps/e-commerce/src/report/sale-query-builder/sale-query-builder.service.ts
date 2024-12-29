@@ -24,7 +24,7 @@ export class SaleQueryBuilderService {
 
   init(groupByQuery: boolean) {
     this.groupByQuery = groupByQuery;
-    this.builder = this.builder.thenInlcude({
+    this.builder = this.builder.thenInclude({
       attributes: this.groupByQuery ? [] : ['id', 'orderStatusId'],
       model: ECOrder,
       as: 'order',
@@ -119,7 +119,7 @@ export class SaleQueryBuilderService {
   }
 
   includeProduct() {
-    this.builder = this.builder.thenInlcude({
+    this.builder = this.builder.thenInclude({
       attributes: this.groupByQuery ? [] : ['id', 'title', 'sku'],
       model: ECProduct,
       as: 'product',
@@ -140,7 +140,7 @@ export class SaleQueryBuilderService {
   }
 
   includeInventory() {
-    this.builder = this.builder.thenInlcude({
+    this.builder = this.builder.thenInclude({
       attributes: this.groupByQuery
         ? []
         : ['id', 'vendorId', 'colorId', 'guaranteeId', 'guaranteeMonthId'],
@@ -178,7 +178,7 @@ export class SaleQueryBuilderService {
   }
 
   includeVendor() {
-    this.builder = this.builder.thenInlcude({
+    this.builder = this.builder.thenInclude({
       attributes: this.groupByQuery ? [] : ['id', 'name', 'slug'],
       model: ECVendor,
       as: 'vendor',
@@ -188,7 +188,7 @@ export class SaleQueryBuilderService {
   }
 
   includeInventoryPrice() {
-    this.builder = this.builder.thenInlcude({
+    this.builder = this.builder.thenInclude({
       attributes: this.groupByQuery
         ? []
         : ['id', 'buyPrice', 'variationPriceId'],

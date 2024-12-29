@@ -262,7 +262,7 @@ export class OrderQueryBuilder {
         },
       });
     }
-    this.builder = this.builder.thenInlcude(includeBuilder.build());
+    this.builder = this.builder.thenInclude(includeBuilder.build());
     return this;
   }
 
@@ -352,12 +352,12 @@ export class OrderQueryBuilder {
       ),
     );
 
-    this.builder = this.builder.thenInlcude(includeBuilder.build());
+    this.builder = this.builder.thenInclude(includeBuilder.build());
     return this;
   }
 
   includeAddress() {
-    this.builder = this.builder.thenInlcude({
+    this.builder = this.builder.thenInclude({
       attributes: [
         'id',
         'name',
@@ -396,7 +396,7 @@ export class OrderQueryBuilder {
   }
 
   includeUser() {
-    this.builder = this.builder.thenInlcude({
+    this.builder = this.builder.thenInclude({
       attributes: ['id', 'firstname', 'lastname', 'username', 'phoneNumber'],
       model: User,
       as: 'user',
@@ -406,7 +406,7 @@ export class OrderQueryBuilder {
   }
 
   includeOrderShipmentWay() {
-    this.builder = this.builder.thenInlcude({
+    this.builder = this.builder.thenInclude({
       attributes: ['id', 'name'],
       model: ECOrderShipmentWay,
       as: 'orderShipmentWay',
@@ -415,7 +415,7 @@ export class OrderQueryBuilder {
   }
 
   includeOrderStatus() {
-    this.builder = this.builder.thenInlcude({
+    this.builder = this.builder.thenInclude({
       attributes: ['id', 'name'],
       model: ECOrderStatus,
       as: 'orderStatus',
@@ -424,7 +424,7 @@ export class OrderQueryBuilder {
   }
 
   includePaymentGateway() {
-    this.builder = this.builder.thenInlcude({
+    this.builder = this.builder.thenInclude({
       attributes: ['id', 'totalprice', 'paymentGatewayId'],
       model: ECPayment,
       as: 'payment',

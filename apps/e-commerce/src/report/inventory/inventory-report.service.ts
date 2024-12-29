@@ -82,19 +82,19 @@ export class InventoryReportService {
     const count = await this.inventoryRepository.count(queryBuilder.build());
 
     queryBuilder = queryBuilder
-      .thenInlcude({
+      .thenInclude({
         attributes: ['id', 'title', 'sku', 'slug'],
         model: ECProduct,
         as: 'product',
         required: false,
       })
-      .thenInlcude({
+      .thenInclude({
         attributes: ['id', 'name'],
         model: ECColor,
         as: 'color',
         required: false,
       })
-      .thenInlcude({
+      .thenInclude({
         attributes: ['id', 'name'],
         model: ECGuarantee,
         as: 'guarantee',

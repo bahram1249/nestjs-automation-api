@@ -77,17 +77,17 @@ export class AdminAddressService {
         'floorNumber',
         'postalCode',
       ])
-      .thenInlcude({
+      .thenInclude({
         attributes: ['id', 'name'],
         model: ECProvince,
         as: 'province',
       })
-      .thenInlcude({
+      .thenInclude({
         attributes: ['id', 'name'],
         model: ECCity,
         as: 'city',
       })
-      .thenInlcude({
+      .thenInclude({
         attributes: ['id', 'name'],
         model: ECNeighborhood,
         as: 'neighborhood',

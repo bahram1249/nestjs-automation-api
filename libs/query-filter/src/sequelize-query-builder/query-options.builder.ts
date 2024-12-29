@@ -80,7 +80,7 @@ export class QueryOptionsBuilder {
     this.options.lock = transactionLock;
     return this;
   }
-  thenInlcude(include: Includeable) {
+  thenInclude(include: Includeable) {
     const included = this.options.include as Includeable[];
     included.push(include);
     return this;

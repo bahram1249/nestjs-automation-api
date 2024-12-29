@@ -171,22 +171,22 @@ export class ProductQueryBuilderService {
           as: 'publishStatus',
         },
       ])
-      .thenInlcude({
+      .thenInclude({
         attributes: priceRangeQuery ? [] : ['id', 'name'],
         model: ECInventoryStatus,
         as: 'inventoryStatus',
       })
-      .thenInlcude({
+      .thenInclude({
         attributes: priceRangeQuery ? [] : ['id', 'name', 'slug'],
         model: ECBrand,
         as: 'brand',
       })
-      .thenInlcude({
+      .thenInclude({
         attributes: priceRangeQuery ? [] : ['id', 'name', 'slug'],
         model: EAVEntityType,
         as: 'entityType',
       })
-      .thenInlcude({
+      .thenInclude({
         attributes: priceRangeQuery ? [] : ['id', 'fileName'],
         through: {
           attributes: [],
@@ -195,7 +195,7 @@ export class ProductQueryBuilderService {
         as: 'attachments',
         required: false,
       })
-      .thenInlcude({
+      .thenInclude({
         attributes: priceRangeQuery ? [] : ['id', 'fileName'],
         through: {
           attributes: [],
@@ -468,7 +468,7 @@ export class ProductQueryBuilderService {
       firstPriceIncludeBuilder.build(),
     );
 
-    queryResultBuilder = queryResultBuilder.thenInlcude(
+    queryResultBuilder = queryResultBuilder.thenInclude(
       inventoryIncludeBuilder.build(),
     );
 
@@ -511,7 +511,7 @@ export class ProductQueryBuilderService {
             as: 'attributeValue',
           },
         ]);
-      queryResultBuilder.thenInlcude(attributeIncludeBuilder.build());
+      queryResultBuilder.thenInclude(attributeIncludeBuilder.build());
     }
 
     if (filter.attributes != null && filter.attributes.length > 0) {
