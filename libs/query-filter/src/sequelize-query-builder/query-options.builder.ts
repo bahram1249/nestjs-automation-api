@@ -69,7 +69,6 @@ export class QueryOptionsBuilder {
     return this;
   }
   build(): FindAndCountOptions<any> {
-    //Omit<FindAndCountOptions<any>, 'group'> {
     return this.options;
   }
   transaction(transaction: Transaction) {
