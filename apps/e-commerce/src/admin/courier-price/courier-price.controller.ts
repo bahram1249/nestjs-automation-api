@@ -9,7 +9,7 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
-import { JwtGuard } from '@rahino/auth/guard';
+import { JwtGuard } from '@rahino/auth';
 import { PermissionGuard } from '@rahino/permission-checker/guard';
 import { JsonResponseTransformInterceptor } from '@rahino/response/interceptor';
 import { CheckPermission } from '@rahino/permission-checker/decorator';

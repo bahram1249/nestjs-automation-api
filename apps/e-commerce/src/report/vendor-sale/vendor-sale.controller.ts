@@ -17,11 +17,11 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 
-import { JwtGuard } from '@rahino/auth/guard';
+import { JwtGuard } from '@rahino/auth';
 import { VendorSaleService } from './vendor-sale.service';
 import { GetVendorSaleDto } from './dto';
-import { GetUser } from '@rahino/auth/decorator';
-import { User } from '@rahino/database/models/core/user.entity';
+import { GetUser } from '@rahino/auth';
+import { User } from '@rahino/database';
 
 @ApiTags('Report-VendorSales')
 @UseGuards(JwtGuard, PermissionGuard)

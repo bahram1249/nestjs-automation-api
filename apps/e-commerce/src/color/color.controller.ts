@@ -22,12 +22,12 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 
-import { JwtGuard, OptionalJwtGuard } from '@rahino/auth/guard';
+import { JwtGuard, OptionalJwtGuard } from '@rahino/auth';
 import { ColorService } from './color.service';
 import { ColorDto, GetColorDto } from './dto';
 import { OptionalSessionGuard } from '../user/session/guard';
 import { GetECSession } from 'apps/main/src/decorator';
-import { ECUserSession } from '@rahino/database/models/ecommerce-eav/ec-user-session.entity';
+import { ECUserSession } from '@rahino/database';
 
 @ApiTags('Colors')
 @Controller({

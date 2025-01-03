@@ -15,7 +15,7 @@ import {
   ApiQuery,
   ApiTags,
 } from '@nestjs/swagger';
-import { JwtGuard } from '@rahino/auth/guard';
+import { JwtGuard } from '@rahino/auth';
 import { NotificationService } from './notification.service';
 import { ListFilter } from '@rahino/query-filter';
 

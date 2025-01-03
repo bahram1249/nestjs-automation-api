@@ -18,11 +18,11 @@ import {
   ApiQuery,
   ApiTags,
 } from '@nestjs/swagger';
-import { JwtGuard } from '@rahino/auth/guard';
+import { JwtGuard } from '@rahino/auth';
 import { JsonResponseTransformInterceptor } from '@rahino/response/interceptor';
 import { GetConditionValueDto } from './dto';
-import { GetUser } from '@rahino/auth/decorator';
-import { User } from '@rahino/database/models/core/user.entity';
+import { GetUser } from '@rahino/auth';
+import { User } from '@rahino/database';
 import { DISCOUNT_CONDITION_VALUE_PROVIDER_TOKEN } from './provider/discount-condition-value.constants';
 import { CheckPermission } from '@rahino/permission-checker/decorator';
 import { PermissionGuard } from '@rahino/permission-checker/guard';

@@ -2,9 +2,9 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { QueryFilter } from '@rahino/query-filter/sequelize-mapper';
 import { Op } from 'sequelize';
-import { Role } from '@rahino/database/models/core/role.entity';
+import { Role } from '@rahino/database';
 import { RoleGetDto } from './dto';
-import { UserRole } from '@rahino/database/models/core/userRole.entity';
+import { UserRole } from '@rahino/database';
 
 @Injectable()
 export class RoleService {

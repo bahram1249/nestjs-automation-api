@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
-import { BuffetMenuCategory } from '@rahino/database/models/discount-coffe/buffet-menu-category.entity';
+import { BuffetMenuCategory } from '@rahino/database';
 
 @Injectable()
 export class MenuCategoryService {

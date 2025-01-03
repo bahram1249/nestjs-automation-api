@@ -20,9 +20,9 @@ import {
   ApiQuery,
   ApiTags,
 } from '@nestjs/swagger';
-import { JwtGuard } from '@rahino/auth/guard';
-import { GetUser } from '@rahino/auth/decorator';
-import { User } from '@rahino/database/models/core/user.entity';
+import { JwtGuard } from '@rahino/auth';
+import { GetUser } from '@rahino/auth';
+import { User } from '@rahino/database';
 import { ReserveService } from './reserve.service';
 import { ReserveDto, ReserveFilterDto } from './dto';
 

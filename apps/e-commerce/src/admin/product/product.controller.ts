@@ -24,10 +24,10 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { GetProductDto, ProductDto } from './dto';
-import { JwtGuard } from '@rahino/auth/guard';
+import { JwtGuard } from '@rahino/auth';
 import { ProductService } from './product.service';
-import { GetUser } from '@rahino/auth/decorator';
-import { User } from '@rahino/database/models/core/user.entity';
+import { GetUser } from '@rahino/auth';
+import { User } from '@rahino/database';
 
 @ApiTags('Admin-Product')
 @ApiBearerAuth()

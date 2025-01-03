@@ -1,12 +1,12 @@
 import { Module } from '@nestjs/common';
 import { SequelizeModule } from '@nestjs/sequelize';
-import { Permission } from '@rahino/database/models/core/permission.entity';
-import { User } from '@rahino/database/models/core/user.entity';
+import { Permission } from '@rahino/database';
+import { User } from '@rahino/database';
 import { HolidayService } from './holiday.service';
-import { Buffet } from '@rahino/database/models/discount-coffe/buffet.entity';
+import { Buffet } from '@rahino/database';
 import { HolidayController } from './holiday.controller';
-import { BuffetIgnoreReserve } from '@rahino/database/models/discount-coffe/ignore-reserve.entity';
-import { PersianDate } from '@rahino/database/models/core/view/persiandate.entity';
+import { BuffetIgnoreReserve } from '@rahino/database';
+import { PersianDate } from '@rahino/database';
 
 @Module({
   imports: [

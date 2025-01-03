@@ -2,10 +2,10 @@
 import { UserVendorModule } from '@rahino/ecommerce/user/vendor/user-vendor.module';
 import { VendorAddressModule } from '@rahino/ecommerce/vendor-address/vendor-address.module';
 import { SequelizeModule } from '@nestjs/sequelize';
-import { ECVariationPrice } from '@rahino/database/models/ecommerce-eav/ec-variation-prices';
-import { ECColor } from '@rahino/database/models/ecommerce-eav/ec-color.entity';
-import { ECGuarantee } from '@rahino/database/models/ecommerce-eav/ec-guarantee.entity';
-import { ECGuaranteeMonth } from '@rahino/database/models/ecommerce-eav/ec-guarantee-month.entity';
+import { ECVariationPrice } from '@rahino/database';
+import { ECColor } from '@rahino/database';
+import { ECGuarantee } from '@rahino/database';
+import { ECGuaranteeMonth } from '@rahino/database';
 import { InventoryProfile } from './mapper';
 import {
   DecreaseInventoryService,
@@ -13,11 +13,11 @@ import {
   InventoryValidationService,
   inventoryStatusService,
 } from './services';
-import { ECInventory } from '@rahino/database/models/ecommerce-eav/ec-inventory.entity';
-import { ECInventoryPrice } from '@rahino/database/models/ecommerce-eav/ec-inventory-price.entity';
-import { ECProvince } from '@rahino/database/models/ecommerce-eav/ec-province.entity';
+import { ECInventory } from '@rahino/database';
+import { ECInventoryPrice } from '@rahino/database';
+import { ECProvince } from '@rahino/database';
 import { QueryFilterModule } from '@rahino/query-filter';
-import { ECProduct } from '@rahino/database/models/ecommerce-eav/ec-product.entity';
+import { ECProduct } from '@rahino/database';
 import { BullModule } from '@nestjs/bullmq';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import {
@@ -30,12 +30,12 @@ import {
   DecreaseInventoryProcessor,
   ProductInventoryStatusProcessor,
 } from './processor';
-import { ECPayment } from '@rahino/database/models/ecommerce-eav/ec-payment-entity';
-import { ECOrder } from '@rahino/database/models/ecommerce-eav/ec-order.entity';
+import { ECPayment } from '@rahino/database';
+import { ECOrder } from '@rahino/database';
 import { RevertInventoryQtyProcessor } from './processor/revert-inventory-qty.processor';
 import { PaymentServiceProviderModule } from '../user/payment/provider/payment-provider.module';
 import { InventoryTrackChangeModule } from '../inventory-track-change/inventory-track-change.module';
-import { ECWallet } from '@rahino/database/models/ecommerce-eav/ec-wallet.entity';
+import { ECWallet } from '@rahino/database';
 import { RevertPaymentQtyModule } from './revert-payment-qty.module';
 import { CalPriceFactoryModule } from '../admin/product/price-cal-factory/cal-price-factory.module';
 

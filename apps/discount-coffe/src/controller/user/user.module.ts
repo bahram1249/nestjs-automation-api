@@ -3,8 +3,8 @@ import { UserService } from './user.service';
 import { UserController } from './user.controller';
 import { WebAuthDiscountCoffeMiddleware } from '@rahino/commonmiddleware/middlewares/web-auth-discountcoffe.middleware';
 import { SequelizeModule } from '@nestjs/sequelize';
-import { User } from '@rahino/database/models/core/user.entity';
-import { BuffetReserve } from '@rahino/database/models/discount-coffe/buffet-reserve.entity';
+import { User } from '@rahino/database';
+import { BuffetReserve } from '@rahino/database';
 
 @Module({
   imports: [SequelizeModule.forFeature([User, BuffetReserve])],

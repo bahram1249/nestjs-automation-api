@@ -10,7 +10,7 @@ import {
 import { JsonResponseTransformInterceptor } from '@rahino/response/interceptor';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { DiscountTypeService } from './discount-type.service';
-import { JwtGuard } from '@rahino/auth/guard';
+import { JwtGuard } from '@rahino/auth';
 
 @ApiTags('Admin-DiscountTypes')
 @ApiBearerAuth()

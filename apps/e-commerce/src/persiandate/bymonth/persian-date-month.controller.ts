@@ -10,7 +10,7 @@ import {
 import { JsonResponseTransformInterceptor } from '@rahino/response/interceptor';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { PersianDateMonthService } from './persian-date-month.service';
-import { JwtGuard } from '@rahino/auth/guard';
+import { JwtGuard } from '@rahino/auth';
 
 @ApiTags('PersianDate-Month')
 @ApiBearerAuth()

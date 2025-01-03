@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
-import { User } from '@rahino/database/models/core/user.entity';
-import { ECPaymentGateway } from '@rahino/database/models/ecommerce-eav/ec-payment-gateway.entity';
+import { User } from '@rahino/database';
+import { ECPaymentGateway } from '@rahino/database';
 import { ListFilter } from '@rahino/query-filter';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import { Op } from 'sequelize';

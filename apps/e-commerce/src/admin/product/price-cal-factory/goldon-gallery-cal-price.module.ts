@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { GoldonGalleryCalPriceService } from './services';
 import { SequelizeModule } from '@nestjs/sequelize';
-import { Setting } from '@rahino/database/models/core/setting.entity';
+import { Setting } from '@rahino/database';
 
 @Module({
   imports: [SequelizeModule.forFeature([Setting])],

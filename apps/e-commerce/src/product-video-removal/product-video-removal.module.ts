@@ -5,7 +5,7 @@ import { ProductVideoRemovalProcessor } from './product-video-removal.processor'
 import { REMOVE_PRODUCT_VIDEO_QUEUE } from './constants';
 import { MinioClientModule } from '@rahino/minio-client';
 import { SequelizeModule } from '@nestjs/sequelize';
-import { Attachment } from '@rahino/database/models/core/attachment.entity';
+import { Attachment } from '@rahino/database';
 import { ProductVideoRemovalService } from './product-video-removal.service';
 import { DBLoggerModule } from '@rahino/logger';
 

@@ -1,7 +1,7 @@
 import { OnWorkerEvent, Processor, WorkerHost } from '@nestjs/bullmq';
 import { Job } from 'bullmq';
 import { REMOVE_PRODUCT_VIDEO_QUEUE } from './constants';
-import { Attachment } from '@rahino/database/models/core/attachment.entity';
+import { Attachment } from '@rahino/database';
 import { InjectModel } from '@nestjs/sequelize';
 import { MinioClientService } from '@rahino/minio-client';
 import { DBLogger } from '@rahino/logger';

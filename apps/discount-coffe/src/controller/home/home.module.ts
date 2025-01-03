@@ -2,11 +2,11 @@ import { Module } from '@nestjs/common';
 import { HomeController } from './home.controller';
 import { HomeService } from './home.service';
 import { SequelizeModule } from '@nestjs/sequelize';
-import { Buffet } from '@rahino/database/models/discount-coffe/buffet.entity';
-import { BuffetType } from '@rahino/database/models/discount-coffe/buffet-type.entity';
-import { BuffetCity } from '@rahino/database/models/discount-coffe/city.entity';
-import { BuffetReserve } from '@rahino/database/models/discount-coffe/buffet-reserve.entity';
-import { BuffetCost } from '@rahino/database/models/discount-coffe/buffet-cost.entity';
+import { Buffet } from '@rahino/database';
+import { BuffetType } from '@rahino/database';
+import { BuffetCity } from '@rahino/database';
+import { BuffetReserve } from '@rahino/database';
+import { BuffetCost } from '@rahino/database';
 
 @Module({
   imports: [

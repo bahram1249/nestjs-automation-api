@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { AutomapperProfile, InjectMapper } from 'automapper-nestjs';
 import { InventoryDto } from '../dto';
 import { Mapper, createMap, forMember, ignore } from 'automapper-core';
-import { ECInventory } from '@rahino/database/models/ecommerce-eav/ec-inventory.entity';
+import { ECInventory } from '@rahino/database';
 
 @Injectable()
 export class InventoryProfile extends AutomapperProfile {

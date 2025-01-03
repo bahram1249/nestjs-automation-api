@@ -29,11 +29,11 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 
-import { JwtGuard, OptionalJwtGuard } from '@rahino/auth/guard';
+import { JwtGuard, OptionalJwtGuard } from '@rahino/auth';
 import { VendorService } from './vendor.service';
 import { VendorDto, GetVendorDto } from './dto';
-import { GetUser } from '@rahino/auth/decorator';
-import { User } from '@rahino/database/models/core/user.entity';
+import { GetUser } from '@rahino/auth';
+import { User } from '@rahino/database';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { imageOptions } from './file-options';
 import { OptionalSessionGuard } from '../user/session/guard';

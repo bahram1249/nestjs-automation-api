@@ -3,13 +3,13 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { User } from '@rahino/database/models/core/user.entity';
+import { User } from '@rahino/database';
 import { CourierDto, GetCourierDto } from './dto';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import { Sequelize } from 'sequelize';
 import { Op } from 'sequelize';
 import { InjectModel } from '@nestjs/sequelize';
-import { ECCourier } from '@rahino/database/models/ecommerce-eav/ec-courier.entity';
+import { ECCourier } from '@rahino/database';
 import { I18nContext, I18nService } from 'nestjs-i18n';
 import { I18nTranslations } from 'apps/main/src/generated/i18n.generated';
 import { InjectMapper } from 'automapper-nestjs';
@@ -17,7 +17,7 @@ import { Mapper } from 'automapper-core';
 import { UserCourierDto } from './dto/user-courier-dto';
 import * as _ from 'lodash';
 import { UserRoleService } from '@rahino/core/admin/user-role/user-role.service';
-import { Role } from '@rahino/database/models/core/role.entity';
+import { Role } from '@rahino/database';
 
 @Injectable()
 export class CourierService {

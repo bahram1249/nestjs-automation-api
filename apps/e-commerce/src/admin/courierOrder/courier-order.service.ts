@@ -4,8 +4,8 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
-import { User } from '@rahino/database/models/core/user.entity';
-import { ECOrder } from '@rahino/database/models/ecommerce-eav/ec-order.entity';
+import { User } from '@rahino/database';
+import { ECOrder } from '@rahino/database';
 import {
   OrderShipmentwayEnum,
   OrderStatusEnum,
@@ -19,7 +19,7 @@ import { Op } from 'sequelize';
 import { OrderUtilService } from '../utilOrder/service/order-util.service';
 import { I18nContext, I18nService } from 'nestjs-i18n';
 import { I18nTranslations } from 'apps/main/src/generated/i18n.generated';
-import { ECCourier } from '@rahino/database/models/ecommerce-eav/ec-courier.entity';
+import { ECCourier } from '@rahino/database';
 import { ECommmerceSmsService } from '@rahino/ecommerce/util/sms/ecommerce-sms.service';
 
 @Injectable()

@@ -1,4 +1,4 @@
-import { ECUserSession } from '@rahino/database/models/ecommerce-eav/ec-user-session.entity';
+import { ECUserSession } from '@rahino/database';
 import { Request } from 'express';
 
 declare global {

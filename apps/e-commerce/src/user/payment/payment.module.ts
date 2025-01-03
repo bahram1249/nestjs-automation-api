@@ -6,12 +6,12 @@ import { ShipmentModule } from '../stock/services/shipment-price';
 import { StockModule } from '../stock/stock.module';
 import { AddressModule } from '../address/address.module';
 import { SequelizeModule } from '@nestjs/sequelize';
-import { ECProvince } from '@rahino/database/models/ecommerce-eav/ec-province.entity';
-import { ECVariationPrice } from '@rahino/database/models/ecommerce-eav/ec-variation-prices';
-import { ECPaymentGateway } from '@rahino/database/models/ecommerce-eav/ec-payment-gateway.entity';
-import { ECOrder } from '@rahino/database/models/ecommerce-eav/ec-order.entity';
-import { ECOrderDetail } from '@rahino/database/models/ecommerce-eav/ec-order-detail.entity';
-import { ECStock } from '@rahino/database/models/ecommerce-eav/ec-stocks.entity';
+import { ECProvince } from '@rahino/database';
+import { ECVariationPrice } from '@rahino/database';
+import { ECPaymentGateway } from '@rahino/database';
+import { ECOrder } from '@rahino/database';
+import { ECOrderDetail } from '@rahino/database';
+import { ECStock } from '@rahino/database';
 import { SessionModule } from '../session/session.module';
 import { BullModule } from '@nestjs/bullmq';
 import { ConfigService } from '@nestjs/config';
@@ -20,13 +20,13 @@ import {
   REVERT_INVENTORY_QTY_QUEUE,
 } from '@rahino/ecommerce/inventory/constants';
 import { InventoryModule } from '@rahino/ecommerce/inventory/inventory.module';
-import { ECDiscount } from '@rahino/database/models/ecommerce-eav/ec-discount.entity';
+import { ECDiscount } from '@rahino/database';
 import { ProductModule } from '@rahino/ecommerce/product/product.module';
-import { ECInventoryPrice } from '@rahino/database/models/ecommerce-eav/ec-inventory-price.entity';
-import { ECVendorCommission } from '@rahino/database/models/ecommerce-eav/ec-vendor-commision.entity';
+import { ECInventoryPrice } from '@rahino/database';
+import { ECVendorCommission } from '@rahino/database';
 import { REVERT_PAYMENT_QUEUE } from './revert-payment/revert-payment.constants';
 import { RevertPaymentProcessor } from './revert-payment/revert-payment.processor';
-import { ECPayment } from '@rahino/database/models/ecommerce-eav/ec-payment-entity';
+import { ECPayment } from '@rahino/database';
 import { DBLoggerModule } from '@rahino/logger';
 
 @Module({

@@ -1,6 +1,6 @@
 import { Injectable, Query } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
-import { PersianDate } from '@rahino/database/models/core/view/persiandate.entity';
+import { PersianDate } from '@rahino/database';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import { Op, Sequelize } from 'sequelize';
 import * as moment from 'moment-jalaali';

@@ -7,12 +7,12 @@ import {
 import { ProductVideoController } from './product-video.controller';
 import { ProductVideoService } from './product-video.service';
 import { SequelizeModule } from '@nestjs/sequelize';
-import { Permission } from '@rahino/database/models/core/permission.entity';
-import { User } from '@rahino/database/models/core/user.entity';
+import { Permission } from '@rahino/database';
+import { User } from '@rahino/database';
 import { MinioClientModule } from '@rahino/minio-client';
-import { Attachment } from '@rahino/database/models/core/attachment.entity';
+import { Attachment } from '@rahino/database';
 import { ReverseProxyProductVideoMiddleware } from './reverse-proxy.middleware';
-import { EAVEntityVideo } from '@rahino/database/models/eav/eav-entity-video.entity';
+import { EAVEntityVideo } from '@rahino/database';
 
 @Module({
   imports: [

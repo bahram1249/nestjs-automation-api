@@ -7,10 +7,10 @@ import {
 import { PageController } from './page.controller';
 import { PageService } from './page.service';
 import { SequelizeModule } from '@nestjs/sequelize';
-import { Permission } from '@rahino/database/models/core/permission.entity';
-import { User } from '@rahino/database/models/core/user.entity';
+import { Permission } from '@rahino/database';
+import { User } from '@rahino/database';
 import { PageProfile } from './mapper';
-import { ECPage } from '@rahino/database/models/ecommerce-eav/ec-page.entity';
+import { ECPage } from '@rahino/database';
 
 @Module({
   imports: [SequelizeModule.forFeature([User, Permission, ECPage])],

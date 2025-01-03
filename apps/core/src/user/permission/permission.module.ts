@@ -1,8 +1,8 @@
 import { Module } from '@nestjs/common';
 import { SequelizeModule } from '@nestjs/sequelize';
-import { Permission } from '@rahino/database/models/core/permission.entity';
-import { RolePermission } from '@rahino/database/models/core/rolePermission.entity';
-import { UserRole } from '@rahino/database/models/core/userRole.entity';
+import { Permission } from '@rahino/database';
+import { RolePermission } from '@rahino/database';
+import { UserRole } from '@rahino/database';
 import { PermissionService } from './permission.service';
 import { PermissionController } from './permission.controller';
 

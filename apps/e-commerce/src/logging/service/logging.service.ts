@@ -1,10 +1,10 @@
 import { Injectable, Scope } from '@nestjs/common';
 import { RequestDataInterface } from '../interface';
-import { ECUserSession } from '@rahino/database/models/ecommerce-eav/ec-user-session.entity';
+import { ECUserSession } from '@rahino/database';
 import { InjectModel } from '@nestjs/sequelize';
-import { ECRequestLog } from '@rahino/database/models/ecommerce-eav/ec-request-log.entity';
+import { ECRequestLog } from '@rahino/database';
 import * as moment from 'moment';
-import { User } from '@rahino/database/models/core/user.entity';
+import { User } from '@rahino/database';
 
 @Injectable({ scope: Scope.DEFAULT })
 export class LoggingService {

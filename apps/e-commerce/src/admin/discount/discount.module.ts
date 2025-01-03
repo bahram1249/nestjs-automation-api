@@ -3,12 +3,12 @@ import { DiscountController } from './discount.controller';
 import { DiscountService } from './discount.service';
 import { DiscountProfile } from './mapper';
 import { SequelizeModule } from '@nestjs/sequelize';
-import { ECDiscount } from '@rahino/database/models/ecommerce-eav/ec-discount.entity';
-import { Permission } from '@rahino/database/models/core/permission.entity';
-import { User } from '@rahino/database/models/core/user.entity';
-import { ECDiscountType } from '@rahino/database/models/ecommerce-eav/ec-discount-type.entity';
+import { ECDiscount } from '@rahino/database';
+import { Permission } from '@rahino/database';
+import { User } from '@rahino/database';
+import { ECDiscountType } from '@rahino/database';
 import { UserVendorModule } from '@rahino/ecommerce/user/vendor/user-vendor.module';
-import { ECDiscountCondition } from '@rahino/database/models/ecommerce-eav/ec-discount-condition.entity';
+import { ECDiscountCondition } from '@rahino/database';
 import { PermissionModule } from '@rahino/core/user/permission/permission.module';
 
 @Module({

@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { GetProductDto, GetUnPriceDto } from '../dto';
 import { InjectModel } from '@nestjs/sequelize';
-import { ECProduct } from '@rahino/database/models/ecommerce-eav/ec-product.entity';
+import { ECProduct } from '@rahino/database';
 import * as _ from 'lodash';
 import { ProductQueryBuilderService } from './product-query-builder.service';
 import { ApplyDiscountService } from './apply-discount.service';
@@ -9,7 +9,7 @@ import { ApplyInventoryStatus } from './apply-inventory-status.service';
 import { RemoveEmptyPriceService } from './remove-empty-price.service';
 import { Sequelize } from 'sequelize';
 import { ConfigService } from '@nestjs/config';
-import { ECSlugVersion } from '@rahino/database/models/ecommerce-eav/ec-slug-version.entity';
+import { ECSlugVersion } from '@rahino/database';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import { RedirectException } from '@rahino/ecommerce/util/exception';
 import { SlugVersionTypeEnum } from '@rahino/ecommerce/util/enum';

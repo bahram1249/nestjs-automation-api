@@ -5,7 +5,7 @@ import { ProductImageRemovalProcessor } from './product-image-removal.processor'
 import { REMOVE_PRODUCT_PHOTO_QUEUE } from './constants';
 import { MinioClientModule } from '@rahino/minio-client';
 import { SequelizeModule } from '@nestjs/sequelize';
-import { Attachment } from '@rahino/database/models/core/attachment.entity';
+import { Attachment } from '@rahino/database';
 import { ProductImageRemovalService } from './product-image-removal.service';
 import { DBLoggerModule } from '@rahino/logger';
 

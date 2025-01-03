@@ -31,13 +31,13 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { Response } from 'express';
-import { JwtGuard, OptionalJwtGuard } from '@rahino/auth/guard';
+import { JwtGuard, OptionalJwtGuard } from '@rahino/auth';
 import { SelectedProductService } from './selected-product.service';
 import { SelectedProductDto, GetSelectedProductDto } from './dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { imageOptions } from './file-options';
-import { GetUser } from '@rahino/auth/decorator';
-import { User } from '@rahino/database/models/core/user.entity';
+import { GetUser } from '@rahino/auth';
+import { User } from '@rahino/database';
 
 @ApiTags('Admin-SelectedProducts')
 @Controller({

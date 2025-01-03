@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { AutomapperProfile, InjectMapper } from 'automapper-nestjs';
 import { StockDto } from '../dto';
 import { Mapper, createMap, forMember, ignore } from 'automapper-core';
-import { ECStock } from '@rahino/database/models/ecommerce-eav/ec-stocks.entity';
+import { ECStock } from '@rahino/database';
 
 @Injectable()
 export class StockProfile extends AutomapperProfile {

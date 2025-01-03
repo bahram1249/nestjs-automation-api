@@ -4,8 +4,8 @@ import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builde
 import * as _ from 'lodash';
 import { Op, Sequelize } from 'sequelize';
 import { GetNeighborhoodDto } from './dto';
-import { ECCity } from '@rahino/database/models/ecommerce-eav/ec-city.entity';
-import { ECNeighborhood } from '@rahino/database/models/ecommerce-eav/ec-neighborhood.entity';
+import { ECCity } from '@rahino/database';
+import { ECNeighborhood } from '@rahino/database';
 
 @Injectable()
 export class NeighborhoodService {

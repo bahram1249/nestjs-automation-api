@@ -16,24 +16,24 @@ import {
   QueryOptionsBuilder,
 } from '@rahino/query-filter/sequelize-query-builder';
 import { InventoryStatusEnum } from '@rahino/ecommerce/inventory/enum';
-import { ECVariationPrice } from '@rahino/database/models/ecommerce-eav/ec-variation-prices';
-import { ECInventoryPrice } from '@rahino/database/models/ecommerce-eav/ec-inventory-price.entity';
-import { ECProvince } from '@rahino/database/models/ecommerce-eav/ec-province.entity';
-import { ECGuaranteeMonth } from '@rahino/database/models/ecommerce-eav/ec-guarantee-month.entity';
-import { ECGuarantee } from '@rahino/database/models/ecommerce-eav/ec-guarantee.entity';
-import { ECColor } from '@rahino/database/models/ecommerce-eav/ec-color.entity';
-import { ECVendor } from '@rahino/database/models/ecommerce-eav/ec-vendor.entity';
-import { ECInventoryStatus } from '@rahino/database/models/ecommerce-eav/ec-inventory-status.entity';
-import { ECInventory } from '@rahino/database/models/ecommerce-eav/ec-inventory.entity';
-import { Attachment } from '@rahino/database/models/core/attachment.entity';
-import { EAVEntityType } from '@rahino/database/models/eav/eav-entity-type.entity';
-import { ECBrand } from '@rahino/database/models/ecommerce-eav/ec-brand.entity';
-import { ECPublishStatus } from '@rahino/database/models/ecommerce-eav/ec-publish-status.entity';
+import { ECVariationPrice } from '@rahino/database';
+import { ECInventoryPrice } from '@rahino/database';
+import { ECProvince } from '@rahino/database';
+import { ECGuaranteeMonth } from '@rahino/database';
+import { ECGuarantee } from '@rahino/database';
+import { ECColor } from '@rahino/database';
+import { ECVendor } from '@rahino/database';
+import { ECInventoryStatus } from '@rahino/database';
+import { ECInventory } from '@rahino/database';
+import { Attachment } from '@rahino/database';
+import { EAVEntityType } from '@rahino/database';
+import { ECBrand } from '@rahino/database';
+import { ECPublishStatus } from '@rahino/database';
 
 import * as _ from 'lodash';
-import { EAVEntityAttributeValue } from '@rahino/database/models/eav/eav-entity-attribute-value.entity';
-import { EAVAttribute } from '@rahino/database/models/eav/eav-attribute.entity';
-import { EAVAttributeValue } from '@rahino/database/models/eav/eav-attribute-value';
+import { EAVEntityAttributeValue } from '@rahino/database';
+import { EAVAttribute } from '@rahino/database';
+import { EAVAttributeValue } from '@rahino/database';
 import { InjectConnection, InjectModel } from '@nestjs/sequelize';
 
 @Injectable()

@@ -4,14 +4,14 @@ import {
   NotImplementedException,
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
-import { Buffet } from '@rahino/database/models/discount-coffe/buffet.entity';
-import { BuffetType } from '@rahino/database/models/discount-coffe/buffet-type.entity';
-import { BuffetCost } from '@rahino/database/models/discount-coffe/buffet-cost.entity';
-import { BuffetCity } from '@rahino/database/models/discount-coffe/city.entity';
-import { User } from '@rahino/database/models/core/user.entity';
-import { CoffeOption } from '@rahino/database/models/discount-coffe/coffe-option.entity';
-import { BuffetOption } from '@rahino/database/models/discount-coffe/buffet-option.entity';
-import { Attachment } from '@rahino/database/models/core/attachment.entity';
+import { Buffet } from '@rahino/database';
+import { BuffetType } from '@rahino/database';
+import { BuffetCost } from '@rahino/database';
+import { BuffetCity } from '@rahino/database';
+import { User } from '@rahino/database';
+import { CoffeOption } from '@rahino/database';
+import { BuffetOption } from '@rahino/database';
+import { Attachment } from '@rahino/database';
 
 @Injectable()
 export class BuffetService {

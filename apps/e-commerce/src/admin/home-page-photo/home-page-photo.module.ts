@@ -2,10 +2,10 @@ import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { HomePagePhotoController } from './home-page-photo.controller';
 import { HomePagePhotoService } from './home-page-photo.service';
 import { SequelizeModule } from '@nestjs/sequelize';
-import { Permission } from '@rahino/database/models/core/permission.entity';
-import { User } from '@rahino/database/models/core/user.entity';
+import { Permission } from '@rahino/database';
+import { User } from '@rahino/database';
 import { MinioClientModule } from '@rahino/minio-client';
-import { Attachment } from '@rahino/database/models/core/attachment.entity';
+import { Attachment } from '@rahino/database';
 
 @Module({
   imports: [

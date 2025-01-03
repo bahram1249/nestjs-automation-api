@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import * as _ from 'lodash';
-import { ECEntityTypeSort } from '@rahino/database/models/ecommerce-eav/ec-entityType-sort.entity';
+import { ECEntityTypeSort } from '@rahino/database';
 
 @Injectable()
 export class EntityTypeSortService {

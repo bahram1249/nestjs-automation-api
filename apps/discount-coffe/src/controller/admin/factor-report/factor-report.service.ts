@@ -1,9 +1,9 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
-import { Menu } from '@rahino/database/models/core/menu.entity';
-import { User } from '@rahino/database/models/core/user.entity';
-import { Buffet } from '@rahino/database/models/discount-coffe/buffet.entity';
-import { VW_BuffetReservers } from '@rahino/database/models/discount-coffe/vw_buffet_reserve.entity';
+import { Menu } from '@rahino/database';
+import { User } from '@rahino/database';
+import { Buffet } from '@rahino/database';
+import { VW_BuffetReservers } from '@rahino/database';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import { Request } from 'express';
 import { Op } from 'sequelize';

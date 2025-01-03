@@ -4,7 +4,7 @@ import { REVERT_INVENTORY_QTY_QUEUE } from '../constants';
 import { DBLogger } from '@rahino/logger';
 import { RevertInventoryQtyService } from '../services';
 import { InjectModel } from '@nestjs/sequelize';
-import { ECPayment } from '@rahino/database/models/ecommerce-eav/ec-payment-entity';
+import { ECPayment } from '@rahino/database';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import {
   PaymentStatusEnum,
@@ -12,7 +12,7 @@ import {
 } from '@rahino/ecommerce/util/enum';
 import { Op, Sequelize } from 'sequelize';
 import { PaymentServiceManualProviderFactory } from '@rahino/ecommerce/user/payment/provider/factory/payment-service-manual-provider.factory';
-import { ECWallet } from '@rahino/database/models/ecommerce-eav/ec-wallet.entity';
+import { ECWallet } from '@rahino/database';
 import { RevertPaymentQtyService } from '../services/revert-payment-qty.service';
 
 @Processor(REVERT_INVENTORY_QTY_QUEUE)

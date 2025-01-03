@@ -6,11 +6,11 @@ import {
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { InjectModel } from '@nestjs/sequelize';
-import { Permission } from '@rahino/database/models/core/permission.entity';
-import { RolePermission } from '@rahino/database/models/core/rolePermission.entity';
-import { Role } from '@rahino/database/models/core/role.entity';
-import { UserRole } from '@rahino/database/models/core/userRole.entity';
-import { User } from '@rahino/database/models/core/user.entity';
+import { Permission } from '@rahino/database';
+import { RolePermission } from '@rahino/database';
+import { Role } from '@rahino/database';
+import { UserRole } from '@rahino/database';
+import { User } from '@rahino/database';
 import { PermissionReflector } from '../interface';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { Cache } from 'cache-manager';

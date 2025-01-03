@@ -1,14 +1,14 @@
 import { Module } from '@nestjs/common';
 import { SequelizeModule } from '@nestjs/sequelize';
-import { Setting } from '@rahino/database/models/core/setting.entity';
+import { Setting } from '@rahino/database';
 import {
   RetrievePricePersianApiService,
   RetrievePriceRunnerService,
 } from './services';
 import { QueryFilterModule } from '@rahino/query-filter';
-import { ECInventory } from '@rahino/database/models/ecommerce-eav/ec-inventory.entity';
+import { ECInventory } from '@rahino/database';
 import { CalPriceFactoryModule } from '@rahino/ecommerce/admin/product/price-cal-factory/cal-price-factory.module';
-import { ECInventoryPrice } from '@rahino/database/models/ecommerce-eav/ec-inventory-price.entity';
+import { ECInventoryPrice } from '@rahino/database';
 import { RetrievePriceProcessor } from './processor';
 import { BullModule } from '@nestjs/bullmq';
 import { ConfigModule, ConfigService } from '@nestjs/config';

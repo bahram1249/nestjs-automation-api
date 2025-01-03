@@ -7,9 +7,9 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
-import { GetUser } from '@rahino/auth/decorator';
-import { JwtGuard } from '@rahino/auth/guard';
-import { User } from '@rahino/database/models/core/user.entity';
+import { GetUser } from '@rahino/auth';
+import { JwtGuard } from '@rahino/auth';
+import { User } from '@rahino/database';
 import { JsonResponseTransformInterceptor } from '@rahino/response/interceptor';
 import { DashboardService } from './dashboard.service';
 

@@ -18,13 +18,13 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 
-import { JwtGuard } from '@rahino/auth/guard';
+import { JwtGuard } from '@rahino/auth';
 import { OptionalSessionGuard } from '../user/session/guard';
 import { ProductCommentService } from './product-comment.service';
 import { ListFilter } from '@rahino/query-filter';
 import { ProductCommentDto } from './dto';
-import { GetUser } from '@rahino/auth/decorator';
-import { User } from '@rahino/database/models/core/user.entity';
+import { GetUser } from '@rahino/auth';
+import { User } from '@rahino/database';
 
 @ApiTags('Product-Comment')
 @UseInterceptors(JsonResponseTransformInterceptor)

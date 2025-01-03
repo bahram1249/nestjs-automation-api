@@ -1,14 +1,14 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { User } from '@rahino/database/models/core/user.entity';
+import { User } from '@rahino/database';
 import { EntityTypeFactorDto, GetEntityTypeFactorDto } from './dto';
 import { InjectModel } from '@nestjs/sequelize';
-import { ECEntityTypeFactor } from '@rahino/database/models/ecommerce-eav/ec-entitytype-factor.entity';
+import { ECEntityTypeFactor } from '@rahino/database';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import { Sequelize } from 'sequelize';
 import { Op } from 'sequelize';
 import { I18nContext, I18nService } from 'nestjs-i18n';
 import { I18nTranslations } from 'apps/main/src/generated/i18n.generated';
-import { EAVEntityType } from '@rahino/database/models/eav/eav-entity-type.entity';
+import { EAVEntityType } from '@rahino/database';
 import { InjectMapper } from 'automapper-nestjs';
 import { Mapper } from 'automapper-core';
 import * as _ from 'lodash';

@@ -5,7 +5,7 @@ import {
   PaymentTypeEnum,
 } from '@rahino/ecommerce/util/enum';
 import { InjectModel } from '@nestjs/sequelize';
-import { ECPaymentGateway } from '@rahino/database/models/ecommerce-eav/ec-payment-gateway.entity';
+import { ECPaymentGateway } from '@rahino/database';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import { Sequelize, Transaction } from 'sequelize';
 import { Op } from 'sequelize';
@@ -13,15 +13,15 @@ import {
   BadRequestException,
   InternalServerErrorException,
 } from '@nestjs/common';
-import { ECPayment } from '@rahino/database/models/ecommerce-eav/ec-payment-entity';
+import { ECPayment } from '@rahino/database';
 import { Base64 } from 'base64-string';
 import axios from 'axios';
-import { ECOrderDetail } from '@rahino/database/models/ecommerce-eav/ec-order-detail.entity';
+import { ECOrderDetail } from '@rahino/database';
 import { SnapPayDto } from '@rahino/ecommerce/verify-payment/dto';
-import { ECOrder } from '@rahino/database/models/ecommerce-eav/ec-order.entity';
+import { ECOrder } from '@rahino/database';
 import { Response } from 'express';
 import { ConfigService } from '@nestjs/config';
-import { User } from '@rahino/database/models/core/user.entity';
+import { User } from '@rahino/database';
 import { FinalizedPaymentService } from '../../util/finalized-payment/finalized-payment.service';
 import { RevertPaymentQtyService } from '@rahino/ecommerce/inventory/services/revert-payment-qty.service';
 

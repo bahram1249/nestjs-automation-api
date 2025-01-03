@@ -7,10 +7,10 @@ import {
 import { NotificationController } from './notification.controller';
 import { NotificationService } from './notification.service';
 import { SequelizeModule } from '@nestjs/sequelize';
-import { Permission } from '@rahino/database/models/core/permission.entity';
-import { User } from '@rahino/database/models/core/user.entity';
+import { Permission } from '@rahino/database';
+import { User } from '@rahino/database';
 import { NotificationProfile } from './mapper';
-import { ECNotification } from '@rahino/database/models/ecommerce-eav/ec-notification.entity';
+import { ECNotification } from '@rahino/database';
 
 @Module({
   imports: [SequelizeModule.forFeature([User, Permission, ECNotification])],

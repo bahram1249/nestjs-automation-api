@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { EmojiLogger } from './emoji-logger.logger';
-import { WinstonLog } from '@rahino/database/models/core/winstonlog.entity';
+import { WinstonLog } from '@rahino/database';
 
 @Injectable()
 export class DBLogger extends EmojiLogger {

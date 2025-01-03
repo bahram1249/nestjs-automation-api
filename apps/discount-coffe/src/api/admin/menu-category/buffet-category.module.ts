@@ -1,14 +1,14 @@
 import { Module } from '@nestjs/common';
 import { SequelizeModule } from '@nestjs/sequelize';
-import { Permission } from '@rahino/database/models/core/permission.entity';
-import { User } from '@rahino/database/models/core/user.entity';
-import { AttachmentType } from '@rahino/database/models/core/attachmentType.entity';
+import { Permission } from '@rahino/database';
+import { User } from '@rahino/database';
+import { AttachmentType } from '@rahino/database';
 import { FileModule } from '@rahino/file';
 import { ThumbnailModule } from '@rahino/thumbnail';
-import { Attachment } from '@rahino/database/models/core/attachment.entity';
+import { Attachment } from '@rahino/database';
 import { MenuCategoryService } from './menu-category.service';
 import { MenuCategoryController } from './menu-category.controller';
-import { BuffetMenuCategory } from '@rahino/database/models/discount-coffe/buffet-menu-category.entity';
+import { BuffetMenuCategory } from '@rahino/database';
 
 @Module({
   imports: [

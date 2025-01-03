@@ -3,15 +3,15 @@ import { LoginService } from './login.service';
 import { LoginController } from './login.controller';
 import { RedisClientModule } from '@rahino/redis-client';
 import { SequelizeModule } from '@nestjs/sequelize';
-import { User } from '@rahino/database/models/core/user.entity';
+import { User } from '@rahino/database';
 import { AuthService } from '@rahino/core/auth/auth.service';
-import { JwtStrategy } from '@rahino/auth/strategy';
+import { JwtStrategy } from '@rahino/auth';
 import { JwtModule } from '@nestjs/jwt';
-import { Menu } from '@rahino/database/models/core/menu.entity';
-import { RolePermission } from '@rahino/database/models/core/rolePermission.entity';
-import { PermissionMenu } from '@rahino/database/models/core/permission-menu.entity';
+import { Menu } from '@rahino/database';
+import { RolePermission } from '@rahino/database';
+import { PermissionMenu } from '@rahino/database';
 import { ECommerceSmsModule } from '@rahino/ecommerce/util/sms/ecommerce-sms.module';
-import { ECWallet } from '@rahino/database/models/ecommerce-eav/ec-wallet.entity';
+import { ECWallet } from '@rahino/database';
 
 @Module({
   imports: [

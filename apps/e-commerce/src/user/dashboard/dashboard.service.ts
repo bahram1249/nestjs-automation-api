@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
-import { User } from '@rahino/database/models/core/user.entity';
-import { ECOrder } from '@rahino/database/models/ecommerce-eav/ec-order.entity';
-import { ECProductComment } from '@rahino/database/models/ecommerce-eav/ec-product-comment.entity';
-import { ECWallet } from '@rahino/database/models/ecommerce-eav/ec-wallet.entity';
+import { User } from '@rahino/database';
+import { ECOrder } from '@rahino/database';
+import { ECProductComment } from '@rahino/database';
+import { ECWallet } from '@rahino/database';
 import {
   OrderStatusEnum,
   ProductCommentStatusEnum,

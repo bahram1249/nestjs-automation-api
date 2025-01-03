@@ -1,7 +1,7 @@
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
-import { ECInventoryPrice } from '@rahino/database/models/ecommerce-eav/ec-inventory-price.entity';
-import { ECStock } from '@rahino/database/models/ecommerce-eav/ec-stocks.entity';
-import { ECVariationPrice } from '@rahino/database/models/ecommerce-eav/ec-variation-prices';
+import { ECInventoryPrice } from '@rahino/database';
+import { ECStock } from '@rahino/database';
+import { ECVariationPrice } from '@rahino/database';
 import { StockPriceInterface, VariationStockInterface } from './interface';
 import * as _ from 'lodash';
 import { VariationPriceEnum } from '../../enum';

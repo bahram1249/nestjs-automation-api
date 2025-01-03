@@ -1,4 +1,4 @@
-import { ECVariationPrice } from '@rahino/database/models/ecommerce-eav/ec-variation-prices';
+import { ECVariationPrice } from '@rahino/database';
 
 export interface StockPriceInterface {
   stockId: bigint;

@@ -2,8 +2,8 @@ import { Injectable } from '@nestjs/common';
 import { AutomapperProfile, InjectMapper } from 'automapper-nestjs';
 import { VendorDto, VendorUserDto } from '../dto';
 import { Mapper, createMap, forMember, ignore } from 'automapper-core';
-import { ECVendor } from '@rahino/database/models/ecommerce-eav/ec-vendor.entity';
-import { User } from '@rahino/database/models/core/user.entity';
+import { ECVendor } from '@rahino/database';
+import { User } from '@rahino/database';
 
 @Injectable()
 export class VendorProfile extends AutomapperProfile {

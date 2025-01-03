@@ -5,11 +5,11 @@ import {
 } from '@nestjs/common';
 import { GetVendorSaleDto } from './dto';
 import { InjectModel } from '@nestjs/sequelize';
-import { PersianDate } from '@rahino/database/models/core/view/persiandate.entity';
+import { PersianDate } from '@rahino/database';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import { I18nContext, I18nService } from 'nestjs-i18n';
 import { I18nTranslations } from 'apps/main/src/generated/i18n.generated';
-import { User } from '@rahino/database/models/core/user.entity';
+import { User } from '@rahino/database';
 import { UserVendorService } from '@rahino/ecommerce/user/vendor/user-vendor.service';
 import { Knex } from 'knex';
 import { InjectKnex } from 'nestjs-knex';

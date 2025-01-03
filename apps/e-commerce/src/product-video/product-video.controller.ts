@@ -24,12 +24,12 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { Response } from 'express';
-import { JwtGuard } from '@rahino/auth/guard';
+import { JwtGuard } from '@rahino/auth';
 import { ProductVideoService } from './product-video.service';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { imageOptions } from './file-options';
-import { GetUser } from '@rahino/auth/decorator';
-import { User } from '@rahino/database/models/core/user.entity';
+import { GetUser } from '@rahino/auth';
+import { User } from '@rahino/database';
 
 @ApiTags('ProductVideos')
 @Controller({

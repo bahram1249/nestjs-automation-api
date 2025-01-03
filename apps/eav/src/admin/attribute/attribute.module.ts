@@ -2,13 +2,13 @@ import { Module } from '@nestjs/common';
 import { AttributeController } from './attribute.controller';
 import { AttributeService } from './attribute.service';
 import { SequelizeModule } from '@nestjs/sequelize';
-import { User } from '@rahino/database/models/core/user.entity';
-import { Permission } from '@rahino/database/models/core/permission.entity';
-import { EAVAttribute } from '@rahino/database/models/eav/eav-attribute.entity';
-import { EAVEntityAttribute } from '@rahino/database/models/eav/eav-entity-attribute.entity';
+import { User } from '@rahino/database';
+import { Permission } from '@rahino/database';
+import { EAVAttribute } from '@rahino/database';
+import { EAVEntityAttribute } from '@rahino/database';
 import { AttributeProfile } from './mapper';
-import { EAVAttributeType } from '@rahino/database/models/eav/eav-attribute-type.entity';
-import { EAVEntityType } from '@rahino/database/models/eav/eav-entity-type.entity';
+import { EAVAttributeType } from '@rahino/database';
+import { EAVEntityType } from '@rahino/database';
 
 @Module({
   imports: [

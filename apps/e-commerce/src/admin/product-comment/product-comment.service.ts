@@ -1,21 +1,21 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
-import { User } from '@rahino/database/models/core/user.entity';
+import { User } from '@rahino/database';
 import { ConfirmCommentDto, GetProductCommentDto } from './dto';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import { Sequelize } from 'sequelize';
 import { Op } from 'sequelize';
 import { I18nContext, I18nService } from 'nestjs-i18n';
 import { I18nTranslations } from 'apps/main/src/generated/i18n.generated';
-import { ECProductComment } from '@rahino/database/models/ecommerce-eav/ec-product-comment.entity';
-import { ECProductCommentStatus } from '@rahino/database/models/ecommerce-eav/ec-comment-status.entity';
-import { ECProductCommentFactor } from '@rahino/database/models/ecommerce-eav/ec-product-comment-factor.entity';
-import { ECEntityTypeFactor } from '@rahino/database/models/ecommerce-eav/ec-entitytype-factor.entity';
+import { ECProductComment } from '@rahino/database';
+import { ECProductCommentStatus } from '@rahino/database';
+import { ECProductCommentFactor } from '@rahino/database';
+import { ECEntityTypeFactor } from '@rahino/database';
 import { ProductCommentStatusEnum } from '@rahino/ecommerce/util/enum/product-comment-status.enum';
 import { SCORE_COMMENT_JOB, SCORE_COMMENT_QUEUE } from './constants';
 import { InjectQueue } from '@nestjs/bullmq';
 import { Queue } from 'bullmq';
-import { ECProduct } from '@rahino/database/models/ecommerce-eav/ec-product.entity';
+import { ECProduct } from '@rahino/database';
 
 @Injectable()
 export class ProductCommentService {

@@ -1,12 +1,12 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { InjectModel } from '@nestjs/sequelize';
-import { User } from '@rahino/database/models/core/user.entity';
-import { ECOrderDetail } from '@rahino/database/models/ecommerce-eav/ec-order-detail.entity';
-import { ECOrder } from '@rahino/database/models/ecommerce-eav/ec-order.entity';
-import { ECPayment } from '@rahino/database/models/ecommerce-eav/ec-payment-entity';
-import { ECVendorUser } from '@rahino/database/models/ecommerce-eav/ec-vendor-user.entity';
-import { ECVendor } from '@rahino/database/models/ecommerce-eav/ec-vendor.entity';
+import { User } from '@rahino/database';
+import { ECOrderDetail } from '@rahino/database';
+import { ECOrder } from '@rahino/database';
+import { ECPayment } from '@rahino/database';
+import { ECVendorUser } from '@rahino/database';
+import { ECVendor } from '@rahino/database';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import { SMS_SERVICE } from '@rahino/sms/contants';
 import { SmsService } from '@rahino/sms/sms.service';

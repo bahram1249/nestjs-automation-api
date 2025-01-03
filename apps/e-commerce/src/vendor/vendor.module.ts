@@ -7,21 +7,21 @@ import {
 import { VendorController } from './vendor.controller';
 import { VendorService } from './vendor.service';
 import { SequelizeModule } from '@nestjs/sequelize';
-import { Permission } from '@rahino/database/models/core/permission.entity';
-import { User } from '@rahino/database/models/core/user.entity';
+import { Permission } from '@rahino/database';
+import { User } from '@rahino/database';
 import { VendorProfile } from './mapper';
 import { UserRoleModule } from '@rahino/core/admin/user-role/user-role.module';
-import { ECVendor } from '@rahino/database/models/ecommerce-eav/ec-vendor.entity';
-import { ECVendorUser } from '@rahino/database/models/ecommerce-eav/ec-vendor-user.entity';
-import { Role } from '@rahino/database/models/core/role.entity';
+import { ECVendor } from '@rahino/database';
+import { ECVendorUser } from '@rahino/database';
+import { Role } from '@rahino/database';
 import { MinioClientModule } from '@rahino/minio-client';
 import { ReverseProxyVendorImageMiddleware } from './reverse-proxy.middleware';
-import { Attachment } from '@rahino/database/models/core/attachment.entity';
+import { Attachment } from '@rahino/database';
 import { ThumbnailModule } from '@rahino/thumbnail';
 import { ConfigService } from '@nestjs/config';
 import { SessionModule } from '../user/session/session.module';
-import { ECVariationPrice } from '@rahino/database/models/ecommerce-eav/ec-variation-prices';
-import { ECVendorCommission } from '@rahino/database/models/ecommerce-eav/ec-vendor-commision.entity';
+import { ECVariationPrice } from '@rahino/database';
+import { ECVendorCommission } from '@rahino/database';
 
 @Module({
   imports: [

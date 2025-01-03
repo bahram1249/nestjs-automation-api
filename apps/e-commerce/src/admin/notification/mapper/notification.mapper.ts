@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { AutomapperProfile, InjectMapper } from 'automapper-nestjs';
 import { NotificationDto } from '../dto';
 import { Mapper, createMap, forMember, ignore } from 'automapper-core';
-import { ECNotification } from '@rahino/database/models/ecommerce-eav/ec-notification.entity';
+import { ECNotification } from '@rahino/database';
 
 @Injectable()
 export class NotificationProfile extends AutomapperProfile {

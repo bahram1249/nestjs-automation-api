@@ -8,24 +8,24 @@ import {
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { Op, Sequelize } from 'sequelize';
-import { Buffet } from '@rahino/database/models/discount-coffe/buffet.entity';
+import { Buffet } from '@rahino/database';
 import { ListFilter } from '@rahino/query-filter';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
-import { Attachment } from '@rahino/database/models/core/attachment.entity';
+import { Attachment } from '@rahino/database';
 import { BuffetDto } from './dto';
-import { User } from '@rahino/database/models/core/user.entity';
-import { AttachmentType } from '@rahino/database/models/core/attachmentType.entity';
+import { User } from '@rahino/database';
+import { AttachmentType } from '@rahino/database';
 import { FileService } from '@rahino/file';
 import { ThumbnailService } from '@rahino/thumbnail';
 import * as path from 'path';
 import * as _ from 'lodash';
 import { Response } from 'express';
 import * as fs from 'fs';
-import { Role } from '@rahino/database/models/core/role.entity';
-import { UserRole } from '@rahino/database/models/core/userRole.entity';
-import { BuffetOption } from '@rahino/database/models/discount-coffe/buffet-option.entity';
+import { Role } from '@rahino/database';
+import { UserRole } from '@rahino/database';
+import { BuffetOption } from '@rahino/database';
 import { replaceCharacterSlug } from '@rahino/commontools';
-import { BuffetGallery } from '@rahino/database/models/discount-coffe/buffet-gallery.entity';
+import { BuffetGallery } from '@rahino/database';
 
 @Injectable()
 export class BuffetService {

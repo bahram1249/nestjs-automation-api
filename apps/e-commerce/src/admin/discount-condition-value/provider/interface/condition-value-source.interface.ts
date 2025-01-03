@@ -1,4 +1,4 @@
-import { User } from '@rahino/database/models/core/user.entity';
+import { User } from '@rahino/database';
 import { ListFilter } from '@rahino/query-filter';
 import { ConditionValueResInterface } from './condition-value-res.interface';
 

@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { InjectModel } from '@nestjs/sequelize';
-import { User } from '@rahino/database/models/core/user.entity';
-import { ECUserSession } from '@rahino/database/models/ecommerce-eav/ec-user-session.entity';
+import { User } from '@rahino/database';
+import { ECUserSession } from '@rahino/database';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import * as randomstring from 'randomstring';
 import { Op, Sequelize } from 'sequelize';

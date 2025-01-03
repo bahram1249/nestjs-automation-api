@@ -4,9 +4,9 @@ import { InjectModel } from '@nestjs/sequelize';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import { Op, Sequelize } from 'sequelize';
 import * as _ from 'lodash';
-import { Attachment } from '@rahino/database/models/core/attachment.entity';
-import { ECSelectedProduct } from '@rahino/database/models/ecommerce-eav/ec-selected-product.entity';
-import { ECSelectedProductType } from '@rahino/database/models/ecommerce-eav/ec-selected-product-type.entity';
+import { Attachment } from '@rahino/database';
+import { ECSelectedProduct } from '@rahino/database';
+import { ECSelectedProductType } from '@rahino/database';
 
 @Injectable()
 export class SelectedProductService {

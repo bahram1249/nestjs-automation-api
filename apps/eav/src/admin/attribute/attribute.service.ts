@@ -6,15 +6,15 @@ import {
 import { InjectModel } from '@nestjs/sequelize';
 import { Op, Sequelize } from 'sequelize';
 import { AttributeDto, GetAttributeDto, UpdateAttributeDto } from './dto';
-import { EAVAttribute } from '@rahino/database/models/eav/eav-attribute.entity';
-import { EAVEntityAttribute } from '@rahino/database/models/eav/eav-entity-attribute.entity';
+import { EAVAttribute } from '@rahino/database';
+import { EAVEntityAttribute } from '@rahino/database';
 import { InjectMapper } from 'automapper-nestjs';
 import { Mapper } from 'automapper-core';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
-import { EAVAttributeType } from '@rahino/database/models/eav/eav-attribute-type.entity';
-import { EAVEntityType } from '@rahino/database/models/eav/eav-entity-type.entity';
+import { EAVAttributeType } from '@rahino/database';
+import { EAVEntityType } from '@rahino/database';
 import * as _ from 'lodash';
-import { EAVAttributeValue } from '@rahino/database/models/eav/eav-attribute-value';
+import { EAVAttributeValue } from '@rahino/database';
 
 @Injectable()
 export class AttributeService {

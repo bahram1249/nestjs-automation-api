@@ -5,14 +5,14 @@ import {
 } from '@nestjs/common';
 import { GetVendorSaleDto } from './dto';
 import { InjectModel } from '@nestjs/sequelize';
-import { PersianDate } from '@rahino/database/models/core/view/persiandate.entity';
+import { PersianDate } from '@rahino/database';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import { I18nContext, I18nService } from 'nestjs-i18n';
 import { I18nTranslations } from 'apps/main/src/generated/i18n.generated';
 import { SaleQueryBuilderService } from '../sale-query-builder/sale-query-builder.service';
-import { ECOrderDetail } from '@rahino/database/models/ecommerce-eav/ec-order-detail.entity';
+import { ECOrderDetail } from '@rahino/database';
 import { Sequelize } from 'sequelize';
-import { User } from '@rahino/database/models/core/user.entity';
+import { User } from '@rahino/database';
 import { UserVendorService } from '@rahino/ecommerce/user/vendor/user-vendor.service';
 
 @Injectable()

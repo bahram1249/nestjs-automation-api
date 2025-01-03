@@ -2,9 +2,9 @@ import { Module } from '@nestjs/common';
 import { ProfileService } from './profile.service';
 import { ProfileController } from './profile.controller';
 import { SequelizeModule } from '@nestjs/sequelize';
-import { User } from '@rahino/database/models/core/user.entity';
-import { Attachment } from '@rahino/database/models/core/attachment.entity';
-import { AttachmentType } from '@rahino/database/models/core/attachmentType.entity';
+import { User } from '@rahino/database';
+import { Attachment } from '@rahino/database';
+import { AttachmentType } from '@rahino/database';
 import { FileModule } from '@rahino/file';
 import { ThumbnailModule } from '@rahino/thumbnail';
 

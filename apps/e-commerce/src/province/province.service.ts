@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import * as _ from 'lodash';
-import { ECProvince } from '@rahino/database/models/ecommerce-eav/ec-province.entity';
+import { ECProvince } from '@rahino/database';
 import { Op, Sequelize } from 'sequelize';
 
 @Injectable()

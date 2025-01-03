@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { TransactionController } from './transaction.controller';
 import { TransactionService } from './transaction.service';
-import { ECPayment } from '@rahino/database/models/ecommerce-eav/ec-payment-entity';
+import { ECPayment } from '@rahino/database';
 import { SequelizeModule } from '@nestjs/sequelize';
 
 @Module({

@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { ListFilter } from '@rahino/query-filter';
-import { User } from '@rahino/database/models/core/user.entity';
+import { User } from '@rahino/database';
 import * as _ from 'lodash';
-import { VW_BuffetReservers } from '@rahino/database/models/discount-coffe/vw_buffet_reserve.entity';
+import { VW_BuffetReservers } from '@rahino/database';
 import { InjectModel } from '@nestjs/sequelize';
 import { Sequelize } from 'sequelize';
 

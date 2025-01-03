@@ -10,12 +10,12 @@ import {
   Res,
   UseGuards,
 } from '@nestjs/common';
-import { JwtWebGuard } from '@rahino/auth/guard';
-import { GetUser } from '@rahino/auth/decorator';
-import { Menu } from '@rahino/database/models/core/menu.entity';
+import { JwtWebGuard } from '@rahino/auth';
+import { GetUser } from '@rahino/auth';
+import { Menu } from '@rahino/database';
 import { Request } from 'express';
 import { UserService } from './user.service';
-import { User } from '@rahino/database/models/core/user.entity';
+import { User } from '@rahino/database';
 import { UserDto, UserPasswordDto } from './dto';
 
 @UseGuards(JwtWebGuard)

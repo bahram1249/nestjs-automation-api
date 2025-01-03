@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
-import { Setting } from '@rahino/database/models/core/setting.entity';
+import { Setting } from '@rahino/database';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import { InjectQueue } from '@nestjs/bullmq';
 import { RETRIEVE_PRICE_JOB, RETRIEVE_PRICE_QUEUE } from '../constants';

@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
-import { PersianDate } from '@rahino/database/models/core/view/persiandate.entity';
+import { PersianDate } from '@rahino/database';
 import { Op, Sequelize } from 'sequelize';
 
 @Injectable()

@@ -1,6 +1,6 @@
 import { Controller, Get, Render, Req, UseGuards } from '@nestjs/common';
 import { HomeService } from './home.service';
-import { OptionalJwtWebGuard } from '@rahino/auth/guard';
+import { OptionalJwtWebGuard } from '@rahino/auth';
 import { Request } from 'express';
 
 @Controller({

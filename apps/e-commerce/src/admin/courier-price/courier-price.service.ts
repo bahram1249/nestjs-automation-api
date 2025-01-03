@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { CourierPriceDto } from './dto';
 import { InjectModel } from '@nestjs/sequelize';
-import { Setting } from '@rahino/database/models/core/setting.entity';
+import { Setting } from '@rahino/database';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import { CourierPriceEnum } from './enum';
 

@@ -19,13 +19,13 @@ import {
   ApiQuery,
   ApiTags,
 } from '@nestjs/swagger';
-import { JwtGuard } from '@rahino/auth/guard';
+import { JwtGuard } from '@rahino/auth';
 import { PermissionGuard } from '@rahino/permission-checker/guard';
 import { JsonResponseTransformInterceptor } from '@rahino/response/interceptor';
 import { CheckPermission } from '@rahino/permission-checker/decorator';
 import { CreateDiscountDto, FactorDiscountDto, GetDiscountDto } from './dto';
-import { GetUser } from '@rahino/auth/decorator';
-import { User } from '@rahino/database/models/core/user.entity';
+import { GetUser } from '@rahino/auth';
+import { User } from '@rahino/database';
 
 @ApiTags('Admin-FactorDiscounts')
 @ApiBearerAuth()

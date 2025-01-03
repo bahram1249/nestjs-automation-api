@@ -1,10 +1,10 @@
 import { Module } from '@nestjs/common';
 import { PriceFormulaService } from './price-formula.service';
 import { SequelizeModule } from '@nestjs/sequelize';
-import { User } from '@rahino/database/models/core/user.entity';
-import { Permission } from '@rahino/database/models/core/permission.entity';
+import { User } from '@rahino/database';
+import { Permission } from '@rahino/database';
 import { PriceFormulaController } from './price-formula.controller';
-import { ECProductPriceFormula } from '@rahino/database/models/ecommerce-eav/ec-product-price-formula';
+import { ECProductPriceFormula } from '@rahino/database';
 
 @Module({
   imports: [

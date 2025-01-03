@@ -7,16 +7,16 @@ import {
 import { SelectedProductController } from './selected-product.controller';
 import { SelectedProductService } from './selected-product.service';
 import { SequelizeModule } from '@nestjs/sequelize';
-import { ECBrand } from '@rahino/database/models/ecommerce-eav/ec-brand.entity';
-import { Permission } from '@rahino/database/models/core/permission.entity';
-import { User } from '@rahino/database/models/core/user.entity';
+import { ECBrand } from '@rahino/database';
+import { Permission } from '@rahino/database';
+import { User } from '@rahino/database';
 import { SelectedProductProfile } from './mapper';
 import { MinioClientModule } from '@rahino/minio-client';
-import { Attachment } from '@rahino/database/models/core/attachment.entity';
+import { Attachment } from '@rahino/database';
 import { ReverseProxySelectedProductImageMiddleware } from './reverse-proxy.middleware';
 import { ThumbnailModule } from '@rahino/thumbnail';
 import { ConfigService } from '@nestjs/config';
-import { ECSelectedProduct } from '@rahino/database/models/ecommerce-eav/ec-selected-product.entity';
+import { ECSelectedProduct } from '@rahino/database';
 
 @Module({
   imports: [

@@ -1,12 +1,12 @@
 import { Module } from '@nestjs/common';
 import { SequelizeModule } from '@nestjs/sequelize';
-import { Permission } from '@rahino/database/models/core/permission.entity';
-import { User } from '@rahino/database/models/core/user.entity';
-import { ECEntityTypeFactor } from '@rahino/database/models/ecommerce-eav/ec-entitytype-factor.entity';
+import { Permission } from '@rahino/database';
+import { User } from '@rahino/database';
+import { ECEntityTypeFactor } from '@rahino/database';
 import { EntityTypeFactorService } from './entity-type-factor.service';
 import { EntityTypeFactorController } from './entity-type-factor.controller';
 import { EntityTypFactorProfile } from './mapper';
-import { EAVEntityType } from '@rahino/database/models/eav/eav-entity-type.entity';
+import { EAVEntityType } from '@rahino/database';
 
 @Module({
   imports: [

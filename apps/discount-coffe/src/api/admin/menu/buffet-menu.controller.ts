@@ -31,13 +31,13 @@ import {
 } from '@nestjs/swagger';
 import { Response } from 'express';
 
-import { JwtGuard } from '@rahino/auth/guard';
+import { JwtGuard } from '@rahino/auth';
 import { ListFilter } from '@rahino/query-filter';
 import { MenuDto, MenuGetDto } from './dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { coverOptions } from './file-options';
-import { GetUser } from '@rahino/auth/decorator';
-import { User } from '@rahino/database/models/core/user.entity';
+import { GetUser } from '@rahino/auth';
+import { User } from '@rahino/database';
 import { BuffetMenuService } from './buffet-menu.service';
 
 @ApiTags('DiscountCoffe-MenuCategories')

@@ -1,12 +1,12 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { Op, Sequelize } from 'sequelize';
-import { Menu } from '@rahino/database/models/core/menu.entity';
+import { Menu } from '@rahino/database';
 import { MenuGetDto } from './dto';
-import { User } from '@rahino/database/models/core/user.entity';
-import { UserRole } from '@rahino/database/models/core/userRole.entity';
-import { RolePermission } from '@rahino/database/models/core/rolePermission.entity';
-import { PermissionMenu } from '@rahino/database/models/core/permission-menu.entity';
+import { User } from '@rahino/database';
+import { UserRole } from '@rahino/database';
+import { RolePermission } from '@rahino/database';
+import { PermissionMenu } from '@rahino/database';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 
 @Injectable()

@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { AutomapperProfile, InjectMapper } from 'automapper-nestjs';
 import { BrandDto } from '../dto';
-import { ECBrand } from '@rahino/database/models/ecommerce-eav/ec-brand.entity';
+import { ECBrand } from '@rahino/database';
 import { Mapper, createMap, forMember, ignore } from 'automapper-core';
 
 @Injectable()

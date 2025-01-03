@@ -6,13 +6,13 @@ import {
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
-import { GetUser } from '@rahino/auth/decorator';
-import { OptionalJwtGuard } from '@rahino/auth/guard';
-import { User } from '@rahino/database/models/core/user.entity';
+import { GetUser } from '@rahino/auth';
+import { OptionalJwtGuard } from '@rahino/auth';
+import { User } from '@rahino/database';
 import { SessionService } from './session.service';
 import { JsonResponseTransformInterceptor } from '@rahino/response/interceptor';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
-import { ECUserSession } from '@rahino/database/models/ecommerce-eav/ec-user-session.entity';
+import { ECUserSession } from '@rahino/database';
 import { Throttle } from '@nestjs/throttler';
 import { ThrottlerBehindProxyGuard } from '@rahino/commontools/guard';
 

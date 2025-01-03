@@ -10,9 +10,9 @@ import {
 import { JsonResponseTransformInterceptor } from '@rahino/response/interceptor';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { PermissionService } from './permission.service';
-import { User } from '@rahino/database/models/core/user.entity';
-import { JwtGuard } from '@rahino/auth/guard';
-import { GetUser } from '@rahino/auth/decorator';
+import { User } from '@rahino/database';
+import { JwtGuard } from '@rahino/auth';
+import { GetUser } from '@rahino/auth';
 
 @ApiTags('User-Permissions')
 @ApiBearerAuth()

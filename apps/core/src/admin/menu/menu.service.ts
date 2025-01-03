@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
-import { Menu } from '@rahino/database/models/core/menu.entity';
+import { Menu } from '@rahino/database';
 import { Op, Sequelize } from 'sequelize';
 import { GetMenuDto, MenuDto } from './dto';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';

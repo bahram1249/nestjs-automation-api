@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { UserController } from './user.controller';
 import { UserService } from './user.service';
 import { SequelizeModule } from '@nestjs/sequelize';
-import { User } from '@rahino/database/models/core/user.entity';
+import { User } from '@rahino/database';
 
 @Module({
   imports: [SequelizeModule.forFeature([User])],

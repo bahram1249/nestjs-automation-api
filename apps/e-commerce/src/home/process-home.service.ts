@@ -1,6 +1,6 @@
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
-import { ECHomePage } from '@rahino/database/models/ecommerce-eav/ec-home-page.entity';
+import { ECHomePage } from '@rahino/database';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import { Op, Sequelize } from 'sequelize';
 import { HomePageTypeEnum } from '../util/enum';
@@ -8,13 +8,13 @@ import { BrandContentDto } from '../admin/home-page/dto/content/brand-content.dt
 import { CategoryContentDto } from '../admin/home-page/dto/content/category-content.dto';
 import { ConfigService } from '@nestjs/config';
 import { ProductCategoryContentDto } from '../admin/home-page/dto/content/product-category-content.dto';
-import { ECEntityTypeSort } from '@rahino/database/models/ecommerce-eav/ec-entityType-sort.entity';
-import { EAVEntityType } from '@rahino/database/models/eav/eav-entity-type.entity';
+import { ECEntityTypeSort } from '@rahino/database';
+import { EAVEntityType } from '@rahino/database';
 import { ProductBrandContentDto } from '../admin/home-page/dto/content/product-brand-content.dto';
-import { ECBrand } from '@rahino/database/models/ecommerce-eav/ec-brand.entity';
+import { ECBrand } from '@rahino/database';
 import { AmazingContentDto } from '../admin/home-page/dto/content/amazing-content.dto';
 import { SliderContentDto } from '../admin/home-page/dto/content/slider-content.dto';
-import { Attachment } from '@rahino/database/models/core/attachment.entity';
+import { Attachment } from '@rahino/database';
 import { BannerContentDto } from '../admin/home-page/dto/content/banner-content.dto';
 import { ProductContentDto } from '../admin/home-page/dto/content/product-content.dto';
 import { SelectedProductContentDto } from '../admin/home-page/dto/content/selected-product-content.dto';

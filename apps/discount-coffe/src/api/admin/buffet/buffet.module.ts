@@ -1,18 +1,18 @@
 import { Module } from '@nestjs/common';
 import { SequelizeModule } from '@nestjs/sequelize';
-import { Permission } from '@rahino/database/models/core/permission.entity';
-import { User } from '@rahino/database/models/core/user.entity';
+import { Permission } from '@rahino/database';
+import { User } from '@rahino/database';
 import { BuffetService } from './buffet.service';
-import { Buffet } from '@rahino/database/models/discount-coffe/buffet.entity';
+import { Buffet } from '@rahino/database';
 import { BuffetController } from './buffet.controller';
-import { AttachmentType } from '@rahino/database/models/core/attachmentType.entity';
+import { AttachmentType } from '@rahino/database';
 import { FileModule } from '@rahino/file';
 import { ThumbnailModule } from '@rahino/thumbnail';
-import { Attachment } from '@rahino/database/models/core/attachment.entity';
-import { Role } from '@rahino/database/models/core/role.entity';
-import { UserRole } from '@rahino/database/models/core/userRole.entity';
-import { BuffetOption } from '@rahino/database/models/discount-coffe/buffet-option.entity';
-import { BuffetGallery } from '@rahino/database/models/discount-coffe/buffet-gallery.entity';
+import { Attachment } from '@rahino/database';
+import { Role } from '@rahino/database';
+import { UserRole } from '@rahino/database';
+import { BuffetOption } from '@rahino/database';
+import { BuffetGallery } from '@rahino/database';
 
 @Module({
   imports: [

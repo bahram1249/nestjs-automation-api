@@ -22,7 +22,7 @@ import {
 } from '@nestjs/swagger';
 import { GetMenuDto, MenuDto } from './dto';
 import { MenuService } from './menu.service';
-import { JwtGuard } from '@rahino/auth/guard';
+import { JwtGuard } from '@rahino/auth';
 
 @ApiTags('Admin-Menu')
 @ApiBearerAuth()

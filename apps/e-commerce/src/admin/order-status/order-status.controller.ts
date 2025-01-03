@@ -14,9 +14,9 @@ import {
   ApiQuery,
   ApiTags,
 } from '@nestjs/swagger';
-import { GetUser } from '@rahino/auth/decorator';
-import { JwtGuard } from '@rahino/auth/guard';
-import { User } from '@rahino/database/models/core/user.entity';
+import { GetUser } from '@rahino/auth';
+import { JwtGuard } from '@rahino/auth';
+import { User } from '@rahino/database';
 import { ListFilter } from '@rahino/query-filter';
 import { JsonResponseTransformInterceptor } from '@rahino/response/interceptor';
 import { PermissionGuard } from '@rahino/permission-checker/guard';

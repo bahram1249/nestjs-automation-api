@@ -22,7 +22,7 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 
-import { JwtGuard } from '@rahino/auth/guard';
+import { JwtGuard } from '@rahino/auth';
 import { AttributeDto, GetAttributeDto, UpdateAttributeDto } from './dto';
 import { AttributeService } from './attribute.service';
 

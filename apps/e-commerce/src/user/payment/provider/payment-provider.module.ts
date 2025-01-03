@@ -2,7 +2,7 @@ import { Module, Scope } from '@nestjs/common';
 import { ECOMMERCE_PAYMENT_PROVIDER_TOKEN } from './constants';
 import { PaymentServiceProviderFactory } from './factory';
 import { SequelizeModule } from '@nestjs/sequelize';
-import { ECPaymentGateway } from '@rahino/database/models/ecommerce-eav/ec-payment-gateway.entity';
+import { ECPaymentGateway } from '@rahino/database';
 import { ZarinPalModule } from './zarinpal.module';
 import { SnappayModule } from './snappay.module';
 import { WalletModule } from './wallet.module';

@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { DBLogger } from './db-logger.service';
 import { SequelizeModule } from '@nestjs/sequelize';
-import { WinstonLog } from '@rahino/database/models/core/winstonlog.entity';
+import { WinstonLog } from '@rahino/database';
 import { DatabaseModule } from '@rahino/database';
 
 describe('LoggerService', () => {

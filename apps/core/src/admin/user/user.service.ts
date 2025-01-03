@@ -6,15 +6,15 @@ import {
 } from '@nestjs/common';
 
 import { InjectModel } from '@nestjs/sequelize';
-import { Role } from '@rahino/database/models/core/role.entity';
-import { User } from '@rahino/database/models/core/user.entity';
+import { Role } from '@rahino/database';
+import { User } from '@rahino/database';
 import { QueryFilter } from '@rahino/query-filter/sequelize-mapper';
 import { ListFilter } from '@rahino/query-filter/types';
 import { Op } from 'sequelize';
 import { UserDto } from './dto';
 // import { InjectMapper } from '@automapper/nestjs';
 // import { Mapper } from '@automapper/core';
-import { UserRole } from '@rahino/database/models/core/userRole.entity';
+import { UserRole } from '@rahino/database';
 
 @Injectable()
 export class UserService {

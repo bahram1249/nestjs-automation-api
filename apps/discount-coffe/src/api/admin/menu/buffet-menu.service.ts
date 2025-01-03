@@ -8,17 +8,17 @@ import {
 import { InjectModel } from '@nestjs/sequelize';
 import { Op, Sequelize } from 'sequelize';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
-import { Attachment } from '@rahino/database/models/core/attachment.entity';
+import { Attachment } from '@rahino/database';
 import { MenuDto, MenuGetDto } from './dto';
-import { User } from '@rahino/database/models/core/user.entity';
-import { AttachmentType } from '@rahino/database/models/core/attachmentType.entity';
+import { User } from '@rahino/database';
+import { AttachmentType } from '@rahino/database';
 import { FileService } from '@rahino/file';
 import { ThumbnailService } from '@rahino/thumbnail';
 import * as path from 'path';
 import * as _ from 'lodash';
 import { Response } from 'express';
 import * as fs from 'fs';
-import { BuffetMenu } from '@rahino/database/models/discount-coffe/buffet-menu.entity';
+import { BuffetMenu } from '@rahino/database';
 
 @Injectable()
 export class BuffetMenuService {

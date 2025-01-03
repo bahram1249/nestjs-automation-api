@@ -3,15 +3,15 @@ import { InjectModel } from '@nestjs/sequelize';
 import { Op, Sequelize } from 'sequelize';
 import { ListFilter } from '@rahino/query-filter';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
-import { User } from '@rahino/database/models/core/user.entity';
+import { User } from '@rahino/database';
 import * as _ from 'lodash';
-import { BuffetReserve } from '@rahino/database/models/discount-coffe/buffet-reserve.entity';
-import { BuffetReserveType } from '@rahino/database/models/discount-coffe/buffet-reserve-type.entity';
-import { Buffet } from '@rahino/database/models/discount-coffe/buffet.entity';
-import { Attachment } from '@rahino/database/models/core/attachment.entity';
-import { PersianDate } from '@rahino/database/models/core/view/persiandate.entity';
-import { BuffetReserveDetail } from '@rahino/database/models/discount-coffe/buffet-reserve-detail.entity';
-import { BuffetMenu } from '@rahino/database/models/discount-coffe/buffet-menu.entity';
+import { BuffetReserve } from '@rahino/database';
+import { BuffetReserveType } from '@rahino/database';
+import { Buffet } from '@rahino/database';
+import { Attachment } from '@rahino/database';
+import { PersianDate } from '@rahino/database';
+import { BuffetReserveDetail } from '@rahino/database';
+import { BuffetMenu } from '@rahino/database';
 
 @Injectable()
 export class TotalReserveService {

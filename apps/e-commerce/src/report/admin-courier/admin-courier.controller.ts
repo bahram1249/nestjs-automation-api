@@ -17,7 +17,7 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 
-import { JwtGuard } from '@rahino/auth/guard';
+import { JwtGuard } from '@rahino/auth';
 import { GetAdminCourierDto } from './dto';
 import { AdminCourierService } from './admin-courier.service';
 

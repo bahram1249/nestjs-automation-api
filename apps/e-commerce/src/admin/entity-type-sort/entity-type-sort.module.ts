@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { EntityTypeSortController } from './entity-type-sort.controller';
 import { EntityTypeSortService } from './entity-type-sort.service';
 import { SequelizeModule } from '@nestjs/sequelize';
-import { ECEntityTypeSort } from '@rahino/database/models/ecommerce-eav/ec-entityType-sort.entity';
+import { ECEntityTypeSort } from '@rahino/database';
 
 @Module({
   imports: [SequelizeModule.forFeature([ECEntityTypeSort])],

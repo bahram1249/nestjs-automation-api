@@ -15,9 +15,9 @@ import {
 } from '@nestjs/common';
 import { BuffetService } from './buffet.service';
 import { ReserveDto } from './dto';
-import { JwtWebGuard, OptionalJwtWebGuard } from '@rahino/auth/guard';
-import { GetUser } from '@rahino/auth/decorator';
-import { User } from '@rahino/database/models/core/user.entity';
+import { JwtWebGuard, OptionalJwtWebGuard } from '@rahino/auth';
+import { GetUser } from '@rahino/auth';
+import { User } from '@rahino/database';
 import { Response, Request } from 'express';
 import { BuffetFilterDto } from '@rahino/discountCoffe/api/user/buffet/dto';
 

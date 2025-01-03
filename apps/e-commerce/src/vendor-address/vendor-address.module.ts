@@ -2,11 +2,11 @@
 import { VendorAddressController } from './vendor-address.controller';
 import { VendorAddressService } from './vendor-address.service';
 import { SequelizeModule } from '@nestjs/sequelize';
-import { ECVendorUser } from '@rahino/database/models/ecommerce-eav/ec-vendor-user.entity';
+import { ECVendorUser } from '@rahino/database';
 import { AddressModule } from '@rahino/ecommerce/user/address/address.module';
-import { ECVendorAddress } from '@rahino/database/models/ecommerce-eav/ec-vendor-address.entity';
-import { Permission } from '@rahino/database/models/core/permission.entity';
-import { User } from '@rahino/database/models/core/user.entity';
+import { ECVendorAddress } from '@rahino/database';
+import { Permission } from '@rahino/database';
+import { User } from '@rahino/database';
 
 @Module({
   imports: [

@@ -3,7 +3,7 @@ import { CommentController } from './comment.controller';
 import { CommentService } from './comment.service';
 import { SequelizeModule } from '@nestjs/sequelize';
 import { SessionModule } from '../session/session.module';
-import { ECProductComment } from '@rahino/database/models/ecommerce-eav/ec-product-comment.entity';
+import { ECProductComment } from '@rahino/database';
 
 @Module({
   imports: [SessionModule, SequelizeModule.forFeature([ECProductComment])],

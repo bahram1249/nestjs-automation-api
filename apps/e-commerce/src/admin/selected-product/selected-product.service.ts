@@ -11,14 +11,14 @@ import { Op, Sequelize } from 'sequelize';
 import { InjectMapper } from 'automapper-nestjs';
 import { Mapper } from 'automapper-core';
 import * as _ from 'lodash';
-import { User } from '@rahino/database/models/core/user.entity';
+import { User } from '@rahino/database';
 import { MinioClientService } from '@rahino/minio-client';
 import * as fs from 'fs';
-import { Attachment } from '@rahino/database/models/core/attachment.entity';
+import { Attachment } from '@rahino/database';
 import { Response } from 'express';
 import { ThumbnailService } from '@rahino/thumbnail';
-import { ECSelectedProduct } from '@rahino/database/models/ecommerce-eav/ec-selected-product.entity';
-import { ECSelectedProductType } from '@rahino/database/models/ecommerce-eav/ec-selected-product-type.entity';
+import { ECSelectedProduct } from '@rahino/database';
+import { ECSelectedProductType } from '@rahino/database';
 
 @Injectable()
 export class SelectedProductService {

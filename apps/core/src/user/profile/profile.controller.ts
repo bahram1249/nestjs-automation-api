@@ -22,13 +22,13 @@ import {
   ApiOperation,
   ApiTags,
 } from '@nestjs/swagger';
-import { User } from '@rahino/database/models/core/user.entity';
+import { User } from '@rahino/database';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ProfileService } from './profile.service';
 import { profileFileOptions } from './file-options';
 import type { Response } from 'express';
-import { JwtGuard } from '@rahino/auth/guard';
-import { GetUser } from '@rahino/auth/decorator';
+import { JwtGuard } from '@rahino/auth';
+import { GetUser } from '@rahino/auth';
 import { EditProfileDto } from './dto';
 
 @ApiTags('User-Profile')

@@ -4,8 +4,8 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
-import { User } from '@rahino/database/models/core/user.entity';
-import { ECOrder } from '@rahino/database/models/ecommerce-eav/ec-order.entity';
+import { User } from '@rahino/database';
+import { ECOrder } from '@rahino/database';
 import { GetOrderDto } from './dto';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import { Sequelize } from 'sequelize';
@@ -14,7 +14,7 @@ import {
   OrderDetailStatusEnum,
   OrderStatusEnum,
 } from '@rahino/ecommerce/util/enum';
-import { ECOrderDetail } from '@rahino/database/models/ecommerce-eav/ec-order-detail.entity';
+import { ECOrderDetail } from '@rahino/database';
 import { UserVendorService } from '@rahino/ecommerce/user/vendor/user-vendor.service';
 import { OrderQueryBuilder } from '../utilOrder/service/order-query-builder.service';
 import { OrderUtilService } from '../utilOrder/service/order-util.service';

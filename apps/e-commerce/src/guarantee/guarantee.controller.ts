@@ -32,11 +32,11 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 
-import { JwtGuard, OptionalJwtGuard } from '@rahino/auth/guard';
+import { JwtGuard, OptionalJwtGuard } from '@rahino/auth';
 import { GuaranteeService } from './guarantee.service';
 import { GuaranteeDto, GetGuaranteeDto } from './dto';
-import { GetUser } from '@rahino/auth/decorator';
-import { User } from '@rahino/database/models/core/user.entity';
+import { GetUser } from '@rahino/auth';
+import { User } from '@rahino/database';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { imageOptions } from './file-options';
 import { Response } from 'express';

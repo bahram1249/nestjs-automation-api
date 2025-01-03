@@ -11,7 +11,7 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { PostageFeeService } from './postage-fee.service';
-import { JwtGuard } from '@rahino/auth/guard';
+import { JwtGuard } from '@rahino/auth';
 import {
   ApiBearerAuth,
   ApiOperation,
@@ -22,8 +22,8 @@ import { PermissionGuard } from '@rahino/permission-checker/guard';
 import { JsonResponseTransformInterceptor } from '@rahino/response/interceptor';
 import { ListFilter } from '@rahino/query-filter';
 import { CheckPermission } from '@rahino/permission-checker/decorator';
-import { GetUser } from '@rahino/auth/decorator';
-import { User } from '@rahino/database/models/core/user.entity';
+import { GetUser } from '@rahino/auth';
+import { User } from '@rahino/database';
 import { updateAllProvincePriceDto } from './dto';
 
 @ApiTags('Admin-PostageFee')

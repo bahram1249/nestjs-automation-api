@@ -12,18 +12,18 @@ import { Op, Sequelize, Transaction } from 'sequelize';
 import { InjectMapper } from 'automapper-nestjs';
 import { Mapper } from 'automapper-core';
 import * as _ from 'lodash';
-import { ECVendor } from '@rahino/database/models/ecommerce-eav/ec-vendor.entity';
-import { User } from '@rahino/database/models/core/user.entity';
-import { Role } from '@rahino/database/models/core/role.entity';
+import { ECVendor } from '@rahino/database';
+import { User } from '@rahino/database';
+import { Role } from '@rahino/database';
 import { UserRoleService } from '@rahino/core/admin/user-role/user-role.service';
-import { ECVendorUser } from '@rahino/database/models/ecommerce-eav/ec-vendor-user.entity';
-import { Attachment } from '@rahino/database/models/core/attachment.entity';
+import { ECVendorUser } from '@rahino/database';
+import { Attachment } from '@rahino/database';
 import { MinioClientService } from '@rahino/minio-client';
 import * as fs from 'fs';
 import { ThumbnailService } from '@rahino/thumbnail';
-import { ECVendorCommission } from '@rahino/database/models/ecommerce-eav/ec-vendor-commision.entity';
-import { ECVariationPrice } from '@rahino/database/models/ecommerce-eav/ec-variation-prices';
-import { ECVendorCommissionType } from '@rahino/database/models/ecommerce-eav/ec-vendor-commission-type.entity';
+import { ECVendorCommission } from '@rahino/database';
+import { ECVariationPrice } from '@rahino/database';
+import { ECVendorCommissionType } from '@rahino/database';
 
 @Injectable()
 export class VendorService {

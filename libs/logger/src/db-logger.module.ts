@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { DBLogger } from './db-logger.service';
 import { SequelizeModule } from '@nestjs/sequelize';
-import { WinstonLog } from '@rahino/database/models/core/winstonlog.entity';
+import { WinstonLog } from '@rahino/database';
 
 @Module({
   imports: [SequelizeModule.forFeature([WinstonLog])],

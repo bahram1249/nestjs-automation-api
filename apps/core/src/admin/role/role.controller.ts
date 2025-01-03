@@ -24,7 +24,7 @@ import {
 import { RoleDto } from './dto';
 import { RoleService } from './role.service';
 import { RoleGetDto } from './dto/role-get.dto';
-import { JwtGuard } from '@rahino/auth/guard';
+import { JwtGuard } from '@rahino/auth';
 
 @ApiTags('Admin-Role')
 @ApiBearerAuth()

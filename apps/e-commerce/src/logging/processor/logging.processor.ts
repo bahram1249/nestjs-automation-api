@@ -3,8 +3,8 @@ import { Job } from 'bullmq';
 import { REQUEST_LOGGING_QUEUE } from '../constants';
 import { LoggingService } from '../service';
 import { RequestDataInterface } from '../interface';
-import { ECUserSession } from '@rahino/database/models/ecommerce-eav/ec-user-session.entity';
-import { User } from '@rahino/database/models/core/user.entity';
+import { ECUserSession } from '@rahino/database';
+import { User } from '@rahino/database';
 
 @Processor(REQUEST_LOGGING_QUEUE)
 export class LoggingProcessor extends WorkerHost {

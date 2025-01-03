@@ -20,14 +20,14 @@ import {
 } from './constants';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { SequelizeModule } from '@nestjs/sequelize';
-import { User } from '@rahino/database/models/core/user.entity';
-import { ECStock } from '@rahino/database/models/ecommerce-eav/ec-stocks.entity';
+import { User } from '@rahino/database';
+import { ECStock } from '@rahino/database';
 import { SessionModule } from '../session/session.module';
-import { ECPaymentGateway } from '@rahino/database/models/ecommerce-eav/ec-payment-gateway.entity';
+import { ECPaymentGateway } from '@rahino/database';
 import { AddressModule } from '../address/address.module';
 import { StockPriceService } from './services/price';
-import { ECVariationPrice } from '@rahino/database/models/ecommerce-eav/ec-variation-prices';
-import { ECProvince } from '@rahino/database/models/ecommerce-eav/ec-province.entity';
+import { ECVariationPrice } from '@rahino/database';
+import { ECProvince } from '@rahino/database';
 import { ShipmentModule } from './services/shipment-price';
 import { PaymentServiceProviderModule } from '../payment/provider/payment-provider.module';
 

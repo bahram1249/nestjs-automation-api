@@ -2,7 +2,7 @@ import { ForbiddenException, Inject, Injectable } from '@nestjs/common';
 import { AuthDto, UsernameDto } from './dto';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
-import { User } from '@rahino/database/models/core/user.entity';
+import { User } from '@rahino/database';
 import { InjectModel } from '@nestjs/sequelize';
 
 @Injectable()

@@ -9,12 +9,12 @@ import {
 } from '@nestjs/common';
 import { CheckPermission } from '@rahino/permission-checker/decorator';
 import { PermissionGuard } from '@rahino/permission-checker/guard';
-import { JwtWebGuard } from '@rahino/auth/guard';
-import { GetUser } from '@rahino/auth/decorator';
-import { Menu } from '@rahino/database/models/core/menu.entity';
+import { JwtWebGuard } from '@rahino/auth';
+import { GetUser } from '@rahino/auth';
+import { Menu } from '@rahino/database';
 import { FactorReportService } from './factor-report.service';
 import { Request } from 'express';
-import { User } from '@rahino/database/models/core/user.entity';
+import { User } from '@rahino/database';
 
 @UseGuards(JwtWebGuard, PermissionGuard)
 @Controller({

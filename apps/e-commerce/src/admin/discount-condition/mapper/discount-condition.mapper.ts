@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { AutomapperProfile, InjectMapper } from 'automapper-nestjs';
 import { DiscountConditionDto } from '../dto';
 import { Mapper, createMap, forMember, ignore } from 'automapper-core';
-import { ECDiscountCondition } from '@rahino/database/models/ecommerce-eav/ec-discount-condition.entity';
+import { ECDiscountCondition } from '@rahino/database';
 
 @Injectable()
 export class DiscountConditionProfile extends AutomapperProfile {

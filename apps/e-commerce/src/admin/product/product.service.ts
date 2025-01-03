@@ -9,7 +9,7 @@ import {
 import { InjectConnection, InjectModel } from '@nestjs/sequelize';
 import { Op, Sequelize, Transaction } from 'sequelize';
 import { GetProductDto, ProductDto } from './dto';
-import { ECProduct } from '@rahino/database/models/ecommerce-eav/ec-product.entity';
+import { ECProduct } from '@rahino/database';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import * as _ from 'lodash';
 import { Mapper } from 'automapper-core';
@@ -19,14 +19,14 @@ import { ProductAttributeDto } from './dto/product-attribute.dto';
 import { EntityAttributeValueDto } from '@rahino/eav/admin/entity-attribute-value/dto';
 import { EntityService } from '@rahino/eav/admin/entity/entity.service';
 import { ConfigService } from '@nestjs/config';
-import { User } from '@rahino/database/models/core/user.entity';
-import { ECPublishStatus } from '@rahino/database/models/ecommerce-eav/ec-publish-status.entity';
-import { ECInventoryStatus } from '@rahino/database/models/ecommerce-eav/ec-inventory-status.entity';
-import { ECBrand } from '@rahino/database/models/ecommerce-eav/ec-brand.entity';
-import { EAVEntityType } from '@rahino/database/models/eav/eav-entity-type.entity';
-import { EAVEntityAttributeValue } from '@rahino/database/models/eav/eav-entity-attribute-value.entity';
-import { EAVAttribute } from '@rahino/database/models/eav/eav-attribute.entity';
-import { EAVAttributeValue } from '@rahino/database/models/eav/eav-attribute-value';
+import { User } from '@rahino/database';
+import { ECPublishStatus } from '@rahino/database';
+import { ECInventoryStatus } from '@rahino/database';
+import { ECBrand } from '@rahino/database';
+import { EAVEntityType } from '@rahino/database';
+import { EAVEntityAttributeValue } from '@rahino/database';
+import { EAVAttribute } from '@rahino/database';
+import { EAVAttributeValue } from '@rahino/database';
 import { ProductPhotoService } from '@rahino/ecommerce/product-photo/product-photo.service';
 import { ProductAttachmentDto } from './dto/product-attachment.dto';
 import { PhotoDto } from '@rahino/ecommerce/product-photo/dto';
@@ -38,22 +38,22 @@ import {
   InventoryService,
   InventoryValidationService,
 } from '@rahino/ecommerce/inventory/services';
-import { ECInventory } from '@rahino/database/models/ecommerce-eav/ec-inventory.entity';
+import { ECInventory } from '@rahino/database';
 import { UserVendorService } from '@rahino/ecommerce/user/vendor/user-vendor.service';
 import { ListFilter } from '@rahino/query-filter';
-import { ECVendor } from '@rahino/database/models/ecommerce-eav/ec-vendor.entity';
-import { ECColor } from '@rahino/database/models/ecommerce-eav/ec-color.entity';
-import { ECGuarantee } from '@rahino/database/models/ecommerce-eav/ec-guarantee.entity';
-import { ECGuaranteeMonth } from '@rahino/database/models/ecommerce-eav/ec-guarantee-month.entity';
-import { ECProvince } from '@rahino/database/models/ecommerce-eav/ec-province.entity';
-import { ECVendorAddress } from '@rahino/database/models/ecommerce-eav/ec-vendor-address.entity';
-import { ECInventoryPrice } from '@rahino/database/models/ecommerce-eav/ec-inventory-price.entity';
+import { ECVendor } from '@rahino/database';
+import { ECColor } from '@rahino/database';
+import { ECGuarantee } from '@rahino/database';
+import { ECGuaranteeMonth } from '@rahino/database';
+import { ECProvince } from '@rahino/database';
+import { ECVendorAddress } from '@rahino/database';
+import { ECInventoryPrice } from '@rahino/database';
 import { emptyListFilter } from '@rahino/query-filter/provider/constants';
-import { ECAddress } from '@rahino/database/models/ecommerce-eav/ec-address.entity';
-import { ECCity } from '@rahino/database/models/ecommerce-eav/ec-city.entity';
-import { ECNeighborhood } from '@rahino/database/models/ecommerce-eav/ec-neighborhood.entity';
-import { ECVariationPrice } from '@rahino/database/models/ecommerce-eav/ec-variation-prices';
-import { Attachment } from '@rahino/database/models/core/attachment.entity';
+import { ECAddress } from '@rahino/database';
+import { ECCity } from '@rahino/database';
+import { ECNeighborhood } from '@rahino/database';
+import { ECVariationPrice } from '@rahino/database';
+import { Attachment } from '@rahino/database';
 import {
   Constants,
   PRODUCT_INVENTORY_STATUS_QUEUE,
@@ -62,7 +62,7 @@ import { InjectQueue } from '@nestjs/bullmq';
 import { Queue } from 'bullmq';
 import { ProductVideoService } from '@rahino/ecommerce/product-video/product-video.service';
 import { VideoDto } from '@rahino/ecommerce/product-video/dto';
-import { ECSlugVersion } from '@rahino/database/models/ecommerce-eav/ec-slug-version.entity';
+import { ECSlugVersion } from '@rahino/database';
 import { SlugVersionTypeEnum } from '@rahino/ecommerce/util/enum';
 import { PermissionService } from '@rahino/core/user/permission/permission.service';
 

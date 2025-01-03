@@ -5,16 +5,16 @@ import {
   NotImplementedException,
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
-import { BuffetReserve } from '@rahino/database/models/discount-coffe/buffet-reserve.entity';
+import { BuffetReserve } from '@rahino/database';
 import { OrderDto } from './dto';
 import { Request } from 'express';
-import { User } from '@rahino/database/models/core/user.entity';
+import { User } from '@rahino/database';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
-import { Buffet } from '@rahino/database/models/discount-coffe/buffet.entity';
-import { Attachment } from '@rahino/database/models/core/attachment.entity';
+import { Buffet } from '@rahino/database';
+import { Attachment } from '@rahino/database';
 import { Op, Sequelize } from 'sequelize';
-import { BuffetMenu } from '@rahino/database/models/discount-coffe/buffet-menu.entity';
-import { BuffetMenuCategory } from '@rahino/database/models/discount-coffe/buffet-menu-category.entity';
+import { BuffetMenu } from '@rahino/database';
+import { BuffetMenuCategory } from '@rahino/database';
 
 @Injectable()
 export class ReserveService {

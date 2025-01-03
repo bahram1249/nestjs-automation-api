@@ -29,13 +29,13 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { Response } from 'express';
-import { JwtGuard, OptionalJwtGuard } from '@rahino/auth/guard';
+import { JwtGuard, OptionalJwtGuard } from '@rahino/auth';
 import { BrandService } from './brand.service';
 import { BrandDto, GetBrandDto } from './dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { imageOptions } from './file-options';
-import { GetUser } from '@rahino/auth/decorator';
-import { User } from '@rahino/database/models/core/user.entity';
+import { GetUser } from '@rahino/auth';
+import { User } from '@rahino/database';
 import { OptionalSessionGuard } from '../user/session/guard';
 
 @ApiTags('Brands')

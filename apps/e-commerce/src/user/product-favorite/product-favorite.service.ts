@@ -3,10 +3,10 @@ import { ProductFavoriteDto, GetProductFavoriteDto } from './dto';
 import { InjectModel } from '@nestjs/sequelize';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import * as _ from 'lodash';
-import { User } from '@rahino/database/models/core/user.entity';
+import { User } from '@rahino/database';
 import { I18nTranslations } from 'apps/main/src/generated/i18n.generated';
 import { I18nService } from 'nestjs-i18n';
-import { ECProductFavorite } from '@rahino/database/models/ecommerce-eav/ec-product-favorite';
+import { ECProductFavorite } from '@rahino/database';
 import { ProductRepositoryService } from '@rahino/ecommerce/product/service/product-repository.service';
 import { ListFilterV2Factory } from '@rahino/query-filter/provider/list-filter-v2.factory';
 

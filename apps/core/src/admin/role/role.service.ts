@@ -6,13 +6,13 @@ import {
 } from '@nestjs/common';
 
 import { InjectModel } from '@nestjs/sequelize';
-import { Role } from '@rahino/database/models/core/role.entity';
+import { Role } from '@rahino/database';
 import { QueryFilter } from '@rahino/query-filter/sequelize-mapper';
 import { Op } from 'sequelize';
-import { Permission } from '@rahino/database/models/core/permission.entity';
-import { RolePermission } from '@rahino/database/models/core/rolePermission.entity';
+import { Permission } from '@rahino/database';
+import { RolePermission } from '@rahino/database';
 import { RoleGetDto, RoleDto } from './dto';
-import { UserRole } from '@rahino/database/models/core/userRole.entity';
+import { UserRole } from '@rahino/database';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 
 @Injectable()

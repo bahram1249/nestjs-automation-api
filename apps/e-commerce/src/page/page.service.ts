@@ -3,7 +3,7 @@ import { InjectModel } from '@nestjs/sequelize';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import { Op, Sequelize } from 'sequelize';
 import * as _ from 'lodash';
-import { ECPage } from '@rahino/database/models/ecommerce-eav/ec-page.entity';
+import { ECPage } from '@rahino/database';
 import { ListFilter } from '@rahino/query-filter';
 
 @Injectable()

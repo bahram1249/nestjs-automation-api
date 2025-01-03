@@ -3,10 +3,10 @@ import { InjectModel } from '@nestjs/sequelize';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import { Op, Sequelize } from 'sequelize';
 import * as _ from 'lodash';
-import { User } from '@rahino/database/models/core/user.entity';
+import { User } from '@rahino/database';
 import { MinioClientService } from '@rahino/minio-client';
 import * as fs from 'fs';
-import { Attachment } from '@rahino/database/models/core/attachment.entity';
+import { Attachment } from '@rahino/database';
 import { Response } from 'express';
 import axios from 'axios';
 

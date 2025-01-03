@@ -6,27 +6,27 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectConnection, InjectModel } from '@nestjs/sequelize';
-import { User } from '@rahino/database/models/core/user.entity';
-import { ECOrder } from '@rahino/database/models/ecommerce-eav/ec-order.entity';
+import { User } from '@rahino/database';
+import { ECOrder } from '@rahino/database';
 import { OrderStatusEnum } from '@rahino/ecommerce/util/enum';
 import { OrderQueryBuilder } from '../utilOrder/service/order-query-builder.service';
 import { ListFilter } from '@rahino/query-filter';
-import { ECOrderDetail } from '@rahino/database/models/ecommerce-eav/ec-order-detail.entity';
+import { ECOrderDetail } from '@rahino/database';
 import { Sequelize, Transaction } from 'sequelize';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import { Op } from 'sequelize';
-import { ECPayment } from '@rahino/database/models/ecommerce-eav/ec-payment-entity';
-import { ECPaymentGateway } from '@rahino/database/models/ecommerce-eav/ec-payment-gateway.entity';
+import { ECPayment } from '@rahino/database';
+import { ECPaymentGateway } from '@rahino/database';
 import { SnapPayService } from '@rahino/ecommerce/user/payment/provider/services';
-import { ECProduct } from '@rahino/database/models/ecommerce-eav/ec-product.entity';
-import { EAVEntityType } from '@rahino/database/models/eav/eav-entity-type.entity';
+import { ECProduct } from '@rahino/database';
+import { EAVEntityType } from '@rahino/database';
 import { RoleUtilService } from '@rahino/core/user/role-util/role-util.service';
 import { UserVendorService } from '@rahino/ecommerce/user/vendor/user-vendor.service';
 import { OrderUtilService } from '../utilOrder/service/order-util.service';
 import { FinalizedPaymentService } from '@rahino/ecommerce/user/payment/util/finalized-payment/finalized-payment.service';
 import { ChangeOrderStatusDto, ChangeShipmentWayDto } from './dto';
-import { ECOrderStatus } from '@rahino/database/models/ecommerce-eav/ec-order-status.entity';
-import { ECOrderShipmentWay } from '@rahino/database/models/ecommerce-eav/ec-order-shipmentway.entity';
+import { ECOrderStatus } from '@rahino/database';
+import { ECOrderShipmentWay } from '@rahino/database';
 import { GetTotalOrderFilterDto } from './dto/get-total-order.dto';
 
 @Injectable()

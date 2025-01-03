@@ -1,12 +1,12 @@
 import { Module } from '@nestjs/common';
 import { FinalizedPaymentService } from './finalized-payment.service';
 import { SequelizeModule } from '@nestjs/sequelize';
-import { ECPayment } from '@rahino/database/models/ecommerce-eav/ec-payment-entity';
-import { ECOrder } from '@rahino/database/models/ecommerce-eav/ec-order.entity';
+import { ECPayment } from '@rahino/database';
+import { ECOrder } from '@rahino/database';
 import { ECommerceSmsModule } from '@rahino/ecommerce/util/sms/ecommerce-sms.module';
-import { User } from '@rahino/database/models/core/user.entity';
-import { ECPaymentGatewayCommission } from '@rahino/database/models/ecommerce-eav/ec-paymentgateway-commission.entity';
-import { ECWallet } from '@rahino/database/models/ecommerce-eav/ec-wallet.entity';
+import { User } from '@rahino/database';
+import { ECPaymentGatewayCommission } from '@rahino/database';
+import { ECWallet } from '@rahino/database';
 
 @Module({
   imports: [

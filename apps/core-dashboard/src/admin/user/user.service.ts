@@ -5,9 +5,9 @@ import {
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { Op, Sequelize } from 'sequelize';
-import { Permission } from '@rahino/database/models/core/permission.entity';
-import { User } from '@rahino/database/models/core/user.entity';
-import { Role } from '@rahino/database/models/core/role.entity';
+import { Permission } from '@rahino/database';
+import { User } from '@rahino/database';
+import { Role } from '@rahino/database';
 
 @Injectable()
 export class UserService {

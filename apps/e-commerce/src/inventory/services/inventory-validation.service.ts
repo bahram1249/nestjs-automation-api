@@ -1,19 +1,19 @@
 ﻿import { BadRequestException, Inject, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { InventoryDto, RequiredProductFieldDto } from '../dto';
-import { ECVariationPrice } from '@rahino/database/models/ecommerce-eav/ec-variation-prices';
+import { ECVariationPrice } from '@rahino/database';
 import { Op, Sequelize } from 'sequelize';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
-import { ECColor } from '@rahino/database/models/ecommerce-eav/ec-color.entity';
-import { User } from '@rahino/database/models/core/user.entity';
+import { ECColor } from '@rahino/database';
+import { User } from '@rahino/database';
 import { UserVendorService } from '@rahino/ecommerce/user/vendor/user-vendor.service';
-import { ECGuarantee } from '@rahino/database/models/ecommerce-eav/ec-guarantee.entity';
-import { ECGuaranteeMonth } from '@rahino/database/models/ecommerce-eav/ec-guarantee-month.entity';
+import { ECGuarantee } from '@rahino/database';
+import { ECGuaranteeMonth } from '@rahino/database';
 import { VendorAddressService } from '@rahino/ecommerce/vendor-address/vendor-address.service';
-import { ECProvince } from '@rahino/database/models/ecommerce-eav/ec-province.entity';
+import { ECProvince } from '@rahino/database';
 import { emptyListFilter } from '@rahino/query-filter/provider/constants';
 import { ListFilter } from '@rahino/query-filter';
-import { ECInventory } from '@rahino/database/models/ecommerce-eav/ec-inventory.entity';
+import { ECInventory } from '@rahino/database';
 
 @Injectable()
 export class InventoryValidationService {

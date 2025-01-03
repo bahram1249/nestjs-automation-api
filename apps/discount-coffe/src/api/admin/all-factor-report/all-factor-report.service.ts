@@ -3,7 +3,7 @@ import { InjectModel } from '@nestjs/sequelize';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import * as _ from 'lodash';
 import { AllFactorReportDto } from './dto';
-import { VW_BuffetReservers } from '@rahino/database/models/discount-coffe/vw_buffet_reserve.entity';
+import { VW_BuffetReservers } from '@rahino/database';
 
 @Injectable()
 export class AllFactorReportService {

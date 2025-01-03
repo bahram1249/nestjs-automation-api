@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { ListFilter } from '@rahino/query-filter';
 import { ProductQueryBuilderService } from '../product/service';
 import { InjectModel } from '@nestjs/sequelize';
-import { ECProduct } from '@rahino/database/models/ecommerce-eav/ec-product.entity';
+import { ECProduct } from '@rahino/database';
 import { ProductDiscountSetterService } from './product-discount-setter.service';
 import * as _ from 'lodash';
 import { InventoryStatusEnum } from '../inventory/enum';

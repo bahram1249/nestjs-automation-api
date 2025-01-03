@@ -2,7 +2,7 @@ import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { HeaderNotificationController } from './notification.controller';
 import { HeaderNotificationService } from './notification.service';
 import { SequelizeModule } from '@nestjs/sequelize';
-import { Setting } from '@rahino/database/models/core/setting.entity';
+import { Setting } from '@rahino/database';
 
 @Module({
   imports: [SequelizeModule.forFeature([Setting])],

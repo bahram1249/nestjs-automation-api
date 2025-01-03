@@ -109,15 +109,6 @@
         "tsConfigPath": "libs/thumbnail/tsconfig.lib.json"
       }
     },
-    "database": {
-      "type": "library",
-      "root": "libs/database",
-      "entryFile": "index",
-      "sourceRoot": "libs/database/src",
-      "compilerOptions": {
-        "tsConfigPath": "libs/database/tsconfig.lib.json"
-      }
-    },
     "http-exception-filter": {
       "type": "library",
       "root": "libs/http-exception-filter",
@@ -134,15 +125,6 @@
       "sourceRoot": "libs/logger/src",
       "compilerOptions": {
         "tsConfigPath": "libs/logger/tsconfig.lib.json"
-      }
-    },
-    "auth": {
-      "type": "library",
-      "root": "libs/auth",
-      "entryFile": "index",
-      "sourceRoot": "libs/auth/src",
-      "compilerOptions": {
-        "tsConfigPath": "libs/auth/tsconfig.lib.json"
       }
     },
     "permission-checker": {

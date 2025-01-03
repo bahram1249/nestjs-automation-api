@@ -5,9 +5,9 @@ import {
   StreamableFile,
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
-import { Attachment } from '@rahino/database/models/core/attachment.entity';
-import { AttachmentType } from '@rahino/database/models/core/attachmentType.entity';
-import { User } from '@rahino/database/models/core/user.entity';
+import { Attachment } from '@rahino/database';
+import { AttachmentType } from '@rahino/database';
+import { User } from '@rahino/database';
 import * as path from 'path';
 import * as fs from 'fs';
 import { Sequelize } from 'sequelize';

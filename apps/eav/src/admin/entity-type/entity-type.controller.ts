@@ -29,12 +29,12 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 
-import { JwtGuard } from '@rahino/auth/guard';
+import { JwtGuard } from '@rahino/auth';
 import { EntityTypeDto, GetEntityTypeDto } from './dto';
 import { EntityTypeService } from './entity-type.service';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { GetUser } from '@rahino/auth/decorator';
-import { User } from '@rahino/database/models/core/user.entity';
+import { GetUser } from '@rahino/auth';
+import { User } from '@rahino/database';
 import { imageOptions } from './file-options';
 import { Response } from 'express';
 

@@ -5,7 +5,7 @@ import {
   KeyValueInterface,
 } from '../interface';
 import { ListFilter } from '@rahino/query-filter';
-import { User } from '@rahino/database/models/core/user.entity';
+import { User } from '@rahino/database';
 import { EntityTypeService } from '@rahino/eav/admin/entity-type/entity-type.service';
 import * as _ from 'lodash';
 

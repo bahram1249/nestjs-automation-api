@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
-import { ECDiscountConditionType } from '@rahino/database/models/ecommerce-eav/ec-discount-condition-type.entity';
+import { ECDiscountConditionType } from '@rahino/database';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import * as _ from 'lodash';
 import { Sequelize } from 'sequelize';

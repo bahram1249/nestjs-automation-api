@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { ICalPrice } from '../interface/cal-price.interface';
 import { InventoryPriceDto } from '@rahino/ecommerce/inventory/dto/inventory-price.dto';
 import { InjectModel } from '@nestjs/sequelize';
-import { Setting } from '@rahino/database/models/core/setting.entity';
+import { Setting } from '@rahino/database';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import { ProductPriceDto } from '../interface/ProductPriceDto.type';
 import {

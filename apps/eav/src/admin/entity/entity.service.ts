@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
-import { EAVEntity } from '@rahino/database/models/eav/eav-entity.entity';
+import { EAVEntity } from '@rahino/database';
 import { EntityDto } from './dto';
 import { Transaction } from 'sequelize';
 

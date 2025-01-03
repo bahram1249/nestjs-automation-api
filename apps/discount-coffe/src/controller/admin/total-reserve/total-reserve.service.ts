@@ -1,6 +1,6 @@
 import { Injectable, NotImplementedException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
-import { BuffetReserve } from '@rahino/database/models/discount-coffe/buffet-reserve.entity';
+import { BuffetReserve } from '@rahino/database';
 
 @Injectable()
 export class TotalReserveService {

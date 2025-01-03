@@ -12,11 +12,11 @@ import { CheckPermission } from '@rahino/permission-checker/decorator';
 import { PermissionGuard } from '@rahino/permission-checker/guard';
 import { JsonResponseTransformInterceptor } from '@rahino/response/interceptor';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
-import { JwtGuard } from '@rahino/auth/guard';
+import { JwtGuard } from '@rahino/auth';
 import { HeaderNotificationService } from './notification.service';
 import { HeaderNotificationDto } from './dto';
-import { GetUser } from '@rahino/auth/decorator';
-import { User } from '@rahino/database/models/core/user.entity';
+import { GetUser } from '@rahino/auth';
+import { User } from '@rahino/database';
 
 @ApiTags('Admin-HeaderNotifications')
 @UseGuards(JwtGuard, PermissionGuard)

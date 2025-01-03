@@ -12,15 +12,15 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
-import { OptionalJwtGuard } from '@rahino/auth/guard';
+import { OptionalJwtGuard } from '@rahino/auth';
 import { JsonResponseTransformInterceptor } from '@rahino/response/interceptor';
 import { SessionGuard, SessionIgnoreUserGuard } from '../session/guard';
 import { GetECSession } from 'apps/main/src/decorator';
-import { ECUserSession } from '@rahino/database/models/ecommerce-eav/ec-user-session.entity';
+import { ECUserSession } from '@rahino/database';
 import { StockDto, StockPriceDto } from './dto';
 import { StockService } from './stock.service';
-import { GetUser } from '@rahino/auth/decorator';
-import { User } from '@rahino/database/models/core/user.entity';
+import { GetUser } from '@rahino/auth';
+import { User } from '@rahino/database';
 
 @ApiTags('Stocks')
 @ApiBearerAuth()

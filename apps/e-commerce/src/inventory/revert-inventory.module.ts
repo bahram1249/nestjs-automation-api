@@ -1,10 +1,10 @@
 import { Module } from '@nestjs/common';
 import { RevertInventoryQtyService, inventoryStatusService } from './services';
 import { SequelizeModule } from '@nestjs/sequelize';
-import { ECInventory } from '@rahino/database/models/ecommerce-eav/ec-inventory.entity';
-import { ECPayment } from '@rahino/database/models/ecommerce-eav/ec-payment-entity';
-import { ECOrder } from '@rahino/database/models/ecommerce-eav/ec-order.entity';
-import { ECProduct } from '@rahino/database/models/ecommerce-eav/ec-product.entity';
+import { ECInventory } from '@rahino/database';
+import { ECPayment } from '@rahino/database';
+import { ECOrder } from '@rahino/database';
+import { ECProduct } from '@rahino/database';
 import { InventoryTrackChangeModule } from '../inventory-track-change/inventory-track-change.module';
 
 @Module({

@@ -4,19 +4,19 @@ import {
   NotImplementedException,
 } from '@nestjs/common';
 import { PayInterface } from '../interface';
-import { User } from '@rahino/database/models/core/user.entity';
+import { User } from '@rahino/database';
 import {
   PaymentStatusEnum,
   PaymentTypeEnum,
 } from '@rahino/ecommerce/util/enum';
 import { Sequelize, Transaction } from 'sequelize';
-import { ECOrderDetail } from '@rahino/database/models/ecommerce-eav/ec-order-detail.entity';
+import { ECOrderDetail } from '@rahino/database';
 import { InjectModel } from '@nestjs/sequelize';
-import { ECWallet } from '@rahino/database/models/ecommerce-eav/ec-wallet.entity';
+import { ECWallet } from '@rahino/database';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import { Op } from 'sequelize';
-import { ECPaymentGateway } from '@rahino/database/models/ecommerce-eav/ec-payment-gateway.entity';
-import { ECPayment } from '@rahino/database/models/ecommerce-eav/ec-payment-entity';
+import { ECPaymentGateway } from '@rahino/database';
+import { ECPayment } from '@rahino/database';
 import { FinalizedPaymentService } from '../../util/finalized-payment/finalized-payment.service';
 import { ConfigService } from '@nestjs/config';
 import { PaymentServiceManualWalletPurposeProviderFactory } from '../factory/payment-service-manual-wallet-purpose-provider.factory';

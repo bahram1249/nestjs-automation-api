@@ -5,17 +5,17 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { CreateDiscountDto, FactorDiscountDto, GetDiscountDto } from './dto';
-import { ECDiscount } from '@rahino/database/models/ecommerce-eav/ec-discount.entity';
+import { ECDiscount } from '@rahino/database';
 import { InjectConnection, InjectModel } from '@nestjs/sequelize';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import { Op, Sequelize, Transaction } from 'sequelize';
-import { ECDiscountType } from '@rahino/database/models/ecommerce-eav/ec-discount-type.entity';
-import { ECDiscountActionRule } from '@rahino/database/models/ecommerce-eav/ec-discount-action-rule.entity';
-import { ECDiscountActionType } from '@rahino/database/models/ecommerce-eav/ec-discount-action-type.entity';
+import { ECDiscountType } from '@rahino/database';
+import { ECDiscountActionRule } from '@rahino/database';
+import { ECDiscountActionType } from '@rahino/database';
 import { Mapper } from 'automapper-core';
 import { InjectMapper } from 'automapper-nestjs';
 import * as _ from 'lodash';
-import { User } from '@rahino/database/models/core/user.entity';
+import { User } from '@rahino/database';
 import { DiscountConditionTypeEnum } from '../discount-condition-type/enum';
 
 @Injectable()

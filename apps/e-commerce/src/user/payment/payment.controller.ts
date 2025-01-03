@@ -8,14 +8,14 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
-import { JwtGuard } from '@rahino/auth/guard';
+import { JwtGuard } from '@rahino/auth';
 import { SessionGuard } from '../session/guard';
 import { JsonResponseTransformInterceptor } from '@rahino/response/interceptor';
 import { PaymentService } from './payment.service';
 import { GetECSession } from 'apps/main/src/decorator';
-import { ECUserSession } from '@rahino/database/models/ecommerce-eav/ec-user-session.entity';
-import { GetUser } from '@rahino/auth/decorator';
-import { User } from '@rahino/database/models/core/user.entity';
+import { ECUserSession } from '@rahino/database';
+import { GetUser } from '@rahino/auth';
+import { User } from '@rahino/database';
 import { StockPaymentDto, WalletPaymentDto } from './dto';
 
 @ApiTags('payments')

@@ -1,9 +1,9 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { GetCourierReportDto } from './dto';
 import { InjectModel } from '@nestjs/sequelize';
-import { ECOrder } from '@rahino/database/models/ecommerce-eav/ec-order.entity';
+import { ECOrder } from '@rahino/database';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
-import { PersianDate } from '@rahino/database/models/core/view/persiandate.entity';
+import { PersianDate } from '@rahino/database';
 import { I18nContext, I18nService } from 'nestjs-i18n';
 import { I18nTranslations } from 'apps/main/src/generated/i18n.generated';
 import { OrderQueryBuilderService } from '../order-query-builder/order-query-builder.service';
@@ -12,7 +12,7 @@ import {
   OrderStatusEnum,
 } from '@rahino/ecommerce/util/enum';
 import { Sequelize } from 'sequelize';
-import { User } from '@rahino/database/models/core/user.entity';
+import { User } from '@rahino/database';
 
 @Injectable()
 export class CourierReportService {

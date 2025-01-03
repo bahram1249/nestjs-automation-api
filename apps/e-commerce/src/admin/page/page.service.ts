@@ -10,8 +10,8 @@ import { Op, Sequelize } from 'sequelize';
 import { InjectMapper } from 'automapper-nestjs';
 import { Mapper } from 'automapper-core';
 import * as _ from 'lodash';
-import { User } from '@rahino/database/models/core/user.entity';
-import { ECPage } from '@rahino/database/models/ecommerce-eav/ec-page.entity';
+import { User } from '@rahino/database';
+import { ECPage } from '@rahino/database';
 import { ListFilter } from '@rahino/query-filter';
 
 @Injectable()

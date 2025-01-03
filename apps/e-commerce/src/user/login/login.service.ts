@@ -1,6 +1,6 @@
 import { BadRequestException, Inject, Injectable } from '@nestjs/common';
 import { LoginDto, VerifyDto } from './dto';
-import { User } from '@rahino/database/models/core/user.entity';
+import { User } from '@rahino/database';
 import { InjectModel } from '@nestjs/sequelize';
 import { RedisRepository } from '@rahino/redis-client/repository';
 import { AuthService } from '@rahino/core/auth/auth.service';
@@ -8,7 +8,7 @@ import * as _ from 'lodash';
 import { ConfigService } from '@nestjs/config';
 import { getIntegerRandomArbitrary } from '@rahino/commontools';
 import { ECommmerceSmsService } from '@rahino/ecommerce/util/sms/ecommerce-sms.service';
-import { ECWallet } from '@rahino/database/models/ecommerce-eav/ec-wallet.entity';
+import { ECWallet } from '@rahino/database';
 
 @Injectable()
 export class LoginService {

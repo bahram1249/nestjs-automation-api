@@ -1,11 +1,11 @@
 import { Module } from '@nestjs/common';
 import { EntityAttributeValueService } from './entity-attribute-value.service';
 import { SequelizeModule } from '@nestjs/sequelize';
-import { EAVEntityType } from '@rahino/database/models/eav/eav-entity-type.entity';
-import { EAVEntityAttribute } from '@rahino/database/models/eav/eav-entity-attribute.entity';
-import { EAVAttributeValue } from '@rahino/database/models/eav/eav-attribute-value';
-import { EAVAttribute } from '@rahino/database/models/eav/eav-attribute.entity';
-import { EAVEntityAttributeValue } from '@rahino/database/models/eav/eav-entity-attribute-value.entity';
+import { EAVEntityType } from '@rahino/database';
+import { EAVEntityAttribute } from '@rahino/database';
+import { EAVAttributeValue } from '@rahino/database';
+import { EAVAttribute } from '@rahino/database';
+import { EAVEntityAttributeValue } from '@rahino/database';
 
 @Module({
   imports: [

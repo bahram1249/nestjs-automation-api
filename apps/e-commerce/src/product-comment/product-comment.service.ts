@@ -4,20 +4,20 @@ import {
   InternalServerErrorException,
   NotFoundException,
 } from '@nestjs/common';
-import { User } from '@rahino/database/models/core/user.entity';
+import { User } from '@rahino/database';
 import { ProductCommentDto } from './dto';
 import { ListFilter } from '@rahino/query-filter';
 import { InjectConnection, InjectModel } from '@nestjs/sequelize';
-import { ECProductComment } from '@rahino/database/models/ecommerce-eav/ec-product-comment.entity';
+import { ECProductComment } from '@rahino/database';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import { Sequelize, Transaction } from 'sequelize';
 import { Op } from 'sequelize';
 import { ProductCommentStatusEnum } from '../util/enum';
-import { ECProductCommentStatus } from '@rahino/database/models/ecommerce-eav/ec-comment-status.entity';
-import { ECProductCommentFactor } from '@rahino/database/models/ecommerce-eav/ec-product-comment-factor.entity';
-import { ECEntityTypeFactor } from '@rahino/database/models/ecommerce-eav/ec-entitytype-factor.entity';
-import { EAVEntityType } from '@rahino/database/models/eav/eav-entity-type.entity';
-import { ECProduct } from '@rahino/database/models/ecommerce-eav/ec-product.entity';
+import { ECProductCommentStatus } from '@rahino/database';
+import { ECProductCommentFactor } from '@rahino/database';
+import { ECEntityTypeFactor } from '@rahino/database';
+import { EAVEntityType } from '@rahino/database';
+import { ECProduct } from '@rahino/database';
 import { PublishStatusEnum } from '../product/enum';
 import { I18nTranslations } from 'apps/main/src/generated/i18n.generated';
 import { I18nContext, I18nService } from 'nestjs-i18n';

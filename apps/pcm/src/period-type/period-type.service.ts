@@ -3,7 +3,7 @@ import { InjectModel } from '@nestjs/sequelize';
 import { QueryFilter } from '@rahino/query-filter/sequelize-mapper';
 import { Op } from 'sequelize';
 import { PeriodTypeGetDto } from './dto';
-import { PCMPeriodType } from '@rahino/database/models/pcm/pcm-period-type.entity';
+import { PCMPeriodType } from '@rahino/database';
 
 @Injectable()
 export class PeriodTypeService {

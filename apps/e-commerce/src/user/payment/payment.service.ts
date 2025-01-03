@@ -4,23 +4,23 @@ import {
   Injectable,
   InternalServerErrorException,
 } from '@nestjs/common';
-import { User } from '@rahino/database/models/core/user.entity';
-import { ECUserSession } from '@rahino/database/models/ecommerce-eav/ec-user-session.entity';
+import { User } from '@rahino/database';
+import { ECUserSession } from '@rahino/database';
 import { StockPaymentDto, WalletPaymentDto } from './dto';
 import { ECOMMERCE_PAYMENT_PROVIDER_TOKEN } from './provider/constants';
 import { PayInterface } from './provider/interface';
 import { StockService } from '../stock/stock.service';
 import { InventoryStatusEnum } from '@rahino/ecommerce/inventory/enum';
 import { AddressService } from '../address/address.service';
-import { ECProvince } from '@rahino/database/models/ecommerce-eav/ec-province.entity';
+import { ECProvince } from '@rahino/database';
 import { InjectConnection, InjectModel } from '@nestjs/sequelize';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
-import { ECVariationPrice } from '@rahino/database/models/ecommerce-eav/ec-variation-prices';
+import { ECVariationPrice } from '@rahino/database';
 import {
   StockPriceService,
   VariationStockInterface,
 } from '../stock/services/price';
-import { ECPaymentGateway } from '@rahino/database/models/ecommerce-eav/ec-payment-gateway.entity';
+import { ECPaymentGateway } from '@rahino/database';
 import { Op, Sequelize, Transaction } from 'sequelize';
 import { ShipmentInteface } from '../stock/services/shipment-price/interface';
 import {
@@ -30,11 +30,11 @@ import {
   PaymentTypeEnum,
   VendorCommissionTypeEnum,
 } from '@rahino/ecommerce/util/enum';
-import { ECOrder } from '@rahino/database/models/ecommerce-eav/ec-order.entity';
-import { ECOrderDetail } from '@rahino/database/models/ecommerce-eav/ec-order-detail.entity';
-import { ECProduct } from '@rahino/database/models/ecommerce-eav/ec-product.entity';
-import { EAVEntityType } from '@rahino/database/models/eav/eav-entity-type.entity';
-import { ECStock } from '@rahino/database/models/ecommerce-eav/ec-stocks.entity';
+import { ECOrder } from '@rahino/database';
+import { ECOrderDetail } from '@rahino/database';
+import { ECProduct } from '@rahino/database';
+import { EAVEntityType } from '@rahino/database';
+import { ECStock } from '@rahino/database';
 import {
   REVERT_INVENTORY_QTY_JOB,
   REVERT_INVENTORY_QTY_QUEUE,
@@ -44,8 +44,8 @@ import { InjectQueue } from '@nestjs/bullmq';
 import { ConfigService } from '@nestjs/config';
 import { DecreaseInventoryService } from '@rahino/ecommerce/inventory/services';
 import { ApplyDiscountService } from '@rahino/ecommerce/product/service';
-import { ECInventoryPrice } from '@rahino/database/models/ecommerce-eav/ec-inventory-price.entity';
-import { ECVendorCommission } from '@rahino/database/models/ecommerce-eav/ec-vendor-commision.entity';
+import { ECInventoryPrice } from '@rahino/database';
+import { ECVendorCommission } from '@rahino/database';
 import * as moment from 'moment-jalaali';
 import {
   REVERT_PAYMENT_JOB,

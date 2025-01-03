@@ -4,7 +4,7 @@ import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builde
 import * as _ from 'lodash';
 import { Sequelize } from 'sequelize';
 import { Op } from 'sequelize';
-import { ECDiscountActionType } from '@rahino/database/models/ecommerce-eav/ec-discount-action-type.entity';
+import { ECDiscountActionType } from '@rahino/database';
 
 @Injectable()
 export class DiscountActionTypeService {

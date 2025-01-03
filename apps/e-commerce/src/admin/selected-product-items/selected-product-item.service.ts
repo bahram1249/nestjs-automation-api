@@ -9,10 +9,10 @@ import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builde
 import { InjectMapper } from 'automapper-nestjs';
 import { Mapper } from 'automapper-core';
 import * as _ from 'lodash';
-import { ECSelectedProductItem } from '@rahino/database/models/ecommerce-eav/ec-selected-product-item.entity';
-import { ECProduct } from '@rahino/database/models/ecommerce-eav/ec-product.entity';
-import { ECSelectedProduct } from '@rahino/database/models/ecommerce-eav/ec-selected-product.entity';
-import { Attachment } from '@rahino/database/models/core/attachment.entity';
+import { ECSelectedProductItem } from '@rahino/database';
+import { ECProduct } from '@rahino/database';
+import { ECSelectedProduct } from '@rahino/database';
+import { Attachment } from '@rahino/database';
 
 @Injectable()
 export class SelectedProductItemService {

@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
-import { Attachment } from '@rahino/database/models/core/attachment.entity';
-import { BuffetCost } from '@rahino/database/models/discount-coffe/buffet-cost.entity';
-import { Buffet } from '@rahino/database/models/discount-coffe/buffet.entity';
-import { CoffeOption } from '@rahino/database/models/discount-coffe/coffe-option.entity';
+import { Attachment } from '@rahino/database';
+import { BuffetCost } from '@rahino/database';
+import { Buffet } from '@rahino/database';
+import { CoffeOption } from '@rahino/database';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import { Op, Sequelize } from 'sequelize';
 import { BuffetFilterDto } from './dto';

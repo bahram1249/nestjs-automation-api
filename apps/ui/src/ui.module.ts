@@ -6,7 +6,7 @@ import {
 } from '@nestjs/common';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { SequelizeModule } from '@nestjs/sequelize';
-import { WinstonLog } from '@rahino/database/models/core/winstonlog.entity';
+import { WinstonLog } from '@rahino/database';
 import { DBLogger } from '@rahino/logger';
 import { join } from 'path';
 import * as hbs from 'express-handlebars';

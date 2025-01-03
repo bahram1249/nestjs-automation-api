@@ -1,10 +1,10 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { InjectModel } from '@nestjs/sequelize';
-import { Setting } from '@rahino/database/models/core/setting.entity';
-import { ECInventoryPrice } from '@rahino/database/models/ecommerce-eav/ec-inventory-price.entity';
-import { ECInventory } from '@rahino/database/models/ecommerce-eav/ec-inventory.entity';
-import { ECProduct } from '@rahino/database/models/ecommerce-eav/ec-product.entity';
+import { Setting } from '@rahino/database';
+import { ECInventoryPrice } from '@rahino/database';
+import { ECInventory } from '@rahino/database';
+import { ECProduct } from '@rahino/database';
 import { CAL_PRICE_PROVIDER_TOKEN } from '@rahino/ecommerce/admin/product/price-cal-factory/constants';
 import { ICalPrice } from '@rahino/ecommerce/admin/product/price-cal-factory/interface/cal-price.interface';
 import {

@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { NeighborhoodController } from './neighborhood.controller';
 import { NeighborhoodService } from './neighborhood.service';
 import { SequelizeModule } from '@nestjs/sequelize';
-import { ECNeighborhood } from '@rahino/database/models/ecommerce-eav/ec-neighborhood.entity';
+import { ECNeighborhood } from '@rahino/database';
 import { SessionModule } from '../user/session/session.module';
 
 @Module({

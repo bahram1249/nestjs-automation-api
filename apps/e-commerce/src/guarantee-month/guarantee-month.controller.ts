@@ -11,7 +11,7 @@ import { JsonResponseTransformInterceptor } from '@rahino/response/interceptor';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 
 import { GuaranteeMonthService } from './guarantee-month.service';
-import { OptionalJwtGuard } from '@rahino/auth/guard';
+import { OptionalJwtGuard } from '@rahino/auth';
 import { OptionalSessionGuard } from '../user/session/guard';
 
 @ApiTags('GuaranteeMonths')

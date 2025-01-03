@@ -1,23 +1,23 @@
 import { Injectable, Scope } from '@nestjs/common';
-import { Attachment } from '@rahino/database/models/core/attachment.entity';
-import { User } from '@rahino/database/models/core/user.entity';
-import { ECAddress } from '@rahino/database/models/ecommerce-eav/ec-address.entity';
-import { ECCity } from '@rahino/database/models/ecommerce-eav/ec-city.entity';
-import { ECColor } from '@rahino/database/models/ecommerce-eav/ec-color.entity';
-import { ECDiscount } from '@rahino/database/models/ecommerce-eav/ec-discount.entity';
-import { ECGuaranteeMonth } from '@rahino/database/models/ecommerce-eav/ec-guarantee-month.entity';
-import { ECGuarantee } from '@rahino/database/models/ecommerce-eav/ec-guarantee.entity';
-import { ECInventory } from '@rahino/database/models/ecommerce-eav/ec-inventory.entity';
-import { ECNeighborhood } from '@rahino/database/models/ecommerce-eav/ec-neighborhood.entity';
-import { ECOrderDetailStatus } from '@rahino/database/models/ecommerce-eav/ec-order-detail-status.entity';
-import { ECOrderDetail } from '@rahino/database/models/ecommerce-eav/ec-order-detail.entity';
-import { ECOrderShipmentWay } from '@rahino/database/models/ecommerce-eav/ec-order-shipmentway.entity';
-import { ECOrderStatus } from '@rahino/database/models/ecommerce-eav/ec-order-status.entity';
-import { ECPayment } from '@rahino/database/models/ecommerce-eav/ec-payment-entity';
-import { ECPaymentGateway } from '@rahino/database/models/ecommerce-eav/ec-payment-gateway.entity';
-import { ECProduct } from '@rahino/database/models/ecommerce-eav/ec-product.entity';
-import { ECProvince } from '@rahino/database/models/ecommerce-eav/ec-province.entity';
-import { ECVendor } from '@rahino/database/models/ecommerce-eav/ec-vendor.entity';
+import { Attachment } from '@rahino/database';
+import { User } from '@rahino/database';
+import { ECAddress } from '@rahino/database';
+import { ECCity } from '@rahino/database';
+import { ECColor } from '@rahino/database';
+import { ECDiscount } from '@rahino/database';
+import { ECGuaranteeMonth } from '@rahino/database';
+import { ECGuarantee } from '@rahino/database';
+import { ECInventory } from '@rahino/database';
+import { ECNeighborhood } from '@rahino/database';
+import { ECOrderDetailStatus } from '@rahino/database';
+import { ECOrderDetail } from '@rahino/database';
+import { ECOrderShipmentWay } from '@rahino/database';
+import { ECOrderStatus } from '@rahino/database';
+import { ECPayment } from '@rahino/database';
+import { ECPaymentGateway } from '@rahino/database';
+import { ECProduct } from '@rahino/database';
+import { ECProvince } from '@rahino/database';
+import { ECVendor } from '@rahino/database';
 import {
   OrderShipmentwayEnum,
   OrderStatusEnum,

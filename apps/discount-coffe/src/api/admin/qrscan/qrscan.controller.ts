@@ -11,9 +11,9 @@ import { CheckPermission } from '@rahino/permission-checker/decorator';
 import { PermissionGuard } from '@rahino/permission-checker/guard';
 import { JsonResponseTransformInterceptor } from '@rahino/response/interceptor';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
-import { JwtGuard } from '@rahino/auth/guard';
-import { GetUser } from '@rahino/auth/decorator';
-import { User } from '@rahino/database/models/core/user.entity';
+import { JwtGuard } from '@rahino/auth';
+import { GetUser } from '@rahino/auth';
+import { User } from '@rahino/database';
 import { QrScanDto } from './dto';
 import { QrScanService } from './qrscan.service';
 

@@ -18,10 +18,10 @@ import {
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
-import { JwtGuard } from '@rahino/auth/guard';
+import { JwtGuard } from '@rahino/auth';
 import { JsonResponseTransformInterceptor } from '@rahino/response/interceptor';
-import { GetUser } from '@rahino/auth/decorator';
-import { User } from '@rahino/database/models/core/user.entity';
+import { GetUser } from '@rahino/auth';
+import { User } from '@rahino/database';
 import { PermissionGuard } from '@rahino/permission-checker/guard';
 import { CheckPermission } from '@rahino/permission-checker/decorator';
 import { GetTotalOrderFilterDto } from './dto/get-total-order.dto';

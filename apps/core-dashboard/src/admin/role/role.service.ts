@@ -1,11 +1,11 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { Request, Response } from 'express';
-import { Role } from '@rahino/database/models/core/role.entity';
-import { PermissionGroup } from '@rahino/database/models/core/permissionGroup.entity';
+import { Role } from '@rahino/database';
+import { PermissionGroup } from '@rahino/database';
 import { Op, Sequelize } from 'sequelize';
-import { Permission } from '@rahino/database/models/core/permission.entity';
-import { RolePermission } from '@rahino/database/models/core/rolePermission.entity';
+import { Permission } from '@rahino/database';
+import { RolePermission } from '@rahino/database';
 
 @Injectable()
 export class RoleService {

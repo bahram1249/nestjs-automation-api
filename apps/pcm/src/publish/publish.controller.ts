@@ -18,7 +18,7 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 
-import { JwtGuard } from '@rahino/auth/guard';
+import { JwtGuard } from '@rahino/auth';
 import { PublishGetDto } from './dto';
 import { PublishService } from './publish.service';
 

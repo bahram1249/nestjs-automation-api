@@ -4,7 +4,7 @@ import { CAL_PRICE_PROVIDER_TOKEN } from './constants';
 import { GoldonGalleryCalPriceModule } from './goldon-gallery-cal-price.module';
 import { GeneralCalPriceModule } from './general-cal-price.module';
 import { SequelizeModule } from '@nestjs/sequelize';
-import { Setting } from '@rahino/database/models/core/setting.entity';
+import { Setting } from '@rahino/database';
 
 @Module({
   imports: [

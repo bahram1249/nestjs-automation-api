@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { ChargingWalletPaymentController } from './charging-wallet-payment.controller';
 import { ChargingWalletPaymentService } from './charging-wallet-payment.service';
 import { SequelizeModule } from '@nestjs/sequelize';
-import { ECPaymentGateway } from '@rahino/database/models/ecommerce-eav/ec-payment-gateway.entity';
+import { ECPaymentGateway } from '@rahino/database';
 
 @Module({
   imports: [SequelizeModule.forFeature([ECPaymentGateway])],

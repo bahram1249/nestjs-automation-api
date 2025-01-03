@@ -12,7 +12,7 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { DiscountConditionService } from './discount-condition.service';
-import { JwtGuard } from '@rahino/auth/guard';
+import { JwtGuard } from '@rahino/auth';
 import { PermissionGuard } from '@rahino/permission-checker/guard';
 import { JsonResponseTransformInterceptor } from '@rahino/response/interceptor';
 import {
@@ -22,8 +22,8 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { CheckPermission } from '@rahino/permission-checker/decorator';
-import { GetUser } from '@rahino/auth/decorator';
-import { User } from '@rahino/database/models/core/user.entity';
+import { GetUser } from '@rahino/auth';
+import { User } from '@rahino/database';
 import { DiscountConditionDto, GetDiscountConditionDto } from './dto';
 
 @ApiTags('Admin-DiscountConditions')

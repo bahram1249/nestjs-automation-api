@@ -16,10 +16,10 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { UserVendorService } from './user-vendor.service';
-import { JwtGuard } from '@rahino/auth/guard';
+import { JwtGuard } from '@rahino/auth';
 import { ListFilter } from '@rahino/query-filter';
-import { GetUser } from '@rahino/auth/decorator';
-import { User } from '@rahino/database/models/core/user.entity';
+import { GetUser } from '@rahino/auth';
+import { User } from '@rahino/database';
 
 @UseGuards(JwtGuard)
 @ApiBearerAuth()

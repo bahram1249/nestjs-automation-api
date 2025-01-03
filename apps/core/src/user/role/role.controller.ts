@@ -17,10 +17,10 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { RoleService } from './role.service';
-import { User } from '@rahino/database/models/core/user.entity';
+import { User } from '@rahino/database';
 import { RoleGetDto } from './dto';
-import { JwtGuard } from '@rahino/auth/guard';
-import { GetUser } from '@rahino/auth/decorator';
+import { JwtGuard } from '@rahino/auth';
+import { GetUser } from '@rahino/auth';
 
 @ApiTags('User-Roles')
 @ApiBearerAuth()

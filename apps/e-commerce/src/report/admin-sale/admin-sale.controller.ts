@@ -17,7 +17,7 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 
-import { JwtGuard } from '@rahino/auth/guard';
+import { JwtGuard } from '@rahino/auth';
 import { AdminSaleService } from './admin-sale.service';
 import { GetAdminSaleDto } from './dto';
 

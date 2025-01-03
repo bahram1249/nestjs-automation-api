@@ -5,7 +5,7 @@ import {
   Redirect,
 } from '@nestjs/common';
 import { CodeDto, LoginDto } from './dto';
-import { User } from '@rahino/database/models/core/user.entity';
+import { User } from '@rahino/database';
 import { Request, Response } from 'express';
 import { AuthService } from '@rahino/core/auth/auth.service';
 import { InjectModel } from '@nestjs/sequelize';

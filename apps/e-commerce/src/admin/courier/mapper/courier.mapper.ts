@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { AutomapperProfile, InjectMapper } from 'automapper-nestjs';
 import { Mapper, createMap, forMember, ignore } from 'automapper-core';
 import { UserCourierDto } from '../dto/user-courier-dto';
-import { User } from '@rahino/database/models/core/user.entity';
+import { User } from '@rahino/database';
 
 @Injectable()
 export class CourierProfile extends AutomapperProfile {

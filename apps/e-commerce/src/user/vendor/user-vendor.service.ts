@@ -3,14 +3,14 @@ import { InjectModel } from '@nestjs/sequelize';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import { Op, Sequelize } from 'sequelize';
 import * as _ from 'lodash';
-import { User } from '@rahino/database/models/core/user.entity';
+import { User } from '@rahino/database';
 import { ListFilter } from '@rahino/query-filter';
-import { ECVendor } from '@rahino/database/models/ecommerce-eav/ec-vendor.entity';
-import { ECVendorUser } from '@rahino/database/models/ecommerce-eav/ec-vendor-user.entity';
-import { Attachment } from '@rahino/database/models/core/attachment.entity';
-import { ECVendorCommission } from '@rahino/database/models/ecommerce-eav/ec-vendor-commision.entity';
-import { ECVariationPrice } from '@rahino/database/models/ecommerce-eav/ec-variation-prices';
-import { ECVendorCommissionType } from '@rahino/database/models/ecommerce-eav/ec-vendor-commission-type.entity';
+import { ECVendor } from '@rahino/database';
+import { ECVendorUser } from '@rahino/database';
+import { Attachment } from '@rahino/database';
+import { ECVendorCommission } from '@rahino/database';
+import { ECVariationPrice } from '@rahino/database';
+import { ECVendorCommissionType } from '@rahino/database';
 
 @Injectable()
 export class UserVendorService {

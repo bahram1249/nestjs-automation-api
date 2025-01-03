@@ -11,7 +11,7 @@ import {
 } from '@nestjs/common';
 import { JsonResponseTransformInterceptor } from '@rahino/response/interceptor';
 import { ApiOperation, ApiQuery, ApiTags } from '@nestjs/swagger';
-import { OptionalJwtGuard } from '@rahino/auth/guard';
+import { OptionalJwtGuard } from '@rahino/auth';
 import { GetProductDto, GetUnPriceDto } from './dto';
 import { ProductService } from './product.service';
 import { OptionalSessionGuard } from '../user/session/guard';

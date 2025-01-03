@@ -5,14 +5,14 @@
   NotFoundException,
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
-import { ECVendorUser } from '@rahino/database/models/ecommerce-eav/ec-vendor-user.entity';
+import { ECVendorUser } from '@rahino/database';
 import { GetVendorAddressDto, VendorAddressDto } from './dto';
-import { User } from '@rahino/database/models/core/user.entity';
-import { ECVendorAddress } from '@rahino/database/models/ecommerce-eav/ec-vendor-address.entity';
+import { User } from '@rahino/database';
+import { ECVendorAddress } from '@rahino/database';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import { Op, Sequelize } from 'sequelize';
-import { ECAddress } from '@rahino/database/models/ecommerce-eav/ec-address.entity';
-import { ECVendor } from '@rahino/database/models/ecommerce-eav/ec-vendor.entity';
+import { ECAddress } from '@rahino/database';
+import { ECVendor } from '@rahino/database';
 import { AddressService } from '@rahino/ecommerce/user/address/address.service';
 
 @Injectable()

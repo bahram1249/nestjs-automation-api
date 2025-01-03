@@ -10,9 +10,9 @@ import {
 } from '@nestjs/common';
 import { CheckPermission } from '@rahino/permission-checker/decorator';
 import { PermissionGuard } from '@rahino/permission-checker/guard';
-import { JwtWebGuard } from '@rahino/auth/guard';
-import { GetUser } from '@rahino/auth/decorator';
-import { Menu } from '@rahino/database/models/core/menu.entity';
+import { JwtWebGuard } from '@rahino/auth';
+import { GetUser } from '@rahino/auth';
+import { Menu } from '@rahino/database';
 import { HolidayService } from './holiday.service';
 import { Request } from 'express';
 

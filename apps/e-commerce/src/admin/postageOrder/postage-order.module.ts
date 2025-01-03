@@ -2,9 +2,9 @@ import { Module } from '@nestjs/common';
 import { PostageOrderController } from './postage-order.controller';
 import { PostageOrderService } from './postage-order.service';
 import { SequelizeModule } from '@nestjs/sequelize';
-import { User } from '@rahino/database/models/core/user.entity';
-import { Permission } from '@rahino/database/models/core/permission.entity';
-import { ECOrder } from '@rahino/database/models/ecommerce-eav/ec-order.entity';
+import { User } from '@rahino/database';
+import { Permission } from '@rahino/database';
+import { ECOrder } from '@rahino/database';
 import { UtilOrderModule } from '../utilOrder/util-order.module';
 import { ECommerceSmsModule } from '@rahino/ecommerce/util/sms/ecommerce-sms.module';
 

@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { SequelizeModule } from '@nestjs/sequelize';
-import { ECPaymentGateway } from '@rahino/database/models/ecommerce-eav/ec-payment-gateway.entity';
+import { ECPaymentGateway } from '@rahino/database';
 import { ECommerceSmsModule } from '@rahino/ecommerce/util/sms/ecommerce-sms.module';
 import { FinalizedPaymentModule } from '../util/finalized-payment/finalized-payment.module';
 import { ZarinPalModule } from './zarinpal.module';

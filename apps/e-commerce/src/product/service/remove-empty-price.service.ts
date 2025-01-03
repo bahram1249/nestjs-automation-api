@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { ECProduct } from '@rahino/database/models/ecommerce-eav/ec-product.entity';
+import { ECProduct } from '@rahino/database';
 
 /*
 when we filtering based price

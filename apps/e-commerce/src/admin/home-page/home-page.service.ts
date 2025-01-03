@@ -1,10 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import * as _ from 'lodash';
-import { User } from '@rahino/database/models/core/user.entity';
+import { User } from '@rahino/database';
 import { ListFilter } from '@rahino/query-filter';
 import { HomePageDto } from './dto/home-page.dto';
-import { ECHomePage } from '@rahino/database/models/ecommerce-eav/ec-home-page.entity';
+import { ECHomePage } from '@rahino/database';
 import { HomePageTypeEnum } from '../../util/enum/home-page-type.enum';
 import { HomePageValidatorService } from './home-page-validator.service';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';

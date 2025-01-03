@@ -23,7 +23,7 @@ import {
 } from '@nestjs/swagger';
 import { ListFilter } from '@rahino/query-filter/types';
 import { UserDto } from './dto';
-import { JwtGuard } from '@rahino/auth/guard';
+import { JwtGuard } from '@rahino/auth';
 
 @ApiTags('Admin-Users')
 @ApiBearerAuth()

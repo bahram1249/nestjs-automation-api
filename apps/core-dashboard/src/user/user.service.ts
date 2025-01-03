@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import { User } from '@rahino/database/models/core/user.entity';
-import { Menu } from '@rahino/database/models/core/menu.entity';
+import { User } from '@rahino/database';
+import { Menu } from '@rahino/database';
 import { Request } from 'express';
 import { InjectModel } from '@nestjs/sequelize';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';

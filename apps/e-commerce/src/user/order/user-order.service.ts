@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
-import { User } from '@rahino/database/models/core/user.entity';
-import { ECOrder } from '@rahino/database/models/ecommerce-eav/ec-order.entity';
+import { User } from '@rahino/database';
+import { ECOrder } from '@rahino/database';
 import { OrderQueryBuilder } from '@rahino/ecommerce/admin/utilOrder/service/order-query-builder.service';
 import { OrderStatusEnum } from '@rahino/ecommerce/util/enum';
 import { ListFilter } from '@rahino/query-filter';

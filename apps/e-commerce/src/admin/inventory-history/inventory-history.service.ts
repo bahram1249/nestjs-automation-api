@@ -1,10 +1,10 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
-import { User } from '@rahino/database/models/core/user.entity';
-import { ECInventoryHistory } from '@rahino/database/models/ecommerce-eav/ec-inventory-history.entity';
-import { ECInventoryTrackChangeStatus } from '@rahino/database/models/ecommerce-eav/ec-inventory-track-change-status.entity';
-import { ECInventory } from '@rahino/database/models/ecommerce-eav/ec-inventory.entity';
-import { ECProduct } from '@rahino/database/models/ecommerce-eav/ec-product.entity';
+import { User } from '@rahino/database';
+import { ECInventoryHistory } from '@rahino/database';
+import { ECInventoryTrackChangeStatus } from '@rahino/database';
+import { ECInventory } from '@rahino/database';
+import { ECProduct } from '@rahino/database';
 import { ListFilter } from '@rahino/query-filter';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 

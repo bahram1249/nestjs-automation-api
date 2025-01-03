@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { safeJsonParse } from '@rahino/commontools';
-import { ECInventoryStatus } from '@rahino/database/models/ecommerce-eav/ec-inventory-status.entity';
-import { ECInventory } from '@rahino/database/models/ecommerce-eav/ec-inventory.entity';
-import { ECProduct } from '@rahino/database/models/ecommerce-eav/ec-product.entity';
+import { ECInventoryStatus } from '@rahino/database';
+import { ECInventory } from '@rahino/database';
+import { ECProduct } from '@rahino/database';
 import { InventoryStatusEnum } from '@rahino/ecommerce/inventory/enum';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import { RedisRepository } from '@rahino/redis-client';

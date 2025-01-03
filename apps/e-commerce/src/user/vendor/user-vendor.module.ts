@@ -2,8 +2,8 @@ import { Module } from '@nestjs/common';
 import { UserVendorController } from './user-vendor.controller';
 import { UserVendorService } from './user-vendor.service';
 import { SequelizeModule } from '@nestjs/sequelize';
-import { ECVendorUser } from '@rahino/database/models/ecommerce-eav/ec-vendor-user.entity';
-import { ECVendor } from '@rahino/database/models/ecommerce-eav/ec-vendor.entity';
+import { ECVendorUser } from '@rahino/database';
+import { ECVendor } from '@rahino/database';
 
 @Module({
   imports: [SequelizeModule.forFeature([ECVendorUser, ECVendor])],

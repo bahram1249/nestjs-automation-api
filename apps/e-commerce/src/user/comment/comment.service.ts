@@ -3,14 +3,14 @@ import { InjectModel } from '@nestjs/sequelize';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import { Op, Sequelize } from 'sequelize';
 import * as _ from 'lodash';
-import { User } from '@rahino/database/models/core/user.entity';
+import { User } from '@rahino/database';
 import { ListFilter } from '@rahino/query-filter';
-import { ECProductComment } from '@rahino/database/models/ecommerce-eav/ec-product-comment.entity';
+import { ECProductComment } from '@rahino/database';
 import { ProductCommentStatusEnum } from '@rahino/ecommerce/util/enum';
-import { ECProductCommentStatus } from '@rahino/database/models/ecommerce-eav/ec-comment-status.entity';
-import { ECProduct } from '@rahino/database/models/ecommerce-eav/ec-product.entity';
-import { ECProductCommentFactor } from '@rahino/database/models/ecommerce-eav/ec-product-comment-factor.entity';
-import { ECEntityTypeFactor } from '@rahino/database/models/ecommerce-eav/ec-entitytype-factor.entity';
+import { ECProductCommentStatus } from '@rahino/database';
+import { ECProduct } from '@rahino/database';
+import { ECProductCommentFactor } from '@rahino/database';
+import { ECEntityTypeFactor } from '@rahino/database';
 
 @Injectable()
 export class CommentService {

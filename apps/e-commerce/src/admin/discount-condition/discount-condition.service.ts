@@ -5,8 +5,8 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { DiscountConditionDto, GetDiscountConditionDto } from './dto';
-import { User } from '@rahino/database/models/core/user.entity';
-import { ECDiscountCondition } from '@rahino/database/models/ecommerce-eav/ec-discount-condition.entity';
+import { User } from '@rahino/database';
+import { ECDiscountCondition } from '@rahino/database';
 import { InjectModel } from '@nestjs/sequelize';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import { Op, Sequelize } from 'sequelize';
@@ -18,7 +18,7 @@ import * as _ from 'lodash';
 import { EntityTypeService } from '@rahino/eav/admin/entity-type/entity-type.service';
 import { ProductService } from '../product/product.service';
 import { UserInventoryService } from '@rahino/ecommerce/user/inventory/user-inventory.service';
-import { ECDiscountConditionType } from '@rahino/database/models/ecommerce-eav/ec-discount-condition-type.entity';
+import { ECDiscountConditionType } from '@rahino/database';
 
 @Injectable()
 export class DiscountConditionService {
