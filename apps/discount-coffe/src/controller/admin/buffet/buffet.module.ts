@@ -10,7 +10,6 @@ import { BuffetCost } from '@rahino/database';
 import { BuffetCity } from '@rahino/database';
 import { CoffeOption } from '@rahino/database';
 import { BuffetOption } from '@rahino/database';
-import { ExtendOptionMiddleware } from '@rahino/commonmiddleware/middlewares/extend-option.middleware';
 
 @Module({
   imports: [

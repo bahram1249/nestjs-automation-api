@@ -1,7 +1,7 @@
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { UserService } from './user.service';
 import { UserController } from './user.controller';
-import { WebAuthDiscountCoffeMiddleware } from '@rahino/commonmiddleware/middlewares/web-auth-discountcoffe.middleware';
+import { WebAuthDiscountCoffeMiddleware } from '@rahino/commonmiddleware';
 import { SequelizeModule } from '@nestjs/sequelize';
 import { User } from '@rahino/database';
 import { BuffetReserve } from '@rahino/database';

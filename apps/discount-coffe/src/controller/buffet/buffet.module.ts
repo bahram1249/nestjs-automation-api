@@ -6,7 +6,7 @@ import { Buffet } from '@rahino/database';
 import { BuffetMenuCategory } from '@rahino/database';
 import { PersianDate } from '@rahino/database';
 import { BuffetReserve } from '@rahino/database';
-import { WebAuthDiscountCoffeMiddleware } from '@rahino/commonmiddleware/middlewares/web-auth-discountcoffe.middleware';
+import { WebAuthDiscountCoffeMiddleware } from '@rahino/commonmiddleware';
 import { Attachment } from '@rahino/database';
 import { BuffetMenu } from '@rahino/database';
 import { BuffetReserveDetail } from '@rahino/database';

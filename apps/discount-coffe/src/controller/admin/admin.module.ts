@@ -1,5 +1,5 @@
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
-import { ExtendOptionMiddleware } from '@rahino/commonmiddleware/middlewares/extend-option.middleware';
+import { ExtendOptionMiddleware } from '@rahino/commonmiddleware';
 import { BuffetModule } from './buffet/buffet.module';
 import { MenuCategoryModule } from './menu-category/menu-category.module';
 import { BuffetMenuModule } from './buffet-menu/buffet-menu.module';

@@ -48,8 +48,6 @@
       "@rahino/query-filter/*": ["libs/query-filter/src/*"],
       "@rahino/pay": ["libs/pay/src"],
       "@rahino/pay/*": ["libs/pay/src/*"],
-      "@rahino/commonmiddleware": ["libs/commonmiddleware/src"],
-      "@rahino/commonmiddleware/*": ["libs/commonmiddleware/src/*"],
       "@rahino/redis-client": ["libs/redis-client/src"],
       "@rahino/redis-client/*": ["libs/redis-client/src/*"],
       "@rahino/commontools": ["libs/commontools/src"],
