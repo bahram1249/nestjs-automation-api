@@ -56,6 +56,7 @@ export class UserService {
       'lastPasswordChangeDate',
       'profilePhotoAttachmentId',
       'static_id',
+      'birthDate',
       'createdAt',
       'updatedAt',
     ];
@@ -85,6 +86,7 @@ export class UserService {
           'lastPasswordChangeDate',
           'profilePhotoAttachmentId',
           'static_id',
+          'birthDate',
           'createdAt',
           'updatedAt',
         ],
@@ -155,6 +157,7 @@ export class UserService {
         'lastPasswordChangeDate',
         'profilePhotoAttachmentId',
         'static_id',
+        'birthDate',
         'createdAt',
         'updatedAt',
       ],
