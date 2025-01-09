@@ -164,7 +164,7 @@ export class ProcessHomeService {
       type: HomePageTypeEnum.SELECTEDPRODUCT,
       link:
         baseUrl +
-        `/v1/api/ecommerce/user/selectedProducts?orderBy=priority&sortOrder=DESC&limit=20`,
+        `/v1/api/ecommerce/user/selectedProducts?orderBy=priority&sortOrder=ASC&limit=20`,
       totalLink: null,
       requestBased: true,
     };
