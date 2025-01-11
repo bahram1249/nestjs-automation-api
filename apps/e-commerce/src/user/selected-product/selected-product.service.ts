@@ -3,20 +3,21 @@ import { GetSelectedProductDto } from './dto';
 import { InjectModel } from '@nestjs/sequelize';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import { Op, Sequelize } from 'sequelize';
-import * as _ from 'lodash';
-import { Attachment } from '@rahino/database';
-import { ECSelectedProduct } from '@rahino/database';
-import { ECSelectedProductType } from '@rahino/database';
+import {
+  Attachment,
+  ECSelectedProduct,
+  ECSelectedProductType,
+} from '@rahino/database';
 
 @Injectable()
 export class SelectedProductService {
   constructor(
     @InjectModel(ECSelectedProduct)
-    private repository: typeof ECSelectedProduct,
+    private readonly repository: typeof ECSelectedProduct,
   ) {}
 
   async findAll(filter: GetSelectedProductDto) {
-    let queryBuilder = new QueryOptionsBuilder().filter({
+    const queryBuilder = new QueryOptionsBuilder().filter({
       title: {
         [Op.like]: filter.search,
       },

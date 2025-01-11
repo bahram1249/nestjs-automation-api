@@ -4,12 +4,35 @@ import {
   Injectable,
   InternalServerErrorException,
   NotFoundException,
-  NotImplementedException,
 } from '@nestjs/common';
 import { InjectConnection, InjectModel } from '@nestjs/sequelize';
 import { Op, Sequelize, Transaction } from 'sequelize';
 import { GetProductDto, ProductDto } from './dto';
-import { ECProduct } from '@rahino/database';
+import {
+  ECProduct,
+  ECSlugVersion,
+  ECInventoryStatus,
+  ECBrand,
+  EAVEntityType,
+  EAVEntityAttributeValue,
+  EAVAttribute,
+  EAVAttributeValue,
+  ECInventory,
+  ECVendor,
+  ECColor,
+  ECGuarantee,
+  ECGuaranteeMonth,
+  ECProvince,
+  ECVendorAddress,
+  ECAddress,
+  ECCity,
+  ECNeighborhood,
+  ECInventoryPrice,
+  ECVariationPrice,
+  Attachment,
+  User,
+  ECPublishStatus,
+} from '@rahino/database';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import * as _ from 'lodash';
 import { Mapper } from 'automapper-core';
@@ -19,14 +42,6 @@ import { ProductAttributeDto } from './dto/product-attribute.dto';
 import { EntityAttributeValueDto } from '@rahino/eav/admin/entity-attribute-value/dto';
 import { EntityService } from '@rahino/eav/admin/entity/entity.service';
 import { ConfigService } from '@nestjs/config';
-import { User } from '@rahino/database';
-import { ECPublishStatus } from '@rahino/database';
-import { ECInventoryStatus } from '@rahino/database';
-import { ECBrand } from '@rahino/database';
-import { EAVEntityType } from '@rahino/database';
-import { EAVEntityAttributeValue } from '@rahino/database';
-import { EAVAttribute } from '@rahino/database';
-import { EAVAttributeValue } from '@rahino/database';
 import { ProductPhotoService } from '@rahino/ecommerce/product-photo/product-photo.service';
 import { ProductAttachmentDto } from './dto/product-attachment.dto';
 import { PhotoDto } from '@rahino/ecommerce/product-photo/dto';
@@ -38,22 +53,9 @@ import {
   InventoryService,
   InventoryValidationService,
 } from '@rahino/ecommerce/inventory/services';
-import { ECInventory } from '@rahino/database';
 import { UserVendorService } from '@rahino/ecommerce/user/vendor/user-vendor.service';
 import { ListFilter } from '@rahino/query-filter';
-import { ECVendor } from '@rahino/database';
-import { ECColor } from '@rahino/database';
-import { ECGuarantee } from '@rahino/database';
-import { ECGuaranteeMonth } from '@rahino/database';
-import { ECProvince } from '@rahino/database';
-import { ECVendorAddress } from '@rahino/database';
-import { ECInventoryPrice } from '@rahino/database';
 import { emptyListFilter } from '@rahino/query-filter/provider/constants';
-import { ECAddress } from '@rahino/database';
-import { ECCity } from '@rahino/database';
-import { ECNeighborhood } from '@rahino/database';
-import { ECVariationPrice } from '@rahino/database';
-import { Attachment } from '@rahino/database';
 import {
   Constants,
   PRODUCT_INVENTORY_STATUS_QUEUE,
@@ -62,7 +64,6 @@ import { InjectQueue } from '@nestjs/bullmq';
 import { Queue } from 'bullmq';
 import { ProductVideoService } from '@rahino/ecommerce/product-video/product-video.service';
 import { VideoDto } from '@rahino/ecommerce/product-video/dto';
-import { ECSlugVersion } from '@rahino/database';
 import { SlugVersionTypeEnum } from '@rahino/ecommerce/util/enum';
 import { PermissionService } from '@rahino/core/user/permission/permission.service';
 
@@ -90,8 +91,8 @@ export class ProductService {
     @InjectConnection()
     private readonly sequelize: Sequelize,
     @InjectQueue(PRODUCT_INVENTORY_STATUS_QUEUE)
-    private productInventoryQueue: Queue,
-    private config: ConfigService,
+    private readonly productInventoryQueue: Queue,
+    private readonly config: ConfigService,
   ) {}
 
   async findAll(user: User, filter: GetProductDto) {
@@ -993,25 +994,25 @@ export class ProductService {
   async create(user: User, dto: ProductDto) {
     const customerName = this.config.get<string>('SITE_NAME');
     if (customerName == 'goldongallery') {
-      for (let i = 0; i < dto.inventories.length; i++) {
-        dto.inventories[i].firstPrice = BigInt(0);
+      for (const inventory of dto.inventories) {
+        inventory.firstPrice = BigInt(0);
       }
     }
     // add symbol price to inventoryPrices
-    for (let i = 0; i < dto.inventories.length; i++) {
-      if (dto.inventories[i].inventoryPrices == null) {
-        dto.inventories[i].inventoryPrices = [];
+    for (const inventory of dto.inventories) {
+      if (inventory.inventoryPrices == null) {
+        inventory.inventoryPrices = [];
       }
-      if (dto.inventories[i].firstPrice != null) {
-        dto.inventories[i].inventoryPrices.push({
+      if (inventory.firstPrice != null) {
+        inventory.inventoryPrices.push({
           variationPriceId: VariationPriceIdEnum.firstPrice,
-          price: dto.inventories[i].firstPrice,
+          price: inventory.firstPrice,
         });
       }
-      if (dto.inventories[i].secondaryPrice != null) {
-        dto.inventories[i].inventoryPrices.push({
+      if (inventory.secondaryPrice != null) {
+        inventory.inventoryPrices.push({
           variationPriceId: VariationPriceIdEnum.secondaryPrice,
-          price: dto.inventories[i].secondaryPrice,
+          price: inventory.secondaryPrice,
         });
       }
     }
@@ -1036,8 +1037,8 @@ export class ProductService {
       );
     }
 
-    // validation of entityType is linked to ecommerce model
-    const ecommerceEntityModel = 1;
+    // validation of entityType is linked to e-commerce model
+    const eCommerceEntityModel = 1;
     const entityType = await this.entityType.findOne(
       new QueryOptionsBuilder()
         .filter({ id: dto.entityTypeId })
@@ -1050,7 +1051,7 @@ export class ProductService {
           ),
         )
         .filter({
-          entityModelId: ecommerceEntityModel,
+          entityModelId: eCommerceEntityModel,
         })
         .build(),
     );
@@ -1090,6 +1091,7 @@ export class ProductService {
       dto.inventories,
     );
 
+    // begin transaction
     const transaction = await this.sequelize.transaction({
       isolationLevel: Transaction.ISOLATION_LEVELS.READ_COMMITTED,
     });
@@ -1186,25 +1188,25 @@ export class ProductService {
   async update(entityId: bigint, user: User, dto: ProductDto) {
     const customerName = this.config.get<string>('SITE_NAME');
     if (customerName == 'goldongallery') {
-      for (let i = 0; i < dto.inventories.length; i++) {
-        dto.inventories[i].firstPrice = BigInt(0);
+      for (const inventory of dto.inventories) {
+        inventory.firstPrice = BigInt(0);
       }
     }
     // add symbol price to inventoryPrices
-    for (let i = 0; i < dto.inventories.length; i++) {
-      if (dto.inventories[i].inventoryPrices == null) {
-        dto.inventories[i].inventoryPrices = [];
+    for (const inventory of dto.inventories) {
+      if (inventory.inventoryPrices == null) {
+        inventory.inventoryPrices = [];
       }
-      if (dto.inventories[i].firstPrice != null) {
-        dto.inventories[i].inventoryPrices.push({
+      if (inventory.firstPrice != null) {
+        inventory.inventoryPrices.push({
           variationPriceId: VariationPriceIdEnum.firstPrice,
-          price: dto.inventories[i].firstPrice,
+          price: inventory.firstPrice,
         });
       }
-      if (dto.inventories[i].secondaryPrice != null) {
-        dto.inventories[i].inventoryPrices.push({
+      if (inventory.secondaryPrice != null) {
+        inventory.inventoryPrices.push({
           variationPriceId: VariationPriceIdEnum.secondaryPrice,
-          price: dto.inventories[i].secondaryPrice,
+          price: inventory.secondaryPrice,
         });
       }
     }
@@ -1276,8 +1278,8 @@ export class ProductService {
         );
       }
 
-      // validation of entityType is linked to ecommerce model
-      const ecommerceEntityModel = 1;
+      // validation of entityType is linked to e-commerce model
+      const eCommerceEntityModel = 1;
       const entityType = await this.entityType.findOne(
         new QueryOptionsBuilder()
           .filter({ id: dto.entityTypeId })
@@ -1290,7 +1292,7 @@ export class ProductService {
             ),
           )
           .filter({
-            entityModelId: ecommerceEntityModel,
+            entityModelId: eCommerceEntityModel,
           })
           .build(),
       );
@@ -1330,7 +1332,7 @@ export class ProductService {
       dto.inventories,
     );
 
-    // beign transaction
+    // begin transaction
     const transaction = await this.sequelize.transaction({
       isolationLevel: Transaction.ISOLATION_LEVELS.READ_COMMITTED,
     });
@@ -1430,7 +1432,7 @@ export class ProductService {
       const oldItemInventories = dto.inventories.filter(
         (item) => item.id != null,
       );
-      const oldItemInvenotryIds = oldItemInventories.map((item) => item.id);
+      const oldItemInventoryIds = oldItemInventories.map((item) => item.id);
 
       // all old inventories exists in database
       const allOldInventories = await this.inventoryService.findByVendorIds(
@@ -1442,7 +1444,7 @@ export class ProductService {
       const deletedInventoryIds = allOldInventories
         .filter(
           (item) =>
-            oldItemInvenotryIds.findIndex((value) => value == item.id) == -1,
+            oldItemInventoryIds.findIndex((value) => value == item.id) == -1,
         )
         .map((item) => item.id);
 

@@ -5,14 +5,14 @@
   "compilerOptions": {
     "deleteOutDir": true,
     "webpack": true,
-    "builder": "swc",
+    "builder": "tsc",
     "tsConfigPath": "apps/main/tsconfig.app.json",
     "plugins": ["@nestjs/swagger/plugin"],
     "assets": [
       {
         "include": "i18n/**/*",
         "watchAssets": true,
-        "outDir": "dist/apps/main"
+        "outDir": "dist"
       }
     ]
   },
