@@ -3076,6 +3076,23 @@ END
 GO
 
 
+-- ec-stocks-v2
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ec-stocks-v2' 
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'SITE_NAME' AND [value] IN ('ecommerce'))
+		)
+BEGIN
+
+	ALTER TABLE ECStocks
+		DROP CONSTRAINT FK_ECStocks_SessionId
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'ec-stocks-v2', GETDATE(), GETDATE()
+END
+
+
 GO
 
 -- ec-paymentgateways-v1
@@ -3765,6 +3782,24 @@ END
 
 GO
 
+
+-- ec-order-details-v6
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ec-order-details-v6' 
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'SITE_NAME' AND [value] IN ('ecommerce'))
+		)
+BEGIN
+
+	ALTER TABLE ECOrderDetails
+		DROP CONSTRAINT FK_ECOrderDetails_Stocks
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'ec-order-details-v6', GETDATE(), GETDATE()
+END
+
+GO
 
 -- ec-payment-status
 IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ec-payment-status-v1' 
