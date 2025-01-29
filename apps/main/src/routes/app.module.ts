@@ -6,6 +6,13 @@ import {
 } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { DatabaseModule } from '@rahino/database';
+import {
+  coreModels,
+  discountCoffeEntities,
+  eavEntities,
+  ecommerceEntities,
+  pcmEntities,
+} from '@rahino/database/dist/subsystem-models';
 import helmet from 'helmet';
 import { ThrottlerModule } from '@nestjs/throttler';
 import { DevtoolsModule } from '@nestjs/devtools-integration';
@@ -40,6 +47,7 @@ import { KnexModule } from 'nestjs-knex';
 import { useContainer } from 'class-validator';
 const cluster = require('cluster');
 import * as os from 'os';
+import { Dialect } from 'sequelize';
 
 @Module({
   imports: [
@@ -71,7 +79,29 @@ import * as os from 'os';
         },
       ],
     }),
-    DatabaseModule,
+    DatabaseModule.forRootAsync({
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService) => ({
+        name: 'sequelize_default',
+        dialect: configService.get<Dialect>('DB_DIALECT'),
+        host: configService.get<string>('DB_HOST'),
+        port: configService.get<number>('DB_PORT'),
+        username: configService.get<string>('DB_USER'),
+        password: configService.get<string>('DB_PASS'),
+        database: configService.get<string>('DB_NAME_DEVELOPMENT'),
+        autoLoadModels: configService.get('DB_AUTO_LOAD_MODELS') === 'true',
+        logging: configService.get('DB_LOG') === 'true',
+        synchronize: configService.get('DB_SYNCHRONIZE') === 'true',
+        timezone: configService.get('DB_TIMEZONE') || 'fa-IR',
+        models: [
+          ...coreModels,
+          ...eavEntities,
+          ...ecommerceEntities,
+          ...pcmEntities,
+          ...discountCoffeEntities,
+        ],
+      }),
+    }),
     KnexModule.forRootAsync({
       useFactory: (config: ConfigService) => ({
         config: {
@@ -98,7 +128,7 @@ import * as os from 'os';
     I18nModule.forRoot({
       fallbackLanguage: 'en',
       loaderOptions: {
-        path: [path.join(__dirname, '/i18n/')],
+        path: [path.join(__dirname, '../../../../../apps/main/src/i18n/')],
         watch: true,
       },
       resolvers: [
@@ -111,7 +141,7 @@ import * as os from 'os';
       ],
       typesOutputPath: path.join(
         __dirname,
-        '../../../apps/main/src/generated/i18n.generated.ts',
+        '../../../../../apps/main/src/generated/i18n.generated.ts',
       ),
     }),
     DevtoolsModule.register({

@@ -515,8 +515,7 @@ export class ProductQueryBuilderService {
     }
 
     if (filter.attributes != null && filter.attributes.length > 0) {
-      for (let index = 0; index < filter.attributes.length; index++) {
-        const attribute = filter.attributes[index];
+      for (const attribute of filter.attributes) {
         const attributeFilter = Sequelize.literal(
           `EXISTS (
             SELECT 1
@@ -584,7 +583,10 @@ export class ProductQueryBuilderService {
     };
   }
 
-  async parseOrder(filter: GetProductDto, queryBuilder: QueryOptionsBuilder) {
+  async parseOrder(
+    filter: GetProductDto,
+    queryBuilder: QueryOptionsBuilder,
+  ): Promise<QueryOptionsBuilder> {
     if (filter.orderBy.startsWith('$')) {
       const items = filter.orderBy.replaceAll('$', '').split('.');
       const orders = [];
@@ -664,5 +666,69 @@ export class ProductQueryBuilderService {
       });
     }
     return queryBuilder;
+  }
+
+  async filterEntityChild(
+    builder: QueryOptionsBuilder,
+    entityTypeId: number,
+  ): Promise<QueryOptionsBuilder> {
+    const entityTypeIds = [entityTypeId];
+    const entityType = await this.entityTypeRepository.findOne(
+      new QueryOptionsBuilder()
+        .filter({ id: entityTypeId })
+        .filter(
+          Sequelize.where(
+            Sequelize.fn('isnull', Sequelize.col('EAVEntityType.isDeleted'), 0),
+            {
+              [Op.eq]: 0,
+            },
+          ),
+        )
+        .include([
+          {
+            attributes: ['id', 'name', 'slug'],
+            model: EAVEntityType,
+            as: 'subEntityTypes',
+            required: false,
+            include: [
+              {
+                attributes: ['id', 'name', 'slug'],
+                model: EAVEntityType,
+                as: 'subEntityTypes',
+                required: false,
+                include: [
+                  {
+                    attributes: ['id', 'fileName'],
+                    model: Attachment,
+                    as: 'attachment',
+                    required: false,
+                  },
+                ],
+              },
+              {
+                attributes: ['id', 'fileName'],
+                model: Attachment,
+                as: 'attachment',
+                required: false,
+              },
+            ],
+          },
+        ])
+        .build(),
+    );
+    if (entityType) {
+      for (const firstChild of entityType.subEntityTypes) {
+        entityTypeIds.push(firstChild.id);
+        for (const secondChild of firstChild.subEntityTypes) {
+          entityTypeIds.push(secondChild.id);
+        }
+      }
+    }
+    builder = builder.filter({
+      entityTypeId: {
+        [Op.in]: entityTypeIds,
+      },
+    });
+    return builder;
   }
 }

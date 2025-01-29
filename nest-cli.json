@@ -4,7 +4,7 @@
   "sourceRoot": "apps/main/src",
   "compilerOptions": {
     "deleteOutDir": true,
-    "webpack": true,
+    "webpack": false,
     "builder": "tsc",
     "tsConfigPath": "apps/main/tsconfig.app.json",
     "plugins": ["@nestjs/swagger/plugin"],
@@ -12,7 +12,7 @@
       {
         "include": "i18n/**/*",
         "watchAssets": true,
-        "outDir": "dist"
+        "outDir": "dist/apps/main/src/i18n"
       }
     ]
   },
