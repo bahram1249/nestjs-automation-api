@@ -6,15 +6,17 @@ import {
 import { InjectModel } from '@nestjs/sequelize';
 import { Op, Sequelize } from 'sequelize';
 import { AttributeDto, GetAttributeDto, UpdateAttributeDto } from './dto';
-import { EAVAttribute } from '@rahino/database';
-import { EAVEntityAttribute } from '@rahino/database';
+import {
+  EAVAttribute,
+  EAVEntityAttribute,
+  EAVAttributeType,
+  EAVEntityType,
+  EAVAttributeValue,
+} from '@rahino/database';
 import { InjectMapper } from 'automapper-nestjs';
 import { Mapper } from 'automapper-core';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
-import { EAVAttributeType } from '@rahino/database';
-import { EAVEntityType } from '@rahino/database';
 import * as _ from 'lodash';
-import { EAVAttributeValue } from '@rahino/database';
 
 @Injectable()
 export class AttributeService {
@@ -107,8 +109,7 @@ export class AttributeService {
   }
 
   async findById(id: bigint) {
-    let builder = new QueryOptionsBuilder();
-    const options = builder
+    const options = new QueryOptionsBuilder()
       .attributes([
         'id',
         'name',

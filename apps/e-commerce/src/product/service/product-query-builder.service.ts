@@ -1,40 +1,41 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import {
+  Attachment,
+  EAVAttribute,
+  EAVAttributeValue,
+  EAVEntityAttributeValue,
+  EAVEntityType,
+  ECBrand,
+  ECColor,
+  ECGuarantee,
+  ECGuaranteeMonth,
+  ECInventory,
+  ECInventoryPrice,
+  ECInventoryStatus,
+  ECProvince,
+  ECPublishStatus,
+  ECVariationPrice,
+  ECVendor,
+} from '@rahino/database';
+import { InventoryStatusEnum } from '@rahino/ecommerce/inventory/enum';
+import {
+  IncludeOptionsBuilder,
+  QueryOptionsBuilder,
+} from '@rahino/query-filter/sequelize-query-builder';
+import {
   FindAndCountOptions,
   Model,
   ModelStatic,
   Op,
-  Order,
   OrderItem,
   QueryTypes,
   Sequelize,
 } from 'sequelize';
 import { GetProductDto } from '../dto';
 import { PublishStatusEnum } from '../enum';
-import {
-  IncludeOptionsBuilder,
-  QueryOptionsBuilder,
-} from '@rahino/query-filter/sequelize-query-builder';
-import { InventoryStatusEnum } from '@rahino/ecommerce/inventory/enum';
-import { ECVariationPrice } from '@rahino/database';
-import { ECInventoryPrice } from '@rahino/database';
-import { ECProvince } from '@rahino/database';
-import { ECGuaranteeMonth } from '@rahino/database';
-import { ECGuarantee } from '@rahino/database';
-import { ECColor } from '@rahino/database';
-import { ECVendor } from '@rahino/database';
-import { ECInventoryStatus } from '@rahino/database';
-import { ECInventory } from '@rahino/database';
-import { Attachment } from '@rahino/database';
-import { EAVEntityType } from '@rahino/database';
-import { ECBrand } from '@rahino/database';
-import { ECPublishStatus } from '@rahino/database';
 
-import * as _ from 'lodash';
-import { EAVEntityAttributeValue } from '@rahino/database';
-import { EAVAttribute } from '@rahino/database';
-import { EAVAttributeValue } from '@rahino/database';
 import { InjectConnection, InjectModel } from '@nestjs/sequelize';
+import * as _ from 'lodash';
 
 @Injectable()
 export class ProductQueryBuilderService {
