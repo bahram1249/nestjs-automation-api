@@ -12,11 +12,7 @@
       {
         "include": "i18n/**/*",
         "watchAssets": true,
-<<<<<<< HEAD
         "outDir": "dist/apps/main/src/i18n"
-=======
-        "outDir": "dist/apps/main"
->>>>>>> origin/main
       }
     ]
   },
