@@ -91,6 +91,15 @@
         "tsConfigPath": "apps/e-commerce/tsconfig.lib.json"
       }
     },
+    "bpmn": {
+      "type": "library",
+      "root": "apps/bpmn",
+      "entryFile": "index",
+      "sourceRoot": "apps/bpmn/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/bpmn/tsconfig.lib.json"
+      }
+    },
     "file": {
       "type": "library",
       "root": "libs/file",

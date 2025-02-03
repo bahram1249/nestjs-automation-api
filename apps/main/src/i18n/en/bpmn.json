@@ -1,0 +1,8 @@
+{
+  "action": "action",
+  "node_has_not_assigned_any_roles": "node has not assigned any roles",
+  "cannot_find_any_referral_user": "cannot find any referral user",
+  "activity": "activity",
+  "organization": "organization",
+  "process": "process"
+}

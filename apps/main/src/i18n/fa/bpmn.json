@@ -1,0 +1,8 @@
+{
+  "action": "عملیات",
+  "node_has_not_assigned_any_roles": "به ارجاع مورد نظر هیچ نقشی وصل نشده است",
+  "cannot_find_any_referral_user": "کاربری برای ارجاع یافت نشد",
+  "activity": "وضعیت",
+  "organization": "مجموعه",
+  "process": "فرآیند"
+}

@@ -1,4 +1,8 @@
 {
+  "user": "user",
+  "requested_item": "request item",
+  "item": "item",
+  "not_found": "not found",
   "not_found_id": "the item with this given id not founded !",
   "not_found_role": "the role not founded !",
   "not_found_slug": "the item with this given slug not founded !",

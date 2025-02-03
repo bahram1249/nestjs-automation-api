@@ -261,6 +261,15 @@ export class GuaranteeService {
   async findBySlug(slug: string) {
     const item = await this.repository.findOne(
       new QueryOptionsBuilder()
+        .attributes([
+          'id',
+          'name',
+          'slug',
+          'description',
+          'metaTitle',
+          'metaKeywords',
+          'metaDescription',
+        ])
         .include([
           {
             attributes: ['id', 'fileName'],
@@ -288,15 +297,7 @@ export class GuaranteeService {
       );
     }
     return {
-      result: _.pick(item, [
-        'id',
-        'name',
-        'slug',
-        'description',
-        'metaTitle',
-        'metaKeywords',
-        'metaDescription',
-      ]),
+      result: item,
     };
   }
 

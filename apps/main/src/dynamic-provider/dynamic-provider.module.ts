@@ -2,6 +2,7 @@ import { DynamicModule, Module } from '@nestjs/common';
 import { discountCoffeProviders } from './providers';
 import { pcmProviders } from './providers/pcm.providers';
 import { ecommerceProviders } from './providers/ecommerce.providers';
+import { bpmnProviders } from './providers/bpmn.providers';
 
 @Module({})
 export class DynamicProviderModule {
@@ -13,6 +14,8 @@ export class DynamicProviderModule {
       imports = pcmProviders;
     } else if (process.env.PROJECT_NAME == 'ECommerce') {
       imports = ecommerceProviders;
+    } else if (process.env.PROJECT_NAME == 'BPMN') {
+      imports = bpmnProviders;
     }
     return {
       module: DynamicProviderModule,

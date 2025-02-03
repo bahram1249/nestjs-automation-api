@@ -5,7 +5,19 @@
 import { Path } from "nestjs-i18n";
 /* prettier-ignore */
 export type I18nTranslations = {
+    "bpmn": {
+        "action": string;
+        "node_has_not_assigned_any_roles": string;
+        "cannot_find_any_referral_user": string;
+        "activity": string;
+        "organization": string;
+        "process": string;
+    };
     "core": {
+        "user": string;
+        "requested_item": string;
+        "item": string;
+        "not_found": string;
         "not_found_id": string;
         "not_found_role": string;
         "not_found_slug": string;

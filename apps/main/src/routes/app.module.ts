@@ -12,6 +12,7 @@ import {
   eavEntities,
   ecommerceEntities,
   pcmEntities,
+  bpmnModels,
 } from '@rahino/database/dist/subsystem-models';
 import helmet from 'helmet';
 import { ThrottlerModule } from '@nestjs/throttler';
@@ -48,6 +49,7 @@ import { useContainer } from 'class-validator';
 const cluster = require('cluster');
 import * as os from 'os';
 import { Dialect } from 'sequelize';
+import { BPMNModule } from '@rahino/bpmn';
 
 @Module({
   imports: [
@@ -99,6 +101,7 @@ import { Dialect } from 'sequelize';
           ...ecommerceEntities,
           ...pcmEntities,
           ...discountCoffeEntities,
+          ...bpmnModels,
         ],
       }),
     }),
@@ -219,6 +222,8 @@ export class AppModule implements NestModule {
     } else if (projectName == 'DiscountCoffe') {
     } else if (projectName == 'PCM') {
       app.get(PCMModule).setApp(app);
+    } else if (projectName == 'BPMN') {
+      app.get(BPMNModule).setApp(app);
     }
 
     const numCpu = Number(
