@@ -65,4 +65,9 @@ export class InventoryDto {
   @IsOptional()
   @IsArray()
   inventoryPrices?: InventoryPriceDto[] = [];
+
+  @IsOptional()
+  @IsString()
+  @AutoMap()
+  inventoryDescriptor?: string;
 }

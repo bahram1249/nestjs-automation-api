@@ -872,6 +872,24 @@ END
 
 GO
 
+-- ecommerce inventories
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ecommerce-inventories-v3' 
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'SITE_NAME' AND [value] IN ('ecommerce'))
+		)
+BEGIN
+
+	ALTER TABLE ECInventories
+		ADD inventoryDescriptor nvarchar(256) null
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'ecommerce-inventories-v3', GETDATE(), GETDATE()
+END
+
+GO
+
 
 -- ecommerce inventory-prices
 IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ecommerce-inventory-prices-v1' 

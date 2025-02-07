@@ -12,7 +12,7 @@ import { EntityModelModule } from './admin/entity-model/entity-model.module';
 import { EntityModule } from './admin/entity/entity.module';
 import { AttributeValueModule } from './admin/attribute-value/attribute-value.module';
 import { BlogPublishModule } from './admin/blog-publish/blog-publish.module';
-import { PostModule } from './admin/blog/post.module';
+import { PostModule } from './admin/post/post.module';
 
 @Module({
   imports: [
