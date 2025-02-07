@@ -37,7 +37,7 @@
     "@nestjs/throttler": "^5.1.2",
     "@rahino/auth": "^1.0.3",
     "@rahino/commonmiddleware": "^3.0.0",
-    "@rahino/database": "^5.1.0",
+    "@rahino/database": "^5.1.1",
     "@types/express-handlebars": "^5.3.0",
     "@types/passport": "^1.0.13",
     "automapper-classes": "^8.7.12",

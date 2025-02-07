@@ -400,6 +400,7 @@ BEGIN
 		pubilshId					int 						NOT NULL
 			CONSTRAINT FK_EAVBlogs_PublishId
 				FOREIGN KEY REFERENCES EAVBlogPublishes(id),
+		slug						nvarchar(1024)				NOT NULL,
 		title						nvarchar(256)				NOT NULL,
 		[description]				ntext						NOT NULL,
 		metaTitle					nvarchar(256)					NULL,
