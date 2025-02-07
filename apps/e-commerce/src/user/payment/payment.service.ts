@@ -6,7 +6,7 @@ import {
 } from '@nestjs/common';
 import { User } from '@rahino/database';
 import { ECUserSession } from '@rahino/database';
-import { StockPaymentDto, WalletPaymentDto } from './dto';
+import { StockPaymentDto, validateAddressDto, WalletPaymentDto } from './dto';
 import { ECOMMERCE_PAYMENT_PROVIDER_TOKEN } from './provider/constants';
 import { PayInterface } from './provider/interface';
 import { StockService } from '../stock/stock.service';
@@ -28,6 +28,7 @@ import {
   OrderShipmentwayEnum,
   OrderStatusEnum,
   PaymentTypeEnum,
+  ProvinceEnum,
   VendorCommissionTypeEnum,
 } from '@rahino/ecommerce/util/enum';
 import { ECOrder } from '@rahino/database';
@@ -51,6 +52,7 @@ import {
   REVERT_PAYMENT_JOB,
   REVERT_PAYMENT_QUEUE,
 } from './revert-payment/revert-payment.constants';
+import { CityEnum } from '@rahino/ecommerce/util/enum/city.enum';
 
 @Injectable()
 export class PaymentService {
@@ -103,30 +105,12 @@ export class PaymentService {
     if (stocks.length == 0) {
       throw new BadRequestException('cannot find stocks');
     }
-    // validation of address ... next refactor this piece of code
-    const findAddress = (
-      await this.addressService.findById(user, body.addressId)
-    ).result;
 
-    for (let index = 0; index < stocks.length; index++) {
-      const stock = stocks[index];
-      if (
-        stock.product.inventories[0].onlyProvinceId != null &&
-        stock.product.inventories[0].onlyProvinceId != findAddress.provinceId
-      ) {
-        const province = await this.provinceRepository.findOne(
-          new QueryOptionsBuilder()
-            .filter({
-              id: stock.product.inventories[0].onlyProvinceId,
-            })
-            .build(),
-        );
-        throw new BadRequestException(
-          `${stock.product.title} فقط مجوز ارسال به استان ${province.name} را دارد.`,
-        );
-      }
-    }
-
+    await this.validateAddress({
+      addressId: body.addressId,
+      stocks: stocks,
+      user: user,
+    });
     // discount
     if (body.couponCode) {
       const applitedStocksDiscount =
@@ -230,30 +214,6 @@ export class PaymentService {
       // set stocks to purchase
       await this.purchaseStocks(stocks, transaction);
 
-      // decrease inventories
-      // const job = await this.decreaseInventoryQueue.add(
-      //   DECREASE_INVENTORY_JOB,
-      //   {
-      //     paymentId: res.paymentId,
-      //     transaction: transaction,
-      //   },
-      //   {
-      //     attempts: 1,
-      //     removeOnComplete: 500,
-      //   },
-      // );
-      // const result = await job.waitUntilFinished(
-      //   new QueueEvents(DECREASE_INVENTORY_QUEUE, {
-      //     connection: {
-      //       host: this.config.get<string>('REDIS_ADDRESS'),
-      //       port: this.config.get<number>('REDIS_PORT'),
-      //       password: this.config.get<string>('REDIS_PASSWORD'),
-      //     },
-      //   }),
-      //   5000,
-      // );
-      // const finishedJob = await Job.fromId(this.decreaseInventoryQueue, job.id);
-
       await this.decreaseInventoryService.decreaseByPayment(
         res.paymentId,
         transaction,
@@ -294,6 +254,34 @@ export class PaymentService {
         redirectUrl: redirectUrl,
       },
     };
+  }
+
+  private async validateAddress(dto: validateAddressDto) {
+    const findAddress = (
+      await this.addressService.findById(dto.user, dto.addressId)
+    ).result;
+
+    for (let index = 0; index < dto.stocks.length; index++) {
+      const stock = dto.stocks[index];
+      if (
+        stock.product.inventories[0].onlyProvinceId != null &&
+        (stock.product.inventories[0].onlyProvinceId !=
+          findAddress.provinceId ||
+          (stock.product.inventories[0].onlyProvinceId == ProvinceEnum.Tehran &&
+            findAddress.cityId != CityEnum.Tehran))
+      ) {
+        const province = await this.provinceRepository.findOne(
+          new QueryOptionsBuilder()
+            .filter({
+              id: stock.product.inventories[0].onlyProvinceId,
+            })
+            .build(),
+        );
+        throw new BadRequestException(
+          `${stock.product.title} فقط مجوز ارسال به استان ${province.name} را دارد.`,
+        );
+      }
+    }
   }
 
   private async purchaseStocks(stocks: ECStock[], transaction: Transaction) {

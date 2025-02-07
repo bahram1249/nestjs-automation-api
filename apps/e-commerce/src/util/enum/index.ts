@@ -9,3 +9,4 @@ export * from './inventory-track-change-status.enum';
 export * from './home-page-type.enum';
 export * from './slug-version-type.enum';
 export * from './product-price-formula-enum';
+export * from './province.enum';

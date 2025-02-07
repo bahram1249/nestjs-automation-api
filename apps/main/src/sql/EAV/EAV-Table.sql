@@ -357,3 +357,64 @@ BEGIN
 END
 
 GO
+
+
+
+-- eav blog publishes
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'eav-blog-publishes-v1' 
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'SITE_NAME' AND [value] IN ('ecommerce'))
+		)
+BEGIN
+
+	CREATE TABLE EAVBlogPublishes (
+		id							int							PRIMARY KEY,
+		[name]						nvarchar(256)				NOT NULL,
+		[createdAt]					datetimeoffset				NOT NULL,
+		[updatedAt]					datetimeoffset				NOT NULL,
+	);
+
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'eav-blog-publishes-v1', GETDATE(), GETDATE()
+END
+
+GO
+
+-- eav blog
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'eav-blogs-v1' 
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'SITE_NAME' AND [value] IN ('ecommerce'))
+		)
+BEGIN
+
+	CREATE TABLE EAVBlogs (
+		id							bigint						PRIMARY KEY,
+		entityTypeId				int							NULL
+			CONSTRAINT FK_EAVBlogs_EntityTypeId
+				FOREIGN KEY REFERENCES EAVEntityTypes(id),
+		pubilshId					int 						NOT NULL
+			CONSTRAINT FK_EAVBlogs_PublishId
+				FOREIGN KEY REFERENCES EAVBlogPublishes(id),
+		title						nvarchar(256)				NOT NULL,
+		[description]				ntext						NOT NULL,
+		metaTitle					nvarchar(256)					NULL,
+		metaDescription				nvarchar(512)					NULL,
+		metaKeywords				nvarchar(512)					NULL,
+		userId						bigint							NULL
+			CONSTRAINT FK_EAVBlogs_UserId
+				FOREIGN KEY REFERENCES Users(id),
+		[createdAt]					datetimeoffset				NOT NULL,
+		[updatedAt]					datetimeoffset				NOT NULL,
+	);
+
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'eav-blogs-v1', GETDATE(), GETDATE()
+END
+
+GO

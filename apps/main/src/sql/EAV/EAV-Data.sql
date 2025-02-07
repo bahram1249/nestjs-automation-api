@@ -41,3 +41,21 @@ BEGIN
 END
 
 GO
+
+-- entitymodels
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'eav-entitymodels-Data-v2' 
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'SITE_NAME' AND [value] IN ('ecommerce'))
+		)
+BEGIN
+
+	INSERT INTO EAVEntityModels(id, name, createdAt, updatedAt)
+	VALUES (2, N'وبلاگ', getdate(), getdate())
+			
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'eav-entitymodels-Data-v2', GETDATE(), GETDATE()
+END
+
+GO

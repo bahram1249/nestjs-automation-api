@@ -1,4 +1,5 @@
 {
   "editor.defaultFormatter": "esbenp.prettier-vscode",
-  "cSpell.words": ["goldongallery", "qrcode", "rahino"]
+  "cSpell.words": ["goldongallery", "qrcode", "rahino"],
+  "CodeGPT.apiKey": "CodeGPT Plus Beta"
 }
