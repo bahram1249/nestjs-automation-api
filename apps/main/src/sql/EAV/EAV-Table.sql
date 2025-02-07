@@ -409,6 +409,7 @@ BEGIN
 		userId						bigint							NULL
 			CONSTRAINT FK_EAVBlogs_UserId
 				FOREIGN KEY REFERENCES Users(id),
+		isDeleted					bit							NULL,
 		[createdAt]					datetimeoffset				NOT NULL,
 		[updatedAt]					datetimeoffset				NOT NULL,
 	);
