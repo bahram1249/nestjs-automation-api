@@ -384,7 +384,7 @@ END
 GO
 
 -- eav blog
-IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'eav-blogs-v1' 
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'eav-posts-v1' 
 			)
 	AND EXISTS (
 		SELECT 1 FROM Settings 
@@ -392,7 +392,7 @@ IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'eav-blogs-v1'
 		)
 BEGIN
 
-	CREATE TABLE EAVBlogs (
+	CREATE TABLE EAVPosts (
 		id							bigint						PRIMARY KEY,
 		entityTypeId				int							NULL
 			CONSTRAINT FK_EAVBlogs_EntityTypeId
@@ -416,7 +416,7 @@ BEGIN
 
 
 	INSERT INTO Migrations(version, createdAt, updatedAt)
-	SELECT 'eav-blogs-v1', GETDATE(), GETDATE()
+	SELECT 'eav-posts-v1', GETDATE(), GETDATE()
 END
 
 GO
