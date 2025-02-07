@@ -1,6 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { AutoMap } from 'automapper-classes';
-import { IsNumber, IsString } from 'class-validator';
+import { IsArray, IsNumber, IsOptional, IsString } from 'class-validator';
+import { PostAttachmentDto } from './post-attachment.dto';
 
 export class PostDto {
   @AutoMap()
@@ -22,6 +23,7 @@ export class PostDto {
   public slug: string;
 
   @AutoMap()
+  @IsOptional()
   @IsString()
   @ApiProperty({
     required: false,
@@ -31,6 +33,7 @@ export class PostDto {
   public description?: string;
 
   @AutoMap()
+  @IsOptional()
   @IsNumber()
   @ApiProperty({
     required: false,
@@ -49,6 +52,7 @@ export class PostDto {
   public publishId: number;
 
   @AutoMap()
+  @IsOptional()
   @IsString()
   @ApiProperty({
     required: false,
@@ -59,6 +63,7 @@ export class PostDto {
 
   @AutoMap()
   @IsString()
+  @IsOptional()
   @ApiProperty({
     required: false,
     type: String,
@@ -68,10 +73,15 @@ export class PostDto {
 
   @AutoMap()
   @IsString()
+  @IsOptional()
   @ApiProperty({
     required: false,
     type: String,
     description: 'metaKeywords',
   })
   public metaKeywords?: string;
+
+  @IsArray()
+  @IsOptional()
+  postAttachments?: PostAttachmentDto[];
 }

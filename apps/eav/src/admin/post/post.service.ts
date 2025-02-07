@@ -2,26 +2,38 @@ import {
   BadRequestException,
   ForbiddenException,
   Injectable,
+  InternalServerErrorException,
   NotFoundException,
 } from '@nestjs/common';
-import { InjectModel } from '@nestjs/sequelize';
-import { Op, Sequelize } from 'sequelize';
+import { InjectConnection, InjectModel } from '@nestjs/sequelize';
+import { Op, Sequelize, Transaction } from 'sequelize';
 import { PostDto, GetPostDto } from './dto';
-import { EAVPost, EAVBlogPublish, EAVEntityType } from '@rahino/database';
+import {
+  EAVPost,
+  EAVBlogPublish,
+  EAVEntityType,
+  EAVEntity,
+} from '@rahino/database';
 import { InjectMapper } from 'automapper-nestjs';
 import { Mapper } from 'automapper-core';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import * as _ from 'lodash';
 import { I18nTranslations } from 'apps/main/src/generated/i18n.generated';
 import { I18nContext, I18nService } from 'nestjs-i18n';
+import { EntityService } from '../entity/entity.service';
 
 @Injectable()
 export class PostService {
   constructor(
     @InjectModel(EAVPost)
     private readonly repository: typeof EAVPost,
+    @InjectModel(EAVEntityType)
+    private readonly entityTypeRepository: typeof EAVEntityType,
+    @InjectConnection()
+    private readonly sequelize: Sequelize,
     @InjectMapper() private readonly mapper: Mapper,
     private readonly i18n: I18nService<I18nTranslations>,
+    private readonly entityService: EntityService,
   ) {}
 
   async findAll(filter: GetPostDto) {
@@ -135,7 +147,7 @@ export class PostService {
   }
 
   async create(dto: PostDto) {
-    const slugItem = await this.repository.findOne(
+    const slugSearch = await this.repository.findOne(
       new QueryOptionsBuilder()
         .filter(
           Sequelize.where(
@@ -148,7 +160,7 @@ export class PostService {
         .filter({ slug: dto.slug })
         .build(),
     );
-    if (slugItem) {
+    if (slugSearch) {
       throw new ForbiddenException(
         this.i18n.t('core.the_given_slug_is_exists_before', {
           lang: I18nContext.current().lang,
@@ -156,15 +168,61 @@ export class PostService {
       );
     }
 
-    const mappedItem = this.mapper.map(dto, PostDto, EAVPost);
-    const blog = await this.repository.create(
-      _.omit(mappedItem.toJSON(), ['id']),
+    // validation of entityType is linked to blog model
+    const blogEntityModel = 2;
+    const entityType = await this.entityTypeRepository.findOne(
+      new QueryOptionsBuilder()
+        .filter({ id: dto.entityTypeId })
+        .filter(
+          Sequelize.where(
+            Sequelize.fn('isnull', Sequelize.col('EAVEntityType.isDeleted'), 0),
+            {
+              [Op.eq]: 0,
+            },
+          ),
+        )
+        .filter({
+          entityModelId: blogEntityModel,
+        })
+        .build(),
     );
+    if (!entityType) {
+      throw new BadRequestException(
+        `the given entityType->${dto.entityTypeId} isn't exists`,
+      );
+    }
+
+    // begin transaction
+    const transaction = await this.sequelize.transaction({
+      isolationLevel: Transaction.ISOLATION_LEVELS.READ_COMMITTED,
+    });
+    let post: EAVPost = null;
+    try {
+      const mappedItem = this.mapper.map(dto, PostDto, EAVPost);
+      const insertItem = _.omit(mappedItem.toJSON(), ['id']);
+      const { result } = await this.entityService.create(
+        {
+          entityTypeId: mappedItem.entityTypeId,
+        },
+        transaction,
+      );
+      insertItem.id = result.id;
+
+      post = await this.repository.create(insertItem, {
+        transaction: transaction,
+      });
+
+      await transaction.commit();
+    } catch (error) {
+      await transaction.rollback();
+      throw new InternalServerErrorException(error.message);
+    }
 
     return {
-      result: _.pick(blog, [
+      result: _.pick(post, [
         'id',
         'title',
+        'slug',
         'description',
         'publishId',
         'entityTypeId',
@@ -197,7 +255,7 @@ export class PostService {
       );
     }
 
-    const slugItem = await this.repository.findOne(
+    const searchSlug = await this.repository.findOne(
       new QueryOptionsBuilder()
         .filter(
           Sequelize.where(
@@ -215,7 +273,7 @@ export class PostService {
         })
         .build(),
     );
-    if (slugItem) {
+    if (searchSlug) {
       throw new BadRequestException(
         this.i18n.t('core.the_given_slug_is_exists_before', {
           lang: I18nContext.current().lang,
@@ -223,14 +281,50 @@ export class PostService {
       );
     }
 
-    const mappedItem = this.mapper.map(dto, PostDto, EAVPost);
-    const post = await this.repository.update(
-      _.omit(mappedItem.toJSON(), ['id']),
-      {
-        where: { id },
-        returning: true,
-      },
+    // validation of entityType is linked to blog model
+    const blogEntityModel = 2;
+    const entityType = await this.entityTypeRepository.findOne(
+      new QueryOptionsBuilder()
+        .filter({ id: dto.entityTypeId })
+        .filter(
+          Sequelize.where(
+            Sequelize.fn('isnull', Sequelize.col('EAVEntityType.isDeleted'), 0),
+            {
+              [Op.eq]: 0,
+            },
+          ),
+        )
+        .filter({
+          entityModelId: blogEntityModel,
+        })
+        .build(),
     );
+    if (!entityType) {
+      throw new BadRequestException(
+        `the given entityType->${dto.entityTypeId} isn't exists`,
+      );
+    }
+
+    // begin transaction
+    const transaction = await this.sequelize.transaction({
+      isolationLevel: Transaction.ISOLATION_LEVELS.READ_COMMITTED,
+    });
+    let post: EAVPost = null;
+    try {
+      const mappedItem = this.mapper.map(dto, PostDto, EAVPost);
+      const updated = await this.repository.update(
+        _.omit(mappedItem.toJSON(), ['id']),
+        {
+          where: { id },
+          returning: true,
+          transaction: transaction,
+        },
+      );
+      post = updated[1][0];
+    } catch (error) {
+      transaction.rollback();
+      throw new InternalServerErrorException(error.message);
+    }
 
     return {
       result: _.pick(post, [
