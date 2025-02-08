@@ -1,8 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { AutomapperProfile, InjectMapper } from 'automapper-nestjs';
-import { PostDto } from '../dto';
+import { PhotoDto, PostDto } from '../dto';
 import { Mapper, createMap, forMember, ignore } from 'automapper-core';
 import { EAVPost } from '@rahino/database';
+import { PostAttachmentDto } from '../dto/post-attachment.dto';
 
 @Injectable()
 export class PostProfile extends AutomapperProfile {
@@ -18,6 +19,8 @@ export class PostProfile extends AutomapperProfile {
         EAVPost,
         forMember((dest) => dest.id, ignore()),
       );
+
+      createMap(mapper, PostAttachmentDto, PhotoDto);
     };
   }
 }
