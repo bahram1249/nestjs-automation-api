@@ -397,7 +397,7 @@ BEGIN
 		entityTypeId				int							NULL
 			CONSTRAINT FK_EAVBlogs_EntityTypeId
 				FOREIGN KEY REFERENCES EAVEntityTypes(id),
-		pubilshId					int 						NOT NULL
+		publishId					int 						NOT NULL
 			CONSTRAINT FK_EAVBlogs_PublishId
 				FOREIGN KEY REFERENCES EAVBlogPublishes(id),
 		slug						nvarchar(1024)				NOT NULL,
