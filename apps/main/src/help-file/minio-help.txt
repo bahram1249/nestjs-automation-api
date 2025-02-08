@@ -2,3 +2,4 @@ mc alias set myminio http://<minio-server-address>:<port> <access-key> <secret-k
 mc mb myminio/blogphotos
 mc anonymous set download myminio/blogphotos
 
+
