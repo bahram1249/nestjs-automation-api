@@ -2,13 +2,17 @@ import {
   Body,
   Controller,
   Delete,
+  FileTypeValidator,
   Get,
   HttpCode,
   HttpStatus,
+  MaxFileSizeValidator,
   Param,
+  ParseFilePipe,
   Post,
   Put,
   Query,
+  UploadedFile,
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
@@ -17,14 +21,19 @@ import { PermissionGuard } from '@rahino/permission-checker/guard';
 import { JsonResponseTransformInterceptor } from '@rahino/response/interceptor';
 import {
   ApiBearerAuth,
+  ApiBody,
+  ApiConsumes,
   ApiOperation,
   ApiQuery,
   ApiTags,
 } from '@nestjs/swagger';
 
-import { JwtGuard } from '@rahino/auth';
+import { GetUser, JwtGuard } from '@rahino/auth';
 import { PostDto, GetPostDto } from './dto';
 import { PostService } from './post.service';
+import { User } from '@rahino/database';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { imageOptions } from './file-options';
 
 @ApiTags('EAV-Posts')
 @ApiBearerAuth()
@@ -80,5 +89,41 @@ export class PostController {
   @HttpCode(HttpStatus.OK)
   async deleteById(@Param('id') entityId: bigint) {
     return await this.service.deleteById(entityId);
+  }
+
+  @UseInterceptors(JsonResponseTransformInterceptor)
+  @UseGuards(JwtGuard, PermissionGuard)
+  @ApiBearerAuth()
+  @CheckPermission({ permissionSymbol: 'ecommerce.productphotos.uploadImage' })
+  @UseInterceptors(FileInterceptor('file', imageOptions()))
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        file: {
+          type: 'string',
+          format: 'binary',
+        },
+      },
+    },
+  })
+  @Post('/image')
+  @HttpCode(HttpStatus.OK)
+  async uploadImage(
+    @GetUser() user: User,
+    @UploadedFile(
+      new ParseFilePipe({
+        validators: [
+          new FileTypeValidator({ fileType: /(jpg|png|jpeg)/ }),
+          new MaxFileSizeValidator({ maxSize: 2097152 }),
+        ],
+        fileIsRequired: false,
+        errorHttpStatusCode: HttpStatus.UNPROCESSABLE_ENTITY,
+      }),
+    )
+    file?: Express.Multer.File,
+  ) {
+    return await this.service.uploadImage(user, file);
   }
 }

@@ -391,3 +391,35 @@ BEGIN
 END
 
 GO
+
+
+-- eav temp blog photos
+IF NOT EXISTS ((SELECT 1 FROM Migrations WHERE version = 'CORE-AttachmentTypes-Data-v15' 
+			))
+BEGIN
+	
+	INSERT INTO AttachmentTypes(id, typeName, createdAt, updatedAt)
+	SELECT 17, N'tempblogphoto', getdate(), getdate()
+
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'CORE-AttachmentTypes-Data-v15', GETDATE(), GETDATE()
+END
+
+GO
+
+
+-- eav blog photos
+IF NOT EXISTS ((SELECT 1 FROM Migrations WHERE version = 'CORE-AttachmentTypes-Data-v16' 
+			))
+BEGIN
+	
+	INSERT INTO AttachmentTypes(id, typeName, createdAt, updatedAt)
+	SELECT 18, N'blogphoto', getdate(), getdate()
+
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'CORE-AttachmentTypes-Data-v16', GETDATE(), GETDATE()
+END
+
+GO

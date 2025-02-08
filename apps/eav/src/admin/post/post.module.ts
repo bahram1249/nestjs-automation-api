@@ -2,16 +2,46 @@ import { Module } from '@nestjs/common';
 import { PostController } from './post.controller';
 import { PostService } from './post.service';
 import { SequelizeModule } from '@nestjs/sequelize';
-import { EAVEntity, EAVEntityType, EAVPost, User } from '@rahino/database';
+import {
+  Attachment,
+  EAVEntityPhoto,
+  EAVEntityType,
+  EAVPost,
+  User,
+} from '@rahino/database';
 import { Permission } from '@rahino/database';
 import { PostProfile } from './mapper';
 import { EntityModule } from '../entity/entity.module';
+import { MinioClientModule } from '@rahino/minio-client';
+import { ThumbnailModule } from '@rahino/thumbnail';
+import { ConfigService } from '@nestjs/config';
 
 @Module({
   imports: [
     SequelizeModule,
-    SequelizeModule.forFeature([User, Permission, EAVPost, EAVEntityType]),
+    SequelizeModule.forFeature([
+      User,
+      Permission,
+      EAVPost,
+      EAVEntityType,
+      Attachment,
+      EAVEntityPhoto,
+    ]),
     EntityModule,
+    MinioClientModule,
+    ThumbnailModule.registerAsync({
+      inject: [ConfigService],
+      useFactory: (config: ConfigService) => ({
+        height: 1980,
+        width: 1280,
+        resizeOptions: {
+          withoutEnlargement: false,
+          withoutReduction: true,
+          fit: 'fill',
+          position: 'center',
+        },
+      }),
+    }),
   ],
   providers: [PostService, PostProfile],
   controllers: [PostController],

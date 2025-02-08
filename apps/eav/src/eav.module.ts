@@ -13,6 +13,7 @@ import { EntityModule } from './admin/entity/entity.module';
 import { AttributeValueModule } from './admin/attribute-value/attribute-value.module';
 import { BlogPublishModule } from './admin/blog-publish/blog-publish.module';
 import { PostModule } from './admin/post/post.module';
+import { EAVClientModule } from './client/eav-client.module';
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { PostModule } from './admin/post/post.module';
     EntityModule,
     BlogPublishModule,
     PostModule,
+    EAVClientModule,
   ],
 })
 export class EAVModule implements NestModule {

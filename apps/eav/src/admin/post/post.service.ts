@@ -7,12 +7,14 @@ import {
 } from '@nestjs/common';
 import { InjectConnection, InjectModel } from '@nestjs/sequelize';
 import { Op, Sequelize, Transaction } from 'sequelize';
-import { PostDto, GetPostDto } from './dto';
+import { PostDto, GetPostDto, PhotoDto } from './dto';
 import {
   EAVPost,
   EAVBlogPublish,
   EAVEntityType,
-  EAVEntity,
+  User,
+  Attachment,
+  EAVEntityPhoto,
 } from '@rahino/database';
 import { InjectMapper } from 'automapper-nestjs';
 import { Mapper } from 'automapper-core';
@@ -21,19 +23,31 @@ import * as _ from 'lodash';
 import { I18nTranslations } from 'apps/main/src/generated/i18n.generated';
 import { I18nContext, I18nService } from 'nestjs-i18n';
 import { EntityService } from '../entity/entity.service';
+import { MinioClientService } from '@rahino/minio-client';
+import { ThumbnailService } from '@rahino/thumbnail';
+import * as fs from 'fs';
+import { PostAttachmentDto } from './dto/post-attachment.dto';
 
 @Injectable()
 export class PostService {
+  private photoTempAttachmentType = 16;
+  private postAttachmentType = 17;
   constructor(
     @InjectModel(EAVPost)
     private readonly repository: typeof EAVPost,
+    @InjectModel(Attachment)
+    private readonly attachmentRepository: typeof Attachment,
     @InjectModel(EAVEntityType)
     private readonly entityTypeRepository: typeof EAVEntityType,
+    @InjectModel(EAVEntityPhoto)
+    private readonly entityPhotoRepository: typeof EAVEntityPhoto,
     @InjectConnection()
     private readonly sequelize: Sequelize,
     @InjectMapper() private readonly mapper: Mapper,
     private readonly i18n: I18nService<I18nTranslations>,
     private readonly entityService: EntityService,
+    private readonly minioClientService: MinioClientService,
+    private readonly thumbnailService: ThumbnailService,
   ) {}
 
   async findAll(filter: GetPostDto) {
@@ -192,6 +206,12 @@ export class PostService {
       );
     }
 
+    // validation of photos
+    const mappedPhotos = _.map(dto.postAttachments, (photo) =>
+      this.mapper.map(photo, PostAttachmentDto, PhotoDto),
+    );
+    await this.validationExistsPhoto(mappedPhotos);
+
     // begin transaction
     const transaction = await this.sequelize.transaction({
       isolationLevel: Transaction.ISOLATION_LEVELS.READ_COMMITTED,
@@ -211,6 +231,12 @@ export class PostService {
       post = await this.repository.create(insertItem, {
         transaction: transaction,
       });
+
+      // remove photos
+      await this.removePhotosByPostId(post.id, transaction);
+
+      // insert product photos
+      await this.insertPhotos(post.id, mappedPhotos, transaction);
 
       await transaction.commit();
     } catch (error) {
@@ -305,6 +331,12 @@ export class PostService {
       );
     }
 
+    // validation of photos
+    const mappedPhotos = _.map(dto.postAttachments, (photo) =>
+      this.mapper.map(photo, PostAttachmentDto, PhotoDto),
+    );
+    await this.validationExistsPhoto(mappedPhotos);
+
     // begin transaction
     const transaction = await this.sequelize.transaction({
       isolationLevel: Transaction.ISOLATION_LEVELS.READ_COMMITTED,
@@ -321,6 +353,14 @@ export class PostService {
         },
       );
       post = updated[1][0];
+
+      // remove photos
+      await this.removePhotosByPostId(post.id, transaction);
+
+      // insert product photos
+      await this.insertPhotos(post.id, mappedPhotos, transaction);
+
+      await transaction.commit();
     } catch (error) {
       transaction.rollback();
       throw new InternalServerErrorException(error.message);
@@ -378,5 +418,115 @@ export class PostService {
         'metaKeywords',
       ]),
     };
+  }
+
+  async uploadImage(user: User, file: Express.Multer.File) {
+    // upload to s3 cloud
+    const bucketName = 'blogphotos';
+    await this.minioClientService.createBucket(bucketName);
+    const buffer = await this.thumbnailService.resize(file.path);
+    const uploadResult = await this.minioClientService.upload(
+      bucketName,
+      file.filename,
+      buffer,
+      {
+        'Content-Type': file.mimetype,
+      },
+    );
+
+    // create new one
+    const newAttachment = await this.attachmentRepository.create({
+      attachmentTypeId: this.photoTempAttachmentType,
+      fileName: file.filename,
+      originalFileName: file.originalname,
+      mimetype: file.mimetype,
+      etag: uploadResult.etag,
+      versionId: uploadResult.versionId,
+      bucketName: bucketName,
+      userId: user.id,
+    });
+
+    // remove file on current instanse
+    fs.rmSync(file.path);
+
+    return {
+      result: _.pick(newAttachment, ['id', 'fileName']),
+    };
+  }
+
+  private async validationExistsPhoto(mappedPhotos: PhotoDto[]) {
+    for (const photo of mappedPhotos) {
+      const findAttachment = await this.attachmentRepository.findOne(
+        new QueryOptionsBuilder()
+          .filter({ id: photo.id })
+          .filter({
+            attachmentTypeId: {
+              [Op.in]: [this.photoTempAttachmentType, this.postAttachmentType],
+            },
+          })
+          .filter(
+            Sequelize.where(
+              Sequelize.fn('isnull', Sequelize.col('isDeleted'), 0),
+              {
+                [Op.eq]: 0,
+              },
+            ),
+          )
+          .build(),
+      );
+      if (!findAttachment) {
+        throw new BadRequestException(
+          `the given product photo->${photo.id} isn't exists !`,
+        );
+      }
+    }
+  }
+
+  private async insertPhotos(
+    id: bigint,
+    mappedPhotos: PhotoDto[],
+    transaction: Transaction,
+  ) {
+    for (const photo of mappedPhotos) {
+      let findAttachment = await this.attachmentRepository.findOne(
+        new QueryOptionsBuilder()
+          .filter({ id: photo.id })
+          .filter({
+            attachmentTypeId: {
+              [Op.in]: [this.photoTempAttachmentType, this.postAttachmentType],
+            },
+          })
+          .filter(
+            Sequelize.where(
+              Sequelize.fn('isnull', Sequelize.col('isDeleted'), 0),
+              {
+                [Op.eq]: 0,
+              },
+            ),
+          )
+          .transaction(transaction)
+          .build(),
+      );
+      findAttachment.attachmentTypeId = this.postAttachmentType;
+      findAttachment = await findAttachment.save({ transaction: transaction });
+      await this.entityPhotoRepository.create(
+        {
+          entityId: id,
+          attachmentId: findAttachment.id,
+        },
+        {
+          transaction: transaction,
+        },
+      );
+    }
+  }
+
+  private async removePhotosByPostId(id: bigint, transaction: Transaction) {
+    await this.entityPhotoRepository.destroy({
+      where: {
+        entityId: id,
+      },
+      transaction: transaction,
+    });
   }
 }
