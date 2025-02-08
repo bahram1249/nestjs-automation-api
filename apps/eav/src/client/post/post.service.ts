@@ -1,6 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
-import { EAVBlogPublish, EAVEntityType, EAVPost } from '@rahino/database';
+import {
+  Attachment,
+  EAVBlogPublish,
+  EAVEntityType,
+  EAVPost,
+} from '@rahino/database';
 import { ListFilter } from '@rahino/query-filter';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import { Op } from 'sequelize';
@@ -33,6 +38,15 @@ export class PostService {
             model: EAVEntityType,
             as: 'entityType',
             attributes: ['id', 'name', 'slug'],
+          },
+          {
+            attributes: ['id', 'fileName'],
+            model: Attachment,
+            as: 'attachments',
+            required: false,
+            through: {
+              attributes: [],
+            },
           },
         ])
         .filter({ slug: slug })
@@ -71,6 +85,15 @@ export class PostService {
             model: EAVEntityType,
             as: 'entityType',
             attributes: ['id', 'name', 'slug'],
+          },
+          {
+            attributes: ['id', 'fileName'],
+            model: Attachment,
+            as: 'attachments',
+            required: false,
+            through: {
+              attributes: [],
+            },
           },
         ])
         .filter(

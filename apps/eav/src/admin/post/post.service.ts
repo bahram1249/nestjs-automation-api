@@ -99,6 +99,15 @@ export class PostService {
           model: EAVBlogPublish,
           as: 'publish',
         },
+        {
+          attributes: ['id', 'fileName'],
+          model: Attachment,
+          as: 'attachments',
+          required: false,
+          through: {
+            attributes: [],
+          },
+        },
       ])
       .limit(filter.limit)
       .offset(filter.offset)
@@ -133,6 +142,15 @@ export class PostService {
         {
           model: EAVBlogPublish,
           as: 'publish',
+        },
+        {
+          attributes: ['id', 'fileName'],
+          model: Attachment,
+          as: 'attachments',
+          required: false,
+          through: {
+            attributes: [],
+          },
         },
       ])
       .filter({
@@ -244,19 +262,7 @@ export class PostService {
       throw new InternalServerErrorException(error.message);
     }
 
-    return {
-      result: _.pick(post, [
-        'id',
-        'title',
-        'slug',
-        'description',
-        'publishId',
-        'entityTypeId',
-        'metaTitle',
-        'metaDescription',
-        'metaKeywords',
-      ]),
-    };
+    return await this.findById(post.id);
   }
 
   async updateById(id: bigint, dto: PostDto) {
@@ -366,19 +372,7 @@ export class PostService {
       throw new InternalServerErrorException(error.message);
     }
 
-    return {
-      result: _.pick(post, [
-        'id',
-        'entityTypeId',
-        'publishId',
-        'title',
-        'slug',
-        'description',
-        'metaTitle',
-        'metaDescription',
-        'metaKeywords',
-      ]),
-    };
+    return await this.findById(post.id);
   }
 
   async deleteById(postId: bigint) {
