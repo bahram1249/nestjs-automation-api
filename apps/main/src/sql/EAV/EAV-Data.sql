@@ -59,3 +59,22 @@ BEGIN
 END
 
 GO
+
+-- blogpublishes
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'eav-blogpublishes-Data-v1' 
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'SITE_NAME' AND [value] IN ('ecommerce'))
+		)
+BEGIN
+
+	INSERT INTO EAVBlogPublishes(id, name, createdAt, updatedAt)
+	VALUES (1, N'منتشر شده', getdate(), getdate()),
+			(2, N'منتشر نشده', getdate(), getdate())
+			
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'eav-blogpublishes-Data-v1', GETDATE(), GETDATE()
+END
+
+GO
