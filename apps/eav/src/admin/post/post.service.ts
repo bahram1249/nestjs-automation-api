@@ -226,7 +226,7 @@ export class PostService {
         },
         transaction,
       );
-      insertItem.id = result.id;
+      insertItem.id = result.entityId;
 
       post = await this.repository.create(insertItem, {
         transaction: transaction,
