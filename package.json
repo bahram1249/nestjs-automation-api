@@ -35,7 +35,7 @@
     "@nestjs/serve-static": "^4.0.0",
     "@nestjs/swagger": "^7.1.13",
     "@nestjs/throttler": "^5.1.2",
-    "@rahino/auth": "^1.0.3",
+    "@rahino/auth": "^1.0.4",
     "@rahino/commonmiddleware": "^3.0.0",
     "@rahino/database": "^6.0.2",
     "@types/express-handlebars": "^5.3.0",
