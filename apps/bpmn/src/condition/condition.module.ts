@@ -1,10 +1,13 @@
 import { Module } from '@nestjs/common';
 import { ConditionService } from './condition.service';
 import { SequelizeModule } from '@nestjs/sequelize';
-import { BPMNCondition } from '@rahino/database';
+import { BPMNCondition, BPMNNodeCondition } from '@rahino/database';
 
 @Module({
-  imports: [SequelizeModule.forFeature([BPMNCondition])],
+  imports: [
+    SequelizeModule,
+    SequelizeModule.forFeature([BPMNCondition, BPMNNodeCondition]),
+  ],
   providers: [ConditionService],
   exports: [ConditionService],
 })

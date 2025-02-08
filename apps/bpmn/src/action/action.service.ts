@@ -75,7 +75,7 @@ export class ActionService {
       '@OrganizationId',
       dto.request.organizationId.toString(),
     );
-    text = text.replaceAll('RequestStateId', dto.requestState.id.toString());
+    text = text.replaceAll('@RequestStateId', dto.requestState.id.toString());
     return text;
   }
 }
