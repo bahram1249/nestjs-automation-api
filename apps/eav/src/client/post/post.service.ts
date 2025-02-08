@@ -10,6 +10,7 @@ import { ListFilter } from '@rahino/query-filter';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import { Op } from 'sequelize';
 import { Sequelize } from 'sequelize';
+import { PublishEnum } from './enum';
 
 @Injectable()
 export class PostService {
@@ -64,53 +65,59 @@ export class PostService {
       result: item,
     };
   }
+
   async findAll(filter: ListFilter) {
-    const results = await this.repository.findOne(
-      new QueryOptionsBuilder()
-        .attributes([
-          'id',
-          'title',
-          'slug',
-          'description',
-          'entityTypeId',
-          'publishId',
-        ])
-        .include([
+    let queryBuilder = new QueryOptionsBuilder()
+      .filter(
+        Sequelize.where(
+          Sequelize.fn('isnull', Sequelize.col('EAVPost.isDeleted'), 0),
           {
-            model: EAVBlogPublish,
-            as: 'publish',
-            attributes: ['id', 'name'],
+            [Op.eq]: 0,
           },
-          {
-            model: EAVEntityType,
-            as: 'entityType',
-            attributes: ['id', 'name', 'slug'],
+        ),
+      )
+      .filter({ publishId: PublishEnum.Publish });
+
+    const count = await this.repository.count(queryBuilder.build());
+
+    queryBuilder = queryBuilder
+      .attributes([
+        'id',
+        'title',
+        'slug',
+        'description',
+        'entityTypeId',
+        'publishId',
+      ])
+      .include([
+        {
+          model: EAVBlogPublish,
+          as: 'publish',
+          attributes: ['id', 'name'],
+        },
+        {
+          model: EAVEntityType,
+          as: 'entityType',
+          attributes: ['id', 'name', 'slug'],
+        },
+        {
+          attributes: ['id', 'fileName'],
+          model: Attachment,
+          as: 'attachments',
+          required: false,
+          through: {
+            attributes: [],
           },
-          {
-            attributes: ['id', 'fileName'],
-            model: Attachment,
-            as: 'attachments',
-            required: false,
-            through: {
-              attributes: [],
-            },
-          },
-        ])
-        .filter(
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('EAVPost.isDeleted'), 0),
-            {
-              [Op.eq]: 0,
-            },
-          ),
-        )
-        .order({ orderBy: filter.orderBy, sortOrder: filter.sortOrder })
-        .limit(filter.limit)
-        .offset(filter.offset)
-        .build(),
-    );
+        },
+      ])
+      .order({ orderBy: filter.orderBy, sortOrder: filter.sortOrder })
+      .limit(filter.limit)
+      .offset(filter.offset);
+
+    const results = await this.repository.findAll(queryBuilder.build());
     return {
       result: results,
+      total: count,
     };
   }
 }
