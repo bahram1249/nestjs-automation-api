@@ -13,7 +13,7 @@ import { ApiOperation, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { ListFilter } from '@rahino/query-filter';
 import { PostService } from './post.service';
 
-@ApiTags('EAV-Posts')
+@ApiTags('EAV-Client-Posts')
 @Controller({
   path: '/api/eav/client/posts',
   version: ['1'],
