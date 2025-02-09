@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { RequestService } from '../request/request.service';
+import { RequestService } from '../modules/request/request.service';
 
 @Injectable()
 export class TestService {

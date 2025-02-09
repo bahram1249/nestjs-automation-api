@@ -1,15 +1,14 @@
 import { Module } from '@nestjs/common';
 import { SequelizeModule } from '@nestjs/sequelize';
-import { TraverseModule } from '@rahino/bpmn/traverse/traverse.module';
 import { RequestService } from './request.service';
 import {
   BPMNOrganization,
   BPMNPROCESS,
   BPMNRequest,
-  BPMNRequestState,
   User,
 } from '@rahino/database';
 import { RequestStateModule } from '../request-state';
+import { TraverseModule } from '../traverse/traverse.module';
 
 @Module({
   imports: [

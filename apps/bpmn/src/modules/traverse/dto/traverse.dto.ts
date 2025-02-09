@@ -5,7 +5,7 @@ import {
   BPMNRequestState,
 } from '@rahino/database';
 import { Transaction } from 'sequelize';
-import { UserTraverseDto } from '@rahino/bpmn/traverse/dto/user-traverse.dto';
+import { UserTraverseDto } from './user-traverse.dto';
 
 export class TraverseDto {
   request: BPMNRequest;

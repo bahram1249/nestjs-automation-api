@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { TestController } from './test.controller';
 import { TestService } from './test.service';
-import { RequestModule } from '../request/request.module';
+import { RequestModule } from '../modules/request/request.module';
 
 @Module({
   imports: [RequestModule],

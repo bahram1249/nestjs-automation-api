@@ -1,5 +1,4 @@
 import { Module } from '@nestjs/common';
-import { TraverseService } from '@rahino/bpmn/traverse/traverse.service';
 import { SequelizeModule } from '@nestjs/sequelize';
 import {
   BPMNNode,
@@ -10,6 +9,7 @@ import {
 import { ConditionModule } from '../condition';
 import { ActionModule } from '../action';
 import { RequestStateModule } from '../request-state';
+import { TraverseService } from './traverse.service';
 
 @Module({
   imports: [

@@ -5,9 +5,7 @@ import {
   NestModule,
 } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
-import { TraverseModule } from '@rahino/bpmn/traverse/traverse.module';
-import { RequestModule } from './request/request.module';
-import { RequestService } from './request/request.service';
+import { RequestModule } from './modules/request/request.module';
 import { TestModule } from './test/test.module';
 
 @Module({

@@ -6,13 +6,13 @@ import {
   BPMNRequest,
   User,
 } from '@rahino/database';
-import { InitRequestDto } from '@rahino/bpmn/request/dto';
+import { InitRequestDto } from '@rahino/bpmn/modules/request/dto';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import { I18nContext, I18nService } from 'nestjs-i18n';
-import { I18nTranslations } from '../../../main/src/generated/i18n.generated';
+import { I18nTranslations } from '../../../../main/src/generated/i18n.generated';
 import { Sequelize, Transaction } from 'sequelize';
-import { TraverseService } from '@rahino/bpmn/traverse/traverse.service';
 import { RequestStateService } from '../request-state';
+import { TraverseService } from '../traverse/traverse.service';
 
 @Injectable()
 export class RequestService {

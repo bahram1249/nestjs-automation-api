@@ -1,4 +1,6 @@
 {
+  "undefined_inside_process_runner_id": "Undefined Inside Process Runner Id",
+  "unknown_referral_type": "unknown referral type",
   "action": "action",
   "node_has_not_assigned_any_roles": "node has not assigned any roles",
   "cannot_find_any_referral_user": "cannot find any referral user",

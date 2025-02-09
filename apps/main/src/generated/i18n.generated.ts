@@ -6,6 +6,8 @@ import { Path } from "nestjs-i18n";
 /* prettier-ignore */
 export type I18nTranslations = {
     "bpmn": {
+        "undefined_inside_process_runner_id": string;
+        "unknown_referral_type": string;
         "action": string;
         "node_has_not_assigned_any_roles": string;
         "cannot_find_any_referral_user": string;

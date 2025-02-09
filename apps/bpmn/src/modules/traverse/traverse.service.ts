@@ -111,7 +111,12 @@ export class TraverseService {
     };
 
     const strategy = traverseStrategies[dto.node.referralTypeId];
-    if (!strategy) throw new BadRequestException('Unknown ReferralType');
+    if (!strategy)
+      throw new BadRequestException(
+        this.i18n.translate('bpmn.unknown_referral_type', {
+          lang: I18nContext.current().lang,
+        }),
+      );
     await strategy();
   }
 
@@ -308,7 +313,11 @@ export class TraverseService {
       dto.node.toActivity.activityTypeId == ActivityTypeEnum.SubProcessState
     ) {
       if (dto.node.toActivity.insideProcessRunnerId == null) {
-        throw new BadRequestException('UndefinedInsideProcessRunnerId');
+        throw new BadRequestException(
+          await this.i18n.translate('bpmn.undefined_inside_process_runner_id', {
+            lang: I18nContext.current().lang,
+          }),
+        );
       }
       const subProcessState = await this.requestStateService.initRequestState({
         processId: dto.node.toActivity.insideProcessRunnerId,

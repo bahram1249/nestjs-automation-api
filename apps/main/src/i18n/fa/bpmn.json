@@ -1,4 +1,6 @@
 {
+  "undefined_inside_process_runner_id": "شناسه عملیات درونی یافت نگردید",
+  "unknown_referral_type": "نوع ارجاع نامشخص",
   "action": "عملیات",
   "node_has_not_assigned_any_roles": "به ارجاع مورد نظر هیچ نقشی وصل نشده است",
   "cannot_find_any_referral_user": "کاربری برای ارجاع یافت نشد",
