@@ -7,9 +7,11 @@ import {
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { RequestModule } from './modules/request/request.module';
 import { TestModule } from './test/test.module';
+import { ConditionLoaderModule } from './modules/condition-loader';
+import { DynamicConditionModule } from './dynamic-condition';
 
 @Module({
-  imports: [RequestModule, TestModule], //[RequestModule],
+  imports: [RequestModule, TestModule, DynamicConditionModule], //[RequestModule],
   exports: [RequestModule],
 })
 export class BPMNModule implements NestModule {

@@ -5,16 +5,16 @@ import { BPMNCondition, BPMNNodeCondition } from '@rahino/database';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import { ConditionTypeEnum } from '../condition-type';
 import { QueryTypes, Sequelize } from 'sequelize';
+import { ConditionLoaderService } from '../condition-loader/condition-loader.service';
 
 @Injectable()
 export class ConditionService {
   constructor(
-    @InjectModel(BPMNCondition)
-    private readonly conditionRepository: typeof BPMNCondition,
     @InjectModel(BPMNNodeCondition)
     private readonly nodeConditionRepository: typeof BPMNNodeCondition,
     @InjectConnection()
     private readonly sequelize: Sequelize,
+    private readonly conditionLoaderService: ConditionLoaderService,
   ) {}
 
   async checkConditions(dto: CheckConditionsDto): Promise<boolean> {
@@ -89,7 +89,15 @@ export class ConditionService {
   private async getResultOfSourceCondition(
     dto: RunConditionDto,
   ): Promise<boolean> {
-    return true;
+    return await this.conditionLoaderService.executeCondition({
+      source: dto.condition.conditionSource,
+      checkCondition: {
+        node: dto.node,
+        request: dto.request,
+        requestState: dto.requestState,
+        transaction: dto.transaction,
+      },
+    });
   }
 
   private async replaceConventionalParameters(

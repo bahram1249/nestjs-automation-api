@@ -2,10 +2,12 @@ import { Injectable } from '@nestjs/common';
 import { CheckConditionsDto } from '@rahino/bpmn/modules/condition';
 import { ConditionServiceImp } from '@rahino/bpmn/modules/condition/interface';
 
-@Injectable()
+@Injectable({})
 export class SampleConditionService implements ConditionServiceImp {
   constructor() {}
   async check(dto: CheckConditionsDto): Promise<boolean> {
-    return 1 == 1;
+    let a = 1;
+    let b = 2;
+    return a == b;
   }
 }
