@@ -33,8 +33,6 @@ import { ActivityTypeEnum } from '../activity-type';
 @Injectable()
 export class TraverseService {
   constructor(
-    @InjectModel(BPMNPROCESS)
-    private readonly processRepository: typeof BPMNPROCESS,
     @InjectModel(BPMNNode)
     private readonly nodeRepository: typeof BPMNNode,
     @InjectModel(UserRole)
@@ -69,6 +67,13 @@ export class TraverseService {
 
     if (!conditionResult) return;
 
+    await this.actionService.runOutboundActions({
+      node: dto.node,
+      request: dto.request,
+      requestState: dto.requestState,
+      transaction: dto.transaction,
+    });
+
     // traverse based referral
     await this.traverseBasedReferral({
       node: dto.node,
@@ -77,10 +82,6 @@ export class TraverseService {
       transaction: dto.transaction,
       users: dto.users,
     });
-
-    // outbound actions of current state
-
-    // inbound action of next state
 
     // remove current state
     await this.requestStateRepository.destroy({
@@ -307,9 +308,16 @@ export class TraverseService {
       }
     }
   }
-
   // if new state touched
   private async newStateReached(dto: NewStateReachedDto) {
+    // run inbound action
+    await this.actionService.runInboundActions({
+      node: dto.node,
+      request: dto.request,
+      requestState: dto.newRequestState,
+      transaction: dto.transaction,
+    });
+
     if (
       dto.node.toActivity.activityTypeId == ActivityTypeEnum.SubProcessState
     ) {
@@ -329,6 +337,38 @@ export class TraverseService {
       await this.autoTraverse({
         request: dto.request,
         requestState: subProcessState,
+        transaction: dto.transaction,
+      });
+    } else if (
+      dto.node.toActivity.isEndActivity &&
+      dto.node.toActivity.processId != dto.request.processId
+    ) {
+      const returnRequestStateId = dto.newRequestState.returnRequestStateId;
+      if (returnRequestStateId == null) {
+        throw new BadRequestException('return requestStateId is null');
+      }
+      const parentRequestState = await this.requestStateRepository.findOne(
+        new QueryOptionsBuilder()
+          .filter({ id: returnRequestStateId })
+          .filter({ requestId: dto.request.id })
+          .transaction(dto.transaction)
+          .build(),
+      );
+      if (!parentRequestState) {
+        throw new BadRequestException('parent request state not founded !!!');
+      }
+      // remove last activity of sub process activity
+      await this.requestStateRepository.destroy({
+        where: {
+          id: dto.newRequestState.id,
+          requestId: dto.request.id,
+        },
+        transaction: dto.transaction,
+      });
+
+      await this.autoTraverse({
+        request: dto.request,
+        requestState: parentRequestState,
         transaction: dto.transaction,
       });
     } else {

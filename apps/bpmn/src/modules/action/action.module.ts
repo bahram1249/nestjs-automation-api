@@ -1,6 +1,10 @@
 import { Module } from '@nestjs/common';
 import { SequelizeModule } from '@nestjs/sequelize';
-import { BPMNAction } from '@rahino/database';
+import {
+  BPMNAction,
+  BPMNInboundAction,
+  BPMNOutboundAction,
+} from '@rahino/database';
 import { ActionService } from './action.service';
 import { ActionLoaderModule } from '../action-loader';
 
@@ -8,7 +12,11 @@ import { ActionLoaderModule } from '../action-loader';
   imports: [
     ActionLoaderModule.register(),
     SequelizeModule,
-    SequelizeModule.forFeature([BPMNAction]),
+    SequelizeModule.forFeature([
+      BPMNAction,
+      BPMNInboundAction,
+      BPMNOutboundAction,
+    ]),
   ],
   providers: [ActionService],
   exports: [ActionService],
