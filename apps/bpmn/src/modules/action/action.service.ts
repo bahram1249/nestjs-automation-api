@@ -11,6 +11,7 @@ import { I18nService } from 'nestjs-i18n';
 import { InjectConnection, InjectModel } from '@nestjs/sequelize';
 import { QueryTypes, Sequelize } from 'sequelize';
 import { ActionTypeEnum } from '../action-type';
+import { ActionLoaderService } from '../action-loader';
 
 @Injectable()
 export class ActionService {
@@ -20,6 +21,7 @@ export class ActionService {
     private readonly i18n: I18nService<I18nTranslations>,
     @InjectConnection()
     private readonly sequelize: Sequelize,
+    private readonly actionLoaderService: ActionLoaderService,
   ) {}
 
   async runAction(dto: RunActionDto) {
@@ -39,6 +41,7 @@ export class ActionService {
           action: action,
           request: dto.request,
           requestState: dto.requestState,
+          node: dto.node,
           transaction: dto.transaction,
         }),
       [ActionTypeEnum.SourceAction]: () =>
@@ -46,6 +49,7 @@ export class ActionService {
           action: action,
           request: dto.request,
           requestState: dto.requestState,
+          node: dto.node,
           transaction: dto.transaction,
         }),
     };
@@ -64,7 +68,17 @@ export class ActionService {
     });
   }
 
-  private async runSourceAction(dto: RunSourceActionDto) {}
+  private async runSourceAction(dto: RunSourceActionDto) {
+    await this.actionLoaderService.tryExecuteAction({
+      source: dto.action.actionSource,
+      sourceExecuteAction: {
+        node: dto.node,
+        request: dto.request,
+        requestState: dto.requestState,
+        transaction: dto.transaction,
+      },
+    });
+  }
 
   private async replaceConventionalParameters(
     dto: RunSQLActionDto,

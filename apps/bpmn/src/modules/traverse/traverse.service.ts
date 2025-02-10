@@ -62,6 +62,7 @@ export class TraverseService {
         actionId: dto.node.conditionFailedActionRunnerId,
         request: dto.request,
         requestState: dto.requestState,
+        node: dto.node,
         transaction: dto.transaction,
       });
     }
