@@ -2735,7 +2735,7 @@ IF NOT EXISTS ( SELECT 1 FROM Migrations WHERE version = 'gold-currentPrices-Dat
 		)
 	AND EXISTS (
 		SELECT 1 FROM Settings 
-		WHERE ([key] = 'CUSTOMER_NAME' AND [value] IN ('hojresaz','goldongallery'))
+		WHERE ([key] = 'CUSTOMER_NAME' AND [value] IN ('hojresaz','goldongallery', 'pegahgallery'))
 		)
 	
 BEGIN
@@ -2764,7 +2764,7 @@ IF NOT EXISTS ( SELECT 1 FROM Migrations WHERE version = 'gold-currentPrices-Dat
 		)
 	AND EXISTS (
 		SELECT 1 FROM Settings 
-		WHERE ([key] = 'CUSTOMER_NAME' AND [value] IN ('hojresaz', 'goldongallery'))
+		WHERE ([key] = 'CUSTOMER_NAME' AND [value] IN ('hojresaz', 'goldongallery', 'pegahgallery'))
 		)
 	
 BEGIN
@@ -2792,7 +2792,7 @@ IF NOT EXISTS ( SELECT 1 FROM Migrations WHERE version = 'gold-currentPrices-Dat
 		)
 	AND EXISTS (
 		SELECT 1 FROM Settings 
-		WHERE ([key] = 'CUSTOMER_NAME' AND [value] IN ('hojresaz', 'goldongallery'))
+		WHERE ([key] = 'CUSTOMER_NAME' AND [value] IN ('hojresaz', 'goldongallery', 'pegahgallery'))
 		)
 	
 BEGIN
