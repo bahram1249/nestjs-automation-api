@@ -1,0 +1,20 @@
+name: deploy-pegahgold
+on:
+  push:
+    branches: [main]
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v1
+        with:
+          node-version: '20'
+      - name: update-chabokan
+        env:
+          CHABOKAN_TOKEN: ${{ secrets.PEGAH_CHABOKAN_TOKEN }}
+        run: |
+          npm install -g @chabokan.net/cli
+          chabok login -t $CHABOKAN_TOKEN
+          chabok deploy -s pegahgold
