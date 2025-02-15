@@ -12,6 +12,9 @@ export class TraverseDto {
   requestState: BPMNRequestState;
   node: BPMNNode;
   nodeCommand: BPMNNodeCommand;
+  userExecuterId?: bigint;
+  executeBundle?: string;
+  description?: string;
   users?: UserTraverseDto[];
   transaction: Transaction;
 }

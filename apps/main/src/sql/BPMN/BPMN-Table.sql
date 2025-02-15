@@ -583,9 +583,15 @@ IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'bpmn-requesthistories-v
             toActivityId            int                                 NOT NULL
                 CONSTRAINT FK_BPMNRequestHistories_ToActivityId
                     FOREIGN KEY REFERENCES BPMNActivities(id),
-            fromUserId              bigint                              NOT NULL
+            fromUserId              bigint                              NULL
                 CONSTRAINT FK_BPMNRequestHistories_FormUserId
                     FOREIGN KEY REFERENCES Users(id),
+            fromOrganizationId      int                                 NULL
+                CONSTRAINT FK_BPMNRequestHistories_FromOrganizationId
+                    FOREIGN KEY REFERENCES BPMNOrganizations(id),
+            fromRoleId              int                                 NULL
+                CONSTRAINT FK_BPMNRequestHistoreis_FromRoleId
+                    FOREIGN KEY REFERENCES Roles(id),
             toUserId                bigint                              NULL 
                 CONSTRAINT FK_BPMNRequestHistories_ToUserId
                     FOREIGN KEY REFERENCES Users(id),
@@ -595,6 +601,8 @@ IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'bpmn-requesthistories-v
             toOrganizationId        int                                 NULL
                 CONSTRAINT FK_BPMNRequestHistories_ToOrganizationId
                     FOREIGN KEY REFERENCES BPMNOrganizations(id),
+            description             nvarchar(2048)                      NULL,
+            executeBundle           nvarchar(56)                        NULL,
             [createdAt]				datetimeoffset			            NOT NULL,
             [updatedAt]				datetimeoffset			            NOT NULL,
             CONSTRAINT PK_BPMNRequestHistories PRIMARY KEY CLUSTERED(requestId, id)

@@ -29,6 +29,8 @@ import { ConditionService } from '../condition';
 import { ActionService } from '../action';
 import { RequestStateService } from '../request-state';
 import { ActivityTypeEnum } from '../activity-type';
+import { v4 as uuidv4 } from 'uuid';
+import { HistoryService } from '../history';
 
 @Injectable()
 export class TraverseService {
@@ -42,6 +44,7 @@ export class TraverseService {
     private readonly requestStateService: RequestStateService,
     private readonly conditionService: ConditionService,
     private readonly actionService: ActionService,
+    private readonly historyService: HistoryService,
     private readonly i18n: I18nService<I18nTranslations>,
   ) {}
 
@@ -53,6 +56,10 @@ export class TraverseService {
       node: dto.node,
       transaction: dto.transaction,
     });
+
+    if (dto.executeBundle == null) {
+      dto.executeBundle = uuidv4();
+    }
 
     // run failed action if any condition failed
     if (!conditionResult && dto.node.conditionFailedActionRunnerId) {
@@ -77,10 +84,13 @@ export class TraverseService {
     // traverse based referral
     await this.traverseBasedReferral({
       node: dto.node,
+      nodeCommand: dto.nodeCommand,
       request: dto.request,
       requestState: dto.requestState,
       transaction: dto.transaction,
       users: dto.users,
+      userExecuterId: dto.userExecuterId,
+      executeBundle: dto.executeBundle,
     });
 
     // remove current state
@@ -93,145 +103,26 @@ export class TraverseService {
     });
   }
 
-  private async traverseBasedReferral(dto: TraverseBasedReferralDto) {
-    const traverseStrategies = {
-      [ReferralTypeEnum.Direct]: () =>
-        this.traverseBasedDirectUser({
-          node: dto.node,
-          requestState: dto.requestState,
-          request: dto.request,
-          transaction: dto.transaction,
-          users: dto.users,
-        }),
-      [ReferralTypeEnum.Role]: () =>
-        this.traverseBasedRole({
-          node: dto.node,
-          request: dto.request,
-          requestState: dto.requestState,
-          transaction: dto.transaction,
-        }),
-    };
-
-    const strategy = traverseStrategies[dto.node.referralTypeId];
-    if (!strategy)
-      throw new BadRequestException(
-        this.i18n.translate('bpmn.unknown_referral_type', {
-          lang: I18nContext.current().lang,
-        }),
-      );
-    await strategy();
-  }
-
-  private async traverseBasedDirectUser(dto: TraverseBasedDirectUserDto) {
-    const nodeProvidedUsers: UserTraverseDto[] = [];
-    if (dto.node.userId) {
-      nodeProvidedUsers.push({ userId: dto.node.userId });
-    }
-    const users = dto.users ?? nodeProvidedUsers;
-
-    // if doesn't find any user for traverse
-    if (users.length === 0) {
-      throw new BadRequestException(
-        this.i18n.translate('bpmn.cannot_find_any_referral_user', {
-          lang: I18nContext.current().lang,
-        }),
-      );
-    }
-
-    // traverse to find it users
-    for (const user of users) {
-      const newRequestState = await this.requestStateRepository.create(
-        {
-          requestId: dto.request.id,
-          activityId: dto.node.toActivityId,
-          userId: user.userId,
-          returnRequestStateId: dto.requestState.returnRequestStateId,
-        },
-        { transaction: dto.transaction },
-      );
-
-      // set histories
-
-      await this.newStateReached({
-        request: dto.request,
-        newRequestState: newRequestState,
-        node: dto.node,
-        transaction: dto.transaction,
-      });
-    }
-  }
-
-  private async traverseBasedRole(dto: TraverseBasedRoleDto) {
-    if (dto.node.roleId == null) {
-      throw new BadRequestException(
-        this.i18n.translate('bpmn.node_has_not_assigned_any_roles', {
-          lang: I18nContext.current().lang,
-        }),
-      );
-    }
-
-    if (dto.users != null && dto.users.length > 0) {
-      let userRoles = await this.userRoleRepository.findAll(
-        new QueryOptionsBuilder().filter({ roleId: dto.node.roleId }).build(),
-      );
-      userRoles = userRoles.filter((userRole) =>
-        dto.users.some((user) => user.userId === userRole.userId),
-      );
-
-      // cannot find any users
-      if (userRoles.length === 0) {
-        throw new BadRequestException(
-          this.i18n.translate('bpmn.cannot_find_any_referral_user', {
-            lang: I18nContext.current().lang,
-          }),
-        );
-      }
-
-      // iterate between users
-      for (const userRole of userRoles) {
-        const newRequestState = await this.requestStateRepository.create(
-          {
-            requestId: dto.request.id,
-            activityId: dto.node.toActivityId,
-            userId: userRole.userId,
-            returnRequestStateId: dto.requestState.returnRequestStateId,
-          },
-          { transaction: dto.transaction },
-        );
-
-        // set histories
-
-        await this.newStateReached({
-          request: dto.request,
-          newRequestState: newRequestState,
-          node: dto.node,
-          transaction: dto.transaction,
-        });
-      }
-    } else {
-      const newRequestState = await this.requestStateRepository.create(
-        {
-          requestId: dto.request.id,
-          activityId: dto.node.toActivityId,
-          roleId: dto.node.roleId,
-          returnRequestStateId: dto.requestState.returnRequestStateId,
-        },
-        { transaction: dto.transaction },
-      );
-
-      // set histories
-      await this.newStateReached({
-        request: dto.request,
-        newRequestState: newRequestState,
-        node: dto.node,
-        transaction: dto.transaction,
-      });
-    }
-  }
-
   async autoTraverse(dto: AutoTraverseDto) {
     // find all nextAutoNode with submit nodeCommandType
-    const nextAutoNodes = await this.nodeRepository.findAll(
+    const nextAutoNodes = await this.findNextAutoNodes(dto);
+
+    for (const nextAutoNode of nextAutoNodes) {
+      for (const nodeCommand of nextAutoNode.nodeCommands) {
+        await this.traverse({
+          request: dto.request,
+          requestState: dto.requestState,
+          node: nextAutoNode,
+          nodeCommand: nodeCommand,
+          transaction: dto.transaction,
+          executeBundle: dto.executeBundle,
+        });
+      }
+    }
+  }
+
+  private async findNextAutoNodes(dto: AutoTraverseDto) {
+    return await this.nodeRepository.findAll(
       new QueryOptionsBuilder()
         .include([
           {
@@ -295,88 +186,300 @@ export class TraverseService {
         )
         .build(),
     );
+  }
 
-    for (const nextAutoNode of nextAutoNodes) {
-      for (const nodeCommand of nextAutoNode.nodeCommands) {
-        await this.traverse({
+  private async traverseBasedReferral(dto: TraverseBasedReferralDto) {
+    const traverseStrategies = {
+      [ReferralTypeEnum.Direct]: () =>
+        this.traverseBasedDirectUser({
+          node: dto.node,
+          nodeCommand: dto.nodeCommand,
+          requestState: dto.requestState,
+          request: dto.request,
+          transaction: dto.transaction,
+          userExecuterId: dto.userExecuterId,
+          executeBundle: dto.executeBundle,
+          users: dto.users,
+        }),
+      [ReferralTypeEnum.Role]: () =>
+        this.traverseBasedRole({
+          node: dto.node,
+          nodeCommand: dto.nodeCommand,
           request: dto.request,
           requestState: dto.requestState,
-          node: nextAutoNode,
-          nodeCommand: nodeCommand,
           transaction: dto.transaction,
-        });
-      }
+          users: dto.users,
+          executeBundle: dto.executeBundle,
+          userExecuterId: dto.userExecuterId,
+        }),
+    };
+
+    const strategy = traverseStrategies[dto.node.referralTypeId];
+    if (!strategy)
+      throw new BadRequestException(
+        this.i18n.translate('bpmn.unknown_referral_type', {
+          lang: I18nContext.current().lang,
+        }),
+      );
+    await strategy();
+  }
+
+  private async traverseBasedDirectUser(dto: TraverseBasedDirectUserDto) {
+    const nodeProvidedUsers: UserTraverseDto[] = [];
+    if (dto.node.userId) {
+      nodeProvidedUsers.push({ userId: dto.node.userId });
+    }
+    const users = dto.users ?? nodeProvidedUsers;
+
+    // if doesn't find any user for traverse
+    if (users.length === 0) {
+      throw new BadRequestException(
+        this.i18n.translate('bpmn.cannot_find_any_referral_user', {
+          lang: I18nContext.current().lang,
+        }),
+      );
+    }
+
+    // traverse to find it users
+    for (const user of users) {
+      const newRequestState = await this.requestStateRepository.create(
+        {
+          requestId: dto.request.id,
+          activityId: dto.node.toActivityId,
+          userId: user.userId,
+          returnRequestStateId: dto.requestState.returnRequestStateId,
+        },
+        { transaction: dto.transaction },
+      );
+
+      // set histories
+
+      await this.newStateReached({
+        request: dto.request,
+        oldRequestState: dto.requestState,
+        newRequestState: newRequestState,
+        node: dto.node,
+        nodeCommand: dto.nodeCommand,
+        transaction: dto.transaction,
+        description: dto.description,
+        executeBundle: dto.executeBundle,
+        userExecuterId: dto.userExecuterId,
+      });
     }
   }
-  // if new state touched
-  private async newStateReached(dto: NewStateReachedDto) {
-    // run inbound action
-    await this.actionService.runInboundActions({
-      node: dto.node,
-      request: dto.request,
-      requestState: dto.newRequestState,
-      transaction: dto.transaction,
-    });
 
-    if (
-      dto.node.toActivity.activityTypeId == ActivityTypeEnum.SubProcessState
-    ) {
-      if (dto.node.toActivity.insideProcessRunnerId == null) {
+  private async traverseBasedRole(dto: TraverseBasedRoleDto) {
+    this.validateRoleBasedNode(dto.node);
+
+    if (dto.users != null && dto.users.length > 0) {
+      let userRoles = await this.userRoleRepository.findAll(
+        new QueryOptionsBuilder().filter({ roleId: dto.node.roleId }).build(),
+      );
+      userRoles = userRoles.filter((userRole) =>
+        dto.users.some((user) => user.userId === userRole.userId),
+      );
+
+      // cannot find any users
+      if (userRoles.length === 0) {
         throw new BadRequestException(
-          await this.i18n.translate('bpmn.undefined_inside_process_runner_id', {
+          this.i18n.translate('bpmn.cannot_find_any_referral_user', {
             lang: I18nContext.current().lang,
           }),
         );
       }
-      const subProcessState = await this.requestStateService.initRequestState({
-        processId: dto.node.toActivity.insideProcessRunnerId,
-        request: dto.request,
-        returnRequestStateId: dto.newRequestState.id,
-        transaction: dto.transaction,
-      });
-      await this.autoTraverse({
-        request: dto.request,
-        requestState: subProcessState,
-        transaction: dto.transaction,
-      });
-    } else if (
-      dto.node.toActivity.isEndActivity &&
-      dto.node.toActivity.processId != dto.request.processId
-    ) {
-      const returnRequestStateId = dto.newRequestState.returnRequestStateId;
-      if (returnRequestStateId == null) {
-        throw new BadRequestException('return requestStateId is null');
-      }
-      const parentRequestState = await this.requestStateRepository.findOne(
-        new QueryOptionsBuilder()
-          .filter({ id: returnRequestStateId })
-          .filter({ requestId: dto.request.id })
-          .transaction(dto.transaction)
-          .build(),
-      );
-      if (!parentRequestState) {
-        throw new BadRequestException('parent request state not founded !!!');
-      }
-      // remove last activity of sub process activity
-      await this.requestStateRepository.destroy({
-        where: {
-          id: dto.newRequestState.id,
-          requestId: dto.request.id,
-        },
-        transaction: dto.transaction,
-      });
 
-      await this.autoTraverse({
-        request: dto.request,
-        requestState: parentRequestState,
-        transaction: dto.transaction,
-      });
+      // iterate between users
+      for (const userRole of userRoles) {
+        const newRequestState = await this.requestStateRepository.create(
+          {
+            requestId: dto.request.id,
+            activityId: dto.node.toActivityId,
+            userId: userRole.userId,
+            returnRequestStateId: dto.requestState.returnRequestStateId,
+          },
+          { transaction: dto.transaction },
+        );
+
+        // set histories
+
+        await this.newStateReached({
+          request: dto.request,
+          oldRequestState: dto.requestState,
+          newRequestState: newRequestState,
+          node: dto.node,
+          nodeCommand: dto.nodeCommand,
+          transaction: dto.transaction,
+          executeBundle: dto.executeBundle,
+          userExecuterId: dto.userExecuterId,
+        });
+      }
     } else {
-      await this.autoTraverse({
+      const newRequestState = await this.requestStateRepository.create(
+        {
+          requestId: dto.request.id,
+          activityId: dto.node.toActivityId,
+          roleId: dto.node.roleId,
+          returnRequestStateId: dto.requestState.returnRequestStateId,
+        },
+        { transaction: dto.transaction },
+      );
+
+      // set histories
+      await this.newStateReached({
         request: dto.request,
-        requestState: dto.newRequestState,
+        oldRequestState: dto.requestState,
+        newRequestState: newRequestState,
+        node: dto.node,
+        nodeCommand: dto.nodeCommand,
         transaction: dto.transaction,
+        description: dto.description,
+        executeBundle: dto.executeBundle,
+        userExecuterId: dto.userExecuterId,
       });
     }
+  }
+
+  private validateRoleBasedNode(node: BPMNNode) {
+    if (node.roleId == null) {
+      throw new BadRequestException(
+        this.i18n.translate('bpmn.node_has_not_assigned_any_roles', {
+          lang: I18nContext.current().lang,
+        }),
+      );
+    }
+  }
+
+  private async handleTraverseBasedRoleIfUserPass() {}
+
+  // if new state touched
+  private async newStateReached(dto: NewStateReachedDto) {
+    const {
+      node,
+      nodeCommand,
+      request,
+      oldRequestState,
+      newRequestState,
+      transaction,
+      executeBundle,
+      userExecuterId,
+      description,
+    } = dto;
+
+    // Run inbound action
+    await this.actionService.runInboundActions({
+      node,
+      request,
+      requestState: newRequestState,
+      transaction,
+    });
+
+    // Set histories
+
+    await this.historyService.addHistory({
+      executeBundle: dto.executeBundle,
+      node: dto.node,
+      nodeCommand: dto.nodeCommand,
+      oldRequestStaet: dto.oldRequestState,
+      request: dto.request,
+      requestState: dto.newRequestState,
+      transaction: dto.transaction,
+      description: dto.description,
+      userExecuterId: dto.userExecuterId,
+    });
+
+    if (node.toActivity.activityTypeId === ActivityTypeEnum.SubProcessState) {
+      await this.handleSubProcessState(dto);
+    } else if (
+      node.toActivity.isEndActivity &&
+      node.toActivity.processId !== request.processId
+    ) {
+      await this.handleEndActivity(dto);
+    } else {
+      await this.autoTraverse({
+        request,
+        requestState: newRequestState,
+        transaction,
+        userExecuterId,
+        executeBundle,
+      });
+    }
+  }
+
+  private async handleSubProcessState(dto: NewStateReachedDto) {
+    const {
+      node,
+      request,
+      newRequestState,
+      transaction,
+      executeBundle,
+      userExecuterId,
+    } = dto;
+
+    if (node.toActivity.insideProcessRunnerId == null) {
+      throw new BadRequestException(
+        await this.i18n.translate('bpmn.undefined_inside_process_runner_id', {
+          lang: I18nContext.current().lang,
+        }),
+      );
+    }
+
+    const subProcessState = await this.requestStateService.initRequestState({
+      processId: node.toActivity.insideProcessRunnerId,
+      request,
+      returnRequestStateId: newRequestState.id,
+      transaction,
+    });
+
+    await this.autoTraverse({
+      request,
+      requestState: subProcessState,
+      transaction,
+      executeBundle,
+      userExecuterId,
+    });
+  }
+
+  private async handleEndActivity(dto: NewStateReachedDto) {
+    const {
+      newRequestState,
+      request,
+      transaction,
+      executeBundle,
+      userExecuterId,
+    } = dto;
+
+    const returnRequestStateId = newRequestState.returnRequestStateId;
+    if (returnRequestStateId == null) {
+      throw new BadRequestException('return requestStateId is null');
+    }
+
+    const parentRequestState = await this.requestStateRepository.findOne(
+      new QueryOptionsBuilder()
+        .filter({ id: returnRequestStateId })
+        .filter({ requestId: request.id })
+        .transaction(transaction)
+        .build(),
+    );
+
+    if (!parentRequestState) {
+      throw new BadRequestException('parent request state not founded !!!');
+    }
+
+    // Remove last activity of sub process activity
+    await this.requestStateRepository.destroy({
+      where: {
+        id: newRequestState.id,
+        requestId: request.id,
+      },
+      transaction,
+    });
+
+    await this.autoTraverse({
+      request,
+      requestState: parentRequestState,
+      transaction,
+      userExecuterId,
+      executeBundle,
+    });
   }
 }

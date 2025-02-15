@@ -13,6 +13,7 @@ import { I18nTranslations } from '../../../../main/src/generated/i18n.generated'
 import { Sequelize, Transaction } from 'sequelize';
 import { RequestStateService } from '../request-state';
 import { TraverseService } from '../traverse/traverse.service';
+import { v4 as uuidv4 } from 'uuid';
 
 @Injectable()
 export class RequestService {
@@ -120,6 +121,8 @@ export class RequestService {
         request: request,
         requestState: requestState,
         transaction: transaction,
+        userExecuterId: dto.userId,
+        executeBundle: uuidv4(),
       });
 
       await transaction.commit();

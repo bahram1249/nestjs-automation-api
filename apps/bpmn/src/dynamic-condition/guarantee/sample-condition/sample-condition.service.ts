@@ -7,7 +7,7 @@ export class SampleConditionService implements ConditionServiceImp {
   constructor() {}
   async check(dto: CheckConditionsDto): Promise<boolean> {
     let a = 1;
-    let b = 2;
+    let b = 1;
     return a == b;
   }
 }

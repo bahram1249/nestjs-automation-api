@@ -5,6 +5,7 @@ import { ConditionModule } from '../condition';
 import { ActionModule } from '../action';
 import { RequestStateModule } from '../request-state';
 import { TraverseService } from './traverse.service';
+import { HistoryModule } from '../history';
 
 @Module({
   imports: [
@@ -12,6 +13,7 @@ import { TraverseService } from './traverse.service';
     ConditionModule,
     ActionModule,
     RequestStateModule,
+    HistoryModule,
   ],
   providers: [TraverseService],
   exports: [TraverseService],

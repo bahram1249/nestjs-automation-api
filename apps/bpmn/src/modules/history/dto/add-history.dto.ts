@@ -5,15 +5,14 @@ import {
   BPMNRequestState,
 } from '@rahino/database';
 import { Transaction } from 'sequelize';
-import { UserTraverseDto } from './user-traverse.dto';
 
-export class TraverseBasedRoleDto {
+export class AddHistoryDto {
+  request: BPMNRequest;
   node: BPMNNode;
   nodeCommand: BPMNNodeCommand;
+  oldRequestStaet: BPMNRequestState;
   requestState: BPMNRequestState;
-  request: BPMNRequest;
   transaction: Transaction;
-  users?: UserTraverseDto[];
   description?: string;
   userExecuterId?: bigint;
   executeBundle: string;
