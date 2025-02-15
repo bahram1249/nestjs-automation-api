@@ -4012,7 +4012,7 @@ BEGIN
 	DECLARE @groupId int = null;
 
 	DECLARE @entityName nvarchar(256) = N'Transactions'
-	DECLARE @groupName nvarchar(256) = N'ecommerce.admin.tranactions'
+	DECLARE @groupName nvarchar(256) = N'ecommerce.admin.transactions'
 	DECLARE @findParentMenu bit = 0;
 	DECLARE @parentMenuName nvarchar(256) = N'پرداخت و حمل و نقل'
 	DECLARE @menuName nvarchar(256) = N'تراکنش ها'

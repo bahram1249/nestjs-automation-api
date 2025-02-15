@@ -295,7 +295,7 @@ export class RetrievePricePersianApiService {
               ? InventoryStatusEnum.available
               : InventoryStatusEnum.unavailable;
 
-          let oldInventoryPrices = await this.inventoryPriceRepository.findAll(
+          let oldInventoryPrice = await this.inventoryPriceRepository.findOne(
             new QueryOptionsBuilder()
               .filter(
                 Sequelize.where(
@@ -312,6 +312,7 @@ export class RetrievePricePersianApiService {
               .filter({
                 inventoryId: inventories[index].id,
               })
+              .filter({ variationPriceId: VariationPriceEnum.firstPrice })
               .build(),
           );
 
@@ -326,20 +327,23 @@ export class RetrievePricePersianApiService {
           );
           inventoryPrice = _.omit(newPrice, ['buyPrice']);
 
-          await this.inventoryPriceRepository.create({
-            inventoryId: inventories[index].id,
-            variationPriceId: inventoryPrice.variationPriceId,
-            price: inventoryPrice.price,
-            buyPrice: newPrice.buyPrice,
-            userId: 1,
-          });
+          if (
+            oldInventoryPrice.price != newPrice.price ||
+            oldInventoryPrice.buyPrice != newPrice.buyPrice
+          ) {
+            await this.inventoryPriceRepository.create({
+              inventoryId: inventories[index].id,
+              variationPriceId: inventoryPrice.variationPriceId,
+              price: inventoryPrice.price,
+              buyPrice: newPrice.buyPrice,
+              userId: 1,
+            });
 
-          for (let i = 0; i < oldInventoryPrices.length; i++) {
-            oldInventoryPrices[i].isDeleted = true;
-            await oldInventoryPrices[i].save();
+            oldInventoryPrice.isDeleted = true;
+            await oldInventoryPrice.save();
+
+            inventories[index] = await inventories[index].save();
           }
-
-          inventories[index] = await inventories[index].save();
 
           const keepJobs = this.config.get<number>(
             'PRODUCT_INVENTORY_STATUS_KEEPJOBS',
