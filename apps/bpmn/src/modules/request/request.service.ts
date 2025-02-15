@@ -121,6 +121,7 @@ export class RequestService {
         request: request,
         requestState: requestState,
         transaction: transaction,
+        description: dto.description,
         userExecuterId: dto.userId,
         executeBundle: uuidv4(),
       });

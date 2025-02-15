@@ -5,6 +5,7 @@ export class AutoTraverseDto {
   request: BPMNRequest;
   requestState: BPMNRequestState;
   transaction: Transaction;
+  description?: string;
   userExecuterId?: bigint;
   executeBundle: string;
 }

@@ -53,3 +53,6 @@ lerna-debug.log*
 # task
 todo.md
 .codegpt
+
+# DataGrip
+apps/main/src/sql/.idea

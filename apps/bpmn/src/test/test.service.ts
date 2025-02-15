@@ -9,6 +9,7 @@ export class TestService {
     await this.requestService.initRequest({
       userId: BigInt(1),
       processId: 1,
+      description: 'test',
     });
   }
 }

@@ -91,6 +91,7 @@ export class TraverseService {
       users: dto.users,
       userExecuterId: dto.userExecuterId,
       executeBundle: dto.executeBundle,
+      description: dto.description,
     });
 
     // remove current state
@@ -114,6 +115,7 @@ export class TraverseService {
           requestState: dto.requestState,
           node: nextAutoNode,
           nodeCommand: nodeCommand,
+          description: dto.description,
           transaction: dto.transaction,
           executeBundle: dto.executeBundle,
         });
@@ -200,6 +202,7 @@ export class TraverseService {
           userExecuterId: dto.userExecuterId,
           executeBundle: dto.executeBundle,
           users: dto.users,
+          description: dto.description,
         }),
       [ReferralTypeEnum.Role]: () =>
         this.traverseBasedRole({
@@ -211,6 +214,7 @@ export class TraverseService {
           users: dto.users,
           executeBundle: dto.executeBundle,
           userExecuterId: dto.userExecuterId,
+          description: dto.description,
         }),
     };
 
@@ -311,6 +315,7 @@ export class TraverseService {
           transaction: dto.transaction,
           executeBundle: dto.executeBundle,
           userExecuterId: dto.userExecuterId,
+          description: dto.description,
         });
       }
     } else {
@@ -376,15 +381,15 @@ export class TraverseService {
     // Set histories
 
     await this.historyService.addHistory({
-      executeBundle: dto.executeBundle,
-      node: dto.node,
-      nodeCommand: dto.nodeCommand,
-      oldRequestStaet: dto.oldRequestState,
-      request: dto.request,
-      requestState: dto.newRequestState,
-      transaction: dto.transaction,
-      description: dto.description,
-      userExecuterId: dto.userExecuterId,
+      executeBundle: executeBundle,
+      node: node,
+      nodeCommand: nodeCommand,
+      oldRequestStaet: oldRequestState,
+      request: request,
+      requestState: newRequestState,
+      transaction: transaction,
+      description: description,
+      userExecuterId: userExecuterId,
     });
 
     if (node.toActivity.activityTypeId === ActivityTypeEnum.SubProcessState) {
