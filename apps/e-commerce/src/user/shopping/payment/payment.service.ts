@@ -6,12 +6,12 @@ import {
 } from '@nestjs/common';
 import { User } from '@rahino/database';
 import { ECUserSession } from '@rahino/database';
-import { StockPaymentDto, validateAddressDto, WalletPaymentDto } from './dto';
+import { StockPaymentDto, WalletPaymentDto } from './dto';
 import { ECOMMERCE_PAYMENT_PROVIDER_TOKEN } from './provider/constants';
 import { PayInterface } from './provider/interface';
 import { StockService } from '../stock/stock.service';
 import { InventoryStatusEnum } from '@rahino/ecommerce/inventory/enum';
-import { AddressService } from '../address/address.service';
+import { AddressService } from '../../address/address.service';
 import { ECProvince } from '@rahino/database';
 import { InjectConnection, InjectModel } from '@nestjs/sequelize';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
@@ -53,6 +53,7 @@ import {
   REVERT_PAYMENT_QUEUE,
 } from './revert-payment/revert-payment.constants';
 import { CityEnum } from '@rahino/ecommerce/util/enum/city.enum';
+import { ValidateAddressService } from '../payment-rule/services/validate-address.service';
 
 @Injectable()
 export class PaymentService {
@@ -91,6 +92,7 @@ export class PaymentService {
     private readonly inventoryPriceRepository: typeof ECInventoryPrice,
     @InjectModel(ECVendorCommission)
     private readonly vendorCommissionRepository: typeof ECVendorCommission,
+    private readonly validateAddressService: ValidateAddressService,
   ) {}
 
   async stock(session: ECUserSession, body: StockPaymentDto, user: User) {
@@ -106,11 +108,12 @@ export class PaymentService {
       throw new BadRequestException('cannot find stocks');
     }
 
-    await this.validateAddress({
+    await this.validateAddressService.validateAddress({
       addressId: body.addressId,
       stocks: stocks,
       user: user,
     });
+
     // discount
     if (body.couponCode) {
       const applitedStocksDiscount =
@@ -254,34 +257,6 @@ export class PaymentService {
         redirectUrl: redirectUrl,
       },
     };
-  }
-
-  private async validateAddress(dto: validateAddressDto) {
-    const findAddress = (
-      await this.addressService.findById(dto.user, dto.addressId)
-    ).result;
-
-    for (let index = 0; index < dto.stocks.length; index++) {
-      const stock = dto.stocks[index];
-      if (
-        stock.product.inventories[0].onlyProvinceId != null &&
-        (stock.product.inventories[0].onlyProvinceId !=
-          findAddress.provinceId ||
-          (stock.product.inventories[0].onlyProvinceId == ProvinceEnum.Tehran &&
-            findAddress.cityId != CityEnum.Tehran))
-      ) {
-        const province = await this.provinceRepository.findOne(
-          new QueryOptionsBuilder()
-            .filter({
-              id: stock.product.inventories[0].onlyProvinceId,
-            })
-            .build(),
-        );
-        throw new BadRequestException(
-          `${stock.product.title} فقط مجوز ارسال به استان ${province.name} را دارد.`,
-        );
-      }
-    }
   }
 
   private async purchaseStocks(stocks: ECStock[], transaction: Transaction) {

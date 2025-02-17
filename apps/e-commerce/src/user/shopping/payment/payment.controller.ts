@@ -9,7 +9,7 @@ import {
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { JwtGuard } from '@rahino/auth';
-import { SessionGuard } from '../session/guard';
+import { SessionGuard } from '../../session/guard';
 import { JsonResponseTransformInterceptor } from '@rahino/response/interceptor';
 import { PaymentService } from './payment.service';
 import { GetECSession } from 'apps/main/src/decorator';

@@ -16,13 +16,13 @@ import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builde
 import { Op } from 'sequelize';
 import { ECPayment } from '@rahino/database';
 import { ECPaymentGateway } from '@rahino/database';
-import { SnapPayService } from '@rahino/ecommerce/user/payment/provider/services';
+import { SnapPayService } from '@rahino/ecommerce/user/shopping/payment/provider/services';
 import { ECProduct } from '@rahino/database';
 import { EAVEntityType } from '@rahino/database';
 import { RoleUtilService } from '@rahino/core/user/role-util/role-util.service';
 import { UserVendorService } from '@rahino/ecommerce/user/vendor/user-vendor.service';
 import { OrderUtilService } from '../utilOrder/service/order-util.service';
-import { FinalizedPaymentService } from '@rahino/ecommerce/user/payment/util/finalized-payment/finalized-payment.service';
+import { FinalizedPaymentService } from '@rahino/ecommerce/user/shopping/payment/util/finalized-payment/finalized-payment.service';
 import {
   ChangeOrderStatusDto,
   ChangeShipmentWayDto,

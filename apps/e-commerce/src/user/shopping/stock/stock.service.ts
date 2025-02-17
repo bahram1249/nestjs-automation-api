@@ -31,13 +31,14 @@ import { ConfigService } from '@nestjs/config';
 import { InventoryStatusEnum } from '@rahino/ecommerce/inventory/enum';
 import { ECPaymentGateway } from '@rahino/database';
 import { User } from '@rahino/database';
-import { AddressService } from '../address/address.service';
+import { AddressService } from '../../address/address.service';
 import { ECProvince } from '@rahino/database';
 import { ECVariationPrice } from '@rahino/database';
 import { StockPriceService } from './services/price';
 import { ShipmentInteface } from './services/shipment-price/interface';
 import { ApplyDiscountService } from '@rahino/ecommerce/product/service';
 import { PaymentServiceManualProviderFactory } from '../payment/provider/factory/payment-service-manual-provider.factory';
+import { ValidateAddressService } from '../payment-rule/services/validate-address.service';
 
 @Injectable()
 export class StockService {
@@ -66,6 +67,7 @@ export class StockService {
     private readonly shipmentService: ShipmentInteface,
     private readonly applyDiscountService: ApplyDiscountService,
     private readonly paymentServiceProvider: PaymentServiceManualProviderFactory,
+    private readonly validateAddressService: ValidateAddressService,
   ) {}
 
   async findAll(session: ECUserSession) {
@@ -161,27 +163,11 @@ export class StockService {
 
     // validation on address
     if (query.addressId) {
-      const findAddress = (
-        await this.addressService.findById(user, query.addressId)
-      ).result;
-      for (let index = 0; index < stocks.length; index++) {
-        const stock = stocks[index];
-        if (
-          stock.product.inventories[0].onlyProvinceId != null &&
-          stock.product.inventories[0].onlyProvinceId != findAddress.provinceId
-        ) {
-          const province = await this.provinceRepository.findOne(
-            new QueryOptionsBuilder()
-              .filter({
-                id: stock.product.inventories[0].onlyProvinceId,
-              })
-              .build(),
-          );
-          throw new BadRequestException(
-            `${stock.product.title} فقط مجوز ارسال به استان ${province.name} را دارد.`,
-          );
-        }
-      }
+      await this.validateAddressService.validateAddress({
+        addressId: query.addressId,
+        stocks: stocks,
+        user: user,
+      });
     }
 
     if (query.couponCode) {

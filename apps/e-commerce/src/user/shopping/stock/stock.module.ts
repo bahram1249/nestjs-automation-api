@@ -22,17 +22,19 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { SequelizeModule } from '@nestjs/sequelize';
 import { User } from '@rahino/database';
 import { ECStock } from '@rahino/database';
-import { SessionModule } from '../session/session.module';
+import { SessionModule } from '../../session/session.module';
 import { ECPaymentGateway } from '@rahino/database';
-import { AddressModule } from '../address/address.module';
+import { AddressModule } from '../../address/address.module';
 import { StockPriceService } from './services/price';
 import { ECVariationPrice } from '@rahino/database';
 import { ECProvince } from '@rahino/database';
 import { ShipmentModule } from './services/shipment-price';
 import { PaymentServiceProviderModule } from '../payment/provider/payment-provider.module';
+import { PaymentRuleModule } from '../payment-rule/payment-rule.module';
 
 @Module({
   imports: [
+    PaymentRuleModule,
     SequelizeModule.forFeature([
       User,
       ECStock,

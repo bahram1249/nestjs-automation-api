@@ -1,30 +1,18 @@
-import {
-  BadRequestException,
-  ForbiddenException,
-  Injectable,
-  InternalServerErrorException,
-  NotFoundException,
-} from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectConnection, InjectModel } from '@nestjs/sequelize';
 import { User } from '@rahino/database';
 import { ECOrder } from '@rahino/database';
 import { OrderStatusEnum } from '@rahino/ecommerce/util/enum';
 import { OrderQueryBuilder } from '../utilOrder/service/order-query-builder.service';
-import { ListFilter } from '@rahino/query-filter';
 import { ECOrderDetail } from '@rahino/database';
-import { Sequelize, Transaction } from 'sequelize';
-import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
-import { Op } from 'sequelize';
+import { Sequelize } from 'sequelize';
 import { ECPayment } from '@rahino/database';
 import { ECPaymentGateway } from '@rahino/database';
-import { SnapPayService } from '@rahino/ecommerce/user/payment/provider/services';
-import { ECProduct } from '@rahino/database';
-import { EAVEntityType } from '@rahino/database';
+import { SnapPayService } from '@rahino/ecommerce/user/shopping/payment/provider/services';
 import { RoleUtilService } from '@rahino/core/user/role-util/role-util.service';
 import { UserVendorService } from '@rahino/ecommerce/user/vendor/user-vendor.service';
 import { OrderUtilService } from '../utilOrder/service/order-util.service';
-import { FinalizedPaymentService } from '@rahino/ecommerce/user/payment/util/finalized-payment/finalized-payment.service';
-import { ChangeOrderStatusDto, ChangeShipmentWayDto } from './dto';
+import { FinalizedPaymentService } from '@rahino/ecommerce/user/shopping/payment/util/finalized-payment/finalized-payment.service';
 import { ECOrderStatus } from '@rahino/database';
 import { ECOrderShipmentWay } from '@rahino/database';
 import { GetTotalOrderFilterDto } from './dto/get-total-order.dto';

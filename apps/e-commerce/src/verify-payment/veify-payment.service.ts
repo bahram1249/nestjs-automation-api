@@ -3,7 +3,7 @@ import { SnapPayDto, ZarinPalDto } from './dto';
 import {
   SnapPayService,
   ZarinPalService,
-} from '../user/payment/provider/services';
+} from '../user/shopping/payment/provider/services';
 import { Response } from 'express';
 
 @Injectable()

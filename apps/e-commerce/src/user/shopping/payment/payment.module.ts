@@ -4,7 +4,7 @@ import { PaymentService } from './payment.service';
 import { PaymentServiceProviderModule } from './provider/payment-provider.module';
 import { ShipmentModule } from '../stock/services/shipment-price';
 import { StockModule } from '../stock/stock.module';
-import { AddressModule } from '../address/address.module';
+import { AddressModule } from '../../address/address.module';
 import { SequelizeModule } from '@nestjs/sequelize';
 import { ECProvince } from '@rahino/database';
 import { ECVariationPrice } from '@rahino/database';
@@ -12,7 +12,7 @@ import { ECPaymentGateway } from '@rahino/database';
 import { ECOrder } from '@rahino/database';
 import { ECOrderDetail } from '@rahino/database';
 import { ECStock } from '@rahino/database';
-import { SessionModule } from '../session/session.module';
+import { SessionModule } from '../../session/session.module';
 import { BullModule } from '@nestjs/bullmq';
 import { ConfigService } from '@nestjs/config';
 import {
@@ -28,9 +28,11 @@ import { REVERT_PAYMENT_QUEUE } from './revert-payment/revert-payment.constants'
 import { RevertPaymentProcessor } from './revert-payment/revert-payment.processor';
 import { ECPayment } from '@rahino/database';
 import { DBLoggerModule } from '@rahino/logger';
+import { PaymentRuleModule } from '../payment-rule/payment-rule.module';
 
 @Module({
   imports: [
+    PaymentRuleModule,
     SessionModule,
     SequelizeModule.forFeature([
       ECProvince,

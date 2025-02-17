@@ -11,7 +11,7 @@ import {
   PaymentTypeEnum,
 } from '@rahino/ecommerce/util/enum';
 import { Op, Sequelize } from 'sequelize';
-import { PaymentServiceManualProviderFactory } from '@rahino/ecommerce/user/payment/provider/factory/payment-service-manual-provider.factory';
+import { PaymentServiceManualProviderFactory } from '@rahino/ecommerce/user/shopping/payment/provider/factory/payment-service-manual-provider.factory';
 import { ECWallet } from '@rahino/database';
 import { RevertPaymentQtyService } from '../services/revert-payment-qty.service';
 

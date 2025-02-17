@@ -13,7 +13,7 @@ import {
 } from '@rahino/ecommerce/inventory/constants';
 import { InventoryPriceDto } from '@rahino/ecommerce/inventory/dto/inventory-price.dto';
 import { InventoryStatusEnum } from '@rahino/ecommerce/inventory/enum';
-import { VariationPriceEnum } from '@rahino/ecommerce/user/stock/enum';
+import { VariationPriceEnum } from '@rahino/ecommerce/user/shopping/stock/enum';
 import { ListFilterV2Factory } from '@rahino/query-filter/provider/list-filter-v2.factory';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import axios from 'axios';

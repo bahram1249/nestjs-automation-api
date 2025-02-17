@@ -14,13 +14,13 @@ import {
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { OptionalJwtGuard } from '@rahino/auth';
 import { JsonResponseTransformInterceptor } from '@rahino/response/interceptor';
-import { SessionGuard, SessionIgnoreUserGuard } from '../session/guard';
 import { GetECSession } from 'apps/main/src/decorator';
 import { ECUserSession } from '@rahino/database';
 import { StockDto, StockPriceDto } from './dto';
 import { StockService } from './stock.service';
 import { GetUser } from '@rahino/auth';
 import { User } from '@rahino/database';
+import { SessionGuard, SessionIgnoreUserGuard } from '../../session/guard';
 
 @ApiTags('Stocks')
 @ApiBearerAuth()
