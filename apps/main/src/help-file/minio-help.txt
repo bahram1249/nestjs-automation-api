@@ -3,3 +3,39 @@ mc mb myminio/blogphotos
 mc anonymous set download myminio/blogphotos
 
 
+mc alias set myminio http://<minio-server-address>:<port> <access-key> <secret-key>
+mc mb myminio/homepages
+mc anonymous set download myminio/homepages
+
+mc alias set myminio http://<minio-server-address>:<port> <access-key> <secret-key>
+mc mb myminio/brands
+mc anonymous set download myminio/brands
+
+
+mc alias set myminio http://<minio-server-address>:<port> <access-key> <secret-key>
+mc mb myminio/guarantees
+mc anonymous set download myminio/guarantees
+
+
+mc alias set myminio http://<minio-server-address>:<port> <access-key> <secret-key>
+mc mb myminio/products
+mc anonymous set download myminio/products
+
+
+mc alias set myminio http://<minio-server-address>:<port> <access-key> <secret-key>
+mc mb myminio/productvideos
+mc anonymous set download myminio/productvideos
+
+mc alias set myminio http://<minio-server-address>:<port> <access-key> <secret-key>
+mc mb myminio/vendors
+mc anonymous set download myminio/vendors
+
+
+mc alias set myminio http://<minio-server-address>:<port> <access-key> <secret-key>
+mc mb myminio/entitytypes
+mc anonymous set download myminio/entitytypes
+
+mc alias set myminio http://<minio-server-address>:<port> <access-key> <secret-key>
+mc mb myminio/blogphotos
+mc anonymous set download myminio/blogphotos
+
