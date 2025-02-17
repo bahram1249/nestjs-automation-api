@@ -27,7 +27,7 @@ import { ECommerceModule } from '@rahino/ecommerce';
 import { AutomapperModule } from 'automapper-nestjs';
 import { classes } from 'automapper-classes';
 import { NestExpressApplication } from '@nestjs/platform-express';
-import { UIModule } from '@rahino/ui';
+//import { UIModule } from '@rahino/ui';
 import * as cookieParser from 'cookie-parser';
 import * as session from 'express-session';
 import { DynamicProviderModule } from '../dynamic-provider/dynamic-provider.module';
@@ -126,7 +126,7 @@ import { BPMNModule } from '@rahino/bpmn';
       strategyInitializer: classes(),
     }),
     CoreModule,
-    UIModule,
+    // UIModule,
     DynamicProviderModule.register(),
     I18nModule.forRoot({
       fallbackLanguage: 'en',
@@ -214,7 +214,7 @@ export class AppModule implements NestModule {
     );
 
     app.get(CoreModule).setApp(app);
-    app.get(UIModule).setApp(app);
+    //app.get(UIModule).setApp(app);
     const projectName = this.config.get<string>('PROJECT_NAME');
     if (projectName == 'ECommerce') {
       app.get(EAVModule).setApp(app);

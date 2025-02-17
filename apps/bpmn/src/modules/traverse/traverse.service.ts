@@ -418,6 +418,7 @@ export class TraverseService {
       transaction,
       executeBundle,
       userExecuterId,
+      oldRequestState,
     } = dto;
 
     if (node.toActivity.insideProcessRunnerId == null) {

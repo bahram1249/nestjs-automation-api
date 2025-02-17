@@ -37,15 +37,6 @@
         "tsConfigPath": "apps/core/tsconfig.lib.json"
       }
     },
-    "ui": {
-      "type": "library",
-      "root": "apps/ui",
-      "entryFile": "index",
-      "sourceRoot": "apps/ui/src",
-      "compilerOptions": {
-        "tsConfigPath": "apps/ui/tsconfig.lib.json"
-      }
-    },
     "coreDashboard": {
       "type": "library",
       "root": "apps/core-dashboard",

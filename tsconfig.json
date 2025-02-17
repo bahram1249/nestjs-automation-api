@@ -20,8 +20,6 @@
     "paths": {
       "@rahino/core": ["apps/core/src"],
       "@rahino/core/*": ["apps/core/src/*"],
-      "@rahino/ui": ["apps/ui/src"],
-      "@rahino/ui/*": ["apps/ui/src/*"],
       "@rahino/coreDashboard": ["apps/core-dashboard/src"],
       "@rahino/coreDashboard/*": ["apps/core-dashboard/src/*"],
       "@rahino/discountCoffe": ["apps/discount-coffe/src"],
