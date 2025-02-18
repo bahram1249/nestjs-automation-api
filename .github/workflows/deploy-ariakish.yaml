@@ -17,7 +17,7 @@ jobs:
         uses: appleboy/ssh-action@v1.2.0
         with:
           host: ${{ secrets.ARIAKISH_HOST }}
-          username: ${{ secrets.ARIAKISH_USRNAME }}
+          username: ${{ secrets.ARIAKISH_USERNAME }}
           key: ${{ secrets.ARIAKISH_SECRET_KEY }}
           script: |
             cd ~/clubapi.ariakish.com
