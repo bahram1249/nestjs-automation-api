@@ -14,7 +14,7 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Deploy to ClubAriakish
-        uses: appleboy/ssh-action@v0.1.10
+        uses: appleboy/ssh-action@v1.2.0
         with:
           host: ${{ secrets.ARIAKISH_HOST }}
           username: ${{ secrets.ARIAKISH_USRNAME }}
