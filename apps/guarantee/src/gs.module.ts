@@ -6,9 +6,10 @@ import {
 } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { ProductTypeModule } from './admin/product-type';
+import { BrandModule } from './admin/brand';
 
 @Module({
-  imports: [ProductTypeModule],
+  imports: [ProductTypeModule, BrandModule],
 })
 export class GSModule implements NestModule {
   constructor() {}
