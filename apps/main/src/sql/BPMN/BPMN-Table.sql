@@ -4,7 +4,7 @@ IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'bpmn-process-v1'
 )
     AND EXISTS (
         SELECT 1 FROM Settings
-        WHERE ([key] = 'SITE_NAME' AND [value] IN ('bpmn'))
+        WHERE ([key] = 'SITE_NAME' AND [value] IN ('BPMN'))
     )
     BEGIN
 
@@ -29,7 +29,7 @@ IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'bpmn-conditiontypes-v1'
 )
     AND EXISTS (
         SELECT 1 FROM Settings
-        WHERE ([key] = 'SITE_NAME' AND [value] IN ('bpmn'))
+        WHERE ([key] = 'SITE_NAME' AND [value] IN ('BPMN'))
     )
     BEGIN
 
@@ -52,7 +52,7 @@ IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'bpmn-conditions-v1'
 )
     AND EXISTS (
         SELECT 1 FROM Settings
-        WHERE ([key] = 'SITE_NAME' AND [value] IN ('bpmn'))
+        WHERE ([key] = 'SITE_NAME' AND [value] IN ('BPMN'))
     )
     BEGIN
 
@@ -82,7 +82,7 @@ IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'bpmn-actiontypes-v1'
 )
     AND EXISTS (
         SELECT 1 FROM Settings
-        WHERE ([key] = 'SITE_NAME' AND [value] IN ('bpmn'))
+        WHERE ([key] = 'SITE_NAME' AND [value] IN ('BPMN'))
     )
     BEGIN
 
@@ -105,7 +105,7 @@ IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'bpmn-actions-v1'
 )
     AND EXISTS (
         SELECT 1 FROM Settings
-        WHERE ([key] = 'SITE_NAME' AND [value] IN ('bpmn'))
+        WHERE ([key] = 'SITE_NAME' AND [value] IN ('BPMN'))
     )
     BEGIN
 
@@ -135,7 +135,7 @@ IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'bpmn-activitytypes-v1'
 )
     AND EXISTS (
         SELECT 1 FROM Settings
-        WHERE ([key] = 'SITE_NAME' AND [value] IN ('bpmn'))
+        WHERE ([key] = 'SITE_NAME' AND [value] IN ('BPMN'))
     )
     BEGIN
 
@@ -159,7 +159,7 @@ IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'bpmn-activities-v1'
 )
     AND EXISTS (
         SELECT 1 FROM Settings
-        WHERE ([key] = 'SITE_NAME' AND [value] IN ('bpmn'))
+        WHERE ([key] = 'SITE_NAME' AND [value] IN ('BPMN'))
     )
     BEGIN
         
@@ -196,7 +196,7 @@ IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'bpmn-inboundactions-v1'
 )
     AND EXISTS (
         SELECT 1 FROM Settings
-        WHERE ([key] = 'SITE_NAME' AND [value] IN ('bpmn'))
+        WHERE ([key] = 'SITE_NAME' AND [value] IN ('BPMN'))
     )
     BEGIN
 
@@ -228,7 +228,7 @@ IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'bpmn-outboundactions-v1
 )
     AND EXISTS (
         SELECT 1 FROM Settings
-        WHERE ([key] = 'SITE_NAME' AND [value] IN ('bpmn'))
+        WHERE ([key] = 'SITE_NAME' AND [value] IN ('BPMN'))
     )
     BEGIN
 
@@ -258,7 +258,7 @@ IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'bpmn-referraltypes-v1'
 )
     AND EXISTS (
         SELECT 1 FROM Settings
-        WHERE ([key] = 'SITE_NAME' AND [value] IN ('bpmn'))
+        WHERE ([key] = 'SITE_NAME' AND [value] IN ('BPMN'))
     )
     BEGIN
 
@@ -282,7 +282,7 @@ IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'bpmn-nodes-v1'
 )
     AND EXISTS (
         SELECT 1 FROM Settings
-        WHERE ([key] = 'SITE_NAME' AND [value] IN ('bpmn'))
+        WHERE ([key] = 'SITE_NAME' AND [value] IN ('BPMN'))
     )
     BEGIN
 
@@ -325,7 +325,7 @@ IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'bpmn-nodecommandtypes-v
 )
     AND EXISTS (
         SELECT 1 FROM Settings
-        WHERE ([key] = 'SITE_NAME' AND [value] IN ('bpmn'))
+        WHERE ([key] = 'SITE_NAME' AND [value] IN ('BPMN'))
     )
     BEGIN
 
@@ -349,7 +349,7 @@ IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'bpmn-nodecommands-v1'
 )
     AND EXISTS (
         SELECT 1 FROM Settings
-        WHERE ([key] = 'SITE_NAME' AND [value] IN ('bpmn'))
+        WHERE ([key] = 'SITE_NAME' AND [value] IN ('BPMN'))
     )
     BEGIN
 
@@ -379,7 +379,7 @@ IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'bpmn-nodeconditions-v1'
 )
     AND EXISTS (
         SELECT 1 FROM Settings
-        WHERE ([key] = 'SITE_NAME' AND [value] IN ('bpmn'))
+        WHERE ([key] = 'SITE_NAME' AND [value] IN ('BPMN'))
     )
     BEGIN
 
@@ -408,7 +408,7 @@ IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'bpmn-organization-v1'
 )
     AND EXISTS (
         SELECT 1 FROM Settings
-        WHERE ([key] = 'SITE_NAME' AND [value] IN ('bpmn'))
+        WHERE ([key] = 'SITE_NAME' AND [value] IN ('BPMN'))
     )
     BEGIN
 
@@ -435,7 +435,7 @@ IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'bpmn-occurredevents-v1'
 )
     AND EXISTS (
         SELECT 1 FROM Settings
-        WHERE ([key] = 'SITE_NAME' AND [value] IN ('bpmn'))
+        WHERE ([key] = 'SITE_NAME' AND [value] IN ('BPMN'))
     )
     BEGIN
 
@@ -449,7 +449,7 @@ IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'bpmn-occurredevents-v1'
         )
 
         INSERT INTO Migrations(version, createdAt, updatedAt)
-        SELECT 'bpmn-occuredevents-v1', GETDATE(), GETDATE()
+        SELECT 'bpmn-occurredevents-v1', GETDATE(), GETDATE()
     END
 
 GO
@@ -459,7 +459,7 @@ IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'bpmn-requests-v1'
 )
     AND EXISTS (
         SELECT 1 FROM Settings
-        WHERE ([key] = 'SITE_NAME' AND [value] IN ('bpmn'))
+        WHERE ([key] = 'SITE_NAME' AND [value] IN ('BPMN'))
     )
     BEGIN
 
@@ -490,7 +490,7 @@ IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'bpmn-requestoccurredeve
 )
     AND EXISTS (
         SELECT 1 FROM Settings
-        WHERE ([key] = 'SITE_NAME' AND [value] IN ('bpmn'))
+        WHERE ([key] = 'SITE_NAME' AND [value] IN ('BPMN'))
     )
     BEGIN
 
@@ -519,7 +519,7 @@ IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'bpmn-requeststates-v1'
 )
     AND EXISTS (
         SELECT 1 FROM Settings
-        WHERE ([key] = 'SITE_NAME' AND [value] IN ('bpmn'))
+        WHERE ([key] = 'SITE_NAME' AND [value] IN ('BPMN'))
     )
     BEGIN
 
@@ -561,7 +561,7 @@ IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'bpmn-requesthistories-v
 )
     AND EXISTS (
         SELECT 1 FROM Settings
-        WHERE ([key] = 'SITE_NAME' AND [value] IN ('bpmn'))
+        WHERE ([key] = 'SITE_NAME' AND [value] IN ('BPMN'))
     )
     BEGIN
 

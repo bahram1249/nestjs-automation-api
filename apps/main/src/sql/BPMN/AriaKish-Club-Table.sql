@@ -3,7 +3,7 @@ IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'gs-providers-v1'
 )
     AND EXISTS (
         SELECT 1 FROM Settings
-        WHERE ([key] = 'CUSTOMER_NAME' AND [value] IN ('ariakish'))
+        WHERE ([key] = 'CUSTOMER_NAME' AND [value] IN ('AriaKish'))
     )
     BEGIN
 
@@ -27,7 +27,7 @@ IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'gs-product-types-v1'
 )
     AND EXISTS (
         SELECT 1 FROM Settings
-        WHERE ([key] = 'CUSTOMER_NAME' AND [value] IN ('ariakish'))
+        WHERE ([key] = 'CUSTOMER_NAME' AND [value] IN ('AriaKish'))
     )
     BEGIN
 
@@ -55,7 +55,7 @@ IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'gs-brands-v1'
 )
     AND EXISTS (
         SELECT 1 FROM Settings
-        WHERE ([key] = 'CUSTOMER_NAME' AND [value] IN ('ariakish'))
+        WHERE ([key] = 'CUSTOMER_NAME' AND [value] IN ('AriaKish'))
     )
     BEGIN
 
@@ -84,7 +84,7 @@ IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'gs-guaranteeconfirmstat
 )
     AND EXISTS (
         SELECT 1 FROM Settings
-        WHERE ([key] = 'CUSTOMER_NAME' AND [value] IN ('ariakish'))
+        WHERE ([key] = 'CUSTOMER_NAME' AND [value] IN ('AriaKish'))
     )
     BEGIN
 
@@ -107,7 +107,7 @@ IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'gs-guaranteeperiods-v1'
 )
     AND EXISTS (
         SELECT 1 FROM Settings
-        WHERE ([key] = 'CUSTOMER_NAME' AND [value] IN ('ariakish'))
+        WHERE ([key] = 'CUSTOMER_NAME' AND [value] IN ('AriaKish'))
     )
     BEGIN
 
@@ -132,7 +132,7 @@ IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'gs-guaranteetypes-v1'
 )
     AND EXISTS (
         SELECT 1 FROM Settings
-        WHERE ([key] = 'CUSTOMER_NAME' AND [value] IN ('ariakish'))
+        WHERE ([key] = 'CUSTOMER_NAME' AND [value] IN ('AriaKish'))
     )
     BEGIN
 
@@ -155,11 +155,11 @@ IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'gs-guarantees-v1'
 )
     AND EXISTS (
         SELECT 1 FROM Settings
-        WHERE ([key] = 'CUSTOMER_NAME' AND [value] IN ('ariakish'))
+        WHERE ([key] = 'CUSTOMER_NAME' AND [value] IN ('AriaKish'))
     )
     BEGIN
 
-        CREATE TABLE GSGuarantess
+        CREATE TABLE GSGuarantees
         (
             id                          bigint identity(1,1)                PRIMARY KEY,
             providerId                  int                                 NULL
@@ -181,6 +181,7 @@ IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'gs-guarantees-v1'
 			serialNumber				nvarchar(256)						NOT NULL,
 			startDate					datetime							NOT NULL,
 			endDate						datetime							NOT NULL,
+			allowedDateEnterProduct		datetime							NULL,
 			variantName					nvarchar(256)						NULL,
             description                 ntext                               NULL,
             [createdAt]				    datetimeoffset			            NOT NULL,

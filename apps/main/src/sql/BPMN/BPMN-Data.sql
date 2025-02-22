@@ -2,7 +2,7 @@ IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'bpmn-condition-types-da
 			)
 	AND EXISTS (
 		SELECT 1 FROM Settings 
-		WHERE ([key] = 'SITE_NAME' AND [value] IN ('bpmn'))
+		WHERE ([key] = 'SITE_NAME' AND [value] IN ('BPMN'))
 		)
 BEGIN
 
@@ -21,7 +21,7 @@ IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'bpmn-activity-types-dat
 			)
 	AND EXISTS (
 		SELECT 1 FROM Settings 
-		WHERE ([key] = 'SITE_NAME' AND [value] IN ('bpmn'))
+		WHERE ([key] = 'SITE_NAME' AND [value] IN ('BPMN'))
 		)
 BEGIN
 
@@ -41,7 +41,7 @@ IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'bpmn-activity-types-dat
 			)
 	AND EXISTS (
 		SELECT 1 FROM Settings 
-		WHERE ([key] = 'SITE_NAME' AND [value] IN ('bpmn'))
+		WHERE ([key] = 'SITE_NAME' AND [value] IN ('BPMN'))
 		)
 BEGIN
 
@@ -59,7 +59,7 @@ IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'bpmn-action-types-data-
 			)
 	AND EXISTS (
 		SELECT 1 FROM Settings 
-		WHERE ([key] = 'SITE_NAME' AND [value] IN ('bpmn'))
+		WHERE ([key] = 'SITE_NAME' AND [value] IN ('BPMN'))
 		)
 BEGIN
 
@@ -81,7 +81,7 @@ IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'bpmn-node-command-types
 			)
 	AND EXISTS (
 		SELECT 1 FROM Settings 
-		WHERE ([key] = 'SITE_NAME' AND [value] IN ('bpmn'))
+		WHERE ([key] = 'SITE_NAME' AND [value] IN ('BPMN'))
 		)
 BEGIN
 
@@ -103,7 +103,7 @@ IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'bpmn-referral-types-dat
 			)
 	AND EXISTS (
 		SELECT 1 FROM Settings 
-		WHERE ([key] = 'SITE_NAME' AND [value] IN ('bpmn'))
+		WHERE ([key] = 'SITE_NAME' AND [value] IN ('BPMN'))
 		)
 BEGIN
 
