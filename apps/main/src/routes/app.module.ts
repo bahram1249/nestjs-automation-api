@@ -13,6 +13,7 @@ import {
   ecommerceEntities,
   pcmEntities,
   bpmnModels,
+  guaranteeModels,
 } from '@rahino/database/dist/subsystem-models';
 import helmet from 'helmet';
 import { ThrottlerModule } from '@nestjs/throttler';
@@ -50,6 +51,7 @@ const cluster = require('cluster');
 import * as os from 'os';
 import { Dialect } from 'sequelize';
 import { BPMNModule } from '@rahino/bpmn';
+import { GSModule } from 'apps/guarantee/src';
 
 @Module({
   imports: [
@@ -102,6 +104,7 @@ import { BPMNModule } from '@rahino/bpmn';
           ...pcmEntities,
           ...discountCoffeEntities,
           ...bpmnModels,
+          ...guaranteeModels,
         ],
       }),
     }),
@@ -224,8 +227,10 @@ export class AppModule implements NestModule {
       app.get(PCMModule).setApp(app);
     } else if (projectName == 'BPMN') {
       app.get(BPMNModule).setApp(app);
+    } else if (projectName == 'Guarantee') {
+      app.get(BPMNModule).setApp(app);
+      app.get(GSModule).setApp(app);
     }
-
     const numCpu = Number(
       this.config.get<string>('CLUSTER_COUNT') || os.cpus().length,
     );

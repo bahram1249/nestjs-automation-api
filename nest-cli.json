@@ -91,6 +91,15 @@
         "tsConfigPath": "apps/bpmn/tsconfig.lib.json"
       }
     },
+    "guarantee": {
+      "type": "library",
+      "root": "apps/guarantee",
+      "entryFile": "index",
+      "sourceRoot": "apps/guarantee/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/guarantee/tsconfig.lib.json"
+      }
+    },
     "file": {
       "type": "library",
       "root": "libs/file",

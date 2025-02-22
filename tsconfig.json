@@ -32,6 +32,8 @@
       "@rahino/ecommerce/*": ["apps/e-commerce/src/*"],
       "@rahino/bpmn": ["apps/bpmn/src"],
       "@rahino/bpmn/*": ["apps/bpmn/src/*"],
+      "@rahino/guarantee": ["apps/guarantee/src"],
+      "@rahino/guarantee/*": ["apps/guarantee/src/*"],
       "@rahino/file": ["libs/file/src"],
       "@rahino/file/*": ["libs/file/src/*"],
       "@rahino/thumbnail": ["libs/thumbnail/src"],
