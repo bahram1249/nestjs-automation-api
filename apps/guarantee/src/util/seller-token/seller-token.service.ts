@@ -17,8 +17,8 @@ export class SellerTokenService {
   public async getToken(): Promise<string> {
     const cache = await this.cacheManager.get(SELLER_TOKEN_STORE);
     if (cache) return cache as string;
-    const apiKey = this.config.get<string>('DELTASIB_USERNAME');
-    const apiSecretKey = this.config.get<string>('DELTASIB_PASSWORD');
+    const apiKey = this.config.get<string>('SELLER_API_KEY');
+    const apiSecretKey = this.config.get<string>('SELLER_API_SECRET_KEY');
     const result = await this.generateToken({
       apiKey: apiKey,
       apiSecretKey: apiSecretKey,

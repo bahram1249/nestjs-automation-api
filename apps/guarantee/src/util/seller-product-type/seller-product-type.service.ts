@@ -21,7 +21,6 @@ export class SellerProductTypeService {
         params: JSON.parse(JSON.stringify(dto)),
       },
     );
-
     return response.data as GetSellerProductTypeResponse;
   }
 }
