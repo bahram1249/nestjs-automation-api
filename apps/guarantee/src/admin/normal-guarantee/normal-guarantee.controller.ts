@@ -28,7 +28,7 @@ import { GetNoramlGuaranteeDto, NoramlGuaranteeDto } from './dto';
 
 @ApiTags('GS-NormalGuarantees')
 @Controller({
-  path: '/api/guarantee/admin/noramlGuarantees',
+  path: '/api/guarantee/admin/normalGuarantees',
   version: ['1'],
 })
 @UseInterceptors(JsonResponseTransformInterceptor)
