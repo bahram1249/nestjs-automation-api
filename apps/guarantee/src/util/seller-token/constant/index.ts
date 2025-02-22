@@ -1,0 +1,1 @@
+export const SELLER_TOKEN_STORE = 'SELLER_TOKEN_STORE';
