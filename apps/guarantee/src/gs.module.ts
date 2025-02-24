@@ -9,15 +9,22 @@ import { ProductTypeModule } from './admin/product-type';
 import { BrandModule } from './admin/brand';
 import { NormalGuaranteeModule } from './admin/normal-guarantee';
 import { LoginModule } from './client/login/login.module';
+import { SellerSyncModule, SellerSyncService } from './job/seller-sync';
 
 @Module({
-  imports: [LoginModule, ProductTypeModule, BrandModule, NormalGuaranteeModule],
+  imports: [
+    LoginModule,
+    SellerSyncModule,
+    ProductTypeModule,
+    BrandModule,
+    NormalGuaranteeModule,
+  ],
 })
 export class GSModule implements NestModule {
   constructor() {}
   private app: INestApplication;
   configure(consumer: MiddlewareConsumer) {}
-  setApp(app: INestApplication<any>) {
+  async setApp(app: INestApplication<any>) {
     this.app = app;
 
     const guaranteeConfig = new DocumentBuilder()
@@ -37,5 +44,7 @@ export class GSModule implements NestModule {
     );
 
     SwaggerModule.setup('api/guarantee', this.app, guaranteeDocument);
+
+    await app.get(SellerSyncService).sync();
   }
 }

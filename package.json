@@ -21,7 +21,7 @@
   },
   "dependencies": {
     "@golevelup/nestjs-modules": "^0.7.1",
-    "@nestjs/bullmq": "^10.0.1",
+    "@nestjs/bullmq": "^10.2.3",
     "@nestjs/cache-manager": "^2.1.1",
     "@nestjs/common": "^10.0.0",
     "@nestjs/config": "^3.1.1",
@@ -31,6 +31,7 @@
     "@nestjs/microservices": "^10.2.7",
     "@nestjs/passport": "^10.0.2",
     "@nestjs/platform-express": "^10.0.0",
+    "@nestjs/schedule": "^5.0.1",
     "@nestjs/sequelize": "^10.0.1",
     "@nestjs/serve-static": "^4.0.0",
     "@nestjs/swagger": "^7.1.13",

@@ -216,21 +216,6 @@ export class AppModule implements NestModule {
       }),
     );
 
-    app.get(CoreModule).setApp(app);
-    //app.get(UIModule).setApp(app);
-    const projectName = this.config.get<string>('PROJECT_NAME');
-    if (projectName == 'ECommerce') {
-      app.get(EAVModule).setApp(app);
-      app.get(ECommerceModule).setApp(app);
-    } else if (projectName == 'DiscountCoffe') {
-    } else if (projectName == 'PCM') {
-      app.get(PCMModule).setApp(app);
-    } else if (projectName == 'BPMN') {
-      app.get(BPMNModule).setApp(app);
-    } else if (projectName == 'Guarantee') {
-      app.get(BPMNModule).setApp(app);
-      app.get(GSModule).setApp(app);
-    }
     const numCpu = Number(
       this.config.get<string>('CLUSTER_COUNT') || os.cpus().length,
     );
@@ -244,6 +229,22 @@ export class AppModule implements NestModule {
         cluster.fork();
       });
     } else {
+      app.get(CoreModule).setApp(app);
+      //app.get(UIModule).setApp(app);
+      const projectName = this.config.get<string>('PROJECT_NAME');
+      if (projectName == 'ECommerce') {
+        app.get(EAVModule).setApp(app);
+        app.get(ECommerceModule).setApp(app);
+      } else if (projectName == 'DiscountCoffe') {
+      } else if (projectName == 'PCM') {
+        app.get(PCMModule).setApp(app);
+      } else if (projectName == 'BPMN') {
+        app.get(BPMNModule).setApp(app);
+      } else if (projectName == 'Guarantee') {
+        app.get(BPMNModule).setApp(app);
+        await app.get(GSModule).setApp(app);
+      }
+
       const port = this.config.get('HOST_PORT');
       const host = this.config.get('HOST_NAME');
 
