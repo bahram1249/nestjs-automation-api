@@ -14,9 +14,15 @@ import {
 } from './processor';
 import { SellerSyncService } from './seller-sync.service';
 import { SellerSyncController } from './seller-sync.controller';
+import { SellerBrandModule } from '@rahino/guarantee/util/seller-brand';
+import { SellerProductTypeModule } from '@rahino/guarantee/util/seller-product-type';
+import { SellerWarrantyModule } from '@rahino/guarantee/util/seller-warranty';
 
 @Module({
   imports: [
+    SellerBrandModule,
+    SellerProductTypeModule,
+    SellerWarrantyModule,
     BullModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],

@@ -7,4 +7,4 @@ import { SellerTokenModule } from '../seller-token';
   providers: [SellerWarrantyService],
   exports: [SellerWarrantyService],
 })
-export class SellerProductTypeModule {}
+export class SellerWarrantyModule {}
