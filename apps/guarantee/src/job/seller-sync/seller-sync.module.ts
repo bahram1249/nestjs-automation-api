@@ -17,6 +17,8 @@ import { SellerSyncController } from './seller-sync.controller';
 import { SellerBrandModule } from '@rahino/guarantee/util/seller-brand';
 import { SellerProductTypeModule } from '@rahino/guarantee/util/seller-product-type';
 import { SellerWarrantyModule } from '@rahino/guarantee/util/seller-warranty';
+import { SequelizeModule } from '@nestjs/sequelize';
+import { GSBrand, GSGuarantee, GSProductType, Setting } from '@rahino/database';
 
 @Module({
   imports: [
@@ -45,6 +47,7 @@ import { SellerWarrantyModule } from '@rahino/guarantee/util/seller-warranty';
         },
       }),
     }),
+    SequelizeModule.forFeature([Setting, GSBrand, GSGuarantee, GSProductType]),
   ],
   controllers: [SellerSyncController],
   providers: [
