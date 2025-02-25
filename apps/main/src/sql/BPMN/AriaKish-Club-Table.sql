@@ -51,6 +51,24 @@ IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'gs-product-types-v1'
 
 GO
 
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'gs-product-types-v2'
+)
+    AND EXISTS (
+        SELECT 1 FROM Settings
+        WHERE ([key] = 'CUSTOMER_NAME' AND [value] IN ('AriaKish'))
+    )
+    BEGIN
+
+        ALTER TABLE GSProductTypes
+        ADD providerBaseId int null
+
+
+        INSERT INTO Migrations(version, createdAt, updatedAt)
+        SELECT 'gs-product-types-v2', GETDATE(), GETDATE()
+    END
+
+GO
+
 IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'gs-brands-v1'
 )
     AND EXISTS (
@@ -74,6 +92,25 @@ IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'gs-brands-v1'
 
         INSERT INTO Migrations(version, createdAt, updatedAt)
         SELECT 'gs-brands-v1', GETDATE(), GETDATE()
+    END
+
+GO
+
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'gs-brands-v2'
+)
+    AND EXISTS (
+        SELECT 1 FROM Settings
+        WHERE ([key] = 'CUSTOMER_NAME' AND [value] IN ('AriaKish'))
+    )
+    BEGIN
+
+        ALTER TABLE GSBrands
+        ADD providerBaseId int null
+        
+
+
+        INSERT INTO Migrations(version, createdAt, updatedAt)
+        SELECT 'gs-brands-v2', GETDATE(), GETDATE()
     END
 
 GO
@@ -191,6 +228,24 @@ IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'gs-guarantees-v1'
 
         INSERT INTO Migrations(version, createdAt, updatedAt)
         SELECT 'gs-guarantees-v1', GETDATE(), GETDATE()
+    END
+
+GO
+
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'gs-guarantees-v2'
+)
+    AND EXISTS (
+        SELECT 1 FROM Settings
+        WHERE ([key] = 'CUSTOMER_NAME' AND [value] IN ('AriaKish'))
+    )
+    BEGIN
+
+        ALTER TABLE GSGuarantees
+        ADD providerBaseId int null
+
+
+        INSERT INTO Migrations(version, createdAt, updatedAt)
+        SELECT 'gs-guarantees-v2', GETDATE(), GETDATE()
     END
 
 GO
