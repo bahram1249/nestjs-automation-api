@@ -1,6 +1,6 @@
 import { Processor, WorkerHost } from '@nestjs/bullmq';
 import { Job } from 'bullmq';
-import { SELLER_VARAINT_OFFSET, SYNC_SELLER_VARAINT_QUEUE } from '../constants';
+import { SELLER_VARIANT_OFFSET, SYNC_SELLER_VARAINT_QUEUE } from '../constants';
 import { InjectModel } from '@nestjs/sequelize';
 import { GSVariant, Setting } from '@rahino/database';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
@@ -30,7 +30,7 @@ export class SellerVariantProcessor extends WorkerHost {
 
   async fetchDataAndSync() {
     let setting = await this.settingRepository.findOne(
-      new QueryOptionsBuilder().filter({ key: SELLER_VARAINT_OFFSET }).build(),
+      new QueryOptionsBuilder().filter({ key: SELLER_VARIANT_OFFSET }).build(),
     );
     const fromId = Number(setting.value);
     const limit = 10;
