@@ -1,6 +1,6 @@
 import { Processor, WorkerHost } from '@nestjs/bullmq';
 import { Job } from 'bullmq';
-import { SELLER_VARIANT_OFFSET, SYNC_SELLER_VARAINT_QUEUE } from '../constants';
+import { SELLER_VARIANT_OFFSET, SYNC_SELLER_VARIANT_QUEUE } from '../constants';
 import { InjectModel } from '@nestjs/sequelize';
 import { GSVariant, Setting } from '@rahino/database';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
@@ -8,7 +8,7 @@ import { GSProviderEnum } from '@rahino/guarantee/admin/provider';
 import { Op } from 'sequelize';
 import { SellerVariantService } from '@rahino/guarantee/util/seller-variant';
 
-@Processor(SYNC_SELLER_VARAINT_QUEUE)
+@Processor(SYNC_SELLER_VARIANT_QUEUE)
 export class SellerVariantProcessor extends WorkerHost {
   constructor(
     private readonly sellerVariantService: SellerVariantService,
@@ -46,7 +46,7 @@ export class SellerVariantProcessor extends WorkerHost {
       if (result.data.length == 0) break;
 
       let sellerItemIds = result.data.map((item) => item.id);
-      const localBrands = await this.variantRepository.findAll(
+      const localVariants = await this.variantRepository.findAll(
         new QueryOptionsBuilder()
           .filter({
             providerId: GSProviderEnum.SELLER,
@@ -61,7 +61,7 @@ export class SellerVariantProcessor extends WorkerHost {
 
       const sellerSourceItems = result.data;
       for (const sellerItem of sellerSourceItems) {
-        const duplicateItem = localBrands.find(
+        const duplicateItem = localVariants.find(
           (localBrand) => localBrand.providerBaseId == sellerItem.id,
         );
         if (!duplicateItem) {
