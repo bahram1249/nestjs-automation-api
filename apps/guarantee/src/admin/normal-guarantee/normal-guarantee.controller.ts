@@ -21,11 +21,12 @@ import {
   ApiQuery,
   ApiTags,
 } from '@nestjs/swagger';
-
 import { JwtGuard } from '@rahino/auth';
 import { NormalGuaranteeService } from './normal-guarantee.service';
 import { GetNoramlGuaranteeDto, NoramlGuaranteeDto } from './dto';
 
+@ApiBearerAuth()
+@UseGuards(JwtGuard, PermissionGuard)
 @ApiTags('GS-NormalGuarantees')
 @Controller({
   path: '/api/guarantee/admin/normalGuarantees',
@@ -49,8 +50,6 @@ export class NormalGuaranteeController {
     return await this.service.findAll(filter);
   }
 
-  @ApiBearerAuth()
-  @UseGuards(JwtGuard, PermissionGuard)
   @ApiOperation({ description: 'show guarantee by given id' })
   @CheckPermission({ permissionSymbol: 'gs.admin.noramlguarantees.getone' })
   @Get('/:id')
@@ -59,8 +58,6 @@ export class NormalGuaranteeController {
     return await this.service.findById(entityId);
   }
 
-  @ApiBearerAuth()
-  @UseGuards(JwtGuard, PermissionGuard)
   @ApiOperation({ description: 'create guarantee' })
   @CheckPermission({ permissionSymbol: 'gs.admin.noramlguarantees.create' })
   @Post('/')
@@ -69,8 +66,6 @@ export class NormalGuaranteeController {
     return await this.service.create(dto);
   }
 
-  @ApiBearerAuth()
-  @UseGuards(JwtGuard, PermissionGuard)
   @ApiOperation({ description: 'update guarantee by given id' })
   @CheckPermission({ permissionSymbol: 'gs.admin.noramlguarantees.update' })
   @Put('/:id')
@@ -79,8 +74,6 @@ export class NormalGuaranteeController {
     return await this.service.updateById(id, dto);
   }
 
-  @ApiBearerAuth()
-  @UseGuards(JwtGuard, PermissionGuard)
   @ApiOperation({ description: 'delete guarantee by id' })
   @CheckPermission({ permissionSymbol: 'gs.admin.noramlguarantees.delete' })
   @Delete('/:id')

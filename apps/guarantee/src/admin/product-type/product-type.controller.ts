@@ -26,6 +26,8 @@ import { JwtGuard } from '@rahino/auth';
 import { ProductTypeService } from './product-type.service';
 import { GetProductTypeDto, ProductTypeDto } from './dto';
 
+@ApiBearerAuth()
+@UseGuards(JwtGuard, PermissionGuard)
 @ApiTags('GS-ProductTypes')
 @Controller({
   path: '/api/guarantee/admin/productTypes',
@@ -49,8 +51,6 @@ export class ProductTypeController {
     return await this.service.findAll(filter);
   }
 
-  @ApiBearerAuth()
-  @UseGuards(JwtGuard, PermissionGuard)
   @ApiOperation({ description: 'show product type by given id' })
   @CheckPermission({ permissionSymbol: 'gs.admin.producttypes.getone' })
   @Get('/:id')
@@ -59,8 +59,6 @@ export class ProductTypeController {
     return await this.service.findById(entityId);
   }
 
-  @ApiBearerAuth()
-  @UseGuards(JwtGuard, PermissionGuard)
   @ApiOperation({ description: 'create product type' })
   @CheckPermission({ permissionSymbol: 'gs.admin.producttypes.create' })
   @Post('/')
@@ -69,8 +67,6 @@ export class ProductTypeController {
     return await this.service.create(dto);
   }
 
-  @ApiBearerAuth()
-  @UseGuards(JwtGuard, PermissionGuard)
   @ApiOperation({ description: 'update product type by id' })
   @CheckPermission({ permissionSymbol: 'gs.admin.producttypes.update' })
   @Put('/:id')
@@ -79,8 +75,6 @@ export class ProductTypeController {
     return await this.service.updateById(id, dto);
   }
 
-  @ApiBearerAuth()
-  @UseGuards(JwtGuard, PermissionGuard)
   @ApiOperation({ description: 'delete product type by id' })
   @CheckPermission({ permissionSymbol: 'gs.admin.producttypes.delete' })
   @Delete('/:id')

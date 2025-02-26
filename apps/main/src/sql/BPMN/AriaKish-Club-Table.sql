@@ -116,6 +116,35 @@ IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'gs-brands-v2'
 GO
 
 
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'gs-variants-v1'
+)
+    AND EXISTS (
+        SELECT 1 FROM Settings
+        WHERE ([key] = 'CUSTOMER_NAME' AND [value] IN ('AriaKish'))
+    )
+    BEGIN
+
+        CREATE TABLE GSVariants
+        (
+            id                          int identity(1,1)                   PRIMARY KEY,
+            title                       nvarchar(256)                       NOT NULL,
+            providerId                  int                                 NULL
+                CONSTRAINT FK_GSVariants_ProviderId
+                    FOREIGN KEY REFERENCES GSProviders(id),
+            description                 ntext                               NULL,
+            providerBaseId              int                                 NULL,
+            [createdAt]				    datetimeoffset			            NOT NULL,
+            [updatedAt]				    datetimeoffset			            NOT NULL,
+        )
+
+
+        INSERT INTO Migrations(version, createdAt, updatedAt)
+        SELECT 'gs-variants-v1', GETDATE(), GETDATE()
+    END
+
+GO
+
+
 
 IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'gs-guaranteeconfirmstatuses-v1'
 )

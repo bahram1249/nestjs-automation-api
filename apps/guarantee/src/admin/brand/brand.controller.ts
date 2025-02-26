@@ -26,6 +26,8 @@ import { JwtGuard } from '@rahino/auth';
 import { BrandService } from './brand.service';
 import { GetBrandDto, BrandDto } from './dto';
 
+@ApiBearerAuth()
+@UseGuards(JwtGuard, PermissionGuard)
 @ApiTags('GS-Brands')
 @Controller({
   path: '/api/guarantee/admin/brands',
@@ -49,8 +51,6 @@ export class BrandController {
     return await this.service.findAll(filter);
   }
 
-  @ApiBearerAuth()
-  @UseGuards(JwtGuard, PermissionGuard)
   @ApiOperation({ description: 'show brand by given id' })
   @CheckPermission({ permissionSymbol: 'gs.admin.brands.getone' })
   @Get('/:id')
@@ -59,8 +59,6 @@ export class BrandController {
     return await this.service.findById(entityId);
   }
 
-  @ApiBearerAuth()
-  @UseGuards(JwtGuard, PermissionGuard)
   @ApiOperation({ description: 'create brand' })
   @CheckPermission({ permissionSymbol: 'gs.admin.brands.create' })
   @Post('/')
@@ -69,8 +67,6 @@ export class BrandController {
     return await this.service.create(dto);
   }
 
-  @ApiBearerAuth()
-  @UseGuards(JwtGuard, PermissionGuard)
   @ApiOperation({ description: 'update brand by given id' })
   @CheckPermission({ permissionSymbol: 'gs.admin.brands.update' })
   @Put('/:id')
@@ -79,8 +75,6 @@ export class BrandController {
     return await this.service.updateById(id, dto);
   }
 
-  @ApiBearerAuth()
-  @UseGuards(JwtGuard, PermissionGuard)
   @ApiOperation({ description: 'delete brand by id' })
   @CheckPermission({ permissionSymbol: 'gs.admin.brands.delete' })
   @Delete('/:id')
