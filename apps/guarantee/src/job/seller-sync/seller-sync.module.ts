@@ -13,7 +13,13 @@ import { SellerBrandModule } from '@rahino/guarantee/util/seller-brand';
 import { SellerProductTypeModule } from '@rahino/guarantee/util/seller-product-type';
 import { SellerWarrantyModule } from '@rahino/guarantee/util/seller-warranty';
 import { SequelizeModule } from '@nestjs/sequelize';
-import { GSBrand, GSGuarantee, GSProductType, Setting } from '@rahino/database';
+import {
+  GSBrand,
+  GSGuarantee,
+  GSProductType,
+  GSVariant,
+  Setting,
+} from '@rahino/database';
 import { SellerVaraintModule } from '@rahino/guarantee/util/seller-variant';
 import { SellerVariantProcessor } from './processor/sync-seller-variant.processor';
 
@@ -45,7 +51,13 @@ import { SellerVariantProcessor } from './processor/sync-seller-variant.processo
         },
       }),
     }),
-    SequelizeModule.forFeature([Setting, GSBrand, GSGuarantee, GSProductType]),
+    SequelizeModule.forFeature([
+      Setting,
+      GSBrand,
+      GSGuarantee,
+      GSProductType,
+      GSVariant,
+    ]),
   ],
   controllers: [SellerSyncController],
   providers: [
