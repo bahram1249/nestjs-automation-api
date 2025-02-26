@@ -37,7 +37,7 @@ export class VerifyDto {
 
   @IsString()
   @IsNotEmpty()
-  @Matches(new RegExp('^([0-9]){5,6}$'))
+  @Matches(new RegExp('^([0-9]){4}$'))
   @ApiProperty({
     required: true,
     type: IsString,
