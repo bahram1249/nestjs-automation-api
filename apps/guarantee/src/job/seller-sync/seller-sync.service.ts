@@ -5,6 +5,7 @@ import {
   SYNC_SELLER_BRAND_QUEUE,
   SYNC_SELLER_FLOW_PRODUCER,
   SYNC_SELLER_PRODUCT_TYPE_QUEUE,
+  SYNC_SELLER_VARAINT_QUEUE,
   SYNC_SELLER_WARRANTY_QUEUE,
 } from './constants';
 
@@ -28,6 +29,10 @@ export class SellerSyncService {
         {
           name: 'sync-product-type',
           queueName: SYNC_SELLER_PRODUCT_TYPE_QUEUE,
+        },
+        {
+          name: 'sync-variant',
+          queueName: SYNC_SELLER_VARAINT_QUEUE,
         },
       ],
     });

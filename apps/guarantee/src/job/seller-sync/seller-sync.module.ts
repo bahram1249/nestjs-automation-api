@@ -1,12 +1,7 @@
 import { BullModule } from '@nestjs/bullmq';
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import {
-  SYNC_SELLER_BRAND_QUEUE,
-  SYNC_SELLER_FLOW_PRODUCER,
-  SYNC_SELLER_PRODUCT_TYPE_QUEUE,
-  SYNC_SELLER_WARRANTY_QUEUE,
-} from './constants';
+import { SYNC_SELLER_FLOW_PRODUCER } from './constants';
 import {
   SellerBrandProcessor,
   SellerProductTypeProcessor,
@@ -19,12 +14,15 @@ import { SellerProductTypeModule } from '@rahino/guarantee/util/seller-product-t
 import { SellerWarrantyModule } from '@rahino/guarantee/util/seller-warranty';
 import { SequelizeModule } from '@nestjs/sequelize';
 import { GSBrand, GSGuarantee, GSProductType, Setting } from '@rahino/database';
+import { SellerVaraintModule } from '@rahino/guarantee/util/seller-variant';
+import { SellerVariantProcessor } from './processor/sync-seller-variant.processor';
 
 @Module({
   imports: [
     SellerBrandModule,
     SellerProductTypeModule,
     SellerWarrantyModule,
+    SellerVaraintModule,
     BullModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
@@ -55,6 +53,7 @@ import { GSBrand, GSGuarantee, GSProductType, Setting } from '@rahino/database';
     SellerBrandProcessor,
     SellerProductTypeProcessor,
     SellerWarrantyProcessor,
+    SellerVariantProcessor,
   ],
   exports: [SellerSyncService],
 })
