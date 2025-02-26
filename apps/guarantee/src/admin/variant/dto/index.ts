@@ -1,2 +1,2 @@
-export * from './brand.dto';
-export * from './get-brand.dto';
+export * from './variant.dto';
+export * from './get-variant.dto';
