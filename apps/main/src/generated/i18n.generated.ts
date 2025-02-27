@@ -45,6 +45,10 @@ export type I18nTranslations = {
         "you_entered_this_card_before": string;
         "expire_date_of_card_is_reach": string;
         "details_of_requested_card_is_not_found": string;
+        "province_not_found": string;
+        "city_not_found": string;
+        "neighbordhood_not_found": string;
+        "neighborhood_must_be_select_it": string;
     };
     "validation": {
         "NOT_EMPTY": string;

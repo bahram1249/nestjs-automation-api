@@ -2,5 +2,9 @@
   "this_card_assigned_to_another_user_call_support_user": "this card assigned to another user",
   "you_entered_this_card_before": "you entered this card before",
   "expire_date_of_card_is_reach": "exire date of card is reach",
-  "details_of_requested_card_is_not_found": "details of requested card is not found"
+  "details_of_requested_card_is_not_found": "details of requested card is not found",
+  "province_not_found": "province not found",
+  "city_not_found": "city not found",
+  "neighbordhood_not_found": "neighborhood not found",
+  "neighborhood_must_be_select_it": "neighborhood must be select it!"
 }
