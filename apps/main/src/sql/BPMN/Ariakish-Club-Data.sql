@@ -195,11 +195,11 @@ IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'gs-provinces-Data-v1'
 			)
 	AND EXISTS (
 		SELECT 1 FROM Settings 
-		WHERE ([key] = 'SITE_NAME' AND [value] IN ('AriaKish'))
+		WHERE ([key] = 'CUSTOMER_NAME' AND [value] IN ('AriaKish'))
 		)
 BEGIN
 
-	INSERT INTO ECProvinces(
+	INSERT INTO GSProvinces(
 	id
 	,[name]
 	,slug
@@ -252,7 +252,7 @@ IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'gs-cities-Data-v1'
 			)
 	AND EXISTS (
 		SELECT 1 FROM Settings 
-		WHERE ([key] = 'SITE_NAME' AND [value] IN ('AriaKish'))
+		WHERE ([key] = 'CUSTOMER_NAME' AND [value] IN ('AriaKish'))
 		)
 BEGIN
 
@@ -1257,7 +1257,7 @@ IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'gs-neighborhoods-Data-v
 			)
 	AND EXISTS (
 		SELECT 1 FROM Settings 
-		WHERE ([key] = 'SITE_NAME' AND [value] IN ('AriaKish'))
+		WHERE ([key] = 'CUSTOMER_NAME' AND [value] IN ('AriaKish'))
 		)
 BEGIN
 

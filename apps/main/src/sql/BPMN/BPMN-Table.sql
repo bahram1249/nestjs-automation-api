@@ -613,3 +613,31 @@ IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'bpmn-requesthistories-v
     END
 
 GO
+
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'bpmn-organizationusers-v1'
+)
+    AND EXISTS (
+        SELECT 1 FROM Settings
+        WHERE ([key] = 'SITE_NAME' AND [value] IN ('BPMN'))
+    )
+    BEGIN
+
+        CREATE TABLE BPMNOrganizationUsers
+        (
+            organizationId          int                                 NOT NULL
+                CONSTRAINT FK_BPMNOrganizationUsers_OrganizationId
+                    FOREIGN KEY REFERENCES BPMNOrganizations(id),
+            userId                  bigint                              NOT NULL
+                CONSTRAINT FK_BPMNOrganizationUsers_UserId
+                    FOREIGN KEY REFERENCES Users(id),
+            [createdAt]				datetimeoffset			            NOT NULL,
+            [updatedAt]				datetimeoffset			            NOT NULL,
+            CONSTRAINT PK_BPMNOrganizationUsers_OrganizationId_UserId
+                PRIMARY KEY CLUSTERED (organizationId, userId)
+        )
+
+        INSERT INTO Migrations(version, createdAt, updatedAt)
+        SELECT 'bpmn-organizationusers-v1', GETDATE(), GETDATE()
+    END
+
+GO

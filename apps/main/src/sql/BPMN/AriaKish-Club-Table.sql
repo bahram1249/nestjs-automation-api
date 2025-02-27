@@ -337,7 +337,7 @@ IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'gs-provinces-v1'
 			)
 	AND EXISTS (
 		SELECT 1 FROM Settings 
-		WHERE ([key] = 'SITE_NAME' AND [value] IN ('AriaKish'))
+		WHERE ([key] = 'CUSTOMER_NAME' AND [value] IN ('AriaKish'))
 		)
 BEGIN
 
@@ -362,7 +362,7 @@ IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'gs-cities-v1'
 			)
 	AND EXISTS (
 		SELECT 1 FROM Settings 
-		WHERE ([key] = 'SITE_NAME' AND [value] IN ('AriaKish'))
+		WHERE ([key] = 'CUSTOMER_NAME' AND [value] IN ('AriaKish'))
 		)
 BEGIN
 
@@ -393,7 +393,7 @@ IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'gs-neighborhoods-v1'
 			)
 	AND EXISTS (
 		SELECT 1 FROM Settings 
-		WHERE ([key] = 'SITE_NAME' AND [value] IN ('AriaKish'))
+		WHERE ([key] = 'CUSTOMER_NAME' AND [value] IN ('AriaKish'))
 		)
 BEGIN
 
@@ -421,7 +421,7 @@ IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'gs-addresses-v1'
 			)
 	AND EXISTS (
 		SELECT 1 FROM Settings 
-		WHERE ([key] = 'SITE_NAME' AND [value] IN ('AriaKish'))
+		WHERE ([key] = 'CUSTOMER_NAME' AND [value] IN ('AriaKish'))
 		)
 BEGIN
 
@@ -455,6 +455,39 @@ BEGIN
 
 	INSERT INTO Migrations(version, createdAt, updatedAt)
 	SELECT 'gs-addresses-v1', GETDATE(), GETDATE()
+END
+
+GO
+
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'gs-guaranteeorganizations-v1'
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings
+		WHERE ([key] = 'CUSTOMER_NAME' AND [value] IN ('AriaKish'))
+		)
+BEGIN
+
+
+	CREATE TABLE GSGuaranteeOrganizations (
+		id				int                 		NOT NULL
+	        CONSTRAINT FK_GSGuaranteeOrganizations_Id
+	            FOREIGN KEY REFERENCES BPMNOrganizations(id),
+		addressId                   bigint                      NOT NULL
+		    CONSTRAINT FK_GSGuaranteeOrganizations_AddressId
+		        FOREIGN KEY REFERENCES GSAddresses(id),
+		userId						bigint						NULL
+			CONSTRAINT FK_GSGuaranteeOrganizations_UserId
+				FOREIGN KEY REFERENCES Users(id),
+        isNationwide                bit                         NULL,
+		isDeleted					bit							NULL,
+		[createdAt]					datetimeoffset				NOT NULL,
+		[updatedAt]					datetimeoffset				NOT NULL,
+        CONSTRAINT PK_GSGuaranteeOrganizations_OrganizationId_AddressId
+	            PRIMARY KEY CLUSTERED (id)
+	);
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'gs-guaranteeorganizations-v1', GETDATE(), GETDATE()
 END
 
 GO
