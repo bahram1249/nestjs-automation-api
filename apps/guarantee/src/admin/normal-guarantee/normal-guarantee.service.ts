@@ -101,7 +101,7 @@ export class NormalGuaranteeService {
 
     return {
       result: results,
-      totalCount: count,
+      total: count,
     };
   }
 

@@ -56,7 +56,7 @@ export class VariantService {
 
     return {
       result: results,
-      totalCount: count,
+      total: count,
     };
   }
 

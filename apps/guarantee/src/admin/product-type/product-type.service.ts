@@ -57,7 +57,7 @@ export class ProductTypeService {
 
     return {
       result: results,
-      totalCount: count,
+      total: count,
     };
   }
 

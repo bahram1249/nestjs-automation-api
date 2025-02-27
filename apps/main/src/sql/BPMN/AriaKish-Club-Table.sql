@@ -217,6 +217,7 @@ IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'gs-guaranteetypes-v1'
 
 GO
 
+-- gs-guarantees-v1
 IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'gs-guarantees-v1'
 )
     AND EXISTS (
@@ -261,6 +262,7 @@ IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'gs-guarantees-v1'
 
 GO
 
+-- gs-guarantees-v2
 IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'gs-guarantees-v2'
 )
     AND EXISTS (
@@ -279,7 +281,7 @@ IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'gs-guarantees-v2'
 
 GO
 
-
+-- gs-guarantees_v3
 IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'gs-guarantees-v3'
 )
     AND EXISTS (
@@ -300,3 +302,32 @@ IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'gs-guarantees-v3'
 
 GO
 
+-- gs-assigned-guarantees-v1
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'gs-assigned-guarantees-v1'
+)
+    AND EXISTS (
+        SELECT 1 FROM Settings
+        WHERE ([key] = 'CUSTOMER_NAME' AND [value] IN ('AriaKish'))
+    )
+    BEGIN
+
+        CREATE TABLE GSAssignedGuarantees
+        (
+            id                          bigint identity(1,1)                   PRIMARY KEY,
+            guaranteeId                 bigint                              NOT NULL
+                CONSTRAINT FK_GSAssignedGuarantees_GuaranteeId
+                    FOREIGN KEY REFERENCES GSGuarantees(id),
+            userId                      bigint                              NOT NULL
+                CONSTRAINT FK_GSAssignedGuarantees_UserId
+                    FOREIGN KEY REFERENCES Users(id),
+            isDeleted                   bit                                 NULL,
+            [createdAt]				    datetimeoffset			            NOT NULL,
+            [updatedAt]				    datetimeoffset			            NOT NULL,
+        )
+
+
+        INSERT INTO Migrations(version, createdAt, updatedAt)
+        SELECT 'gs-assigned-guarantees-v1', GETDATE(), GETDATE()
+    END
+
+GO

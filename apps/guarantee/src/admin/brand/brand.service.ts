@@ -56,7 +56,7 @@ export class BrandService {
 
     return {
       result: results,
-      totalCount: count,
+      total: count,
     };
   }
 
