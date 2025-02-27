@@ -11,7 +11,6 @@ import { InjectMapper } from 'automapper-nestjs';
 import { Mapper } from 'automapper-core';
 import * as _ from 'lodash';
 import {
-  ECAddress,
   GSAddress,
   GSCity,
   GSNeighborhood,
@@ -235,7 +234,7 @@ export class AddressService {
       }
     }
 
-    const mappedItem = this.mapper.map(dto, AddressDto, ECAddress);
+    const mappedItem = this.mapper.map(dto, AddressDto, GSAddress);
     mappedItem.userId = user.id;
     const result = await this.repository.create(
       _.omit(mappedItem.toJSON(), ['id']),
@@ -362,7 +361,7 @@ export class AddressService {
       }
     }
 
-    const mappedItem = this.mapper.map(dto, AddressDto, ECAddress);
+    const mappedItem = this.mapper.map(dto, AddressDto, GSAddress);
     const result = await this.repository.update(
       _.omit(mappedItem.toJSON(), ['id']),
       {
@@ -527,7 +526,7 @@ export class AddressService {
       }
     }
 
-    const mappedItem = this.mapper.map(dto, AddressDto, ECAddress);
+    const mappedItem = this.mapper.map(dto, AddressDto, GSAddress);
     const result = await this.repository.update(
       _.omit(mappedItem.toJSON(), ['id']),
       {
