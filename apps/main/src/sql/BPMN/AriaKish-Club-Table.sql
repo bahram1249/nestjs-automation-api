@@ -331,3 +331,130 @@ IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'gs-assigned-guarantees-
     END
 
 GO
+
+
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'gs-provinces-v1' 
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'SITE_NAME' AND [value] IN ('AriaKish'))
+		)
+BEGIN
+
+	CREATE TABLE GSProvinces (
+		id							int							PRIMARY KEY,
+		[name]						nvarchar(256)				NOT NULL,
+		[slug]						nvarchar(256)				NOT NULL,
+		isDeleted					bit							NULL,
+		[order]						int							NULL,
+		[createdAt]					datetimeoffset				NOT NULL,
+		[updatedAt]					datetimeoffset				NOT NULL,
+	);
+
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'gs-provinces-v1', GETDATE(), GETDATE()
+END
+
+GO
+
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'gs-cities-v1' 
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'SITE_NAME' AND [value] IN ('AriaKish'))
+		)
+BEGIN
+
+	CREATE TABLE GSCities (
+		id							int							PRIMARY KEY,
+		[name]						nvarchar(256)				NOT NULL,
+		[slug]						nvarchar(256)				NULL,
+		
+		[neighborhoodBase]			bit							NULL,
+		[provinceId]				int							NOT NULL
+			CONSTRAINT FK_GSCities_ProvinceId
+				FOREIGN KEY REFERENCES GSProvinces(id),
+		[order]						int							NULL,
+		isDeleted					bit							NULL,
+		[createdAt]					datetimeoffset				NOT NULL,
+		[updatedAt]					datetimeoffset				NOT NULL,
+	);
+
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'gs-cities-v1', GETDATE(), GETDATE()
+END
+
+GO
+
+
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'gs-neighborhoods-v1' 
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'SITE_NAME' AND [value] IN ('AriaKish'))
+		)
+BEGIN
+
+	CREATE TABLE GSNeighborhoods (
+		id							int							PRIMARY KEY,
+		[name]						nvarchar(256)				NOT NULL,
+		[slug]						nvarchar(256)				NULL,
+		[order]						int							NULL,
+		[cityId]				int								NOT NULL
+			CONSTRAINT FK_GSNeighborhoods_CityId
+				FOREIGN KEY REFERENCES GSCities(id),
+		isDeleted					bit							NULL,
+		[createdAt]					datetimeoffset				NOT NULL,
+		[updatedAt]					datetimeoffset				NOT NULL,
+	);
+
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'gs-neighborhoods-v1', GETDATE(), GETDATE()
+END
+
+GO
+
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'gs-addresses-v1' 
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'SITE_NAME' AND [value] IN ('AriaKish'))
+		)
+BEGIN
+
+	CREATE TABLE GSAddresses (
+		id							bigint	identity(1,1)		PRIMARY KEY,
+		name						nvarchar(512)				NULL,
+		[latitude]					nvarchar(256)				NULL,
+		[longitude]					nvarchar(256)				NULL,
+		[provinceId]				int							NOT NULL
+			CONSTRAINT FK_GSAddresses_ProvinceId
+				FOREIGN KEY REFERENCES GSProvinces(id),
+		[cityId]					int							NOT NULL
+			CONSTRAINT FK_GSAddresses_CityId
+				FOREIGN KEY REFERENCES GSCities(id),
+		[neighborhoodId]			int							NULL
+			CONSTRAINT FK_GSAddresses_NeighborhoodId
+				FOREIGN KEY REFERENCES GSNeighborhoods(id),
+		street						nvarchar(1024)				NULL,
+		alley						nvarchar(1024)				NULL,
+		plaque						nvarchar(256)				NULL,
+		floorNumber					nvarchar(25)				NULL,
+		userId						bigint						NULL
+			CONSTRAINT FK_GSAddresses_UserId
+				FOREIGN KEY REFERENCES Users(id),
+        postalCode                  nvarchar(128)               NULL,
+		isDeleted					bit							NULL,
+		[createdAt]					datetimeoffset				NOT NULL,
+		[updatedAt]					datetimeoffset				NOT NULL,
+	);
+
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'gs-addresses-v1', GETDATE(), GETDATE()
+END
+
+GO

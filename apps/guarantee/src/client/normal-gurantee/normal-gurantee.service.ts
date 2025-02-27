@@ -3,9 +3,17 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { GSAssignedGuarantee, GSGuarantee, User } from '@rahino/database';
+import {
+  GSAssignedGuarantee,
+  GSBrand,
+  GSGuarantee,
+  GSGuaranteePeriod,
+  GSProductType,
+  GSVariant,
+  User,
+} from '@rahino/database';
 import { ListFilter } from '@rahino/query-filter';
-import { NormalGuaranteeDto } from './dto';
+import { NormalGuaranteAvailabilityeDto, NormalGuaranteeDto } from './dto';
 import { InjectModel } from '@nestjs/sequelize';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import { Sequelize } from 'sequelize';
@@ -14,6 +22,7 @@ import { GSGuaranteeTypeEnum } from '@rahino/guarantee/admin/gurantee-type';
 import { I18nTranslations } from 'apps/main/src/generated/i18n.generated';
 import { I18nContext, I18nService } from 'nestjs-i18n';
 import * as _ from 'lodash';
+import { GSGuaranteeConfirmStatus } from '@rahino/guarantee/admin/guarantee-confirm-status';
 
 @Injectable()
 export class NormalGuaranteeService {
@@ -32,6 +41,25 @@ export class NormalGuaranteeService {
           model: GSGuarantee,
           as: 'guarantee',
           required: true,
+          attributes: [
+            'id',
+            'serialNumber',
+            'startDate',
+            'endDate',
+            'variantId',
+            'brandId',
+            'productTypeId',
+          ],
+          include: [
+            { model: GSProductType, as: 'productType', required: false },
+            { model: GSVariant, as: 'variant', required: false },
+            { model: GSBrand, as: 'brand', required: false },
+            {
+              model: GSGuaranteePeriod,
+              as: 'guaranteePeriod',
+              required: false,
+            },
+          ],
           where: {
             [Op.and]: [
               { guaranteeTypeId: GSGuaranteeTypeEnum.Normal },
@@ -79,6 +107,25 @@ export class NormalGuaranteeService {
           model: GSGuarantee,
           as: 'guarantee',
           required: true,
+          attributes: [
+            'id',
+            'serialNumber',
+            'startDate',
+            'endDate',
+            'variantId',
+            'brandId',
+            'productTypeId',
+          ],
+          include: [
+            { model: GSProductType, as: 'productType', required: false },
+            { model: GSVariant, as: 'variant', required: false },
+            { model: GSBrand, as: 'brand', required: false },
+            {
+              model: GSGuaranteePeriod,
+              as: 'guaranteePeriod',
+              required: false,
+            },
+          ],
           where: {
             [Op.and]: [
               { guaranteeTypeId: GSGuaranteeTypeEnum.Normal },
@@ -120,9 +167,52 @@ export class NormalGuaranteeService {
   }
 
   async create(user: User, dto: NormalGuaranteeDto) {
+    const guarantee = await this.checkGuaranteeIsValidThenReturnGuarantee(
+      dto.serialNumber,
+      user,
+    );
+
+    await this.assignedGuaranteeRepository.create({
+      guaranteeId: guarantee.id,
+      userId: user.id,
+    });
+
+    return {
+      result: guarantee,
+    };
+  }
+
+  async getAvailability(user: User, dto: NormalGuaranteAvailabilityeDto) {
+    const result = await this.checkGuaranteeIsValidThenReturnGuarantee(
+      dto.serialNumber,
+      user,
+    );
+    return { result };
+  }
+
+  private async checkGuaranteeIsValidThenReturnGuarantee(
+    serialNumber: string,
+    user: User,
+  ): Promise<GSGuarantee> {
     const guarantee = await this.guaranteeRepository.findOne(
       new QueryOptionsBuilder()
-        .filter({ serialNumber: dto.serialNumber })
+        .attributes([
+          'id',
+          'serialNumber',
+          'startDate',
+          'endDate',
+          'variantId',
+          'brandId',
+          'productTypeId',
+        ])
+        .include([
+          { model: GSProductType, as: 'productType', required: false },
+          { model: GSVariant, as: 'variant', required: false },
+          { model: GSBrand, as: 'brand', required: false },
+          { model: GSGuaranteePeriod, as: 'guaranteePeriod', required: false },
+        ])
+        .filter({ serialNumber: serialNumber })
+        .filter({ guaranteeConfirmStatusId: GSGuaranteeConfirmStatus.Confirm })
         .filter({ guaranteeTypeId: GSGuaranteeTypeEnum.Normal })
         .build(),
     );
@@ -153,7 +243,7 @@ export class NormalGuaranteeService {
           where: {
             [Op.and]: [
               { guaranteeTypeId: GSGuaranteeTypeEnum.Normal },
-              { serialNumber: dto.serialNumber },
+              { serialNumber: serialNumber },
             ],
           },
         },
@@ -193,14 +283,6 @@ export class NormalGuaranteeService {
         }),
       );
     }
-
-    await this.assignedGuaranteeRepository.create({
-      guaranteeId: guarantee.id,
-      userId: user.id,
-    });
-
-    return {
-      result: _.pick(guarantee, ['id', 'serialNumber']),
-    };
+    return guarantee;
   }
 }
