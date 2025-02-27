@@ -18,9 +18,6 @@ import {
   GSProvince,
 } from '@rahino/localdatabase/models';
 import { User } from '@rahino/database';
-import { ECProvince } from '@rahino/localdatabase/models';
-import { ECCity } from '@rahino/localdatabase/models';
-import { ECNeighborhood } from '@rahino/localdatabase/models';
 import { I18nTranslations } from 'apps/main/src/generated/i18n.generated';
 import { I18nContext, I18nService } from 'nestjs-i18n';
 
@@ -219,7 +216,7 @@ export class AddressService {
             Sequelize.where(
               Sequelize.fn(
                 'isnull',
-                Sequelize.col('ECNeighborhood.isDeleted'),
+                Sequelize.col('GSNeighborhood.isDeleted'),
                 0,
               ),
               {
