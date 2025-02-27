@@ -11,6 +11,7 @@ import {
   GSGuaranteeConfirmStatus,
   GSGuaranteePeriod,
   GSGuaranteeType,
+  GSProductType,
   GSProvider,
   GSVariant,
 } from '@rahino/localdatabase/models';
@@ -56,6 +57,7 @@ export class NormalGuaranteeService {
         'endDate',
         'allowedDateEnterProduct',
         'variantId',
+        'productTypeId',
         'description',
         'createdAt',
         'updatedAt',
@@ -91,6 +93,10 @@ export class NormalGuaranteeService {
           as: 'variant',
           required: false,
         },
+        {
+          model: GSProductType,
+          as: 'productType',
+        },
       ])
       .filter({ guaranteeTypeId: GSGuaranteeTypeEnum.Normal })
       .limit(filter.limit)
@@ -121,6 +127,7 @@ export class NormalGuaranteeService {
           'endDate',
           'allowedDateEnterProduct',
           'variantId',
+          'productTypeId',
           'description',
           'createdAt',
           'updatedAt',
@@ -155,6 +162,10 @@ export class NormalGuaranteeService {
             model: GSVariant,
             as: 'variant',
             required: false,
+          },
+          {
+            model: GSProductType,
+            as: 'productType',
           },
         ])
         .filter({ guaranteeTypeId: GSGuaranteeTypeEnum.Normal })

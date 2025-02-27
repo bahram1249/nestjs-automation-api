@@ -1,4 +1,4 @@
-import { AutoMap } from "automapper-classes";
+import { AutoMap } from 'automapper-classes';
 import {
   Table,
   Column,
@@ -6,15 +6,16 @@ import {
   DataType,
   ForeignKey,
   BelongsTo,
-} from "sequelize-typescript";
-import { GSProvider } from "./gs-provider.entity";
-import { GSBrand } from "./gs-brand.entity";
-import { GSGuaranteeType } from "./gs-guarantee-type.entity";
-import { GSGuaranteePeriod } from "./gs-guarantee-period.entity";
-import { GSGuaranteeConfirmStatus } from "./gs-guarantee-confirm-status.entity";
-import { GSVariant } from "./gs-varaint.entity";
+} from 'sequelize-typescript';
+import { GSProvider } from './gs-provider.entity';
+import { GSBrand } from './gs-brand.entity';
+import { GSGuaranteeType } from './gs-guarantee-type.entity';
+import { GSGuaranteePeriod } from './gs-guarantee-period.entity';
+import { GSGuaranteeConfirmStatus } from './gs-guarantee-confirm-status.entity';
+import { GSVariant } from './gs-varaint.entity';
+import { GSProductType } from './gs-product-type.entity';
 
-@Table({ tableName: "GSGuarantees" })
+@Table({ tableName: 'GSGuarantees' })
 export class GSGuarantee extends Model {
   @Column({
     type: DataType.BIGINT,
@@ -31,7 +32,7 @@ export class GSGuarantee extends Model {
   @ForeignKey(() => GSProvider)
   providerId?: number;
 
-  @BelongsTo(() => GSProvider, { as: "provider", foreignKey: "providerId" })
+  @BelongsTo(() => GSProvider, { as: 'provider', foreignKey: 'providerId' })
   provider?: GSProvider;
 
   @AutoMap()
@@ -42,7 +43,7 @@ export class GSGuarantee extends Model {
   @ForeignKey(() => GSBrand)
   brandId?: number;
 
-  @BelongsTo(() => GSBrand, { as: "brand", foreignKey: "brandId" })
+  @BelongsTo(() => GSBrand, { as: 'brand', foreignKey: 'brandId' })
   brand?: GSBrand;
 
   @AutoMap()
@@ -53,8 +54,8 @@ export class GSGuarantee extends Model {
   guaranteeTypeId: number;
 
   @BelongsTo(() => GSGuaranteeType, {
-    as: "guaranteeType",
-    foreignKey: "guaranteeTypeId",
+    as: 'guaranteeType',
+    foreignKey: 'guaranteeTypeId',
   })
   guaranteeType?: GSGuaranteeType;
 
@@ -67,8 +68,8 @@ export class GSGuarantee extends Model {
   guaranteePeriodId?: number;
 
   @BelongsTo(() => GSGuaranteePeriod, {
-    as: "guaranteePeriod",
-    foreignKey: "guaranteePeriodId",
+    as: 'guaranteePeriod',
+    foreignKey: 'guaranteePeriodId',
   })
   guaranteePeriod?: GSGuaranteePeriod;
 
@@ -80,8 +81,8 @@ export class GSGuarantee extends Model {
   guaranteeConfirmStatusId: number;
 
   @BelongsTo(() => GSGuaranteeConfirmStatus, {
-    as: "guaranteeConfirmStatus",
-    foreignKey: "guaranteeConfirmStatusId",
+    as: 'guaranteeConfirmStatus',
+    foreignKey: 'guaranteeConfirmStatusId',
   })
   guaranteeCofirmStatus?: GSGuaranteeConfirmStatus;
 
@@ -145,6 +146,17 @@ export class GSGuarantee extends Model {
   @ForeignKey(() => GSVariant)
   variantId: number;
 
-  @BelongsTo(() => GSVariant, { as: "variant", foreignKey: "variantId" })
+  @BelongsTo(() => GSVariant, { as: 'variant', foreignKey: 'variantId' })
   variant?: GSVariant;
+
+  @AutoMap()
+  @Column({
+    type: DataType.NUMBER,
+    allowNull: false,
+  })
+  @ForeignKey(() => GSProductType)
+  productTypeId: number;
+
+  @BelongsTo(() => GSProductType)
+  productType?: GSProductType;
 }

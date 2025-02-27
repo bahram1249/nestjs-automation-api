@@ -149,11 +149,9 @@ export class SellerWarrantyProcessor extends WorkerHost {
       let lastItem = sellerSourceItems[sellerSourceItems.length - 1];
       lastItemId = lastItem.id;
 
-      if (result.last_page != page) {
-        page += 1;
-      } else {
-        break;
-      }
+      if (result.last_page == page) break;
+
+      page += 1;
     }
 
     setting.value = lastItemId.toString();

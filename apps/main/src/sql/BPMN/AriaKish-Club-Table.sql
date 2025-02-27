@@ -302,6 +302,27 @@ IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'gs-guarantees-v3'
 
 GO
 
+-- gs-guarantees_v4
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'gs-guarantees-v4'
+)
+    AND EXISTS (
+        SELECT 1 FROM Settings
+        WHERE ([key] = 'CUSTOMER_NAME' AND [value] IN ('AriaKish'))
+    )
+    BEGIN
+
+        ALTER TABLE GSGuarantees
+        ADD productTypeId int not null
+            CONSTRAINT FK_GSGuarantees_ProductTypeId
+                FOREIGN KEY REFERENCES GSProductTypes(id)
+
+
+        INSERT INTO Migrations(version, createdAt, updatedAt)
+        SELECT 'gs-guarantees-v4', GETDATE(), GETDATE()
+    END
+
+GO
+
 -- gs-assigned-guarantees-v1
 IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'gs-assigned-guarantees-v1'
 )

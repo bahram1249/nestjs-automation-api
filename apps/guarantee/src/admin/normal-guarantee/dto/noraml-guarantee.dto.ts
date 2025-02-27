@@ -61,4 +61,8 @@ export class NoramlGuaranteeDto {
   @IsNumber()
   @IsOptional()
   public variantId?: number;
+
+  @AutoMap()
+  @IsNumber()
+  public productTypeId: number;
 }
