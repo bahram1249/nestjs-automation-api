@@ -11,9 +11,12 @@ export class ProvinceService {
 
   async findAll() {
     const queryBuilder = new QueryOptionsBuilder().filter(
-      Sequelize.where(Sequelize.fn('isnull', Sequelize.col('isDeleted'), 0), {
-        [Op.eq]: 0,
-      }),
+      Sequelize.where(
+        Sequelize.fn('isnull', Sequelize.col('GSProvince.isDeleted'), 0),
+        {
+          [Op.eq]: 0,
+        },
+      ),
     );
     const count = await this.repository.count(queryBuilder.build());
     const queryOptions = queryBuilder

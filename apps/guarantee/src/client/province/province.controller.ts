@@ -11,7 +11,7 @@ import { ProvinceService } from './province.service';
 
 @ApiTags('GS-Provinces')
 @Controller({
-  path: '/api/guarantee/provinces',
+  path: '/api/guarantee/client/provinces',
   version: ['1'],
 })
 @UseInterceptors(JsonResponseTransformInterceptor)
