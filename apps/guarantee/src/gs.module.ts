@@ -11,6 +11,7 @@ import { NormalGuaranteeModule } from './admin/normal-guarantee';
 import { LoginModule } from './client/login/login.module';
 import { SellerSyncModule, SellerSyncService } from './job/seller-sync';
 import { VariantModule } from './admin/variant';
+import { ClientNormalGuaranteeModule } from './client/normal-gurantee';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { VariantModule } from './admin/variant';
     BrandModule,
     NormalGuaranteeModule,
     VariantModule,
+    ClientNormalGuaranteeModule,
   ],
 })
 export class GSModule implements NestModule {

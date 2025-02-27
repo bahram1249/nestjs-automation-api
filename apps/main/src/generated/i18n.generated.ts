@@ -40,6 +40,12 @@ export type I18nTranslations = {
         "dont_access_to_this_vendor": string;
         "neighborhood_must_be_select_it": string;
     };
+    "guarantee": {
+        "this_card_assigned_to_another_user_call_support_user": string;
+        "you_entered_this_card_before": string;
+        "expire_date_of_card_is_reach": string;
+        "details_of_requested_card_is_not_found": string;
+    };
     "validation": {
         "NOT_EMPTY": string;
         "INVALID_EMAIL": string;
