@@ -4,7 +4,7 @@ import {
   BPMNAction,
   BPMNInboundAction,
   BPMNOutboundAction,
-} from '@rahino/database';
+} from '@rahino/localdatabase/models';
 import { ActionService } from './action.service';
 import { ActionLoaderModule } from '../action-loader';
 

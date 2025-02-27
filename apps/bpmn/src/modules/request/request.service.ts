@@ -4,8 +4,8 @@ import {
   BPMNOrganization,
   BPMNPROCESS,
   BPMNRequest,
-  User,
-} from '@rahino/database';
+} from '@rahino/localdatabase/models';
+import { User } from '@rahino/database';
 import { InitRequestDto } from '@rahino/bpmn/modules/request/dto';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import { I18nContext, I18nService } from 'nestjs-i18n';

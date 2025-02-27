@@ -7,7 +7,7 @@ import {
 import { SelectedProductController } from './selected-product.controller';
 import { SelectedProductService } from './selected-product.service';
 import { SequelizeModule } from '@nestjs/sequelize';
-import { ECBrand } from '@rahino/database';
+import { ECBrand } from '@rahino/localdatabase/models';
 import { Permission } from '@rahino/database';
 import { User } from '@rahino/database';
 import { SelectedProductProfile } from './mapper';
@@ -16,7 +16,7 @@ import { Attachment } from '@rahino/database';
 import { ReverseProxySelectedProductImageMiddleware } from './reverse-proxy.middleware';
 import { ThumbnailModule } from '@rahino/thumbnail';
 import { ConfigService } from '@nestjs/config';
-import { ECSelectedProduct } from '@rahino/database';
+import { ECSelectedProduct } from '@rahino/localdatabase/models';
 
 @Module({
   imports: [

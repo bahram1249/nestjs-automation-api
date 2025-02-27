@@ -1,7 +1,8 @@
 import { Module } from '@nestjs/common';
 import { BrandService } from './brand.service';
 import { SequelizeModule } from '@nestjs/sequelize';
-import { GSBrand, Permission, User } from '@rahino/database';
+import { GSBrand } from '@rahino/localdatabase/models';
+import { Permission, User } from '@rahino/database';
 import { BrandController } from './brand.controller';
 import { BrandProfile } from './mapper';
 

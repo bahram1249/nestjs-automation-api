@@ -5,12 +5,12 @@ import { Op, Sequelize } from 'sequelize';
 import * as _ from 'lodash';
 import { User } from '@rahino/database';
 import { ListFilter } from '@rahino/query-filter';
-import { ECVendor } from '@rahino/database';
-import { ECVendorUser } from '@rahino/database';
+import { ECVendor } from '@rahino/localdatabase/models';
+import { ECVendorUser } from '@rahino/localdatabase/models';
 import { Attachment } from '@rahino/database';
-import { ECVendorCommission } from '@rahino/database';
-import { ECVariationPrice } from '@rahino/database';
-import { ECVendorCommissionType } from '@rahino/database';
+import { ECVendorCommission } from '@rahino/localdatabase/models';
+import { ECVariationPrice } from '@rahino/localdatabase/models';
+import { ECVendorCommissionType } from '@rahino/localdatabase/models';
 
 @Injectable()
 export class UserVendorService {

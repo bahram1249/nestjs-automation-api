@@ -1,12 +1,12 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { Attachment } from '@rahino/database';
-import { BuffetCost } from '@rahino/database';
-import { BuffetReserve } from '@rahino/database';
-import { BuffetType } from '@rahino/database';
-import { Buffet } from '@rahino/database';
-import { BuffetCity } from '@rahino/database';
-import { CoffeOption } from '@rahino/database';
+import { BuffetCost } from '@rahino/localdatabase/models';
+import { BuffetReserve } from '@rahino/localdatabase/models';
+import { BuffetType } from '@rahino/localdatabase/models';
+import { Buffet } from '@rahino/localdatabase/models';
+import { BuffetCity } from '@rahino/localdatabase/models';
+import { CoffeOption } from '@rahino/localdatabase/models';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import { Request } from 'express';
 import { Op, Sequelize } from 'sequelize';

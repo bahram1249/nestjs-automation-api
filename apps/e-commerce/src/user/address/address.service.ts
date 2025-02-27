@@ -10,11 +10,11 @@ import { Op, Sequelize } from 'sequelize';
 import { InjectMapper } from 'automapper-nestjs';
 import { Mapper } from 'automapper-core';
 import * as _ from 'lodash';
-import { ECAddress } from '@rahino/database';
+import { ECAddress } from '@rahino/localdatabase/models';
 import { User } from '@rahino/database';
-import { ECProvince } from '@rahino/database';
-import { ECCity } from '@rahino/database';
-import { ECNeighborhood } from '@rahino/database';
+import { ECProvince } from '@rahino/localdatabase/models';
+import { ECCity } from '@rahino/localdatabase/models';
+import { ECNeighborhood } from '@rahino/localdatabase/models';
 import { I18nTranslations } from 'apps/main/src/generated/i18n.generated';
 import { I18nContext, I18nService } from 'nestjs-i18n';
 

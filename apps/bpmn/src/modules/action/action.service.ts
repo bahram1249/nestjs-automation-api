@@ -7,7 +7,7 @@ import {
   BPMNAction,
   BPMNInboundAction,
   BPMNOutboundAction,
-} from '@rahino/database';
+} from '@rahino/localdatabase/models';
 import {
   RunActionDto,
   RunInboundActionsDto,

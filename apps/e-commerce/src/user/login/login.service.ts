@@ -8,7 +8,7 @@ import * as _ from 'lodash';
 import { ConfigService } from '@nestjs/config';
 import { getIntegerRandomArbitrary } from '@rahino/commontools';
 import { ECommmerceSmsService } from '@rahino/ecommerce/util/sms/ecommerce-sms.service';
-import { ECWallet } from '@rahino/database';
+import { ECWallet } from '@rahino/localdatabase/models';
 
 @Injectable()
 export class LoginService {

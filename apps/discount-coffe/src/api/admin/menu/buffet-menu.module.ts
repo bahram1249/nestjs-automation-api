@@ -6,10 +6,10 @@ import { AttachmentType } from '@rahino/database';
 import { FileModule } from '@rahino/file';
 import { ThumbnailModule } from '@rahino/thumbnail';
 import { Attachment } from '@rahino/database';
-import { BuffetMenuCategory } from '@rahino/database';
+import { BuffetMenuCategory } from '@rahino/localdatabase/models';
 import { BuffetMenuService } from './buffet-menu.service';
 import { BuffetMenuController } from './buffet-menu.controller';
-import { BuffetMenu } from '@rahino/database';
+import { BuffetMenu } from '@rahino/localdatabase/models';
 
 @Module({
   imports: [

@@ -3,7 +3,7 @@ import {
   BPMNNodeCommand,
   BPMNRequest,
   BPMNRequestState,
-} from '@rahino/database';
+} from '@rahino/localdatabase/models';
 import { UserTraverseDto } from './user-traverse.dto';
 import { Transaction } from 'sequelize';
 

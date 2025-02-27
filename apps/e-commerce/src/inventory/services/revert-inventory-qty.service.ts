@@ -1,17 +1,17 @@
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
-import { ECInventory } from '@rahino/database';
+import { ECInventory } from '@rahino/localdatabase/models';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import { Op } from 'sequelize';
 import { Sequelize } from 'sequelize';
 import { InventoryStatusEnum } from '../enum';
-import { ECPayment } from '@rahino/database';
+import { ECPayment } from '@rahino/localdatabase/models';
 import {
   InventoryTrackChangeStatusEnum,
   PaymentTypeEnum,
 } from '@rahino/ecommerce/util/enum';
-import { ECOrder } from '@rahino/database';
-import { ECOrderDetail } from '@rahino/database';
+import { ECOrder } from '@rahino/localdatabase/models';
+import { ECOrderDetail } from '@rahino/localdatabase/models';
 import { inventoryStatusService } from './inventory-status.service';
 import { InventoryTrackChangeService } from '@rahino/ecommerce/inventory-track-change/inventory-track-change.service';
 

@@ -15,7 +15,7 @@ import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { OptionalJwtGuard } from '@rahino/auth';
 import { JsonResponseTransformInterceptor } from '@rahino/response/interceptor';
 import { GetECSession } from 'apps/main/src/decorator';
-import { ECUserSession } from '@rahino/database';
+import { ECUserSession } from '@rahino/localdatabase/models';
 import { StockDto, StockPriceDto } from './dto';
 import { StockService } from './stock.service';
 import { GetUser } from '@rahino/auth';

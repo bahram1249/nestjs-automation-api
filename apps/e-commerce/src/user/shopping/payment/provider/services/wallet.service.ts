@@ -10,13 +10,13 @@ import {
   PaymentTypeEnum,
 } from '@rahino/ecommerce/util/enum';
 import { Sequelize, Transaction } from 'sequelize';
-import { ECOrderDetail } from '@rahino/database';
+import { ECOrderDetail } from '@rahino/localdatabase/models';
 import { InjectModel } from '@nestjs/sequelize';
-import { ECWallet } from '@rahino/database';
+import { ECWallet } from '@rahino/localdatabase/models';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import { Op } from 'sequelize';
-import { ECPaymentGateway } from '@rahino/database';
-import { ECPayment } from '@rahino/database';
+import { ECPaymentGateway } from '@rahino/localdatabase/models';
+import { ECPayment } from '@rahino/localdatabase/models';
 import { FinalizedPaymentService } from '../../util/finalized-payment/finalized-payment.service';
 import { ConfigService } from '@nestjs/config';
 import { PaymentServiceManualWalletPurposeProviderFactory } from '../factory/payment-service-manual-wallet-purpose-provider.factory';

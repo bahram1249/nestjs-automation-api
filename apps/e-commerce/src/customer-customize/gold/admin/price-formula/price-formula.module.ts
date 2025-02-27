@@ -4,7 +4,7 @@ import { SequelizeModule } from '@nestjs/sequelize';
 import { User } from '@rahino/database';
 import { Permission } from '@rahino/database';
 import { PriceFormulaController } from './price-formula.controller';
-import { ECProductPriceFormula } from '@rahino/database';
+import { ECProductPriceFormula } from '@rahino/localdatabase/models';
 
 @Module({
   imports: [

@@ -3,7 +3,7 @@ import { PublishService } from './publish.service';
 import { PublishController } from './publish.controller';
 import { SequelizeModule } from '@nestjs/sequelize';
 
-import { PCMPublish } from '@rahino/database';
+import { PCMPublish } from '@rahino/localdatabase/models';
 import { User } from '@rahino/database';
 import { Permission } from '@rahino/database';
 

@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { AutomapperProfile, InjectMapper } from 'automapper-nestjs';
 import { EntityTypeFactorDto } from '../dto';
 import { Mapper, createMap, forMember, ignore } from 'automapper-core';
-import { ECEntityTypeFactor } from '@rahino/database';
+import { ECEntityTypeFactor } from '@rahino/localdatabase/models';
 
 @Injectable()
 export class EntityTypFactorProfile extends AutomapperProfile {

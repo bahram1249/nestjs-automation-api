@@ -5,13 +5,13 @@ import {
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { Op, Sequelize } from 'sequelize';
-import { Buffet } from '@rahino/database';
+import { Buffet } from '@rahino/localdatabase/models';
 import { ListFilter } from '@rahino/query-filter';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import { HolidayDto } from './dto';
 import { User } from '@rahino/database';
 import * as _ from 'lodash';
-import { BuffetIgnoreReserve } from '@rahino/database';
+import { BuffetIgnoreReserve } from '@rahino/localdatabase/models';
 import { PersianDate } from '@rahino/database';
 
 @Injectable()

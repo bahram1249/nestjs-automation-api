@@ -4,9 +4,9 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { ECUserSession } from '@rahino/database';
+import { ECUserSession } from '@rahino/localdatabase/models';
 import { StockDto, StockPriceDto } from './dto';
-import { ECStock } from '@rahino/database';
+import { ECStock } from '@rahino/localdatabase/models';
 import { InjectModel } from '@nestjs/sequelize';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import { Sequelize } from 'sequelize';
@@ -29,11 +29,11 @@ import { QueueEvents } from 'bullmq';
 import { Job } from 'bullmq';
 import { ConfigService } from '@nestjs/config';
 import { InventoryStatusEnum } from '@rahino/ecommerce/inventory/enum';
-import { ECPaymentGateway } from '@rahino/database';
+import { ECPaymentGateway } from '@rahino/localdatabase/models';
 import { User } from '@rahino/database';
 import { AddressService } from '../../address/address.service';
-import { ECProvince } from '@rahino/database';
-import { ECVariationPrice } from '@rahino/database';
+import { ECProvince } from '@rahino/localdatabase/models';
+import { ECVariationPrice } from '@rahino/localdatabase/models';
 import { StockPriceService } from './services/price';
 import { ShipmentInteface } from './services/shipment-price/interface';
 import { ApplyDiscountService } from '@rahino/ecommerce/product/service';

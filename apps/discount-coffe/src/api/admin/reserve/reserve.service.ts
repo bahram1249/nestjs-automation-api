@@ -8,13 +8,13 @@ import { Op, Sequelize } from 'sequelize';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import { User } from '@rahino/database';
 import * as _ from 'lodash';
-import { BuffetReserve } from '@rahino/database';
-import { BuffetReserveType } from '@rahino/database';
-import { Buffet } from '@rahino/database';
+import { BuffetReserve } from '@rahino/localdatabase/models';
+import { BuffetReserveType } from '@rahino/localdatabase/models';
+import { Buffet } from '@rahino/localdatabase/models';
 import { Attachment } from '@rahino/database';
 import { PersianDate } from '@rahino/database';
-import { BuffetReserveDetail } from '@rahino/database';
-import { BuffetMenu } from '@rahino/database';
+import { BuffetReserveDetail } from '@rahino/localdatabase/models';
+import { BuffetMenu } from '@rahino/localdatabase/models';
 import { ReserveDto, ReserveFilterDto } from './dto';
 
 @Injectable()

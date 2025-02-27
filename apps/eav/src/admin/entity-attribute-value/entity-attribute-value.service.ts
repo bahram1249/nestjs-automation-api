@@ -1,13 +1,13 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { EntityAttributeValueDto } from './dto';
 import { InjectModel } from '@nestjs/sequelize';
-import { EAVEntityType } from '@rahino/database';
+import { EAVEntityType } from '@rahino/localdatabase/models';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import { Op, Sequelize, Transaction } from 'sequelize';
-import { EAVEntityAttribute } from '@rahino/database';
-import { EAVAttribute } from '@rahino/database';
-import { EAVAttributeValue } from '@rahino/database';
-import { EAVEntityAttributeValue } from '@rahino/database';
+import { EAVEntityAttribute } from '@rahino/localdatabase/models';
+import { EAVAttribute } from '@rahino/localdatabase/models';
+import { EAVAttributeValue } from '@rahino/localdatabase/models';
+import { EAVEntityAttributeValue } from '@rahino/localdatabase/models';
 
 @Injectable()
 export class EntityAttributeValueService {

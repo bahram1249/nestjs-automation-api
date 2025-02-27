@@ -3,7 +3,7 @@ import { SequelizeModule } from '@nestjs/sequelize';
 import { Permission } from '@rahino/database';
 import { User } from '@rahino/database';
 import { BuffetService } from './buffet.service';
-import { Buffet } from '@rahino/database';
+import { Buffet } from '@rahino/localdatabase/models';
 import { BuffetController } from './buffet.controller';
 import { AttachmentType } from '@rahino/database';
 import { FileModule } from '@rahino/file';
@@ -11,8 +11,8 @@ import { ThumbnailModule } from '@rahino/thumbnail';
 import { Attachment } from '@rahino/database';
 import { Role } from '@rahino/database';
 import { UserRole } from '@rahino/database';
-import { BuffetOption } from '@rahino/database';
-import { BuffetGallery } from '@rahino/database';
+import { BuffetOption } from '@rahino/localdatabase/models';
+import { BuffetGallery } from '@rahino/localdatabase/models';
 
 @Module({
   imports: [

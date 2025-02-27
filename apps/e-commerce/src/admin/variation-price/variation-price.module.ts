@@ -3,7 +3,7 @@ import { VariationPriceService } from './variation-price.service';
 import { SequelizeModule } from '@nestjs/sequelize';
 import { User } from '@rahino/database';
 import { Permission } from '@rahino/database';
-import { ECVariationPrice } from '@rahino/database';
+import { ECVariationPrice } from '@rahino/localdatabase/models';
 import { VariationPriceController } from './variation-price.controller';
 
 @Module({

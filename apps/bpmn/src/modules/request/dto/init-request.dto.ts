@@ -1,4 +1,4 @@
-import { BPMNPROCESS } from '@rahino/database';
+import { BPMNPROCESS } from '@rahino/localdatabase/models';
 
 export class InitRequestDto {
   userId: bigint;

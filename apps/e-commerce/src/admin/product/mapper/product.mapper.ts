@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { AutomapperProfile, InjectMapper } from 'automapper-nestjs';
 import { ProductDto } from '../dto';
 import { Mapper, createMap, forMember, ignore } from 'automapper-core';
-import { ECProduct } from '@rahino/database';
+import { ECProduct } from '@rahino/localdatabase/models';
 import { ProductAttributeDto } from '../dto/product-attribute.dto';
 import { EntityAttributeValueDto } from '@rahino/eav/admin/entity-attribute-value/dto';
 import { ProductAttachmentDto } from '../dto/product-attachment.dto';

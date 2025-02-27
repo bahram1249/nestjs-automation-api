@@ -3,7 +3,7 @@ import {
   BPMNRequestState,
   BPMNNode,
   BPMNCondition,
-} from '@rahino/database';
+} from '@rahino/localdatabase/models';
 import { Transaction } from 'sequelize';
 
 export class RunConditionDto {

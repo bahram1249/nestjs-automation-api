@@ -1,11 +1,11 @@
-import { ECDiscountCondition } from '@rahino/database';
-import { ECDiscountType } from '@rahino/database';
-import { ECInventory } from '@rahino/database';
-import { ECProduct } from '@rahino/database';
+import { ECDiscountCondition } from '@rahino/localdatabase/models';
+import { ECDiscountType } from '@rahino/localdatabase/models';
+import { ECInventory } from '@rahino/localdatabase/models';
+import { ECProduct } from '@rahino/localdatabase/models';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import { Op, Sequelize } from 'sequelize';
 import { DiscountConditionTypeEnum } from '../admin/discount-condition-type/enum';
-import { ECDiscount } from '@rahino/database';
+import { ECDiscount } from '@rahino/localdatabase/models';
 import { InjectModel } from '@nestjs/sequelize';
 import { DiscountInterface } from '../admin/discount/interface';
 import { ApplyDiscountService } from '../product/service';

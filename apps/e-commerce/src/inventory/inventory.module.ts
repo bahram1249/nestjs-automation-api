@@ -2,10 +2,10 @@
 import { UserVendorModule } from '@rahino/ecommerce/user/vendor/user-vendor.module';
 import { VendorAddressModule } from '@rahino/ecommerce/vendor-address/vendor-address.module';
 import { SequelizeModule } from '@nestjs/sequelize';
-import { ECVariationPrice } from '@rahino/database';
-import { ECColor } from '@rahino/database';
-import { ECGuarantee } from '@rahino/database';
-import { ECGuaranteeMonth } from '@rahino/database';
+import { ECVariationPrice } from '@rahino/localdatabase/models';
+import { ECColor } from '@rahino/localdatabase/models';
+import { ECGuarantee } from '@rahino/localdatabase/models';
+import { ECGuaranteeMonth } from '@rahino/localdatabase/models';
 import { InventoryProfile } from './mapper';
 import {
   DecreaseInventoryService,
@@ -13,11 +13,11 @@ import {
   InventoryValidationService,
   inventoryStatusService,
 } from './services';
-import { ECInventory } from '@rahino/database';
-import { ECInventoryPrice } from '@rahino/database';
-import { ECProvince } from '@rahino/database';
+import { ECInventory } from '@rahino/localdatabase/models';
+import { ECInventoryPrice } from '@rahino/localdatabase/models';
+import { ECProvince } from '@rahino/localdatabase/models';
 import { QueryFilterModule } from '@rahino/query-filter';
-import { ECProduct } from '@rahino/database';
+import { ECProduct } from '@rahino/localdatabase/models';
 import { BullModule } from '@nestjs/bullmq';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import {
@@ -30,12 +30,12 @@ import {
   DecreaseInventoryProcessor,
   ProductInventoryStatusProcessor,
 } from './processor';
-import { ECPayment } from '@rahino/database';
-import { ECOrder } from '@rahino/database';
+import { ECPayment } from '@rahino/localdatabase/models';
+import { ECOrder } from '@rahino/localdatabase/models';
 import { RevertInventoryQtyProcessor } from './processor/revert-inventory-qty.processor';
 import { PaymentServiceProviderModule } from '../user/shopping/payment/provider/payment-provider.module';
 import { InventoryTrackChangeModule } from '../inventory-track-change/inventory-track-change.module';
-import { ECWallet } from '@rahino/database';
+import { ECWallet } from '@rahino/localdatabase/models';
 import { RevertPaymentQtyModule } from './revert-payment-qty.module';
 import { CalPriceFactoryModule } from '../admin/product/price-cal-factory/cal-price-factory.module';
 

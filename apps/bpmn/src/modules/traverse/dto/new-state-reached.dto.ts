@@ -3,7 +3,7 @@ import {
   BPMNNodeCommand,
   BPMNRequest,
   BPMNRequestState,
-} from '@rahino/database';
+} from '@rahino/localdatabase/models';
 import { Transaction } from 'sequelize';
 
 export class NewStateReachedDto {

@@ -12,7 +12,7 @@ import { User } from '@rahino/database';
 import { SessionService } from './session.service';
 import { JsonResponseTransformInterceptor } from '@rahino/response/interceptor';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
-import { ECUserSession } from '@rahino/database';
+import { ECUserSession } from '@rahino/localdatabase/models';
 import { Throttle } from '@nestjs/throttler';
 import { ThrottlerBehindProxyGuard } from '@rahino/commontools/guard';
 

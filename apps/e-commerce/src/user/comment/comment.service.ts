@@ -5,12 +5,12 @@ import { Op, Sequelize } from 'sequelize';
 import * as _ from 'lodash';
 import { User } from '@rahino/database';
 import { ListFilter } from '@rahino/query-filter';
-import { ECProductComment } from '@rahino/database';
+import { ECProductComment } from '@rahino/localdatabase/models';
 import { ProductCommentStatusEnum } from '@rahino/ecommerce/util/enum';
-import { ECProductCommentStatus } from '@rahino/database';
-import { ECProduct } from '@rahino/database';
-import { ECProductCommentFactor } from '@rahino/database';
-import { ECEntityTypeFactor } from '@rahino/database';
+import { ECProductCommentStatus } from '@rahino/localdatabase/models';
+import { ECProduct } from '@rahino/localdatabase/models';
+import { ECProductCommentFactor } from '@rahino/localdatabase/models';
+import { ECEntityTypeFactor } from '@rahino/localdatabase/models';
 
 @Injectable()
 export class CommentService {

@@ -207,6 +207,15 @@
       "compilerOptions": {
         "tsConfigPath": "libs/sms/tsconfig.lib.json"
       }
+    },
+    "localdatabase": {
+      "type": "library",
+      "root": "libs/localdatabase",
+      "entryFile": "index",
+      "sourceRoot": "libs/localdatabase/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/localdatabase/tsconfig.lib.json"
+      }
     }
   }
 }

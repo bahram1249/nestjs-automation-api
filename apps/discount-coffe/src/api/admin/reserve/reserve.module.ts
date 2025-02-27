@@ -2,12 +2,12 @@ import { Module } from '@nestjs/common';
 import { SequelizeModule } from '@nestjs/sequelize';
 import { Permission } from '@rahino/database';
 import { User } from '@rahino/database';
-import { BuffetReserve } from '@rahino/database';
+import { BuffetReserve } from '@rahino/localdatabase/models';
 import { ReserveService } from './reserve.service';
 import { ReserveController } from './reserve.controller';
-import { BuffetMenu } from '@rahino/database';
-import { BuffetReserveDetail } from '@rahino/database';
-import { Buffet } from '@rahino/database';
+import { BuffetMenu } from '@rahino/localdatabase/models';
+import { BuffetReserveDetail } from '@rahino/localdatabase/models';
+import { Buffet } from '@rahino/localdatabase/models';
 
 @Module({
   imports: [

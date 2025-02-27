@@ -7,8 +7,8 @@ import {
   BPMNNodeCommandType,
   BPMNPROCESS,
   BPMNRequestState,
-  UserRole,
-} from '@rahino/database';
+} from '@rahino/localdatabase/models';
+import { UserRole } from '@rahino/database';
 import {
   AutoTraverseDto,
   NewStateReachedDto,

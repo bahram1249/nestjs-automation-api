@@ -3,12 +3,11 @@ import { PostController } from './post.controller';
 import { PostService } from './post.service';
 import { SequelizeModule } from '@nestjs/sequelize';
 import {
-  Attachment,
   EAVEntityPhoto,
   EAVEntityType,
   EAVPost,
-  User,
-} from '@rahino/database';
+} from '@rahino/localdatabase/models';
+import { Attachment, User } from '@rahino/database';
 import { Permission } from '@rahino/database';
 import { PostProfile } from './mapper';
 import { EntityModule } from '../entity/entity.module';

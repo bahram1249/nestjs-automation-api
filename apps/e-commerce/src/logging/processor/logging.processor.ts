@@ -3,7 +3,7 @@ import { Job } from 'bullmq';
 import { REQUEST_LOGGING_QUEUE } from '../constants';
 import { LoggingService } from '../service';
 import { RequestDataInterface } from '../interface';
-import { ECUserSession } from '@rahino/database';
+import { ECUserSession } from '@rahino/localdatabase/models';
 import { User } from '@rahino/database';
 
 @Processor(REQUEST_LOGGING_QUEUE)

@@ -11,7 +11,7 @@ import { Permission } from '@rahino/database';
 import { User } from '@rahino/database';
 import { MinioClientModule } from '@rahino/minio-client';
 import { Attachment } from '@rahino/database';
-import { EAVEntityPhoto } from '@rahino/database';
+import { EAVEntityPhoto } from '@rahino/localdatabase/models';
 import { ReverseProxyProductImageMiddleware } from './reverse-proxy.middleware';
 import { ThumbnailModule } from '@rahino/thumbnail';
 import { ConfigService } from '@nestjs/config';

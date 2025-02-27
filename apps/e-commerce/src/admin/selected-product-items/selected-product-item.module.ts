@@ -5,9 +5,9 @@ import { SequelizeModule } from '@nestjs/sequelize';
 import { Permission } from '@rahino/database';
 import { User } from '@rahino/database';
 import { SelectedProductItemProfile } from './mapper';
-import { ECSelectedProduct } from '@rahino/database';
-import { ECProduct } from '@rahino/database';
-import { ECSelectedProductItem } from '@rahino/database';
+import { ECSelectedProduct } from '@rahino/localdatabase/models';
+import { ECProduct } from '@rahino/localdatabase/models';
+import { ECSelectedProductItem } from '@rahino/localdatabase/models';
 
 @Module({
   imports: [

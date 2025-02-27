@@ -5,7 +5,7 @@ import { ProvinceEnum } from '@rahino/ecommerce/util/enum';
 import { CityEnum } from '@rahino/ecommerce/util/enum/city.enum';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import { InjectModel } from '@nestjs/sequelize';
-import { ECProvince } from '@rahino/database';
+import { ECProvince } from '@rahino/localdatabase/models';
 
 @Injectable()
 export class ValidateAddressService {

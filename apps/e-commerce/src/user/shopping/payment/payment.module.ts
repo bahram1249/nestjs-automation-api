@@ -6,12 +6,12 @@ import { ShipmentModule } from '../stock/services/shipment-price';
 import { StockModule } from '../stock/stock.module';
 import { AddressModule } from '../../address/address.module';
 import { SequelizeModule } from '@nestjs/sequelize';
-import { ECProvince } from '@rahino/database';
-import { ECVariationPrice } from '@rahino/database';
-import { ECPaymentGateway } from '@rahino/database';
-import { ECOrder } from '@rahino/database';
-import { ECOrderDetail } from '@rahino/database';
-import { ECStock } from '@rahino/database';
+import { ECProvince } from '@rahino/localdatabase/models';
+import { ECVariationPrice } from '@rahino/localdatabase/models';
+import { ECPaymentGateway } from '@rahino/localdatabase/models';
+import { ECOrder } from '@rahino/localdatabase/models';
+import { ECOrderDetail } from '@rahino/localdatabase/models';
+import { ECStock } from '@rahino/localdatabase/models';
 import { SessionModule } from '../../session/session.module';
 import { BullModule } from '@nestjs/bullmq';
 import { ConfigService } from '@nestjs/config';
@@ -20,13 +20,13 @@ import {
   REVERT_INVENTORY_QTY_QUEUE,
 } from '@rahino/ecommerce/inventory/constants';
 import { InventoryModule } from '@rahino/ecommerce/inventory/inventory.module';
-import { ECDiscount } from '@rahino/database';
+import { ECDiscount } from '@rahino/localdatabase/models';
 import { ProductModule } from '@rahino/ecommerce/product/product.module';
-import { ECInventoryPrice } from '@rahino/database';
-import { ECVendorCommission } from '@rahino/database';
+import { ECInventoryPrice } from '@rahino/localdatabase/models';
+import { ECVendorCommission } from '@rahino/localdatabase/models';
 import { REVERT_PAYMENT_QUEUE } from './revert-payment/revert-payment.constants';
 import { RevertPaymentProcessor } from './revert-payment/revert-payment.processor';
-import { ECPayment } from '@rahino/database';
+import { ECPayment } from '@rahino/localdatabase/models';
 import { DBLoggerModule } from '@rahino/logger';
 import { PaymentRuleModule } from '../payment-rule/payment-rule.module';
 

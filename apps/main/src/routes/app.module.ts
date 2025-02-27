@@ -6,15 +6,7 @@ import {
 } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { DatabaseModule } from '@rahino/database';
-import {
-  coreModels,
-  discountCoffeEntities,
-  eavEntities,
-  ecommerceEntities,
-  pcmEntities,
-  bpmnModels,
-  guaranteeModels,
-} from '@rahino/database/dist/subsystem-models';
+import { coreModels } from '@rahino/database';
 import helmet from 'helmet';
 import { ThrottlerModule } from '@nestjs/throttler';
 import { DevtoolsModule } from '@nestjs/devtools-integration';
@@ -52,6 +44,14 @@ import * as os from 'os';
 import { Dialect } from 'sequelize';
 import { BPMNModule } from '@rahino/bpmn';
 import { GSModule } from 'apps/guarantee/src';
+import {
+  bpmnModels,
+  discountCoffeEntities,
+  eavEntities,
+  ecommerceEntities,
+  guaranteeModels,
+  pcmEntities,
+} from '@rahino/localdatabase/subsystem-models';
 
 @Module({
   imports: [

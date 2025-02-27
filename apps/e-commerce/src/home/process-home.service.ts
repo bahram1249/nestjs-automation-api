@@ -1,6 +1,6 @@
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
-import { ECHomePage } from '@rahino/database';
+import { ECHomePage } from '@rahino/localdatabase/models';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import { Op, Sequelize } from 'sequelize';
 import { HomePageTypeEnum } from '../util/enum';
@@ -8,10 +8,10 @@ import { BrandContentDto } from '../admin/home-page/dto/content/brand-content.dt
 import { CategoryContentDto } from '../admin/home-page/dto/content/category-content.dto';
 import { ConfigService } from '@nestjs/config';
 import { ProductCategoryContentDto } from '../admin/home-page/dto/content/product-category-content.dto';
-import { ECEntityTypeSort } from '@rahino/database';
-import { EAVEntityType } from '@rahino/database';
+import { ECEntityTypeSort } from '@rahino/localdatabase/models';
+import { EAVEntityType } from '@rahino/localdatabase/models';
 import { ProductBrandContentDto } from '../admin/home-page/dto/content/product-brand-content.dto';
-import { ECBrand } from '@rahino/database';
+import { ECBrand } from '@rahino/localdatabase/models';
 import { AmazingContentDto } from '../admin/home-page/dto/content/amazing-content.dto';
 import { SliderContentDto } from '../admin/home-page/dto/content/slider-content.dto';
 import { Attachment } from '@rahino/database';

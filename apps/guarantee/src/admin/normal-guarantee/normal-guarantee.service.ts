@@ -13,7 +13,7 @@ import {
   GSGuaranteeType,
   GSProvider,
   GSVariant,
-} from '@rahino/database';
+} from '@rahino/localdatabase/models';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import { Op } from 'sequelize';
 import { I18nContext, I18nService } from 'nestjs-i18n';

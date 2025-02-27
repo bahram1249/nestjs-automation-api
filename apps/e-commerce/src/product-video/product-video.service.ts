@@ -13,7 +13,7 @@ import * as fs from 'fs';
 import { Attachment } from '@rahino/database';
 import { Response } from 'express';
 import { VideoDto } from './dto';
-import { EAVEntityVideo } from '@rahino/database';
+import { EAVEntityVideo } from '@rahino/localdatabase/models';
 import * as util from 'util';
 const readFileAsync = util.promisify(fs.readFile);
 

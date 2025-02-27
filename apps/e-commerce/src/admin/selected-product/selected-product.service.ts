@@ -17,8 +17,8 @@ import * as fs from 'fs';
 import { Attachment } from '@rahino/database';
 import { Response } from 'express';
 import { ThumbnailService } from '@rahino/thumbnail';
-import { ECSelectedProduct } from '@rahino/database';
-import { ECSelectedProductType } from '@rahino/database';
+import { ECSelectedProduct } from '@rahino/localdatabase/models';
+import { ECSelectedProductType } from '@rahino/localdatabase/models';
 
 @Injectable()
 export class SelectedProductService {

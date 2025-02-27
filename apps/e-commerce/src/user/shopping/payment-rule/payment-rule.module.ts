@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ValidateAddressService } from './services/validate-address.service';
 import { SequelizeModule } from '@nestjs/sequelize';
-import { ECProvince } from '@rahino/database';
+import { ECProvince } from '@rahino/localdatabase/models';
 import { AddressModule } from '../../address/address.module';
 
 @Module({

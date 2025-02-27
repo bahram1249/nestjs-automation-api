@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { AutomapperProfile, InjectMapper } from 'automapper-nestjs';
 import { VendorDto, VendorUserDto } from '../dto';
 import { Mapper, createMap, forMember, ignore } from 'automapper-core';
-import { ECVendor } from '@rahino/database';
+import { ECVendor } from '@rahino/localdatabase/models';
 import { User } from '@rahino/database';
 
 @Injectable()

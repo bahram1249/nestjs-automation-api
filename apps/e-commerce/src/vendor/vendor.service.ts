@@ -12,18 +12,18 @@ import { Op, Sequelize, Transaction } from 'sequelize';
 import { InjectMapper } from 'automapper-nestjs';
 import { Mapper } from 'automapper-core';
 import * as _ from 'lodash';
-import { ECVendor } from '@rahino/database';
+import { ECVendor } from '@rahino/localdatabase/models';
 import { User } from '@rahino/database';
 import { Role } from '@rahino/database';
 import { UserRoleService } from '@rahino/core/admin/user-role/user-role.service';
-import { ECVendorUser } from '@rahino/database';
+import { ECVendorUser } from '@rahino/localdatabase/models';
 import { Attachment } from '@rahino/database';
 import { MinioClientService } from '@rahino/minio-client';
 import * as fs from 'fs';
 import { ThumbnailService } from '@rahino/thumbnail';
-import { ECVendorCommission } from '@rahino/database';
-import { ECVariationPrice } from '@rahino/database';
-import { ECVendorCommissionType } from '@rahino/database';
+import { ECVendorCommission } from '@rahino/localdatabase/models';
+import { ECVariationPrice } from '@rahino/localdatabase/models';
+import { ECVendorCommissionType } from '@rahino/localdatabase/models';
 
 @Injectable()
 export class VendorService {

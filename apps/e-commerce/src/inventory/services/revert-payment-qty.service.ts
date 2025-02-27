@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { RevertInventoryQtyService } from './revert-inventory-qty.service';
 import { InjectModel } from '@nestjs/sequelize';
-import { ECPayment } from '@rahino/database';
+import { ECPayment } from '@rahino/localdatabase/models';
 import { PaymentStatusEnum } from '@rahino/ecommerce/util/enum';
-import { ECWallet } from '@rahino/database';
+import { ECWallet } from '@rahino/localdatabase/models';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import { Op, Sequelize } from 'sequelize';
 

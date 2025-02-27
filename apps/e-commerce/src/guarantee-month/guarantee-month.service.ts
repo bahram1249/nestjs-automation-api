@@ -3,7 +3,7 @@ import { InjectModel } from '@nestjs/sequelize';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import { Op, Sequelize } from 'sequelize';
 import * as _ from 'lodash';
-import { ECGuaranteeMonth } from '@rahino/database';
+import { ECGuaranteeMonth } from '@rahino/localdatabase/models';
 
 @Injectable()
 export class GuaranteeMonthService {

@@ -9,7 +9,7 @@ import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builde
 import { Sequelize } from 'sequelize';
 import { Op } from 'sequelize';
 import { InjectModel } from '@nestjs/sequelize';
-import { ECCourier } from '@rahino/database';
+import { ECCourier } from '@rahino/localdatabase/models';
 import { I18nContext, I18nService } from 'nestjs-i18n';
 import { I18nTranslations } from 'apps/main/src/generated/i18n.generated';
 import { InjectMapper } from 'automapper-nestjs';

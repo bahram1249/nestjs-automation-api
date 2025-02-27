@@ -3,10 +3,10 @@ import { AddressController } from './addess.controller';
 import { AddressService } from './address.service';
 import { SequelizeModule } from '@nestjs/sequelize';
 import { AddressProfile } from './mapper';
-import { ECAddress } from '@rahino/database';
-import { ECProvince } from '@rahino/database';
-import { ECCity } from '@rahino/database';
-import { ECNeighborhood } from '@rahino/database';
+import { ECAddress } from '@rahino/localdatabase/models';
+import { ECProvince } from '@rahino/localdatabase/models';
+import { ECCity } from '@rahino/localdatabase/models';
+import { ECNeighborhood } from '@rahino/localdatabase/models';
 import { SessionModule } from '../session/session.module';
 
 @Module({

@@ -7,7 +7,7 @@ import {
 } from '@nestjs/common';
 import { BrandDto, GetBrandDto } from './dto';
 import { InjectModel } from '@nestjs/sequelize';
-import { ECBrand } from '@rahino/database';
+import { ECBrand } from '@rahino/localdatabase/models';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import { Op, Sequelize } from 'sequelize';
 import { InjectMapper } from 'automapper-nestjs';

@@ -19,8 +19,8 @@ import {
   GSGuaranteePeriod,
   GSProductType,
   GSVariant,
-  Setting,
-} from '@rahino/database';
+} from '@rahino/localdatabase/models';
+import { Setting } from '@rahino/database';
 import { SellerVaraintModule } from '@rahino/guarantee/util/seller-variant';
 import { SellerVariantProcessor } from './processor/sync-seller-variant.processor';
 

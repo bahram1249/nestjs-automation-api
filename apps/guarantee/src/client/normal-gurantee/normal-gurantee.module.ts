@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { SequelizeModule } from '@nestjs/sequelize';
-import { GSAssignedGuarantee, GSGuarantee } from '@rahino/database';
+import { GSAssignedGuarantee, GSGuarantee } from '@rahino/localdatabase/models';
 import { NormalGuaranteeService } from './normal-gurantee.service';
 import { NormalGuaranteeController } from './normal-gurantee.controller';
 

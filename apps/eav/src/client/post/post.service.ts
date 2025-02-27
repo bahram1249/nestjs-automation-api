@@ -1,11 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import {
-  Attachment,
   EAVBlogPublish,
   EAVEntityType,
   EAVPost,
-} from '@rahino/database';
+} from '@rahino/localdatabase/models';
+import { Attachment } from '@rahino/database';
 import { ListFilter } from '@rahino/query-filter';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import { Op } from 'sequelize';

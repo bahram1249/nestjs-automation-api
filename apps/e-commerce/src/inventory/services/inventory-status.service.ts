@@ -1,11 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
-import { ECInventory } from '@rahino/database';
+import { ECInventory } from '@rahino/localdatabase/models';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import { Op } from 'sequelize';
 import { Sequelize, Transaction } from 'sequelize';
 import { InventoryStatusEnum } from '../enum';
-import { ECProduct } from '@rahino/database';
+import { ECProduct } from '@rahino/localdatabase/models';
 
 @Injectable()
 export class inventoryStatusService {

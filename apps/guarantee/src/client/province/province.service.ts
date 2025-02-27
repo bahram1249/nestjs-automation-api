@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import * as _ from 'lodash';
-import { GSProvince } from '@rahino/database';
+import { GSProvince } from '@rahino/localdatabase/models';
 import { Op, Sequelize } from 'sequelize';
 
 @Injectable()

@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { AutomapperProfile, InjectMapper } from 'automapper-nestjs';
 import { PageDto } from '../dto';
 import { Mapper, createMap, forMember, ignore } from 'automapper-core';
-import { ECPage } from '@rahino/database';
+import { ECPage } from '@rahino/localdatabase/models';
 
 @Injectable()
 export class PageProfile extends AutomapperProfile {

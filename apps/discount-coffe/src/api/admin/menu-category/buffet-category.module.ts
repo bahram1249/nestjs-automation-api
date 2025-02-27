@@ -8,7 +8,7 @@ import { ThumbnailModule } from '@rahino/thumbnail';
 import { Attachment } from '@rahino/database';
 import { MenuCategoryService } from './menu-category.service';
 import { MenuCategoryController } from './menu-category.controller';
-import { BuffetMenuCategory } from '@rahino/database';
+import { BuffetMenuCategory } from '@rahino/localdatabase/models';
 
 @Module({
   imports: [

@@ -1,7 +1,8 @@
 import { Module } from '@nestjs/common';
 import { VariantService } from './variant.service';
 import { SequelizeModule } from '@nestjs/sequelize';
-import { GSVariant, Permission, User } from '@rahino/database';
+import { GSVariant } from '@rahino/localdatabase/models';
+import { User, Permission } from '@rahino/database';
 import { VariantController } from './variant.controller';
 import { VariantProfile } from './mapper';
 

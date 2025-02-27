@@ -5,7 +5,7 @@ import { Permission } from '@rahino/database';
 import { TotalReserveController } from './total-reserve.controller';
 import { TotalReserveService } from './total-reserve.service';
 
-import { BuffetReserve } from '@rahino/database';
+import { BuffetReserve } from '@rahino/localdatabase/models';
 
 @Module({
   imports: [SequelizeModule.forFeature([User, Permission, BuffetReserve])],

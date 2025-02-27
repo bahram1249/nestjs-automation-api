@@ -11,7 +11,7 @@ import { InjectMapper } from 'automapper-nestjs';
 import { Mapper } from 'automapper-core';
 import * as _ from 'lodash';
 import { User } from '@rahino/database';
-import { ECPage } from '@rahino/database';
+import { ECPage } from '@rahino/localdatabase/models';
 import { ListFilter } from '@rahino/query-filter';
 
 @Injectable()

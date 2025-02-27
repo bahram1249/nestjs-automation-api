@@ -1,4 +1,4 @@
-import { ECVariationPrice } from '@rahino/database';
+import { ECVariationPrice } from '@rahino/localdatabase/models';
 
 export interface StockPriceInterface {
   stockId: bigint;

@@ -3,7 +3,7 @@ import { InjectModel } from '@nestjs/sequelize';
 import { QueryFilter } from '@rahino/query-filter/sequelize-mapper';
 import { Op } from 'sequelize';
 import { AgeGetDto } from './dto';
-import { PCMAge } from '@rahino/database';
+import { PCMAge } from '@rahino/localdatabase/models';
 
 @Injectable()
 export class AgeService {

@@ -4,7 +4,7 @@ import { User } from '@rahino/database';
 import { Permission } from '@rahino/database';
 import { AdminReportController } from './admin-report.controller';
 import { AdminReportService } from './admin-report.service';
-import { BuffetReserve } from '@rahino/database';
+import { BuffetReserve } from '@rahino/localdatabase/models';
 
 @Module({
   imports: [SequelizeModule.forFeature([User, Permission, BuffetReserve])],

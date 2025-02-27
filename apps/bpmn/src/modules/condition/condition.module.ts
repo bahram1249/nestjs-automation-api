@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ConditionService } from './condition.service';
 import { SequelizeModule } from '@nestjs/sequelize';
-import { BPMNNodeCondition } from '@rahino/database';
+import { BPMNNodeCondition } from '@rahino/localdatabase/models';
 import { ConditionLoaderModule } from '../condition-loader';
 
 @Module({

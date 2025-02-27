@@ -7,15 +7,15 @@ import { Sequelize } from 'sequelize';
 import { Op } from 'sequelize';
 import { I18nContext, I18nService } from 'nestjs-i18n';
 import { I18nTranslations } from 'apps/main/src/generated/i18n.generated';
-import { ECProductComment } from '@rahino/database';
-import { ECProductCommentStatus } from '@rahino/database';
-import { ECProductCommentFactor } from '@rahino/database';
-import { ECEntityTypeFactor } from '@rahino/database';
+import { ECProductComment } from '@rahino/localdatabase/models';
+import { ECProductCommentStatus } from '@rahino/localdatabase/models';
+import { ECProductCommentFactor } from '@rahino/localdatabase/models';
+import { ECEntityTypeFactor } from '@rahino/localdatabase/models';
 import { ProductCommentStatusEnum } from '@rahino/ecommerce/util/enum/product-comment-status.enum';
 import { SCORE_COMMENT_JOB, SCORE_COMMENT_QUEUE } from './constants';
 import { InjectQueue } from '@nestjs/bullmq';
 import { Queue } from 'bullmq';
-import { ECProduct } from '@rahino/database';
+import { ECProduct } from '@rahino/localdatabase/models';
 
 @Injectable()
 export class ProductCommentService {

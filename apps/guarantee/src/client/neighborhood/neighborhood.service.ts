@@ -4,7 +4,7 @@ import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builde
 import * as _ from 'lodash';
 import { Op, Sequelize } from 'sequelize';
 import { GetNeighborhoodDto } from './dto';
-import { GSCity, GSNeighborhood } from '@rahino/database';
+import { GSCity, GSNeighborhood } from '@rahino/localdatabase/models';
 
 @Injectable()
 export class NeighborhoodService {

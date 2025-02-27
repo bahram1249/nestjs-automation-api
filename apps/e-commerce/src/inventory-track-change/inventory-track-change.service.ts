@@ -1,11 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
-import { ECInventoryTrackChangeStatus } from '@rahino/database';
+import { ECInventoryTrackChangeStatus } from '@rahino/localdatabase/models';
 import { InventoryTrackChangeStatusEnum } from '../util/enum';
 import { Transaction } from 'sequelize';
-import { ECInventory } from '@rahino/database';
+import { ECInventory } from '@rahino/localdatabase/models';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
-import { ECInventoryHistory } from '@rahino/database';
+import { ECInventoryHistory } from '@rahino/localdatabase/models';
 
 @Injectable()
 export class InventoryTrackChangeService {

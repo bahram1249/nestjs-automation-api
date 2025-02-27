@@ -9,9 +9,9 @@ import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builde
 import { InjectMapper } from 'automapper-nestjs';
 import { Mapper } from 'automapper-core';
 import * as _ from 'lodash';
-import { ECSelectedProductItem } from '@rahino/database';
-import { ECProduct } from '@rahino/database';
-import { ECSelectedProduct } from '@rahino/database';
+import { ECSelectedProductItem } from '@rahino/localdatabase/models';
+import { ECProduct } from '@rahino/localdatabase/models';
+import { ECSelectedProduct } from '@rahino/localdatabase/models';
 import { Attachment } from '@rahino/database';
 
 @Injectable()

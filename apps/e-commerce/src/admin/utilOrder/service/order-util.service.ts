@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { ECOrder } from '@rahino/database';
+import { ECOrder } from '@rahino/localdatabase/models';
 
 @Injectable()
 export class OrderUtilService {

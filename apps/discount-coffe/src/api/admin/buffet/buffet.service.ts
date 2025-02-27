@@ -8,7 +8,7 @@ import {
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { Op, Sequelize } from 'sequelize';
-import { Buffet } from '@rahino/database';
+import { Buffet } from '@rahino/localdatabase/models';
 import { ListFilter } from '@rahino/query-filter';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import { Attachment } from '@rahino/database';
@@ -23,9 +23,9 @@ import { Response } from 'express';
 import * as fs from 'fs';
 import { Role } from '@rahino/database';
 import { UserRole } from '@rahino/database';
-import { BuffetOption } from '@rahino/database';
+import { BuffetOption } from '@rahino/localdatabase/models';
 import { replaceCharacterSlug } from '@rahino/commontools';
-import { BuffetGallery } from '@rahino/database';
+import { BuffetGallery } from '@rahino/localdatabase/models';
 
 @Injectable()
 export class BuffetService {

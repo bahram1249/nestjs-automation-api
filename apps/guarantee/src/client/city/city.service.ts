@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import * as _ from 'lodash';
-import { GSCity, GSProvince } from '@rahino/database';
+import { GSCity, GSProvince } from '@rahino/localdatabase/models';
 import { Op, Sequelize } from 'sequelize';
 import { GetCityDto } from './dto';
 

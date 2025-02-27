@@ -12,7 +12,7 @@ import { User } from '@rahino/database';
 import { MinioClientModule } from '@rahino/minio-client';
 import { Attachment } from '@rahino/database';
 import { ReverseProxyProductVideoMiddleware } from './reverse-proxy.middleware';
-import { EAVEntityVideo } from '@rahino/database';
+import { EAVEntityVideo } from '@rahino/localdatabase/models';
 
 @Module({
   imports: [

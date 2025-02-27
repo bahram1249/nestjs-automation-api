@@ -5,7 +5,7 @@ import {
 } from '@nestjs/common';
 import { ZarinPalService } from '../services';
 import { InjectModel } from '@nestjs/sequelize';
-import { ECPaymentGateway } from '@rahino/database';
+import { ECPaymentGateway } from '@rahino/localdatabase/models';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import { Sequelize } from 'sequelize';
 import { Op } from 'sequelize';

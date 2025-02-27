@@ -2,7 +2,7 @@ import { Processor, WorkerHost } from '@nestjs/bullmq';
 import { Job } from 'bullmq';
 import { DBLogger } from '@rahino/logger';
 import { InjectModel } from '@nestjs/sequelize';
-import { ECPayment } from '@rahino/database';
+import { ECPayment } from '@rahino/localdatabase/models';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import { PaymentStatusEnum } from '@rahino/ecommerce/util/enum';
 import { Op, Sequelize } from 'sequelize';

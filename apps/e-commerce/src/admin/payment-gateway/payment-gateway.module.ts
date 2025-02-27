@@ -4,7 +4,7 @@ import { SequelizeModule } from '@nestjs/sequelize';
 import { User } from '@rahino/database';
 import { Permission } from '@rahino/database';
 import { PaymentGatewayController } from './payment-gateway.controller';
-import { ECPaymentGateway } from '@rahino/database';
+import { ECPaymentGateway } from '@rahino/localdatabase/models';
 
 @Module({
   imports: [SequelizeModule.forFeature([User, Permission, ECPaymentGateway])],

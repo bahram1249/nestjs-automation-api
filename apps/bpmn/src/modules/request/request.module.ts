@@ -5,8 +5,8 @@ import {
   BPMNOrganization,
   BPMNPROCESS,
   BPMNRequest,
-  User,
-} from '@rahino/database';
+} from '@rahino/localdatabase/models';
+import { User } from '@rahino/database';
 import { RequestStateModule } from '../request-state';
 import { TraverseModule } from '../traverse/traverse.module';
 

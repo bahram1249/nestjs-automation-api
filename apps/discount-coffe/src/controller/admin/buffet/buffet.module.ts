@@ -4,12 +4,12 @@ import { BuffetController } from './buffet.controller';
 import { SequelizeModule } from '@nestjs/sequelize';
 import { User } from '@rahino/database';
 import { Permission } from '@rahino/database';
-import { Buffet } from '@rahino/database';
-import { BuffetType } from '@rahino/database';
-import { BuffetCost } from '@rahino/database';
-import { BuffetCity } from '@rahino/database';
-import { CoffeOption } from '@rahino/database';
-import { BuffetOption } from '@rahino/database';
+import { Buffet } from '@rahino/localdatabase/models';
+import { BuffetType } from '@rahino/localdatabase/models';
+import { BuffetCost } from '@rahino/localdatabase/models';
+import { BuffetCity } from '@rahino/localdatabase/models';
+import { CoffeOption } from '@rahino/localdatabase/models';
+import { BuffetOption } from '@rahino/localdatabase/models';
 
 @Module({
   imports: [

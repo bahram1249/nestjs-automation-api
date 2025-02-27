@@ -5,13 +5,13 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { CreateDiscountDto, FactorDiscountDto, GetDiscountDto } from './dto';
-import { ECDiscount } from '@rahino/database';
+import { ECDiscount } from '@rahino/localdatabase/models';
 import { InjectConnection, InjectModel } from '@nestjs/sequelize';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import { Op, Sequelize, Transaction } from 'sequelize';
-import { ECDiscountType } from '@rahino/database';
-import { ECDiscountActionRule } from '@rahino/database';
-import { ECDiscountActionType } from '@rahino/database';
+import { ECDiscountType } from '@rahino/localdatabase/models';
+import { ECDiscountActionRule } from '@rahino/localdatabase/models';
+import { ECDiscountActionType } from '@rahino/localdatabase/models';
 import { Mapper } from 'automapper-core';
 import { InjectMapper } from 'automapper-nestjs';
 import * as _ from 'lodash';

@@ -2,10 +2,10 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import * as _ from 'lodash';
-import { ECProvince } from '@rahino/database';
+import { ECProvince } from '@rahino/localdatabase/models';
 import { Op, Sequelize } from 'sequelize';
 import { GetCityDto } from './dto';
-import { ECCity } from '@rahino/database';
+import { ECCity } from '@rahino/localdatabase/models';
 
 @Injectable()
 export class CityService {

@@ -6,11 +6,11 @@ import {
 import { InjectModel } from '@nestjs/sequelize';
 import { Op, Sequelize } from 'sequelize';
 import { AttributeValueDto, GetAttributeValueDto } from './dto';
-import { EAVAttribute } from '@rahino/database';
+import { EAVAttribute } from '@rahino/localdatabase/models';
 import { InjectMapper } from 'automapper-nestjs';
 import { Mapper } from 'automapper-core';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
-import { EAVAttributeValue } from '@rahino/database';
+import { EAVAttributeValue } from '@rahino/localdatabase/models';
 import * as _ from 'lodash';
 
 @Injectable()

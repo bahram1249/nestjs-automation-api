@@ -13,7 +13,7 @@ import * as fs from 'fs';
 import { Attachment } from '@rahino/database';
 import { Response } from 'express';
 import { PhotoDto } from './dto';
-import { EAVEntityPhoto } from '@rahino/database';
+import { EAVEntityPhoto } from '@rahino/localdatabase/models';
 import { ThumbnailService } from '@rahino/thumbnail';
 
 @Injectable()

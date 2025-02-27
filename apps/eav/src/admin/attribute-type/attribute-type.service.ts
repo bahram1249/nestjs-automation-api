@@ -3,7 +3,7 @@ import { InjectModel } from '@nestjs/sequelize';
 import { QueryFilter } from '@rahino/query-filter/sequelize-mapper';
 import { Op } from 'sequelize';
 import { GetAttributeTypeDto } from './dto';
-import { EAVAttributeType } from '@rahino/database';
+import { EAVAttributeType } from '@rahino/localdatabase/models';
 
 @Injectable()
 export class AttributeTypeService {

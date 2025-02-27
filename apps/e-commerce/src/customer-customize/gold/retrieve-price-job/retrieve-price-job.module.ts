@@ -6,9 +6,9 @@ import {
   RetrievePriceRunnerService,
 } from './services';
 import { QueryFilterModule } from '@rahino/query-filter';
-import { ECInventory } from '@rahino/database';
+import { ECInventory } from '@rahino/localdatabase/models';
 import { CalPriceFactoryModule } from '@rahino/ecommerce/admin/product/price-cal-factory/cal-price-factory.module';
-import { ECInventoryPrice } from '@rahino/database';
+import { ECInventoryPrice } from '@rahino/localdatabase/models';
 import { RetrievePriceProcessor } from './processor';
 import { BullModule } from '@nestjs/bullmq';
 import { ConfigModule, ConfigService } from '@nestjs/config';

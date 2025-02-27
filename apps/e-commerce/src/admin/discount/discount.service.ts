@@ -5,19 +5,19 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { CreateDiscountDto, DiscountDto, GetDiscountDto } from './dto';
-import { ECDiscount } from '@rahino/database';
+import { ECDiscount } from '@rahino/localdatabase/models';
 import { InjectConnection, InjectModel } from '@nestjs/sequelize';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import { Op, Sequelize, Transaction } from 'sequelize';
-import { ECDiscountType } from '@rahino/database';
-import { ECDiscountActionRule } from '@rahino/database';
-import { ECDiscountActionType } from '@rahino/database';
+import { ECDiscountType } from '@rahino/localdatabase/models';
+import { ECDiscountActionRule } from '@rahino/localdatabase/models';
+import { ECDiscountActionType } from '@rahino/localdatabase/models';
 import { Mapper } from 'automapper-core';
 import { InjectMapper } from 'automapper-nestjs';
 import * as _ from 'lodash';
 import { User } from '@rahino/database';
 import { UserVendorService } from '@rahino/ecommerce/user/vendor/user-vendor.service';
-import { ECDiscountCondition } from '@rahino/database';
+import { ECDiscountCondition } from '@rahino/localdatabase/models';
 import { DiscountConditionTypeEnum } from '../discount-condition-type/enum';
 import { PermissionService } from '@rahino/core/user/permission/permission.service';
 

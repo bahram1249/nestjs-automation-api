@@ -1,4 +1,8 @@
-import { BPMNNode, BPMNRequest, BPMNRequestState } from '@rahino/database';
+import {
+  BPMNNode,
+  BPMNRequest,
+  BPMNRequestState,
+} from '@rahino/localdatabase/models';
 import { Transaction } from 'sequelize';
 
 export class RunInboundActionsDto {

@@ -7,7 +7,7 @@ import { Mapper } from 'automapper-core';
 import * as _ from 'lodash';
 import { User } from '@rahino/database';
 import { ListFilter } from '@rahino/query-filter';
-import { ECNotification } from '@rahino/database';
+import { ECNotification } from '@rahino/localdatabase/models';
 
 @Injectable()
 export class NotificationService {

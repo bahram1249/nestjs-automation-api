@@ -2,7 +2,7 @@ import { OnWorkerEvent, Processor, WorkerHost } from '@nestjs/bullmq';
 import { Job } from 'bullmq';
 import { DBLogger } from '@rahino/logger';
 import { StockAvailabilityInventoryService } from '../services';
-import { ECUserSession } from '@rahino/database';
+import { ECUserSession } from '@rahino/localdatabase/models';
 import { StockDto } from '../dto';
 import { STOCK_INVENTORY_QUEUE } from '../constants';
 

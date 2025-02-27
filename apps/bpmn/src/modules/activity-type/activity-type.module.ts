@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { SequelizeModule } from '@nestjs/sequelize';
-import { BPMNActionType } from '@rahino/database';
+import { BPMNActionType } from '@rahino/localdatabase/models';
 import { ActivityTypeService } from './activity-type.service';
 
 @Module({

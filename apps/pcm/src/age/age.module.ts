@@ -4,7 +4,7 @@ import { User } from '@rahino/database';
 import { Permission } from '@rahino/database';
 import { AgeService } from './age.service';
 import { AgeController } from './age.controller';
-import { PCMAge } from '@rahino/database';
+import { PCMAge } from '@rahino/localdatabase/models';
 
 @Module({
   imports: [SequelizeModule.forFeature([User, Permission, PCMAge])],

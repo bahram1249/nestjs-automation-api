@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { SequelizeModule } from '@nestjs/sequelize';
-import { BPMNNode, BPMNRequestState, UserRole } from '@rahino/database';
+import { BPMNNode, BPMNRequestState } from '@rahino/localdatabase/models';
+import { UserRole } from '@rahino/database';
 import { ConditionModule } from '../condition';
 import { ActionModule } from '../action';
 import { RequestStateModule } from '../request-state';

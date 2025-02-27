@@ -1,11 +1,11 @@
 import { Module } from '@nestjs/common';
 import { SnapPayService, WalletService, ZarinPalService } from './services';
 import { SequelizeModule } from '@nestjs/sequelize';
-import { ECPaymentGateway } from '@rahino/database';
-import { ECPayment } from '@rahino/database';
-import { ECOrder } from '@rahino/database';
+import { ECPaymentGateway } from '@rahino/localdatabase/models';
+import { ECPayment } from '@rahino/localdatabase/models';
+import { ECOrder } from '@rahino/localdatabase/models';
 import { FinalizedPaymentModule } from '../util/finalized-payment/finalized-payment.module';
-import { ECWallet } from '@rahino/database';
+import { ECWallet } from '@rahino/localdatabase/models';
 import { PaymentWalletServiceProviderModule } from './payment-wallet-provider.module';
 import { RevertPaymentQtyModule } from '@rahino/ecommerce/inventory/revert-payment-qty.module';
 

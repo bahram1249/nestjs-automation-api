@@ -4,7 +4,7 @@ import { EntityModelService } from './entity-model.service';
 import { SequelizeModule } from '@nestjs/sequelize';
 import { User } from '@rahino/database';
 import { Permission } from '@rahino/database';
-import { EAVEntityModel } from '@rahino/database';
+import { EAVEntityModel } from '@rahino/localdatabase/models';
 
 @Module({
   imports: [SequelizeModule.forFeature([User, Permission, EAVEntityModel])],

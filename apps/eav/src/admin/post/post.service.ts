@@ -12,10 +12,9 @@ import {
   EAVPost,
   EAVBlogPublish,
   EAVEntityType,
-  User,
-  Attachment,
   EAVEntityPhoto,
-} from '@rahino/database';
+} from '@rahino/localdatabase/models';
+import { User, Attachment } from '@rahino/database';
 import { InjectMapper } from 'automapper-nestjs';
 import { Mapper } from 'automapper-core';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';

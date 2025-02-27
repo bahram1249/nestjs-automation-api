@@ -4,8 +4,8 @@ import { User } from '@rahino/database';
 import { Permission } from '@rahino/database';
 import { FactorReportController } from './factor-report.controller';
 import { FactorReportService } from './factor-report.service';
-import { Buffet } from '@rahino/database';
-import { VW_BuffetReservers } from '@rahino/database';
+import { Buffet } from '@rahino/localdatabase/models';
+import { VW_BuffetReservers } from '@rahino/localdatabase/models';
 
 @Module({
   imports: [

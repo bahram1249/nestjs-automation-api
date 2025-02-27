@@ -7,18 +7,18 @@ import {
 } from '@nestjs/common';
 import { InjectConnection, InjectModel } from '@nestjs/sequelize';
 import { User } from '@rahino/database';
-import { ECOrder } from '@rahino/database';
+import { ECOrder } from '@rahino/localdatabase/models';
 import { OrderStatusEnum } from '@rahino/ecommerce/util/enum';
 import { OrderQueryBuilder } from '../utilOrder/service/order-query-builder.service';
-import { ECOrderDetail } from '@rahino/database';
+import { ECOrderDetail } from '@rahino/localdatabase/models';
 import { Sequelize, Transaction } from 'sequelize';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import { Op } from 'sequelize';
-import { ECPayment } from '@rahino/database';
-import { ECPaymentGateway } from '@rahino/database';
+import { ECPayment } from '@rahino/localdatabase/models';
+import { ECPaymentGateway } from '@rahino/localdatabase/models';
 import { SnapPayService } from '@rahino/ecommerce/user/shopping/payment/provider/services';
-import { ECProduct } from '@rahino/database';
-import { EAVEntityType } from '@rahino/database';
+import { ECProduct } from '@rahino/localdatabase/models';
+import { EAVEntityType } from '@rahino/localdatabase/models';
 import { RoleUtilService } from '@rahino/core/user/role-util/role-util.service';
 import { UserVendorService } from '@rahino/ecommerce/user/vendor/user-vendor.service';
 import { OrderUtilService } from '../utilOrder/service/order-util.service';
@@ -28,8 +28,8 @@ import {
   ChangeShipmentWayDto,
   EditReceiptPostDto,
 } from './dto';
-import { ECOrderStatus } from '@rahino/database';
-import { ECOrderShipmentWay } from '@rahino/database';
+import { ECOrderStatus } from '@rahino/localdatabase/models';
+import { ECOrderShipmentWay } from '@rahino/localdatabase/models';
 import { GetTotalOrderFilterDto } from './dto/get-total-order.dto';
 
 @Injectable()

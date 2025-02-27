@@ -4,7 +4,7 @@ import { SequelizeModule } from '@nestjs/sequelize';
 import { User } from '@rahino/database';
 import { Permission } from '@rahino/database';
 import { ProductCommentStatusController } from './product-comment-status.controller';
-import { ECProductCommentStatus } from '@rahino/database';
+import { ECProductCommentStatus } from '@rahino/localdatabase/models';
 
 @Module({
   imports: [

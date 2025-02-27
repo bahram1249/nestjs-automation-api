@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { User } from '@rahino/database';
-import { ECPostageFee } from '@rahino/database';
+import { ECPostageFee } from '@rahino/localdatabase/models';
 import { ListFilter } from '@rahino/query-filter';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import { updateAllProvincePriceDto } from './dto';

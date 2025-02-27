@@ -1,10 +1,10 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { User } from '@rahino/database';
-import { ECOrder } from '@rahino/database';
-import { ECPayment } from '@rahino/database';
-import { ECPaymentGatewayCommission } from '@rahino/database';
-import { ECWallet } from '@rahino/database';
+import { ECOrder } from '@rahino/localdatabase/models';
+import { ECPayment } from '@rahino/localdatabase/models';
+import { ECPaymentGatewayCommission } from '@rahino/localdatabase/models';
+import { ECWallet } from '@rahino/localdatabase/models';
 import {
   OrderStatusEnum,
   PaymentStatusEnum,

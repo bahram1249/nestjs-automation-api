@@ -36,9 +36,9 @@
     "@nestjs/serve-static": "^4.0.0",
     "@nestjs/swagger": "^7.1.13",
     "@nestjs/throttler": "^5.1.2",
-    "@rahino/auth": "^1.0.19",
+    "@rahino/auth": "^2.0.0",
     "@rahino/commonmiddleware": "^3.0.0",
-    "@rahino/database": "^6.8.0",
+    "@rahino/database": "^7.0.0",
     "@types/express-handlebars": "^5.3.0",
     "@types/passport": "^1.0.13",
     "automapper-classes": "^8.7.12",
@@ -151,7 +151,8 @@
       "^@rahino/redis-client(|/.*)$": "<rootDir>/libs/redis-client/src/$1",
       "^@rahino/commontools(|/.*)$": "<rootDir>/libs/commontools/src/$1",
       "^@rahino/minio-client(|/.*)$": "<rootDir>/libs/minio-client/src/$1",
-      "^@rahino/sms(|/.*)$": "<rootDir>/libs/sms/src/$1"
+      "^@rahino/sms(|/.*)$": "<rootDir>/libs/sms/src/$1",
+      "^@rahino/localdatabase(|/.*)$": "<rootDir>/libs/localdatabase/src/$1"
     }
   }
 }

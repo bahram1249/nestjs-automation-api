@@ -9,7 +9,7 @@ import {
   GSCity,
   GSNeighborhood,
   GSProvince,
-} from '@rahino/database';
+} from '@rahino/localdatabase/models';
 
 @Module({
   imports: [

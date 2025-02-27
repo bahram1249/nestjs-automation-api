@@ -1,4 +1,4 @@
-import { BPMNRequest, BPMNRequestState } from '@rahino/database';
+import { BPMNRequest, BPMNRequestState } from '@rahino/localdatabase/models';
 import { Transaction } from 'sequelize';
 
 export class AutoTraverseDto {

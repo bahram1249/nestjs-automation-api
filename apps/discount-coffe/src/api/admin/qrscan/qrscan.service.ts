@@ -2,9 +2,9 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import { User } from '@rahino/database';
 import { QrScanDto } from './dto';
 import { InjectModel } from '@nestjs/sequelize';
-import { BuffetReserve } from '@rahino/database';
+import { BuffetReserve } from '@rahino/localdatabase/models';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
-import { Buffet } from '@rahino/database';
+import { Buffet } from '@rahino/localdatabase/models';
 import { Sequelize } from 'sequelize';
 
 @Injectable()

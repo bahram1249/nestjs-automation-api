@@ -5,7 +5,7 @@ import {
   PaymentTypeEnum,
 } from '@rahino/ecommerce/util/enum';
 import { InjectModel } from '@nestjs/sequelize';
-import { ECPaymentGateway } from '@rahino/database';
+import { ECPaymentGateway } from '@rahino/localdatabase/models';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import { Sequelize, Transaction } from 'sequelize';
 import { Op } from 'sequelize';
@@ -13,12 +13,12 @@ import {
   BadRequestException,
   InternalServerErrorException,
 } from '@nestjs/common';
-import { ECPayment } from '@rahino/database';
+import { ECPayment } from '@rahino/localdatabase/models';
 import { Base64 } from 'base64-string';
 import axios from 'axios';
-import { ECOrderDetail } from '@rahino/database';
+import { ECOrderDetail } from '@rahino/localdatabase/models';
 import { SnapPayDto } from '@rahino/ecommerce/verify-payment/dto';
-import { ECOrder } from '@rahino/database';
+import { ECOrder } from '@rahino/localdatabase/models';
 import { Response } from 'express';
 import { ConfigService } from '@nestjs/config';
 import { User } from '@rahino/database';

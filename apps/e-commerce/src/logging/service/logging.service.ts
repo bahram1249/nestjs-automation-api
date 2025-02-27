@@ -1,8 +1,8 @@
 import { Injectable, Scope } from '@nestjs/common';
 import { RequestDataInterface } from '../interface';
-import { ECUserSession } from '@rahino/database';
+import { ECUserSession } from '@rahino/localdatabase/models';
 import { InjectModel } from '@nestjs/sequelize';
-import { ECRequestLog } from '@rahino/database';
+import { ECRequestLog } from '@rahino/localdatabase/models';
 import * as moment from 'moment';
 import { User } from '@rahino/database';
 

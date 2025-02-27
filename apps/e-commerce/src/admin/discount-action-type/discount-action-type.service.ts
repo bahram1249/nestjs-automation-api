@@ -4,7 +4,7 @@ import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builde
 import * as _ from 'lodash';
 import { Sequelize } from 'sequelize';
 import { Op } from 'sequelize';
-import { ECDiscountActionType } from '@rahino/database';
+import { ECDiscountActionType } from '@rahino/localdatabase/models';
 
 @Injectable()
 export class DiscountActionTypeService {

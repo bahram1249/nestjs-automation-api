@@ -4,9 +4,9 @@ import { AttributeValueService } from './attribute-value.service';
 import { SequelizeModule } from '@nestjs/sequelize';
 import { User } from '@rahino/database';
 import { Permission } from '@rahino/database';
-import { EAVAttribute } from '@rahino/database';
+import { EAVAttribute } from '@rahino/localdatabase/models';
 import { AttributeValueProfile } from './mapper';
-import { EAVAttributeValue } from '@rahino/database';
+import { EAVAttributeValue } from '@rahino/localdatabase/models';
 
 @Module({
   imports: [

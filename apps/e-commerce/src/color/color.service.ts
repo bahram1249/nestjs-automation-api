@@ -6,7 +6,7 @@ import { Op, Sequelize } from 'sequelize';
 import { InjectMapper } from 'automapper-nestjs';
 import { Mapper } from 'automapper-core';
 import * as _ from 'lodash';
-import { ECColor } from '@rahino/database';
+import { ECColor } from '@rahino/localdatabase/models';
 
 @Injectable()
 export class ColorService {

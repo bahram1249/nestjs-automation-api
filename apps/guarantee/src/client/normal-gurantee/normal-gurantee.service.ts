@@ -10,8 +10,8 @@ import {
   GSGuaranteePeriod,
   GSProductType,
   GSVariant,
-  User,
-} from '@rahino/database';
+} from '@rahino/localdatabase/models';
+import { User } from '@rahino/database';
 import { ListFilter } from '@rahino/query-filter';
 import { NormalGuaranteAvailabilityeDto, NormalGuaranteeDto } from './dto';
 import { InjectModel } from '@nestjs/sequelize';

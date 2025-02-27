@@ -3,9 +3,9 @@ import { SequelizeModule } from '@nestjs/sequelize';
 import { Permission } from '@rahino/database';
 import { User } from '@rahino/database';
 import { HolidayService } from './holiday.service';
-import { Buffet } from '@rahino/database';
+import { Buffet } from '@rahino/localdatabase/models';
 import { HolidayController } from './holiday.controller';
-import { BuffetIgnoreReserve } from '@rahino/database';
+import { BuffetIgnoreReserve } from '@rahino/localdatabase/models';
 import { PersianDate } from '@rahino/database';
 
 @Module({

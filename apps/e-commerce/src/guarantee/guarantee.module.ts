@@ -10,7 +10,7 @@ import { SequelizeModule } from '@nestjs/sequelize';
 import { Permission } from '@rahino/database';
 import { User } from '@rahino/database';
 import { GuaranteeProfile } from './mapper';
-import { ECGuarantee } from '@rahino/database';
+import { ECGuarantee } from '@rahino/localdatabase/models';
 import { Attachment } from '@rahino/database';
 import { MinioClientModule } from '@rahino/minio-client';
 import { ReverseProxyGuaranteeImageMiddleware } from './reverse-proxy.middleware';

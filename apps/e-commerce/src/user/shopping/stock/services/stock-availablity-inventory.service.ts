@@ -4,9 +4,9 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
-import { ECStock } from '@rahino/database';
+import { ECStock } from '@rahino/localdatabase/models';
 import { StockDto } from '../dto';
-import { ECUserSession } from '@rahino/database';
+import { ECUserSession } from '@rahino/localdatabase/models';
 import { InventoryService } from '@rahino/ecommerce/inventory/services';
 import { InjectMapper } from 'automapper-nestjs';
 import { Mapper } from 'automapper-core';

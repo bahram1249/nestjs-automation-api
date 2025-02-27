@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { SequelizeModule } from '@nestjs/sequelize';
 import { Permission } from '@rahino/database';
 import { User } from '@rahino/database';
-import { ECCourier } from '@rahino/database';
+import { ECCourier } from '@rahino/localdatabase/models';
 import { CourierService } from './courier.service';
 import { CourierProfile } from './mapper';
 import { UserRoleModule } from '@rahino/core/admin/user-role/user-role.module';

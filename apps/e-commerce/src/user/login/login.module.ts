@@ -11,7 +11,7 @@ import { Menu } from '@rahino/database';
 import { RolePermission } from '@rahino/database';
 import { PermissionMenu } from '@rahino/database';
 import { ECommerceSmsModule } from '@rahino/ecommerce/util/sms/ecommerce-sms.module';
-import { ECWallet } from '@rahino/database';
+import { ECWallet } from '@rahino/localdatabase/models';
 
 @Module({
   imports: [

@@ -29,10 +29,9 @@ import {
   ECNeighborhood,
   ECInventoryPrice,
   ECVariationPrice,
-  Attachment,
-  User,
   ECPublishStatus,
-} from '@rahino/database';
+} from '@rahino/localdatabase/models';
+import { User, Attachment } from '@rahino/database';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import * as _ from 'lodash';
 import { Mapper } from 'automapper-core';

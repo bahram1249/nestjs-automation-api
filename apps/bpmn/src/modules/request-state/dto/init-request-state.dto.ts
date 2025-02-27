@@ -1,4 +1,4 @@
-import { BPMNRequest } from '@rahino/database';
+import { BPMNRequest } from '@rahino/localdatabase/models';
 import { Transaction } from 'sequelize';
 
 export class InitRequestDto {

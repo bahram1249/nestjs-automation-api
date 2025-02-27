@@ -4,7 +4,7 @@ import { SequelizeModule } from '@nestjs/sequelize';
 import { User } from '@rahino/database';
 import { Permission } from '@rahino/database';
 import { InventoryStatusController } from './inventory-status.controller';
-import { ECInventoryStatus } from '@rahino/database';
+import { ECInventoryStatus } from '@rahino/localdatabase/models';
 
 @Module({
   imports: [SequelizeModule.forFeature([User, Permission, ECInventoryStatus])],

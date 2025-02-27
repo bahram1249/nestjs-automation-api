@@ -4,7 +4,7 @@ import { PeriodTypeController } from './period-type.controller';
 import { SequelizeModule } from '@nestjs/sequelize';
 import { User } from '@rahino/database';
 import { Permission } from '@rahino/database';
-import { PCMPeriodType } from '@rahino/database';
+import { PCMPeriodType } from '@rahino/localdatabase/models';
 
 @Module({
   imports: [SequelizeModule.forFeature([User, Permission, PCMPeriodType])],

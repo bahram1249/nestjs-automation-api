@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { AutomapperProfile, InjectMapper } from 'automapper-nestjs';
 import { AddressDto } from '../dto';
 import { Mapper, createMap, forMember, ignore } from 'automapper-core';
-import { ECAddress } from '@rahino/database';
+import { ECAddress } from '@rahino/localdatabase/models';
 
 @Injectable()
 export class AddressProfile extends AutomapperProfile {

@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { ListFilter } from '@rahino/query-filter';
 import { User } from '@rahino/database';
 import * as _ from 'lodash';
-import { VW_BuffetReservers } from '@rahino/database';
+import { VW_BuffetReservers } from '@rahino/localdatabase/models';
 import { InjectModel } from '@nestjs/sequelize';
 import { Sequelize } from 'sequelize';
 

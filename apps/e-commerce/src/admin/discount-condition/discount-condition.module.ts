@@ -4,7 +4,7 @@ import { DiscountConditionService } from './discount-condition.service';
 import { UserVendorModule } from '@rahino/ecommerce/user/vendor/user-vendor.module';
 import { DiscountConditionProfile } from './mapper';
 import { SequelizeModule } from '@nestjs/sequelize';
-import { ECDiscountCondition } from '@rahino/database';
+import { ECDiscountCondition } from '@rahino/localdatabase/models';
 import { Permission } from '@rahino/database';
 import { User } from '@rahino/database';
 import { EntityTypeModule } from '@rahino/eav/admin/entity-type/entity-type.module';

@@ -3,7 +3,7 @@ import { InjectModel } from '@nestjs/sequelize';
 import { QueryFilter } from '@rahino/query-filter/sequelize-mapper';
 import { Op } from 'sequelize';
 import { PublishGetDto } from './dto';
-import { PCMPublish } from '@rahino/database';
+import { PCMPublish } from '@rahino/localdatabase/models';
 
 @Injectable()
 export class PublishService {

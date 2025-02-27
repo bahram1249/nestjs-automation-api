@@ -3,14 +3,14 @@ import { StockPriceInterface } from '../price';
 import { ShipmentInteface } from './interface';
 import { OrderShipmentwayEnum } from '@rahino/ecommerce/util/enum';
 import { InjectConnection, InjectModel } from '@nestjs/sequelize';
-import { ECAddress } from '@rahino/database';
+import { ECAddress } from '@rahino/localdatabase/models';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import { Sequelize } from 'sequelize-typescript';
 import { Op, QueryTypes } from 'sequelize';
 import { Setting } from '@rahino/database';
 import { CourierPriceEnum } from '@rahino/ecommerce/admin/courier-price/enum';
-import { ECDiscount } from '@rahino/database';
-import { ECDiscountType } from '@rahino/database';
+import { ECDiscount } from '@rahino/localdatabase/models';
+import { ECDiscountType } from '@rahino/localdatabase/models';
 import { TipaxShipmentPrice } from './tipax.service';
 
 @Injectable()

@@ -10,7 +10,7 @@ import { SequelizeModule } from '@nestjs/sequelize';
 import { Permission } from '@rahino/database';
 import { User } from '@rahino/database';
 import { NotificationProfile } from './mapper';
-import { ECNotification } from '@rahino/database';
+import { ECNotification } from '@rahino/localdatabase/models';
 
 @Module({
   imports: [SequelizeModule.forFeature([User, Permission, ECNotification])],

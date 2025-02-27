@@ -4,9 +4,9 @@ import { User } from '@rahino/database';
 import { Permission } from '@rahino/database';
 import { BuffetMenuController } from './buffet-menu.controller';
 import { BuffetMenuService } from './buffet-menu.service';
-import { BuffetMenu } from '@rahino/database';
-import { BuffetMenuCategory } from '@rahino/database';
-import { Buffet } from '@rahino/database';
+import { BuffetMenu } from '@rahino/localdatabase/models';
+import { BuffetMenuCategory } from '@rahino/localdatabase/models';
+import { Buffet } from '@rahino/localdatabase/models';
 
 @Module({
   imports: [

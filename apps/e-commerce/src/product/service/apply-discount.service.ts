@@ -4,10 +4,10 @@ import {
   InternalServerErrorException,
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
-import { ECDiscountCondition } from '@rahino/database';
-import { ECDiscount } from '@rahino/database';
-import { ECInventory } from '@rahino/database';
-import { ECProduct } from '@rahino/database';
+import { ECDiscountCondition } from '@rahino/localdatabase/models';
+import { ECDiscount } from '@rahino/localdatabase/models';
+import { ECInventory } from '@rahino/localdatabase/models';
+import { ECProduct } from '@rahino/localdatabase/models';
 import { DiscountActionRuleEnum } from '@rahino/ecommerce/admin/discount-action-rule/enum/discount-action-rule.enum';
 import { DiscountConditionTypeEnum } from '@rahino/ecommerce/admin/discount-condition-type/enum';
 import { DiscountInterface } from '@rahino/ecommerce/admin/discount/interface';
@@ -16,11 +16,11 @@ import { RedisRepository } from '@rahino/redis-client';
 import { Op, Sequelize } from 'sequelize';
 import * as _ from 'lodash';
 import { DiscountActionTypeEnum } from '@rahino/ecommerce/admin/discount-action-type/enum';
-import { ECInventoryPrice } from '@rahino/database';
+import { ECInventoryPrice } from '@rahino/localdatabase/models';
 import { ConfigService } from '@nestjs/config';
-import { ECDiscountType } from '@rahino/database';
+import { ECDiscountType } from '@rahino/localdatabase/models';
 import { parseValue } from '@rahino/commontools/functions/parse-value';
-import { ECStock } from '@rahino/database';
+import { ECStock } from '@rahino/localdatabase/models';
 import { defaultValueIsNull } from '@rahino/commontools/functions/default-value-isnull';
 
 @Injectable()

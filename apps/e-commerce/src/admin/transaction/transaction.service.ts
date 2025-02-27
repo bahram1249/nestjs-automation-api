@@ -1,10 +1,10 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { User } from '@rahino/database';
-import { ECPayment } from '@rahino/database';
-import { ECPaymentGateway } from '@rahino/database';
-import { ECPaymentStatus } from '@rahino/database';
-import { ECPaymentType } from '@rahino/database';
+import { ECPayment } from '@rahino/localdatabase/models';
+import { ECPaymentGateway } from '@rahino/localdatabase/models';
+import { ECPaymentStatus } from '@rahino/localdatabase/models';
+import { ECPaymentType } from '@rahino/localdatabase/models';
 import { ListFilter } from '@rahino/query-filter';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import { Op } from 'sequelize';

@@ -19,7 +19,7 @@ import * as path from 'path';
 import * as _ from 'lodash';
 import { Response } from 'express';
 import * as fs from 'fs';
-import { BuffetMenuCategory } from '@rahino/database';
+import { BuffetMenuCategory } from '@rahino/localdatabase/models';
 
 @Injectable()
 export class MenuCategoryService {

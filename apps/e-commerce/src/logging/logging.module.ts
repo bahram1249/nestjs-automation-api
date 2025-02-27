@@ -5,7 +5,7 @@ import { BullModule } from '@nestjs/bullmq';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { REQUEST_LOGGING_QUEUE } from './constants';
 import { SequelizeModule } from '@nestjs/sequelize';
-import { ECRequestLog } from '@rahino/database';
+import { ECRequestLog } from '@rahino/localdatabase/models';
 
 @Module({
   imports: [

@@ -1,13 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
-import { ECPostageFee } from '@rahino/database';
+import { ECPostageFee } from '@rahino/localdatabase/models';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import { Op, Sequelize } from 'sequelize';
 import { StockPriceInterface } from '../price';
 import { ShipmentInteface } from './interface';
 import { OrderShipmentwayEnum } from '@rahino/ecommerce/util/enum';
-import { ECDiscount } from '@rahino/database';
-import { ECDiscountType } from '@rahino/database';
+import { ECDiscount } from '@rahino/localdatabase/models';
+import { ECDiscountType } from '@rahino/localdatabase/models';
 
 @Injectable()
 export class PostShipmentPriceService implements ShipmentInteface {

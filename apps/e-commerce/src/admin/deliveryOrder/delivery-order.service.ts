@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { User } from '@rahino/database';
-import { ECOrder } from '@rahino/database';
+import { ECOrder } from '@rahino/localdatabase/models';
 import {
   OrderShipmentwayEnum,
   OrderStatusEnum,

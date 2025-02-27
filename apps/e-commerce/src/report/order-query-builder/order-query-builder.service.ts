@@ -1,7 +1,7 @@
 import { Injectable, Scope } from '@nestjs/common';
 import { User } from '@rahino/database';
-import { ECOrderStatus } from '@rahino/database';
-import { ECPayment } from '@rahino/database';
+import { ECOrderStatus } from '@rahino/localdatabase/models';
+import { ECPayment } from '@rahino/localdatabase/models';
 import {
   OrderShipmentwayEnum,
   OrderStatusEnum,

@@ -10,7 +10,7 @@ import { SequelizeModule } from '@nestjs/sequelize';
 import { Permission } from '@rahino/database';
 import { User } from '@rahino/database';
 import { PageProfile } from './mapper';
-import { ECPage } from '@rahino/database';
+import { ECPage } from '@rahino/localdatabase/models';
 
 @Module({
   imports: [SequelizeModule.forFeature([User, Permission, ECPage])],

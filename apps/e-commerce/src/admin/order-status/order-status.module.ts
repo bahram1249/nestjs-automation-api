@@ -4,7 +4,7 @@ import { SequelizeModule } from '@nestjs/sequelize';
 import { User } from '@rahino/database';
 import { Permission } from '@rahino/database';
 import { OrderStatusController } from './order-status.controller';
-import { ECOrderStatus } from '@rahino/database';
+import { ECOrderStatus } from '@rahino/localdatabase/models';
 
 @Module({
   imports: [SequelizeModule.forFeature([User, Permission, ECOrderStatus])],

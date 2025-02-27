@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { AutomapperProfile, InjectMapper } from 'automapper-nestjs';
 import { ColorDto } from '../dto';
 import { Mapper, createMap, forMember, ignore } from 'automapper-core';
-import { ECColor } from '@rahino/database';
+import { ECColor } from '@rahino/localdatabase/models';
 
 @Injectable()
 export class ColorProfile extends AutomapperProfile {

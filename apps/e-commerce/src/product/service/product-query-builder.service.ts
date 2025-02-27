@@ -1,6 +1,5 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import {
-  Attachment,
   EAVAttribute,
   EAVAttributeValue,
   EAVEntityAttributeValue,
@@ -16,7 +15,8 @@ import {
   ECPublishStatus,
   ECVariationPrice,
   ECVendor,
-} from '@rahino/database';
+} from '@rahino/localdatabase/models';
+import { Attachment } from '@rahino/database';
 import { InventoryStatusEnum } from '@rahino/ecommerce/inventory/enum';
 import {
   IncludeOptionsBuilder,

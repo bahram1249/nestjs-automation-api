@@ -5,7 +5,7 @@ import {
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { User } from '@rahino/database';
-import { ECOrder } from '@rahino/database';
+import { ECOrder } from '@rahino/localdatabase/models';
 import { GetOrderDto } from './dto';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import { Sequelize } from 'sequelize';
@@ -14,7 +14,7 @@ import {
   OrderDetailStatusEnum,
   OrderStatusEnum,
 } from '@rahino/ecommerce/util/enum';
-import { ECOrderDetail } from '@rahino/database';
+import { ECOrderDetail } from '@rahino/localdatabase/models';
 import { UserVendorService } from '@rahino/ecommerce/user/vendor/user-vendor.service';
 import { OrderQueryBuilder } from '../utilOrder/service/order-query-builder.service';
 import { OrderUtilService } from '../utilOrder/service/order-util.service';

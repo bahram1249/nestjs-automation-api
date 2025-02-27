@@ -1,7 +1,7 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { GetAdminPostDto } from './dto';
 import { InjectModel } from '@nestjs/sequelize';
-import { ECOrder } from '@rahino/database';
+import { ECOrder } from '@rahino/localdatabase/models';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import { PersianDate } from '@rahino/database';
 import { I18nContext, I18nService } from 'nestjs-i18n';

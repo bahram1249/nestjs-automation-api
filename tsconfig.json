@@ -57,7 +57,9 @@
       "@rahino/minio-client": ["libs/minio-client/src"],
       "@rahino/minio-client/*": ["libs/minio-client/src/*"],
       "@rahino/sms": ["libs/sms/src"],
-      "@rahino/sms/*": ["libs/sms/src/*"]
+      "@rahino/sms/*": ["libs/sms/src/*"],
+      "@rahino/localdatabase": ["libs/localdatabase/src"],
+      "@rahino/localdatabase/*": ["libs/localdatabase/src/*"]
     }
   }
 }

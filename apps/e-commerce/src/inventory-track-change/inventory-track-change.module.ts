@@ -1,9 +1,9 @@
 import { Module } from '@nestjs/common';
 import { SequelizeModule } from '@nestjs/sequelize';
-import { ECInventoryTrackChangeStatus } from '@rahino/database';
-import { ECInventory } from '@rahino/database';
+import { ECInventoryTrackChangeStatus } from '@rahino/localdatabase/models';
+import { ECInventory } from '@rahino/localdatabase/models';
 import { InventoryTrackChangeService } from './inventory-track-change.service';
-import { ECInventoryHistory } from '@rahino/database';
+import { ECInventoryHistory } from '@rahino/localdatabase/models';
 
 @Module({
   imports: [SequelizeModule.forFeature([ECInventoryHistory, ECInventory])],

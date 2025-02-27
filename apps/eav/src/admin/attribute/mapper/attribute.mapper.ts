@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { AutomapperProfile, InjectMapper } from 'automapper-nestjs';
 import { AttributeDto, UpdateAttributeDto } from '../dto';
-import { EAVAttribute } from '@rahino/database';
+import { EAVAttribute } from '@rahino/localdatabase/models';
 import { Mapper, createMap, forMember, ignore } from 'automapper-core';
 
 @Injectable()

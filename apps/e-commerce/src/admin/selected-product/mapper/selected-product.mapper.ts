@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { AutomapperProfile, InjectMapper } from 'automapper-nestjs';
 import { SelectedProductDto } from '../dto';
 import { Mapper, createMap, forMember, ignore } from 'automapper-core';
-import { ECSelectedProduct } from '@rahino/database';
+import { ECSelectedProduct } from '@rahino/localdatabase/models';
 
 @Injectable()
 export class SelectedProductProfile extends AutomapperProfile {

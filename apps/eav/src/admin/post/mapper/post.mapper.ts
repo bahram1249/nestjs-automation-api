@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { AutomapperProfile, InjectMapper } from 'automapper-nestjs';
 import { PhotoDto, PostDto } from '../dto';
 import { Mapper, createMap, forMember, ignore } from 'automapper-core';
-import { EAVPost } from '@rahino/database';
+import { EAVPost } from '@rahino/localdatabase/models';
 import { PostAttachmentDto } from '../dto/post-attachment.dto';
 
 @Injectable()

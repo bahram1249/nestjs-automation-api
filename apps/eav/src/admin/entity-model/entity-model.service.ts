@@ -3,7 +3,7 @@ import { InjectModel } from '@nestjs/sequelize';
 import { Op } from 'sequelize';
 import { GetEntityModelDto } from './dto';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
-import { EAVEntityModel } from '@rahino/database';
+import { EAVEntityModel } from '@rahino/localdatabase/models';
 
 @Injectable()
 export class EntityModelService {

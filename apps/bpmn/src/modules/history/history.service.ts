@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { AddHistoryDto } from './dto';
 import { InjectModel } from '@nestjs/sequelize';
-import { BPMNRequestHistory } from '@rahino/database';
+import { BPMNRequestHistory } from '@rahino/localdatabase/models';
 
 @Injectable()
 export class HistoryService {

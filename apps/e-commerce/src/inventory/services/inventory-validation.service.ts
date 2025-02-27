@@ -1,19 +1,19 @@
 ﻿import { BadRequestException, Inject, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { InventoryDto, RequiredProductFieldDto } from '../dto';
-import { ECVariationPrice } from '@rahino/database';
+import { ECVariationPrice } from '@rahino/localdatabase/models';
 import { Op, Sequelize } from 'sequelize';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
-import { ECColor } from '@rahino/database';
+import { ECColor } from '@rahino/localdatabase/models';
 import { User } from '@rahino/database';
 import { UserVendorService } from '@rahino/ecommerce/user/vendor/user-vendor.service';
-import { ECGuarantee } from '@rahino/database';
-import { ECGuaranteeMonth } from '@rahino/database';
+import { ECGuarantee } from '@rahino/localdatabase/models';
+import { ECGuaranteeMonth } from '@rahino/localdatabase/models';
 import { VendorAddressService } from '@rahino/ecommerce/vendor-address/vendor-address.service';
-import { ECProvince } from '@rahino/database';
+import { ECProvince } from '@rahino/localdatabase/models';
 import { emptyListFilter } from '@rahino/query-filter/provider/constants';
 import { ListFilter } from '@rahino/query-filter';
-import { ECInventory } from '@rahino/database';
+import { ECInventory } from '@rahino/localdatabase/models';
 
 @Injectable()
 export class InventoryValidationService {

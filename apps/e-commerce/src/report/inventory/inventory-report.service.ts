@@ -1,7 +1,7 @@
 import { ForbiddenException, Injectable } from '@nestjs/common';
 import { GetInventoryDto } from './dto';
 import { InjectModel } from '@nestjs/sequelize';
-import { ECInventory } from '@rahino/database';
+import { ECInventory } from '@rahino/localdatabase/models';
 import { UserVendorService } from '@rahino/ecommerce/user/vendor/user-vendor.service';
 import { User } from '@rahino/database';
 import { I18nContext, I18nService } from 'nestjs-i18n';
@@ -9,10 +9,10 @@ import { I18nTranslations } from 'apps/main/src/generated/i18n.generated';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import { Sequelize } from 'sequelize';
 import { Op } from 'sequelize';
-import { ECProduct } from '@rahino/database';
-import { ECColor } from '@rahino/database';
-import { ECGuarantee } from '@rahino/database';
-import { ECInventoryStatus } from '@rahino/database';
+import { ECProduct } from '@rahino/localdatabase/models';
+import { ECColor } from '@rahino/localdatabase/models';
+import { ECGuarantee } from '@rahino/localdatabase/models';
+import { ECInventoryStatus } from '@rahino/localdatabase/models';
 
 @Injectable({})
 export class InventoryReportService {

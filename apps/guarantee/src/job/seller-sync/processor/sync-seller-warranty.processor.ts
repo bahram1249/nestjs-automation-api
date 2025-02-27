@@ -11,8 +11,8 @@ import {
   GSGuaranteePeriod,
   GSProductType,
   GSVariant,
-  Setting,
-} from '@rahino/database';
+} from '@rahino/localdatabase/models';
+import { Setting } from '@rahino/database';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import { SellerWarrantyService } from '@rahino/guarantee/util/seller-warranty';
 import { GSProviderEnum } from '@rahino/guarantee/admin/provider';

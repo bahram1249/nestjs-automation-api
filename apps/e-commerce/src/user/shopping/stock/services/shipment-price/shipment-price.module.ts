@@ -3,11 +3,11 @@ import { ShipmentOptions } from './interface';
 import { ConfigService } from '@nestjs/config';
 import { JahizanShipmentPrice } from './jahizan-shipment-price.service';
 import { PostShipmentPriceService } from './post-shipment-price.service';
-import { ECPostageFee } from '@rahino/database';
+import { ECPostageFee } from '@rahino/localdatabase/models';
 import { SequelizeModule } from '@nestjs/sequelize';
-import { ECAddress } from '@rahino/database';
+import { ECAddress } from '@rahino/localdatabase/models';
 import { Setting } from '@rahino/database';
-import { ECDiscount } from '@rahino/database';
+import { ECDiscount } from '@rahino/localdatabase/models';
 import { GoldonShipmentPrice } from './goldon-shipment-price.service';
 import { TipaxShipmentPrice } from './tipax.service';
 

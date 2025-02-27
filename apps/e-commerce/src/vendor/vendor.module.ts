@@ -11,8 +11,8 @@ import { Permission } from '@rahino/database';
 import { User } from '@rahino/database';
 import { VendorProfile } from './mapper';
 import { UserRoleModule } from '@rahino/core/admin/user-role/user-role.module';
-import { ECVendor } from '@rahino/database';
-import { ECVendorUser } from '@rahino/database';
+import { ECVendor } from '@rahino/localdatabase/models';
+import { ECVendorUser } from '@rahino/localdatabase/models';
 import { Role } from '@rahino/database';
 import { MinioClientModule } from '@rahino/minio-client';
 import { ReverseProxyVendorImageMiddleware } from './reverse-proxy.middleware';
@@ -20,8 +20,8 @@ import { Attachment } from '@rahino/database';
 import { ThumbnailModule } from '@rahino/thumbnail';
 import { ConfigService } from '@nestjs/config';
 import { SessionModule } from '../user/session/session.module';
-import { ECVariationPrice } from '@rahino/database';
-import { ECVendorCommission } from '@rahino/database';
+import { ECVariationPrice } from '@rahino/localdatabase/models';
+import { ECVendorCommission } from '@rahino/localdatabase/models';
 
 @Module({
   imports: [

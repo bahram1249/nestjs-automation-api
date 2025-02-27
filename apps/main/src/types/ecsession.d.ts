@@ -1,4 +1,4 @@
-import { ECUserSession } from '@rahino/database';
+import { ECUserSession } from '@rahino/localdatabase/models';
 import { Request } from 'express';
 
 declare global {

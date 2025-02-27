@@ -11,7 +11,7 @@ import { Op, Sequelize } from 'sequelize';
 import { InjectMapper } from 'automapper-nestjs';
 import { Mapper } from 'automapper-core';
 import * as _ from 'lodash';
-import { ECGuarantee } from '@rahino/database';
+import { ECGuarantee } from '@rahino/localdatabase/models';
 import { Response } from 'express';
 import { Attachment } from '@rahino/database';
 import * as fs from 'fs';

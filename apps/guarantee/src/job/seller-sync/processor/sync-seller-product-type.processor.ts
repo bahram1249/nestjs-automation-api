@@ -5,7 +5,8 @@ import {
   SYNC_SELLER_PRODUCT_TYPE_QUEUE,
 } from '../constants';
 import { InjectModel } from '@nestjs/sequelize';
-import { GSProductType, Setting } from '@rahino/database';
+import { GSProductType } from '@rahino/localdatabase/models';
+import { Setting } from '@rahino/database';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import { SellerProductTypeService } from '@rahino/guarantee/util/seller-product-type';
 import { GSProviderEnum } from '@rahino/guarantee/admin/provider';

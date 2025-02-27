@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { ECProduct } from '@rahino/database';
+import { ECProduct } from '@rahino/localdatabase/models';
 
 /*
 when we filtering based price

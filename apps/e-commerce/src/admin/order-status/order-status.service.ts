@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { User } from '@rahino/database';
-import { ECInventoryStatus } from '@rahino/database';
-import { ECOrderStatus } from '@rahino/database';
+import { ECInventoryStatus } from '@rahino/localdatabase/models';
+import { ECOrderStatus } from '@rahino/localdatabase/models';
 import { ListFilter } from '@rahino/query-filter';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 

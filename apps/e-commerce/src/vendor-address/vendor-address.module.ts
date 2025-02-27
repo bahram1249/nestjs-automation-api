@@ -2,9 +2,9 @@
 import { VendorAddressController } from './vendor-address.controller';
 import { VendorAddressService } from './vendor-address.service';
 import { SequelizeModule } from '@nestjs/sequelize';
-import { ECVendorUser } from '@rahino/database';
+import { ECVendorUser } from '@rahino/localdatabase/models';
 import { AddressModule } from '@rahino/ecommerce/user/address/address.module';
-import { ECVendorAddress } from '@rahino/database';
+import { ECVendorAddress } from '@rahino/localdatabase/models';
 import { Permission } from '@rahino/database';
 import { User } from '@rahino/database';
 

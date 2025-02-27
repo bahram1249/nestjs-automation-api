@@ -1,7 +1,7 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { CheckConditionsDto, RunConditionDto } from './dto';
 import { InjectConnection, InjectModel } from '@nestjs/sequelize';
-import { BPMNCondition, BPMNNodeCondition } from '@rahino/database';
+import { BPMNCondition, BPMNNodeCondition } from '@rahino/localdatabase/models';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import { ConditionTypeEnum } from '../condition-type';
 import { QueryTypes, Sequelize } from 'sequelize';

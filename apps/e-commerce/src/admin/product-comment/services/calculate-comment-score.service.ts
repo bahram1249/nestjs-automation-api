@@ -1,8 +1,8 @@
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
-import { ECProductCommentFactor } from '@rahino/database';
-import { ECProductComment } from '@rahino/database';
-import { ECProduct } from '@rahino/database';
+import { ECProductCommentFactor } from '@rahino/localdatabase/models';
+import { ECProductComment } from '@rahino/localdatabase/models';
+import { ECProduct } from '@rahino/localdatabase/models';
 import { ProductCommentStatusEnum } from '@rahino/ecommerce/util/enum';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import { Op } from 'sequelize';

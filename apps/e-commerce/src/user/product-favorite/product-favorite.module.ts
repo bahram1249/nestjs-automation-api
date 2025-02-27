@@ -4,7 +4,7 @@ import { ProductFavoriteService } from './product-favorite.service';
 import { SequelizeModule } from '@nestjs/sequelize';
 import { SessionModule } from '../session/session.module';
 import { ProductModule } from '@rahino/ecommerce/product/product.module';
-import { ECProductFavorite } from '@rahino/database';
+import { ECProductFavorite } from '@rahino/localdatabase/models';
 import { QueryFilterModule } from '@rahino/query-filter';
 
 @Module({

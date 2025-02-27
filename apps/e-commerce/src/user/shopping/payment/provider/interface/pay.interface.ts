@@ -1,5 +1,5 @@
 import { User } from '@rahino/database';
-import { ECOrderDetail } from '@rahino/database';
+import { ECOrderDetail } from '@rahino/localdatabase/models';
 import { PaymentTypeEnum } from '@rahino/ecommerce/util/enum';
 import { Transaction } from 'sequelize';
 

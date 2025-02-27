@@ -4,7 +4,7 @@ import { UserController } from './user.controller';
 import { WebAuthDiscountCoffeMiddleware } from '@rahino/commonmiddleware';
 import { SequelizeModule } from '@nestjs/sequelize';
 import { User } from '@rahino/database';
-import { BuffetReserve } from '@rahino/database';
+import { BuffetReserve } from '@rahino/localdatabase/models';
 
 @Module({
   imports: [SequelizeModule.forFeature([User, BuffetReserve])],
