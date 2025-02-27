@@ -16,6 +16,7 @@ import { SequelizeModule } from '@nestjs/sequelize';
 import {
   GSBrand,
   GSGuarantee,
+  GSGuaranteePeriod,
   GSProductType,
   GSVariant,
   Setting,
@@ -57,6 +58,7 @@ import { SellerVariantProcessor } from './processor/sync-seller-variant.processo
       GSGuarantee,
       GSProductType,
       GSVariant,
+      GSGuaranteePeriod,
     ]),
   ],
   controllers: [SellerSyncController],

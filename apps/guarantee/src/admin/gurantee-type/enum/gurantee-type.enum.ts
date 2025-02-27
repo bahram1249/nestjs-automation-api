@@ -1,4 +1,4 @@
 export enum GSGuaranteeTypeEnum {
-  Noraml = 1,
+  Normal = 1,
   VIP = 2,
 }

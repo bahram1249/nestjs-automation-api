@@ -56,4 +56,9 @@ export class NoramlGuaranteeDto {
   @IsString()
   @IsOptional()
   public description: string;
+
+  @AutoMap()
+  @IsNumber()
+  @IsOptional()
+  public variantId?: number;
 }

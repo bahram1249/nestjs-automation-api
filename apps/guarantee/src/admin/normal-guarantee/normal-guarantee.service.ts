@@ -12,6 +12,7 @@ import {
   GSGuaranteePeriod,
   GSGuaranteeType,
   GSProvider,
+  GSVariant,
 } from '@rahino/database';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import { Op } from 'sequelize';
@@ -20,6 +21,7 @@ import { I18nTranslations } from 'apps/main/src/generated/i18n.generated';
 import { InjectMapper } from 'automapper-nestjs';
 import { Mapper } from 'automapper-core';
 import * as _ from 'lodash';
+import { GSGuaranteeTypeEnum } from '../gurantee-type';
 
 @Injectable()
 export class NormalGuaranteeService {
@@ -53,7 +55,7 @@ export class NormalGuaranteeService {
         'startDate',
         'endDate',
         'allowedDateEnterProduct',
-        'variantName',
+        'variantId',
         'description',
         'createdAt',
         'updatedAt',
@@ -62,24 +64,35 @@ export class NormalGuaranteeService {
         {
           model: GSProvider,
           as: 'provider',
+          required: false,
         },
         {
           model: GSBrand,
           as: 'brand',
+          required: false,
         },
         {
           model: GSGuaranteeType,
           as: 'guaranteeType',
+          required: false,
         },
         {
           model: GSGuaranteePeriod,
           as: 'guaranteePeriod',
+          required: false,
         },
         {
           model: GSGuaranteeConfirmStatus,
           as: 'guaranteeConfirmStatus',
+          required: false,
+        },
+        {
+          model: GSVariant,
+          as: 'variant',
+          required: false,
         },
       ])
+      .filter({ guaranteeTypeId: GSGuaranteeTypeEnum.Normal })
       .limit(filter.limit)
       .offset(filter.offset)
       .order({ orderBy: filter.orderBy, sortOrder: filter.sortOrder });
@@ -107,7 +120,7 @@ export class NormalGuaranteeService {
           'startDate',
           'endDate',
           'allowedDateEnterProduct',
-          'variantName',
+          'variantId',
           'description',
           'createdAt',
           'updatedAt',
@@ -116,24 +129,35 @@ export class NormalGuaranteeService {
           {
             model: GSProvider,
             as: 'provider',
+            required: false,
           },
           {
             model: GSBrand,
             as: 'brand',
+            required: false,
           },
           {
             model: GSGuaranteeType,
             as: 'guaranteeType',
+            required: false,
           },
           {
             model: GSGuaranteePeriod,
             as: 'guaranteePeriod',
+            required: false,
           },
           {
             model: GSGuaranteeConfirmStatus,
             as: 'guaranteeConfirmStatus',
+            required: false,
+          },
+          {
+            model: GSVariant,
+            as: 'variant',
+            required: false,
           },
         ])
+        .filter({ guaranteeTypeId: GSGuaranteeTypeEnum.Normal })
         .filter({ id: entityId })
         .build(),
     );
@@ -152,7 +176,10 @@ export class NormalGuaranteeService {
 
   async create(dto: NoramlGuaranteeDto) {
     const duplicateItem = await this.repository.findOne(
-      new QueryOptionsBuilder().filter({ title: dto.serialNumber }).build(),
+      new QueryOptionsBuilder()
+        .filter({ title: dto.serialNumber })
+        .filter({ guaranteeTypeId: GSGuaranteeTypeEnum.Normal })
+        .build(),
     );
     if (duplicateItem) {
       throw new BadRequestException(
@@ -174,7 +201,10 @@ export class NormalGuaranteeService {
 
   async updateById(id: number, dto: NoramlGuaranteeDto) {
     const updatedItem = await this.repository.findOne(
-      new QueryOptionsBuilder().filter({ id: id }).build(),
+      new QueryOptionsBuilder()
+        .filter({ id: id })
+        .filter({ guaranteeTypeId: GSGuaranteeTypeEnum.Normal })
+        .build(),
     );
 
     if (!updatedItem) {

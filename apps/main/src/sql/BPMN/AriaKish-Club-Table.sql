@@ -279,3 +279,24 @@ IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'gs-guarantees-v2'
 
 GO
 
+
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'gs-guarantees-v3'
+)
+    AND EXISTS (
+        SELECT 1 FROM Settings
+        WHERE ([key] = 'CUSTOMER_NAME' AND [value] IN ('AriaKish'))
+    )
+    BEGIN
+
+        ALTER TABLE GSGuarantees
+        ADD variantId int null
+            CONSTRAINT FK_GSGuarantees_VariantId
+                FOREIGN KEY REFERENCES GSVariants(id)
+
+
+        INSERT INTO Migrations(version, createdAt, updatedAt)
+        SELECT 'gs-guarantees-v3', GETDATE(), GETDATE()
+    END
+
+GO
+

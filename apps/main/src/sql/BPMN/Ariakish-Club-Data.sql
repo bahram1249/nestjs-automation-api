@@ -170,3 +170,21 @@ BEGIN
 END
 
 GO
+
+IF NOT EXISTS ( SELECT 1 FROM Migrations WHERE version = 'gs-guarantee-offset-settings-Data-v1'
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings
+		WHERE ([key] = 'CUSTOMER_NAME' AND [value] IN ('AriaKish'))
+		)
+
+BEGIN
+
+	INSERT INTO Settings([key], [value], [type], createdAt, updatedAt)
+	SELECT N'SELLER_GUARANTEE_OFFSET', N'0', N'number', getdate(), getdate()
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'gs-guarantee-offset-settings-Data-v1', GETDATE(), GETDATE()
+END
+
+GO
