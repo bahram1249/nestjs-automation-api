@@ -22,7 +22,7 @@ import { GetUser } from '@rahino/auth';
 import { User } from '@rahino/database';
 import { ListFilter } from '@rahino/query-filter';
 import { NormalGuaranteeService } from './normal-gurantee.service';
-import { NormalGuaranteAvailabilityeDto, NormalGuaranteeDto } from './dto';
+import { NormalGuaranteeDto } from './dto';
 
 @ApiTags('Client-NormalGuarantee')
 @UseGuards(JwtGuard)
@@ -67,12 +67,12 @@ export class NormalGuaranteeController {
   }
 
   @ApiOperation({ description: 'get guarantee avaialiablity card' })
-  @Post('/availability/:serialNumber')
+  @Get('/availability/:serialNumber')
   @HttpCode(HttpStatus.OK)
   async getAvailability(
+    @Param('serialNumber') serialNumber: string,
     @GetUser() user: User,
-    @Body() dto: NormalGuaranteAvailabilityeDto,
   ) {
-    return await this.service.getAvailability(user, dto);
+    return await this.service.getAvailability(user, serialNumber);
   }
 }

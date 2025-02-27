@@ -13,7 +13,7 @@ import {
 } from '@rahino/localdatabase/models';
 import { User } from '@rahino/database';
 import { ListFilter } from '@rahino/query-filter';
-import { NormalGuaranteAvailabilityeDto, NormalGuaranteeDto } from './dto';
+import { NormalGuaranteeDto } from './dto';
 import { InjectModel } from '@nestjs/sequelize';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import { Sequelize } from 'sequelize';
@@ -182,9 +182,9 @@ export class NormalGuaranteeService {
     };
   }
 
-  async getAvailability(user: User, dto: NormalGuaranteAvailabilityeDto) {
+  async getAvailability(user: User, serialNumber: string) {
     const result = await this.checkGuaranteeIsValidThenReturnGuarantee(
-      dto.serialNumber,
+      serialNumber,
       user,
     );
     return { result };
