@@ -738,7 +738,7 @@ export class ProductService {
 
   async create(user: User, dto: ProductDto) {
     const customerName = this.config.get<string>('SITE_NAME');
-    if (customerName == 'goldongallery') {
+    if (customerName == 'goldongallery' || customerName == 'pegahgallery') {
       for (const inventory of dto.inventories) {
         inventory.firstPrice = BigInt(0);
       }
@@ -932,7 +932,7 @@ export class ProductService {
 
   async update(entityId: bigint, user: User, dto: ProductDto) {
     const customerName = this.config.get<string>('SITE_NAME');
-    if (customerName == 'goldongallery') {
+    if (customerName == 'goldongallery' || customerName == 'pegahgallery') {
       for (const inventory of dto.inventories) {
         inventory.firstPrice = BigInt(0);
       }

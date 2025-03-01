@@ -24,6 +24,8 @@ export class CalPriceManualProviderFactory {
     switch (customerName) {
       case 'goldongallery':
         return this.goldonGalleryService;
+      case 'pegahgallery':
+        return this.goldonGalleryService;
       default:
         return this.generalCalPriceService;
     }

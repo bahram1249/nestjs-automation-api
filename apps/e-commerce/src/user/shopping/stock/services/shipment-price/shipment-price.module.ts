@@ -48,6 +48,8 @@ export class ShipmentModule {
                 return jahizanShipmentPrice;
               case 'goldongallery':
                 return goldonGalleryShipmentPrice;
+              case 'pegahgallery':
+                return goldonGalleryShipmentPrice;
               default:
                 return postShipmentPrice;
             }

@@ -20,7 +20,7 @@ export class RetrievePriceRunnerService {
       new QueryOptionsBuilder().filter({ key: 'CUSTOMER_NAME' }).build(),
     );
     console.log(setting.value);
-    if (setting.value == 'goldongallery') {
+    if (setting.value == 'goldongallery' || setting.value == 'pegahgallery') {
       await this.retrievePriceQueue.add(
         RETRIEVE_PRICE_JOB,
         {},
