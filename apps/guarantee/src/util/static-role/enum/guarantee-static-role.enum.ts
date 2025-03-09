@@ -1,3 +1,3 @@
 export enum GuaranteeStaticRoleEnum {
-  OrganizationRole = 1;
+  OrganizationRole = 4,
 }

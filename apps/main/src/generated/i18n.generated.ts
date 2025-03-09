@@ -6,6 +6,7 @@ import { Path } from "nestjs-i18n";
 /* prettier-ignore */
 export type I18nTranslations = {
     "bpmn": {
+        "find_any_contract_in_this_given_date_before": string;
         "undefined_inside_process_runner_id": string;
         "unknown_referral_type": string;
         "action": string;

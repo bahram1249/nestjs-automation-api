@@ -8,6 +8,7 @@ import {
   BelongsTo,
 } from 'sequelize-typescript';
 import { GSGuaranteeOrganization } from './gs-guarantee-organization.entity';
+import { BPMNOrganization } from '../bpmn';
 
 @Table({ tableName: 'GSGuaranteeOrganizationContracts' })
 export class GSGuaranteeOrganizationContract extends Model {
@@ -28,7 +29,13 @@ export class GSGuaranteeOrganizationContract extends Model {
     as: 'guaranteeOrganization',
     foreignKey: 'organizationId',
   })
-  organization?: GSGuaranteeOrganization;
+  guaranteeOrganization?: GSGuaranteeOrganization;
+
+  @BelongsTo(() => BPMNOrganization, {
+    as: 'bpmnOrganization',
+    foreignKey: 'organizationId',
+  })
+  bpmnOrganization?: BPMNOrganization;
 
   @Column({
     type: DataType.DATE,

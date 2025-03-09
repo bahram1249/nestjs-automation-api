@@ -560,3 +560,20 @@ END
 
 GO
 
+-- gs-guaranteeorganizationcontracts
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'gs-guaranteeorganizationcontracts-v2'
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings
+		WHERE ([key] = 'CUSTOMER_NAME' AND [value] IN ('AriaKish'))
+		)
+BEGIN
+
+	ALTER TABLE GSGuaranteeOrganizationContracts 
+        ADD isDeleted bit null
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'gs-guaranteeorganizationcontracts-v2', GETDATE(), GETDATE()
+END
+
+GO
