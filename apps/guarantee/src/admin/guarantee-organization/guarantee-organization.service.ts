@@ -71,7 +71,7 @@ export class GuaranteeOrganizationService {
         Sequelize.where(
           Sequelize.fn(
             'isnull',
-            Sequelize.col('GuaranteeOrganization.isDeleted'),
+            Sequelize.col('GSGuaranteeOrganization.isDeleted'),
             0,
           ),
           {
@@ -216,7 +216,7 @@ export class GuaranteeOrganizationService {
         Sequelize.where(
           Sequelize.fn(
             'isnull',
-            Sequelize.col('GuaranteeOrganization.isDeleted'),
+            Sequelize.col('GSGuaranteeOrganization.isDeleted'),
             0,
           ),
           {
@@ -300,7 +300,7 @@ export class GuaranteeOrganizationService {
           Sequelize.where(
             Sequelize.fn(
               'isnull',
-              Sequelize.col('GuranteeOrganization.isDeleted'),
+              Sequelize.col('GSGuaranteeOrganization.isDeleted'),
               0,
             ),
             {

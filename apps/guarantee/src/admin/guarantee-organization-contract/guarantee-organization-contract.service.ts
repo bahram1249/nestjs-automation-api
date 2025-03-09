@@ -1,10 +1,9 @@
 import {
   BadRequestException,
   Injectable,
-  InternalServerErrorException,
   NotFoundException,
 } from '@nestjs/common';
-import { InjectConnection, InjectModel } from '@nestjs/sequelize';
+import { InjectModel } from '@nestjs/sequelize';
 import {
   BPMNOrganization,
   GSGuaranteeOrganization,
@@ -32,18 +31,20 @@ export class GuaranteeOrganizationContractService {
   ) {}
 
   async findAll(filter: GetGuaranteeOrganizationContractDto) {
-    let query = new QueryOptionsBuilder().filter(
-      Sequelize.where(
-        Sequelize.fn(
-          'isnull',
-          Sequelize.col('GuaranteeOrganizationContract.isDeleted'),
-          0,
+    let query = new QueryOptionsBuilder()
+      .filter(
+        Sequelize.where(
+          Sequelize.fn(
+            'isnull',
+            Sequelize.col('GSGuaranteeOrganizationContract.isDeleted'),
+            0,
+          ),
+          {
+            [Op.eq]: 0,
+          },
         ),
-        {
-          [Op.eq]: 0,
-        },
-      ),
-    );
+      )
+      .filter({ organizationId: filter.organizationId });
 
     // count
     const count = await this.repository.count(query.build());
@@ -59,7 +60,7 @@ export class GuaranteeOrganizationContractService {
         'createdAt',
         'updatedAt',
       ])
-      .thenInclude({
+      .include({
         model: BPMNOrganization,
         as: 'bpmnOrganization',
         required: false,
@@ -98,7 +99,7 @@ export class GuaranteeOrganizationContractService {
         Sequelize.where(
           Sequelize.fn(
             'isnull',
-            Sequelize.col('GuaranteeOrganizationContract.isDeleted'),
+            Sequelize.col('GSGuaranteeOrganizationContract.isDeleted'),
             0,
           ),
           {
@@ -143,7 +144,7 @@ export class GuaranteeOrganizationContractService {
           Sequelize.where(
             Sequelize.fn(
               'isnull',
-              Sequelize.col('GSGuaranteeOrganization.isDeleted'),
+              Sequelize.col('GSGuaranteeOrganizationContract.isDeleted'),
               0,
             ),
             {
@@ -193,7 +194,7 @@ export class GuaranteeOrganizationContractService {
           Sequelize.where(
             Sequelize.fn(
               'isnull',
-              Sequelize.col('GSGuaranteeOrganization.isDeleted'),
+              Sequelize.col('GSGuaranteeOrganizationContract.isDeleted'),
               0,
             ),
             {
