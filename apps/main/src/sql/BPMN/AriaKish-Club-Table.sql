@@ -353,7 +353,7 @@ IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'gs-assigned-guarantees-
 
 GO
 
-
+-- gs-provinces
 IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'gs-provinces-v1' 
 			)
 	AND EXISTS (
@@ -379,6 +379,7 @@ END
 
 GO
 
+-- gs-cities
 IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'gs-cities-v1' 
 			)
 	AND EXISTS (
@@ -409,7 +410,7 @@ END
 
 GO
 
-
+-- gs-neighborhoods
 IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'gs-neighborhoods-v1' 
 			)
 	AND EXISTS (
@@ -438,6 +439,7 @@ END
 
 GO
 
+-- gs-addresses
 IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'gs-addresses-v1' 
 			)
 	AND EXISTS (
@@ -480,6 +482,7 @@ END
 
 GO
 
+-- gs-guaranteeorganizations
 IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'gs-guaranteeorganizations-v1'
 			)
 	AND EXISTS (
@@ -488,15 +491,14 @@ IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'gs-guaranteeorganizatio
 		)
 BEGIN
 
-
 	CREATE TABLE GSGuaranteeOrganizations (
-		id				int                 		NOT NULL
+		id				            int                         NOT NULL
 	        CONSTRAINT FK_GSGuaranteeOrganizations_Id
 	            FOREIGN KEY REFERENCES BPMNOrganizations(id),
 		addressId                   bigint                      NOT NULL
 		    CONSTRAINT FK_GSGuaranteeOrganizations_AddressId
 		        FOREIGN KEY REFERENCES GSAddresses(id),
-		userId						bigint						NULL
+		userId						bigint						NOT NULL
 			CONSTRAINT FK_GSGuaranteeOrganizations_UserId
 				FOREIGN KEY REFERENCES Users(id),
         isNationwide                bit                         NULL,
@@ -512,3 +514,49 @@ BEGIN
 END
 
 GO
+
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'gs-guaranteeorganizations-v2'
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings
+		WHERE ([key] = 'CUSTOMER_NAME' AND [value] IN ('AriaKish'))
+		)
+BEGIN
+
+	ALTER TABLE GSGuaranteeOrganizations
+        ADD isOnlinePayment bit null
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'gs-guaranteeorganizations-v2', GETDATE(), GETDATE()
+END
+
+GO
+-- gs-guaranteeorganizationcontracts
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'gs-guaranteeorganizationcontracts-v1'
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings
+		WHERE ([key] = 'CUSTOMER_NAME' AND [value] IN ('AriaKish'))
+		)
+BEGIN
+
+	CREATE TABLE GSGuaranteeOrganizationContracts (
+		id                          bigint identity(1,1)        NOT NULL,
+        organizationId              int                         NOT NULL
+            CONSTRAINT FK_GSGuaranteeOrganizationContracts_OrganizationId
+                FOREIGN KEY REFERENCES GSGuaranteeOrganizations(id),
+        startDate                   datetime                    NOT NULL,
+        endDate                     datetime                    NOT NULL,
+        representativeShare         decimal                     NOT NULL,
+		[createdAt]					datetimeoffset				NOT NULL,
+		[updatedAt]					datetimeoffset				NOT NULL,
+        CONSTRAINT PK_GSGuaranteeOrganizationContracts_OrganizationId_Id
+	        PRIMARY KEY CLUSTERED (organizationId, id)
+	);
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'gs-guaranteeorganizationcontracts-v1', GETDATE(), GETDATE()
+END
+
+GO
+

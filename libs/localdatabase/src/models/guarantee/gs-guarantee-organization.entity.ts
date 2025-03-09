@@ -5,10 +5,13 @@ import {
   DataType,
   ForeignKey,
   BelongsTo,
+  HasMany,
 } from 'sequelize-typescript';
 import { BPMNOrganization } from '../bpmn';
 import { GSAddress } from './gs-address.entity';
 import { User } from '@rahino/database';
+import { GSGuaranteeOrganizationContract } from './gs-guarantee-organization-contract.entity';
+import { AutoMap } from 'automapper-classes';
 
 @Table({ tableName: 'GSGuaranteeOrganizations' })
 export class GSGuaranteeOrganization extends Model {
@@ -46,15 +49,30 @@ export class GSGuaranteeOrganization extends Model {
   @BelongsTo(() => User, { as: 'user', foreignKey: 'userId' })
   user?: User;
 
+  @AutoMap()
   @Column({
     type: DataType.BOOLEAN,
     allowNull: true,
   })
-  isNationWide?: boolean;
+  isNationwide?: boolean;
 
   @Column({
     type: DataType.BOOLEAN,
     allowNull: true,
   })
   isDeleted?: boolean;
+
+  @AutoMap()
+  @Column({
+    type: DataType.BOOLEAN,
+    allowNull: true,
+  })
+  isOnlinePayment?: boolean;
+
+  @HasMany(() => GSGuaranteeOrganizationContract, {
+    as: 'organizationContracts',
+    foreignKey: 'organizationId',
+    sourceKey: 'id',
+  })
+  organizationContracts?: GSGuaranteeOrganizationContract[];
 }

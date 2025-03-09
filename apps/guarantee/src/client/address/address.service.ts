@@ -6,7 +6,7 @@ import {
 import { AddressDto, GetAddressDto } from './dto';
 import { InjectModel } from '@nestjs/sequelize';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
-import { Op, Sequelize } from 'sequelize';
+import { Op, Sequelize, Transaction } from 'sequelize';
 import { InjectMapper } from 'automapper-nestjs';
 import { Mapper } from 'automapper-core';
 import * as _ from 'lodash';
@@ -154,7 +154,7 @@ export class AddressService {
     };
   }
 
-  async create(user: User, dto: AddressDto) {
+  async create(user: User, dto: AddressDto, transaction?: Transaction) {
     const province = await this.provinceRepository.findOne(
       new QueryOptionsBuilder()
         .filter({ id: dto.provinceId })
@@ -238,6 +238,7 @@ export class AddressService {
     mappedItem.userId = user.id;
     const result = await this.repository.create(
       _.omit(mappedItem.toJSON(), ['id']),
+      { transaction: transaction },
     );
     return {
       result: _.pick(result, [
@@ -257,7 +258,12 @@ export class AddressService {
     };
   }
 
-  async update(user: User, entityId: bigint, dto: AddressDto) {
+  async update(
+    user: User,
+    entityId: bigint,
+    dto: AddressDto,
+    transaction?: Transaction,
+  ) {
     const item = await this.repository.findOne(
       new QueryOptionsBuilder()
         .filter({
@@ -369,6 +375,7 @@ export class AddressService {
           id: entityId,
         },
         returning: true,
+        transaction: transaction,
       },
     );
     return {
