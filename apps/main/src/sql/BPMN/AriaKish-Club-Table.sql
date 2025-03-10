@@ -323,6 +323,25 @@ IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'gs-guarantees-v4'
 
 GO
 
+-- gs-guarantees_v5
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'gs-guarantees-v5'
+)
+    AND EXISTS (
+        SELECT 1 FROM Settings
+        WHERE ([key] = 'CUSTOMER_NAME' AND [value] IN ('AriaKish'))
+    )
+    BEGIN
+
+        ALTER TABLE GSGuarantees
+            ALTER COLUMN productTypeId int null
+            
+
+        INSERT INTO Migrations(version, createdAt, updatedAt)
+        SELECT 'gs-guarantees-v5', GETDATE(), GETDATE()
+    END
+
+GO
+
 -- gs-assigned-guarantees-v1
 IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'gs-assigned-guarantees-v1'
 )
@@ -574,6 +593,110 @@ BEGIN
 
 	INSERT INTO Migrations(version, createdAt, updatedAt)
 	SELECT 'gs-guaranteeorganizationcontracts-v2', GETDATE(), GETDATE()
+END
+
+GO
+
+
+-- gs-request-types like : install or repair
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'gs-request-types-v1'
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings
+		WHERE ([key] = 'CUSTOMER_NAME' AND [value] IN ('AriaKish'))
+		)
+BEGIN
+
+	CREATE TABLE GSRequestTypes (
+		id                          int                         PRIMARY KEY,
+        title                       nvarchar(256)               NOT NULL,
+		[createdAt]					datetimeoffset				NOT NULL,
+		[updatedAt]					datetimeoffset				NOT NULL
+	);
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'gs-request-types-v1', GETDATE(), GETDATE()
+END
+
+GO
+
+-- gs-request-categories like : normal gaurantee, vip guarantee, without guarantee
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'gs-request-categories-v1'
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings
+		WHERE ([key] = 'CUSTOMER_NAME' AND [value] IN ('AriaKish'))
+		)
+BEGIN
+
+	CREATE TABLE GSRequestCategories (
+		id                          int                         PRIMARY KEY,
+        title                       nvarchar(256)               NOT NULL,
+		[createdAt]					datetimeoffset				NOT NULL,
+		[updatedAt]					datetimeoffset				NOT NULL
+	);
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'gs-request-categories-v1', GETDATE(), GETDATE()
+END
+
+GO
+
+-- gs-request-v1
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'gs-requests-v1'
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings
+		WHERE ([key] = 'CUSTOMER_NAME' AND [value] IN ('AriaKish'))
+		)
+BEGIN
+
+	CREATE TABLE GSRequests (
+		id                          bigint                      NOT NULL
+            CONSTRAINT FK_GSRequests_Id
+                FOREIGN KEY REFERENCES BPMNRequests(id),
+        requestTypeId               int                         NOT NULL
+            CONSTRAINT FK_GSRequests_RequestTypeId
+                FOREIGN KEY REFERENCES GSRequestTypes(id),
+        requestCategoryId           int                         NOT NULL
+            CONSTRAINT FK_GSRequests_RequestCategoryId
+                FOREIGN KEY REFERENCES GSRequestCategories(id),
+        brandId                     int                         NULL
+            CONSTRAINT FK_GSRequests_BrandId
+                FOREIGN KEY REFERENCES GSBrands(id),
+        variantId                   int                         NULL
+            CONSTRAINT FK_GSRequests_VariantId
+                FOREIGN KEY REFERENCES GSVariants(id),
+        productTypeId               int                         NULL
+            CONSTRAINT FK_GSRequests_ProductTypeId
+                FOREIGN KEY REFERENCES GSProductTypes(id),      
+        organizationId              int                         NULL
+            CONSTRAINT FK_GSRequests_OrganizationId
+                FOREIGN KEY REFERENCES GSGuaranteeOrganizations(id),
+        guaranteeId                 bigint                      NULL
+            CONSTRAINT FK_Requests_GuaranteeId
+                FOREIGN KEY REFERENCES GSGuarantees(id),
+        userId                      bigint                      NOT NULL
+            CONSTRAINT FK_GSRequests_UserId
+                FOREIGN KEY REFERENCES Users(id),
+        phoneNumber                 nvarchar(128)               NULL,
+        addressId                   bigint                      NOT NULL
+            CONSTRAINT FK_GSRequests_AddressId
+                FOREIGN KEY REFERENCES GSAddresses(id),
+        isDeleted                   bit                         NULL,
+		[createdAt]					datetimeoffset				NOT NULL,
+		[updatedAt]					datetimeoffset				NOT NULL,
+        CONSTRAINT PK_GSRequests_Id
+	        PRIMARY KEY CLUSTERED (id)
+	);
+
+    CREATE NONCLUSTERED INDEX NIX_GSRequests_UserId ON GSRequests(id);
+    CREATE NONCLUSTERED INDEX NIX_GSRequests_IsDeleted ON GSRequests(isDeleted);
+    CREATE NONCLUSTERED INDEX NIX_GSRequests_GuaranteeId ON GSRequests(guaranteeId);
+    CREATE NONCLUSTERED INDEX NIX_GSRequests_OrganizationId ON GSRequests(organizationId);
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'gs-requests-v1', GETDATE(), GETDATE()
 END
 
 GO

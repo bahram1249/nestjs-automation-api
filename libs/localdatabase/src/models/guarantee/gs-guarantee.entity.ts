@@ -152,10 +152,10 @@ export class GSGuarantee extends Model {
   @AutoMap()
   @Column({
     type: DataType.NUMBER,
-    allowNull: false,
+    allowNull: true,
   })
   @ForeignKey(() => GSProductType)
-  productTypeId: number;
+  productTypeId?: number;
 
   @BelongsTo(() => GSProductType)
   productType?: GSProductType;

@@ -13,6 +13,9 @@ import {
   GSProductType,
   GSProvider,
   GSProvince,
+  GSRequest,
+  GSRequestCategory,
+  GSRequestType,
   GSVariant,
 } from '../models';
 
@@ -32,4 +35,7 @@ export const guaranteeModels = [
   GSAddress,
   GSGuaranteeOrganization,
   GSGuaranteeOrganizationContract,
+  GSRequestType,
+  GSRequestCategory,
+  GSRequest,
 ];

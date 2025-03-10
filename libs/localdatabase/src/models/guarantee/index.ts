@@ -14,3 +14,6 @@ export * from './gs-neighborhood.entity';
 export * from './gs-address.entity';
 export * from './gs-guarantee-organization.entity';
 export * from './gs-guarantee-organization-contract.entity';
+export * from './gs-request-type.entity';
+export * from './gs-request-category.entity';
+export * from './gs-request.entity';
