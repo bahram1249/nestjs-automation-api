@@ -27,3 +27,7 @@ export * from './gs-payment-way.entity';
 export * from './gs-payment-gateway.entity';
 export * from './gs-transaction-status.entity';
 export * from './gs-transaction.entity';
+export * from './gs-factor-additional-package.entity';
+export * from './gs-assigned-product-assigned-guarantee.entity';
+export * from './gs-solution.entity';
+export * from './gs-part.entity';

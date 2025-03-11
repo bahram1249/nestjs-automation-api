@@ -27,6 +27,10 @@ import {
   GSPaymentGateway,
   GSTransactionStatus,
   GSTransaction,
+  GSFactorAdditionalPackage,
+  GSAssignedProductAssignedGuarantee,
+  GSSolution,
+  GSPart,
 } from '../models';
 
 export const guaranteeModels = [
@@ -58,4 +62,8 @@ export const guaranteeModels = [
   GSPaymentGateway,
   GSTransactionStatus,
   GSTransaction,
+  GSFactorAdditionalPackage,
+  GSAssignedProductAssignedGuarantee,
+  GSSolution,
+  GSPart,
 ];

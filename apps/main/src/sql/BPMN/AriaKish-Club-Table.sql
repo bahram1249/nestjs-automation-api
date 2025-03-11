@@ -970,3 +970,125 @@ END
 
 GO
 
+-- gs-factor-additional-packages
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'gs-factor-additional-packages-v1'
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings
+		WHERE ([key] = 'CUSTOMER_NAME' AND [value] IN ('AriaKish'))
+		)
+BEGIN
+
+	CREATE TABLE GSFactorAdditionalPackages (
+		id                          bigint identity(1,1)        PRIMARY KEY,
+        factorId                    bigint                      NOT NULL
+            CONSTRAINT FK_GSFactorAdditionalPackages_FactorId
+                FOREIGN KEY REFERENCES GSFactors(id),
+        additionalPackageId         int                         NOT NULL
+            CONSTRAINT FK_GSFactorAdditionalPackages_AdditionalPackageId
+                FOREIGN KEY REFERENCES GSAdditionalPackages(id),
+		[createdAt]					datetimeoffset				NOT NULL,
+		[updatedAt]					datetimeoffset				NOT NULL
+	);
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'gs-factor-additional-packages-v1', GETDATE(), GETDATE()
+END
+
+GO
+
+-- gs-assignedproductassignedguarantees
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'gs-assignedproductassignedguarantees-v1'
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings
+		WHERE ([key] = 'CUSTOMER_NAME' AND [value] IN ('AriaKish'))
+		)
+BEGIN
+
+	CREATE TABLE GSAssignedProductAsssignedGuarantees (
+		id                          bigint identity(1,1)        PRIMARY KEY,
+        assignedGuaranteeId         bigint                      NOT NULL
+            CONSTRAINT FK_AssignedProductAssignedGuarantees_AssignedGuaranteeId
+                FOREIGN KEY REFERENCES GSAssignedGuarantees(id),
+        productTypeId               int                         NOT NULL
+            CONSTRAINT FK_AssignedProductAssignedGuarantees_ProductTypeId
+                FOREIGN KEY REFERENCES GSProductTypes(id),
+        variantId                   int                         NOT NULL
+            CONSTRAINT FK_AssignedProductAssignedGuarantees_VaraintId
+                FOREIGN KEY REFERENCES GSVariants(id),
+        brandId                     int                         NOT NULL
+            CONSTRAINT FK_AssignedProductAssignedGuarantees_BrandId
+                FOREIGN KEY REFERENCES GSBrands(id),
+        isDeleted                   bit                         NULL,
+		[createdAt]					datetimeoffset				NOT NULL,
+		[updatedAt]					datetimeoffset				NOT NULL
+	);
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'gs-assignedproductassignedguarantees-v1', GETDATE(), GETDATE()
+END
+
+GO
+
+-- gs-solutions
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'gs-solutions-v1'
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings
+		WHERE ([key] = 'CUSTOMER_NAME' AND [value] IN ('AriaKish'))
+		)
+BEGIN
+
+	CREATE TABLE GSSolutions (
+		id                          int identity(1,1)           PRIMARY KEY,
+        title                       nvarchar(256)               NULL,
+        fee                         bigint                      NOT NULL,
+        unitPriceId                 int                         NOT NULL
+            CONSTRAINT FK_GSSolutions_UnitPriceId
+                FOREIGN KEY REFERENCES GSUnitPrices(id),
+        provinceId                  int                         NULL
+            CONSTRAINT FK_GSSolutions_ProvinceId
+                FOREIGN KEY REFERENCES GSProvinces(id),
+        pranetId                    int                         NULL
+            CONSTRAINT FK_GSSolutions_ParentId
+                FOREIGN KEY REFERENCES GSSolutions(id),
+        isDeleted                   bit                         NULL,
+		[createdAt]					datetimeoffset				NOT NULL,
+		[updatedAt]					datetimeoffset				NOT NULL
+	);
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'gs-solutions-v1', GETDATE(), GETDATE()
+END
+
+GO
+
+-- gs-parts
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'gs-parts-v1'
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings
+		WHERE ([key] = 'CUSTOMER_NAME' AND [value] IN ('AriaKish'))
+		)
+BEGIN
+
+	CREATE TABLE GSParts (
+		id                          int identity(1,1)           PRIMARY KEY,
+        title                       nvarchar(512)               NOT NULL,
+        minFee                      bigint                      NOT NULL,
+        unitPriceId                 int                         NOT NULL
+            CONSTRAINT FK_GSParts_UnitPriceId
+                FOREIGN KEY REFERENCES GSUnitPrices(id),
+        dollarBaseFee               decimal                     NULL,
+		[createdAt]					datetimeoffset				NOT NULL,
+		[updatedAt]					datetimeoffset				NOT NULL
+	);
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'gs-parts-v1', GETDATE(), GETDATE()
+END
+
+GO
+
+
