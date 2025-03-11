@@ -860,6 +860,26 @@ END
 
 GO
 
+-- gs-factor-v2
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'gs-factors-v2'
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings
+		WHERE ([key] = 'CUSTOMER_NAME' AND [value] IN ('AriaKish'))
+		)
+BEGIN
+
+	ALTER TABLE GSFactors 
+        ADD requestId bigint NULL
+            CONSTRAINT FK_GSFactors_RequestId
+                FOREIGN KEY REFERENCES GSRequests(id)
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'gs-factors-v2', GETDATE(), GETDATE()
+END
+
+GO
+
 -- gs-paymentways
 IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'gs-paymentways-v1'
 			)

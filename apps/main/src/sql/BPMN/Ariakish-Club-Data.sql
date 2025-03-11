@@ -2290,3 +2290,156 @@ BEGIN
 END
 
 GO
+
+-- request-types
+IF NOT EXISTS ( SELECT 1 FROM Migrations WHERE version = 'gs-request-types-Data-v1'
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings
+		WHERE ([key] = 'CUSTOMER_NAME' AND [value] IN ('AriaKish'))
+		)
+
+BEGIN
+
+	INSERT INTO GSRequestTypes(id, title, createdAt, updatedAt)
+	VALUES (1, N'نصب', GETDATE(), GETDATE())
+			,(2, N'تعمیر', GETDATE(), GETDATE())
+	
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'gs-request-types-Data-v1', GETDATE(), GETDATE()
+END
+
+GO
+
+-- request categories
+IF NOT EXISTS ( SELECT 1 FROM Migrations WHERE version = 'gs-request-categories-Data-v1'
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings
+		WHERE ([key] = 'CUSTOMER_NAME' AND [value] IN ('AriaKish'))
+		)
+
+BEGIN
+
+	INSERT INTO GSRequestCategories(id, title, createdAt, updatedAt)
+	VALUES (1, N'گارانتی عادی', GETDATE(), GETDATE())
+			,(2, N'گارانتی VIP', GETDATE(), GETDATE())
+			,(3, N'درخواست خارج از گارانتی', GETDATE(), GETDATE())
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'gs-request-categories-Data-v1', GETDATE(), GETDATE()
+END
+
+GO
+
+-- unit-prices
+IF NOT EXISTS ( SELECT 1 FROM Migrations WHERE version = 'gs-unit-prices-Data-v1'
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings
+		WHERE ([key] = 'CUSTOMER_NAME' AND [value] IN ('AriaKish'))
+		)
+
+BEGIN
+
+	INSERT INTO GSUnitPrices(id, title, createdAt, updatedAt)
+	VALUES (1, N'تومان', GETDATE(), GETDATE())
+			,(2, N'ریال', GETDATE(), GETDATE())
+			
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'gs-unit-prices-Data-v1', GETDATE(), GETDATE()
+END
+
+GO
+
+-- factor status
+IF NOT EXISTS ( SELECT 1 FROM Migrations WHERE version = 'gs-factor-status-Data-v1'
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings
+		WHERE ([key] = 'CUSTOMER_NAME' AND [value] IN ('AriaKish'))
+		)
+
+BEGIN
+
+	INSERT INTO GSFactorStatuses(id, title, createdAt, updatedAt)
+	VALUES (1, N'منتظر پرداخت', GETDATE(), GETDATE())
+			,(2, N'پرداخت نشده', GETDATE(), GETDATE())
+			,(3, N'پرداخت شده', GETDATE(), GETDATE())
+			,(4, N'انقضا شده', GETDATE(), GETDATE())
+			
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'gs-factor-status-Data-v1', GETDATE(), GETDATE()
+END
+
+GO
+
+
+-- factor types
+IF NOT EXISTS ( SELECT 1 FROM Migrations WHERE version = 'gs-factor-types-Data-v1'
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings
+		WHERE ([key] = 'CUSTOMER_NAME' AND [value] IN ('AriaKish'))
+		)
+
+BEGIN
+
+	INSERT INTO GSFactorTypes(id, title, createdAt, updatedAt)
+	VALUES (1, N'خرید شرایط مازاد', GETDATE(), GETDATE())
+			,(2, N'خرید کارت گارانتی VIP', GETDATE(), GETDATE())
+			,(3, N'پرداخت صورتحساب درخواست', GETDATE(), GETDATE())
+			
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'gs-factor-types-Data-v1', GETDATE(), GETDATE()
+END
+
+GO
+
+-- payment ways
+IF NOT EXISTS ( SELECT 1 FROM Migrations WHERE version = 'gs-payment-ways-Data-v1'
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings
+		WHERE ([key] = 'CUSTOMER_NAME' AND [value] IN ('AriaKish'))
+		)
+
+BEGIN
+
+	INSERT INTO GSPaymentWays(id, title, createdAt, updatedAt)
+	VALUES (1, N'نقدی', GETDATE(), GETDATE())
+			,(2, N'پرداخت آنلاین', GETDATE(), GETDATE())
+			,(3, N'پرداخت از طریق اعتبار گارانتی عادی', GETDATE(), GETDATE())
+			,(4, N'پرداخت از طریق اعتبار گارانتی VIP', GETDATE(), GETDATE())
+			
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'gs-payment-ways-Data-v1', GETDATE(), GETDATE()
+END
+
+GO
+
+
+-- transaction status
+IF NOT EXISTS ( SELECT 1 FROM Migrations WHERE version = 'gs-transaction-statuses-Data-v1'
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings
+		WHERE ([key] = 'CUSTOMER_NAME' AND [value] IN ('AriaKish'))
+		)
+
+BEGIN
+
+	INSERT INTO GSTransactionStatuses(id, title, createdAt, updatedAt)
+	VALUES (1, N'منتظر پرداخت', GETDATE(), GETDATE())
+			,(2, N'لغو شده', GETDATE(), GETDATE())
+			,(3, N'پرداخت نشده', GETDATE(), GETDATE())
+			
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'gs-transaction-statuses-Data-v1', GETDATE(), GETDATE()
+END
+
+GO

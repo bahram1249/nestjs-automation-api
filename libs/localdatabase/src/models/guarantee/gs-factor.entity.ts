@@ -11,6 +11,8 @@ import { GSUnitPrice } from './gs-unit-price.entity';
 import { GSFactorStatus } from './gs-factor-status.entity';
 import { GSFactorType } from './gs-factor-type.entity';
 import { User } from '@rahino/database';
+import { GSRequest } from './gs-request.entity';
+import { BPMNRequest } from '../bpmn';
 
 @Table({ tableName: 'GSFactors' })
 export class GSFactor extends Model {
@@ -70,4 +72,20 @@ export class GSFactor extends Model {
     type: DataType.DATE,
   })
   expireDate: Date;
+
+  @Column({
+    type: DataType.BIGINT,
+    allowNull: true,
+  })
+  @ForeignKey(() => GSRequest)
+  requestId: bigint;
+
+  @BelongsTo(() => GSRequest, {
+    as: 'guaranteeRequest',
+    foreignKey: 'requestId',
+  })
+  guaranteeRequest?: GSRequest;
+
+  @BelongsTo(() => BPMNRequest, { as: 'bpmnRequest', foreignKey: 'requestId' })
+  bpmnRequest?: BPMNRequest;
 }
