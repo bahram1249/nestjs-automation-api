@@ -1,4 +1,5 @@
 import {
+  GSAdditionalPackage,
   GSAddress,
   GSAssignedGuarantee,
   GSBrand,
@@ -16,7 +17,16 @@ import {
   GSRequest,
   GSRequestCategory,
   GSRequestType,
+  GSUnitPrice,
   GSVariant,
+  GSAssignedGuaranteeAdditionalPackage,
+  GSFactorStatus,
+  GSFactorType,
+  GSFactor,
+  GSPaymentWay,
+  GSPaymentGateway,
+  GSTransactionStatus,
+  GSTransaction,
 } from '../models';
 
 export const guaranteeModels = [
@@ -38,4 +48,14 @@ export const guaranteeModels = [
   GSRequestType,
   GSRequestCategory,
   GSRequest,
+  GSUnitPrice,
+  GSAdditionalPackage,
+  GSAssignedGuaranteeAdditionalPackage,
+  GSFactorStatus,
+  GSFactorType,
+  GSFactor,
+  GSPaymentWay,
+  GSPaymentGateway,
+  GSTransactionStatus,
+  GSTransaction,
 ];

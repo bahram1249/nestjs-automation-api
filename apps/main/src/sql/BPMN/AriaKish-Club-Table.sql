@@ -700,3 +700,273 @@ BEGIN
 END
 
 GO
+
+
+-- gs-unit-prices v1 :-> rial, toman
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'gs-unit-prices-v1'
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings
+		WHERE ([key] = 'CUSTOMER_NAME' AND [value] IN ('AriaKish'))
+		)
+BEGIN
+
+	CREATE TABLE GSUnitPrices (
+		id                          int                         PRIMARY KEY,
+        title                       nvarchar(256)               NOT NULL,
+		[createdAt]					datetimeoffset				NOT NULL,
+		[updatedAt]					datetimeoffset				NOT NULL
+	);
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'gs-unit-prices-v1', GETDATE(), GETDATE()
+END
+
+GO
+
+-- gs-additional-package
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'gs-additional-packages-v1'
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings
+		WHERE ([key] = 'CUSTOMER_NAME' AND [value] IN ('AriaKish'))
+		)
+BEGIN
+
+	CREATE TABLE GSAdditionalPackages (
+		id                          int identity(1,1)           PRIMARY KEY,
+        title                       nvarchar(256)               NOT NULL,
+        price                       bigint                      NOT NULL,
+        unitPriceId                 int                         NOT NULL
+            CONSTRAINT FK_GSAdditionalPackages_UnitPriceId
+                FOREIGN KEY REFERENCES GSUnitPrices(id),
+        isDeleted                   bit                         NULL,
+		[createdAt]					datetimeoffset				NOT NULL,
+		[updatedAt]					datetimeoffset				NOT NULL
+	);
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'gs-additional-packages-v1', GETDATE(), GETDATE()
+END
+
+GO
+
+-- gs-assignedguarantee-additional-package
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'gs-assginedguaranteeadditionalpackage-v1'
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings
+		WHERE ([key] = 'CUSTOMER_NAME' AND [value] IN ('AriaKish'))
+		)
+BEGIN
+
+	CREATE TABLE GSAssignedGuaranteeAdditionalPackages (
+		id                          bigint identity(1,1)       PRIMARY KEY,
+        assignedGuaranteeId         bigint                      NOT NULL
+            CONSTRAINT FK_GSAssignedGuaranteeAdditionalPackages_AssignedGuaranteeId
+                FOREIGN KEY REFERENCES GSAssignedGuarantees(id),
+        additionalPackageId         int                         NOT NULL
+            CONSTRAINT FK_GSAssignedGuaranteeAdditionalPackages_additionalPackageId
+                FOREIGN KEY REFERENCES GSAdditionalPackages(id),
+		[createdAt]					datetimeoffset				NOT NULL,
+		[updatedAt]					datetimeoffset				NOT NULL
+	);
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'gs-assginedguaranteeadditionalpackage-v1', GETDATE(), GETDATE()
+END
+
+GO
+
+
+-- gs-factor-status
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'gs-factor-statuses-v1'
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings
+		WHERE ([key] = 'CUSTOMER_NAME' AND [value] IN ('AriaKish'))
+		)
+BEGIN
+
+	CREATE TABLE GSFactorStatuses (
+		id                          int                         PRIMARY KEY,
+        title                       nvarchar(256)               NOT NULL,
+		[createdAt]					datetimeoffset				NOT NULL,
+		[updatedAt]					datetimeoffset				NOT NULL
+	);
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'gs-factor-statuses-v1', GETDATE(), GETDATE()
+END
+
+GO
+
+
+-- gs-factor-type
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'gs-factor-types-v1'
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings
+		WHERE ([key] = 'CUSTOMER_NAME' AND [value] IN ('AriaKish'))
+		)
+BEGIN
+
+	CREATE TABLE GSFactorTypes (
+		id                          int                         PRIMARY KEY,
+        title                       nvarchar(256)               NOT NULL,
+		[createdAt]					datetimeoffset				NOT NULL,
+		[updatedAt]					datetimeoffset				NOT NULL
+	);
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'gs-factor-types-v1', GETDATE(), GETDATE()
+END
+
+GO
+
+
+-- gs-factors
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'gs-factors-v1'
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings
+		WHERE ([key] = 'CUSTOMER_NAME' AND [value] IN ('AriaKish'))
+		)
+BEGIN
+
+	CREATE TABLE GSFactors (
+		id                          bigint identity(1,1)        PRIMARY KEY,
+        unitPriceId                 int                         NOT NULL
+            CONSTRAINT FK_GSFactors_UnitPriceId
+                FOREIGN KEY REFERENCES GSUnitPrices(id),
+        totalPrice                  bigint                      NOT NULL,
+        factorStatusId              int                         NOT NULL
+            CONSTRAINT FK_GSFactors_FactorStatusId
+                FOREIGN KEY REFERENCES GSFactorStatuses(id),
+        factorTypeId                int                         NOT NULL
+            CONSTRAINT FK_GSFactors_FactorTypeId
+                FOREIGN KEY REFERENCES GSFactorTypes(id),
+        userId                      bigint                      NOT NULL
+            CONSTRAINT FK_GSFactors_UserId
+                FOREIGN KEY REFERENCES Users(id),
+        expireDate                  datetime                    NOT NULL,
+		[createdAt]					datetimeoffset				NOT NULL,
+		[updatedAt]					datetimeoffset				NOT NULL
+	);
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'gs-factors-v1', GETDATE(), GETDATE()
+END
+
+GO
+
+-- gs-paymentways
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'gs-paymentways-v1'
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings
+		WHERE ([key] = 'CUSTOMER_NAME' AND [value] IN ('AriaKish'))
+		)
+BEGIN
+
+	CREATE TABLE GSPaymentWays (
+		id                          int                         PRIMARY KEY,
+        title                       nvarchar(256)               NOT NULL,
+		[createdAt]					datetimeoffset				NOT NULL,
+		[updatedAt]					datetimeoffset				NOT NULL
+	);
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'gs-paymentways-v1', GETDATE(), GETDATE()
+END
+
+GO
+
+
+-- gs-paymentgateways
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'gs-paymentgateways-v1'
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings
+		WHERE ([key] = 'CUSTOMER_NAME' AND [value] IN ('AriaKish'))
+		)
+BEGIN
+
+	CREATE TABLE GSPaymentGateways (
+		id                          int identity(1,1)           PRIMARY KEY,
+        title                       nvarchar(256)               NOT NULL,
+        paymentWayId                int                         NOT NULL
+            CONSTRAINT FK_GSPaymentGateways_PaymentWayId
+                FOREIGN KEY REFERENCES GSPaymentWays(id),
+        serviceProvider             nvarchar(1024)              NULL,
+        username                    nvarchar(256)               NULL,
+        password                    nvarchar(256)               NULL,
+        clientToken                 nvarchar(256)               NULL,
+        secretToken                 nvarchar(256)               NULL,
+		[createdAt]					datetimeoffset				NOT NULL,
+		[updatedAt]					datetimeoffset				NOT NULL
+	);
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'gs-paymentgateways-v1', GETDATE(), GETDATE()
+END
+
+GO
+
+-- gs-transaction-statuses
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'gs-transaction-statuses-v1'
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings
+		WHERE ([key] = 'CUSTOMER_NAME' AND [value] IN ('AriaKish'))
+		)
+BEGIN
+
+	CREATE TABLE GSTransactionStatuses (
+		id                          int                         PRIMARY KEY,
+        title                       nvarchar(256)               NOT NULL,
+		[createdAt]					datetimeoffset				NOT NULL,
+		[updatedAt]					datetimeoffset				NOT NULL
+	);
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'gs-transaction-statuses-v1', GETDATE(), GETDATE()
+END
+
+GO
+
+
+-- gs-transactions
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'gs-transactions-v1'
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings
+		WHERE ([key] = 'CUSTOMER_NAME' AND [value] IN ('AriaKish'))
+		)
+BEGIN
+
+	CREATE TABLE GSTransactions (
+		id                          bigint identity(1,1)        PRIMARY KEY,
+        transactionStatusId         int                         NOT NULL
+            CONSTRAINT FK_GSTransactions_TransactionStatusId
+                FOREIGN KEY REFERENCES GSTransactionStatuses(id),
+        unitPriceId                 int                         NOT NULL
+            CONSTRAINT FK_GSTransactions_UnitPriceId
+                FOREIGN KEY REFERENCES GSUnitPrices(id),
+        totalPrice                  bigint                      NOT NULL,
+        factorId                    bigint                      NOT NULL
+            CONSTRAINT FK_GSTransactions_FactorId
+                FOREIGN KEY REFERENCES GSFactors(id),
+        userId                      bigint                      NOT NULL
+            CONSTRAINT FK_GSTransactions_UserId
+                FOREIGN KEY REFERENCES Users(id),
+		[createdAt]					datetimeoffset				NOT NULL,
+		[updatedAt]					datetimeoffset				NOT NULL
+	);
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'gs-transactions-v1', GETDATE(), GETDATE()
+END
+
+GO
+

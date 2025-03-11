@@ -16,6 +16,7 @@ import { BPMNOrganization } from '../bpmn';
 import { GSGuarantee } from './gs-guarantee.entity';
 import { User } from '@rahino/database';
 import { GSAddress } from './gs-address.entity';
+import { AutoMap } from 'automapper-classes';
 
 @Table({ tableName: 'GSRequests' })
 export class GSRequest extends Model {
@@ -24,6 +25,8 @@ export class GSRequest extends Model {
     primaryKey: true,
   })
   id: bigint;
+
+  @AutoMap()
   @Column({
     type: DataType.INTEGER,
   })
@@ -36,6 +39,7 @@ export class GSRequest extends Model {
   })
   requestType?: GSRequestType;
 
+  @AutoMap()
   @Column({
     type: DataType.INTEGER,
   })
@@ -48,6 +52,7 @@ export class GSRequest extends Model {
   })
   requestCategory?: GSRequestCategory;
 
+  @AutoMap()
   @Column({
     type: DataType.INTEGER,
     allowNull: true,
@@ -58,6 +63,7 @@ export class GSRequest extends Model {
   @BelongsTo(() => GSBrand, { as: 'brand', foreignKey: 'brandId' })
   brand?: GSBrand;
 
+  @AutoMap()
   @Column({
     type: DataType.INTEGER,
     allowNull: true,
@@ -68,6 +74,7 @@ export class GSRequest extends Model {
   @BelongsTo(() => GSVariant, { as: 'variant', foreignKey: 'variantId' })
   bariant?: GSVariant;
 
+  @AutoMap()
   @Column({
     type: DataType.INTEGER,
     allowNull: true,
@@ -81,6 +88,7 @@ export class GSRequest extends Model {
   })
   productType?: GSProductType;
 
+  @AutoMap()
   @Column({
     type: DataType.INTEGER,
     allowNull: true,
@@ -100,6 +108,7 @@ export class GSRequest extends Model {
   })
   bpmnOrganization?: BPMNOrganization;
 
+  @AutoMap()
   @Column({
     type: DataType.BIGINT,
     allowNull: true,
@@ -119,11 +128,14 @@ export class GSRequest extends Model {
   @BelongsTo(() => User, { as: 'user', foreignKey: 'userId' })
   user?: User;
 
+  @AutoMap()
   @Column({
     type: DataType.STRING,
     allowNull: true,
   })
   phoneNumber?: string;
+
+  @AutoMap()
   @Column({
     type: DataType.BIGINT,
   })
