@@ -42,6 +42,7 @@ export type I18nTranslations = {
         "neighborhood_must_be_select_it": string;
     };
     "guarantee": {
+        "guarantee_request_item_not_founded": string;
         "this_card_assigned_to_another_user_call_support_user": string;
         "you_entered_this_card_before": string;
         "expire_date_of_card_is_reach": string;
