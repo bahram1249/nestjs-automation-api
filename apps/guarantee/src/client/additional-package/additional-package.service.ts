@@ -38,8 +38,8 @@ export class AdditionalPackageService {
           },
         ),
       )
-      .limit(filter.limit)
-      .offset(filter.offset)
+      .limit(filter.limit, filter.ignorePaging)
+      .offset(filter.offset, filter.ignorePaging)
       .order({ orderBy: filter.orderBy, sortOrder: filter.sortOrder });
 
     const results = await this.repository.findAll(query.build());
