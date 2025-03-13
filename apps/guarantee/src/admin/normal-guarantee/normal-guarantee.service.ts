@@ -22,7 +22,7 @@ import { I18nTranslations } from 'apps/main/src/generated/i18n.generated';
 import { InjectMapper } from 'automapper-nestjs';
 import { Mapper } from 'automapper-core';
 import * as _ from 'lodash';
-import { GSGuaranteeTypeEnum } from '../gurantee-type';
+import { GSGuaranteeTypeEnum } from '../../shared/gurantee-type';
 
 @Injectable()
 export class NormalGuaranteeService {

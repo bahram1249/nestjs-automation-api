@@ -18,11 +18,11 @@ import { InjectModel } from '@nestjs/sequelize';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import { Sequelize } from 'sequelize';
 import { Op } from 'sequelize';
-import { GSGuaranteeTypeEnum } from '@rahino/guarantee/admin/gurantee-type';
+import { GSGuaranteeTypeEnum } from '@rahino/guarantee/shared/gurantee-type';
 import { I18nTranslations } from 'apps/main/src/generated/i18n.generated';
 import { I18nContext, I18nService } from 'nestjs-i18n';
 import * as _ from 'lodash';
-import { GSGuaranteeConfirmStatus } from '@rahino/guarantee/admin/guarantee-confirm-status';
+import { GSGuaranteeConfirmStatus } from '@rahino/guarantee/shared/guarantee-confirm-status';
 
 @Injectable()
 export class NormalGuaranteeService {

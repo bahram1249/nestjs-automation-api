@@ -9,7 +9,7 @@ import { GSProductType } from '@rahino/localdatabase/models';
 import { Setting } from '@rahino/database';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import { SellerProductTypeService } from '@rahino/guarantee/util/seller-product-type';
-import { GSProviderEnum } from '@rahino/guarantee/admin/provider';
+import { GSProviderEnum } from '@rahino/guarantee/shared/provider';
 import { Op } from 'sequelize';
 
 @Processor(SYNC_SELLER_PRODUCT_TYPE_QUEUE)

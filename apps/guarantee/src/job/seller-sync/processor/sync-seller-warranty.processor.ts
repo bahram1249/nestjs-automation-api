@@ -15,10 +15,10 @@ import {
 import { Setting } from '@rahino/database';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import { SellerWarrantyService } from '@rahino/guarantee/util/seller-warranty';
-import { GSProviderEnum } from '@rahino/guarantee/admin/provider';
+import { GSProviderEnum } from '@rahino/guarantee/shared/provider';
 import { Op } from 'sequelize';
-import { GSGuaranteeTypeEnum } from '@rahino/guarantee/admin/gurantee-type';
-import { GSGuaranteeConfirmStatus } from '@rahino/guarantee/admin/guarantee-confirm-status';
+import { GSGuaranteeTypeEnum } from '@rahino/guarantee/shared/gurantee-type';
+import { GSGuaranteeConfirmStatus } from '@rahino/guarantee/shared/guarantee-confirm-status';
 
 @Processor(SYNC_SELLER_WARRANTY_QUEUE)
 export class SellerWarrantyProcessor extends WorkerHost {

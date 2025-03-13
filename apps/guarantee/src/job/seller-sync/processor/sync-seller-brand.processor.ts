@@ -6,7 +6,7 @@ import { InjectModel } from '@nestjs/sequelize';
 import { GSBrand } from '@rahino/localdatabase/models';
 import { Setting } from '@rahino/database';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
-import { GSProviderEnum } from '@rahino/guarantee/admin/provider';
+import { GSProviderEnum } from '@rahino/guarantee/shared/provider';
 import { Op } from 'sequelize';
 
 @Processor(SYNC_SELLER_BRAND_QUEUE)

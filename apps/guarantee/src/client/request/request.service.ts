@@ -16,7 +16,7 @@ import { LocalizationService } from 'apps/main/src/common/localization';
 import { NormalRequestDto } from './dto';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import { Sequelize, Transaction, Op } from 'sequelize';
-import { GSGuaranteeTypeEnum } from '@rahino/guarantee/admin/gurantee-type';
+import { GSGuaranteeTypeEnum } from '@rahino/guarantee/shared/gurantee-type';
 import { BPMNRequestService } from '@rahino/bpmn/modules/request/request.service';
 import { GuaranteeProcessEnum } from '@rahino/guarantee/shared/process';
 
