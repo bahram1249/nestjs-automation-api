@@ -122,7 +122,7 @@ export class RequestService {
         },
         transaction,
       );
-      const request = this.repository.create(
+      this.repository.create(
         {
           id: bpmnRequest.id,
           requestTypeId: dto.requestTypeId,
