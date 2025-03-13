@@ -14,7 +14,7 @@ import { I18nTranslations } from 'apps/main/src/generated/i18n.generated';
 import { InjectMapper } from 'automapper-nestjs';
 import { Mapper } from 'automapper-core';
 import * as _ from 'lodash';
-import { GSUnitPriceEnum } from '@rahino/guarantee/util/unit-price';
+import { GSUnitPriceEnum } from '@rahino/guarantee/shared/unit-price';
 import { ChildSolutionDto } from './dto/child-solution.dto';
 
 @Injectable()

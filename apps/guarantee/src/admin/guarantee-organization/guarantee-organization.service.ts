@@ -27,7 +27,7 @@ import { InjectMapper } from 'automapper-nestjs';
 import { Mapper } from 'automapper-core';
 import { OrganizationDto } from '@rahino/bpmn/modules/organization/dto';
 import * as _ from 'lodash';
-import { GuaranteeStaticRoleEnum } from '@rahino/guarantee/util/static-role/enum';
+import { GuaranteeStaticRoleEnum } from '@rahino/guarantee/shared/static-role/enum';
 import { AddressService } from '@rahino/guarantee/client/address/address.service';
 
 @Injectable()
