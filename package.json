@@ -45,7 +45,7 @@
     "automapper-core": "^8.7.12",
     "automapper-nestjs": "^8.7.12",
     "automapper-sequelize": "^8.7.12",
-    "axios": "^1.6.2",
+    "axios": "^1.8.3",
     "base64-string": "^1.1.2",
     "bcrypt": "^5.1.1",
     "cache-manager": "^5.2.4",
