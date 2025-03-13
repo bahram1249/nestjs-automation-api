@@ -5,19 +5,19 @@ import {
   NestModule,
 } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
-import { RequestModule } from './modules/request/request.module';
+import { BPMNRequestModule } from './modules/request/request.module';
 import { TestModule } from './test/test.module';
 import { DynamicConditionModule } from './dynamic-condition';
 import { DynamicActionModule } from './dynamic-action';
 
 @Module({
   imports: [
-    RequestModule,
+    BPMNRequestModule,
     TestModule,
     DynamicConditionModule,
     DynamicActionModule,
   ], //[RequestModule],
-  exports: [RequestModule],
+  exports: [BPMNRequestModule],
 })
 export class BPMNModule implements NestModule {
   constructor() {}

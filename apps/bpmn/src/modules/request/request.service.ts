@@ -16,7 +16,7 @@ import { TraverseService } from '../traverse/traverse.service';
 import { v4 as uuidv4 } from 'uuid';
 
 @Injectable()
-export class RequestService {
+export class BPMNRequestService {
   constructor(
     @InjectModel(BPMNRequest)
     private readonly requestRepository: typeof BPMNRequest,
@@ -33,10 +33,13 @@ export class RequestService {
     private readonly sequelize: Sequelize,
   ) {}
 
-  async initRequest(dto: InitRequestDto) {
+  async initRequest(
+    dto: InitRequestDto,
+    transaction?: Transaction,
+  ): Promise<BPMNRequest> {
     await this.checkRequiredValidation(dto);
     await this.checkOptionalValidation(dto);
-    await this.createRequest(dto);
+    return await this.createRequest(dto, transaction);
   }
 
   private async checkRequiredValidation(dto: InitRequestDto) {
@@ -93,13 +96,19 @@ export class RequestService {
     }
   }
 
-  private async createRequest(dto: InitRequestDto) {
-    const transaction = await this.sequelize.transaction({
-      isolationLevel: Transaction.ISOLATION_LEVELS.READ_COMMITTED,
-    });
+  private async createRequest(
+    dto: InitRequestDto,
+    transaction?: Transaction,
+  ): Promise<BPMNRequest> {
+    if (transaction == null) {
+      transaction = await this.sequelize.transaction({
+        isolationLevel: Transaction.ISOLATION_LEVELS.READ_COMMITTED,
+      });
+    }
+    let request: BPMNRequest;
     try {
       // create request
-      const request = await this.requestRepository.create(
+      request = await this.requestRepository.create(
         {
           userId: dto.userId,
           organizationId: dto.organizationId,
@@ -131,5 +140,6 @@ export class RequestService {
       await transaction.rollback();
       throw new BadRequestException(error.message);
     }
+    return request;
   }
 }

@@ -1,4 +1,7 @@
 {
+  "the_max_character_of_request_description": "حداکثر کاراکتر توضیحات درخواست باید {constraints.0} باشد",
+  "the_min_character_of_request_description": "حداقل کاراکتر توضیحات درخواست باید {constraints.0} باشد",
+  "request_description_is_required": "توضیحات درخواست اجباری است",
   "guarantee_request_item_not_founded": "درخواست گارانتی یافت نشد",
   "this_card_assigned_to_another_user_call_support_user": "این کارت توسط شخص دیگری استفاده شده است٬ چنانچه این کارت در اختیار شما است با پشتیبانی تماس بگیرید",
   "you_entered_this_card_before": "شما قبلا این کارت را وارد نمودید",

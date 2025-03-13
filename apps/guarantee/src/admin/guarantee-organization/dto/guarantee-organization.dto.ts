@@ -1,7 +1,7 @@
 import { UserDto } from '@rahino/coreDashboard/user/dto';
 import { AddressDto } from '@rahino/guarantee/client/address/dto';
 import { AutoMap } from 'automapper-classes';
-import { IsBoolean, IsOptional, IsString } from 'class-validator';
+import { IsBoolean, IsObject, IsOptional, IsString } from 'class-validator';
 
 export class GuaranteeOrganizationDto {
   @AutoMap()
@@ -18,7 +18,9 @@ export class GuaranteeOrganizationDto {
   @IsBoolean()
   public isOnlinePayment?: boolean;
 
+  @IsObject()
   public address: AddressDto;
 
+  @IsObject()
   public user: UserDto;
 }

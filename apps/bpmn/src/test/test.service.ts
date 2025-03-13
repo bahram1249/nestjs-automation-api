@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
-import { RequestService } from '../modules/request/request.service';
+import { BPMNRequestService } from '../modules/request/request.service';
 
 @Injectable()
 export class TestService {
-  constructor(private readonly requestService: RequestService) {}
+  constructor(private readonly requestService: BPMNRequestService) {}
 
   async createRequest() {
     await this.requestService.initRequest({

@@ -1,3 +1,4 @@
+import { AutoMap } from 'automapper-classes';
 import {
   Table,
   Column,
@@ -5,9 +6,9 @@ import {
   DataType,
   ForeignKey,
   BelongsTo,
-} from "sequelize-typescript";
+} from 'sequelize-typescript';
 
-@Table({ tableName: "BPMNOrganizations" })
+@Table({ tableName: 'BPMNOrganizations' })
 export class BPMNOrganization extends Model {
   @Column({
     type: DataType.INTEGER,
@@ -15,6 +16,7 @@ export class BPMNOrganization extends Model {
     primaryKey: true,
   })
   id: number;
+  @AutoMap()
   @Column({
     type: DataType.STRING,
   })
@@ -31,6 +33,6 @@ export class BPMNOrganization extends Model {
   @ForeignKey(() => BPMNOrganization)
   parentId?: number;
 
-  @BelongsTo(() => BPMNOrganization, { as: "parent", foreignKey: "parentId" })
+  @BelongsTo(() => BPMNOrganization, { as: 'parent', foreignKey: 'parentId' })
   parent?: BPMNOrganization;
 }

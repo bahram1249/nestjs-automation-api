@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { SequelizeModule } from '@nestjs/sequelize';
-import { RequestService } from './request.service';
+import { BPMNRequestService } from './request.service';
 import {
   BPMNOrganization,
   BPMNPROCESS,
@@ -22,7 +22,7 @@ import { TraverseModule } from '../traverse/traverse.module';
     TraverseModule,
     RequestStateModule,
   ],
-  providers: [RequestService],
-  exports: [RequestService],
+  providers: [BPMNRequestService],
+  exports: [BPMNRequestService],
 })
-export class RequestModule {}
+export class BPMNRequestModule {}

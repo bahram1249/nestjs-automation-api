@@ -248,6 +248,7 @@ export class GuaranteeOrganizationService {
         OrganizationDto,
       );
 
+      console.log(dto);
       // create or update user
       const user = await this.createOrUpdateUser(dto.user, transaction);
       // assign organization role  to user
@@ -267,13 +268,16 @@ export class GuaranteeOrganizationService {
       );
 
       // create guarantee organization
-      guaranteeOrganization = await this.repository.create({
-        id: organization.id,
-        isNationWide: dto.isNationwide,
-        isOnlinePayment: dto.isOnlinePayment,
-        userId: user.id,
-        addressId: address.result.id,
-      });
+      guaranteeOrganization = await this.repository.create(
+        {
+          id: organization.id,
+          isNationWide: dto.isNationwide,
+          isOnlinePayment: dto.isOnlinePayment,
+          userId: user.id,
+          addressId: address.result.id,
+        },
+        { transaction: transaction },
+      );
 
       // assign user to organization
       await this.assignedOrganizationUser(
@@ -284,6 +288,7 @@ export class GuaranteeOrganizationService {
 
       await transaction.commit();
     } catch (error) {
+      await transaction.rollback();
       throw new InternalServerErrorException(error.message);
     }
 
@@ -367,6 +372,7 @@ export class GuaranteeOrganizationService {
 
       await transaction.commit();
     } catch (error) {
+      await transaction.rollback();
       throw new InternalServerErrorException(error.message);
     }
 
@@ -431,6 +437,7 @@ export class GuaranteeOrganizationService {
       user.lastname = dto.lastname;
       user.phoneNumber = dto.phoneNumber;
       user.username = dto.phoneNumber;
+      await user.save();
     }
     return user;
   }
@@ -441,7 +448,7 @@ export class GuaranteeOrganizationService {
   ) {
     const organizationRole = await this.roleRepository.findOne(
       new QueryOptionsBuilder()
-        .filter({ staticId: GuaranteeStaticRoleEnum.OrganizationRole })
+        .filter({ static_id: GuaranteeStaticRoleEnum.OrganizationRole })
         .build(),
     );
     if (!organizationRole) {

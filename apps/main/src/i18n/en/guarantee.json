@@ -1,4 +1,7 @@
 {
+  "the_max_character_of_request_description": "request description max length at least must be {constraints.0}",
+  "the_min_character_of_request_description": "request description min length at least must be {constraints.0}",
+  "request_description_is_required": "request description is required",
   "guarantee_request_item_not_founded": "guarantee request item not founded",
   "this_card_assigned_to_another_user_call_support_user": "this card assigned to another user",
   "you_entered_this_card_before": "you entered this card before",
