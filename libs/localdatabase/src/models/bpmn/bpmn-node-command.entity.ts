@@ -5,11 +5,11 @@ import {
   DataType,
   ForeignKey,
   BelongsTo,
-} from "sequelize-typescript";
-import { BPMNNode } from "./bpmn-node.entity";
-import { BPMNNodeCommandType } from "./bpmn-node-command-type.entity";
+} from 'sequelize-typescript';
+import { BPMNNode } from './bpmn-node.entity';
+import { BPMNNodeCommandType } from './bpmn-node-command-type.entity';
 
-@Table({ tableName: "BPMNNodeCommands" })
+@Table({ tableName: 'BPMNNodeCommands' })
 export class BPMNNodeCommand extends Model {
   @Column({
     type: DataType.INTEGER,
@@ -23,7 +23,7 @@ export class BPMNNodeCommand extends Model {
   @ForeignKey(() => BPMNNode)
   nodeId: number;
 
-  @BelongsTo(() => BPMNNode, { as: "node", foreignKey: "nodeId" })
+  @BelongsTo(() => BPMNNode, { as: 'node', foreignKey: 'nodeId' })
   node?: BPMNNode;
 
   @Column({
@@ -37,10 +37,16 @@ export class BPMNNodeCommand extends Model {
   nodeCommandTypeId: number;
 
   @BelongsTo(() => BPMNNodeCommandType, {
-    as: "nodeCommandType",
-    foreignKey: "nodeCommandTypeId",
+    as: 'nodeCommandType',
+    foreignKey: 'nodeCommandTypeId',
   })
   nodeCommandType?: BPMNNodeCommandType;
+
+  @Column({
+    type: DataType.STRING,
+    allowNull: true,
+  })
+  route?: string;
 
   @Column({
     type: DataType.BOOLEAN,
