@@ -105,6 +105,10 @@ export class BPMNNode extends Model {
   })
   isDeleted?: boolean;
 
-  @HasMany(() => BPMNNodeCommand)
+  @HasMany(() => BPMNNodeCommand, {
+    as: 'nodeCommands',
+    foreignKey: 'nodeId',
+    sourceKey: 'id',
+  })
   nodeCommands: BPMNNodeCommand[];
 }

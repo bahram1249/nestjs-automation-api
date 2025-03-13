@@ -5,11 +5,14 @@ import {
   DataType,
   ForeignKey,
   BelongsTo,
+  HasMany,
 } from 'sequelize-typescript';
 import { BPMNRequest } from './bpmn-request.entity';
 import { BPMNActivity } from './bpmn-activity.entity';
 import { Role, User } from '@rahino/database';
 import { BPMNOrganization } from './bpmn-organization.entity';
+import { BPMNNode } from './bpmn-node.entity';
+import { GSRequest } from '../guarantee';
 
 @Table({ tableName: 'BPMNRequestStates' })
 export class BPMNRequestState extends Model {
@@ -22,6 +25,12 @@ export class BPMNRequestState extends Model {
 
   @BelongsTo(() => BPMNRequest, { as: 'request', foreignKey: 'requestId' })
   request?: BPMNRequest;
+
+  @BelongsTo(() => GSRequest, {
+    as: 'guaranteeRequest',
+    foreignKey: 'requestId',
+  })
+  guaranteeRequest?: GSRequest;
 
   @Column({
     type: DataType.BIGINT,
@@ -76,4 +85,11 @@ export class BPMNRequestState extends Model {
     allowNull: true,
   })
   returnRequestStateId?: bigint;
+
+  @HasMany(() => BPMNNode, {
+    as: 'nodes',
+    foreignKey: 'fromActivityId',
+    sourceKey: 'activityId',
+  })
+  nodes?: BPMNNode[];
 }

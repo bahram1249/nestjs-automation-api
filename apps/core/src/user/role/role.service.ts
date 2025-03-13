@@ -5,6 +5,7 @@ import { Op } from 'sequelize';
 import { Role } from '@rahino/database';
 import { RoleGetDto } from './dto';
 import { UserRole } from '@rahino/database';
+import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 
 @Injectable()
 export class RoleService {
@@ -40,5 +41,15 @@ export class RoleService {
       result: await this.repository.findAll(options),
       total: count,
     };
+  }
+
+  async findAllRoleId(userId: bigint): Promise<number[]> {
+    const roles = await this.userRoleRepository.findAll(
+      new QueryOptionsBuilder()
+        .attributes(['id', 'roleId'])
+        .filter({ userId: userId })
+        .build(),
+    );
+    return roles.map((item) => item.roleId);
   }
 }
