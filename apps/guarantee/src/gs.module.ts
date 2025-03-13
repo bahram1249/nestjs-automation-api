@@ -18,6 +18,8 @@ import { GSNeighborhoodModule } from './client/neighborhood/neighborhood.module'
 import { GSAddressModule } from './client/address/address.module';
 import { GuaranteeOrganizationModule } from './admin/guarantee-organization';
 import { GuaranteeOrganizationContractModule } from './admin/guarantee-organization-contract';
+import { GSAdditionalPackageModule } from './admin/additional-package';
+import { GSClientAdditionalPackageModule } from './client/additional-package';
 
 @Module({
   imports: [
@@ -34,6 +36,8 @@ import { GuaranteeOrganizationContractModule } from './admin/guarantee-organizat
     GSAddressModule,
     GuaranteeOrganizationModule,
     GuaranteeOrganizationContractModule,
+    GSAdditionalPackageModule,
+    GSClientAdditionalPackageModule,
   ],
 })
 export class GSModule implements NestModule {
