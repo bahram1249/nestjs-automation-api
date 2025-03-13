@@ -20,6 +20,7 @@ import { GuaranteeOrganizationModule } from './admin/guarantee-organization';
 import { GuaranteeOrganizationContractModule } from './admin/guarantee-organization-contract';
 import { GSAdditionalPackageModule } from './admin/additional-package';
 import { GSClientAdditionalPackageModule } from './client/additional-package';
+import { GSSolutionModule } from './admin/solution';
 
 @Module({
   imports: [
@@ -38,6 +39,7 @@ import { GSClientAdditionalPackageModule } from './client/additional-package';
     GuaranteeOrganizationContractModule,
     GSAdditionalPackageModule,
     GSClientAdditionalPackageModule,
+    GSSolutionModule,
   ],
 })
 export class GSModule implements NestModule {

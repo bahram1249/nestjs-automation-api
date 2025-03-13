@@ -1,4 +1,3 @@
-import { AutoMap } from 'automapper-classes';
 import {
   Table,
   Column,
@@ -6,6 +5,7 @@ import {
   DataType,
   ForeignKey,
   BelongsTo,
+  HasMany,
 } from 'sequelize-typescript';
 import { GSUnitPrice } from './gs-unit-price.entity';
 import { GSProvince } from './gs-province.entity';
@@ -63,4 +63,7 @@ export class GSSolution extends Model {
     allowNull: true,
   })
   isDeleted?: boolean;
+
+  @HasMany(() => GSSolution, { foreignKey: 'parentId', sourceKey: 'id' })
+  provinceSolutions?: GSSolution[];
 }
