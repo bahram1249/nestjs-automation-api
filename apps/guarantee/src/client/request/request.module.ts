@@ -9,11 +9,13 @@ import {
 } from '@rahino/localdatabase/models';
 import { LocalizationModule } from 'apps/main/src/common/localization';
 import { BPMNRequestModule } from '@rahino/bpmn/modules/request/request.module';
+import { GSAddressModule } from '../address/address.module';
 
 @Module({
   imports: [
     SequelizeModule,
     BPMNRequestModule,
+    GSAddressModule,
     SequelizeModule.forFeature([GSRequest, GSAssignedGuarantee, BPMNPROCESS]),
     LocalizationModule,
   ],

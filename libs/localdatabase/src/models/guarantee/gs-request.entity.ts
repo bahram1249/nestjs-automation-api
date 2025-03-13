@@ -72,7 +72,7 @@ export class GSRequest extends Model {
   variantId?: number;
 
   @BelongsTo(() => GSVariant, { as: 'variant', foreignKey: 'variantId' })
-  bariant?: GSVariant;
+  variant?: GSVariant;
 
   @AutoMap()
   @Column({

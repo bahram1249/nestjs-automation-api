@@ -23,6 +23,7 @@ import { GSClientAdditionalPackageModule } from './client/additional-package';
 import { GSSolutionModule } from './admin/solution';
 import { GSClientSolutionModule } from './client/solution';
 import { GSRequestTypeModule } from './client/request-type/request-type.module';
+import { GSClientRequestModule } from './client/request/request.module';
 
 @Module({
   imports: [
@@ -44,6 +45,7 @@ import { GSRequestTypeModule } from './client/request-type/request-type.module';
     GSSolutionModule,
     GSClientSolutionModule,
     GSRequestTypeModule,
+    GSClientRequestModule,
   ],
 })
 export class GSModule implements NestModule {

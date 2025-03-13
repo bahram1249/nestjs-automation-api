@@ -19,6 +19,8 @@ import { Sequelize, Transaction, Op } from 'sequelize';
 import { GSGuaranteeTypeEnum } from '@rahino/guarantee/shared/gurantee-type';
 import { BPMNRequestService } from '@rahino/bpmn/modules/request/request.service';
 import { GuaranteeProcessEnum } from '@rahino/guarantee/shared/process';
+import { GSRequestCategoryEnum } from '@rahino/guarantee/shared/request-category';
+import { AddressService } from '../address/address.service';
 
 @Injectable()
 export class RequestService {
@@ -26,6 +28,7 @@ export class RequestService {
     @InjectModel(GSRequest) private repository: typeof GSRequest,
     @InjectModel(GSAssignedGuarantee)
     private readonly assignedGuaranteeRepository: typeof GSAssignedGuarantee,
+    private readonly addressService: AddressService,
     private readonly localizationService: LocalizationService,
     private readonly bpmnRequestService: BPMNRequestService,
     @InjectModel(BPMNPROCESS)
@@ -103,27 +106,47 @@ export class RequestService {
       ]);
     }
 
+    // thats return error of not exists address
+    await this.addressService.findById(user, dto.addressId);
     const transaction = await this.sequelize.transaction({
       isolationLevel: Transaction.ISOLATION_LEVELS.READ_COMMITTED,
     });
 
+    let requestId: bigint;
     try {
-      const bpmnRequest = await this.bpmnRequestService.initRequest({
-        userId: user.id,
-        description: dto.description,
-        processId: process.id,
-      });
+      const bpmnRequest = await this.bpmnRequestService.initRequest(
+        {
+          userId: user.id,
+          description: dto.description,
+          processId: process.id,
+        },
+        transaction,
+      );
       const request = this.repository.create(
         {
           id: bpmnRequest.id,
           requestTypeId: dto.requestTypeId,
-          requestCategoryId: 1,
+          requestCategoryId: GSRequestCategoryEnum.NormalGuarantee,
+          userId: user.id,
+          brandId: asssignedGuarantee.guarantee.brandId,
+          variantId: asssignedGuarantee.guarantee.variantId,
+          productTypeId: asssignedGuarantee.guarantee.productTypeId,
+          addressId: dto.addressId,
+          phoneNumber: dto.phoneNumber,
+          guaranteeId: asssignedGuarantee.guaranteeId,
         },
         { transaction: transaction },
       );
+      requestId = bpmnRequest.id;
       await transaction.commit();
     } catch (error) {
       await transaction.rollback();
     }
+    return {
+      result: {
+        trackingCode: requestId,
+        message: this.localizationService.translate('core.success'),
+      },
+    };
   }
 }
