@@ -247,8 +247,6 @@ export class GuaranteeOrganizationService {
         GuaranteeOrganizationDto,
         OrganizationDto,
       );
-
-      console.log(dto);
       // create or update user
       const user = await this.createOrUpdateUser(dto.user, transaction);
       // assign organization role  to user
@@ -271,7 +269,7 @@ export class GuaranteeOrganizationService {
       guaranteeOrganization = await this.repository.create(
         {
           id: organization.id,
-          isNationWide: dto.isNationwide,
+          isNationwide: dto.isNationwide,
           isOnlinePayment: dto.isOnlinePayment,
           userId: user.id,
           addressId: address.result.id,
@@ -344,7 +342,7 @@ export class GuaranteeOrganizationService {
       // create guarantee organization
       await this.repository.update(
         {
-          isNationWide: dto.isNationwide,
+          isNationwide: dto.isNationwide,
           isOnlinePayment: dto.isOnlinePayment,
           userId: user.id,
         },
