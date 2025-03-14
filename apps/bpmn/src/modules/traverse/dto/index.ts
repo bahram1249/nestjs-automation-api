@@ -5,3 +5,4 @@ export * from './traverse-based-referral.dto';
 export * from './traverse-based-direct-user.dto';
 export * from './new-state-reached.dto';
 export * from './traverse-based-role.dto';
+export * from './traverse-based-request-owner.dto';

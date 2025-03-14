@@ -120,3 +120,23 @@ END
 
 GO
 
+
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'bpmn-referral-types-data-v2' 
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'SITE_NAME' AND [value] IN ('BPMN'))
+		)
+BEGIN
+
+	
+    INSERT INTO BPMNReferralTypes(id, [name], [createdAt], [updatedAt])
+    VALUES (4, N'REQUESTOWNER', GETDATE(), GETDATE())
+
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'bpmn-referral-types-data-v2', GETDATE(), GETDATE()
+END
+
+GO
+

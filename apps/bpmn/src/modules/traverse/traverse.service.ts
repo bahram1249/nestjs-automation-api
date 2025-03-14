@@ -15,6 +15,7 @@ import {
   TraverseBasedDirectUserDto,
   TraverseBasedReferralDto,
   TraverseBasedRoleDto,
+  TraverseBaseRequestOwnerDto,
   TraverseDto,
   UserTraverseDto,
 } from './dto';
@@ -216,6 +217,18 @@ export class TraverseService {
           userExecuterId: dto.userExecuterId,
           description: dto.description,
         }),
+
+      [ReferralTypeEnum.RequestOwner]: () =>
+        this.traverseBasedRequestOwner({
+          node: dto.node,
+          nodeCommand: dto.nodeCommand,
+          requestState: dto.requestState,
+          request: dto.request,
+          transaction: dto.transaction,
+          userExecuterId: dto.userExecuterId,
+          executeBundle: dto.executeBundle,
+          description: dto.description,
+        }),
     };
 
     const strategy = traverseStrategies[dto.node.referralTypeId];
@@ -270,6 +283,32 @@ export class TraverseService {
         userExecuterId: dto.userExecuterId,
       });
     }
+  }
+
+  private async traverseBasedRequestOwner(dto: TraverseBaseRequestOwnerDto) {
+    // traverse to ownerRequest
+    const newRequestState = await this.requestStateRepository.create(
+      {
+        requestId: dto.request.id,
+        activityId: dto.node.toActivityId,
+        userId: dto.request.userId,
+        returnRequestStateId: dto.requestState.returnRequestStateId,
+      },
+      { transaction: dto.transaction },
+    );
+
+    // set histories
+    await this.newStateReached({
+      request: dto.request,
+      oldRequestState: dto.requestState,
+      newRequestState: newRequestState,
+      node: dto.node,
+      nodeCommand: dto.nodeCommand,
+      transaction: dto.transaction,
+      description: dto.description,
+      executeBundle: dto.executeBundle,
+      userExecuterId: dto.userExecuterId,
+    });
   }
 
   private async traverseBasedRole(dto: TraverseBasedRoleDto) {
