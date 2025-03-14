@@ -100,11 +100,6 @@ export class BPMNRequestService {
     dto: InitRequestDto,
     transaction?: Transaction,
   ): Promise<BPMNRequest> {
-    if (transaction == null) {
-      transaction = await this.sequelize.transaction({
-        isolationLevel: Transaction.ISOLATION_LEVELS.READ_COMMITTED,
-      });
-    }
     let request: BPMNRequest;
     try {
       // create request
@@ -134,10 +129,7 @@ export class BPMNRequestService {
         userExecuterId: dto.userId,
         executeBundle: uuidv4(),
       });
-
-      await transaction.commit();
     } catch (error) {
-      await transaction.rollback();
       throw new BadRequestException(error.message);
     }
     return request;
