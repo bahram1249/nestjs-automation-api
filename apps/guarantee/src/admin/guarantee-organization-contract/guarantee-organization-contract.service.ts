@@ -128,14 +128,14 @@ export class GuaranteeOrganizationContractService {
           [Op.or]: [
             Sequelize.where(Sequelize.literal(`${dto.startDate}`), {
               [Op.between]: [
-                Sequelize.col('GSGuranteeOrganizationContract.startDate'),
-                Sequelize.col('GSGuranteeOrganizationContract.endDate'),
+                Sequelize.col('GSGuaranteeOrganizationContract.startDate'),
+                Sequelize.col('GSGuaranteeOrganizationContract.endDate'),
               ],
             }),
             Sequelize.where(Sequelize.literal(`${dto.endDate}`), {
               [Op.between]: [
-                Sequelize.col('GSGuranteeOrganizationContract.startDate'),
-                Sequelize.col('GSGuranteeOrganizationContract.endDate'),
+                Sequelize.col('GSGuaranteeOrganizationContract.startDate'),
+                Sequelize.col('GSGuaranteeOrganizationContract.endDate'),
               ],
             }),
           ],
@@ -178,14 +178,14 @@ export class GuaranteeOrganizationContractService {
           [Op.or]: [
             Sequelize.where(Sequelize.literal(`${dto.startDate}`), {
               [Op.between]: [
-                Sequelize.col('GSGuranteeOrganizationContract.startDate'),
-                Sequelize.col('GSGuranteeOrganizationContract.endDate'),
+                Sequelize.col('GSGuaranteeOrganizationContract.startDate'),
+                Sequelize.col('GSGuaranteeOrganizationContract.endDate'),
               ],
             }),
             Sequelize.where(Sequelize.literal(`${dto.endDate}`), {
               [Op.between]: [
-                Sequelize.col('GSGuranteeOrganizationContract.startDate'),
-                Sequelize.col('GSGuranteeOrganizationContract.endDate'),
+                Sequelize.col('GSGuaranteeOrganizationContract.startDate'),
+                Sequelize.col('GSGuaranteeOrganizationContract.endDate'),
               ],
             }),
           ],
