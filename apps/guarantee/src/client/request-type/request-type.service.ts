@@ -13,10 +13,7 @@ export class RequestTypeService {
   async findAll() {
     const queryBuilder = new QueryOptionsBuilder();
     const count = await this.repository.count(queryBuilder.build());
-    const queryOptions = queryBuilder
-      .attributes(['id', 'title'])
-      .order({ orderBy: 'order', sortOrder: 'asc' })
-      .build();
+    const queryOptions = queryBuilder.attributes(['id', 'title']).build();
     const result = await this.repository.findAll(queryOptions);
     return {
       result: result,
