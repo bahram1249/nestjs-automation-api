@@ -18,6 +18,8 @@ export class GSGuaranteeOrganizationContract extends Model {
     primaryKey: true,
   })
   id: bigint;
+
+  @AutoMap()
   @Column({
     type: DataType.INTEGER,
     primaryKey: true,
@@ -37,14 +39,19 @@ export class GSGuaranteeOrganizationContract extends Model {
   })
   bpmnOrganization?: BPMNOrganization;
 
+  @AutoMap()
   @Column({
     type: DataType.DATE,
   })
   startDate: Date;
+
+  @AutoMap()
   @Column({
     type: DataType.DATE,
   })
   endDate: Date;
+
+  @AutoMap()
   @Column({
     type: DataType.DECIMAL(10, 2),
   })
