@@ -121,18 +121,20 @@ export class GuaranteeOrganizationContractService {
   }
 
   async create(dto: GuaranteeOrganizationContractDto) {
+    const startDate = dto.startDate.toISOString().slice(0, 10);
+    const endDate = dto.endDate.toISOString().slice(0, 10);
     const findAnyContractBefore = await this.repository.findOne(
       new QueryOptionsBuilder()
         .filter({ organizationId: dto.organizationId })
         .filter({
           [Op.or]: [
-            Sequelize.where(Sequelize.literal(`${dto.startDate}`), {
+            Sequelize.where(Sequelize.literal(`${startDate}`), {
               [Op.between]: [
                 Sequelize.col('GSGuaranteeOrganizationContract.startDate'),
                 Sequelize.col('GSGuaranteeOrganizationContract.endDate'),
               ],
             }),
-            Sequelize.where(Sequelize.literal(`${dto.endDate}`), {
+            Sequelize.where(Sequelize.literal(`${endDate}`), {
               [Op.between]: [
                 Sequelize.col('GSGuaranteeOrganizationContract.startDate'),
                 Sequelize.col('GSGuaranteeOrganizationContract.endDate'),
@@ -171,18 +173,20 @@ export class GuaranteeOrganizationContractService {
   }
 
   async updateById(id: number, dto: GuaranteeOrganizationContractDto) {
+    const startDate = dto.startDate.toISOString().slice(0, 10);
+    const endDate = dto.endDate.toISOString().slice(0, 10);
     const findAnyContractBefore = await this.repository.findOne(
       new QueryOptionsBuilder()
         .filter({ organizationId: dto.organizationId })
         .filter({
           [Op.or]: [
-            Sequelize.where(Sequelize.literal(`${dto.startDate}`), {
+            Sequelize.where(Sequelize.literal(`${startDate}`), {
               [Op.between]: [
                 Sequelize.col('GSGuaranteeOrganizationContract.startDate'),
                 Sequelize.col('GSGuaranteeOrganizationContract.endDate'),
               ],
             }),
-            Sequelize.where(Sequelize.literal(`${dto.endDate}`), {
+            Sequelize.where(Sequelize.literal(`${endDate}`), {
               [Op.between]: [
                 Sequelize.col('GSGuaranteeOrganizationContract.startDate'),
                 Sequelize.col('GSGuaranteeOrganizationContract.endDate'),
