@@ -102,8 +102,8 @@ export class CartableOrganizationService {
           `EXISTS (
           SELECT 1
           FROM GSGuaranteeOrganizationContracts GGOC
-          ON GGOC.organizationId = GSGuaranteeOrganization.id
-          WHERE GETDATE() BETWEEN GGOC.startDate AND GGOC.endDate
+          WHERE GGOC.organizationId = GSGuaranteeOrganization.id
+          AND GETDATE() BETWEEN GGOC.startDate AND GGOC.endDate
         )`.replaceAll(/\s\s+/g, ' '),
         ),
       )
