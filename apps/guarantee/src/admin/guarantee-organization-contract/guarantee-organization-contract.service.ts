@@ -166,8 +166,8 @@ export class GuaranteeOrganizationContractService {
     const mappedItem = {
       organizationId: dto.organizationId,
       representativeShare: dto.representativeShare,
-      startDate: dto.startDate,
-      endDate: dto.endDate,
+      startDate: startDate,
+      endDate: endDate,
     };
     const item = await this.repository.create(mappedItem);
     return await this.findById(item.id);
@@ -225,8 +225,8 @@ export class GuaranteeOrganizationContractService {
     const mappedItem = {
       organizationId: dto.organizationId,
       representativeShare: dto.representativeShare,
-      startDate: dto.startDate,
-      endDate: dto.endDate,
+      startDate: startDate,
+      endDate: endDate,
     };
     const item = await this.repository.update(mappedItem, {
       where: {

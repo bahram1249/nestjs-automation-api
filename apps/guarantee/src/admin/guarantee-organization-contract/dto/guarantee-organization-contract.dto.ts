@@ -7,7 +7,7 @@ export class GuaranteeOrganizationContractDto {
   public organizationId: number;
 
   @AutoMap()
-  @IsNumber()
+  @IsNumber({ maxDecimalPlaces: 2 })
   public representativeShare: number;
 
   @AutoMap()
