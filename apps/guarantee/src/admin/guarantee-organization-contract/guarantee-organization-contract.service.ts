@@ -163,12 +163,13 @@ export class GuaranteeOrganizationContractService {
         ),
       );
     }
-    const mappedItem = this.mapper.map(
-      dto,
-      GuaranteeOrganizationContractDto,
-      GSGuaranteeOrganizationContract,
-    );
-    const item = await this.repository.create(_.omit(mappedItem, ['id']));
+    const mappedItem = {
+      organizationId: dto.organizationId,
+      representativeShare: dto.representativeShare,
+      startDate: dto.startDate,
+      endDate: dto.endDate,
+    };
+    const item = await this.repository.create(mappedItem);
     return await this.findById(item.id);
   }
 
@@ -221,12 +222,13 @@ export class GuaranteeOrganizationContractService {
       );
     }
 
-    const mappedItem = this.mapper.map(
-      dto,
-      GuaranteeOrganizationContractDto,
-      GSGuaranteeOrganizationContract,
-    );
-    const item = await this.repository.update(_.omit(mappedItem, ['id']), {
+    const mappedItem = {
+      organizationId: dto.organizationId,
+      representativeShare: dto.representativeShare,
+      startDate: dto.startDate,
+      endDate: dto.endDate,
+    };
+    const item = await this.repository.update(mappedItem, {
       where: {
         id: id,
       },
