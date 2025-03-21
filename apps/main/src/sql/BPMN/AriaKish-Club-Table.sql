@@ -566,7 +566,7 @@ BEGIN
                 FOREIGN KEY REFERENCES GSGuaranteeOrganizations(id),
         startDate                   datetime                    NOT NULL,
         endDate                     datetime                    NOT NULL,
-        representativeShare         decimal                     NOT NULL,
+        representativeShare         decimal(10, 2)              NOT NULL,
 		[createdAt]					datetimeoffset				NOT NULL,
 		[updatedAt]					datetimeoffset				NOT NULL,
         CONSTRAINT PK_GSGuaranteeOrganizationContracts_OrganizationId_Id
@@ -1100,7 +1100,7 @@ BEGIN
         unitPriceId                 int                         NOT NULL
             CONSTRAINT FK_GSParts_UnitPriceId
                 FOREIGN KEY REFERENCES GSUnitPrices(id),
-        dollarBaseFee               decimal                     NULL,
+        dollarBaseFee               decimal(10,2)               NULL,
 		[createdAt]					datetimeoffset				NOT NULL,
 		[updatedAt]					datetimeoffset				NOT NULL
 	);
