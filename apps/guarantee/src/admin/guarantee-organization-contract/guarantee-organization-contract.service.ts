@@ -238,7 +238,7 @@ export class GuaranteeOrganizationContractService {
   }
 
   async deleteById(entityId: number) {
-    const item = await this.repository.findOne(
+    let item = await this.repository.findOne(
       new QueryOptionsBuilder()
         .filter({ id: entityId })
         .filter(
