@@ -89,7 +89,9 @@ export class CartableService {
             ],
           },
         ],
-      });
+      })
+      .filterIf(filter.requestId != null, { requestId: filter.requestId })
+      .filterIf(filter.requestStateId != null, { id: filter.requestStateId });
 
     const count = await this.repository.count(query.build());
 

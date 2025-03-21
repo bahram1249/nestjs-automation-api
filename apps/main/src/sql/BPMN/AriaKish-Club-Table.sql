@@ -1070,7 +1070,7 @@ BEGIN
         provinceId                  int                         NULL
             CONSTRAINT FK_GSSolutions_ProvinceId
                 FOREIGN KEY REFERENCES GSProvinces(id),
-        pranetId                    int                         NULL
+        parentId                    int                         NULL
             CONSTRAINT FK_GSSolutions_ParentId
                 FOREIGN KEY REFERENCES GSSolutions(id),
         isDeleted                   bit                         NULL,

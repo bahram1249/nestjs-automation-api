@@ -53,7 +53,7 @@ export class GSSolution extends Model {
     allowNull: true,
   })
   @ForeignKey(() => GSSolution)
-  pranetId?: number;
+  parentId?: number;
 
   @BelongsTo(() => GSSolution, { as: 'parentSolution', foreignKey: 'parentId' })
   parent?: GSSolution;
