@@ -17,4 +17,4 @@ import { SolutionProveinceMapper } from './solution-province.mapper';
   providers: [SolutionService, SolutionProveinceMapper],
   exports: [SolutionService],
 })
-export class GSClientSolutionModule {}
+export class GSCartableSolutionModule {}

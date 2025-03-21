@@ -21,10 +21,11 @@ import { GuaranteeOrganizationContractModule } from './admin/guarantee-organizat
 import { GSAdditionalPackageModule } from './admin/additional-package';
 import { GSClientAdditionalPackageModule } from './client/additional-package';
 import { GSSolutionModule } from './admin/solution';
-import { GSClientSolutionModule } from './client/solution';
+import { GSCartableSolutionModule } from './cartable/solution';
 import { GSRequestTypeModule } from './client/request-type/request-type.module';
 import { GSClientRequestModule } from './client/request/request.module';
 import { GSCartableModule } from './admin/cartable';
+import { CartableOrganizationModule } from './cartable/organization/organization.module';
 
 @Module({
   imports: [
@@ -44,10 +45,11 @@ import { GSCartableModule } from './admin/cartable';
     GSAdditionalPackageModule,
     GSClientAdditionalPackageModule,
     GSSolutionModule,
-    GSClientSolutionModule,
+    GSCartableSolutionModule,
     GSRequestTypeModule,
     GSClientRequestModule,
     GSCartableModule,
+    CartableOrganizationModule,
   ],
 })
 export class GSModule implements NestModule {

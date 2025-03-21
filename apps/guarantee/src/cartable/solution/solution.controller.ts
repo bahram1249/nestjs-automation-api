@@ -22,9 +22,9 @@ import { GetSolutionRequestFilterDto } from './dto/get-solution-request-filter.d
 
 @ApiBearerAuth()
 @UseGuards(JwtGuard)
-@ApiTags('GS-Client-Solutions')
+@ApiTags('GS-Cartable-Solutions')
 @Controller({
-  path: '/api/guarantee/client/solutions',
+  path: '/api/guarantee/cartable/solutions',
   version: ['1'],
 })
 @UseInterceptors(JsonResponseTransformInterceptor)
