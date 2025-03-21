@@ -6,15 +6,26 @@ import { GuaranteeTraverseDto } from '@rahino/guarantee/shared/guarantee-travers
 import { ListFilterV2Factory } from '@rahino/query-filter/provider/list-filter-v2.factory';
 import { LocalizationService } from 'apps/main/src/common/localization';
 import * as _ from 'lodash';
+import { ValidateAndReturnCartableItemDto } from './dto';
+import { InjectModel } from '@nestjs/sequelize';
+import { BPMNRequest, BPMNRequestState } from '@rahino/localdatabase/models';
+import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 
 export class GuaranteeTraverseService {
   constructor(
     private readonly cartableService: CartableService,
     private readonly listFilterV2Factory: ListFilterV2Factory,
     private readonly localizationService: LocalizationService,
+    @InjectModel(BPMNRequest)
+    private readonly requestRepository: typeof BPMNRequest,
+    @InjectModel(BPMNRequestState)
+    private readonly requestStateRepository: typeof BPMNRequestState,
   ) {}
 
-  async validate(user: User, dto: GuaranteeTraverseDto) {
+  async validateAndReturnCartableItem(
+    user: User,
+    dto: GuaranteeTraverseDto,
+  ): Promise<ValidateAndReturnCartableItemDto> {
     const emptyFilter = await this.listFilterV2Factory.create();
     const filter = emptyFilter as GetCartableDto;
     filter.requestId = dto.requestId;
@@ -36,5 +47,17 @@ export class GuaranteeTraverseService {
     if (!nodeCommand) {
       throw new BadRequestException('invalid node command');
     }
+    const requestState = await this.requestStateRepository.findOne(
+      new QueryOptionsBuilder().filter({ id: cartableItem.id }).build(),
+    );
+    const request = await this.requestRepository.findOne(
+      new QueryOptionsBuilder().filter({ id: cartableItem.requestId }).build(),
+    );
+    return {
+      node: node,
+      nodeCommand: nodeCommand,
+      requestState: requestState,
+      request: request,
+    };
   }
 }

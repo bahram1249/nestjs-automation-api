@@ -9799,7 +9799,7 @@ BEGIN
 	DECLARE @findParentMenu bit = 0;
 	DECLARE @parentMenuName nvarchar(256) = N'عملیات'
 	DECLARE @menuName nvarchar(256) = N'کارتابل'
-	DECLARE @menuUrl nvarchar(512) = N'/admin/gs/additionalPackages'
+	DECLARE @menuUrl nvarchar(512) = N'/admin/gs/cartables'
 
 	DECLARE @permissionSymbolShowMenu nvarchar(512) = @groupName + '.showmenu';
 	DECLARE @permissionSymbolGetAll nvarchar(512) = @groupName + '.getall';
