@@ -11,10 +11,6 @@ export class SolutionDto {
   @IsNumber()
   public fee: bigint;
 
-  @AutoMap()
-  @IsNumber()
-  public provinceId: number;
-
   @IsOptional()
   @IsArray({ each: true })
   public provinceSolutions?: ChildSolutionDto[];
