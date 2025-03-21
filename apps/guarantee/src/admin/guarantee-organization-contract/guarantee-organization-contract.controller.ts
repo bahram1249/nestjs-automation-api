@@ -61,7 +61,7 @@ export class GuaranteeOrganizationContractController {
   })
   @Get('/:id')
   @HttpCode(HttpStatus.OK)
-  async findById(@Param('id') entityId: number) {
+  async findById(@Param('id') entityId: bigint) {
     return await this.service.findById(entityId);
   }
 
@@ -84,7 +84,7 @@ export class GuaranteeOrganizationContractController {
   @Put('/:id')
   @HttpCode(HttpStatus.OK)
   async updateById(
-    @Param('id') id: number,
+    @Param('id') id: bigint,
     @Body() dto: GuaranteeOrganizationContractDto,
   ) {
     return await this.service.updateById(id, dto);
@@ -96,7 +96,7 @@ export class GuaranteeOrganizationContractController {
   })
   @Delete('/:id')
   @HttpCode(HttpStatus.OK)
-  async deleteById(@Param('id') entityId: number) {
+  async deleteById(@Param('id') entityId: bigint) {
     return await this.service.deleteById(entityId);
   }
 }

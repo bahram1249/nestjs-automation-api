@@ -6,7 +6,6 @@ import {
 import { InjectModel } from '@nestjs/sequelize';
 import {
   BPMNOrganization,
-  GSGuaranteeOrganization,
   GSGuaranteeOrganizationContract,
 } from '@rahino/localdatabase/models';
 import {
@@ -24,7 +23,7 @@ import * as _ from 'lodash';
 export class GuaranteeOrganizationContractService {
   constructor(
     @InjectModel(GSGuaranteeOrganizationContract)
-    private readonly repository: typeof GSGuaranteeOrganization,
+    private readonly repository: typeof GSGuaranteeOrganizationContract,
     private readonly localizationService: LocalizationService,
     @InjectMapper()
     private readonly mapper: Mapper,
@@ -76,7 +75,7 @@ export class GuaranteeOrganizationContractService {
     };
   }
 
-  async findById(entityId: number) {
+  async findById(entityId: bigint) {
     let query = new QueryOptionsBuilder()
       .attributes([
         'id',
@@ -173,7 +172,7 @@ export class GuaranteeOrganizationContractService {
     return await this.findById(item.id);
   }
 
-  async updateById(id: number, dto: GuaranteeOrganizationContractDto) {
+  async updateById(id: bigint, dto: GuaranteeOrganizationContractDto) {
     const startDate = new Date(dto.startDate).toISOString().slice(0, 10);
     const endDate = new Date(dto.endDate).toISOString().slice(0, 10);
     const findAnyContractBefore = await this.repository.findOne(
@@ -237,7 +236,7 @@ export class GuaranteeOrganizationContractService {
     return await this.findById(id);
   }
 
-  async deleteById(entityId: number) {
+  async deleteById(entityId: bigint) {
     let item = await this.repository.findOne(
       new QueryOptionsBuilder()
         .filter({ id: entityId })

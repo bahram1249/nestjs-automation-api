@@ -56,4 +56,10 @@ export class GSGuaranteeOrganizationContract extends Model {
     type: DataType.DECIMAL(10, 2),
   })
   representativeShare: number;
+
+  @Column({
+    type: DataType.BOOLEAN,
+    allowNull: true,
+  })
+  isDeleted?: boolean;
 }
