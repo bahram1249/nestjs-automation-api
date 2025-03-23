@@ -16,7 +16,7 @@ export class SellerSyncService {
       {},
       {
         repeat: {
-          pattern: '*/2 * * * *',
+          pattern: '*/5 * * * *',
         },
       },
     );
