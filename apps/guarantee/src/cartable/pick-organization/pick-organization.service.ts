@@ -38,7 +38,7 @@ export class PickOrganizationService {
           .filter({ id: dto.requestId })
           .filter(
             Sequelize.where(
-              Sequelize.fn('fn', Sequelize.col('GSRequest.isDeleted'), 0),
+              Sequelize.fn('isnull', Sequelize.col('GSRequest.isDeleted'), 0),
               {
                 [Op.eq]: 0,
               },
@@ -74,7 +74,6 @@ export class PickOrganizationService {
       await transaction.commit();
     } catch (error) {
       await transaction.rollback();
-      console.log(error);
       throw new BadRequestException(error.message);
     }
     return {
