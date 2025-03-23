@@ -17,6 +17,8 @@ export class HistoryMapper {
     const output = new HistoryOutputDto();
     output.id = item.id;
     output.requestId = item.requestId;
+    output.createdAt = item.createdAt;
+    output.updatedAt = item.updatedAt;
     output.from = this.fromFieldMap(item);
     output.to = this.toFieldMap(item);
     output.description = item.description;

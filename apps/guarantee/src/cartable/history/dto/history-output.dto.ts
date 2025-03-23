@@ -4,4 +4,6 @@ export class HistoryOutputDto {
   public from: string;
   public to: string;
   public description?: string;
+  public createdAt: Date;
+  public updatedAt: Date;
 }
