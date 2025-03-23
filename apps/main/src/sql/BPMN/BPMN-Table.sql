@@ -660,3 +660,36 @@ IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'bpmn-organizationusers-
     END
 
 GO
+
+
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'bpmn-organizationusers-v2'
+)
+    AND EXISTS (
+        SELECT 1 FROM Settings
+        WHERE ([key] = 'SITE_NAME' AND [value] IN ('BPMN'))
+    )
+    BEGIN
+
+        ALTER TABLE BPMNOrganizationUsers
+            DROP CONSTRAINT PK_BPMNOrganizationUsers_OrganizationId_UserId
+
+        ALTER TABLE BPMNOrganizationUsers
+            ADD roleId int NULL
+                CONSTRAINT FK_BPMNOrganizationUsers_RoleId
+                    FOREIGN KEY REFERENCES Roles(id)
+
+        ALTER TABLE BPMNOrganizationUsers
+            ADD id bigint identity(1,1) NOT NULL
+        
+
+        ALTER TABLE BPMNOrganizationUsers
+            ADD CONSTRAINT PK_BPMNOrganizationUsers_OrganizationId_UserId_Id 
+                PRIMARY KEY CLUSTERED(organizationId, userId, id)
+
+        
+        INSERT INTO Migrations(version, createdAt, updatedAt)
+        SELECT 'bpmn-organizationusers-v2', GETDATE(), GETDATE()
+    END
+
+GO
+

@@ -5,6 +5,7 @@ import {
   BPMNNode,
   BPMNNodeCommand,
   BPMNNodeCommandType,
+  BPMNOrganizationUser,
   BPMNPROCESS,
   BPMNRequestState,
 } from '@rahino/localdatabase/models';
@@ -15,6 +16,7 @@ import {
   TraverseBasedDirectUserDto,
   TraverseBasedReferralDto,
   TraverseBasedRoleDto,
+  TraverseBasedSameOrganizationRoleDto,
   TraverseBaseRequestOwnerDto,
   TraverseDto,
   UserTraverseDto,
@@ -42,6 +44,8 @@ export class TraverseService {
     private readonly userRoleRepository: typeof UserRole,
     @InjectModel(BPMNRequestState)
     private readonly requestStateRepository: typeof BPMNRequestState,
+    @InjectModel(BPMNOrganizationUser)
+    private readonly organizationUserRepository: typeof BPMNOrganizationUser,
     private readonly requestStateService: RequestStateService,
     private readonly conditionService: ConditionService,
     private readonly actionService: ActionService,
@@ -218,6 +222,19 @@ export class TraverseService {
           description: dto.description,
         }),
 
+      [ReferralTypeEnum.SameOrganizationRole]: () =>
+        this.traverseBasedSameOrganizationRole({
+          node: dto.node,
+          nodeCommand: dto.nodeCommand,
+          request: dto.request,
+          requestState: dto.requestState,
+          transaction: dto.transaction,
+          users: dto.users,
+          executeBundle: dto.executeBundle,
+          userExecuterId: dto.userExecuterId,
+          description: dto.description,
+        }),
+
       [ReferralTypeEnum.RequestOwner]: () =>
         this.traverseBasedRequestOwner({
           node: dto.node,
@@ -380,6 +397,103 @@ export class TraverseService {
         executeBundle: dto.executeBundle,
         userExecuterId: dto.userExecuterId,
       });
+    }
+  }
+
+  private async traverseBasedSameOrganizationRole(
+    dto: TraverseBasedSameOrganizationRoleDto,
+  ) {
+    this.validateRoleBasedNode(dto.node);
+
+    if (dto.users != null && dto.users.length > 0) {
+      const userIds = dto.users.map((user) => user.userId);
+
+      const bpmnOrganizationUsers =
+        await this.organizationUserRepository.findAll(
+          new QueryOptionsBuilder()
+            .filter({
+              userId: {
+                [Op.in]: userIds,
+              },
+            })
+            .filter({
+              organizationId: dto.request.organizationId,
+            })
+            .filter({ roleId: dto.node.roleId })
+            .build(),
+        );
+
+      // cannot find any users
+      if (bpmnOrganizationUsers.length === 0) {
+        throw new BadRequestException(
+          this.i18n.translate('bpmn.cannot_find_any_referral_user', {
+            lang: I18nContext.current().lang,
+          }),
+        );
+      }
+
+      // iterate between users
+      for (const organizationUser of bpmnOrganizationUsers) {
+        const newRequestState = await this.requestStateRepository.create(
+          {
+            requestId: dto.request.id,
+            activityId: dto.node.toActivityId,
+            userId: organizationUser.userId,
+            returnRequestStateId: dto.requestState.returnRequestStateId,
+          },
+          { transaction: dto.transaction },
+        );
+
+        // set histories
+
+        await this.newStateReached({
+          request: dto.request,
+          oldRequestState: dto.requestState,
+          newRequestState: newRequestState,
+          node: dto.node,
+          nodeCommand: dto.nodeCommand,
+          transaction: dto.transaction,
+          executeBundle: dto.executeBundle,
+          userExecuterId: dto.userExecuterId,
+          description: dto.description,
+        });
+      }
+    } else {
+      const bpmnOrganizationUsers =
+        await this.organizationUserRepository.findAll(
+          new QueryOptionsBuilder()
+            .filter({
+              organizationId: dto.request.organizationId,
+            })
+            .filter({ roleId: dto.node.roleId })
+            .build(),
+        );
+
+      for (const organizationUser of bpmnOrganizationUsers) {
+        const newRequestState = await this.requestStateRepository.create(
+          {
+            requestId: dto.request.id,
+            activityId: dto.node.toActivityId,
+            organizationId: organizationUser.organizationId,
+            userId: organizationUser.userId,
+            returnRequestStateId: dto.requestState.returnRequestStateId,
+          },
+          { transaction: dto.transaction },
+        );
+
+        // set histories
+        await this.newStateReached({
+          request: dto.request,
+          oldRequestState: dto.requestState,
+          newRequestState: newRequestState,
+          node: dto.node,
+          nodeCommand: dto.nodeCommand,
+          transaction: dto.transaction,
+          description: dto.description,
+          executeBundle: dto.executeBundle,
+          userExecuterId: dto.userExecuterId,
+        });
+      }
     }
   }
 

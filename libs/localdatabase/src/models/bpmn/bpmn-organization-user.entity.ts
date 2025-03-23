@@ -7,10 +7,17 @@ import {
   BelongsTo,
 } from 'sequelize-typescript';
 import { BPMNOrganization } from './bpmn-organization.entity';
-import { User } from '@rahino/database';
+import { Role, User } from '@rahino/database';
 
 @Table({ tableName: 'BPMNOrganizationUsers' })
 export class BPMNOrganizationUser extends Model {
+  @Column({
+    type: DataType.BIGINT,
+    primaryKey: true,
+    autoIncrement: true,
+  })
+  id: bigint;
+
   @Column({
     type: DataType.INTEGER,
     primaryKey: true,
@@ -36,4 +43,13 @@ export class BPMNOrganizationUser extends Model {
     foreignKey: 'userId',
   })
   user?: User;
+
+  @Column({
+    type: DataType.INTEGER,
+  })
+  @ForeignKey(() => Role)
+  roleId: number;
+
+  @BelongsTo(() => Role, { as: 'role', foreignKey: 'roleId' })
+  role?: Role;
 }

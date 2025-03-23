@@ -223,7 +223,8 @@ export class GuaranteeOrganizationService {
             [Op.eq]: 0,
           },
         ),
-      );
+      )
+      .filter({ id: entityId });
 
     const item = await this.repository.findOne(query.build());
     if (!item) {
@@ -250,7 +251,7 @@ export class GuaranteeOrganizationService {
       // create or update user
       const user = await this.createOrUpdateUser(dto.user, transaction);
       // assign organization role  to user
-      await this.assignedOrganizationRole(user, transaction);
+      const userRole = await this.assignedOrganizationRole(user, transaction);
 
       // create organization on base table
       const organization = await this.organizationService.create(
@@ -281,6 +282,7 @@ export class GuaranteeOrganizationService {
       await this.assignedOrganizationUser(
         user,
         guaranteeOrganization,
+        userRole.roleId,
         transaction,
       );
 
@@ -337,7 +339,7 @@ export class GuaranteeOrganizationService {
       // create or update user
       const user = await this.createOrUpdateUser(dto.user, transaction);
       // assign organization role  to user
-      await this.assignedOrganizationRole(user, transaction);
+      const userRole = await this.assignedOrganizationRole(user, transaction);
 
       // create guarantee organization
       await this.repository.update(
@@ -357,6 +359,7 @@ export class GuaranteeOrganizationService {
       await this.assignedOrganizationUser(
         user,
         guaranteeOrganization,
+        userRole.roleId,
         transaction,
       );
 
@@ -443,7 +446,7 @@ export class GuaranteeOrganizationService {
   private async assignedOrganizationRole(
     user: User,
     transaction?: Transaction,
-  ) {
+  ): Promise<UserRole> {
     const organizationRole = await this.roleRepository.findOne(
       new QueryOptionsBuilder()
         .filter({ static_id: GuaranteeStaticRoleEnum.OrganizationRole })
@@ -455,13 +458,13 @@ export class GuaranteeOrganizationService {
       );
     }
 
-    const isExistBefore = await this.userRoleRepository.findOne(
+    let isExistBefore = await this.userRoleRepository.findOne(
       new QueryOptionsBuilder()
         .filter({ userId: user.id, roleId: organizationRole.id })
         .build(),
     );
     if (!isExistBefore) {
-      await this.userRoleRepository.create(
+      isExistBefore = await this.userRoleRepository.create(
         {
           userId: user.id,
           roleId: organizationRole.id,
@@ -471,17 +474,20 @@ export class GuaranteeOrganizationService {
         },
       );
     }
+    return isExistBefore;
   }
 
   private async assignedOrganizationUser(
     user: User,
     guaranteeOrganization?: GSGuaranteeOrganization,
+    roleId?: number,
     transaction?: Transaction,
   ) {
     const isExistsBefore = await this.organizationUserRepository.findOne(
       new QueryOptionsBuilder()
         .filter({ userId: user.id })
         .filter({ organizationId: guaranteeOrganization.id })
+        .filter({ roleId: roleId })
         .transaction(transaction)
         .build(),
     );
@@ -490,6 +496,7 @@ export class GuaranteeOrganizationService {
         {
           userId: user.id,
           organizationId: guaranteeOrganization.id,
+          roleId: roleId,
         },
         { transaction: transaction },
       );
