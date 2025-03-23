@@ -21,7 +21,7 @@
   },
   "dependencies": {
     "@golevelup/nestjs-modules": "^0.7.1",
-    "@nestjs/bullmq": "^10.2.3",
+    "@nestjs/bullmq": "^11.0.2",
     "@nestjs/cache-manager": "^2.1.1",
     "@nestjs/common": "^10.0.0",
     "@nestjs/config": "^3.1.1",
