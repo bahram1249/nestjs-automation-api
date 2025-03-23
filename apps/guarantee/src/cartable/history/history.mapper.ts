@@ -21,6 +21,7 @@ export class HistoryMapper {
     output.updatedAt = item.updatedAt;
     output.from = this.fromFieldMap(item);
     output.to = this.toFieldMap(item);
+    output.nodeCommand = item.nodeCommand.name;
     output.description = item.description;
     return output;
   }
