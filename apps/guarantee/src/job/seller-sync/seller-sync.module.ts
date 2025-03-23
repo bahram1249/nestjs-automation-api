@@ -1,7 +1,7 @@
 import { BullModule } from '@nestjs/bullmq';
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { SYNC_SELLER_FLOW_PRODUCER } from './constants';
+import { SYNC_SELLER_FLOW_PRODUCER, SYNC_SELLER_QUEUE } from './constants';
 import {
   SellerBrandProcessor,
   SellerProductTypeProcessor,
@@ -23,6 +23,7 @@ import {
 import { Setting } from '@rahino/database';
 import { SellerVaraintModule } from '@rahino/guarantee/util/seller-variant';
 import { SellerVariantProcessor } from './processor/sync-seller-variant.processor';
+import { SellerProcesssor } from './processor/sync-seller.processor';
 
 @Module({
   imports: [
@@ -43,14 +44,9 @@ import { SellerVariantProcessor } from './processor/sync-seller-variant.processo
     }),
     BullModule.registerFlowProducerAsync({
       name: SYNC_SELLER_FLOW_PRODUCER,
-      inject: [ConfigService],
-      useFactory: (config: ConfigService) => ({
-        connection: {
-          host: config.get<string>('REDIS_ADDRESS'),
-          port: config.get<number>('REDIS_PORT'),
-          password: config.get<string>('REDIS_PASSWORD'),
-        },
-      }),
+    }),
+    BullModule.registerQueueAsync({
+      name: SYNC_SELLER_QUEUE,
     }),
     SequelizeModule.forFeature([
       Setting,
@@ -68,6 +64,7 @@ import { SellerVariantProcessor } from './processor/sync-seller-variant.processo
     SellerProductTypeProcessor,
     SellerWarrantyProcessor,
     SellerVariantProcessor,
+    SellerProcesssor,
   ],
   exports: [SellerSyncService],
 })
