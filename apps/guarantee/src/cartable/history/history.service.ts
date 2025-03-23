@@ -62,7 +62,7 @@ export class HistoryService {
     }
 
     let query = new QueryOptionsBuilder().filter({
-      requestId: filter.requestId,
+      requestId: requestId,
     });
 
     const count = await this.repository.count(query.build());

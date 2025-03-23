@@ -21,7 +21,7 @@ import { GetHistoryDto } from './dto';
 
 @ApiBearerAuth()
 @UseGuards(JwtGuard)
-@ApiTags('GS-Cartable-Solutions')
+@ApiTags('GS-Cartable-History')
 @Controller({
   path: '/api/guarantee/cartable/histories',
   version: ['1'],
