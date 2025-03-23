@@ -17,7 +17,6 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 
 @Module({
   imports: [
-    SmsSenderModule,
     JwtModule.register({}),
     RedisClientModule,
     SequelizeModule.forFeature([User, Menu, RolePermission, PermissionMenu]),

@@ -6,7 +6,6 @@ import { RedisRepository } from '@rahino/redis-client/repository';
 import { AuthService } from '@rahino/core/auth/auth.service';
 import * as _ from 'lodash';
 import { getIntegerRandomArbitrary } from '@rahino/commontools';
-import { SmsSenderService } from '@rahino/guarantee/shared/sms-sender';
 import { InjectQueue } from '@nestjs/bullmq';
 import { Queue } from 'bullmq';
 import { LOGIN_SMS_SENDER_QUEUE } from '@rahino/guarantee/job/login-sms-sender/constants';
@@ -18,7 +17,6 @@ export class LoginService {
     private authService: AuthService,
     @InjectModel(User)
     private readonly userRepository: typeof User,
-    private readonly smsSenderService: SmsSenderService,
     @InjectQueue(LOGIN_SMS_SENDER_QUEUE)
     private readonly loginSmsSenderQueue: Queue,
   ) {}
