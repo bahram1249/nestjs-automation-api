@@ -9,6 +9,7 @@ import { getIntegerRandomArbitrary } from '@rahino/commontools';
 import { InjectQueue } from '@nestjs/bullmq';
 import { Queue } from 'bullmq';
 import { LOGIN_SMS_SENDER_QUEUE } from '@rahino/guarantee/job/login-sms-sender/constants';
+import { LocalizationService } from 'apps/main/src/common/localization';
 
 @Injectable()
 export class LoginService {
@@ -19,6 +20,7 @@ export class LoginService {
     private readonly userRepository: typeof User,
     @InjectQueue(LOGIN_SMS_SENDER_QUEUE)
     private readonly loginSmsSenderQueue: Queue,
+    private readonly localizationService: LocalizationService,
   ) {}
 
   async login(dto: LoginDto) {
@@ -49,10 +51,14 @@ export class LoginService {
   async verifyCode(dto: VerifyDto) {
     const code = await this.redisRepository.get('usercode', dto.phoneNumber);
     if (!code)
-      throw new BadRequestException('the code was send it, is not true!');
+      throw new BadRequestException(
+        this.localizationService.translate('core.code_was_send_it_is_not_true'),
+      );
 
     if (code != dto.code)
-      throw new BadRequestException('the code was send it, is not true!');
+      throw new BadRequestException(
+        this.localizationService.translate('core.code_was_send_it_is_not_true'),
+      );
 
     let user = await this.userRepository.findOne({
       where: {
@@ -61,7 +67,11 @@ export class LoginService {
     });
     if (!user) {
       if (dto.firstname == null || dto.lastname == null) {
-        throw new BadRequestException('firstname or lastname must be send it');
+        throw new BadRequestException(
+          this.localizationService.translate(
+            'core.firstname_or_lastname_must_be_send_it',
+          ),
+        );
       }
       user = await this.userRepository.create({
         phoneNumber: dto.phoneNumber,

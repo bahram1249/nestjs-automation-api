@@ -17,6 +17,8 @@ export type I18nTranslations = {
         "process": string;
     };
     "core": {
+        "firstname_or_lastname_must_be_send_it": string;
+        "code_was_send_it_is_not_true": string;
         "item_exists": string;
         "user": string;
         "requested_item": string;

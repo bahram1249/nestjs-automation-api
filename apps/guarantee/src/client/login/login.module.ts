@@ -14,9 +14,11 @@ import { SmsSenderModule } from '@rahino/guarantee/shared/sms-sender';
 import { LOGIN_SMS_SENDER_QUEUE } from '@rahino/guarantee/job/login-sms-sender/constants';
 import { BullModule } from '@nestjs/bullmq';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { LocalizationModule } from 'apps/main/src/common/localization';
 
 @Module({
   imports: [
+    LocalizationModule,
     JwtModule.register({}),
     RedisClientModule,
     SequelizeModule.forFeature([User, Menu, RolePermission, PermissionMenu]),
