@@ -32,6 +32,7 @@ import { LoginSmsSenderModule } from './job/login-sms-sender';
 import { NormalGuaranteeRequestSmsSenderModule } from './job/normal-guarantee-request-sms-sender';
 import { NewIncomingCartableRequestSmsSenderModule } from './job/new-incoming-cartable-request-sms-sender';
 import { CartableHistoryModule } from './cartable/history';
+import { CartableAutoTraverseModule } from './cartable/auto-traverse/cartable-auto-traverse.module';
 
 @Module({
   imports: [
@@ -65,6 +66,9 @@ import { CartableHistoryModule } from './cartable/history';
     LoginSmsSenderModule,
     NormalGuaranteeRequestSmsSenderModule,
     NewIncomingCartableRequestSmsSenderModule,
+
+    // test
+    CartableAutoTraverseModule,
   ],
 })
 export class GSModule implements NestModule {
