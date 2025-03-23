@@ -28,6 +28,7 @@ import { GSCartableModule } from './admin/cartable';
 import { CartableOrganizationModule } from './cartable/organization/organization.module';
 import { PickOrganizationModule } from './cartable/pick-organization';
 import { RejectModule } from './cartable/reject';
+import { LoginSmsSenderModule } from './job/login-sms-sender';
 
 @Module({
   imports: [
@@ -54,6 +55,7 @@ import { RejectModule } from './cartable/reject';
     CartableOrganizationModule,
     PickOrganizationModule,
     RejectModule,
+    LoginSmsSenderModule,
   ],
 })
 export class GSModule implements NestModule {

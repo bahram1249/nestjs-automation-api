@@ -10,14 +10,31 @@ import { JwtModule } from '@nestjs/jwt';
 import { Menu } from '@rahino/database';
 import { RolePermission } from '@rahino/database';
 import { PermissionMenu } from '@rahino/database';
-import { ECommerceSmsModule } from '@rahino/ecommerce/util/sms/ecommerce-sms.module';
-import { ECWallet } from '@rahino/localdatabase/models';
+import { SmsSenderModule } from '@rahino/guarantee/shared/sms-sender';
+import { LOGIN_SMS_SENDER_QUEUE } from '@rahino/guarantee/job/login-sms-sender/constants';
+import { BullModule } from '@nestjs/bullmq';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 
 @Module({
   imports: [
+    SmsSenderModule,
     JwtModule.register({}),
     RedisClientModule,
     SequelizeModule.forFeature([User, Menu, RolePermission, PermissionMenu]),
+    BullModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: (config: ConfigService) => ({
+        connection: {
+          host: config.get<string>('REDIS_ADDRESS'),
+          port: config.get<number>('REDIS_PORT'),
+          password: config.get<string>('REDIS_PASSWORD'),
+        },
+      }),
+    }),
+    BullModule.registerQueueAsync({
+      name: LOGIN_SMS_SENDER_QUEUE,
+    }),
   ],
   controllers: [LoginController],
   providers: [AuthService, JwtStrategy, LoginService],

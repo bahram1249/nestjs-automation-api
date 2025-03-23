@@ -5,36 +5,43 @@ import { InjectModel } from '@nestjs/sequelize';
 import { RedisRepository } from '@rahino/redis-client/repository';
 import { AuthService } from '@rahino/core/auth/auth.service';
 import * as _ from 'lodash';
-import { ConfigService } from '@nestjs/config';
 import { getIntegerRandomArbitrary } from '@rahino/commontools';
+import { SmsSenderService } from '@rahino/guarantee/shared/sms-sender';
+import { InjectQueue } from '@nestjs/bullmq';
+import { Queue } from 'bullmq';
+import { LOGIN_SMS_SENDER_QUEUE } from '@rahino/guarantee/job/login-sms-sender/constants';
 
 @Injectable()
 export class LoginService {
   constructor(
-    //@Inject(RedisRepository) private readonly redisRepository: RedisRepository,
+    @Inject(RedisRepository) private readonly redisRepository: RedisRepository,
     private authService: AuthService,
     @InjectModel(User)
     private readonly userRepository: typeof User,
-
-    private readonly config: ConfigService,
+    private readonly smsSenderService: SmsSenderService,
+    @InjectQueue(LOGIN_SMS_SENDER_QUEUE)
+    private readonly loginSmsSenderQueue: Queue,
   ) {}
 
   async login(dto: LoginDto) {
-    const rand = '1234'; //getIntegerRandomArbitrary(100000, 999999).toString();
+    const rand = getIntegerRandomArbitrary(1000, 9999).toString();
     const findUser = await this.userRepository.findOne({
       where: {
         phoneNumber: dto.phoneNumber,
       },
     });
 
-    //await this.smsService.loginSms(rand, dto.phoneNumber);
+    await this.loginSmsSenderQueue.add('login-sms-sender', {
+      phoneNumber: dto.phoneNumber,
+      rand,
+    });
 
-    // await this.redisRepository.setWithExpiry(
-    //   'usercode',
-    //   dto.phoneNumber,
-    //   rand,
-    //   360,
-    // );
+    await this.redisRepository.setWithExpiry(
+      'usercode',
+      dto.phoneNumber,
+      rand,
+      360,
+    );
     return {
       result: dto.phoneNumber,
       signupStatus: findUser ? true : false,
@@ -42,10 +49,9 @@ export class LoginService {
   }
 
   async verifyCode(dto: VerifyDto) {
-    // const code = await this.redisRepository.get('usercode', dto.phoneNumber);
-    // if (!code)
-    //   throw new BadRequestException('the code was send it, is not true!');
-    const code = '1234';
+    const code = await this.redisRepository.get('usercode', dto.phoneNumber);
+    if (!code)
+      throw new BadRequestException('the code was send it, is not true!');
 
     if (code != dto.code)
       throw new BadRequestException('the code was send it, is not true!');
@@ -69,7 +75,7 @@ export class LoginService {
     const signToken = await this.authService.signToken(user);
 
     // remove from redis
-    //await this.redisRepository.delete('usercode', dto.phoneNumber);
+    await this.redisRepository.delete('usercode', dto.phoneNumber);
 
     return {
       token: signToken.access_token,
