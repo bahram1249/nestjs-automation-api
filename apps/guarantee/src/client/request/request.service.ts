@@ -21,6 +21,8 @@ import { BPMNRequestService } from '@rahino/bpmn/modules/request/request.service
 import { GuaranteeProcessEnum } from '@rahino/guarantee/shared/process';
 import { GSRequestCategoryEnum } from '@rahino/guarantee/shared/request-category';
 import { AddressService } from '../address/address.service';
+import { InjectQueue } from '@nestjs/bullmq';
+import { NORMAL_GUARANTEE_REQUEST_SMS_SENDER_QUEUE } from '@rahino/guarantee/job/normal-guarantee-request-sms-sender/constants';
 
 @Injectable()
 export class RequestService {
@@ -35,6 +37,8 @@ export class RequestService {
     private readonly processRepository: typeof BPMNPROCESS,
     @InjectConnection()
     private readonly sequelize: Sequelize,
+    @InjectQueue(NORMAL_GUARANTEE_REQUEST_SMS_SENDER_QUEUE)
+    private readonly normalGuaranteeRequestSmsSenderQueue,
   ) {}
 
   async createNormalGuaranteeRequest(user: User, dto: NormalRequestDto) {
@@ -139,6 +143,12 @@ export class RequestService {
       );
       requestId = bpmnRequest.id;
       await transaction.commit();
+      await this.normalGuaranteeRequestSmsSenderQueue.add(
+        'normal_guarantee_request_sms_sender',
+        {
+          phoneNumber: user.phoneNumber,
+        },
+      );
     } catch (error) {
       await transaction.rollback();
     }
