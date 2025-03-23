@@ -8,7 +8,12 @@ import { LocalizationService } from 'apps/main/src/common/localization';
 import * as _ from 'lodash';
 import { ValidateAndReturnCartableItemDto } from './dto';
 import { InjectModel } from '@nestjs/sequelize';
-import { BPMNRequest, BPMNRequestState } from '@rahino/localdatabase/models';
+import {
+  BPMNNode,
+  BPMNNodeCommand,
+  BPMNRequest,
+  BPMNRequestState,
+} from '@rahino/localdatabase/models';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 
 export class GuaranteeTraverseService {
@@ -20,6 +25,10 @@ export class GuaranteeTraverseService {
     private readonly requestRepository: typeof BPMNRequest,
     @InjectModel(BPMNRequestState)
     private readonly requestStateRepository: typeof BPMNRequestState,
+    @InjectModel(BPMNNode)
+    private readonly nodeRepository: typeof BPMNNode,
+    @InjectModel(BPMNNodeCommand)
+    private readonly nodeCommandRepository: typeof BPMNNodeCommand,
   ) {}
 
   async validateAndReturnCartableItem(
@@ -38,10 +47,10 @@ export class GuaranteeTraverseService {
       );
 
     const cartableItem = items[0];
-    const node = cartableItem.nodes.find((item) => item.id == dto.nodeId);
+    let node = cartableItem.nodes.find((item) => item.id == dto.nodeId);
     if (!node) throw new BadRequestException('invalid nodeId');
 
-    const nodeCommand = node.nodeCommands.find(
+    let nodeCommand = node.nodeCommands.find(
       (command) => command.id == dto.nodeCommandId,
     );
     if (!nodeCommand) {
@@ -53,6 +62,13 @@ export class GuaranteeTraverseService {
     const request = await this.requestRepository.findOne(
       new QueryOptionsBuilder().filter({ id: cartableItem.requestId }).build(),
     );
+    node = await this.nodeRepository.findOne(
+      new QueryOptionsBuilder().filter({ id: node.id }).build(),
+    );
+    nodeCommand = await this.nodeCommandRepository.findOne(
+      new QueryOptionsBuilder().filter({ id: nodeCommand.id }).build(),
+    );
+
     return {
       node: node,
       nodeCommand: nodeCommand,
