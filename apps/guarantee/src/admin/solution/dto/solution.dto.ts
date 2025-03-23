@@ -12,6 +12,6 @@ export class SolutionDto {
   public fee: bigint;
 
   @IsOptional()
-  @IsArray({ each: true })
+  @IsArray()
   public provinceSolutions?: ChildSolutionDto[];
 }

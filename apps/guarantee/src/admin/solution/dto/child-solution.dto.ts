@@ -1,5 +1,5 @@
 import { AutoMap } from 'automapper-classes';
-import { IsArray, IsNumber, IsOptional } from 'class-validator';
+import { IsNumber } from 'class-validator';
 
 export class ChildSolutionDto {
   @AutoMap()

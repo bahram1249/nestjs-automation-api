@@ -16,44 +16,33 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { JwtGuard } from '@rahino/auth';
-import { SolutionService } from './solution.service';
-import { GetSolutionDto } from './dto';
-import { GetSolutionRequestFilterDto } from './dto/get-solution-request-filter.dto';
+import { HistoryService } from './history.service';
+import { GetHistoryDto } from './dto';
 
 @ApiBearerAuth()
 @UseGuards(JwtGuard)
 @ApiTags('GS-Cartable-Solutions')
 @Controller({
-  path: '/api/guarantee/cartable/solutions',
+  path: '/api/guarantee/cartable/histories',
   version: ['1'],
 })
 @UseInterceptors(JsonResponseTransformInterceptor)
-export class SolutionController {
-  constructor(private service: SolutionService) {}
+export class HistoryController {
+  constructor(private service: HistoryService) {}
 
   @ApiOperation({ description: 'show all solution' })
-  @Get('/')
+  @Get('/requestId/:requestId')
   @ApiQuery({
     name: 'filter',
-    type: GetSolutionDto,
+    type: GetHistoryDto,
     style: 'deepObject',
     explode: true,
   })
   @HttpCode(HttpStatus.OK)
   async findAll(
     @Param('requestId') requestId: bigint,
-    @Query() filter: GetSolutionDto,
+    @Query() filter: GetHistoryDto,
   ) {
-    return await this.service.findAll(filter);
-  }
-
-  @ApiOperation({ description: 'show solution by given id' })
-  @Get('/:id')
-  @HttpCode(HttpStatus.OK)
-  async findById(
-    @Param('id') entityId: number,
-    @Query() filter: GetSolutionRequestFilterDto,
-  ) {
-    return await this.service.findById(entityId, filter);
+    return await this.service.findAll(requestId, filter);
   }
 }

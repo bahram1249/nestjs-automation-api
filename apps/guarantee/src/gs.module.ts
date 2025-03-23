@@ -31,6 +31,7 @@ import { RejectModule } from './cartable/reject';
 import { LoginSmsSenderModule } from './job/login-sms-sender';
 import { NormalGuaranteeRequestSmsSenderModule } from './job/normal-guarantee-request-sms-sender';
 import { NewIncomingCartableRequestSmsSenderModule } from './job/new-incoming-cartable-request-sms-sender';
+import { CartableHistoryModule } from './cartable/history';
 
 @Module({
   imports: [
@@ -56,6 +57,8 @@ import { NewIncomingCartableRequestSmsSenderModule } from './job/new-incoming-ca
     CartableOrganizationModule,
     PickOrganizationModule,
     RejectModule,
+
+    CartableHistoryModule,
 
     // jobs
     SellerSyncModule,

@@ -49,6 +49,7 @@ export class SolutionService {
             },
           ),
         )
+        .filter({ id: filter.requestId })
         .build(),
     );
 
@@ -125,6 +126,7 @@ export class SolutionService {
             },
           ),
         )
+        .filter({ id: filter.requestId })
         .build(),
     );
 
