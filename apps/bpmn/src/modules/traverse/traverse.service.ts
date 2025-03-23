@@ -459,41 +459,30 @@ export class TraverseService {
         });
       }
     } else {
-      const bpmnOrganizationUsers =
-        await this.organizationUserRepository.findAll(
-          new QueryOptionsBuilder()
-            .filter({
-              organizationId: dto.request.organizationId,
-            })
-            .filter({ roleId: dto.node.roleId })
-            .build(),
-        );
+      // direct to all users if users isn't pass
+      const newRequestState = await this.requestStateRepository.create(
+        {
+          requestId: dto.request.id,
+          activityId: dto.node.toActivityId,
+          organizationId: dto.request.organizationId,
+          roleId: dto.node.roleId,
+          returnRequestStateId: dto.requestState.returnRequestStateId,
+        },
+        { transaction: dto.transaction },
+      );
 
-      for (const organizationUser of bpmnOrganizationUsers) {
-        const newRequestState = await this.requestStateRepository.create(
-          {
-            requestId: dto.request.id,
-            activityId: dto.node.toActivityId,
-            organizationId: organizationUser.organizationId,
-            userId: organizationUser.userId,
-            returnRequestStateId: dto.requestState.returnRequestStateId,
-          },
-          { transaction: dto.transaction },
-        );
-
-        // set histories
-        await this.newStateReached({
-          request: dto.request,
-          oldRequestState: dto.requestState,
-          newRequestState: newRequestState,
-          node: dto.node,
-          nodeCommand: dto.nodeCommand,
-          transaction: dto.transaction,
-          description: dto.description,
-          executeBundle: dto.executeBundle,
-          userExecuterId: dto.userExecuterId,
-        });
-      }
+      // set histories
+      await this.newStateReached({
+        request: dto.request,
+        oldRequestState: dto.requestState,
+        newRequestState: newRequestState,
+        node: dto.node,
+        nodeCommand: dto.nodeCommand,
+        transaction: dto.transaction,
+        description: dto.description,
+        executeBundle: dto.executeBundle,
+        userExecuterId: dto.userExecuterId,
+      });
     }
   }
 
