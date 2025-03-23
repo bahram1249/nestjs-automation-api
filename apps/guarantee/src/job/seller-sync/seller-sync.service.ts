@@ -17,7 +17,11 @@ export class SellerSyncService {
       {
         repeat: {
           pattern: '*/5 * * * *',
+          count: 1,
+          limit: 1,
         },
+        attempts: 1,
+        jobId: 'sync-seller',
       },
     );
   }

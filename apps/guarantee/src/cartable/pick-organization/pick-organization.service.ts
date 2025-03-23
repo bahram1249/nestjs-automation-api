@@ -74,6 +74,7 @@ export class PickOrganizationService {
       await transaction.commit();
     } catch (error) {
       await transaction.rollback();
+      console.log(error);
       throw new BadRequestException(error.message);
     }
     return {
