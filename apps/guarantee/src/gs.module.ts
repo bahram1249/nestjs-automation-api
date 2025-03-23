@@ -30,6 +30,7 @@ import { PickOrganizationModule } from './cartable/pick-organization';
 import { RejectModule } from './cartable/reject';
 import { LoginSmsSenderModule } from './job/login-sms-sender';
 import { NormalGuaranteeRequestSmsSenderModule } from './job/normal-guarantee-request-sms-sender';
+import { NewIncomingCartableRequestSmsSenderModule } from './job/new-incoming-cartable-request-sms-sender';
 
 @Module({
   imports: [
@@ -60,6 +61,7 @@ import { NormalGuaranteeRequestSmsSenderModule } from './job/normal-guarantee-re
     SellerSyncModule,
     LoginSmsSenderModule,
     NormalGuaranteeRequestSmsSenderModule,
+    NewIncomingCartableRequestSmsSenderModule,
   ],
 })
 export class GSModule implements NestModule {
