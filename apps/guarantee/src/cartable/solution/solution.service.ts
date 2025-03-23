@@ -38,7 +38,7 @@ export class SolutionService {
             model: GSGuaranteeOrganization,
             as: 'guaranteeOrganization',
             required: true,
-            include: [{ model: GSAddress, as: 'addresss' }],
+            include: [{ model: GSAddress, as: 'address' }],
           },
         ])
         .filter(

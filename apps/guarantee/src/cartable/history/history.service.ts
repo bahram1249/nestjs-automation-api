@@ -6,8 +6,6 @@ import {
   BPMNNodeCommand,
   BPMNOrganization,
   BPMNRequestHistory,
-  GSAddress,
-  GSGuaranteeOrganization,
   GSRequest,
 } from '@rahino/localdatabase/models';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
@@ -32,14 +30,7 @@ export class HistoryService {
     // find request
     const request = await this.requestRepository.findOne(
       new QueryOptionsBuilder()
-        .include([
-          {
-            model: GSGuaranteeOrganization,
-            as: 'guaranteeOrganization',
-            required: true,
-            include: [{ model: GSAddress, as: 'addresss' }],
-          },
-        ])
+
         .filter(
           Sequelize.where(
             Sequelize.fn('isnull', Sequelize.col('GSRequest.isDeleted'), 0),
