@@ -31,3 +31,4 @@ export * from './gs-factor-additional-package.entity';
 export * from './gs-assigned-product-assigned-guarantee.entity';
 export * from './gs-solution.entity';
 export * from './gs-part.entity';
+export * from './gs-technical-person.entity';

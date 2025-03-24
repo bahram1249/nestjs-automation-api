@@ -31,6 +31,7 @@ import {
   GSAssignedProductAssignedGuarantee,
   GSSolution,
   GSPart,
+  GSTechnicalPerson,
 } from '../models';
 
 export const guaranteeModels = [
@@ -66,4 +67,5 @@ export const guaranteeModels = [
   GSAssignedProductAssignedGuarantee,
   GSSolution,
   GSPart,
+  GSTechnicalPerson,
 ];
