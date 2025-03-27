@@ -33,6 +33,7 @@ import { NormalGuaranteeRequestSmsSenderModule } from './job/normal-guarantee-re
 import { NewIncomingCartableRequestSmsSenderModule } from './job/new-incoming-cartable-request-sms-sender';
 import { CartableHistoryModule } from './cartable/history';
 import { CartableAutoTraverseModule } from './cartable/auto-traverse/cartable-auto-traverse.module';
+import { GSTechnicalPersonModule } from './admin/technical-person';
 
 @Module({
   imports: [
@@ -60,6 +61,7 @@ import { CartableAutoTraverseModule } from './cartable/auto-traverse/cartable-au
     RejectModule,
 
     CartableHistoryModule,
+    GSTechnicalPersonModule,
 
     // jobs
     SellerSyncModule,
