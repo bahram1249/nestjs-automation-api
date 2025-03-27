@@ -9,6 +9,7 @@ import {
 } from 'sequelize-typescript';
 import { GSUnitPrice } from './gs-unit-price.entity';
 import { GSProvince } from './gs-province.entity';
+import { AutoMap } from 'automapper-classes';
 
 @Table({ tableName: 'GSSolutions' })
 export class GSSolution extends Model {
@@ -19,12 +20,14 @@ export class GSSolution extends Model {
   })
   id: number;
 
+  @AutoMap()
   @Column({
     type: DataType.STRING,
     allowNull: true,
   })
   title?: string;
 
+  @AutoMap()
   @Column({
     type: DataType.BIGINT,
   })
@@ -38,6 +41,7 @@ export class GSSolution extends Model {
   @BelongsTo(() => GSUnitPrice)
   unitPrice?: GSUnitPrice;
 
+  @AutoMap()
   @Column({
     type: DataType.INTEGER,
     allowNull: true,
