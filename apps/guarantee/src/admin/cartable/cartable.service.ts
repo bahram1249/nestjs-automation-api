@@ -52,6 +52,7 @@ export class CartableService {
           required: true,
           where: {
             activityTypeId: ActivityTypeEnum.SimpleState,
+            isEndActivity: false,
           },
         },
       ])
