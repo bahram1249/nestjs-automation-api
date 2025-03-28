@@ -7,13 +7,22 @@ import { InjectConnection, InjectModel } from '@nestjs/sequelize';
 import * as _ from 'lodash';
 import {
   BPMNPROCESS,
+  GSAddress,
   GSAssignedGuarantee,
+  GSBrand,
+  GSCity,
   GSGuarantee,
+  GSNeighborhood,
+  GSProductType,
+  GSProvince,
   GSRequest,
+  GSRequestCategory,
+  GSRequestType,
+  GSVariant,
 } from '@rahino/localdatabase/models';
 import { User } from '@rahino/database';
 import { LocalizationService } from 'apps/main/src/common/localization';
-import { NormalRequestDto } from './dto';
+import { GetRequestFilterDto, NormalRequestDto } from './dto';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import { Sequelize, Transaction, Op } from 'sequelize';
 import { GSGuaranteeTypeEnum } from '@rahino/guarantee/shared/gurantee-type';
@@ -157,6 +166,101 @@ export class RequestService {
         trackingCode: requestId,
         message: this.localizationService.translate('core.success'),
       },
+    };
+  }
+
+  async findAll(user: User, filter: GetRequestFilterDto) {
+    let queryBuilder = new QueryOptionsBuilder()
+      .filter(
+        Sequelize.where(
+          Sequelize.fn('isnull', Sequelize.col('GSRequest.isDeleted'), 0),
+          {
+            [Op.eq]: 0,
+          },
+        ),
+      )
+      .filter({ userId: user.id });
+
+    const count = await this.repository.count(queryBuilder.build());
+    queryBuilder = queryBuilder
+      .include([
+        {
+          attributes: ['id', 'title'],
+          model: GSRequestType,
+          as: 'requestType',
+          required: true,
+        },
+        {
+          attributes: ['id', 'title'],
+          model: GSRequestCategory,
+          as: 'requestCategory',
+          required: true,
+        },
+        {
+          attributes: ['id', 'title'],
+          model: GSBrand,
+          as: 'brand',
+          required: false,
+        },
+        {
+          attributes: ['id', 'title'],
+          model: GSProductType,
+          as: 'productType',
+          required: false,
+        },
+        {
+          attributes: ['id', 'title'],
+          model: GSVariant,
+          as: 'variant',
+          required: false,
+        },
+        {
+          attributes: [
+            'id',
+            'name',
+            'latitude',
+            'longitude',
+            'provinceId',
+            'cityId',
+            'neighborhoodId',
+            'street',
+            'alley',
+            'plaque',
+            'floorNumber',
+            'postalCode',
+          ],
+          model: GSAddress,
+          as: 'address',
+          include: [
+            {
+              attributes: ['id', 'name'],
+              model: GSProvince,
+              as: 'province',
+              required: false,
+            },
+            {
+              attributes: ['id', 'name'],
+              model: GSCity,
+              as: 'city',
+              required: false,
+            },
+            {
+              attributes: ['id', 'name'],
+              model: GSNeighborhood,
+              as: 'neighborhood',
+              required: false,
+            },
+          ],
+        },
+      ])
+      .offset(filter.offset)
+      .limit(filter.limit);
+
+    const result = await this.repository.findAll(queryBuilder.build());
+
+    return {
+      result: result,
+      total: count,
     };
   }
 }
