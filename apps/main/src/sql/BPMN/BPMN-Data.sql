@@ -55,6 +55,24 @@ END
 
 GO
 
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'bpmn-activity-types-data-v3' 
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'SITE_NAME' AND [value] IN ('BPMN'))
+		)
+BEGIN
+
+	INSERT INTO BPMNActivityTypes(id, [name], createdAt, updatedAt)
+    VALUES (4, N'CLIENT_STATE', GETDATE(), GETDATE())
+
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'bpmn-activity-types-data-v3', GETDATE(), GETDATE()
+END
+
+GO
+
 IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'bpmn-action-types-data-v1' 
 			)
 	AND EXISTS (
