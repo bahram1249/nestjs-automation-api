@@ -34,6 +34,7 @@ import { NewIncomingCartableRequestSmsSenderModule } from './job/new-incoming-ca
 import { CartableHistoryModule } from './cartable/history';
 import { CartableAutoTraverseModule } from './cartable/auto-traverse/cartable-auto-traverse.module';
 import { GSTechnicalPersonModule } from './admin/technical-person';
+import { ClientHistoryModule } from './client/history';
 
 @Module({
   imports: [
@@ -62,6 +63,7 @@ import { GSTechnicalPersonModule } from './admin/technical-person';
 
     CartableHistoryModule,
     GSTechnicalPersonModule,
+    ClientHistoryModule,
 
     // jobs
     SellerSyncModule,
