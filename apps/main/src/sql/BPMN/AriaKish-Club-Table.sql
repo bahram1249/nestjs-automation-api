@@ -1139,3 +1139,34 @@ END
 
 GO
 
+ 
+-- gs-vip-bundle-types
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'gs-vip-bundle-types-v1'
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings
+		WHERE ([key] = 'CUSTOMER_NAME' AND [value] IN ('AriaKish'))
+		)
+BEGIN
+
+
+	CREATE TABLE GSVipBundleTypes (
+		id                          int identity(1,1)           PRIMARY KEY,
+        title                       nvarchar(256)               NOT NULL,
+		monthPeriod					int							NOT NULL,
+		cardColor					nvarchar(128)				NOT NULL,
+		price						bigint 						NOT NULL,
+		fee							bigint						NOT NULL,
+		unitPriceId					int							NOT NULL
+			CONSTRAINT FK_GSVipBundleTypes_UnitPriceId
+				FOREIGN KEY REFERENCES GSUnitPrices(id),
+		isDeleted					bit							NULL,
+		[createdAt]					datetimeoffset				NOT NULL,
+		[updatedAt]					datetimeoffset				NOT NULL
+	);
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'gs-vip-bundle-types-v1', GETDATE(), GETDATE()
+END
+
+GO

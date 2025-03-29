@@ -36,6 +36,7 @@ import { CartableAutoTraverseModule } from './cartable/auto-traverse/cartable-au
 import { GSTechnicalPersonModule } from './admin/technical-person';
 import { ClientHistoryModule } from './client/history';
 import { GSNeedActionModule } from './client/need-action';
+import { GSVipBundleTypeModule } from './admin/vip-bundle-types';
 
 @Module({
   imports: [
@@ -66,6 +67,7 @@ import { GSNeedActionModule } from './client/need-action';
     GSTechnicalPersonModule,
     ClientHistoryModule,
     GSNeedActionModule,
+    GSVipBundleTypeModule,
 
     // jobs
     SellerSyncModule,

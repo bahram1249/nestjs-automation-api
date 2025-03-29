@@ -32,3 +32,4 @@ export * from './gs-assigned-product-assigned-guarantee.entity';
 export * from './gs-solution.entity';
 export * from './gs-part.entity';
 export * from './gs-technical-person.entity';
+export * from './gs-vip-bundle-types.entity';

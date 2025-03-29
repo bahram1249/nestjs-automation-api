@@ -32,6 +32,7 @@ import {
   GSSolution,
   GSPart,
   GSTechnicalPerson,
+  GSVipBundleType,
 } from '../models';
 
 export const guaranteeModels = [
@@ -68,4 +69,5 @@ export const guaranteeModels = [
   GSSolution,
   GSPart,
   GSTechnicalPerson,
+  GSVipBundleType,
 ];
