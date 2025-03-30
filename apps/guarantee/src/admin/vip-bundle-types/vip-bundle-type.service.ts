@@ -36,6 +36,7 @@ export class VipBundleTypeService {
     query = query
       .attributes([
         'id',
+        'title',
         'price',
         'fee',
         'monthPeriod',
@@ -68,6 +69,7 @@ export class VipBundleTypeService {
       new QueryOptionsBuilder()
         .attributes([
           'id',
+          'title',
           'price',
           'fee',
           'monthPeriod',
