@@ -56,4 +56,14 @@ export class RequestController {
   ) {
     return await this.service.createNormalGuaranteeRequest(user, dto);
   }
+
+  @ApiOperation({ description: 'create out of warranty request' })
+  @Post('/outOfWarrantyRequest')
+  @HttpCode(HttpStatus.CREATED)
+  async createOutOfWarrantyRequest(
+    @GetUser() user: User,
+    @Body() dto: NormalRequestDto,
+  ) {
+    return await this.service.createNormalGuaranteeRequest(user, dto);
+  }
 }

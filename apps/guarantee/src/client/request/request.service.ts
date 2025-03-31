@@ -22,7 +22,11 @@ import {
 } from '@rahino/localdatabase/models';
 import { User } from '@rahino/database';
 import { LocalizationService } from 'apps/main/src/common/localization';
-import { GetRequestFilterDto, NormalRequestDto } from './dto';
+import {
+  GetRequestFilterDto,
+  NormalRequestDto,
+  OutOfWarrantyRequestDto,
+} from './dto';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import { Sequelize, Transaction, Op } from 'sequelize';
 import { GSGuaranteeTypeEnum } from '@rahino/guarantee/shared/gurantee-type';
@@ -147,6 +151,80 @@ export class RequestService {
           addressId: dto.addressId,
           phoneNumber: dto.phoneNumber,
           guaranteeId: asssignedGuarantee.guaranteeId,
+        },
+        { transaction: transaction },
+      );
+      requestId = bpmnRequest.id;
+      await transaction.commit();
+      await this.normalGuaranteeRequestSmsSenderQueue.add(
+        'normal_guarantee_request_sms_sender',
+        {
+          phoneNumber: user.phoneNumber,
+        },
+      );
+    } catch (error) {
+      await transaction.rollback();
+    }
+    return {
+      result: {
+        trackingCode: requestId,
+        message: this.localizationService.translate('core.success'),
+      },
+    };
+  }
+
+  async createOutOfWarrantyRequest(user: User, dto: OutOfWarrantyRequestDto) {
+    const process = await this.processRepository.findOne(
+      new QueryOptionsBuilder()
+        .filter({
+          staticId: GuaranteeProcessEnum.MainProcessId,
+        })
+        .filter(
+          Sequelize.where(
+            Sequelize.fn('isnull', Sequelize.col('BPMNPROCESS.isDeleted'), 0),
+            {
+              [Op.eq]: 0,
+            },
+          ),
+        )
+        .build(),
+    );
+
+    if (!process) {
+      throw new InternalServerErrorException([
+        this.localizationService.translate('bpmn.process'),
+        ' ',
+        this.localizationService.translate('core.not_found'),
+      ]);
+    }
+
+    // thats return error of not exists address
+    await this.addressService.findById(user, dto.addressId);
+    const transaction = await this.sequelize.transaction({
+      isolationLevel: Transaction.ISOLATION_LEVELS.READ_COMMITTED,
+    });
+
+    let requestId: bigint;
+    try {
+      const bpmnRequest = await this.bpmnRequestService.initRequest(
+        {
+          userId: user.id,
+          description: dto.description,
+          processId: process.id,
+        },
+        transaction,
+      );
+      await this.repository.create(
+        {
+          id: bpmnRequest.id,
+          requestTypeId: dto.requestTypeId,
+          requestCategoryId: GSRequestCategoryEnum.WithoutGuarantee,
+          userId: user.id,
+          brandId: dto.brandId,
+          variantId: dto.variantId,
+          productTypeId: dto.productTypeId,
+          addressId: dto.addressId,
+          phoneNumber: dto.phoneNumber,
         },
         { transaction: transaction },
       );
