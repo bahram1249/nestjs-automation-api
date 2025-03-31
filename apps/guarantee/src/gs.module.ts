@@ -39,6 +39,7 @@ import { GSNeedActionModule } from './client/need-action';
 import { GSVipBundleTypeModule } from './admin/vip-bundle-types';
 import { ClientVariantModule } from './client/variant';
 import { ClientBrandModule } from './client/brand';
+import { ClientProductTypeModule } from './client/product-type';
 
 @Module({
   imports: [
@@ -73,6 +74,7 @@ import { ClientBrandModule } from './client/brand';
 
     ClientVariantModule,
     ClientBrandModule,
+    ClientProductTypeModule,
 
     // jobs
     SellerSyncModule,
