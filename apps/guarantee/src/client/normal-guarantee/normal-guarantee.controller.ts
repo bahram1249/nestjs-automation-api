@@ -21,7 +21,7 @@ import { JwtGuard } from '@rahino/auth';
 import { GetUser } from '@rahino/auth';
 import { User } from '@rahino/database';
 import { ListFilter } from '@rahino/query-filter';
-import { NormalGuaranteeService } from './normal-gurantee.service';
+import { NormalGuaranteeService } from './normal-guarantee.service';
 import { NormalGuaranteeDto } from './dto';
 
 @ApiTags('Client-NormalGuarantee')

@@ -11,7 +11,7 @@ import { NormalGuaranteeModule } from './admin/normal-guarantee';
 import { LoginModule } from './client/login/login.module';
 import { SellerSyncModule, SellerSyncService } from './job/seller-sync';
 import { VariantModule } from './admin/variant';
-import { ClientNormalGuaranteeModule } from './client/normal-gurantee';
+import { ClientNormalGuaranteeModule } from './client/normal-guarantee';
 import { GSProvinceModule } from './client/province/province.module';
 import { GSCityModule } from './client/city/city.module';
 import { GSNeighborhoodModule } from './client/neighborhood/neighborhood.module';
