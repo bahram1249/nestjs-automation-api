@@ -21,7 +21,7 @@ import { GetBrandDto } from './dto';
 
 @ApiBearerAuth()
 @UseGuards(JwtGuard)
-@ApiTags('GS-Brands')
+@ApiTags('GS-ClientBrands')
 @Controller({
   path: '/api/guarantee/client/brands',
   version: ['1'],
