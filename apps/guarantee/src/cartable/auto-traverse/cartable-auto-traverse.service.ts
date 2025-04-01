@@ -41,6 +41,12 @@ export class CartableAutoTraverseService {
         ),
       );
     }
+
+    return await this.runAutoTraverse(user, {
+      request: request,
+      requestState,
+      description: dto.description,
+    });
   }
 
   async runAutoTraverse(user: User, dto: RunAutoTraverseDto) {
