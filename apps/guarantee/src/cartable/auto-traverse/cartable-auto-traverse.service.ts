@@ -59,7 +59,7 @@ export class CartableAutoTraverseService {
       await transaction.commit();
     } catch (error) {
       await transaction.rollback();
-      throw error;
+      throw new BadRequestException(error.message);
     }
     return {
       result: {
