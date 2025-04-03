@@ -702,6 +702,48 @@ END
 GO
 
 
+-- gs-request-v2
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'gs-requests-v2'
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings
+		WHERE ([key] = 'CUSTOMER_NAME' AND [value] IN ('AriaKish'))
+		)
+BEGIN
+
+	ALTER TABLE GSRequests
+	ADD superVisorId bigint null
+		CONSTRAINT FK_GSRequests_SuperVisorId
+			FOREIGN KEY REFERENCES Users(id)
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'gs-requests-v2', GETDATE(), GETDATE()
+END
+
+GO
+
+
+-- gs-request-v3
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'gs-requests-v3'
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings
+		WHERE ([key] = 'CUSTOMER_NAME' AND [value] IN ('AriaKish'))
+		)
+BEGIN
+
+	ALTER TABLE GSRequests
+	ADD superVisorVisitDate datetime null,
+		superVisorVisitTime nvarchar(128) null
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'gs-requests-v3', GETDATE(), GETDATE()
+END
+
+GO
+
+
+
 -- gs-unit-prices v1 :-> rial, toman
 IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'gs-unit-prices-v1'
 			)

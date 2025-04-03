@@ -40,6 +40,8 @@ import { GSVipBundleTypeModule } from './admin/vip-bundle-types';
 import { ClientVariantModule } from './client/variant';
 import { ClientBrandModule } from './client/brand';
 import { ClientProductTypeModule } from './client/product-type';
+import { SuperVisorCartableRequestSmsSenderModule } from './job/supervisor-cartable-request-sms-sender';
+import { PickSupervisorModule } from './cartable/pick-supervisor';
 
 @Module({
   imports: [
@@ -81,6 +83,8 @@ import { ClientProductTypeModule } from './client/product-type';
     LoginSmsSenderModule,
     NormalGuaranteeRequestSmsSenderModule,
     NewIncomingCartableRequestSmsSenderModule,
+    SuperVisorCartableRequestSmsSenderModule,
+    PickSupervisorModule,
 
     // test
     CartableAutoTraverseModule,

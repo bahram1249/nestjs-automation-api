@@ -5,6 +5,7 @@ import {
   DataType,
   ForeignKey,
   BelongsTo,
+  AllowNull,
 } from 'sequelize-typescript';
 import { GSRequestType } from './gs-request-type.entity';
 import { GSRequestCategory } from './gs-request-category.entity';
@@ -150,4 +151,26 @@ export class GSRequest extends Model {
     allowNull: true,
   })
   isDeleted?: boolean;
+
+  @Column({
+    type: DataType.BIGINT,
+    allowNull: true,
+  })
+  @ForeignKey(() => User)
+  superVisorId?: bigint;
+
+  @BelongsTo(() => User, { as: 'superVisor', foreignKey: 'superVisorId' })
+  superVisor?: User;
+
+  @Column({
+    type: DataType.DATE,
+    allowNull: true,
+  })
+  superVisorVisitDate?: Date;
+
+  @Column({
+    type: DataType.STRING,
+    allowNull: true,
+  })
+  superVisorVisitTime?: string;
 }
