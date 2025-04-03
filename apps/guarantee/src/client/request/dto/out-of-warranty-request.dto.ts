@@ -1,9 +1,11 @@
+import { ApiProperty } from '@nestjs/swagger';
 import { I18nTranslations } from 'apps/main/src/generated/i18n.generated';
 import { AutoMap } from 'automapper-classes';
 import {
   IsNotEmpty,
   IsNumber,
   IsString,
+  Matches,
   MaxLength,
   MinLength,
 } from 'class-validator';
@@ -33,6 +35,13 @@ export class OutOfWarrantyRequestDto {
     message: i18nValidationMessage<I18nTranslations>('validation.NOT_EMPTY'),
   })
   @IsString()
+  @Matches(new RegExp('^([0-9]){4}([0-9]){7,8}$'))
+  @ApiProperty({
+    required: true,
+    type: IsString,
+    default: 'string',
+    description: 'phoneNumber',
+  })
   @AutoMap()
   phoneNumber: string;
 
