@@ -171,8 +171,9 @@ export class TechnicalPersonService {
 
       await transaction.commit();
     } catch (error) {
+      console.log(error);
       await transaction.rollback();
-      throw new InternalServerErrorException(error);
+      throw new InternalServerErrorException(error.message);
     }
 
     return {
