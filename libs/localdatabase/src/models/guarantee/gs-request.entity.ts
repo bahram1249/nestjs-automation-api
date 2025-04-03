@@ -157,20 +157,20 @@ export class GSRequest extends Model {
     allowNull: true,
   })
   @ForeignKey(() => User)
-  superVisorId?: bigint;
+  technicalUserId?: bigint;
 
-  @BelongsTo(() => User, { as: 'superVisor', foreignKey: 'superVisorId' })
-  superVisor?: User;
+  @BelongsTo(() => User, { as: 'technicalUser', foreignKey: 'technicalUserId' })
+  technicalUser?: User;
 
   @Column({
     type: DataType.DATE,
     allowNull: true,
   })
-  superVisorVisitDate?: Date;
+  technicalUserVisitDate?: Date;
 
   @Column({
     type: DataType.STRING,
     allowNull: true,
   })
-  superVisorVisitTime?: string;
+  technicalUserVisitTime?: string;
 }
