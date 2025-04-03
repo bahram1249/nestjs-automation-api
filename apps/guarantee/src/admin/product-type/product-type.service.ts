@@ -145,7 +145,7 @@ export class ProductTypeService {
 
     const mappedItem = this.mapper.map(dto, ProductTypeDto, GSProductType);
     const result = await this.repository.update(
-      _.omit(mappedItem.toJSON(), ['id']),
+      _.omit(mappedItem.toJSON(), ['id', 'providerBaseId', 'providerId']),
       {
         where: {
           id: id,
