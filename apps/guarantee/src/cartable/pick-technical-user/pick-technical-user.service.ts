@@ -1,6 +1,6 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { User } from '@rahino/database';
-import { RejectDto } from './dto';
+import { PickTechnicalUserDto } from './dto';
 import { InjectConnection, InjectModel } from '@nestjs/sequelize';
 import { Sequelize, Transaction } from 'sequelize';
 import { GuaranteeTraverseService } from '../guarantee-traverse/guarantee-traverse.service';
@@ -9,7 +9,7 @@ import { LocalizationService } from 'apps/main/src/common/localization';
 import { GSRequest } from '@rahino/localdatabase/models';
 
 @Injectable()
-export class PickSupervisorService {
+export class PickTechnicalUserService {
   constructor(
     private readonly guaranteeTraverseService: GuaranteeTraverseService,
     @InjectConnection()
@@ -20,7 +20,7 @@ export class PickSupervisorService {
     private readonly requestRepository: typeof GSRequest,
   ) {}
 
-  async traverse(user: User, dto: RejectDto) {
+  async traverse(user: User, dto: PickTechnicalUserDto) {
     const cartableItem =
       await this.guaranteeTraverseService.validateAndReturnCartableItem(
         user,
@@ -33,9 +33,9 @@ export class PickSupervisorService {
     // update request
     await this.requestRepository.update(
       {
-        superVisorId: dto.userId,
-        superVisorVisitDate: dto.superVisorVisitDate,
-        superVisorVisitTime: dto.superVisorVisitTime,
+        technicalUserId: dto.userId,
+        technicalUserVisitDate: dto.technicalUserVisitDate,
+        technicalUserVisitTime: dto.technicalUserVisitTime,
       },
       {
         where: {

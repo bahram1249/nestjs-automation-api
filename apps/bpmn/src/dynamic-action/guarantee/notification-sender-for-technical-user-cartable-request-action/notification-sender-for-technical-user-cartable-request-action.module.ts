@@ -4,8 +4,8 @@ import { PersianDate, User, UserRole } from '@rahino/database';
 import { BPMNOrganizationUser, GSRequest } from '@rahino/localdatabase/models';
 import { BullModule } from '@nestjs/bullmq';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { NotificationSenderForSupervisorCartableRquestActionService } from './notification-sender-for-supervisor-cartable-request-action.service';
-import { SUPERVISOR_CARTABLE_REQUEST_SMS_SENDER_QUEUE } from '@rahino/guarantee/job/supervisor-cartable-request-sms-sender/constants';
+import { NotificationSenderForTechnicalUserCartableRquestActionService } from './notification-sender-for-technical-user-cartable-request-action.service';
+import { TECHNICAL_USER_CARTABLE_REQUEST_SMS_SENDER_QUEUE } from '@rahino/guarantee/job/technical-user-cartable-request-sms-sender/constants';
 
 @Module({
   imports: [
@@ -28,14 +28,14 @@ import { SUPERVISOR_CARTABLE_REQUEST_SMS_SENDER_QUEUE } from '@rahino/guarantee/
       }),
     }),
     BullModule.registerQueueAsync({
-      name: SUPERVISOR_CARTABLE_REQUEST_SMS_SENDER_QUEUE,
+      name: TECHNICAL_USER_CARTABLE_REQUEST_SMS_SENDER_QUEUE,
     }),
   ],
   providers: [
     {
-      provide: 'NotificationSenderForSupervisorCartableRquestActionService',
-      useClass: NotificationSenderForSupervisorCartableRquestActionService,
+      provide: 'NotificationSenderForTechnicalUserCartableRquestActionService',
+      useClass: NotificationSenderForTechnicalUserCartableRquestActionService,
     },
   ],
 })
-export class NotificationSenderForSupervisorCartableRquestActionModule {}
+export class NotificationSenderForTechnicalUserCartableRquestActionModule {}

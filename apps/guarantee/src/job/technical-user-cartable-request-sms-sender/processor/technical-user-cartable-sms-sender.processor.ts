@@ -1,10 +1,10 @@
 import { Processor, WorkerHost } from '@nestjs/bullmq';
 import { Job } from 'bullmq';
-import { SUPERVISOR_CARTABLE_REQUEST_SMS_SENDER_QUEUE } from '../constants';
+import { TECHNICAL_USER_CARTABLE_REQUEST_SMS_SENDER_QUEUE } from '../constants';
 import { SmsSenderService } from '@rahino/guarantee/shared/sms-sender';
 
-@Processor(SUPERVISOR_CARTABLE_REQUEST_SMS_SENDER_QUEUE)
-export class SuperVisorCartableSmsSenderProcessor extends WorkerHost {
+@Processor(TECHNICAL_USER_CARTABLE_REQUEST_SMS_SENDER_QUEUE)
+export class TechnicalUserCartableSmsSenderProcessor extends WorkerHost {
   constructor(private readonly smsSenderService: SmsSenderService) {
     super();
   }

@@ -1,9 +1,9 @@
 import { BullModule } from '@nestjs/bullmq';
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { SuperVisorCartableSmsSenderProcessor } from './processor';
+import { TechnicalUserCartableSmsSenderProcessor } from './processor';
 import { SmsSenderModule } from '@rahino/guarantee/shared/sms-sender';
-import { SUPERVISOR_CARTABLE_REQUEST_SMS_SENDER_QUEUE } from './constants';
+import { TECHNICAL_USER_CARTABLE_REQUEST_SMS_SENDER_QUEUE } from './constants';
 
 @Module({
   imports: [
@@ -20,7 +20,7 @@ import { SUPERVISOR_CARTABLE_REQUEST_SMS_SENDER_QUEUE } from './constants';
       }),
     }),
     BullModule.registerQueueAsync({
-      name: SUPERVISOR_CARTABLE_REQUEST_SMS_SENDER_QUEUE,
+      name: TECHNICAL_USER_CARTABLE_REQUEST_SMS_SENDER_QUEUE,
       inject: [ConfigService],
       useFactory: (config: ConfigService) => ({
         connection: {
@@ -31,6 +31,6 @@ import { SUPERVISOR_CARTABLE_REQUEST_SMS_SENDER_QUEUE } from './constants';
       }),
     }),
   ],
-  providers: [SuperVisorCartableSmsSenderProcessor],
+  providers: [TechnicalUserCartableSmsSenderProcessor],
 })
-export class SuperVisorCartableRequestSmsSenderModule {}
+export class TechnicalUserCartableRequestSmsSenderModule {}

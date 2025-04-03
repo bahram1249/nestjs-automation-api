@@ -1,6 +1,6 @@
 import { GSRequestTypeEnum } from '@rahino/guarantee/shared/request-type';
 
-export class NotificationSenderForSuperVisorDto {
+export class NotificationSenderForTechnicalUserDto {
   date: Date;
   time: string;
   requestTypeId: GSRequestTypeEnum;

@@ -4,16 +4,16 @@ import { InjectModel } from '@nestjs/sequelize';
 import { ExecuteActionDto } from '@rahino/bpmn/modules/action/dto';
 import { ActionServiceImp } from '@rahino/bpmn/modules/action/interface';
 import { PersianDate, User, UserRole } from '@rahino/database';
-import { SUPERVISOR_CARTABLE_REQUEST_SMS_SENDER_QUEUE } from '@rahino/guarantee/job/supervisor-cartable-request-sms-sender/constants';
+import { TECHNICAL_USER_CARTABLE_REQUEST_SMS_SENDER_QUEUE } from '@rahino/guarantee/job/technical-user-cartable-request-sms-sender/constants';
 import { BPMNOrganizationUser, GSRequest } from '@rahino/localdatabase/models';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import { Queue } from 'bullmq';
-import { NotificationSenderForSuperVisorDto } from './dto';
+import { NotificationSenderForTechnicalUserDto } from './dto';
 import { Op, Sequelize } from 'sequelize';
 import * as moment from 'moment-jalaali';
 
 @Injectable()
-export class NotificationSenderForSupervisorCartableRquestActionService
+export class NotificationSenderForTechnicalUserCartableRquestActionService
   implements ActionServiceImp
 {
   constructor(
@@ -27,14 +27,14 @@ export class NotificationSenderForSupervisorCartableRquestActionService
     private readonly requestRepository: typeof GSRequest,
     @InjectModel(PersianDate)
     private readonly persianDateRepository: typeof PersianDate,
-    @InjectQueue(SUPERVISOR_CARTABLE_REQUEST_SMS_SENDER_QUEUE)
+    @InjectQueue(TECHNICAL_USER_CARTABLE_REQUEST_SMS_SENDER_QUEUE)
     private readonly superVisorCartableRequestSmsSenderQueue: Queue,
   ) {}
   async executeAction(dto: ExecuteActionDto) {
     const request = await this.requestRepository.findOne(
       new QueryOptionsBuilder().filter({ id: dto.request.id }).build(),
     );
-    const data: NotificationSenderForSuperVisorDto = {
+    const data: NotificationSenderForTechnicalUserDto = {
       date: request.superVisorVisitDate,
       time: request.superVisorVisitTime,
       requestTypeId: request.requestTypeId,
@@ -82,7 +82,7 @@ export class NotificationSenderForSupervisorCartableRquestActionService
 
   private async sendNotificationToOrganizationUsers(
     bpmnOrganizationUsers: BPMNOrganizationUser[],
-    data: NotificationSenderForSuperVisorDto,
+    data: NotificationSenderForTechnicalUserDto,
   ) {
     for (const bpmnOrganizationUser of bpmnOrganizationUsers) {
       await this.sendNotification(bpmnOrganizationUser.user, data);
@@ -91,7 +91,7 @@ export class NotificationSenderForSupervisorCartableRquestActionService
 
   private async sendNotificationToUserRoles(
     userRoles: UserRole[],
-    data: NotificationSenderForSuperVisorDto,
+    data: NotificationSenderForTechnicalUserDto,
   ) {
     for (const userRole of userRoles) {
       await this.sendNotification(userRole.user, data);
@@ -100,7 +100,7 @@ export class NotificationSenderForSupervisorCartableRquestActionService
 
   private async sendNotification(
     user: User,
-    data: NotificationSenderForSuperVisorDto,
+    data: NotificationSenderForTechnicalUserDto,
   ) {
     const convertDateFormat = '103';
     const persianDate = await this.persianDateRepository.findOne(

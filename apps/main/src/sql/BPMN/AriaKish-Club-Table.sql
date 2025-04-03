@@ -712,8 +712,8 @@ IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'gs-requests-v2'
 BEGIN
 
 	ALTER TABLE GSRequests
-	ADD superVisorId bigint null
-		CONSTRAINT FK_GSRequests_SuperVisorId
+	ADD technicalUserId bigint null
+		CONSTRAINT FK_GSRequests_TechnicalUserId
 			FOREIGN KEY REFERENCES Users(id)
 
 	INSERT INTO Migrations(version, createdAt, updatedAt)
@@ -733,8 +733,8 @@ IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'gs-requests-v3'
 BEGIN
 
 	ALTER TABLE GSRequests
-	ADD superVisorVisitDate datetime null,
-		superVisorVisitTime nvarchar(128) null
+	ADD technicalUserVisitDate datetime null,
+		technicalUserVisitTime nvarchar(128) null
 
 	INSERT INTO Migrations(version, createdAt, updatedAt)
 	SELECT 'gs-requests-v3', GETDATE(), GETDATE()
