@@ -35,8 +35,8 @@ export class NotificationSenderForTechnicalUserCartableRquestActionService
       new QueryOptionsBuilder().filter({ id: dto.request.id }).build(),
     );
     const data: NotificationSenderForTechnicalUserDto = {
-      date: request.superVisorVisitDate,
-      time: request.superVisorVisitTime,
+      date: request.technicalUserVisitDate,
+      time: request.technicalUserVisitTime,
       requestTypeId: request.requestTypeId,
     };
     if (
