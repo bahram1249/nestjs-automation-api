@@ -18,7 +18,11 @@ import {
 } from '@nestjs/swagger';
 import { JwtGuard } from '@rahino/auth';
 import { RequestService } from './request.service';
-import { GetRequestFilterDto, NormalRequestDto } from './dto';
+import {
+  GetRequestFilterDto,
+  NormalRequestDto,
+  OutOfWarrantyRequestDto,
+} from './dto';
 import { GetUser } from '@rahino/auth';
 import { User } from '@rahino/database';
 
@@ -62,8 +66,8 @@ export class RequestController {
   @HttpCode(HttpStatus.CREATED)
   async createOutOfWarrantyRequest(
     @GetUser() user: User,
-    @Body() dto: NormalRequestDto,
+    @Body() dto: OutOfWarrantyRequestDto,
   ) {
-    return await this.service.createNormalGuaranteeRequest(user, dto);
+    return await this.service.createOutOfWarrantyRequest(user, dto);
   }
 }
