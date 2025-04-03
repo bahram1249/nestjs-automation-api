@@ -171,7 +171,6 @@ export class TechnicalPersonService {
 
       await transaction.commit();
     } catch (error) {
-      console.log(error);
       await transaction.rollback();
       throw new InternalServerErrorException(error.message);
     }
@@ -277,7 +276,7 @@ export class TechnicalPersonService {
         this.localizationService.translate('core.not_found_role'),
       );
     }
-    const userRole = await this.userRepository.findOne(
+    const userRole = await this.userRoleRepository.findOne(
       new QueryOptionsBuilder()
         .filter({ userId: user.id })
         .filter({ roleId: role.id })
