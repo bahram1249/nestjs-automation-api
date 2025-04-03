@@ -331,6 +331,7 @@ export class RequestService {
           ],
         },
       ])
+      .order({ sortOrder: filter.sortOrder, orderBy: filter.orderBy })
       .offset(filter.offset)
       .limit(filter.limit);
 
