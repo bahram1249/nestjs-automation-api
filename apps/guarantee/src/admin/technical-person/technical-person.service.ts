@@ -5,7 +5,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { GetTechnicalPersonDto, TechnicalPersonDto } from './dto';
-import { InjectModel } from '@nestjs/sequelize';
+import { InjectConnection, InjectModel } from '@nestjs/sequelize';
 import {
   BPMNOrganizationUser,
   GSTechnicalPerson,
@@ -18,7 +18,6 @@ import * as _ from 'lodash';
 import { OrganizationStuffService } from '@rahino/guarantee/shared/organization-stuff';
 import { Role, User, UserRole } from '@rahino/database';
 import { LocalizationService } from 'apps/main/src/common/localization';
-import { InjectConnection } from 'nestjs-knex';
 import { GuaranteeStaticRoleEnum } from '@rahino/guarantee/shared/static-role/enum';
 
 @Injectable()
