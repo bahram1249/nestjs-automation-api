@@ -1,5 +1,7 @@
+import { ApiProperty } from '@nestjs/swagger';
 import { AutoMap } from 'automapper-classes';
-import { IsString } from 'class-validator';
+import { IsNotEmpty, IsString, Matches } from 'class-validator';
+import { Is } from 'sequelize-typescript';
 
 export class TechnicalPersonDto {
   @AutoMap()
@@ -11,5 +13,14 @@ export class TechnicalPersonDto {
   public lastname: string;
 
   @AutoMap()
+  @IsString()
+  @IsNotEmpty()
+  @Matches(new RegExp('^([0-9]){4}([0-9]){7,8}$'))
+  @ApiProperty({
+    required: true,
+    type: IsString,
+    default: 'string',
+    description: 'phoneNumber',
+  })
   public phoneNumber: string;
 }
