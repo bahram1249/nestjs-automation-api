@@ -18,6 +18,7 @@ import { GSGuarantee } from './gs-guarantee.entity';
 import { User } from '@rahino/database';
 import { GSAddress } from './gs-address.entity';
 import { AutoMap } from 'automapper-classes';
+import { GSShippingWay } from './gs-shipping-way.entity';
 
 @Table({ tableName: 'GSRequests' })
 export class GSRequest extends Model {
@@ -173,4 +174,41 @@ export class GSRequest extends Model {
     allowNull: true,
   })
   technicalUserVisitTime?: string;
+
+  @Column({
+    type: DataType.INTEGER,
+    allowNull: true,
+  })
+  @ForeignKey(() => GSShippingWay)
+  clientShipmentWayId?: number;
+
+  @BelongsTo(() => GSShippingWay, {
+    as: 'clientShipmentWay',
+    foreignKey: 'clientShipmentWayId',
+  })
+  clientShipmentWay?: GSShippingWay;
+
+  @Column({
+    type: DataType.STRING,
+    allowNull: true,
+  })
+  clientShipmentWayTrackingCode?: string;
+
+  @Column({
+    type: DataType.INTEGER,
+    allowNull: true,
+  })
+  @ForeignKey(() => GSShippingWay)
+  cartableShipmentWayId?: number;
+  @Column({
+    type: DataType.STRING,
+    allowNull: true,
+  })
+  @BelongsTo(() => GSShippingWay, {
+    as: 'cartableShipmentWay',
+    foreignKey: 'cartableShipmentWayId',
+  })
+  cartableShipmentWay?: GSShippingWay;
+
+  cartableShipmentWayTrackingCode?: string;
 }

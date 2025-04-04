@@ -642,6 +642,34 @@ END
 
 GO
 
+
+-- gs-shipping-way
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'gs-shipping-way-v1'
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings
+		WHERE ([key] = 'CUSTOMER_NAME' AND [value] IN ('AriaKish'))
+		)
+BEGIN
+
+
+	CREATE TABLE GSShippingWays (
+		id                          int                         PRIMARY KEY,
+        title                       nvarchar(256)               NOT NULL,
+        icon                        nvarchar(256)               NOT NULL,
+		isClientSide                bit                         NULL,
+        isCartableSide              bit                         NULL,
+		isDeleted					bit							NULL,
+		[createdAt]					datetimeoffset				NOT NULL,
+		[updatedAt]					datetimeoffset				NOT NULL
+	);
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'gs-shipping-way-v1', GETDATE(), GETDATE()
+END
+
+GO
+
 -- gs-request-v1
 IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'gs-requests-v1'
 			)
@@ -742,6 +770,31 @@ END
 
 GO
 
+-- gs-request-v4
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'gs-requests-v4'
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings
+		WHERE ([key] = 'CUSTOMER_NAME' AND [value] IN ('AriaKish'))
+		)
+BEGIN
+
+	ALTER TABLE GSRequests
+	ADD clientShipmentWayId int null
+	        CONSTRAINT FK_GSRequests_ClientShipmentWatyId
+	            FOREIGN KEY REFERENCES GSShippingWays(id),
+	    clientShipmentWayTrackingCode nvarchar(256) null,
+	    cartableShipmentWayId int null
+	        CONSTRAINT FK_GSRequests_CartableShipmentWayId
+	            FOREIGN KEY REFERENCES GSShippingWays(id),
+	    cartableShipmentWayTrackingCode nvarchar(256) null
+
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'gs-requests-v4', GETDATE(), GETDATE()
+END
+
+GO
 
 
 -- gs-unit-prices v1 :-> rial, toman
@@ -1209,33 +1262,6 @@ BEGIN
 
 	INSERT INTO Migrations(version, createdAt, updatedAt)
 	SELECT 'gs-vip-bundle-types-v1', GETDATE(), GETDATE()
-END
-
-GO
-
--- gs-shipping-way
-IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'gs-shipping-way-v1'
-			)
-	AND EXISTS (
-		SELECT 1 FROM Settings
-		WHERE ([key] = 'CUSTOMER_NAME' AND [value] IN ('AriaKish'))
-		)
-BEGIN
-
-
-	CREATE TABLE GSShippingWays (
-		id                          int                         PRIMARY KEY,
-        title                       nvarchar(256)               NOT NULL,
-        icon                        nvarchar(256)               NOT NULL,
-		isClientSide                bit                         NULL,
-        isCartableSide              bit                         NULL,
-		isDeleted					bit							NULL,
-		[createdAt]					datetimeoffset				NOT NULL,
-		[updatedAt]					datetimeoffset				NOT NULL
-	);
-
-	INSERT INTO Migrations(version, createdAt, updatedAt)
-	SELECT 'gs-shipping-way-v1', GETDATE(), GETDATE()
 END
 
 GO
