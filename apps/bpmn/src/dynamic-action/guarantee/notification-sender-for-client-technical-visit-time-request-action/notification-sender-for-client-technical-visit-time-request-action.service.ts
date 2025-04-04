@@ -9,7 +9,7 @@ import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builde
 import { Queue } from 'bullmq';
 import { NotificationSenderForTechnicalUserDto } from './dto';
 import { Op, Sequelize } from 'sequelize';
-import * as moment from 'moment-jalaali';
+import * as moment from 'moment';
 import { CLIENT_TECHNICAL_USER_VISIT_REQUEST_SMS_SENDER_QUEUE } from '@rahino/guarantee/job/client-technical-user-visit-request-sms-sender/constants';
 
 @Injectable()
@@ -51,16 +51,12 @@ export class NotificationSenderForClientTechnicalVisitTimeRequestActionService
     user: User,
     data: NotificationSenderForTechnicalUserDto,
   ) {
-    const convertDateFormat = '103';
     const persianDate = await this.persianDateRepository.findOne(
       new QueryOptionsBuilder()
         .filter(
           Sequelize.where(Sequelize.col('GregorianDate'), {
-            [Op.eq]: Sequelize.fn(
-              'convert',
-              Sequelize.literal('date'),
-              `${moment().tz('Asia/Tehran', false).format('jYYYY-jMM-jDD')}`,
-              convertDateFormat,
+            [Op.eq]: Sequelize.literal(
+              `${moment(data.date).format('YYYY-MM-DD')}`,
             ),
           }),
         )

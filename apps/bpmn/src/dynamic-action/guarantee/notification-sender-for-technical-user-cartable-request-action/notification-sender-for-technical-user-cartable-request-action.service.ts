@@ -3,14 +3,14 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { ExecuteActionDto } from '@rahino/bpmn/modules/action/dto';
 import { ActionServiceImp } from '@rahino/bpmn/modules/action/interface';
-import { PersianDate, User, UserRole } from '@rahino/database';
+import { PersianDate, User } from '@rahino/database';
 import { TECHNICAL_USER_CARTABLE_REQUEST_SMS_SENDER_QUEUE } from '@rahino/guarantee/job/technical-user-cartable-request-sms-sender/constants';
-import { BPMNOrganizationUser, GSRequest } from '@rahino/localdatabase/models';
+import { GSRequest } from '@rahino/localdatabase/models';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import { Queue } from 'bullmq';
 import { NotificationSenderForTechnicalUserDto } from './dto';
 import { Op, Sequelize } from 'sequelize';
-import * as moment from 'moment-jalaali';
+import * as moment from 'moment';
 
 @Injectable()
 export class NotificationSenderForTechnicalUserCartableRequestActionService
@@ -51,16 +51,12 @@ export class NotificationSenderForTechnicalUserCartableRequestActionService
     user: User,
     data: NotificationSenderForTechnicalUserDto,
   ) {
-    const convertDateFormat = '103';
     const persianDate = await this.persianDateRepository.findOne(
       new QueryOptionsBuilder()
         .filter(
           Sequelize.where(Sequelize.col('GregorianDate'), {
-            [Op.eq]: Sequelize.fn(
-              'convert',
-              Sequelize.literal('date'),
-              `${moment().tz('Asia/Tehran', false).format('jYYYY-jMM-jDD')}`,
-              convertDateFormat,
+            [Op.eq]: Sequelize.literal(
+              `${moment(data.date).format('YYYY-MM-DD')}`,
             ),
           }),
         )
