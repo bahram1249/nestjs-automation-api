@@ -17,12 +17,6 @@ export class NotificationSenderForTechnicalUserCartableRequestActionService
   implements ActionServiceImp
 {
   constructor(
-    @InjectModel(BPMNOrganizationUser)
-    private readonly organizationUserRepository: typeof BPMNOrganizationUser,
-    @InjectModel(UserRole)
-    private readonly userRoleRepository: typeof UserRole,
-    @InjectModel(User)
-    private readonly userRepository: typeof User,
     @InjectModel(GSRequest)
     private readonly requestRepository: typeof GSRequest,
     @InjectModel(PersianDate)
@@ -41,6 +35,7 @@ export class NotificationSenderForTechnicalUserCartableRequestActionService
             attributes: ['id', 'firstname', 'lastname', 'phoneNumber'],
           },
         ])
+        .transaction(dto.transaction)
         .build(),
     );
     const data: NotificationSenderForTechnicalUserDto = {
