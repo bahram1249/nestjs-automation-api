@@ -2443,3 +2443,24 @@ BEGIN
 END
 
 GO
+
+-- shipping ways
+IF NOT EXISTS ( SELECT 1 FROM Migrations WHERE version = 'gs-shipping-ways-Data-v1'
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings
+		WHERE ([key] = 'CUSTOMER_NAME' AND [value] IN ('AriaKish'))
+		)
+
+BEGIN
+
+	INSERT INTO GSShippingWays(id, title, icon, isClientSide, isCartableSide, createdAt, updatedAt)
+	VALUES (1, N'ارسال از طریق پیک', 'courier.png', 1, 1, GETDATE(), GETDATE())
+			,(2, N'ارسال از طریق تیپاکس', 'tipax.png', 1, 1,GETDATE(), GETDATE())
+            ,(3, N'ارسال از طریق تیپاکس', 'post.png', 1,1, GETDATE(), GETDATE())
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'gs-shipping-ways-Data-v1', GETDATE(), GETDATE()
+END
+
+GO

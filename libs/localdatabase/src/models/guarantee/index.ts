@@ -33,3 +33,4 @@ export * from './gs-solution.entity';
 export * from './gs-part.entity';
 export * from './gs-technical-person.entity';
 export * from './gs-vip-bundle-types.entity';
+export * from './gs-shipping-way.entity';

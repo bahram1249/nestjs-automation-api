@@ -1,5 +1,5 @@
 declare @Result nvarchar(max) = ''
-declare @TableName nvarchar(max) = 'GSGuaranteeOrganizationContracts'
+declare @TableName nvarchar(max) = 'GSShippingWays'
 
 SELECT @Result = @Result +
   '@Column({' 

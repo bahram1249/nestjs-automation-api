@@ -33,6 +33,7 @@ import {
   GSPart,
   GSTechnicalPerson,
   GSVipBundleType,
+  GSShippingWay,
 } from '../models';
 
 export const guaranteeModels = [

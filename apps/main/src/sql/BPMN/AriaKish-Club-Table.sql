@@ -1212,3 +1212,30 @@ BEGIN
 END
 
 GO
+
+-- gs-shipping-way
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'gs-shipping-way-v1'
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings
+		WHERE ([key] = 'CUSTOMER_NAME' AND [value] IN ('AriaKish'))
+		)
+BEGIN
+
+
+	CREATE TABLE GSShippingWays (
+		id                          int                         PRIMARY KEY,
+        title                       nvarchar(256)               NOT NULL,
+        icon                        nvarchar(256)               NOT NULL,
+		isClientSide                bit                         NULL,
+        isCartableSide              bit                         NULL,
+		isDeleted					bit							NULL,
+		[createdAt]					datetimeoffset				NOT NULL,
+		[updatedAt]					datetimeoffset				NOT NULL
+	);
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'gs-shipping-way-v1', GETDATE(), GETDATE()
+END
+
+GO
