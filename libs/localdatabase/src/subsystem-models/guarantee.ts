@@ -71,4 +71,5 @@ export const guaranteeModels = [
   GSPart,
   GSTechnicalPerson,
   GSVipBundleType,
+  GSShippingWay,
 ];
