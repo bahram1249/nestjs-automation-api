@@ -21,6 +21,7 @@ export class PickShipmentWayService {
   ) {}
 
   async traverse(user: User, dto: PickShipmentWayDto) {
+    dto.isClientSideCartable = true;
     const cartableItem =
       await this.guaranteeTraverseService.validateAndReturnCartableItem(
         user,

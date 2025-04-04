@@ -51,7 +51,9 @@ export class CartableService {
           as: 'activity',
           required: true,
           where: {
-            activityTypeId: ActivityTypeEnum.SimpleState,
+            activityTypeId: filter.isClientSideCartable
+              ? ActivityTypeEnum.ClientState
+              : ActivityTypeEnum.SimpleState,
             isEndActivity: false,
           },
         },

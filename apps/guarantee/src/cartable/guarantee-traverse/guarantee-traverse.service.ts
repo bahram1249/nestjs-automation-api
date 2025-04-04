@@ -44,6 +44,7 @@ export class GuaranteeTraverseService {
     const filter = emptyFilter as GetCartableDto;
     filter.requestId = dto.requestId;
     filter.requestStateId = dto.requestStateId;
+    filter.isClientSideCartable = dto.isClientSideCartable;
     const findItems = await this.cartableService.findAll(user, filter);
     const items = findItems.result;
     if (items.length == 0)
