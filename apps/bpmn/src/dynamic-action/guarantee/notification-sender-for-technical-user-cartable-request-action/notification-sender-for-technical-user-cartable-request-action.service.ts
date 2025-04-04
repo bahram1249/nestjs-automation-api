@@ -13,7 +13,7 @@ import { Op, Sequelize } from 'sequelize';
 import * as moment from 'moment-jalaali';
 
 @Injectable()
-export class NotificationSenderForTechnicalUserCartableRquestActionService
+export class NotificationSenderForTechnicalUserCartableRequestActionService
   implements ActionServiceImp
 {
   constructor(

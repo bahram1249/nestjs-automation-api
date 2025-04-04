@@ -4,7 +4,7 @@ import { PersianDate, User, UserRole } from '@rahino/database';
 import { BPMNOrganizationUser, GSRequest } from '@rahino/localdatabase/models';
 import { BullModule } from '@nestjs/bullmq';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { NotificationSenderForTechnicalUserCartableRquestActionService } from './notification-sender-for-technical-user-cartable-request-action.service';
+import { NotificationSenderForTechnicalUserCartableRequestActionService } from './notification-sender-for-technical-user-cartable-request-action.service';
 import { TECHNICAL_USER_CARTABLE_REQUEST_SMS_SENDER_QUEUE } from '@rahino/guarantee/job/technical-user-cartable-request-sms-sender/constants';
 
 @Module({
@@ -33,8 +33,8 @@ import { TECHNICAL_USER_CARTABLE_REQUEST_SMS_SENDER_QUEUE } from '@rahino/guaran
   ],
   providers: [
     {
-      provide: 'NotificationSenderForTechnicalUserCartableRquestActionService',
-      useClass: NotificationSenderForTechnicalUserCartableRquestActionService,
+      provide: 'NotificationSenderForTechnicalUserCartableRequestActionService',
+      useClass: NotificationSenderForTechnicalUserCartableRequestActionService,
     },
   ],
 })
