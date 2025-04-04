@@ -43,6 +43,7 @@ import { ClientProductTypeModule } from './client/product-type';
 import { TechnicalUserCartableRequestSmsSenderModule } from './job/technical-user-cartable-request-sms-sender';
 import { PickTechnicalUserModule } from './cartable/pick-technical-user';
 import { ClientTechnicalUserVisitRequestSmsSenderModule } from './job/client-technical-user-visit-request-sms-sender';
+import { ConfirmModule } from './cartable/confirm';
 
 @Module({
   imports: [
@@ -80,6 +81,9 @@ import { ClientTechnicalUserVisitRequestSmsSenderModule } from './job/client-tec
     ClientProductTypeModule,
 
     PickTechnicalUserModule,
+
+    // Cartable
+    ConfirmModule,
 
     // jobs
     SellerSyncModule,
