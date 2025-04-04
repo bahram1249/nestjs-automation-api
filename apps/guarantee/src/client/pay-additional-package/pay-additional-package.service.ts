@@ -90,10 +90,10 @@ export class PayAdditionalPackageService {
   ): Promise<GSRequestPaymentOutputDto> {
     const totalPricesRial = additionalPackages.map((additionalPackage) =>
       additionalPackage.unitPriceId == GSUnitPriceEnum.Toman
-        ? additionalPackage.price * BigInt(10)
-        : additionalPackage.price,
+        ? Number(additionalPackage.price) * 10
+        : Number(additionalPackage.price),
     );
-    const totalPrices = totalPricesRial.reduce((a, b) => a + b, BigInt(0));
+    const totalPrices = totalPricesRial.reduce((a, b) => a + b, 0);
 
     const transaction = await this.sequelize.transaction({
       isolationLevel: Transaction.ISOLATION_LEVELS.READ_COMMITTED,

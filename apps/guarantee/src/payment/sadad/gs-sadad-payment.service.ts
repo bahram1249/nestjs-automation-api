@@ -62,14 +62,14 @@ export class GSSadadPaymentService implements GSPaymentInterface {
     // rial
     const transactionTotalPrices = transactions.map((transaction) =>
       transaction.unitPriceId == GSUnitPriceEnum.Toman
-        ? transaction.totalPrice
-        : transaction.totalPrice * BigInt(10),
+        ? Number(transaction.totalPrice)
+        : Number(transaction.totalPrice) * 10,
     );
 
     // rial
     let paidUntilNow = transactionTotalPrices.reduce(
-      (prev: bigint, current: bigint) => prev + current,
-      BigInt(0),
+      (prev, current) => prev + current,
+      0,
     );
     const mustPaid = totalAmountOfFactor - paidUntilNow;
 
@@ -143,8 +143,8 @@ export class GSSadadPaymentService implements GSPaymentInterface {
 
   private async getRialAmount(factor: GSFactor) {
     return factor.unitPriceId == GSUnitPriceEnum.Toman
-      ? factor.totalPrice * BigInt(10)
-      : factor.totalPrice;
+      ? Number(factor.totalPrice) * 10
+      : Number(factor.totalPrice);
   }
 
   private encryptTripleDES_ECB_PKCS7(plainText: string, key: string): string {
