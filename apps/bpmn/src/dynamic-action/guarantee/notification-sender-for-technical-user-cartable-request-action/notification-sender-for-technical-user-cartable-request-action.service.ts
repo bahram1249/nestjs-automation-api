@@ -56,7 +56,7 @@ export class NotificationSenderForTechnicalUserCartableRequestActionService
         .filter(
           Sequelize.where(Sequelize.col('GregorianDate'), {
             [Op.eq]: Sequelize.literal(
-              `${moment(data.date).format('YYYY-MM-DD')}`,
+              `'${moment(data.date).format('YYYY-MM-DD')}'`,
             ),
           }),
         )
