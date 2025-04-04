@@ -26,7 +26,6 @@ export class ShippingWayService {
     const queryOptions = queryBuilder
       .attributes(['id', 'title', 'icon'])
       .filter({ isClientSide: true })
-      .order({ orderBy: 'order', sortOrder: 'asc' })
       .build();
     const result = await this.repository.findAll(queryOptions);
     return {
