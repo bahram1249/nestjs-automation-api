@@ -138,6 +138,8 @@ export class GSSadadPaymentService implements GSPaymentInterface {
       'https://sadad.shaparak.ir/api/v0/Request/PaymentRequest',
       payload,
     );
+    console.log('payload:', payload);
+    console.log('response:', res.data);
     return res.data as GSSadadRequestPaymentOutputDto;
   }
 
