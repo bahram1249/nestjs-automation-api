@@ -47,6 +47,7 @@ import { ConfirmModule } from './cartable/confirm';
 import { ClientShippingWayRequestSmsSenderModule } from './job/client-shipping-way-request-sms-sender';
 import { ClientOrganizationAddressModule } from './client/organization-address';
 import { CartableTechnicalUserModule } from './cartable/technical-user';
+import { GSClientShippingWayModule } from './client/shipping-way/shipping-way.module';
 
 @Module({
   imports: [
@@ -91,6 +92,7 @@ import { CartableTechnicalUserModule } from './cartable/technical-user';
 
     // client
     ClientOrganizationAddressModule,
+    GSClientShippingWayModule,
 
     // jobs
     SellerSyncModule,
