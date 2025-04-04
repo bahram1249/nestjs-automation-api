@@ -32,70 +32,24 @@ export class NotificationSenderForTechnicalUserCartableRequestActionService
   ) {}
   async executeAction(dto: ExecuteActionDto) {
     const request = await this.requestRepository.findOne(
-      new QueryOptionsBuilder().filter({ id: dto.request.id }).build(),
+      new QueryOptionsBuilder()
+        .filter({ id: dto.request.id })
+        .include([
+          {
+            model: User,
+            as: 'technicalUser',
+            attributes: ['id', 'firstname', 'lastname', 'phoneNumber'],
+          },
+        ])
+        .build(),
     );
     const data: NotificationSenderForTechnicalUserDto = {
       date: request.technicalUserVisitDate,
       time: request.technicalUserVisitTime,
       requestTypeId: request.requestTypeId,
     };
-    if (
-      dto.requestState.organizationId != null &&
-      dto.requestState.roleId != null
-    ) {
-      const organizationUsers = await this.organizationUserRepository.findAll(
-        new QueryOptionsBuilder()
-          .include({
-            model: User,
-            as: 'user',
-            required: true,
-            attributes: ['id', 'firstname', 'lastname', 'phoneNumber'],
-          })
-          .filter({ organizationId: dto.requestState.organizationId })
-          .filter({ roleId: dto.requestState.roleId })
-          .build(),
-      );
-      await this.sendNotificationToOrganizationUsers(organizationUsers, data);
-    } else if (dto.requestState.roleId != null) {
-      const userRoles = await await this.userRoleRepository.findAll(
-        new QueryOptionsBuilder()
-          .include({
-            model: User,
-            as: 'user',
-            required: true,
-            attributes: ['id', 'firstname', 'lastname', 'phoneNumber'],
-          })
-          .filter({ roleId: dto.requestState.roleId })
-          .build(),
-      );
-      await this.sendNotificationToUserRoles(userRoles, data);
-    } else if (dto.requestState.userId != null) {
-      const user = await this.userRepository.findOne(
-        new QueryOptionsBuilder()
-          .attributes(['id', 'firstname', 'lastname', 'phoneNumber'])
-          .filter({ id: dto.requestState.userId })
-          .build(),
-      );
-      await this.sendNotification(user, data);
-    }
-  }
 
-  private async sendNotificationToOrganizationUsers(
-    bpmnOrganizationUsers: BPMNOrganizationUser[],
-    data: NotificationSenderForTechnicalUserDto,
-  ) {
-    for (const bpmnOrganizationUser of bpmnOrganizationUsers) {
-      await this.sendNotification(bpmnOrganizationUser.user, data);
-    }
-  }
-
-  private async sendNotificationToUserRoles(
-    userRoles: UserRole[],
-    data: NotificationSenderForTechnicalUserDto,
-  ) {
-    for (const userRole of userRoles) {
-      await this.sendNotification(userRole.user, data);
-    }
+    await this.sendNotification(request.technicalUser, data);
   }
 
   private async sendNotification(
