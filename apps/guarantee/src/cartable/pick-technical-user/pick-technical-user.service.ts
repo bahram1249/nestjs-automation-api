@@ -30,22 +30,21 @@ export class PickTechnicalUserService {
       isolationLevel: Transaction.ISOLATION_LEVELS.READ_COMMITTED,
     });
 
-    // update request
-    await this.requestRepository.update(
-      {
-        technicalUserId: dto.userId,
-        technicalUserVisitDate: dto.technicalUserVisitDate,
-        technicalUserVisitTime: dto.technicalUserVisitTime,
-      },
-      {
-        where: {
-          id: cartableItem.request.id,
-        },
-        transaction: transaction,
-      },
-    );
-
     try {
+      // update request
+      await this.requestRepository.update(
+        {
+          technicalUserId: dto.userId,
+          technicalUserVisitDate: dto.technicalUserVisitDate,
+          technicalUserVisitTime: dto.technicalUserVisitTime,
+        },
+        {
+          where: {
+            id: cartableItem.request.id,
+          },
+          transaction: transaction,
+        },
+      );
       // lets traverse request
       await this.traverseService.traverse({
         request: cartableItem.request,
@@ -61,6 +60,7 @@ export class PickTechnicalUserService {
       // apply changes
       await transaction.commit();
     } catch (error) {
+      console.log(error);
       await transaction.rollback();
       throw new BadRequestException(error.message);
     }
