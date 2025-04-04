@@ -46,6 +46,7 @@ import { ClientTechnicalUserVisitRequestSmsSenderModule } from './job/client-tec
 import { ConfirmModule } from './cartable/confirm';
 import { ClientShippingWayRequestSmsSenderModule } from './job/client-shipping-way-request-sms-sender';
 import { ClientOrganizationAddressModule } from './client/organization-address';
+import { CartableTechnicalUserModule } from './cartable/technical-user';
 
 @Module({
   imports: [
@@ -86,6 +87,7 @@ import { ClientOrganizationAddressModule } from './client/organization-address';
 
     // Cartable
     ConfirmModule,
+    CartableTechnicalUserModule,
 
     // client
     ClientOrganizationAddressModule,
