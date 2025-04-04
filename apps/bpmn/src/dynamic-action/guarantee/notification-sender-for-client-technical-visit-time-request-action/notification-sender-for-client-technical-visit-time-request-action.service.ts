@@ -59,10 +59,7 @@ export class NotificationSenderForClientTechnicalVisitTimeRequestActionService
             [Op.eq]: Sequelize.fn(
               'convert',
               Sequelize.literal('date'),
-              `${moment()
-                .tz('Asia/Tehran', false)
-                .locale('fa')
-                .format('jYYYY-jMM-jDD')}`,
+              `${moment().tz('Asia/Tehran', false).format('jYYYY-jMM-jDD')}`,
               convertDateFormat,
             ),
           }),
