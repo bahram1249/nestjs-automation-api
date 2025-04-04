@@ -13,6 +13,7 @@ import { GSFactorType } from './gs-factor-type.entity';
 import { User } from '@rahino/database';
 import { GSRequest } from './gs-request.entity';
 import { BPMNRequest } from '../bpmn';
+import { GSGuarantee } from './gs-guarantee.entity';
 
 @Table({ tableName: 'GSFactors' })
 export class GSFactor extends Model {
@@ -89,4 +90,14 @@ export class GSFactor extends Model {
 
   @BelongsTo(() => BPMNRequest, { as: 'bpmnRequest', foreignKey: 'requestId' })
   bpmnRequest?: BPMNRequest;
+
+  @Column({
+    type: DataType.BIGINT,
+    allowNull: true,
+  })
+  @ForeignKey(() => GSGuarantee)
+  guaranteeId?: bigint;
+
+  @BelongsTo(() => GSGuarantee, { as: 'guarantee', foreignKey: 'guaranteeId' })
+  guarantee?: GSGuarantee;
 }
