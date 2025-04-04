@@ -29,7 +29,7 @@ export class GSTransaction extends Model {
 
   @BelongsTo(() => GSTransactionStatus, {
     as: 'transactionStatus',
-    foreignKey: 'transationStatusId',
+    foreignKey: 'transactionStatusId',
   })
   transactionStatus?: GSTransactionStatus;
 
