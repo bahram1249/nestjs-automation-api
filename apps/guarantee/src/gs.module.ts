@@ -48,6 +48,7 @@ import { ClientShippingWayRequestSmsSenderModule } from './job/client-shipping-w
 import { ClientOrganizationAddressModule } from './client/organization-address';
 import { CartableTechnicalUserModule } from './cartable/technical-user';
 import { GSClientShippingWayModule } from './client/shipping-way/shipping-way.module';
+import { PickClientShipmentWayModule } from './client/pick-shipment-way';
 
 @Module({
   imports: [
@@ -93,6 +94,7 @@ import { GSClientShippingWayModule } from './client/shipping-way/shipping-way.mo
     // client
     ClientOrganizationAddressModule,
     GSClientShippingWayModule,
+    PickClientShipmentWayModule,
 
     // jobs
     SellerSyncModule,

@@ -200,15 +200,16 @@ export class GSRequest extends Model {
   })
   @ForeignKey(() => GSShippingWay)
   cartableShipmentWayId?: number;
-  @Column({
-    type: DataType.STRING,
-    allowNull: true,
-  })
+
   @BelongsTo(() => GSShippingWay, {
     as: 'cartableShipmentWay',
     foreignKey: 'cartableShipmentWayId',
   })
   cartableShipmentWay?: GSShippingWay;
 
+  @Column({
+    type: DataType.STRING,
+    allowNull: true,
+  })
   cartableShipmentWayTrackingCode?: string;
 }
