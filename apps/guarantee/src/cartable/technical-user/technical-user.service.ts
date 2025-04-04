@@ -73,7 +73,7 @@ export class CartableTechnicalUserService {
     const queryResults = await this.repository.findAll(query.build());
     const mappedItems = queryResults.map((item) => {
       return {
-        id: item.id,
+        id: item.user.id,
         fullName: item.user.firstname + ' ' + item.user.lastname,
       };
     });
