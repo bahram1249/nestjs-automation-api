@@ -151,10 +151,10 @@ export class GSSadadPaymentService implements GSPaymentInterface {
     // Convert key to WordArray
     const keyHex = CryptoJS.enc.Utf8.parse(key);
 
-    // Check key length (TripleDES requires 24 bytes)
-    if (keyHex.sigBytes !== 24) {
-      throw new Error('Key must be 24 bytes (192 bits) for TripleDES');
-    }
+    //  Check key length (TripleDES requires 24 bytes)
+    // if (keyHex.sigBytes !== 24) {
+    //   throw new Error('Key must be 24 bytes (192 bits) for TripleDES');
+    // }
 
     // Encrypt
     const encrypted = CryptoJS.TripleDES.encrypt(plainText, keyHex, {
