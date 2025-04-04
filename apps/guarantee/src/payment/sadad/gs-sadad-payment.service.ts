@@ -125,7 +125,7 @@ export class GSSadadPaymentService implements GSPaymentInterface {
       MerchantId: gateway.merchantId,
       OrderId: transaction.id,
       TerminalId: gateway.terminalId,
-      SignData: this.encryptTripleDES_ECB_PKCS7(
+      SignData: this.encryptPKCS7(
         `${gateway.terminalId};${transaction.id};${transaction.totalPrice}`,
         gateway.merchantKey,
       ),
@@ -149,22 +149,17 @@ export class GSSadadPaymentService implements GSPaymentInterface {
       : Number(factor.totalPrice);
   }
 
-  private encryptTripleDES_ECB_PKCS7(plainText: string, key: string): string {
-    // Convert key to WordArray
-    const keyHex = CryptoJS.enc.Utf8.parse(key);
+  private encryptPKCS7(str: string, base64Key: string): string {
+    // Decode the Base64 encoded key
+    const key = CryptoJS.enc.Base64.parse(base64Key);
 
-    //  Check key length (TripleDES requires 24 bytes)
-    // if (keyHex.sigBytes !== 24) {
-    //   throw new Error('Key must be 24 bytes (192 bits) for TripleDES');
-    // }
-
-    // Encrypt
-    const encrypted = CryptoJS.TripleDES.encrypt(plainText, keyHex, {
+    // Encrypt using TripleDES (DES-EDE3) in ECB mode with PKCS7 padding
+    const encrypted = CryptoJS.TripleDES.encrypt(str, key, {
       mode: CryptoJS.mode.ECB,
       padding: CryptoJS.pad.Pkcs7,
     });
 
-    // Return as Base64 string
+    // Return the ciphertext as Base64 string
     return encrypted.toString();
   }
 }
