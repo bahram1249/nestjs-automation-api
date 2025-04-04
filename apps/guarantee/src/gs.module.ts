@@ -44,6 +44,7 @@ import { TechnicalUserCartableRequestSmsSenderModule } from './job/technical-use
 import { PickTechnicalUserModule } from './cartable/pick-technical-user';
 import { ClientTechnicalUserVisitRequestSmsSenderModule } from './job/client-technical-user-visit-request-sms-sender';
 import { ConfirmModule } from './cartable/confirm';
+import { ClientShippingWayRequestSmsSenderModule } from './job/client-shipping-way-request-sms-sender';
 
 @Module({
   imports: [
@@ -92,6 +93,7 @@ import { ConfirmModule } from './cartable/confirm';
     NewIncomingCartableRequestSmsSenderModule,
     TechnicalUserCartableRequestSmsSenderModule,
     ClientTechnicalUserVisitRequestSmsSenderModule,
+    ClientShippingWayRequestSmsSenderModule,
 
     // test
     CartableAutoTraverseModule,
