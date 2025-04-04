@@ -25,7 +25,7 @@ export class OrganizationAddressController {
   constructor(private service: OrganizationAddressService) {}
 
   @ApiOperation({ description: 'show organization address by requestId' })
-  @Get('/requestId/:requestId')
+  @Get('/request/:requestId')
   @HttpCode(HttpStatus.OK)
   async findAddress(
     @GetUser() user: User,
