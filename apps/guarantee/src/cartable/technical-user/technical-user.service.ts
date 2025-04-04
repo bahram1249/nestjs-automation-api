@@ -64,7 +64,7 @@ export class CartableTechnicalUserService {
           },
         },
       ])
-      .filter({ organizationId: request.id })
+      .filter({ organizationId: request.organizationId })
       .limit(filter.limit)
       .offset(filter.offset)
       .order({ sortOrder: filter.sortOrder, orderBy: filter.orderBy });
