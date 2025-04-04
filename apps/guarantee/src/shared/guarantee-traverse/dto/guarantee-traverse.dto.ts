@@ -1,4 +1,4 @@
-import { IsNumber } from 'class-validator';
+import { IsBoolean, IsNumber } from 'class-validator';
 
 export class GuaranteeTraverseDto {
   @IsNumber()
@@ -9,4 +9,7 @@ export class GuaranteeTraverseDto {
   nodeId: number;
   @IsNumber()
   nodeCommandId: number;
+
+  @IsBoolean()
+  public isClientSideCartable: boolean = false;
 }
