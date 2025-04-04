@@ -6,10 +6,10 @@ export class ProductTypeDto {
   @IsString()
   public title: string;
 
-  @AutoMap()
-  @IsOptional()
-  @IsNumber()
-  public providerId: number;
+  // @AutoMap()
+  // @IsOptional()
+  // @IsNumber()
+  // public providerId: number;
 
   @AutoMap()
   @IsBoolean()
@@ -18,5 +18,5 @@ export class ProductTypeDto {
   @AutoMap()
   @IsString()
   @IsOptional()
-  public description: string;
+  public description?: string;
 }

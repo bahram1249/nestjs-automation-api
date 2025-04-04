@@ -143,6 +143,8 @@ export class HistoryService {
         },
       ])
       .filter({ requestId: requestId })
+      .limit(filter.limit)
+      .offset(filter.offset)
       .order({ orderBy: filter.orderBy, sortOrder: filter.sortOrder });
 
     const results = await this.repository.findAll(query.build());
@@ -171,6 +173,7 @@ export class HistoryService {
     );
     if (!request) return { result: [], total: 0 };
     let listFilter = await this.listFilter.create();
+    listFilter.limit = 3;
     const additionalFilter = { ignorePaging: true };
     const filter = _.merge(listFilter, additionalFilter);
     return this.findAll(user, request.id, filter);
