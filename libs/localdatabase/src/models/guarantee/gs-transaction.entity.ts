@@ -10,6 +10,7 @@ import { GSTransactionStatus } from './gs-transaction-status.entity';
 import { GSUnitPrice } from './gs-unit-price.entity';
 import { GSFactor } from './gs-factor.entity';
 import { User } from '@rahino/database';
+import { GSPaymentGateway } from './gs-payment-gateway.entity';
 
 @Table({ tableName: 'GSTransactions' })
 export class GSTransaction extends Model {
@@ -62,4 +63,23 @@ export class GSTransaction extends Model {
 
   @BelongsTo(() => User, { as: 'user', foreignKey: 'userId' })
   user?: User;
+
+  @Column({
+    type: DataType.INTEGER,
+    allowNull: false,
+  })
+  @ForeignKey(() => GSPaymentGateway)
+  paymentGatewayId: number;
+
+  @BelongsTo(() => GSPaymentGateway, {
+    as: 'paymentGateway',
+    foreignKey: 'paymentGatewayId',
+  })
+  paymentGateway?: GSPaymentGateway;
+
+  @Column({
+    type: DataType.STRING,
+    allowNull: true,
+  })
+  token?: string;
 }

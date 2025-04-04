@@ -35,6 +35,7 @@ export class GSFactor extends Model {
     type: DataType.BIGINT,
   })
   totalPrice: bigint;
+
   @Column({
     type: DataType.INTEGER,
   })

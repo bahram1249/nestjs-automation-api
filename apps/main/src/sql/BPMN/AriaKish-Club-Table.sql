@@ -955,6 +955,8 @@ END
 
 GO
 
+
+
 -- gs-factor-v2
 IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'gs-factors-v2'
 			)
@@ -974,6 +976,8 @@ BEGIN
 END
 
 GO
+
+
 
 -- gs-paymentways
 IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'gs-paymentways-v1'
@@ -1024,6 +1028,45 @@ BEGIN
 
 	INSERT INTO Migrations(version, createdAt, updatedAt)
 	SELECT 'gs-paymentgateways-v1', GETDATE(), GETDATE()
+END
+
+GO
+
+-- gs-paymentgateways-v2
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'gs-paymentgateways-v2'
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings
+		WHERE ([key] = 'CUSTOMER_NAME' AND [value] IN ('AriaKish'))
+		)
+BEGIN
+
+	ALTER TABLE GSPaymentGateways
+	    ADD icon nvarchar(256) null,
+	        merchantId nvarchar(256) null,
+	        terminalId nvarchar(256) null
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'gs-paymentgateways-v2', GETDATE(), GETDATE()
+END
+
+GO
+
+-- gs-paymentgateways-v3
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'gs-paymentgateways-v3'
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings
+		WHERE ([key] = 'CUSTOMER_NAME' AND [value] IN ('AriaKish'))
+		)
+BEGIN
+
+	ALTER TABLE GSPaymentGateways
+	    ADD merchantKey nvarchar(256) null
+
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'gs-paymentgateways-v3', GETDATE(), GETDATE()
 END
 
 GO
@@ -1081,6 +1124,27 @@ BEGIN
 
 	INSERT INTO Migrations(version, createdAt, updatedAt)
 	SELECT 'gs-transactions-v1', GETDATE(), GETDATE()
+END
+
+GO
+
+-- gs-transactions-v2
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'gs-transactions-v2'
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings
+		WHERE ([key] = 'CUSTOMER_NAME' AND [value] IN ('AriaKish'))
+		)
+BEGIN
+
+	ALTER TABLE GSTransactions
+	    ADD paymentGatewayId int not null
+	        CONSTRAINT FK_GSTransations_PaymentGatewayId
+	            FOREIGN KEY REFERENCES GSPaymentGateways(id),
+	        token nvarchar(512) null
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'gs-transactions-v2', GETDATE(), GETDATE()
 END
 
 GO

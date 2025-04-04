@@ -2444,6 +2444,27 @@ END
 
 GO
 
+
+-- transaction status - v2
+IF NOT EXISTS ( SELECT 1 FROM Migrations WHERE version = 'gs-transaction-statuses-Data-v2'
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings
+		WHERE ([key] = 'CUSTOMER_NAME' AND [value] IN ('AriaKish'))
+		)
+
+BEGIN
+
+	INSERT INTO GSTransactionStatuses(id, title, createdAt, updatedAt)
+	VALUES (4, N'پرداخت شده', GETDATE(), GETDATE())
+
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'gs-transaction-statuses-Data-v2', GETDATE(), GETDATE()
+END
+
+GO
+
 -- shipping ways
 IF NOT EXISTS ( SELECT 1 FROM Migrations WHERE version = 'gs-shipping-ways-Data-v1'
 			)
@@ -2457,7 +2478,8 @@ BEGIN
 	INSERT INTO GSShippingWays(id, title, icon, isClientSide, isCartableSide, createdAt, updatedAt)
 	VALUES (1, N'ارسال از طریق پیک', 'courier.png', 1, 1, GETDATE(), GETDATE())
 			,(2, N'ارسال از طریق تیپاکس', 'tipax.png', 1, 1,GETDATE(), GETDATE())
-            ,(3, N'ارسال از طریق تیپاکس', 'post.png', 1,1, GETDATE(), GETDATE())
+            ,(3, N'ارسال از طریق پست', 'post.png', 1,1, GETDATE(), GETDATE())
+
 
 	INSERT INTO Migrations(version, createdAt, updatedAt)
 	SELECT 'gs-shipping-ways-Data-v1', GETDATE(), GETDATE()

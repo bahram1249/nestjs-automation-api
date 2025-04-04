@@ -58,4 +58,26 @@ export class GSPaymentGateway extends Model {
     allowNull: true,
   })
   secretToken?: string;
+
+  @Column({
+    type: DataType.STRING,
+    allowNull: true,
+  })
+  icon?: string;
+  @Column({
+    type: DataType.STRING,
+    allowNull: true,
+  })
+  merchantId?: string;
+  @Column({
+    type: DataType.STRING,
+    allowNull: true,
+  })
+  terminalId?: string;
+
+  @Column({
+    type: DataType.STRING,
+    allowNull: true,
+  })
+  merchantKey?: string;
 }
