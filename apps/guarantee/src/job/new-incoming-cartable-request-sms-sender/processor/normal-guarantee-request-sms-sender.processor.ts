@@ -11,7 +11,7 @@ export class NewIncomingCartableRequestSmsSenderProcessor extends WorkerHost {
 
   async process(job: Job<any, any, any>, token?: string): Promise<any> {
     try {
-      const template = `آقا/خانم ${job.data.firstName} ${job.data.lastName} درخواست جدیدی در کارتابل شما ثبت شده است.`;
+      const template = `آقا/خانم ${job.data.firstname} ${job.data.lastname} درخواست جدیدی در کارتابل شما ثبت شده است.`;
       await this.smsSenderService.sendSms({
         phoneNumber: job.data.phoneNumber,
         message: template,

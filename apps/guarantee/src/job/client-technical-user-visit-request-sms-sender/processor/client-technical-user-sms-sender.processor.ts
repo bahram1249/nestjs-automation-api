@@ -12,7 +12,7 @@ export class ClientTechnicalUserVisitSmsSenderProcessor extends WorkerHost {
   async process(job: Job<any, any, any>, token?: string): Promise<any> {
     try {
       const requestType = job.data.requestTypeId == 1 ? 'نصب' : 'تعمیر';
-      const template = `آقا/خانم ${job.data.firstName} ${job.data.lastName} درخواست ${requestType} شما جهت مراجعه نماینده در روز ${job.data.date} و در ساعت ${job.data.time} جهت مراجعه به محل درخواستی شما اعزام میگردد. لطفا در روز و ساعت مقرر شده در محل حضور داشته باشید`;
+      const template = `آقا/خانم ${job.data.firstname} ${job.data.lastname} درخواست ${requestType} شما جهت مراجعه نماینده در روز ${job.data.date} و در ساعت ${job.data.time} جهت مراجعه به محل درخواستی شما اعزام میگردد. لطفا در روز و ساعت مقرر شده در محل حضور داشته باشید`;
       await this.smsSenderService.sendSms({
         phoneNumber: job.data.phoneNumber,
         message: template,

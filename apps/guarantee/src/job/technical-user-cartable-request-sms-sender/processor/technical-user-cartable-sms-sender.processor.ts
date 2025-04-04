@@ -12,7 +12,7 @@ export class TechnicalUserCartableSmsSenderProcessor extends WorkerHost {
   async process(job: Job<any, any, any>, token?: string): Promise<any> {
     try {
       const requestType = job.data.requestTypeId == 1 ? 'نصب' : 'تعمیر';
-      const template = `آقا/خانم ${job.data.firstName} ${job.data.lastName} درخواست ${requestType} جدیدی جهت مراجعه در روز ${job.data.date} و در ساعت ${job.data.time} برای شما ثبت گردیده است. لطفا برای جزییات بیشتر به کارتابل خود مراجعه فرمایید.`;
+      const template = `آقا/خانم ${job.data.firstname} ${job.data.lastname} درخواست ${requestType} جدیدی جهت مراجعه در روز ${job.data.date} و در ساعت ${job.data.time} برای شما ثبت گردیده است. لطفا برای جزییات بیشتر به کارتابل خود مراجعه فرمایید.`;
       await this.smsSenderService.sendSms({
         phoneNumber: job.data.phoneNumber,
         message: template,
