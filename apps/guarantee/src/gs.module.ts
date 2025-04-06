@@ -50,6 +50,7 @@ import { CartableTechnicalUserModule } from './cartable/technical-user';
 import { GSClientShippingWayModule } from './client/shipping-way/shipping-way.module';
 import { PickClientShipmentWayModule } from './client/pick-shipment-way';
 import { GSPayAdditionalPackageModule } from './client/pay-additional-package/pay-additional-package.module';
+import { GSClientOnlinePaymentGatewayModule } from './client/online-payment-gateway';
 
 @Module({
   imports: [
@@ -98,6 +99,7 @@ import { GSPayAdditionalPackageModule } from './client/pay-additional-package/pa
     PickClientShipmentWayModule,
 
     GSPayAdditionalPackageModule,
+    GSClientOnlinePaymentGatewayModule,
 
     // jobs
     SellerSyncModule,
