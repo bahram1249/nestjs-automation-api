@@ -72,7 +72,13 @@ export class GSSadadPaymentService implements GSPaymentInterface {
       0,
     );
     const mustPaid = totalAmountOfFactor - paidUntilNow;
-
+    if (mustPaid <= 0) {
+      return {
+        redirectType: GSRequestPaymentOutputTypeEnum.RedirectBase,
+        data: null,
+        redirectUrl: `${this.configService.get('BASE_FRONT_URL')}`,
+      };
+    }
     // find gateway
     const gateway = await this.paymentGatewayRepository.findOne(
       new QueryOptionsBuilder()
