@@ -51,6 +51,7 @@ import { GSClientShippingWayModule } from './client/shipping-way/shipping-way.mo
 import { PickClientShipmentWayModule } from './client/pick-shipment-way';
 import { GSPayAdditionalPackageModule } from './client/pay-additional-package/pay-additional-package.module';
 import { GSClientOnlinePaymentGatewayModule } from './client/online-payment-gateway';
+import { CartableWarrantyServiceTypeModule } from './cartable/warranty-service-type';
 
 @Module({
   imports: [
@@ -92,6 +93,7 @@ import { GSClientOnlinePaymentGatewayModule } from './client/online-payment-gate
     // Cartable
     ConfirmModule,
     CartableTechnicalUserModule,
+    CartableWarrantyServiceTypeModule,
 
     // client
     ClientOrganizationAddressModule,
