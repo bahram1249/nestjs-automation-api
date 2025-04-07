@@ -36,6 +36,7 @@ import {
   GSShippingWay,
   GSServiceType,
   GSWarrantyServiceType,
+  GSFactorService,
 } from '../models';
 
 export const guaranteeModels = [
@@ -76,4 +77,5 @@ export const guaranteeModels = [
   GSShippingWay,
   GSServiceType,
   GSWarrantyServiceType,
+  GSFactorService,
 ];

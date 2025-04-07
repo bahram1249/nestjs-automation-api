@@ -1395,3 +1395,46 @@ BEGIN
 END
 
 GO
+
+-- gs-factor-services
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'gs-factor-service-v1'
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings
+		WHERE ([key] = 'CUSTOMER_NAME' AND [value] IN ('AriaKish'))
+		)
+BEGIN
+
+	CREATE TABLE GSFactorServices (
+		id                          bigint identity (1,1)       PRIMARY KEY,
+        factorId                    bigint                      NOT NULL
+            CONSTRAINT FK_GSFactorServices_FactorId
+                FOREIGN KEY REFERENCES GSFactors(id),
+        solutionId                  int                         NULL
+            CONSTRAINT FK_GSFactorServices_SolutionId
+                FOREIGN KEY REFERENCES GSSolutions(id),
+        partName                    nvarchar(256)               NULL,
+        qty                         int                         NOT NULL,
+        unitPriceId                 int                         NOT NULL
+            CONSTRAINT FK_GSFactorServices_UnitPriceId
+                FOREIGN KEY REFERENCES GSUnitPrices(id),
+        price                   bigint                      NOT NULL,
+        warrantyServiceTypeId       int                         NOT NULL
+            CONSTRAINT FK_GSFactorServices_WarrantyServiceTypeId
+                FOREIGN KEY REFERENCES GSWarrantyServiceTypes(id),
+        serviceTypeId               int                         NOT NULL
+            CONSTRAINT FK_GSFactorServices_ServiceTypeId
+                FOREIGN KEY REFERENCES GSServiceTypes(id),
+        createdByUserId            bigint                      NOT NULL
+            CONSTRAINT FK_GSFactorServices_CreatedBy
+                FOREIGN KEY REFERENCES Users(id),
+        isDeleted                   bit                         NULL,
+		[createdAt]					datetimeoffset				NOT NULL,
+		[updatedAt]					datetimeoffset				NOT NULL
+	);
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'gs-factor-service-v1', GETDATE(), GETDATE()
+END
+
+GO
