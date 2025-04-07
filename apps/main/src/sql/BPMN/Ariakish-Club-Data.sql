@@ -2486,3 +2486,46 @@ BEGIN
 END
 
 GO
+
+
+-- service types
+IF NOT EXISTS ( SELECT 1 FROM Migrations WHERE version = 'gs-service-types-Data-v1'
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings
+		WHERE ([key] = 'CUSTOMER_NAME' AND [value] IN ('AriaKish'))
+		)
+
+BEGIN
+
+	INSERT INTO GSServiceTypes(id, title, createdAt, updatedAt)
+	VALUES (1, N'خدمات', GETDATE(), GETDATE())
+			,(2, N'قطعه', GETDATE(), GETDATE())
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'gs-service-types-Data-v1', GETDATE(), GETDATE()
+END
+
+GO
+
+
+
+-- warranty service types
+IF NOT EXISTS ( SELECT 1 FROM Migrations WHERE version = 'gs-warranty-service-types-Data-v1'
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings
+		WHERE ([key] = 'CUSTOMER_NAME' AND [value] IN ('AriaKish'))
+		)
+
+BEGIN
+
+	INSERT INTO GSWarrantyServiceTypes(id, title, createdAt, updatedAt)
+	VALUES (1, N'دارای شرایط گارانتی', GETDATE(), GETDATE())
+			,(2, N'خارج از شرایط گارانتی', GETDATE(), GETDATE())
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'gs-warranty-service-types-Data-v1', GETDATE(), GETDATE()
+END
+
+GO

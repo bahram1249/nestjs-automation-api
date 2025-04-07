@@ -1350,3 +1350,48 @@ BEGIN
 END
 
 GO
+
+-- gs-service-types
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'gs-service-types-v1'
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings
+		WHERE ([key] = 'CUSTOMER_NAME' AND [value] IN ('AriaKish'))
+		)
+BEGIN
+
+
+	CREATE TABLE GSServiceTypes (
+		id                          int                         PRIMARY KEY,
+        title                       nvarchar(256)               NOT NULL,
+		[createdAt]					datetimeoffset				NOT NULL,
+		[updatedAt]					datetimeoffset				NOT NULL
+	);
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'gs-service-types-v1', GETDATE(), GETDATE()
+END
+
+GO
+
+-- gs-warranty-service-types
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'gs-warranty-service-types-v1'
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings
+		WHERE ([key] = 'CUSTOMER_NAME' AND [value] IN ('AriaKish'))
+		)
+BEGIN
+
+	CREATE TABLE GSWarrantyServiceTypes (
+		id                          int                         PRIMARY KEY,
+        title                       nvarchar(256)               NOT NULL,
+		[createdAt]					datetimeoffset				NOT NULL,
+		[updatedAt]					datetimeoffset				NOT NULL
+	);
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'gs-warranty-service-types-v1', GETDATE(), GETDATE()
+END
+
+GO

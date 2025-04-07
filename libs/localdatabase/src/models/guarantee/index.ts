@@ -34,3 +34,5 @@ export * from './gs-part.entity';
 export * from './gs-technical-person.entity';
 export * from './gs-vip-bundle-types.entity';
 export * from './gs-shipping-way.entity';
+export * from './gs-service-type.entity';
+export * from './gs-warranty-service-type.entity';
