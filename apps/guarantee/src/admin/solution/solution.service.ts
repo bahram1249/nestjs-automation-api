@@ -64,6 +64,11 @@ export class SolutionService {
           required: false,
         },
       ])
+      .filter({
+        parentId: {
+          [Op.is]: null,
+        },
+      })
       .limit(filter.limit)
       .offset(filter.offset)
       .order({ orderBy: filter.orderBy, sortOrder: filter.sortOrder });
@@ -103,6 +108,11 @@ export class SolutionService {
             required: false,
           },
         ])
+        .filter({
+          parentId: {
+            [Op.is]: null,
+          },
+        })
         .filter({ id: entityId })
         .build(),
     );
@@ -322,6 +332,7 @@ export class SolutionService {
               },
             ),
           )
+          .transaction(transaction)
           .build(),
       );
       if (!solution) {
