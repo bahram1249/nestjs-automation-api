@@ -6,6 +6,7 @@ import {
 
 import { InjectModel } from '@nestjs/sequelize';
 import {
+  BPMNOrganization,
   GSAddress,
   GSCity,
   GSGuaranteeOrganization,
@@ -49,7 +50,11 @@ export class OrganizationAddressService {
       );
     }
     const organization = await this.guaranteeOrganizationRepository.findOne(
-      new QueryOptionsBuilder().filter({ id: request.organizationId }).build(),
+      new QueryOptionsBuilder()
+        .include({ model: BPMNOrganization, as: 'organization' })
+        .include({ model: User, as: 'user' })
+        .filter({ id: request.organizationId })
+        .build(),
     );
 
     const address = await this.repository.findOne(
@@ -102,7 +107,13 @@ export class OrganizationAddressService {
       );
     }
     return {
-      result: address,
+      result: {
+        orgnizationDetail: {
+          name: organization.organization.name,
+          phoneNumber: organization.user.phoneNumber,
+        },
+        address: address,
+      },
     };
   }
 }

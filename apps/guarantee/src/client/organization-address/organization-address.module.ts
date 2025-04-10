@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { OrganizationAddressService } from './organization-address.service';
 import { SequelizeModule } from '@nestjs/sequelize';
 import {
+  BPMNOrganization,
   GSAddress,
   GSGuaranteeOrganization,
   GSRequest,
