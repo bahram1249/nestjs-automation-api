@@ -6,6 +6,8 @@ import {
   Post,
   UseGuards,
   UseInterceptors,
+  UsePipes,
+  ValidationPipe,
 } from '@nestjs/common';
 import { JsonResponseTransformInterceptor } from '@rahino/response/interceptor';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
@@ -28,6 +30,7 @@ export class SubmitSolutionItemInRequestLocationController {
   @ApiOperation({ description: 'submit solution to request' })
   @Post('/')
   @HttpCode(HttpStatus.OK)
+  @UsePipes(new ValidationPipe({ transform: true }))
   async traverse(@GetUser() user: User, @Body() dto: SubmitSolutionItemDto) {
     return await this.service.traverse(user, dto);
   }

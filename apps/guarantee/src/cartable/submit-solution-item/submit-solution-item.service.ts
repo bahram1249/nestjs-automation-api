@@ -51,6 +51,7 @@ export class SubmitSolutionItemService {
       // apply changes
       await transaction.commit();
     } catch (error) {
+      console.log(error);
       await transaction.rollback();
       throw new BadRequestException(error.message);
     }
