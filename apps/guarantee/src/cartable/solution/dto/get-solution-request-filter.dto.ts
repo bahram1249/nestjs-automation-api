@@ -11,5 +11,5 @@ export class GetSolutionRequestFilterDto {
     type: IsNumber,
     description: 'requestId',
   })
-  requestId: bigint;
+  requestId: number;
 }

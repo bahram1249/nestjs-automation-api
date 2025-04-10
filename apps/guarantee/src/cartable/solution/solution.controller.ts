@@ -40,10 +40,7 @@ export class SolutionController {
     explode: true,
   })
   @HttpCode(HttpStatus.OK)
-  async findAll(
-    @Param('requestId') requestId: bigint,
-    @Query() filter: GetSolutionDto,
-  ) {
+  async findAll(@Query() filter: GetSolutionDto) {
     return await this.service.findAll(filter);
   }
 
