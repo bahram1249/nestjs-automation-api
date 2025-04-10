@@ -3,9 +3,8 @@ import {
   Injectable,
   InternalServerErrorException,
 } from '@nestjs/common';
-import { User } from '@rahino/database';
-import { SubmitSolutionItemDto } from './dto';
-import { InjectConnection, InjectModel } from '@nestjs/sequelize';
+import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
+import { GSPaymentWayEnum } from '../payment-way';
 import {
   GSFactor,
   GSFactorService,
@@ -16,35 +15,27 @@ import {
   GSTransaction,
 } from '@rahino/localdatabase/models';
 import { Op, Sequelize, Transaction } from 'sequelize';
-import { GuaranteeTraverseService } from '../guarantee-traverse/guarantee-traverse.service';
-import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
-import { TraverseService } from '@rahino/bpmn/modules/traverse/traverse.service';
+import { GSUnitPriceEnum } from '../unit-price';
+import { GSTransactionStatusEnum } from '../transaction-status';
+import { GSWarrantyServiceTypeEnum } from '../warranty-service-type';
+import { GSRequestCategoryEnum } from '../request-category';
+import { User } from '@rahino/database';
+import { SubmitSolutionItemDto } from './dto/submit-solution-item.dto';
+import { ValidateAndReturnCartableItemDto } from '@rahino/guarantee/cartable/guarantee-traverse/dto';
+import { PartArrayDto, SolutionArrayDto } from './dto';
+import { InjectModel } from '@nestjs/sequelize';
+import { RialPriceService } from '../rial-price';
+import { GSServiceTypeEnum } from '../service-type';
+import { SolutionOutputDto } from '@rahino/guarantee/cartable/solution/dto';
+import { SolutionService } from '@rahino/guarantee/cartable/solution';
 import { LocalizationService } from 'apps/main/src/common/localization';
-import { PartArrayDto } from './dto/part-array.dto';
-import { SolutionArrayDto } from './dto/solution-array.dto';
-import { SolutionService } from '../solution';
-import { SolutionOutputDto } from '../solution/dto';
-import { ValidateAndReturnCartableItemDto } from '../guarantee-traverse/dto';
-import { GSUnitPriceEnum } from '@rahino/guarantee/shared/unit-price';
-import { GSFactorStatusEnum } from '@rahino/guarantee/shared/factor-status';
-import { GSFactorTypeEnum } from '@rahino/guarantee/shared/factor-type';
-import { GSServiceTypeEnum } from '@rahino/guarantee/shared/service-type';
-import { GSRequestCategoryEnum } from '@rahino/guarantee/shared/request-category';
-import { GSWarrantyServiceTypeEnum } from '@rahino/guarantee/shared/warranty-service-type';
-import { RialPriceService } from '@rahino/guarantee/shared/rial-price';
-import { GSPaymentWayEnum } from '@rahino/guarantee/shared/payment-way';
-import { GSTransactionStatusEnum } from '@rahino/guarantee/shared/transaction-status';
+import { GSFactorStatusEnum } from '../factor-status';
+import { GSFactorTypeEnum } from '../factor-type';
 
 @Injectable()
-export class SubmitSolutionItemService {
+export class RequestFactorService {
   constructor(
     @InjectModel(GSRequest) private readonly repository: typeof GSRequest,
-    private readonly guaranteeTraverseService: GuaranteeTraverseService,
-    @InjectConnection()
-    private readonly sequelize: Sequelize,
-    private readonly traverseService: TraverseService,
-    private readonly localizationService: LocalizationService,
-    private readonly solutionService: SolutionService,
     @InjectModel(GSFactor)
     private readonly factorRepository: typeof GSFactor,
     @InjectModel(GSFactorService)
@@ -56,114 +47,32 @@ export class SubmitSolutionItemService {
     private readonly transactionRepository: typeof GSTransaction,
     @InjectModel(GSPaymentGateway)
     private readonly paymentGatewayRepository: typeof GSPaymentGateway,
+    private readonly solutionService: SolutionService,
+    private readonly localizationService: LocalizationService,
   ) {}
 
-  async traverse(user: User, dto: SubmitSolutionItemDto) {
-    const cartableItem =
-      await this.guaranteeTraverseService.validateAndReturnCartableItem(
-        user,
-        dto,
-      );
-    const transaction = await this.sequelize.transaction({
-      isolationLevel: Transaction.ISOLATION_LEVELS.READ_COMMITTED,
-    });
-    try {
-      const guaranteeRequest = await this.repository.findOne(
-        new QueryOptionsBuilder()
-          .filter({ id: cartableItem.request.id })
-          .transaction(transaction)
-          .build(),
-      );
-      // create factor details
-      const factor = await this.createFactorDetails(
-        user,
-        dto,
-        cartableItem,
-        transaction,
-      );
-
-      // create local transactions for factor
-      await this.createLocalTransactionFromFactor(
-        factor,
-        guaranteeRequest,
-        transaction,
-      );
-
-      // lets traverse request
-      await this.traverseService.traverse({
-        request: cartableItem.request,
-        requestState: cartableItem.requestState,
-        node: cartableItem.node,
-        nodeCommand: cartableItem.nodeCommand,
-        transaction: transaction,
-        description: dto.description,
-        userExecuterId: user.id,
-        users: [{ userId: guaranteeRequest.technicalUserId }],
-      });
-
-      // apply changes
-      await transaction.commit();
-    } catch (error) {
-      await transaction.rollback();
-      throw new BadRequestException(error.message);
-    }
-    return {
-      result: {
-        message: this.localizationService.translate('core.success'),
-      },
-    };
-  }
-
-  private async createFactorDetails(
+  public async createFactorAndLocalTransaction(
     user: User,
     dto: SubmitSolutionItemDto,
     validateAndReturnCartableItemDto: ValidateAndReturnCartableItemDto,
     transaction: Transaction,
   ) {
+    // dtos
     const partItems: PartArrayDto[] = dto.partItems;
     const solutionItemsDto: SolutionArrayDto[] = dto.solutionItems;
 
-    const request = await this.repository.findOne(
-      new QueryOptionsBuilder()
-        .filter({ id: validateAndReturnCartableItemDto.request.id })
-        .transaction(transaction)
-        .build(),
+    // find guarantee request
+    const request = await this.findGuaranteeRequest(
+      validateAndReturnCartableItemDto.request.id,
+      transaction,
     );
 
-    const organization = await this.organization.findOne(
-      new QueryOptionsBuilder()
-        .include({
-          model: GSGuaranteeOrganizationContract,
-          as: 'organizationContracts',
-          where: {
-            [Op.and]: [
-              Sequelize.where(Sequelize.fn('getdate'), {
-                [Op.between]: [
-                  Sequelize.col('GSGuaranteeOrganizationContract.startDate'),
-                  Sequelize.col('GSGuaranteeOrganizationContract.endDate'),
-                ],
-              }),
-              Sequelize.where(
-                Sequelize.fn(
-                  'isnull',
-                  Sequelize.col('GSGuaranteeOrganizationContract.isDeleted'),
-                  0,
-                ),
-                {
-                  [Op.eq]: 0,
-                },
-              ),
-            ],
-          },
-          required: false,
-        })
-        .filter({
-          id: request.organizationId,
-        })
-        .transaction(transaction)
-        .build(),
+    const organization = await this.findOrganizationFromRequest(
+      request,
+      transaction,
     );
 
+    // validation for contracts
     if (
       organization.organizationContracts == null ||
       organization.organizationContracts.length == 0
@@ -181,7 +90,7 @@ export class SubmitSolutionItemService {
     // tomans
     const partTotalPrice = await this.calculatePartPrice(partItems);
 
-    // get soulutions from database based requestId
+    // get solutions from database based requestId
     const solutionItems = await this.findSolutionItemsFromDatabase(
       dto.requestId,
       solutionItemsDto,
@@ -192,7 +101,7 @@ export class SubmitSolutionItemService {
       .map((solutionItem) => solutionItem.fee)
       .reduce((prev, next) => Number(prev) + Number(next), 0);
 
-    // total price
+    // total price in tomans
     const totalPrice = partTotalPrice + solutionTotalPrice;
 
     const representativeShareOfSolutionForOrganization =
@@ -215,7 +124,8 @@ export class SubmitSolutionItemService {
       user,
       transaction,
     );
-    return factor;
+
+    await this.createLocalTransactionFromFactor(factor, request, transaction);
   }
 
   private async createFactor(
@@ -230,10 +140,18 @@ export class SubmitSolutionItemService {
         .transaction(transaction)
         .build(),
     );
-    const rialTotalPrice = tomanTotalPrice * 10;
+    const rialTotalPrice = this.rialPriceService.getRialPrice({
+      price: tomanTotalPrice,
+      unitPriceId: GSUnitPriceEnum.Toman,
+    });
     const rialRepresentativeShareOfSolutionForOrganization =
-      representativeShareOfSolutionForOrganization * 10;
+      this.rialPriceService.getRialPrice({
+        price: representativeShareOfSolutionForOrganization,
+        unitPriceId: GSUnitPriceEnum.Toman,
+      });
+
     const increaseDay = 31;
+
     const factor = await this.factorRepository.create(
       {
         unitPriceId: GSUnitPriceEnum.Rial,
@@ -276,7 +194,11 @@ export class SubmitSolutionItemService {
           unitPriceId: GSUnitPriceEnum.Rial,
           qty: part.qty,
           warrantyServiceTypeId: part.warrantyServiceType,
-          price: part.price * 10 * part.qty,
+          price:
+            this.rialPriceService.getRialPrice({
+              price: part.price,
+              unitPriceId: GSUnitPriceEnum.Toman,
+            }) * part.qty,
           serviceTypeId: GSServiceTypeEnum.Part,
           createdByUserId: createdByUser.id,
         },
@@ -296,13 +218,18 @@ export class SubmitSolutionItemService {
           solutionId: solution.solutionId,
           qty: 1,
           unitPriceId: GSUnitPriceEnum.Rial,
-          price: Number(findSolutionFromDatabase.fee) * 10,
+          price: this.rialPriceService.getRialPrice({
+            price: Number(findSolutionFromDatabase.fee),
+            unitPriceId: GSUnitPriceEnum.Toman,
+          }),
           warrantyServiceType: solution.warrantyServiceType,
           serviceTypeId: GSServiceTypeEnum.Solution,
           createdByUser: createdByUser.id,
           representativeShareOfSolution:
-            (Number(findSolutionFromDatabase.fee) *
-              10 *
+            (this.rialPriceService.getRialPrice({
+              price: Number(findSolutionFromDatabase.fee),
+              unitPriceId: GSUnitPriceEnum.Toman,
+            }) *
               activeContract.representativeShare) /
             100,
         },
@@ -418,5 +345,56 @@ export class SubmitSolutionItemService {
     }
 
     return paymentGateway;
+  }
+
+  private async findOrganizationFromRequest(
+    request: GSRequest,
+    transaction: Transaction,
+  ) {
+    return await this.organization.findOne(
+      new QueryOptionsBuilder()
+        .include({
+          model: GSGuaranteeOrganizationContract,
+          as: 'organizationContracts',
+          where: {
+            [Op.and]: [
+              Sequelize.where(Sequelize.fn('getdate'), {
+                [Op.between]: [
+                  Sequelize.col('GSGuaranteeOrganizationContract.startDate'),
+                  Sequelize.col('GSGuaranteeOrganizationContract.endDate'),
+                ],
+              }),
+              Sequelize.where(
+                Sequelize.fn(
+                  'isnull',
+                  Sequelize.col('GSGuaranteeOrganizationContract.isDeleted'),
+                  0,
+                ),
+                {
+                  [Op.eq]: 0,
+                },
+              ),
+            ],
+          },
+          required: false,
+        })
+        .filter({
+          id: request.organizationId,
+        })
+        .transaction(transaction)
+        .build(),
+    );
+  }
+
+  private async findGuaranteeRequest(
+    requestId: bigint,
+    transaction: Transaction,
+  ) {
+    return await this.repository.findOne(
+      new QueryOptionsBuilder()
+        .filter({ id: requestId })
+        .transaction(transaction)
+        .build(),
+    );
   }
 }

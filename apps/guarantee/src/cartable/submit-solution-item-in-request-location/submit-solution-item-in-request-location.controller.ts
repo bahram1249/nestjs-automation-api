@@ -10,20 +10,20 @@ import {
 import { JsonResponseTransformInterceptor } from '@rahino/response/interceptor';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { GetUser, JwtGuard } from '@rahino/auth';
-import { SubmitSolutionItemDto } from './dto';
 import { User } from '@rahino/database';
-import { SubmitSolutionItemService } from './submit-solution-item.service';
+import { SubmitSolutionItemInRequestLocationService } from './submit-solution-item-in-request-location.service';
+import { SubmitSolutionItemDto } from '@rahino/guarantee/shared/request-factor/dto/submit-solution-item.dto';
 
 @ApiBearerAuth()
 @UseGuards(JwtGuard)
 @ApiTags('GS-Cartable-Submit-Solution-Item')
 @Controller({
-  path: '/api/guarantee/cartable/submitSolutionItem',
+  path: '/api/guarantee/cartable/submitSolutionItemInRequestLocation',
   version: ['1'],
 })
 @UseInterceptors(JsonResponseTransformInterceptor)
-export class SubmitSolutionItemController {
-  constructor(private service: SubmitSolutionItemService) {}
+export class SubmitSolutionItemInRequestLocationController {
+  constructor(private service: SubmitSolutionItemInRequestLocationService) {}
 
   @ApiOperation({ description: 'submit solution to request' })
   @Post('/')
