@@ -15,7 +15,12 @@ import { QueryFilterModule } from '@rahino/query-filter';
   imports: [
     SequelizeModule,
     LocalizationModule,
-    SequelizeModule.forFeature([GSAddress, GSRequest, GSGuaranteeOrganization]),
+    SequelizeModule.forFeature([
+      GSAddress,
+      GSRequest,
+      GSGuaranteeOrganization,
+      BPMNOrganization,
+    ]),
     QueryFilterModule,
   ],
   controllers: [OrganizationAddressController],

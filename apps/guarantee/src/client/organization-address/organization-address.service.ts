@@ -27,6 +27,8 @@ export class OrganizationAddressService {
     private readonly repository: typeof GSAddress,
     @InjectModel(GSGuaranteeOrganization)
     private readonly guaranteeOrganizationRepository: typeof GSGuaranteeOrganization,
+    @InjectModel(BPMNOrganization)
+    private readonly organizationRepository: typeof BPMNOrganization,
     @InjectModel(GSRequest)
     private readonly requestRepository: typeof GSRequest,
     private readonly localizationService: LocalizationService,
@@ -49,11 +51,17 @@ export class OrganizationAddressService {
         this.localizationService.translate('core.not_found'),
       );
     }
-    const organization = await this.guaranteeOrganizationRepository.findOne(
+    const guaranteeOrganization =
+      await this.guaranteeOrganizationRepository.findOne(
+        new QueryOptionsBuilder()
+          .include({ model: User, as: 'user' })
+          .filter({ id: request.organizationId })
+          .build(),
+      );
+
+    const organization = await this.organizationRepository.findOne(
       new QueryOptionsBuilder()
-        .include({ model: BPMNOrganization, as: 'organization' })
-        .include({ model: User, as: 'user' })
-        .filter({ id: request.organizationId })
+        .filter({ id: guaranteeOrganization.id })
         .build(),
     );
 
@@ -73,7 +81,7 @@ export class OrganizationAddressService {
           'floorNumber',
           'postalCode',
         ])
-        .filter({ id: organization.addressId })
+        .filter({ id: guaranteeOrganization.addressId })
         .filter(
           Sequelize.where(
             Sequelize.fn('isnull', Sequelize.col('GSAddress.isDeleted'), 0),
@@ -109,8 +117,8 @@ export class OrganizationAddressService {
     return {
       result: {
         orgnizationDetail: {
-          name: organization.organization.name,
-          phoneNumber: organization.user.phoneNumber,
+          name: organization.name,
+          phoneNumber: guaranteeOrganization.user.phoneNumber,
         },
         address: address,
       },
