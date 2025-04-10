@@ -222,7 +222,7 @@ export class RequestFactorService {
             price: Number(findSolutionFromDatabase.fee),
             unitPriceId: GSUnitPriceEnum.Toman,
           }),
-          warrantyServiceType: solution.warrantyServiceType,
+          warrantyServiceTypeId: solution.warrantyServiceType,
           serviceTypeId: GSServiceTypeEnum.Solution,
           createdByUser: createdByUser.id,
           representativeShareOfSolution:
