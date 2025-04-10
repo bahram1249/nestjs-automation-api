@@ -360,14 +360,14 @@ export class RequestFactorService {
             [Op.and]: [
               Sequelize.where(Sequelize.fn('getdate'), {
                 [Op.between]: [
-                  Sequelize.col('GSGuaranteeOrganizationContract.startDate'),
-                  Sequelize.col('GSGuaranteeOrganizationContract.endDate'),
+                  Sequelize.col('organizationContracts.startDate'),
+                  Sequelize.col('organizationContracts.endDate'),
                 ],
               }),
               Sequelize.where(
                 Sequelize.fn(
                   'isnull',
-                  Sequelize.col('GSGuaranteeOrganizationContract.isDeleted'),
+                  Sequelize.col('organizationContracts.isDeleted'),
                   0,
                 ),
                 {
