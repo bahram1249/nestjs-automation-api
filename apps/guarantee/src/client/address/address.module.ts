@@ -4,7 +4,6 @@ import { AddressService } from './address.service';
 import { SequelizeModule } from '@nestjs/sequelize';
 import { AddressProfile } from './mapper';
 import {
-  ECAddress,
   GSAddress,
   GSCity,
   GSNeighborhood,
