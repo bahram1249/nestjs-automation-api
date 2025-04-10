@@ -54,6 +54,7 @@ import { GSClientOnlinePaymentGatewayModule } from './client/online-payment-gate
 import { CartableWarrantyServiceTypeModule } from './cartable/warranty-service-type';
 import { SubmitSolutionItemInRequestLocationModule } from './cartable/submit-solution-item-in-request-location';
 import { PickTechnicalUserInOrganizationModule } from './cartable/pick-technical-user-in-organization';
+import { SubmitSolutionItemModule } from './cartable/submit-solution-item';
 
 @Module({
   imports: [
@@ -98,6 +99,7 @@ import { PickTechnicalUserInOrganizationModule } from './cartable/pick-technical
     CartableWarrantyServiceTypeModule,
     SubmitSolutionItemInRequestLocationModule,
     PickTechnicalUserInOrganizationModule,
+    SubmitSolutionItemModule,
 
     // client
     ClientOrganizationAddressModule,
