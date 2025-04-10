@@ -20,7 +20,7 @@ export class OnlinePaymentGatewayService {
           [Op.like]: filter.search,
         },
       })
-      .filter({ paymentWayId: GSPaymentWayEnum.VipBalance });
+      .filter({ paymentWayId: GSPaymentWayEnum.Online });
 
     const count = await this.repository.count(query.build());
 
