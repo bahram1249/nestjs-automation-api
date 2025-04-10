@@ -319,7 +319,7 @@ export class SubmitSolutionItemService {
     for (const solutionItem of solutionItems) {
       const solution = await this.solutionService.findById(
         solutionItem.solutionId,
-        { requestId: requestId },
+        { requestId: Number(requestId) },
       );
       solutionOutputs.push(solution.result);
     }
