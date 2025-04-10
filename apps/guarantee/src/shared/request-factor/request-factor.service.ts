@@ -224,7 +224,7 @@ export class RequestFactorService {
           }),
           warrantyServiceTypeId: solution.warrantyServiceType,
           serviceTypeId: GSServiceTypeEnum.Solution,
-          createdByUser: createdByUser.id,
+          createdByUserId: createdByUser.id,
           representativeShareOfSolution:
             (this.rialPriceService.getRialPrice({
               price: Number(findSolutionFromDatabase.fee),
