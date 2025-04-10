@@ -1,4 +1,5 @@
 {
+  "cannot_find_any_active_contract_call_to_support": "هیچ قرارداد فعالی با نماینده یافت نشد،لطفا با پشتیبانی نماینده مرکزی تماس بگیرید",
   "the_max_character_of_request_description": "حداکثر کاراکتر توضیحات درخواست باید {constraints.0} باشد",
   "the_min_character_of_request_description": "حداقل کاراکتر توضیحات درخواست باید {constraints.0} باشد",
   "request_description_is_required": "توضیحات درخواست اجباری است",

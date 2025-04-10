@@ -113,4 +113,10 @@ export class GSFactorService extends Model {
     allowNull: true,
   })
   isDeleted?: boolean;
+
+  @Column({
+    type: DataType.BIGINT,
+    allowNull: true,
+  })
+  representativeShareOfSolution?: bigint;
 }

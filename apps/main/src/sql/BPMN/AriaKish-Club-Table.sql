@@ -999,6 +999,25 @@ END
 
 GO
 
+-- gs-factor-v4
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'gs-factors-v4'
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings
+		WHERE ([key] = 'CUSTOMER_NAME' AND [value] IN ('AriaKish'))
+		)
+BEGIN
+
+	ALTER TABLE GSFactors
+        ADD representativeShareOfSolution bigint null
+
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'gs-factors-v4', GETDATE(), GETDATE()
+END
+
+GO
+
 
 -- gs-paymentways
 IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'gs-paymentways-v1'
@@ -1396,6 +1415,8 @@ END
 
 GO
 
+
+
 -- gs-factor-services
 IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'gs-factor-service-v1'
 			)
@@ -1435,6 +1456,24 @@ BEGIN
 
 	INSERT INTO Migrations(version, createdAt, updatedAt)
 	SELECT 'gs-factor-service-v1', GETDATE(), GETDATE()
+END
+
+GO
+
+-- gs-factor-services-v2
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'gs-factor-service-v2'
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings
+		WHERE ([key] = 'CUSTOMER_NAME' AND [value] IN ('AriaKish'))
+		)
+BEGIN
+
+	ALTER TABLE GSFactorServices
+	ADD representativeShareOfSolution bigint null
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'gs-factor-service-v2', GETDATE(), GETDATE()
 END
 
 GO

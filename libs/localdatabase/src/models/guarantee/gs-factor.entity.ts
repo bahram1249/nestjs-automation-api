@@ -100,4 +100,10 @@ export class GSFactor extends Model {
 
   @BelongsTo(() => GSGuarantee, { as: 'guarantee', foreignKey: 'guaranteeId' })
   guarantee?: GSGuarantee;
+
+  @Column({
+    type: DataType.BIGINT,
+    allowNull: true,
+  })
+  representativeShareOfSolution?: bigint;
 }
