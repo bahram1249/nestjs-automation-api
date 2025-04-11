@@ -338,7 +338,7 @@ export class RequestFactorService {
         .build(),
     );
 
-    if (paymentGateway) {
+    if (!paymentGateway) {
       throw new InternalServerErrorException(
         'cannot find payment gateway for normal guarantee',
       );
