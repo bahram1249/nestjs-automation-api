@@ -4,6 +4,7 @@ import { NotificationSenderForNewIncomingCartableRequestActionModule } from './n
 import { NotificationSenderForTechnicalUserCartableRquestActionModule } from './notification-sender-for-technical-user-cartable-request-action';
 import { NotificationSenderForClientShippingWayRequestActionModule } from './notification-sender-for-client-shipping-way-request-action';
 import { NotificationSenderForClientTechnicalVisitTimeRequestActionModule } from './notification-sender-for-client-technical-visit-time-request-action';
+import { UpdateRequestFactorToSucessActionModule } from './update-request-factor-to-success';
 
 @Module({
   imports: [
@@ -12,6 +13,7 @@ import { NotificationSenderForClientTechnicalVisitTimeRequestActionModule } from
     NotificationSenderForTechnicalUserCartableRquestActionModule,
     NotificationSenderForClientShippingWayRequestActionModule,
     NotificationSenderForClientTechnicalVisitTimeRequestActionModule,
+    UpdateRequestFactorToSucessActionModule,
   ],
   exports: [
     SampleActionModule,
@@ -19,6 +21,7 @@ import { NotificationSenderForClientTechnicalVisitTimeRequestActionModule } from
     NotificationSenderForTechnicalUserCartableRquestActionModule,
     NotificationSenderForClientShippingWayRequestActionModule,
     NotificationSenderForClientTechnicalVisitTimeRequestActionModule,
+    UpdateRequestFactorToSucessActionModule,
   ],
 })
 export class DynamicGuaranteeActionModule {}
