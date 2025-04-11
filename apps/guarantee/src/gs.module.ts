@@ -56,6 +56,7 @@ import { SubmitSolutionItemInRequestLocationModule } from './cartable/submit-sol
 import { PickTechnicalUserInOrganizationModule } from './cartable/pick-technical-user-in-organization';
 import { SubmitSolutionItemModule } from './cartable/submit-solution-item';
 import { GSCartableFactorDetailAndRemainingAmountModule } from './cartable/factor-detail-and-amount-remaining';
+import { SubmitFactorInRequestLocationModule } from './cartable/submit-factor-in-request-location';
 
 @Module({
   imports: [
@@ -102,6 +103,7 @@ import { GSCartableFactorDetailAndRemainingAmountModule } from './cartable/facto
     PickTechnicalUserInOrganizationModule,
     SubmitSolutionItemModule,
     GSCartableFactorDetailAndRemainingAmountModule,
+    SubmitFactorInRequestLocationModule,
 
     // client
     ClientOrganizationAddressModule,
