@@ -115,7 +115,11 @@ export class GSSharedFactorDetailAndRemainingAmountService {
       )
       .reduce((prev, next) => prev + next, 0);
 
-    const remainingAmount = Number(factor.totalPrice) - totalPaidPrice;
+    const remainingAmount =
+      this.rialPriceService.getRialPrice({
+        price: Number(factor.totalPrice),
+        unitPriceId: factor.unitPriceId,
+      }) - totalPaidPrice;
 
     return {
       result: {
