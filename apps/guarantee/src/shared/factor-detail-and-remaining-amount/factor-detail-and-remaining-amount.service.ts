@@ -12,7 +12,7 @@ import {
 } from '@rahino/localdatabase/models';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import { LocalizationService } from 'apps/main/src/common/localization';
-import { Op } from 'sequelize';
+import { Op, Transaction } from 'sequelize';
 import { Sequelize } from 'sequelize';
 import { GSTransactionStatusEnum } from '../transaction-status';
 import { RialPriceService } from '../rial-price';
@@ -37,7 +37,10 @@ export class GSSharedFactorDetailAndRemainingAmountService {
     private readonly guaranteeOrganizationRepository: typeof GSGuaranteeOrganization,
   ) {}
 
-  async getFactorDetailAndRemainingAmount(requestId: bigint) {
+  async getFactorDetailAndRemainingAmount(
+    requestId: bigint,
+    transaction?: Transaction,
+  ) {
     const request = await this.requestRepository.findOne(
       new QueryOptionsBuilder()
         .filter({ id: requestId })
@@ -49,6 +52,7 @@ export class GSSharedFactorDetailAndRemainingAmountService {
             },
           ),
         )
+        .transaction(transaction)
         .build(),
     );
 
@@ -64,6 +68,7 @@ export class GSSharedFactorDetailAndRemainingAmountService {
       await this.guaranteeOrganizationRepository.findOne(
         new QueryOptionsBuilder()
           .filter({ id: request.organizationId })
+          .transaction(transaction)
           .build(),
       );
 
@@ -79,6 +84,7 @@ export class GSSharedFactorDetailAndRemainingAmountService {
             },
           ),
         )
+        .transaction(transaction)
         .build(),
     );
 
@@ -86,16 +92,25 @@ export class GSSharedFactorDetailAndRemainingAmountService {
       throw new BadRequestException('invalid factor');
     }
 
-    const partServices = await this.getPartServiceByFactorId(factor.id);
-    const solutionServices = await this.getSolutionServiceByFactorId(factor.id);
+    const partServices = await this.getPartServiceByFactorId(
+      factor.id,
+      transaction,
+    );
+    const solutionServices = await this.getSolutionServiceByFactorId(
+      factor.id,
+      transaction,
+    );
 
-    const transactions = await this.getPaidTransactionsByFactorId(factor.id);
+    const paidTransactions = await this.getPaidTransactionsByFactorId(
+      factor.id,
+      transaction,
+    );
 
-    const totalPaidPrice = transactions
-      .map((transaction) =>
+    const totalPaidPrice = paidTransactions
+      .map((paidTransaction) =>
         this.rialPriceService.getRialPrice({
-          price: Number(transaction.totalPrice),
-          unitPriceId: transaction.unitPriceId,
+          price: Number(paidTransaction.totalPrice),
+          unitPriceId: paidTransaction.unitPriceId,
         }),
       )
       .reduce((prev, next) => prev + next, 0);
@@ -106,7 +121,7 @@ export class GSSharedFactorDetailAndRemainingAmountService {
       result: {
         remainingAmount: remainingAmount,
         factor: factor,
-        transactions: transactions,
+        transactions: paidTransactions,
         partServices: partServices,
         solutionServices: solutionServices,
         isOnlinePayment: guaranteeOrganization.isOnlinePayment == true,
@@ -116,6 +131,7 @@ export class GSSharedFactorDetailAndRemainingAmountService {
 
   private async getSolutionServiceByFactorId(
     factorId: bigint,
+    transaction?: Transaction,
   ): Promise<GSFactorServiceOutputDto[]> {
     const solutionServices = await this.factorServiceRepository.findAll(
       new QueryOptionsBuilder()
@@ -132,6 +148,7 @@ export class GSSharedFactorDetailAndRemainingAmountService {
           },
         ])
         .filter({ factorId: factorId })
+        .transaction(transaction)
         .filter({ serviceTypeId: GSServiceTypeEnum.Solution })
         .build(),
     );
@@ -140,6 +157,7 @@ export class GSSharedFactorDetailAndRemainingAmountService {
 
   private async getPartServiceByFactorId(
     factorId: bigint,
+    transaction: Transaction,
   ): Promise<GSFactorServiceOutputDto[]> {
     const partServices = await this.factorServiceRepository.findAll(
       new QueryOptionsBuilder()
@@ -152,6 +170,7 @@ export class GSSharedFactorDetailAndRemainingAmountService {
         ])
         .filter({ factorId: factorId })
         .filter({ serviceTypeId: GSServiceTypeEnum.Part })
+        .transaction(transaction)
         .build(),
     );
     return this.mappingPartServices(partServices);
@@ -189,7 +208,10 @@ export class GSSharedFactorDetailAndRemainingAmountService {
     };
   }
 
-  private async getPaidTransactionsByFactorId(factorId: bigint) {
+  private async getPaidTransactionsByFactorId(
+    factorId: bigint,
+    transaction: Transaction,
+  ) {
     return await this.transactionRepository.findAll(
       new QueryOptionsBuilder()
         .include([
@@ -201,6 +223,7 @@ export class GSSharedFactorDetailAndRemainingAmountService {
         ])
         .filter({ factorId: factorId })
         .filter({ transactionStatusId: GSTransactionStatusEnum.Paid })
+        .transaction(transaction)
         .build(),
     );
   }
