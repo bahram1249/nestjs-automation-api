@@ -201,6 +201,7 @@ export class RequestFactorService {
             }) * part.qty,
           serviceTypeId: GSServiceTypeEnum.Part,
           createdByUserId: createdByUser.id,
+          partName: part.partName,
         },
         {
           transaction: transaction,
