@@ -24,6 +24,7 @@ export class GSFactorDeatilAndRemainingAmountService {
         partServices: result.partServices,
         solutionServices: result.solutionServices,
         isOnlinePayment: result.isOnlinePayment,
+        factor: result.factor,
       },
     };
   }
