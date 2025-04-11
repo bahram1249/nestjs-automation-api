@@ -21,6 +21,7 @@ import { ConfigService } from '@nestjs/config';
 import axios from 'axios';
 import { GSRequestPaymentOutputDto } from '../dto/gs-request-payment-output.dto';
 import { GSRequestPaymentOutputTypeEnum } from '../dto/gs-request-payment-output-type.dto';
+import { Op, Sequelize } from 'sequelize';
 
 @Injectable()
 export class GSSadadPaymentService implements GSPaymentInterface {
@@ -40,6 +41,14 @@ export class GSSadadPaymentService implements GSPaymentInterface {
       new QueryOptionsBuilder()
         .filter({ id: dto.factorId })
         .filter({ factorStatusId: GSFactorStatusEnum.WaitingForPayment })
+        .filter(
+          Sequelize.where(
+            Sequelize.fn('isnull', Sequelize.col('GSFactor.isDeleted'), 0),
+            {
+              [Op.eq]: 0,
+            },
+          ),
+        )
         .transaction(dto.transaction)
         .build(),
     );

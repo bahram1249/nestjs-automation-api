@@ -1,4 +1,3 @@
-import { AutoMap } from 'automapper-classes';
 import {
   Table,
   Column,
@@ -106,4 +105,10 @@ export class GSFactor extends Model {
     allowNull: true,
   })
   representativeShareOfSolution?: bigint;
+
+  @Column({
+    type: DataType.BOOLEAN,
+    allowNull: true,
+  })
+  isDeleted?: boolean;
 }

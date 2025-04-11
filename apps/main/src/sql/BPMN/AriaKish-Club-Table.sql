@@ -1018,6 +1018,25 @@ END
 
 GO
 
+-- gs-factor-v5
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'gs-factors-v5'
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings
+		WHERE ([key] = 'CUSTOMER_NAME' AND [value] IN ('AriaKish'))
+		)
+BEGIN
+
+	ALTER TABLE GSFactors
+        Add isDeleted bit null
+
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'gs-factors-v5', GETDATE(), GETDATE()
+END
+
+GO
+
 
 -- gs-paymentways
 IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'gs-paymentways-v1'
