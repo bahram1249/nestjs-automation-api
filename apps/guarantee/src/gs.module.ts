@@ -55,6 +55,7 @@ import { CartableWarrantyServiceTypeModule } from './cartable/warranty-service-t
 import { SubmitSolutionItemInRequestLocationModule } from './cartable/submit-solution-item-in-request-location';
 import { PickTechnicalUserInOrganizationModule } from './cartable/pick-technical-user-in-organization';
 import { SubmitSolutionItemModule } from './cartable/submit-solution-item';
+import { GSCartableFactorDetailAndRemainingAmountModule } from './cartable/factor-detail-and-amount-remaining';
 
 @Module({
   imports: [
@@ -100,6 +101,7 @@ import { SubmitSolutionItemModule } from './cartable/submit-solution-item';
     SubmitSolutionItemInRequestLocationModule,
     PickTechnicalUserInOrganizationModule,
     SubmitSolutionItemModule,
+    GSCartableFactorDetailAndRemainingAmountModule,
 
     // client
     ClientOrganizationAddressModule,
