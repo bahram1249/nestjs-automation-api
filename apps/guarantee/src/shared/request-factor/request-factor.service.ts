@@ -305,8 +305,8 @@ export class RequestFactorService {
 
     const prices = factorServices.map((factorService) =>
       this.rialPriceService.getRialPrice({
-        price: Number(factor.totalPrice),
-        unitPriceId: factor.unitPriceId as GSUnitPriceEnum,
+        price: Number(factorService.price),
+        unitPriceId: factorService.unitPriceId as GSUnitPriceEnum,
       }),
     );
     const totalPrice = prices.reduce((prev, next) => prev + next, 0);
