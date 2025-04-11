@@ -161,7 +161,7 @@ export class GSSharedFactorDetailAndRemainingAmountService {
 
   private async getPartServiceByFactorId(
     factorId: bigint,
-    transaction: Transaction,
+    transaction?: Transaction,
   ): Promise<GSFactorServiceOutputDto[]> {
     const partServices = await this.factorServiceRepository.findAll(
       new QueryOptionsBuilder()
@@ -214,7 +214,7 @@ export class GSSharedFactorDetailAndRemainingAmountService {
 
   private async getPaidTransactionsByFactorId(
     factorId: bigint,
-    transaction: Transaction,
+    transaction?: Transaction,
   ) {
     return await this.transactionRepository.findAll(
       new QueryOptionsBuilder()

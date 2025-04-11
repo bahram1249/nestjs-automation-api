@@ -6,7 +6,6 @@ import { GSRequest } from '@rahino/localdatabase/models';
 import { GuaranteeTraverseModule } from '../guarantee-traverse/guarantee-traverse.module';
 import { TraverseModule } from '@rahino/bpmn/modules/traverse/traverse.module';
 import { LocalizationModule } from 'apps/main/src/common/localization';
-import { RequestFactorModule } from '@rahino/guarantee/shared/request-factor';
 
 @Module({
   imports: [
@@ -14,7 +13,6 @@ import { RequestFactorModule } from '@rahino/guarantee/shared/request-factor';
     SequelizeModule,
     TraverseModule,
     LocalizationModule,
-    RequestFactorModule,
     SequelizeModule.forFeature([GSRequest]),
   ],
   controllers: [SubmitFactorInRequestLocationController],
