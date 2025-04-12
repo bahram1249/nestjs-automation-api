@@ -4,6 +4,7 @@ import { MandatoryAttendanceModule } from './mandatory-attendance';
 import { NonMandatoryAttendanceModule } from './non-mandatory-attendance';
 import { IsNoPaymentModule } from './is-no-payment';
 import { IsOnlinePaymentModule } from './is-online-payment';
+import { IsCashPaymentModule } from './is-cash-payment';
 
 @Module({
   imports: [
@@ -12,6 +13,7 @@ import { IsOnlinePaymentModule } from './is-online-payment';
     NonMandatoryAttendanceModule,
     IsNoPaymentModule,
     IsOnlinePaymentModule,
+    IsCashPaymentModule,
   ],
   exports: [
     SampleConditionModule,
@@ -19,6 +21,7 @@ import { IsOnlinePaymentModule } from './is-online-payment';
     NonMandatoryAttendanceModule,
     IsNoPaymentModule,
     IsOnlinePaymentModule,
+    IsCashPaymentModule,
   ],
 })
 export class DynamicGuaranteeConditionModule {}
