@@ -2,20 +2,20 @@ import { Module } from '@nestjs/common';
 import { SampleConditionModule } from './sample-condition';
 import { MandatoryAttendanceModule } from './mandatory-attendance';
 import { NonMandatoryAttendanceModule } from './non-mandatory-attendance';
-import { IsOnlineWithNoPaymentModule } from './isOnlineWithNoPayment';
+import { IsNoPaymentModule } from './is-no-payment';
 
 @Module({
   imports: [
     SampleConditionModule,
     MandatoryAttendanceModule,
     NonMandatoryAttendanceModule,
-    IsOnlineWithNoPaymentModule,
+    IsNoPaymentModule,
   ],
   exports: [
     SampleConditionModule,
     MandatoryAttendanceModule,
     NonMandatoryAttendanceModule,
-    IsOnlineWithNoPaymentModule,
+    IsNoPaymentModule,
   ],
 })
 export class DynamicGuaranteeConditionModule {}

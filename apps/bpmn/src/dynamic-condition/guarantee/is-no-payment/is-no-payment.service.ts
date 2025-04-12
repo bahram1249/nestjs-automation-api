@@ -4,7 +4,7 @@ import { ConditionServiceImp } from '@rahino/bpmn/modules/condition/interface';
 import { GSSharedFactorDetailAndRemainingAmountService } from '@rahino/guarantee/shared/factor-detail-and-remaining-amount';
 
 @Injectable({})
-export class IsOnlineWithNoPaymentService implements ConditionServiceImp {
+export class IsNoPaymentService implements ConditionServiceImp {
   constructor(
     private readonly factorDetailAndRemainingAmountService: GSSharedFactorDetailAndRemainingAmountService,
   ) {}
@@ -15,7 +15,7 @@ export class IsOnlineWithNoPaymentService implements ConditionServiceImp {
         dto.transaction,
       );
 
-    if (result.isOnlinePayment && result.remainingAmount == 0) return true;
+    if (result.remainingAmount == 0) return true;
     return false;
   }
 }
