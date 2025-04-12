@@ -328,6 +328,7 @@ export class RetrievePricePersianApiService {
           inventoryPrice = _.omit(newPrice, ['buyPrice']);
 
           if (
+            oldInventoryPrice == null ||
             oldInventoryPrice.price != newPrice.price ||
             oldInventoryPrice.buyPrice != newPrice.buyPrice
           ) {
@@ -339,8 +340,10 @@ export class RetrievePricePersianApiService {
               userId: 1,
             });
 
-            oldInventoryPrice.isDeleted = true;
-            await oldInventoryPrice.save();
+            if (oldInventoryPrice != null) {
+              oldInventoryPrice.isDeleted = true;
+              await oldInventoryPrice.save();
+            }
 
             inventories[index] = await inventories[index].save();
           }
