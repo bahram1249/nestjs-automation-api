@@ -21,6 +21,7 @@ import { ECInventoryStatus } from '@rahino/localdatabase/models';
 import { EAVEntityType } from '@rahino/localdatabase/models';
 import { ECSlugVersion } from '@rahino/localdatabase/models';
 import { QueryFilterModule } from '@rahino/query-filter';
+import { DBLoggerModule } from '@rahino/logger';
 
 @Module({
   imports: [
@@ -49,6 +50,7 @@ import { QueryFilterModule } from '@rahino/query-filter';
     ]),
     SequelizeModule,
     QueryFilterModule,
+    DBLoggerModule,
   ],
   controllers: [ProductController],
   providers: [

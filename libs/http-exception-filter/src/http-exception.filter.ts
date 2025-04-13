@@ -62,20 +62,20 @@ export class HttpExceptionFilter implements ExceptionFilter {
     const apiRegex = /^v[0-9]+/g;
     // if the request send it to web
 
-    if (!apiRegex.test(request.url.split('/')[1])) {
-      if (status == 400) {
-        console.log(exception.getResponse().valueOf()['message']);
-        return response.status(status).render('error/400', { layout: false });
-      } else if (status == 401) {
-        return response.status(status).render('error/401', { layout: false });
-      } else if (status == 403) {
-        return response.status(status).render('error/403', { layout: false });
-      } else if (status == 404) {
-        return response.status(status).render('error/404', { layout: false });
-      } else {
-        return response.status(status).render('error/error', { layout: false });
-      }
-    }
+    // if (!apiRegex.test(request.url.split('/')[1])) {
+    //   if (status == 400) {
+    //     console.log(exception.getResponse().valueOf()['message']);
+    //     return response.status(status).render('error/400', { layout: false });
+    //   } else if (status == 401) {
+    //     return response.status(status).render('error/401', { layout: false });
+    //   } else if (status == 403) {
+    //     return response.status(status).render('error/403', { layout: false });
+    //   } else if (status == 404) {
+    //     return response.status(status).render('error/404', { layout: false });
+    //   } else {
+    //     return response.status(status).render('error/error', { layout: false });
+    //   }
+    // }
 
     let responseBody;
     if (exception instanceof I18nValidationException) {

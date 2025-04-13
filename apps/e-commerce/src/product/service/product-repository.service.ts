@@ -94,9 +94,11 @@ export class ProductRepositoryService {
       await this.productQueryBuilderService.findAllAndCountQuery(filter);
 
     let results = await this.repository.findAll(resultQuery);
+
     results = await this.removeEmptyPriceService.applyProducts(results);
     results = await this.applyInventoryStatus.applyProducts(results);
     results = await this.applyDiscountService.applyProducts(results);
+
     return {
       result: results,
       total: await this.repository.count(countQuery), //count,
