@@ -52,7 +52,7 @@ export class RequestFactorService {
   ) {}
 
   public async createFactorAndLocalTransaction(
-    user: User,
+    createdByUser: User,
     dto: SubmitSolutionItemDto,
     validateAndReturnCartableItemDto: ValidateAndReturnCartableItemDto,
     transaction: Transaction,
@@ -112,6 +112,7 @@ export class RequestFactorService {
       totalPrice,
       representativeShareOfSolutionForOrganization,
       validateAndReturnCartableItemDto,
+      createdByUser,
       transaction,
     );
 
@@ -121,7 +122,7 @@ export class RequestFactorService {
       activeContract,
       dto,
       solutionItems,
-      user,
+      createdByUser,
       transaction,
     );
 
@@ -132,6 +133,7 @@ export class RequestFactorService {
     tomanTotalPrice: number,
     representativeShareOfSolutionForOrganization: number,
     validateAndReturnCartableItem: ValidateAndReturnCartableItemDto,
+    createdByUser: User,
     transaction: Transaction,
   ) {
     const guaranteeRequest = await this.repository.findOne(
@@ -169,6 +171,7 @@ export class RequestFactorService {
         guaranteeId: guaranteeRequest.guaranteeId,
         representativeShareOfSolution:
           rialRepresentativeShareOfSolutionForOrganization,
+        createdByUserId: createdByUser.id,
       },
 
       { transaction: transaction },

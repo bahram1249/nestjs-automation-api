@@ -8,6 +8,7 @@ import {
 } from 'sequelize-typescript';
 import { GSFactor } from './gs-factor.entity';
 import { GSAdditionalPackage } from './gs-additional-package.entity';
+import { GSUnitPrice } from './gs-unit-price.entity';
 
 @Table({ tableName: 'GSFactorAdditionalPackages' })
 export class GSFactorAdditionalPackage extends Model {
@@ -38,4 +39,20 @@ export class GSFactorAdditionalPackage extends Model {
     foreignKey: 'additionalPackageId',
   })
   additionalPackage?: GSAdditionalPackage;
+
+  @Column({
+    type: DataType.BIGINT,
+    allowNull: true,
+  })
+  itemPrice?: bigint;
+
+  @Column({
+    type: DataType.INTEGER,
+    allowNull: true,
+  })
+  @ForeignKey(() => GSUnitPrice)
+  unitPriceId?: bigint;
+
+  @BelongsTo(() => GSUnitPrice, { as: 'unitPrice', foreignKey: 'unitPriceId' })
+  unitPrice?: GSUnitPrice;
 }

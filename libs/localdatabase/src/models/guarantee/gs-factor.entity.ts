@@ -5,6 +5,8 @@ import {
   DataType,
   ForeignKey,
   BelongsTo,
+  HasMany,
+  BelongsToMany,
 } from 'sequelize-typescript';
 import { GSUnitPrice } from './gs-unit-price.entity';
 import { GSFactorStatus } from './gs-factor-status.entity';
@@ -13,6 +15,8 @@ import { User } from '@rahino/database';
 import { GSRequest } from './gs-request.entity';
 import { BPMNRequest } from '../bpmn';
 import { GSGuarantee } from './gs-guarantee.entity';
+import { GSFactorAdditionalPackage } from './gs-factor-additional-package.entity';
+import { GSAdditionalPackage } from './gs-additional-package.entity';
 
 @Table({ tableName: 'GSFactors' })
 export class GSFactor extends Model {
@@ -111,4 +115,28 @@ export class GSFactor extends Model {
     allowNull: true,
   })
   isDeleted?: boolean;
+
+  @Column({
+    type: DataType.BIGINT,
+    allowNull: true,
+  })
+  @ForeignKey(() => User)
+  createdByUserId?: bigint;
+
+  @BelongsTo(() => User, { as: 'createdByUser', foreignKey: 'createdByUserId' })
+  createdByUser: User;
+
+  @BelongsToMany(
+    () => GSAdditionalPackage,
+    () => GSFactorAdditionalPackage,
+    'factorId',
+    'additionalPackageId',
+  )
+  additionalPackages?: GSAdditionalPackage[];
+
+  @HasMany(() => GSFactorAdditionalPackage, {
+    as: 'factorAdditionalPackages',
+    foreignKey: 'factorId',
+  })
+  factorAdditionalPackages?: GSFactorAdditionalPackage[];
 }
