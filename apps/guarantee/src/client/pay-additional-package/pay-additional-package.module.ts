@@ -10,6 +10,7 @@ import {
 } from '@rahino/localdatabase/models';
 import { LocalizationModule } from 'apps/main/src/common/localization';
 import { GSPaymentServiceProviderModule } from '@rahino/guarantee/shared/payment-provider/gs-payment-provider.module';
+import { RialPriceModule } from '@rahino/guarantee/shared/rial-price';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { GSPaymentServiceProviderModule } from '@rahino/guarantee/shared/payment
     ]),
     LocalizationModule,
     GSPaymentServiceProviderModule,
+    RialPriceModule,
   ],
   controllers: [PayAdditionalPackageController],
   providers: [PayAdditionalPackageService],

@@ -18,6 +18,7 @@ import { GSFactorTypeEnum } from '@rahino/guarantee/shared/factor-type';
 import { GS_PAYMENT_PROVIDER_TOKEN } from '@rahino/guarantee/shared/payment-provider/constants';
 import { GSPaymentInterface } from '@rahino/guarantee/payment/interface/gs-payment.interface';
 import { GSRequestPaymentOutputDto } from '@rahino/guarantee/payment/dto/gs-request-payment-output.dto';
+import { RialPriceService } from '@rahino/guarantee/shared/rial-price';
 
 @Injectable()
 export class PayAdditionalPackageService {
@@ -35,6 +36,7 @@ export class PayAdditionalPackageService {
     private readonly sequelize: Sequelize,
     @Inject(GS_PAYMENT_PROVIDER_TOKEN)
     private readonly paymentService: GSPaymentInterface,
+    private readonly rialPriceService: RialPriceService,
   ) {}
 
   async create(user: User, dto: PayAdditionalPackageDto) {
@@ -89,9 +91,10 @@ export class PayAdditionalPackageService {
     additionalPackages: GSAdditionalPackage[],
   ): Promise<GSRequestPaymentOutputDto> {
     const totalPricesRial = additionalPackages.map((additionalPackage) =>
-      additionalPackage.unitPriceId == GSUnitPriceEnum.Toman
-        ? Number(additionalPackage.price) * 10
-        : Number(additionalPackage.price),
+      this.rialPriceService.getRialPrice({
+        price: Number(additionalPackage.price),
+        unitPriceId: additionalPackage.unitPriceId,
+      }),
     );
     const totalPrices = totalPricesRial.reduce((a, b) => a + b, 0);
 
@@ -123,6 +126,10 @@ export class PayAdditionalPackageService {
           {
             factorId: factor.id,
             additionalPackageId: additionalPackage.id,
+            itemPrice: this.rialPriceService.getRialPrice({
+              price: Number(additionalPackage.price),
+              unitPriceId: additionalPackage.unitPriceId,
+            }),
           },
           {
             transaction: transaction,
