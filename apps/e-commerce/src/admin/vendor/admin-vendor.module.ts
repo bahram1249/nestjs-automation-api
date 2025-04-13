@@ -19,7 +19,7 @@ import { ReverseProxyVendorImageMiddleware } from './reverse-proxy.middleware';
 import { Attachment } from '@rahino/database';
 import { ThumbnailModule } from '@rahino/thumbnail';
 import { ConfigService } from '@nestjs/config';
-import { SessionModule } from '../user/session/session.module';
+import { SessionModule } from '../../user/session/session.module';
 import { ECVariationPrice } from '@rahino/localdatabase/models';
 import { ECVendorCommission } from '@rahino/localdatabase/models';
 
@@ -54,7 +54,7 @@ import { ECVendorCommission } from '@rahino/localdatabase/models';
   controllers: [VendorController],
   providers: [VendorService, VendorProfile],
 })
-export class VendorModule implements NestModule {
+export class AdminVendorModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
     consumer.apply(ReverseProxyVendorImageMiddleware).forRoutes({
       path: '/v1/api/ecommerce/vendors/image/*',

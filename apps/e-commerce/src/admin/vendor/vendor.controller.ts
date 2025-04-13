@@ -36,7 +36,7 @@ import { GetUser } from '@rahino/auth';
 import { User } from '@rahino/database';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { imageOptions } from './file-options';
-import { OptionalSessionGuard } from '../user/session/guard';
+import { OptionalSessionGuard } from '../../user/session/guard';
 
 @ApiTags('Vendors')
 @Controller({

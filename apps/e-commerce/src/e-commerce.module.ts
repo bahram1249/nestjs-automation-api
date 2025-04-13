@@ -19,7 +19,7 @@ import { AddressModule } from './user/address/address.module';
 import { ProductPhotoModule } from './product-photo/product-photo.module';
 import { ProductImageRemovalModule } from './product-image-removal/product-image-removal.module';
 import { ProductImageRemovalService } from './product-image-removal/product-image-removal.service';
-import { VendorModule } from './vendor/vendor.module';
+import { AdminVendorModule } from './admin/vendor/admin-vendor.module';
 import { UserVendorModule } from './user/vendor/user-vendor.module';
 import { VendorAddressModule } from './vendor-address/vendor-address.module';
 import { SessionModule } from './user/session/session.module';
@@ -130,7 +130,7 @@ import { UserSelectedProductModule } from './user/selected-product/selected-prod
     ProductPhotoModule,
     ProductImageRemovalModule,
     ProductVideoRemovalModule,
-    VendorModule,
+    AdminVendorModule,
     UserVendorModule,
     VendorAddressModule,
     AdminProductModule,
