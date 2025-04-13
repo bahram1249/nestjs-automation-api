@@ -1038,6 +1038,30 @@ END
 GO
 
 
+-- gs-factor-v6
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'gs-factors-v6'
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings
+		WHERE ([key] = 'CUSTOMER_NAME' AND [value] IN ('AriaKish'))
+		)
+BEGIN
+
+	ALTER TABLE GSFactors
+        Add createdByUserId bigint null
+	        CONSTRAINT FK_GSFactor_CreatedByUserId
+	            FOREIGN KEY REFERENCES Users(id)
+
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'gs-factors-v6', GETDATE(), GETDATE()
+END
+
+GO
+
+
+
+
 -- gs-paymentways
 IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'gs-paymentways-v1'
 			)
@@ -1231,6 +1255,28 @@ BEGIN
 
 	INSERT INTO Migrations(version, createdAt, updatedAt)
 	SELECT 'gs-factor-additional-packages-v1', GETDATE(), GETDATE()
+END
+
+GO
+
+
+-- gs-factor-additional-packages-v2
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'gs-factor-additional-packages-v2'
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings
+		WHERE ([key] = 'CUSTOMER_NAME' AND [value] IN ('AriaKish'))
+		)
+BEGIN
+
+	ALTER TABLE GSFactorAdditionalPackages
+	    ADD itemPrice bigint null,
+	        unitPriceId int null
+	            CONSTRAINT FK_GSFActorAdditionalPackages_UnitPriceId
+	                FOREIGN KEY REFERENCES GSUnitPrices(id)
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'gs-factor-additional-packages-v2', GETDATE(), GETDATE()
 END
 
 GO
