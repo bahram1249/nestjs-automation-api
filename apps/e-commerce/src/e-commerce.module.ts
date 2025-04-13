@@ -101,6 +101,7 @@ import { RetrievePriceRunnerService } from './customer-customize/gold/retrieve-p
 import { SelectedProductModule } from './admin/selected-product/selected-product.module';
 import { SelectedProductItemModule } from './admin/selected-product-items/selected-product-item.module';
 import { UserSelectedProductModule } from './user/selected-product/selected-product.module';
+import { ClientVendorModule } from './client/vendor/client-vendor.module';
 
 @Module({
   imports: [
@@ -200,6 +201,7 @@ import { UserSelectedProductModule } from './user/selected-product/selected-prod
     SelectedProductModule,
     SelectedProductItemModule,
     UserSelectedProductModule,
+    ClientVendorModule,
   ],
   providers: [
     {
