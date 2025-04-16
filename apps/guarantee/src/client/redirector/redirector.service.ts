@@ -1,29 +1,32 @@
-import { Injectable, Redirect } from '@nestjs/common';
-import { SadadRedirectorDto } from './dto';
-
-import * as _ from 'lodash';
+import { Injectable } from '@nestjs/common';
 import { Response } from 'express';
+import { SadadRedirectorDto } from './dto';
 
 @Injectable()
 export class RedirectorService {
   constructor() {}
   async sadadRedirector(dto: SadadRedirectorDto, res: Response) {
-    let html = `<html>
-      <head>
+    const html = `
+      <html>
+        <head>
           <title>Redirect</title>
-      </head>
-      <body>
-        <form method="GET" action="https://sadad.shaparak.ir/Purchase/Index">
-          <input type="hidden" name="token" value="${dto.token}" /> 
-        </form> 
-        <script>
-          window.onload = function(){{
-              document.forms[0].submit()
-          }}
-        </script>
-      </body>
-    </html>`;
+          <meta name="referrer" content="origin">
+        </head>
+        <body>
+          <form method="GET" action="https://sadad.shaparak.ir/Purchase/Index">
+            <input type="hidden" name="token" value="${dto.token}" />
+          </form>
+          <script>
+            document.forms[0].submit();
+          </script>
+        </body>
+      </html>
+    `;
+
+    // Set headers to enforce Referrer Policy
     res.set('Content-Type', 'text/html');
-    res.send(Buffer.from(html));
+    res.set('Referrer-Policy', 'origin');
+
+    res.send(html);
   }
 }
