@@ -8,9 +8,21 @@ import { Response } from 'express';
 export class RedirectorService {
   constructor() {}
   async sadadRedirector(dto: SadadRedirectorDto, res: Response) {
-    res.redirect(
-      `https://sadad.shaparak.ir/Purchase/Index?token=${dto.token}`,
-      302,
-    );
+    let html = `<html>
+      <head>
+          <title>Redirect</title>
+      </head>
+      <body>
+        <form method="GET" action="https://sadad.shaparak.ir/Purchase/Index?token=${dto.token}">
+        </form> 
+        <script>
+          window.onload = function(){{
+              document.forms[0].submit()
+          }}
+        </script>
+      </body>
+    </html>`;
+    res.set('Content-Type', 'text/html');
+    res.send(Buffer.from(html));
   }
 }
