@@ -13,7 +13,8 @@ export class RedirectorService {
           <title>Redirect</title>
       </head>
       <body>
-        <form method="GET" action="https://sadad.shaparak.ir/Purchase/Index?token=${dto.token}">
+        <form method="GET" action="https://sadad.shaparak.ir/Purchase/Index">
+          <input type="hidden" name="token" value="${dto.token}" /> 
         </form> 
         <script>
           window.onload = function(){{
