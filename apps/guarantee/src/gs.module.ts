@@ -58,6 +58,7 @@ import { SubmitSolutionItemModule } from './cartable/submit-solution-item';
 import { GSCartableFactorDetailAndRemainingAmountModule } from './cartable/factor-detail-and-amount-remaining';
 import { SubmitFactorInRequestLocationModule } from './cartable/submit-factor-in-request-location';
 import { SubmitFactorModule } from './cartable/submit-factor';
+import { RedirectorModule } from './client/redirector/redirector.module';
 
 @Module({
   imports: [
@@ -126,6 +127,8 @@ import { SubmitFactorModule } from './cartable/submit-factor';
 
     // test
     CartableAutoTraverseModule,
+
+    RedirectorModule,
   ],
 })
 export class GSModule implements NestModule {

@@ -127,7 +127,9 @@ export class GSSadadPaymentService implements GSPaymentInterface {
     return {
       redirectType: GSRequestPaymentOutputTypeEnum.RedirectBase,
       data: null,
-      redirectUrl: `https://sadad.shaparak.ir/Purchase/Index?token=${res.Token}`,
+      redirectUrl: `${this.configService.get(
+        'BASE_URL',
+      )}/v1/api/guarantee/client/redirector/sadad?token=${res.Token}`,
     };
   }
 
