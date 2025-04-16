@@ -9,7 +9,7 @@ import { RedirectorService } from './redirector.service';
 export class RedirectorController {
   constructor(private service: RedirectorService) {}
 
-  @Get('/sadad/:token')
+  @Get('/sadad')
   @HttpCode(HttpStatus.OK)
   async verifyCode(@Query() dto: SadadRedirectorDto) {
     await this.service.sadadRedirector(dto);
