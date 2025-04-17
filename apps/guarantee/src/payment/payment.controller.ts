@@ -4,6 +4,7 @@ import {
   Get,
   HttpCode,
   HttpStatus,
+  Post,
   Res,
 } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
@@ -20,7 +21,7 @@ export class GSPaymentController {
   constructor(private service: GSPaymentService) {}
 
   @ApiOperation({ description: 'verify callback for sadad' })
-  @Get('/sadad/verifyCallback')
+  @Post('/sadad/verifyCallback')
   @HttpCode(HttpStatus.OK)
   async findAll(@Body() dto: SadadVerifyDto, @Res() res: Response) {
     await this.service.sadadVerfiy(dto, res);
