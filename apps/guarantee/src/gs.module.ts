@@ -60,6 +60,7 @@ import { SubmitFactorInRequestLocationModule } from './cartable/submit-factor-in
 import { SubmitFactorModule } from './cartable/submit-factor';
 import { RedirectorModule } from './client/redirector/redirector.module';
 import { GSClientFactorModule } from './client/factor/client-factor.module';
+import { GSCartableFactorModule } from './cartable/cartable-factor/cartable-factor.module';
 
 @Module({
   imports: [
@@ -132,6 +133,7 @@ import { GSClientFactorModule } from './client/factor/client-factor.module';
     RedirectorModule,
 
     GSClientFactorModule,
+    GSCartableFactorModule,
   ],
 })
 export class GSModule implements NestModule {

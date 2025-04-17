@@ -190,8 +190,8 @@ export class GSSuccessFactorQueryBuilderService {
     return this;
   }
 
-  filterFactorId(factorId: bigint) {
-    this.builder = this.builder.filter({ id: factorId });
+  filterFactorId(factorId?: bigint) {
+    this.builder = this.builder.filterIf(factorId != null, { id: factorId });
     return this;
   }
 

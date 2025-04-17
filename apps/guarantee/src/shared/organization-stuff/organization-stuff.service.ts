@@ -57,4 +57,29 @@ export class OrganizationStuffService {
         .build(),
     );
   }
+
+  async getOptionalOrganizationIdByUserId(
+    userId: bigint,
+  ): Promise<number | null> {
+    const role = await this.roleRepository.findOne(
+      new QueryOptionsBuilder()
+        .filter({
+          static_id: GuaranteeStaticRoleEnum.OrganizationRole,
+        })
+        .build(),
+    );
+    if (!role) {
+      throw new InternalServerErrorException(
+        this.localizationService.translate('core.not_found_role'),
+      );
+    }
+
+    const organizationUser = await this.organizationUserRepository.findOne(
+      new QueryOptionsBuilder()
+        .filter({ userId: userId })
+        .filter({ roleId: role.id })
+        .build(),
+    );
+    return organizationUser != null ? organizationUser.organizationId : null;
+  }
 }
