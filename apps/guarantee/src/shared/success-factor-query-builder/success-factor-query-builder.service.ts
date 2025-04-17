@@ -19,6 +19,7 @@ import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builde
 import { GSFactorStatusEnum } from '../factor-status';
 import { GSFactorTypeEnum } from '../factor-type';
 import { Op } from 'sequelize';
+import { User } from '@rahino/database';
 
 @Injectable({ scope: Scope.REQUEST })
 export class GSSuccessFactorQueryBuilderService {
@@ -43,6 +44,11 @@ export class GSSuccessFactorQueryBuilderService {
 
   requiredIncluded() {
     this.builder = this.builder
+      .thenInclude({
+        model: User,
+        as: 'user',
+        attributes: ['id', 'firstname', 'lastname', 'phoneNumber'],
+      })
       .thenInclude({
         model: GSFactorAdditionalPackage,
         as: 'factorAdditionalPackages',
@@ -84,7 +90,7 @@ export class GSSuccessFactorQueryBuilderService {
           },
           {
             model: GSWarrantyServiceType,
-            as: 'warrantySericeType',
+            as: 'warrantyServiceType',
             attributes: ['id', 'title'],
           },
           {

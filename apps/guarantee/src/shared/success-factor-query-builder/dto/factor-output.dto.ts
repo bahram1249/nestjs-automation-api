@@ -14,4 +14,5 @@ export class GSFactorOutputDto {
   public createdAt: Date;
   public factorItems: GSFactorItemOutputDto[];
   public transactions: GSFactorTransactionOutputDto[];
+  public fullName: string;
 }
