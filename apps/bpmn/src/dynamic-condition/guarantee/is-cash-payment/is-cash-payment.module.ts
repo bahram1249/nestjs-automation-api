@@ -6,7 +6,7 @@ import { GSSharedFactorDetailAndRemainingAmountModule } from '@rahino/guarantee/
   imports: [GSSharedFactorDetailAndRemainingAmountModule],
   providers: [
     {
-      provide: 'IsOnlinePaymentService',
+      provide: 'IsCashPaymentService',
       useClass: IsCashPaymentService,
     },
   ],
