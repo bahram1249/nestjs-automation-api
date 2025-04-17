@@ -64,6 +64,7 @@ import { GSCartableFactorModule } from './cartable/cartable-factor/cartable-fact
 import { GSVipGeneratorModule } from './admin/vip-generator';
 import { VipGeneratorJobModule } from './job/vip-generator-job';
 import { ClientVipGuaranteeModule } from './client/vip-guarantee';
+import { GSClientAssignedProductAssignedGuaranteeModule } from './client/assigned-product-guarantee/assigned-product-guarantee.module';
 
 @Module({
   imports: [
@@ -141,6 +142,7 @@ import { ClientVipGuaranteeModule } from './client/vip-guarantee';
     GSVipGeneratorModule,
 
     ClientVipGuaranteeModule,
+    GSClientAssignedProductAssignedGuaranteeModule,
   ],
 })
 export class GSModule implements NestModule {
