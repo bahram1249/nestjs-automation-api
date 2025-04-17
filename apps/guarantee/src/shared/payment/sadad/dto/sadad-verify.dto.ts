@@ -1,23 +1,16 @@
-import { IsNumber, IsString } from 'class-validator';
+import { IsOptional, IsString } from 'class-validator';
 
 export class SadadVerifyDto {
-  @IsNumber()
-  OrderId: number;
+  @IsString()
+  OrderId: string;
 
   @IsString()
   Token: string;
-  @IsString()
-  SwitchResCode: string;
-
-  @IsNumber()
-  ResCode: number;
 
   @IsString()
-  HashedCardNo: string;
+  @IsOptional()
+  SwitchResCode?: string;
 
   @IsString()
-  PrimaryAccNo: string;
-
-  @IsString()
-  CardHolderFullName: string;
+  ResCode: string;
 }

@@ -34,7 +34,7 @@ export class GSPaymentService {
       throw new BadRequestException('invalid transactionId');
     }
 
-    if (dto.ResCode != 0) {
+    if (Number(dto.ResCode) != 0) {
       transactionItem.transactionStatusId = GSTransactionStatusEnum.UnPaid;
       await transactionItem.save();
       res.redirect(
