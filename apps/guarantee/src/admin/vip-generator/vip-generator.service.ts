@@ -183,14 +183,14 @@ export class VipGeneratorService {
     const mappedItems = guarantees.map((guarantee) => ({
       id: guarantee.id,
       serialNumber: guarantee.serialNumber,
-      totalCredit: guarantee.totalCredit,
+      totalCredit: guarantee.totalCredit.toLocaleString(),
       startDate: moment(guarantee.startDate)
         .tz('Asia/Tehran', false)
-        .locale('en')
+        .locale('fa')
         .format('YYYY-MM-DD HH:mm:ss'),
       endDate: moment(guarantee.endDate)
         .tz('Asia/Tehran', false)
-        .locale('en')
+        .locale('fa')
         .format('YYYY-MM-DD HH:mm:ss'),
     }));
     const headers: {
