@@ -5,7 +5,11 @@ import {
 } from '@nestjs/common';
 import { GetVipGeneratorDto, VipGeneratorDto } from './dto';
 import { InjectModel } from '@nestjs/sequelize';
-import { GSVipBundleType, GSVipGenerator } from '@rahino/localdatabase/models';
+import {
+  GSGuarantee,
+  GSVipBundleType,
+  GSVipGenerator,
+} from '@rahino/localdatabase/models';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import { Op, Sequelize } from 'sequelize';
 import * as _ from 'lodash';
@@ -14,10 +18,17 @@ import { User } from '@rahino/database';
 import { VIP_GENERATOR_QUEUE } from '@rahino/guarantee/job/vip-generator-job/constants';
 import { Queue } from 'bullmq';
 import { InjectQueue } from '@nestjs/bullmq';
+import { Response } from 'express';
+import { GSGuaranteeConfirmStatus } from '@rahino/guarantee/shared/guarantee-confirm-status';
+import * as ExcelJS from 'exceljs';
+import * as moment from 'moment-jalaali';
+import { GSGuaranteeTypeEnum } from '@rahino/guarantee/shared/gurantee-type';
 
 @Injectable()
 export class VipGeneratorService {
   constructor(
+    @InjectModel(GSGuarantee)
+    private readonly guaranteeRepository: typeof GSGuarantee,
     @InjectModel(GSVipGenerator)
     private readonly repository: typeof GSVipGenerator,
     @InjectModel(GSVipBundleType)
@@ -142,5 +153,80 @@ export class VipGeneratorService {
     return {
       result: result,
     };
+  }
+  async downloadExcel(entityId: number, res: Response) {
+    const vipGenerator = await this.repository.findOne(
+      new QueryOptionsBuilder().filter({ id: entityId }).build(),
+    );
+
+    if (!vipGenerator) {
+      throw new NotFoundException(
+        this.localizationService.translate('core.not_found_id'),
+      );
+    }
+
+    const guarantees = await this.guaranteeRepository.findAll(
+      new QueryOptionsBuilder()
+        .attributes([
+          'id',
+          'serialNumber',
+          'totalCredit',
+          'startDate',
+          'endDate',
+        ])
+        .filter({ vipGeneratorId: entityId })
+        .filter({ guanrateeTypeId: GSGuaranteeTypeEnum.VIP })
+        .filter({ guaranteeConfirmStatusId: GSGuaranteeConfirmStatus.Confirm })
+        .build(),
+    );
+
+    const mappedItems = guarantees.map((guarantee) => ({
+      id: guarantee.id,
+      serialNumber: guarantee.serialNumber,
+      totalCredit: guarantee.totalCredit,
+      startDate: moment(guarantee.startDate)
+        .tz('Asia/Tehran', false)
+        .locale('en')
+        .format('YYYY-MM-DD HH:mm:ss'),
+      endDate: moment(guarantee.endDate)
+        .tz('Asia/Tehran', false)
+        .locale('en')
+        .format('YYYY-MM-DD HH:mm:ss'),
+    }));
+    const headers: {
+      key: string;
+      header: string;
+    }[] = [
+      { key: 'id', header: 'شناسه سیستمی' },
+      { key: 'id', header: 'سریال گارانتی' },
+      { key: 'id', header: 'اعتبار' },
+      { key: 'id', header: 'تاریخ شروع' },
+      { key: 'id', header: 'تاریخ پایان' },
+    ];
+
+    const workbook = new ExcelJS.Workbook();
+    const worksheet = workbook.addWorksheet('Sheet 1');
+
+    // Add headers with custom names
+    worksheet.columns = headers;
+
+    // Add data rows
+    mappedItems.forEach((item) => {
+      worksheet.addRow(item);
+    });
+
+    // Set response headers
+    res.setHeader(
+      'Content-Type',
+      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    );
+    res.setHeader(
+      'Content-Disposition',
+      `attachment; filename=${vipGenerator.title}.xlsx`,
+    );
+
+    // Write to response
+    await workbook.xlsx.write(res);
+    res.end();
   }
 }

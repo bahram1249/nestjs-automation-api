@@ -1,7 +1,11 @@
 import { Module } from '@nestjs/common';
 import { VipGeneratorService } from './vip-generator.service';
 import { SequelizeModule } from '@nestjs/sequelize';
-import { GSVipBundleType, GSVipGenerator } from '@rahino/localdatabase/models';
+import {
+  GSGuarantee,
+  GSVipBundleType,
+  GSVipGenerator,
+} from '@rahino/localdatabase/models';
 import { User, Permission } from '@rahino/database';
 import { VipGeneratorController } from './vip-generator.controller';
 import { LocalizationModule } from 'apps/main/src/common/localization';
@@ -16,6 +20,7 @@ import { VIP_GENERATOR_QUEUE } from '@rahino/guarantee/job/vip-generator-job/con
       GSVipGenerator,
       User,
       Permission,
+      GSGuarantee,
     ]),
     LocalizationModule,
     BullModule.forRootAsync({
