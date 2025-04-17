@@ -61,6 +61,7 @@ import { SubmitFactorModule } from './cartable/submit-factor';
 import { RedirectorModule } from './client/redirector/redirector.module';
 import { GSClientFactorModule } from './client/factor/client-factor.module';
 import { GSCartableFactorModule } from './cartable/cartable-factor/cartable-factor.module';
+import { GSVipGeneratorModule } from './admin/vip-generator';
 
 @Module({
   imports: [
@@ -134,6 +135,7 @@ import { GSCartableFactorModule } from './cartable/cartable-factor/cartable-fact
 
     GSClientFactorModule,
     GSCartableFactorModule,
+    GSVipGeneratorModule,
   ],
 })
 export class GSModule implements NestModule {

@@ -217,6 +217,72 @@ IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'gs-guaranteetypes-v1'
 
 GO
 
+
+-- gs-vip-bundle-types
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'gs-vip-bundle-types-v1'
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings
+		WHERE ([key] = 'CUSTOMER_NAME' AND [value] IN ('AriaKish'))
+		)
+BEGIN
+
+
+	CREATE TABLE GSVipBundleTypes (
+		id                          int identity(1,1)           PRIMARY KEY,
+        title                       nvarchar(256)               NOT NULL,
+		monthPeriod					int							NOT NULL,
+		cardColor					nvarchar(128)				NOT NULL,
+		price						bigint 						NOT NULL,
+		fee							bigint						NOT NULL,
+		unitPriceId					int							NOT NULL
+			CONSTRAINT FK_GSVipBundleTypes_UnitPriceId
+				FOREIGN KEY REFERENCES GSUnitPrices(id),
+		isDeleted					bit							NULL,
+		[createdAt]					datetimeoffset				NOT NULL,
+		[updatedAt]					datetimeoffset				NOT NULL
+	);
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'gs-vip-bundle-types-v1', GETDATE(), GETDATE()
+END
+
+GO
+
+
+
+-- gs-vip-generator-v1
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'gs-vip-generator-v1'
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings
+		WHERE ([key] = 'CUSTOMER_NAME' AND [value] IN ('AriaKish'))
+		)
+BEGIN
+
+	CREATE TABLE GSVipGenerators (
+		id                          bigint identity(1,1)           PRIMARY KEY,
+        title                       nvarchar(256)                   NOT NULL,
+		vipBundleTypeId             int                             NOT NULL
+	        CONSTRAINT FK_GSVipGenerators_VipBundleTypeId
+	                FOREIGN KEY REFERENCES GSVipBundleTypes(id),
+        isCompleted                 bit                             NOT NULL,
+        qty                         int                             NOT NULL,
+        price                       bigint                          NOT NULL,
+        fee                         bigint                          NOT NULL,
+        userId                      bigint                          NOT NULL
+            CONSTRAINT FK_GSVipGenerators_UserId
+                FOREIGN KEY REFERENCES Users(id),
+		[createdAt]					datetimeoffset				    NOT NULL,
+		[updatedAt]					datetimeoffset				    NOT NULL
+	);
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'gs-vip-generator-v1', GETDATE(), GETDATE()
+END
+
+GO
+
 -- gs-guarantees-v1
 IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'gs-guarantees-v1'
 )
@@ -338,6 +404,30 @@ IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'gs-guarantees-v5'
 
         INSERT INTO Migrations(version, createdAt, updatedAt)
         SELECT 'gs-guarantees-v5', GETDATE(), GETDATE()
+    END
+
+GO
+
+
+-- gs-guarantees_v6
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'gs-guarantees-v6'
+)
+    AND EXISTS (
+        SELECT 1 FROM Settings
+        WHERE ([key] = 'CUSTOMER_NAME' AND [value] IN ('AriaKish'))
+    )
+    BEGIN
+
+
+    ALTER TABLE GSGuarantees
+        ADD vipBundleTypeId int null
+            CONSTRAINT GSGuarantees_VipBundleTypeId
+                FOREIGN KEY REFERENCES GSVipBundleTypes(id),
+            totalCredit bigint null,
+            availableCredit bigint null
+
+        INSERT INTO Migrations(version, createdAt, updatedAt)
+        SELECT 'gs-guarantees-v6', GETDATE(), GETDATE()
     END
 
 GO
@@ -1422,37 +1512,7 @@ END
 
 GO
 
- 
--- gs-vip-bundle-types
-IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'gs-vip-bundle-types-v1'
-			)
-	AND EXISTS (
-		SELECT 1 FROM Settings
-		WHERE ([key] = 'CUSTOMER_NAME' AND [value] IN ('AriaKish'))
-		)
-BEGIN
 
-
-	CREATE TABLE GSVipBundleTypes (
-		id                          int identity(1,1)           PRIMARY KEY,
-        title                       nvarchar(256)               NOT NULL,
-		monthPeriod					int							NOT NULL,
-		cardColor					nvarchar(128)				NOT NULL,
-		price						bigint 						NOT NULL,
-		fee							bigint						NOT NULL,
-		unitPriceId					int							NOT NULL
-			CONSTRAINT FK_GSVipBundleTypes_UnitPriceId
-				FOREIGN KEY REFERENCES GSUnitPrices(id),
-		isDeleted					bit							NULL,
-		[createdAt]					datetimeoffset				NOT NULL,
-		[updatedAt]					datetimeoffset				NOT NULL
-	);
-
-	INSERT INTO Migrations(version, createdAt, updatedAt)
-	SELECT 'gs-vip-bundle-types-v1', GETDATE(), GETDATE()
-END
-
-GO
 
 -- gs-service-types
 IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'gs-service-types-v1'

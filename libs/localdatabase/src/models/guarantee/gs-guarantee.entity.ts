@@ -14,6 +14,7 @@ import { GSGuaranteePeriod } from './gs-guarantee-period.entity';
 import { GSGuaranteeConfirmStatus } from './gs-guarantee-confirm-status.entity';
 import { GSVariant } from './gs-varaint.entity';
 import { GSProductType } from './gs-product-type.entity';
+import { GSVipBundleType } from './gs-vip-bundle-types.entity';
 
 @Table({ tableName: 'GSGuarantees' })
 export class GSGuarantee extends Model {
@@ -159,4 +160,19 @@ export class GSGuarantee extends Model {
 
   @BelongsTo(() => GSProductType)
   productType?: GSProductType;
+
+  @Column({ type: DataType.NUMBER, allowNull: true })
+  @ForeignKey(() => GSVipBundleType)
+  vipBundleTypeId?: number;
+
+  @BelongsTo(() => GSVipBundleType, {
+    as: 'vipBundleType',
+    foreignKey: 'vipBundleTypeId',
+  })
+  vipBundleType?: GSVipBundleType;
+
+  @Column({ type: DataType.BIGINT, allowNull: true })
+  totalCredit?: bigint;
+  @Column({ type: DataType.BIGINT, allowNull: true })
+  availableCredit?: bigint;
 }
