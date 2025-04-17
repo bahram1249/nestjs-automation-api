@@ -175,7 +175,7 @@ export class VipGeneratorService {
           'endDate',
         ])
         .filter({ vipGeneratorId: entityId })
-        .filter({ guanrateeTypeId: GSGuaranteeTypeEnum.VIP })
+        .filter({ guaranteeTypeId: GSGuaranteeTypeEnum.VIP })
         .filter({ guaranteeConfirmStatusId: GSGuaranteeConfirmStatus.Confirm })
         .build(),
     );
