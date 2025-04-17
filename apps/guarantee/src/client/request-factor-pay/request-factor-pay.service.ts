@@ -8,7 +8,7 @@ import { LocalizationService } from 'apps/main/src/common/localization';
 import { GSFactor, GSRequest } from '@rahino/localdatabase/models';
 import { GuaranteeTraverseService } from '@rahino/guarantee/cartable/guarantee-traverse/guarantee-traverse.service';
 import { GS_PAYMENT_PROVIDER_TOKEN } from '@rahino/guarantee/shared/payment-provider/constants';
-import { GSPaymentInterface } from '@rahino/guarantee/payment/interface/gs-payment.interface';
+import { GSPaymentInterface } from '@rahino/guarantee/shared/payment/interface/gs-payment.interface';
 import { GSSharedFactorDetailAndRemainingAmountService } from '@rahino/guarantee/shared/factor-detail-and-remaining-amount';
 
 @Injectable()

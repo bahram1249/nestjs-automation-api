@@ -16,8 +16,8 @@ import { GSUnitPriceEnum } from '@rahino/guarantee/shared/unit-price';
 import { GSFactorStatusEnum } from '@rahino/guarantee/shared/factor-status';
 import { GSFactorTypeEnum } from '@rahino/guarantee/shared/factor-type';
 import { GS_PAYMENT_PROVIDER_TOKEN } from '@rahino/guarantee/shared/payment-provider/constants';
-import { GSPaymentInterface } from '@rahino/guarantee/payment/interface/gs-payment.interface';
-import { GSRequestPaymentOutputDto } from '@rahino/guarantee/payment/dto/gs-request-payment-output.dto';
+import { GSPaymentInterface } from '@rahino/guarantee/shared/payment/interface/gs-payment.interface';
+import { GSRequestPaymentOutputDto } from '@rahino/guarantee/shared/payment/dto/gs-request-payment-output.dto';
 import { RialPriceService } from '@rahino/guarantee/shared/rial-price';
 
 @Injectable()

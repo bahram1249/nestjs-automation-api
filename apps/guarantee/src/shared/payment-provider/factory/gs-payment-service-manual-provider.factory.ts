@@ -4,7 +4,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
-import { GSSadadPaymentService } from '@rahino/guarantee/payment/sadad';
+import { GSSadadPaymentService } from '@rahino/guarantee/shared/payment/sadad';
 import { GSPaymentGateway } from '@rahino/localdatabase/models';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 

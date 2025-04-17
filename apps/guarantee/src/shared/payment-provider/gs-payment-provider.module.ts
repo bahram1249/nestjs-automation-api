@@ -4,7 +4,7 @@ import { GSPaymentServiceProviderFactory } from './factory';
 import { SequelizeModule } from '@nestjs/sequelize';
 import { GSPaymentGateway } from '@rahino/localdatabase/models';
 import { GSPaymentServiceManualProviderFactory } from './factory/gs-payment-service-manual-provider.factory';
-import { GSSadadPaymentModule } from '../../payment/sadad';
+import { GSSadadPaymentModule } from '../payment/sadad';
 
 @Module({
   imports: [
