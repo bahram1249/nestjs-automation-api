@@ -71,6 +71,7 @@ export class GSSuccessFactorQueryBuilderService {
           'price',
           'representativeShareOfSolution',
           'warrantyServiceTypeId',
+          'serviceTypeId',
           'unitPriceId',
         ],
         model: GSFactorService,
