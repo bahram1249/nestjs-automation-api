@@ -432,6 +432,29 @@ IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'gs-guarantees-v6'
 
 GO
 
+
+-- gs-guarantees_v7
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'gs-guarantees-v7'
+)
+    AND EXISTS (
+        SELECT 1 FROM Settings
+        WHERE ([key] = 'CUSTOMER_NAME' AND [value] IN ('AriaKish'))
+    )
+    BEGIN
+
+
+    ALTER TABLE GSGuarantees
+        ADD vipGeneratorId bigint null
+            CONSTRAINT FK_GSGuarantee_VipGeneratorId
+                FOREIGN KEY REFERENCES GSVipGenerators(id)
+
+        INSERT INTO Migrations(version, createdAt, updatedAt)
+        SELECT 'gs-guarantees-v7', GETDATE(), GETDATE()
+    END
+
+GO
+
+
 -- gs-assigned-guarantees-v1
 IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'gs-assigned-guarantees-v1'
 )

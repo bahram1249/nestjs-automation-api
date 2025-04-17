@@ -17,6 +17,25 @@ IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'data-gs-providers-v1'
 
 GO
 
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'data-gs-providers-v2'
+)
+    AND EXISTS (
+        SELECT 1 FROM Settings
+        WHERE ([key] = 'CUSTOMER_NAME' AND [value] IN ('AriaKish'))
+    )
+    BEGIN
+
+        INSERT INTO GSProviders(id, title, createdAt, updatedAt)
+        SELECT 2, N'ARIAKISH_CLUB_LOCAL', GETDATE(), GETDATE()
+
+
+        INSERT INTO Migrations(version, createdAt, updatedAt)
+        SELECT 'data-gs-providers-v2', GETDATE(), GETDATE()
+
+    END
+
+GO
+
 
 IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'data-gs-guaranteeconfirmstatuses-v1'
 )

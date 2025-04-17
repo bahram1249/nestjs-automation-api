@@ -15,6 +15,7 @@ import { GSGuaranteeConfirmStatus } from './gs-guarantee-confirm-status.entity';
 import { GSVariant } from './gs-varaint.entity';
 import { GSProductType } from './gs-product-type.entity';
 import { GSVipBundleType } from './gs-vip-bundle-types.entity';
+import { GSVipGenerator } from './gs-vip-generator.entity';
 
 @Table({ tableName: 'GSGuarantees' })
 export class GSGuarantee extends Model {
@@ -175,4 +176,14 @@ export class GSGuarantee extends Model {
   totalCredit?: bigint;
   @Column({ type: DataType.BIGINT, allowNull: true })
   availableCredit?: bigint;
+
+  @Column({ type: DataType.BIGINT, allowNull: true })
+  @ForeignKey(() => GSVipGenerator)
+  vipGeneratorId?: bigint;
+
+  @BelongsTo(() => GSVipGenerator, {
+    as: 'vipGenerator',
+    foreignKey: 'vipGeneratorId',
+  })
+  vipGenerator?: GSVipGenerator;
 }

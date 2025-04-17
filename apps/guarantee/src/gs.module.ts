@@ -62,6 +62,7 @@ import { RedirectorModule } from './client/redirector/redirector.module';
 import { GSClientFactorModule } from './client/factor/client-factor.module';
 import { GSCartableFactorModule } from './cartable/cartable-factor/cartable-factor.module';
 import { GSVipGeneratorModule } from './admin/vip-generator';
+import { VipGeneratorJobModule } from './job/vip-generator-job';
 
 @Module({
   imports: [
@@ -127,6 +128,7 @@ import { GSVipGeneratorModule } from './admin/vip-generator';
     TechnicalUserCartableRequestSmsSenderModule,
     ClientTechnicalUserVisitRequestSmsSenderModule,
     ClientShippingWayRequestSmsSenderModule,
+    VipGeneratorJobModule,
 
     // test
     CartableAutoTraverseModule,
