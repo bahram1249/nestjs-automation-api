@@ -11,6 +11,9 @@ import { Op, Sequelize } from 'sequelize';
 import * as _ from 'lodash';
 import { LocalizationService } from 'apps/main/src/common/localization';
 import { User } from '@rahino/database';
+import { VIP_GENERATOR_QUEUE } from '@rahino/guarantee/job/vip-generator-job/constants';
+import { Queue } from 'bullmq';
+import { InjectQueue } from '@nestjs/bullmq';
 
 @Injectable()
 export class VipGeneratorService {
@@ -20,6 +23,8 @@ export class VipGeneratorService {
     @InjectModel(GSVipBundleType)
     private readonly vipBundleTypeRepository: typeof GSVipBundleType,
     private readonly localizationService: LocalizationService,
+    @InjectQueue(VIP_GENERATOR_QUEUE)
+    private readonly vipGeneratorQueue: Queue,
   ) {}
 
   async findAll(filter: GetVipGeneratorDto) {
@@ -128,6 +133,10 @@ export class VipGeneratorService {
       fee: vipBundleTypeItem.fee,
       isCompleted: false,
       userId: user.id,
+    });
+
+    await this.vipGeneratorQueue.add('vip-card-generator-job', {
+      vipGeneratorId: result.id,
     });
 
     return {
