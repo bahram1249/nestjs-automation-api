@@ -16,6 +16,7 @@ export class GSSuccessFactorQueryBuilderMapper {
   constructor() {}
 
   mapItems(items: GSFactor[]): GSFactorOutputDto[] {
+    console.log(items);
     return items.map((item) => this.mapItem(item));
   }
 
@@ -62,9 +63,9 @@ export class GSSuccessFactorQueryBuilderMapper {
   }
 
   mapFactorServices(
-    factorServices: GSFactorService[],
+    factorServices?: GSFactorService[],
   ): GSFactorItemOutputDto[] {
-    return factorServices.map(
+    return factorServices?.map(
       (factorService): GSFactorItemOutputDto => ({
         title:
           factorService.serviceTypeId == GSServiceTypeEnum.Part

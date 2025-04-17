@@ -20,9 +20,11 @@ import { FactorService } from './cartable-factor.service';
 import { GetFactorDto } from './dto';
 import { GetUser } from '@rahino/auth';
 import { User } from '@rahino/database';
+import { PermissionGuard } from '@rahino/permission-checker/guard';
+import { CheckPermission } from '@rahino/permission-checker/decorator';
 
-@ApiTags('GS-Client-Factor')
-@UseGuards(JwtGuard)
+@ApiTags('GS-Cartable-Factor')
+@UseGuards(JwtGuard, PermissionGuard)
 @ApiBearerAuth()
 @UseInterceptors(JsonResponseTransformInterceptor)
 @Controller({
@@ -33,7 +35,8 @@ export class FactorController {
   constructor(private service: FactorService) {}
 
   // public url
-  @ApiOperation({ description: 'show all client factors' })
+  @ApiOperation({ description: 'show all cartable factors' })
+  @CheckPermission({ permissionSymbol: 'gs.admin.factors.getall' })
   @Get('/')
   @ApiQuery({
     name: 'filter',
@@ -48,6 +51,7 @@ export class FactorController {
 
   @ApiOperation({ description: 'show factor by given id' })
   @Get('/:id')
+  @CheckPermission({ permissionSymbol: 'gs.admin.factors.getone' })
   @HttpCode(HttpStatus.OK)
   async findById(@GetUser() user: User, @Param('id') entityId: bigint) {
     return await this.service.findById(user, entityId);
