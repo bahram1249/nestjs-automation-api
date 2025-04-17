@@ -22,6 +22,7 @@ import axios from 'axios';
 import { GSRequestPaymentOutputDto } from '../dto/gs-request-payment-output.dto';
 import { GSRequestPaymentOutputTypeEnum } from '../dto/gs-request-payment-output-type.dto';
 import { Op, Sequelize } from 'sequelize';
+import { RialPriceService } from '@rahino/guarantee/shared/rial-price';
 
 @Injectable()
 export class GSSadadPaymentService implements GSPaymentInterface {
@@ -33,6 +34,7 @@ export class GSSadadPaymentService implements GSPaymentInterface {
     @InjectModel(GSPaymentGateway)
     private readonly paymentGatewayRepository: typeof GSPaymentGateway,
     private readonly configService: ConfigService,
+    private readonly rialPriceService: RialPriceService,
   ) {}
   async requestPayment(
     dto: GSRequestPaymentDto,
@@ -58,7 +60,10 @@ export class GSSadadPaymentService implements GSPaymentInterface {
       );
 
     // rial
-    const totalAmountOfFactor = await this.getRialAmount(factor);
+    const totalAmountOfFactor = this.rialPriceService.getRialPrice({
+      price: Number(factor.totalPrice),
+      unitPriceId: factor.unitPriceId,
+    });
 
     const transactions = await this.transactionRepository.findAll(
       new QueryOptionsBuilder()
@@ -69,10 +74,12 @@ export class GSSadadPaymentService implements GSPaymentInterface {
     );
 
     // rial
+
     const transactionTotalPrices = transactions.map((transaction) =>
-      transaction.unitPriceId == GSUnitPriceEnum.Toman
-        ? Number(transaction.totalPrice)
-        : Number(transaction.totalPrice) * 10,
+      this.rialPriceService.getRialPrice({
+        price: Number(transaction.totalPrice),
+        unitPriceId: transaction.unitPriceId,
+      }),
     );
 
     // rial
@@ -158,12 +165,6 @@ export class GSSadadPaymentService implements GSPaymentInterface {
     console.log('payload:', payload);
     console.log('response:', res.data);
     return res.data as GSSadadRequestPaymentOutputDto;
-  }
-
-  private async getRialAmount(factor: GSFactor) {
-    return factor.unitPriceId == GSUnitPriceEnum.Toman
-      ? Number(factor.totalPrice) * 10
-      : Number(factor.totalPrice);
   }
 
   private encryptPKCS7(str: string, base64Key: string): string {

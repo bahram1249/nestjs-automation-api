@@ -7,11 +7,13 @@ import {
   GSTransaction,
 } from '@rahino/localdatabase/models';
 import { LocalizationModule } from 'apps/main/src/common/localization';
+import { RialPriceModule } from '@rahino/guarantee/shared/rial-price';
 
 @Module({
   imports: [
     SequelizeModule.forFeature([GSFactor, GSTransaction, GSPaymentGateway]),
     LocalizationModule,
+    RialPriceModule,
   ],
   providers: [GSSadadPaymentService],
   exports: [GSSadadPaymentService],
