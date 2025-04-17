@@ -222,7 +222,7 @@ export class VipGeneratorService {
     );
     res.setHeader(
       'Content-Disposition',
-      `attachment; filename=${vipGenerator.title}.xlsx`,
+      `attachment; filename=vip-${Date.now()}.xlsx`,
     );
 
     // Write to response
