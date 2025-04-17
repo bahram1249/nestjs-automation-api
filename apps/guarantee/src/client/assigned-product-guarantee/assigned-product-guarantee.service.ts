@@ -76,9 +76,7 @@ export class AssignedProductGuaranteeService {
         ),
       );
 
-    const count = await this.asssignedGuaranteeRepository.count(
-      queryBuilder.build(),
-    );
+    const count = await this.repository.count(queryBuilder.build());
 
     queryBuilder = queryBuilder
       .attributes(['id', 'productTypeId', 'brandId', 'variantId'])
