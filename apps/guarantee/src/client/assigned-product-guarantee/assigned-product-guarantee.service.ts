@@ -44,7 +44,7 @@ export class AssignedProductGuaranteeService {
               0,
             ),
             {
-              [Op.is]: 0,
+              [Op.eq]: 0,
             },
           ),
         )
