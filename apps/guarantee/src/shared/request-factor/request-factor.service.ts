@@ -8,6 +8,7 @@ import { GSPaymentWayEnum } from '../payment-way';
 import {
   GSFactor,
   GSFactorService,
+  GSGuarantee,
   GSGuaranteeOrganization,
   GSGuaranteeOrganizationContract,
   GSPaymentGateway,
@@ -47,6 +48,8 @@ export class RequestFactorService {
     private readonly transactionRepository: typeof GSTransaction,
     @InjectModel(GSPaymentGateway)
     private readonly paymentGatewayRepository: typeof GSPaymentGateway,
+    @InjectModel(GSGuarantee)
+    private readonly guaranteeRepository: typeof GSGuarantee,
     private readonly solutionService: SolutionService,
     private readonly localizationService: LocalizationService,
   ) {}
@@ -333,12 +336,83 @@ export class RequestFactorService {
     factor: GSFactor,
     request: GSRequest,
     transaction: Transaction,
-  ) {}
+  ) {
+    const factorServices = await GSFactorService.findAll(
+      new QueryOptionsBuilder()
+        .filter({ factorId: factor.id })
+        .transaction(transaction)
+        .build(),
+    );
+
+    // rial price
+
+    const prices = factorServices.map((factorService) =>
+      this.rialPriceService.getRialPrice({
+        price: Number(factorService.price),
+        unitPriceId: factorService.unitPriceId as GSUnitPriceEnum,
+      }),
+    );
+    const totalPrice = prices.reduce((prev, next) => prev + next, 0);
+
+    const paymentGateway = await this.findVipGuaranteePaymentGateway();
+
+    const guarantee = await this.guaranteeRepository.findOne(
+      new QueryOptionsBuilder()
+        .filter({ id: request.guaranteeId })
+        .transaction(transaction)
+        .build(),
+    );
+
+    // is rial
+    let availableCredit = Number(guarantee.availableCredit);
+
+    // skip
+    if (availableCredit == 0) return;
+
+    let canPaid = 0;
+
+    if (totalPrice >= availableCredit) {
+      canPaid = availableCredit;
+    } else {
+      canPaid = totalPrice;
+    }
+
+    guarantee.availableCredit = BigInt(availableCredit - canPaid);
+    await guarantee.save({ transaction: transaction });
+
+    const transactionEntity = await this.transactionRepository.create(
+      {
+        paymentGatewayId: paymentGateway.id,
+        transactionStatusId: GSTransactionStatusEnum.Paid,
+        unitPriceId: GSUnitPriceEnum.Rial,
+        totalPrice: canPaid,
+        factorId: factor.id,
+        userId: factor.userId,
+      },
+      { transaction: transaction },
+    );
+  }
 
   private async findNormalGuaranteePaymentGateway() {
     const paymentGateway = await this.paymentGatewayRepository.findOne(
       new QueryOptionsBuilder()
         .filter({ paymentWayId: GSPaymentWayEnum.NormalGuarantee })
+        .build(),
+    );
+
+    if (!paymentGateway) {
+      throw new InternalServerErrorException(
+        'cannot find payment gateway for normal guarantee',
+      );
+    }
+
+    return paymentGateway;
+  }
+
+  private async findVipGuaranteePaymentGateway() {
+    const paymentGateway = await this.paymentGatewayRepository.findOne(
+      new QueryOptionsBuilder()
+        .filter({ paymentWayId: GSPaymentWayEnum.VipBalance })
         .build(),
     );
 
