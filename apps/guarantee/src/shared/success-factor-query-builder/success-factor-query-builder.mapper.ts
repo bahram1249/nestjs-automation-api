@@ -70,7 +70,7 @@ export class GSSuccessFactorQueryBuilderMapper {
         title:
           factorService.serviceTypeId == GSServiceTypeEnum.Part
             ? factorService.partName
-            : factorService.solution.title,
+            : factorService.solution?.title,
         price: factorService.price,
         qty: factorService.qty,
       }),
