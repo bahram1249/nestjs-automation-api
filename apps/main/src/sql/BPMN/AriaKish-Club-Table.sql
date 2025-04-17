@@ -1060,6 +1060,25 @@ END
 GO
 
 
+-- gs-factor-v7
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'gs-factors-v7'
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings
+		WHERE ([key] = 'CUSTOMER_NAME' AND [value] IN ('AriaKish'))
+		)
+BEGIN
+
+	ALTER TABLE GSFactors
+        Add settlementDate datetime null
+
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'gs-factors-v7', GETDATE(), GETDATE()
+END
+
+GO
+
 
 
 -- gs-paymentways

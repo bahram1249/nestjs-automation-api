@@ -25,7 +25,7 @@ export class UpdateRequestFactorToSucessActionService
 
     // update factor status to paid
     await this.factorRepository.update(
-      { factorStatusId: GSFactorStatusEnum.Paid },
+      { factorStatusId: GSFactorStatusEnum.Paid, settlementDate: new Date() },
       {
         where: {
           id: factorId,

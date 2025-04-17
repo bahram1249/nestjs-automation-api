@@ -17,6 +17,8 @@ import { BPMNRequest } from '../bpmn';
 import { GSGuarantee } from './gs-guarantee.entity';
 import { GSFactorAdditionalPackage } from './gs-factor-additional-package.entity';
 import { GSAdditionalPackage } from './gs-additional-package.entity';
+import { GSTransaction } from './gs-transaction.entity';
+import { GSFactorService } from './gs-factor-service.entity';
 
 @Table({ tableName: 'GSFactors' })
 export class GSFactor extends Model {
@@ -139,4 +141,19 @@ export class GSFactor extends Model {
     foreignKey: 'factorId',
   })
   factorAdditionalPackages?: GSFactorAdditionalPackage[];
+
+  @HasMany(() => GSTransaction, { as: 'transactions', foreignKey: 'factorId' })
+  transactions?: GSTransaction[];
+
+  @Column({
+    type: DataType.DATE,
+    allowNull: true,
+  })
+  settlementDate?: Date;
+
+  @HasMany(() => GSFactorService, {
+    as: 'factorServices',
+    foreignKey: 'factorId',
+  })
+  factorServices?: GSFactorService[];
 }
