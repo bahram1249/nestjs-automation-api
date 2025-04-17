@@ -65,6 +65,7 @@ import { GSVipGeneratorModule } from './admin/vip-generator';
 import { VipGeneratorJobModule } from './job/vip-generator-job';
 import { ClientVipGuaranteeModule } from './client/vip-guarantee';
 import { GSClientAssignedProductAssignedGuaranteeModule } from './client/assigned-product-guarantee/assigned-product-guarantee.module';
+import { GSClientFactorDetailAndRemainingAmountModule } from './client/factor-detail-and-amount-remaining';
 
 @Module({
   imports: [
@@ -143,6 +144,8 @@ import { GSClientAssignedProductAssignedGuaranteeModule } from './client/assigne
 
     ClientVipGuaranteeModule,
     GSClientAssignedProductAssignedGuaranteeModule,
+
+    GSClientFactorDetailAndRemainingAmountModule,
   ],
 })
 export class GSModule implements NestModule {
