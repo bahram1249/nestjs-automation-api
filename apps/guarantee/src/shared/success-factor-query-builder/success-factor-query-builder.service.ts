@@ -32,7 +32,7 @@ export class GSSuccessFactorQueryBuilderService {
         {
           model: GSRequest,
           as: 'guaranteeRequest',
-          required: false,
+          required: true,
           include: [{ model: BPMNOrganization, as: 'bpmnOrganization' }],
         },
       ])
