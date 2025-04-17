@@ -22,6 +22,7 @@ import {
   GetRequestFilterDto,
   NormalRequestDto,
   OutOfWarrantyRequestDto,
+  VipRequestDto,
 } from './dto';
 import { GetUser } from '@rahino/auth';
 import { User } from '@rahino/database';
@@ -59,6 +60,16 @@ export class RequestController {
     @Body() dto: NormalRequestDto,
   ) {
     return await this.service.createNormalGuaranteeRequest(user, dto);
+  }
+
+  @ApiOperation({ description: 'create vip guarantee request' })
+  @Post('/vipRequest')
+  @HttpCode(HttpStatus.CREATED)
+  async createVipGuaranteeRequest(
+    @GetUser() user: User,
+    @Body() dto: VipRequestDto,
+  ) {
+    return await this.service.createVipGuaranteeRequest(user, dto);
   }
 
   @ApiOperation({ description: 'create out of warranty request' })

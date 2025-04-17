@@ -13,6 +13,7 @@ import { GSAddressModule } from '../address/address.module';
 import { BullModule } from '@nestjs/bullmq';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { NORMAL_GUARANTEE_REQUEST_SMS_SENDER_QUEUE } from '@rahino/guarantee/job/normal-guarantee-request-sms-sender/constants';
+import { GSClientAssignedProductAssignedGuaranteeModule } from '../assigned-product-guarantee/assigned-product-guarantee.module';
 
 @Module({
   imports: [
@@ -35,6 +36,7 @@ import { NORMAL_GUARANTEE_REQUEST_SMS_SENDER_QUEUE } from '@rahino/guarantee/job
     BullModule.registerQueueAsync({
       name: NORMAL_GUARANTEE_REQUEST_SMS_SENDER_QUEUE,
     }),
+    GSClientAssignedProductAssignedGuaranteeModule,
   ],
   controllers: [RequestController],
   providers: [RequestService],

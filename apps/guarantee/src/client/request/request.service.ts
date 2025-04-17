@@ -26,6 +26,7 @@ import {
   GetRequestFilterDto,
   NormalRequestDto,
   OutOfWarrantyRequestDto,
+  VipRequestDto,
 } from './dto';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import { Sequelize, Transaction, Op } from 'sequelize';
@@ -36,6 +37,7 @@ import { GSRequestCategoryEnum } from '@rahino/guarantee/shared/request-category
 import { AddressService } from '../address/address.service';
 import { InjectQueue } from '@nestjs/bullmq';
 import { NORMAL_GUARANTEE_REQUEST_SMS_SENDER_QUEUE } from '@rahino/guarantee/job/normal-guarantee-request-sms-sender/constants';
+import { AssignedProductGuaranteeService } from '../assigned-product-guarantee/assigned-product-guarantee.service';
 
 @Injectable()
 export class RequestService {
@@ -52,6 +54,8 @@ export class RequestService {
     private readonly sequelize: Sequelize,
     @InjectQueue(NORMAL_GUARANTEE_REQUEST_SMS_SENDER_QUEUE)
     private readonly normalGuaranteeRequestSmsSenderQueue,
+
+    private readonly assignedProductAssignedGuaranteeService: AssignedProductGuaranteeService,
   ) {}
 
   async createNormalGuaranteeRequest(user: User, dto: NormalRequestDto) {
@@ -225,6 +229,131 @@ export class RequestService {
           productTypeId: dto.productTypeId,
           addressId: dto.addressId,
           phoneNumber: dto.phoneNumber,
+        },
+        { transaction: transaction },
+      );
+      requestId = bpmnRequest.id;
+      await transaction.commit();
+      await this.normalGuaranteeRequestSmsSenderQueue.add(
+        'normal_guarantee_request_sms_sender',
+        {
+          phoneNumber: user.phoneNumber,
+        },
+      );
+    } catch (error) {
+      await transaction.rollback();
+    }
+    return {
+      result: {
+        trackingCode: requestId,
+        message: this.localizationService.translate('core.success'),
+      },
+    };
+  }
+
+  async createVipGuaranteeRequest(user: User, dto: VipRequestDto) {
+    const { result: assigendProductAssignedGuarantee } =
+      await this.assignedProductAssignedGuaranteeService.findById(
+        user,
+        dto.assignedProductAssignedGuaranteeId,
+      );
+
+    const asssignedGuarantee = await this.assignedGuaranteeRepository.findOne(
+      new QueryOptionsBuilder()
+        .include([
+          {
+            model: GSGuarantee,
+            as: 'guarantee',
+            required: true,
+            where: {
+              guaranteeTypeId: GSGuaranteeTypeEnum.VIP,
+            },
+          },
+        ])
+        .filter({ userId: user.id })
+        .filter({ guaranteeId: dto.guaranteeId })
+        .filter(
+          Sequelize.where(
+            Sequelize.fn(
+              'isnull',
+              Sequelize.col('GSAssignedGuarantee.isDeleted'),
+              0,
+            ),
+            {
+              [Op.eq]: 0,
+            },
+          ),
+        )
+        .build(),
+    );
+    if (!asssignedGuarantee) {
+      throw new BadRequestException(
+        this.localizationService.translate(
+          'guarantee.guarantee_request_item_not_founded',
+        ),
+      );
+    }
+
+    if (asssignedGuarantee.guarantee.endDate <= new Date()) {
+      throw new BadRequestException(
+        this.localizationService.translate(
+          'guarantee.expire_date_of_card_is_reach',
+        ),
+      );
+    }
+
+    const process = await this.processRepository.findOne(
+      new QueryOptionsBuilder()
+        .filter({
+          staticId: GuaranteeProcessEnum.MainProcessId,
+        })
+        .filter(
+          Sequelize.where(
+            Sequelize.fn('isnull', Sequelize.col('BPMNPROCESS.isDeleted'), 0),
+            {
+              [Op.eq]: 0,
+            },
+          ),
+        )
+        .build(),
+    );
+
+    if (!process) {
+      throw new InternalServerErrorException([
+        this.localizationService.translate('bpmn.process'),
+        ' ',
+        this.localizationService.translate('core.not_found'),
+      ]);
+    }
+
+    // thats return error of not exists address
+    await this.addressService.findById(user, dto.addressId);
+    const transaction = await this.sequelize.transaction({
+      isolationLevel: Transaction.ISOLATION_LEVELS.READ_COMMITTED,
+    });
+
+    let requestId: bigint;
+    try {
+      const bpmnRequest = await this.bpmnRequestService.initRequest(
+        {
+          userId: user.id,
+          description: dto.description,
+          processId: process.id,
+        },
+        transaction,
+      );
+      await this.repository.create(
+        {
+          id: bpmnRequest.id,
+          requestTypeId: dto.requestTypeId,
+          requestCategoryId: GSRequestCategoryEnum.VIPGuarantee,
+          userId: user.id,
+          brandId: assigendProductAssignedGuarantee.brandId,
+          variantId: assigendProductAssignedGuarantee.variantId,
+          productTypeId: assigendProductAssignedGuarantee.productTypeId,
+          addressId: dto.addressId,
+          phoneNumber: dto.phoneNumber,
+          guaranteeId: asssignedGuarantee.guaranteeId,
         },
         { transaction: transaction },
       );
