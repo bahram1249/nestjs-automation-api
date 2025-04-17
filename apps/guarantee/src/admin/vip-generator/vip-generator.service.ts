@@ -23,6 +23,7 @@ import { GSGuaranteeConfirmStatus } from '@rahino/guarantee/shared/guarantee-con
 import * as ExcelJS from 'exceljs';
 import * as moment from 'moment-jalaali';
 import { GSGuaranteeTypeEnum } from '@rahino/guarantee/shared/gurantee-type';
+import { numberWithCommas } from '@rahino/commontools';
 
 @Injectable()
 export class VipGeneratorService {
@@ -183,15 +184,15 @@ export class VipGeneratorService {
     const mappedItems = guarantees.map((guarantee) => ({
       id: guarantee.id,
       serialNumber: guarantee.serialNumber,
-      totalCredit: guarantee.totalCredit.toLocaleString(),
+      totalCredit: numberWithCommas(Number(guarantee.totalCredit)),
       startDate: moment(guarantee.startDate)
         .tz('Asia/Tehran', false)
         .locale('fa')
-        .format('YYYY-MM-DD HH:mm:ss'),
+        .format('jYYYY-jMM-jDD HH:mm:ss'),
       endDate: moment(guarantee.endDate)
         .tz('Asia/Tehran', false)
         .locale('fa')
-        .format('YYYY-MM-DD HH:mm:ss'),
+        .format('jYYYY-jMM-jDD HH:mm:ss'),
     }));
     const headers: {
       key: string;
