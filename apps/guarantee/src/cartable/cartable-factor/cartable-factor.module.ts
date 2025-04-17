@@ -6,10 +6,11 @@ import { GSFactor } from '@rahino/localdatabase/models';
 import { GSSuccessFactorQueryBuilderModule } from '@rahino/guarantee/shared/success-factor-query-builder';
 import { LocalizationModule } from 'apps/main/src/common/localization';
 import { OrganizationStuffModule } from '@rahino/guarantee/shared/organization-stuff';
+import { Permission, User } from '@rahino/database';
 
 @Module({
   imports: [
-    SequelizeModule.forFeature([GSFactor]),
+    SequelizeModule.forFeature([GSFactor, User, Permission]),
     GSSuccessFactorQueryBuilderModule,
     LocalizationModule,
     OrganizationStuffModule,

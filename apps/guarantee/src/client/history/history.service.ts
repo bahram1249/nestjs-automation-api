@@ -171,11 +171,16 @@ export class HistoryService {
         .order({ orderBy: 'createdAt', sortOrder: 'desc' })
         .build(),
     );
-    if (!request) return { result: [], total: 0 };
+    if (!request)
+      return { result: { requestId: null, histories: [] }, total: 0 };
     let listFilter = await this.listFilter.create();
     listFilter.limit = 3;
     const additionalFilter = { ignorePaging: true };
     const filter = _.merge(listFilter, additionalFilter);
-    return this.findAll(user, request.id, filter);
+    const historyResult = await this.findAll(user, request.id, filter);
+    return {
+      result: { requestId: request.id, histories: historyResult.result },
+      total: historyResult.total,
+    };
   }
 }
