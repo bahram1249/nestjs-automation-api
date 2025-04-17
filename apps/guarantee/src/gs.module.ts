@@ -68,6 +68,7 @@ import { GSClientAssignedProductAssignedGuaranteeModule } from './client/assigne
 import { GSClientFactorDetailAndRemainingAmountModule } from './client/factor-detail-and-amount-remaining';
 import { RequestFactorPayModule } from './client/request-factor-pay';
 import { GSPaymentModule } from './payment/payment.module';
+import { GSClientTransactionModule } from './client/transaction';
 
 @Module({
   imports: [
@@ -150,6 +151,7 @@ import { GSPaymentModule } from './payment/payment.module';
     GSClientFactorDetailAndRemainingAmountModule,
     RequestFactorPayModule,
     GSPaymentModule,
+    GSClientTransactionModule,
   ],
 })
 export class GSModule implements NestModule {
