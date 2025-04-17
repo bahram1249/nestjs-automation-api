@@ -39,7 +39,9 @@ export class GSPaymentService {
       await transactionItem.save();
       res.redirect(
         302,
-        `this.configService.get('BASE_FRONT_URL')/transactionStatus/${transactionItem.id}`,
+        `${this.configService.get('BASE_FRONT_URL')}/transactionStatus/${
+          transactionItem.id
+        }`,
       );
     }
 
@@ -52,7 +54,9 @@ export class GSPaymentService {
       await transactionItem.save();
       res.redirect(
         302,
-        `this.configService.get('BASE_FRONT_URL')/transactionStatus/${transactionItem.id}`,
+        `${this.configService.get('BASE_FRONT_URL')}/transactionStatus/${
+          transactionItem.id
+        }`,
       );
     }
 
@@ -63,7 +67,9 @@ export class GSPaymentService {
 
     res.redirect(
       302,
-      `this.configService.get('BASE_FRONT_URL')/transactionStatus/${transactionItem.id}`,
+      `${this.configService.get('BASE_FRONT_URL')}/transactionStatus/${
+        transactionItem.id
+      }`,
     );
   }
 }
