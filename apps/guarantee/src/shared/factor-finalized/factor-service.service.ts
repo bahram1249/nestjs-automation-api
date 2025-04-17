@@ -63,6 +63,7 @@ export class FactorFinalizedService {
     await strategy();
 
     factor.factorStatusId = GSFactorStatusEnum.Paid;
+    factor.settlementDate = new Date();
     await factor.save();
   }
 
