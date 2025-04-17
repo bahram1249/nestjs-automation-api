@@ -156,4 +156,28 @@ export class GSFactor extends Model {
     foreignKey: 'factorId',
   })
   factorServices?: GSFactorService[];
+
+  @Column({
+    type: DataType.BIGINT,
+    allowNull: true,
+  })
+  traverseRequestId?: bigint;
+
+  @Column({
+    type: DataType.BIGINT,
+    allowNull: true,
+  })
+  traverseRequestStateId?: bigint;
+
+  @Column({
+    type: DataType.INTEGER,
+    allowNull: true,
+  })
+  traverseNodeId?: number;
+
+  @Column({
+    type: DataType.INTEGER,
+    allowNull: true,
+  })
+  traverseNodeCommandId?: number;
 }

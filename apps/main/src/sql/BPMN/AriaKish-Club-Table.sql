@@ -1151,6 +1151,7 @@ END
 GO
 
 
+
 -- gs-factor-v6
 IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'gs-factors-v6'
 			)
@@ -1192,6 +1193,29 @@ END
 
 GO
 
+
+
+-- gs-factor-v8
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'gs-factors-v8'
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings
+		WHERE ([key] = 'CUSTOMER_NAME' AND [value] IN ('AriaKish'))
+		)
+BEGIN
+
+	ALTER TABLE GSFactors
+        Add traverseRequestId bigint null,
+            traverseRequestStateId bigint null,
+            traverseNodeId int null,
+            traverseNodeCommandId int null
+
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'gs-factors-v8', GETDATE(), GETDATE()
+END
+
+GO
 
 
 -- gs-paymentways
