@@ -198,10 +198,10 @@ export class VipGeneratorService {
       header: string;
     }[] = [
       { key: 'id', header: 'شناسه سیستمی' },
-      { key: 'id', header: 'سریال گارانتی' },
-      { key: 'id', header: 'اعتبار' },
-      { key: 'id', header: 'تاریخ شروع' },
-      { key: 'id', header: 'تاریخ پایان' },
+      { key: 'serialNumber', header: 'سریال گارانتی' },
+      { key: 'totalCredit', header: 'اعتبار' },
+      { key: 'startDate', header: 'تاریخ شروع' },
+      { key: 'endDate', header: 'تاریخ پایان' },
     ];
 
     const workbook = new ExcelJS.Workbook();
