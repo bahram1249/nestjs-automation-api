@@ -23,6 +23,6 @@ export class GSPaymentController {
   @Get('/sadad/verifyCallback')
   @HttpCode(HttpStatus.OK)
   async findAll(@Body() dto: SadadVerifyDto, @Res() res: Response) {
-    return await this.service.sadadVerfiy(dto, res);
+    await this.service.sadadVerfiy(dto, res);
   }
 }
