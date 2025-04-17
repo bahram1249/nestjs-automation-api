@@ -10459,7 +10459,7 @@ END
 
 GO
 
-    
+
 -- gs/admin/vipgenerators
 IF NOT EXISTS ((SELECT 1 FROM Migrations WHERE version = 'CORE-Permissions-Data-v88'
 			))

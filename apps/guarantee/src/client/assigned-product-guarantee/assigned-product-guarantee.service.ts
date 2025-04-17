@@ -205,7 +205,7 @@ export class AssignedProductGuaranteeService {
       assignedGuaranteeId: assigendGuarantee.id,
       productTypeId: dto.productTypeId,
       brandId: dto.brandId,
-      varaintId: dto.variantId,
+      variantId: dto.variantId,
     });
 
     return {

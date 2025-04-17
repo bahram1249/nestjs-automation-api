@@ -1422,7 +1422,8 @@ IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'gs-assignedproductassig
 		)
 BEGIN
 
-	CREATE TABLE GSAssignedProductAsssignedGuarantees (
+
+	CREATE TABLE GSAssignedProductAssignedGuarantees (
 		id                          bigint identity(1,1)        PRIMARY KEY,
         assignedGuaranteeId         bigint                      NOT NULL
             CONSTRAINT FK_AssignedProductAssignedGuarantees_AssignedGuaranteeId
