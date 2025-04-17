@@ -197,7 +197,7 @@ export class GSSadadPaymentService implements GSPaymentInterface {
     }
 
     const payload: SadadVerifyMethodDto = {
-      token: dto.Token,
+      token: dto.token,
       signData: this.encryptPKCS7(
         `${gateway.terminalId};${transactionItem.id};${transactionItem.totalPrice}`,
         gateway.merchantKey,

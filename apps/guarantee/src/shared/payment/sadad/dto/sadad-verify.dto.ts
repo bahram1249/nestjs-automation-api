@@ -5,7 +5,7 @@ export class SadadVerifyDto {
   OrderId: string;
 
   @IsString()
-  Token: string;
+  token: string;
 
   @IsString()
   @IsOptional()

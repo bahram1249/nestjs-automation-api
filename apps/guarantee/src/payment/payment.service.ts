@@ -23,7 +23,7 @@ export class GSPaymentService {
     let transactionItem = await this.transactionRepository.findOne(
       new QueryOptionsBuilder()
         .filter({ id: dto.OrderId })
-        .filter({ token: dto.Token })
+        .filter({ token: dto.token })
         .filter({
           transactionStatusId: GSTransactionStatusEnum.WaitingForPayment,
         })
