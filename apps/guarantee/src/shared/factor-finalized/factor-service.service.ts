@@ -111,7 +111,7 @@ export class FactorFinalizedService {
     dto.nodeCommandId = factor.traverseNodeCommandId;
     dto.requestId = factor.traverseRequestId;
     dto.nodeId = factor.traverseNodeId;
-    dto.requestStateId = factor.traverseRequestId;
+    dto.requestStateId = factor.traverseRequestStateId;
 
     dto.isClientSideCartable = true;
     const cartableItem =
