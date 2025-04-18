@@ -20,6 +20,7 @@ import { GSFactorStatusEnum } from '../factor-status';
 import { GSFactorTypeEnum } from '../factor-type';
 import { Op } from 'sequelize';
 import { User } from '@rahino/database';
+import { GSTransactionStatusEnum } from '../transaction-status';
 
 @Injectable({ scope: Scope.REQUEST })
 export class GSSuccessFactorQueryBuilderService {
@@ -119,6 +120,9 @@ export class GSSuccessFactorQueryBuilderService {
             attributes: ['id', 'title'],
           },
         ],
+        where: {
+          transactionStatusId: GSTransactionStatusEnum.Paid,
+        },
       })
       .thenInclude({
         model: GSFactorType,
