@@ -8,6 +8,7 @@ import { GSTransactionStatusEnum } from '../shared/transaction-status';
 import { SadadVerifyDto } from '../shared/payment/sadad/dto';
 import { GSSadadPaymentService } from '../shared/payment/sadad';
 import { FactorFinalizedService } from '../shared/factor-finalized';
+import { User } from '@rahino/database';
 
 @Injectable()
 export class GSPaymentService {
@@ -17,6 +18,8 @@ export class GSPaymentService {
     private readonly configService: ConfigService,
     private readonly sadadPaymentService: GSSadadPaymentService,
     private readonly factorFinalizedService: FactorFinalizedService,
+    @InjectModel(User)
+    private readonly userRepository: typeof User,
   ) {}
 
   async sadadVerfiy(dto: SadadVerifyDto, res: Response) {
@@ -64,7 +67,10 @@ export class GSPaymentService {
     transactionItem.transactionStatusId = GSTransactionStatusEnum.Paid;
     await transactionItem.save();
 
-    await this.factorFinalizedService.finalized(factorId);
+    const user = await this.userRepository.findOne(
+      new QueryOptionsBuilder().filter({ id: transactionItem.userId }).build(),
+    );
+    await this.factorFinalizedService.finalized(user, factorId);
 
     return res.redirect(
       302,

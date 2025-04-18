@@ -16,6 +16,9 @@ import { GSFactorStatusEnum } from '../factor-status';
 import { GSFactorTypeEnum } from '../factor-type';
 import { Op, Sequelize, Transaction } from 'sequelize';
 import { TraverseService } from '@rahino/bpmn/modules/traverse/traverse.service';
+import { GuaranteeTraverseService } from '@rahino/guarantee/cartable/guarantee-traverse/guarantee-traverse.service';
+import { GuaranteeTraverseDto } from '../guarantee-traverse';
+import { User } from '@rahino/database';
 
 @Injectable()
 export class FactorFinalizedService {
@@ -39,15 +42,16 @@ export class FactorFinalizedService {
     private readonly nodeCommandRepository: typeof BPMNNodeCommand,
     @InjectConnection()
     private readonly sequelize: Sequelize,
+    private readonly guaranteeTraverseService: GuaranteeTraverseService,
   ) {}
 
-  async finalized(factorId: bigint) {
+  async finalized(user: User, factorId: bigint) {
     let factor = await this.factorRepository.findOne(
       new QueryOptionsBuilder().filter({ id: factorId }).build(),
     );
 
     const factorStrategies = {
-      [GSFactorTypeEnum.PayRequestFactor]: () => this.traverse(factor),
+      [GSFactorTypeEnum.PayRequestFactor]: () => this.traverse(user, factor),
       [GSFactorTypeEnum.BuyAdditionalPackage]: () =>
         this.additionalPackageToGuarantee(factor),
       [GSFactorTypeEnum.BuyVipCard]: () => this.generateVipCard(factor),
@@ -101,26 +105,20 @@ export class FactorFinalizedService {
     }
   }
 
-  private async traverse(factor: GSFactor) {
-    const request = await this.requestRepository.findOne(
-      new QueryOptionsBuilder()
-        .filter({ id: factor.traverseRequestId })
-        .build(),
-    );
-    const node = await this.nodeRepository.findOne(
-      new QueryOptionsBuilder().filter({ id: factor.traverseNodeId }).build(),
-    );
-    const nodeCommand = await this.nodeCommandRepository.findOne(
-      new QueryOptionsBuilder()
-        .filter({ id: factor.traverseNodeCommandId })
-        .build(),
-    );
+  private async traverse(user: User, factor: GSFactor) {
+    let dto = new GuaranteeTraverseDto();
+    dto.isClientSideCartable = true;
+    dto.nodeCommandId = factor.traverseNodeCommandId;
+    dto.requestId = factor.traverseRequestId;
+    dto.nodeId = factor.traverseNodeId;
+    dto.requestStateId = factor.traverseRequestId;
 
-    const requestState = await this.requestStateRepository.findOne(
-      new QueryOptionsBuilder()
-        .filter({ id: factor.traverseRequestStateId })
-        .build(),
-    );
+    dto.isClientSideCartable = true;
+    const cartableItem =
+      await this.guaranteeTraverseService.validateAndReturnCartableItem(
+        user,
+        dto,
+      );
 
     const transaction = await this.sequelize.transaction({
       isolationLevel: Transaction.ISOLATION_LEVELS.READ_COMMITTED,
@@ -128,10 +126,10 @@ export class FactorFinalizedService {
 
     try {
       await this.traverseService.traverse({
-        node: node,
-        nodeCommand: nodeCommand,
-        request: request,
-        requestState: requestState,
+        node: cartableItem.node,
+        nodeCommand: cartableItem.nodeCommand,
+        request: cartableItem.request,
+        requestState: cartableItem.requestState,
         userExecuterId: factor.userId,
         transaction: transaction,
       });

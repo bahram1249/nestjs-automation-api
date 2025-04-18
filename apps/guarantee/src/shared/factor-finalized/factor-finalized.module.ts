@@ -12,6 +12,7 @@ import {
   GSFactorAdditionalPackage,
 } from '@rahino/localdatabase/models';
 import { TraverseModule } from '@rahino/bpmn/modules/traverse/traverse.module';
+import { GuaranteeTraverseModule } from '@rahino/guarantee/cartable/guarantee-traverse/guarantee-traverse.module';
 
 @Module({
   imports: [
@@ -27,6 +28,7 @@ import { TraverseModule } from '@rahino/bpmn/modules/traverse/traverse.module';
       BPMNRequestState,
     ]),
     TraverseModule,
+    GuaranteeTraverseModule,
   ],
   providers: [FactorFinalizedService],
   exports: [FactorFinalizedService],

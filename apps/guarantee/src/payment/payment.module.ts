@@ -5,10 +5,11 @@ import { FactorFinalizedModule } from '../shared/factor-finalized';
 import { SequelizeModule } from '@nestjs/sequelize';
 import { GSTransaction } from '@rahino/localdatabase/models';
 import { GSPaymentController } from './payment.controller';
+import { User } from '@rahino/database';
 
 @Module({
   imports: [
-    SequelizeModule.forFeature([GSTransaction]),
+    SequelizeModule.forFeature([GSTransaction, User]),
     GSSadadPaymentModule,
     FactorFinalizedModule,
   ],
