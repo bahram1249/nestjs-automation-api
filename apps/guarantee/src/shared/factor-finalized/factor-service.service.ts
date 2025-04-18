@@ -100,7 +100,7 @@ export class FactorFinalizedService {
     for (const factorAdditionalPackage of factorAdditionalPackages) {
       await this.assignedGuaranteeAdditionalPackageRepository.create({
         assignedGuaranteeId: assignedGuarantee.id,
-        additionalPackageId: factorAdditionalPackage.id,
+        additionalPackageId: factorAdditionalPackage.additionalPackageId,
       });
     }
   }
