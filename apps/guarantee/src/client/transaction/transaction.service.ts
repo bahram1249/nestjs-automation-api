@@ -42,9 +42,11 @@ export class GSTransactionService {
   }
 
   async findOne(user: User, id: bigint) {
-    let query = new QueryOptionsBuilder().filter({
-      userId: user.id,
-    });
+    let query = new QueryOptionsBuilder()
+      .filter({
+        userId: user.id,
+      })
+      .filter({ id: id });
 
     query = query.attributes([
       'id',
