@@ -18,7 +18,7 @@ export class FactorService {
 
   async findAll(user: User, filter: GetFactorDto) {
     let query = this.factorQueryBuilder
-      .init()
+      .init(false)
       .factorOwner(user.id)
       .dateGreaterThan(filter.greaterThan)
       .dateLessThan(filter.lessThan);
@@ -41,7 +41,7 @@ export class FactorService {
 
   async findById(user: User, entityId: bigint) {
     let query = this.factorQueryBuilder
-      .init()
+      .init(false)
       .factorOwner(user.id)
       .filterFactorId(entityId)
       .requiredIncluded()

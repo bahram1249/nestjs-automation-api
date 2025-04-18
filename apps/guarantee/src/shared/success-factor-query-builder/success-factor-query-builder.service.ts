@@ -27,19 +27,22 @@ export class GSSuccessFactorQueryBuilderService {
   private builder: QueryOptionsBuilder;
   constructor() {}
 
-  init() {
-    this.builder = new QueryOptionsBuilder()
-      .include([
-        {
-          model: GSRequest,
-          as: 'guaranteeRequest',
-          required: true,
-          include: [{ model: BPMNOrganization, as: 'bpmnOrganization' }],
-        },
-      ])
-      .filter({
-        factorStatusId: GSFactorStatusEnum.Paid,
-      });
+  init(includeRequest = true) {
+    this.builder = new QueryOptionsBuilder().filter({
+      factorStatusId: GSFactorStatusEnum.Paid,
+    });
+
+    this.builder = includeRequest
+      ? this.builder.include([
+          {
+            model: GSRequest,
+            as: 'guaranteeRequest',
+            required: true,
+            include: [{ model: BPMNOrganization, as: 'bpmnOrganization' }],
+          },
+        ])
+      : this.builder.include([]);
+
     return this;
   }
 
