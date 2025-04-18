@@ -37,7 +37,7 @@ export class GSPaymentService {
     if (Number(dto.ResCode) != 0) {
       transactionItem.transactionStatusId = GSTransactionStatusEnum.UnPaid;
       await transactionItem.save();
-      res.redirect(
+      return res.redirect(
         302,
         `${this.configService.get('BASE_FRONT_URL')}/transactionStatus/${
           transactionItem.id
@@ -52,7 +52,7 @@ export class GSPaymentService {
     if (!paymentResult) {
       transactionItem.transactionStatusId = GSTransactionStatusEnum.UnPaid;
       await transactionItem.save();
-      res.redirect(
+      return res.redirect(
         302,
         `${this.configService.get('BASE_FRONT_URL')}/transactionStatus/${
           transactionItem.id
@@ -66,7 +66,7 @@ export class GSPaymentService {
 
     await this.factorFinalizedService.finalized(factorId);
 
-    res.redirect(
+    return res.redirect(
       302,
       `${this.configService.get('BASE_FRONT_URL')}/transactionStatus/${
         transactionItem.id

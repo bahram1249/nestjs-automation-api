@@ -209,6 +209,7 @@ export class GSSadadPaymentService implements GSPaymentInterface {
       payload,
     );
 
+    console.log('data return from sadad', res.data);
     const result = res.data as SadadVerifyOutputDto;
 
     if (result.ResCode != 0) return false;
