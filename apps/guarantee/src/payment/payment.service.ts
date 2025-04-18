@@ -60,10 +60,11 @@ export class GSPaymentService {
       );
     }
 
+    let factorId = transactionItem.factorId;
     transactionItem.transactionStatusId = GSTransactionStatusEnum.Paid;
     await transactionItem.save();
 
-    await this.factorFinalizedService.finalized(transactionItem.factorId);
+    await this.factorFinalizedService.finalized(factorId);
 
     res.redirect(
       302,

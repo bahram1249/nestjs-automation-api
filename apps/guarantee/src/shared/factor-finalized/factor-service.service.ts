@@ -20,7 +20,8 @@ import { TraverseService } from '@rahino/bpmn/modules/traverse/traverse.service'
 @Injectable()
 export class FactorFinalizedService {
   constructor(
-    @InjectModel(GSFactor) private readonly factorRepository: typeof GSFactor,
+    @InjectModel(GSFactor)
+    private readonly factorRepository: typeof GSFactor,
     @InjectModel(GSFactorAdditionalPackage)
     private readonly factorAdditionalPackageRepository: typeof GSFactorAdditionalPackage,
     @InjectModel(GSAssignedGuaranteeAdditionalPackage)
@@ -46,13 +47,10 @@ export class FactorFinalizedService {
     );
 
     const factorStrategies = {
-      [GSFactorTypeEnum.PayRequestFactor]: async () => {
-        await this.traverse(factor);
-      },
-      [GSFactorTypeEnum.BuyAdditionalPackage]: async () => {
-        await this.additionalPackageToGuarantee(factor);
-      },
-      [GSFactorTypeEnum.BuyVipCard]: async () => {},
+      [GSFactorTypeEnum.PayRequestFactor]: () => this.traverse(factor),
+      [GSFactorTypeEnum.BuyAdditionalPackage]: () =>
+        this.additionalPackageToGuarantee(factor),
+      [GSFactorTypeEnum.BuyVipCard]: () => this.generateVipCard(factor),
     };
 
     const strategy = factorStrategies[factor.factorTypeId];
@@ -65,6 +63,10 @@ export class FactorFinalizedService {
     factor.factorStatusId = GSFactorStatusEnum.Paid;
     factor.settlementDate = new Date();
     await factor.save();
+  }
+
+  async generateVipCard(factor: GSFactor) {
+    throw new Error('Method not implemented.');
   }
 
   private async additionalPackageToGuarantee(factor: GSFactor) {
