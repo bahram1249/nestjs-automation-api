@@ -1,4 +1,4 @@
 export class SadadVerifyMethodDto {
-  token: string;
-  signData: string;
+  Token: string;
+  SignData: string;
 }

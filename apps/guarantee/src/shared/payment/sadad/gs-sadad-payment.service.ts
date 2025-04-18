@@ -190,10 +190,11 @@ export class GSSadadPaymentService implements GSPaymentInterface {
 
   public async verify(dto: SadadVerifyDto, transactionItem: GSTransaction) {
     const payload: SadadVerifyMethodDto = {
-      token: dto.token,
-      signData: transactionItem.signData,
+      Token: dto.token,
+      SignData: transactionItem.signData,
     };
 
+    console.log('payload', payload);
     const res = await axios.post(
       'https://sadad.shaparak.ir/api/v0/Advice/Verify',
       payload,
