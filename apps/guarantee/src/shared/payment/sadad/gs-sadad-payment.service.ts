@@ -110,7 +110,7 @@ export class GSSadadPaymentService implements GSPaymentInterface {
       );
     }
 
-    const transaction = await this.transactionRepository.create(
+    let transaction = await this.transactionRepository.create(
       {
         transactionStatusId: GSTransactionStatusEnum.WaitingForPayment,
         unitPriceId: GSUnitPriceEnum.Rial,
@@ -121,6 +121,13 @@ export class GSSadadPaymentService implements GSPaymentInterface {
       },
       { transaction: dto.transaction },
     );
+
+    transaction.signData = this.encryptPKCS7(
+      `${gateway.terminalId};${transaction.id};${transaction.totalPrice}`,
+      gateway.merchantKey,
+    );
+    transaction = await transaction.save({ transaction: dto.transaction });
+
     // request to sadad using axios
     const res = await this.requestToSadad(transaction, gateway);
 
@@ -152,10 +159,7 @@ export class GSSadadPaymentService implements GSPaymentInterface {
       MerchantId: gateway.merchantId,
       OrderId: transaction.id,
       TerminalId: gateway.terminalId,
-      SignData: this.encryptPKCS7(
-        `${gateway.terminalId};${transaction.id};${transaction.totalPrice}`,
-        gateway.merchantKey,
-      ),
+      SignData: transaction.signData,
       LocalDateString: new Date().toISOString(),
       ReturnUrl: `${this.configService.get(
         'BASE_URL',
@@ -185,23 +189,9 @@ export class GSSadadPaymentService implements GSPaymentInterface {
   }
 
   public async verify(dto: SadadVerifyDto, transactionItem: GSTransaction) {
-    const gateway = await this.paymentGatewayRepository.findOne(
-      new QueryOptionsBuilder()
-        .filter({ serviceProvider: 'GSSadadPaymentService' })
-        .build(),
-    );
-    if (!gateway) {
-      throw new BadRequestException(
-        this.localizationService.translate('core.not_found'),
-      );
-    }
-
     const payload: SadadVerifyMethodDto = {
       token: dto.token,
-      signData: this.encryptPKCS7(
-        `${gateway.terminalId};${transactionItem.id};${transactionItem.totalPrice}`,
-        gateway.merchantKey,
-      ),
+      signData: transactionItem.signData,
     };
 
     const res = await axios.post(
@@ -212,7 +202,7 @@ export class GSSadadPaymentService implements GSPaymentInterface {
     console.log('data return from sadad', res.data);
     const result = res.data as SadadVerifyOutputDto;
 
-    if (result.ResCode != 0) return false;
+    if (Number(result.ResCode) != 0) return false;
     if (result.Amount != Number(transactionItem.totalPrice)) return false;
 
     // if you want store extra data from ipg

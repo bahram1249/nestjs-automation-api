@@ -82,4 +82,10 @@ export class GSTransaction extends Model {
     allowNull: true,
   })
   token?: string;
+
+  @Column({
+    type: DataType.STRING,
+    allowNull: true,
+  })
+  signData?: string;
 }

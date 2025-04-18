@@ -1388,6 +1388,24 @@ END
 
 GO
 
+-- gs-transactions-v3
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'gs-transactions-v3'
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings
+		WHERE ([key] = 'CUSTOMER_NAME' AND [value] IN ('AriaKish'))
+		)
+BEGIN
+
+	ALTER TABLE GSTransactions
+	    ADD signData nvarchar(2048) null
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'gs-transactions-v3', GETDATE(), GETDATE()
+END
+
+GO
+
 -- gs-factor-additional-packages
 IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'gs-factor-additional-packages-v1'
 			)

@@ -1,8 +1,8 @@
 import { IsNumber, IsString } from 'class-validator';
 
 export class SadadVerifyOutputDto {
-  @IsNumber()
-  ResCode: number;
+  @IsString()
+  ResCode: string;
 
   @IsNumber()
   Amount: number;
