@@ -189,9 +189,21 @@ export class GSSadadPaymentService implements GSPaymentInterface {
   }
 
   public async verify(dto: SadadVerifyDto, transactionItem: GSTransaction) {
+    // find gateway
+    const gateway = await this.paymentGatewayRepository.findOne(
+      new QueryOptionsBuilder()
+        .filter({ serviceProvider: 'GSSadadPaymentService' })
+        .build(),
+    );
+    if (!gateway) {
+      throw new BadRequestException(
+        this.localizationService.translate('core.not_found'),
+      );
+    }
+
     const payload: SadadVerifyMethodDto = {
       Token: dto.token,
-      SignData: transactionItem.signData,
+      SignData: this.encryptPKCS7(dto.token, gateway.merchantKey),
     };
 
     console.log('payload', payload);
