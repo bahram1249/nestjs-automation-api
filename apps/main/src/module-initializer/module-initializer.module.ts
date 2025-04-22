@@ -5,8 +5,10 @@ import {
   GuaranteeInitializerService,
   PcmInitializerService,
 } from './services';
+import { ScriptRunnerModule } from '../script-runner';
 
 @Module({
+  imports: [ScriptRunnerModule],
   providers: [
     {
       provide: 'GuaranteeInitializerService',
