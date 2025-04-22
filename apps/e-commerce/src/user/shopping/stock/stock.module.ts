@@ -31,9 +31,11 @@ import { ECProvince } from '@rahino/localdatabase/models';
 import { ShipmentModule } from './services/shipment-price';
 import { PaymentServiceProviderModule } from '../payment/provider/payment-provider.module';
 import { PaymentRuleModule } from '../payment-rule/payment-rule.module';
+import { LocalizationModule } from 'apps/main/src/common/localization';
 
 @Module({
   imports: [
+    LocalizationModule,
     PaymentRuleModule,
     SequelizeModule.forFeature([
       User,

@@ -1,4 +1,6 @@
 {
+  "at_least_inventory_qty_must_be_greater_than_zero": "حداقل موجودی اضافه شده باید بزرگتر از صفر باشد",
+  "the_inventory_isnt_available": "موجودی کالا در دسترس نیست",
   "user_exists_before": "کاربر مورد نظر از قبل موجود میباشد",
   "courier_not_found": "پیک یافت نشد",
   "address_name": "یک نام آدرس وارد بفرمایید مانند: خانه",

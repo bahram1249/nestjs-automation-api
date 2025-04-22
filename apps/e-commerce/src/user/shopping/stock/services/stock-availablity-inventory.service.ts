@@ -14,6 +14,7 @@ import * as _ from 'lodash';
 import { Op, Sequelize } from 'sequelize';
 import { ConfigService } from '@nestjs/config';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
+import { LocalizationService } from 'apps/main/src/common/localization';
 
 @Injectable()
 export class StockAvailabilityInventoryService {
@@ -23,12 +24,17 @@ export class StockAvailabilityInventoryService {
     private readonly inventoryService: InventoryService,
     @InjectMapper() private readonly mapper: Mapper,
     private readonly config: ConfigService,
+    private readonly localizationService: LocalizationService,
   ) {}
 
   async insert(session: ECUserSession, dto: StockDto) {
     const inventory = await this.inventoryService.findById(dto.inventoryId);
     if (!inventory) {
-      throw new BadRequestException("the inventory isn't available");
+      throw new BadRequestException(
+        this.localizationService.translate(
+          'ecommerce.the_inventory_isnt_available',
+        ),
+      );
     }
 
     let findItem = await this.repository.findOne(
@@ -63,7 +69,18 @@ export class StockAvailabilityInventoryService {
       dto.qty = dto.qty + findItem.qty;
     }
     if (dto.qty > inventory.qty) {
-      throw new BadRequestException("the inventory isn't available");
+      throw new BadRequestException(
+        this.localizationService.translate(
+          'ecommerce.the_inventory_isnt_available',
+        ),
+      );
+    }
+    if (dto.qty <= 0) {
+      throw new BadRequestException(
+        this.localizationService.translate(
+          'ecommerce.the_inventory_isnt_available',
+        ),
+      );
     }
     const increase = this.config.get<number>('STOCK_EXPIRE_DAY') || 2;
     const mappedItem = this.mapper.map(dto, StockDto, ECStock);
@@ -137,10 +154,18 @@ export class StockAvailabilityInventoryService {
     }
 
     if (dto.qty > inventory.qty) {
-      throw new BadRequestException("the inventory isn't available");
+      throw new BadRequestException(
+        this.localizationService.translate(
+          'ecommerce.the_inventory_isnt_available',
+        ),
+      );
     }
     if (dto.qty == 0) {
-      throw new BadRequestException('at least you have to set qty to 1');
+      throw new BadRequestException(
+        this.localizationService.translate(
+          'ecommerce.at_least_inventory_qty_must_be_greater_than_zero',
+        ),
+      );
     }
     const increase = this.config.get<number>('STOCK_EXPIRE_DAY') || 2;
     const mappedItem = this.mapper.map(dto, StockDto, ECStock);
