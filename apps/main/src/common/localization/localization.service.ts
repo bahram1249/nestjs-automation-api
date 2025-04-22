@@ -9,7 +9,7 @@ export class LocalizationService {
 
   translate(translation: PathImpl2<I18nTranslations>) {
     return this.i18n.translate(translation, {
-      lang: I18nContext.current().lang,
+      lang: I18nContext.current() ? I18nContext.current().lang : 'fa',
     });
   }
 }
