@@ -11,39 +11,29 @@ import helmet from 'helmet';
 import { ThrottlerModule } from '@nestjs/throttler';
 import { DevtoolsModule } from '@nestjs/devtools-integration';
 import { CacheModule } from '@nestjs/cache-manager';
-import { PCMModule } from '@rahino/pcm';
 import { CoreModule } from '@rahino/core';
 import { HttpExceptionFilter } from '@rahino/http-exception-filter';
 import { DBLogger, DBLoggerModule } from '@rahino/logger';
-import { EAVModule } from '@rahino/eav';
-import { ECommerceModule } from '@rahino/ecommerce';
 import { AutomapperModule } from 'automapper-nestjs';
 import { classes } from 'automapper-classes';
 import { NestExpressApplication } from '@nestjs/platform-express';
-//import { UIModule } from '@rahino/ui';
 import * as cookieParser from 'cookie-parser';
-import * as session from 'express-session';
 import { DynamicProviderModule } from '../dynamic-provider/dynamic-provider.module';
 import { ThrottlerBehindProxyGuard } from '@rahino/commontools/guard';
-import { APP_GUARD } from '@nestjs/core';
+import { APP_GUARD, ModuleRef } from '@nestjs/core';
 import {
   AcceptLanguageResolver,
   I18nModule,
-  I18nService,
   I18nValidationPipe,
   QueryResolver,
 } from 'nestjs-i18n';
 import * as path from 'path';
 import { AppLanguageResolver } from '../i18nResolver/AppLanguageResolver';
-import { ECommerceSmsModule } from '@rahino/ecommerce/util/sms/ecommerce-sms.module';
-import { ECommmerceSmsService } from '@rahino/ecommerce/util/sms/ecommerce-sms.service';
 import { KnexModule } from 'nestjs-knex';
 import { useContainer } from 'class-validator';
 const cluster = require('cluster');
 import * as os from 'os';
 import { Dialect } from 'sequelize';
-import { BPMNModule } from '@rahino/bpmn';
-import { GSModule } from 'apps/guarantee/src';
 import {
   bpmnModels,
   discountCoffeEntities,
@@ -52,9 +42,12 @@ import {
   guaranteeModels,
   pcmEntities,
 } from '@rahino/localdatabase/subsystem-models';
+import { ModuleInitializerModule } from '../module-initializer/module-initializer.module';
+import { ModuleInitializerServiceInterface } from '../module-initializer/interface';
 
 @Module({
   imports: [
+    ModuleInitializerModule,
     ConfigModule.forRoot({
       envFilePath: ['.env.development', '.env.local', '.env'],
       isGlobal: true,
@@ -153,7 +146,6 @@ import {
     DevtoolsModule.register({
       http: process.env.NODE_ENV !== 'production',
     }),
-    ECommerceSmsModule,
   ],
   providers: [
     {
@@ -166,8 +158,7 @@ export class AppModule implements NestModule {
   constructor(
     private readonly logger: DBLogger,
     private readonly config: ConfigService,
-    private readonly i18n: I18nService,
-    private readonly smsService: ECommmerceSmsService,
+    private readonly moduleRef: ModuleRef,
   ) {}
   app: NestExpressApplication;
   async configure(consumer: MiddlewareConsumer) {}
@@ -208,14 +199,18 @@ export class AppModule implements NestModule {
     );
     app.enableCors({});
     app.use(cookieParser());
-    app.use(
-      session({
-        secret: this.config.get('SESSION_KEY'),
-        resave: false,
-        saveUninitialized: false,
-      }),
-    );
+    // app.use(
+    //   session({
+    //     secret: this.config.get('SESSION_KEY'),
+    //     resave: false,
+    //     saveUninitialized: false,
+    //   }),
+    // );
 
+    await this.initializerModule(app);
+  }
+
+  private async initializerModule(app: NestExpressApplication) {
     const numCpu = Number(
       this.config.get<string>('CLUSTER_COUNT') || os.cpus().length,
     );
@@ -229,21 +224,24 @@ export class AppModule implements NestModule {
         cluster.fork();
       });
     } else {
-      app.get(CoreModule).setApp(app);
       //app.get(UIModule).setApp(app);
       const projectName = this.config.get<string>('PROJECT_NAME');
-      if (projectName == 'ECommerce') {
-        app.get(EAVModule).setApp(app);
-        app.get(ECommerceModule).setApp(app);
-      } else if (projectName == 'DiscountCoffe') {
-      } else if (projectName == 'PCM') {
-        app.get(PCMModule).setApp(app);
-      } else if (projectName == 'BPMN') {
-        app.get(BPMNModule).setApp(app);
-      } else if (projectName == 'Guarantee') {
-        app.get(BPMNModule).setApp(app);
-        await app.get(GSModule).setApp(app);
+
+      const serviceInstance: ModuleInitializerServiceInterface =
+        await this.moduleRef.get<ModuleInitializerServiceInterface>(
+          projectName + 'InitializerService',
+          {
+            strict: false,
+          },
+        );
+
+      if (!serviceInstance) {
+        throw new Error(
+          `Service with token ${projectName + 'InitializerService'} not found`,
+        );
       }
+
+      await serviceInstance.init(app);
 
       const port = this.config.get('HOST_PORT');
       const host = this.config.get('HOST_NAME');
