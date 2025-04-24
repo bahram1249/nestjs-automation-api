@@ -208,7 +208,7 @@ export class SharedCartableFilteringService {
       .attributes(['id', 'requestId', 'activityId', 'createdAt', 'updatedAt'])
 
       .thenInclude({
-        attributes: ['id', 'injectForm'],
+        attributes: ['id', 'injectForm', 'name', 'description'],
         model: BPMNNode,
         as: 'nodes',
         required: false,
