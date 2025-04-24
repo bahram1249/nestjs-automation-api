@@ -1687,3 +1687,52 @@ BEGIN
 END
 
 GO
+
+
+-- gs-factor-vip-bundles
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'gs-factor-vip-bundle-v1'
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings
+		WHERE ([key] = 'CUSTOMER_NAME' AND [value] IN ('AriaKish'))
+		)
+BEGIN
+
+	CREATE TABLE GSFactorVipBundles (
+		id                          bigint identity (1,1)       PRIMARY KEY,
+        factorId                    bigint                      NOT NULL
+            CONSTRAINT FK_GSFactorVipBundles_FactorId
+                FOREIGN KEY REFERENCES GSFactors(id),
+        vipBundleTypeId             int                         NOT NULL
+            CONSTRAINT FK_GSFactorVipBundles_VipBundleTypeId
+                FOREIGN KEY REFERENCES GSVipBundleTypes(id),
+        itemPrice                   bigint                      NOT NULL,
+        unitPriceId                 int                         NOT NULL
+            CONSTRAINT FK_GSFactorVipBundles_UnitPriceId
+                FOREIGN KEY REFERENCES GSUnitPrices(id),
+		[createdAt]					datetimeoffset				NOT NULL,
+		[updatedAt]					datetimeoffset				NOT NULL
+	);
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'gs-factor-vip-bundle-v1', GETDATE(), GETDATE()
+END
+
+GO
+
+-- gs-factor-vip-bundles-v2
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'gs-factor-vip-bundle-v2'
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings
+		WHERE ([key] = 'CUSTOMER_NAME' AND [value] IN ('AriaKish'))
+		)
+BEGIN
+	ALTER TABLE GSFactorVipBundles
+	    ADD fee bigint not null 
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'gs-factor-vip-bundle-v2', GETDATE(), GETDATE()
+END
+
+GO

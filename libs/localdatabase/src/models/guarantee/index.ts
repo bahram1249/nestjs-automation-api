@@ -38,3 +38,4 @@ export * from './gs-service-type.entity';
 export * from './gs-warranty-service-type.entity';
 export * from './gs-factor-service.entity';
 export * from './gs-vip-generator.entity';
+export * from './gs-factor-vip-bundle.entity';

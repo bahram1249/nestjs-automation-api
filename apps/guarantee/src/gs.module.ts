@@ -70,6 +70,7 @@ import { RequestFactorPayModule } from './client/request-factor-pay';
 import { GSPaymentModule } from './payment/payment.module';
 import { GSClientTransactionModule } from './client/transaction';
 import { GSAnonymousVipBundleTypeModule } from './anonymous/vip-bundle-types';
+import { GSPayVipBundleModule } from './client/pay-vip-bundle/pay-vip-bundle.module';
 
 @Module({
   imports: [
@@ -156,6 +157,8 @@ import { GSAnonymousVipBundleTypeModule } from './anonymous/vip-bundle-types';
 
     // Anonymous
     GSAnonymousVipBundleTypeModule,
+
+    GSPayVipBundleModule,
   ],
 })
 export class GSModule implements NestModule {
