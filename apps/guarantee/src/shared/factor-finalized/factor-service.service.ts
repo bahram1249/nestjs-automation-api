@@ -1,15 +1,13 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectConnection, InjectModel } from '@nestjs/sequelize';
 import {
-  BPMNNode,
-  BPMNNodeCommand,
-  BPMNRequest,
-  BPMNRequestState,
   GSAssignedGuarantee,
   GSAssignedGuaranteeAdditionalPackage,
   GSFactor,
   GSFactorAdditionalPackage,
-  GSRequest,
+  GSFactorVipBundle,
+  GSGuarantee,
+  GSVipBundleType,
 } from '@rahino/localdatabase/models';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import { GSFactorStatusEnum } from '../factor-status';
@@ -19,6 +17,11 @@ import { TraverseService } from '@rahino/bpmn/modules/traverse/traverse.service'
 import { GuaranteeTraverseService } from '@rahino/guarantee/cartable/guarantee-traverse/guarantee-traverse.service';
 import { GuaranteeTraverseDto } from '../guarantee-traverse';
 import { User } from '@rahino/database';
+import * as ShortUniqueId from 'short-unique-id';
+import * as moment from 'moment';
+import { GSProviderEnum } from '../provider';
+import { GSGuaranteeTypeEnum } from '../gurantee-type';
+import { GSGuaranteeConfirmStatus } from '../guarantee-confirm-status';
 
 @Injectable()
 export class FactorFinalizedService {
@@ -31,15 +34,12 @@ export class FactorFinalizedService {
     private readonly assignedGuaranteeAdditionalPackageRepository: typeof GSAssignedGuaranteeAdditionalPackage,
     @InjectModel(GSAssignedGuarantee)
     private readonly assignedGuaranteeRepository: typeof GSAssignedGuarantee,
+    @InjectModel(GSFactorVipBundle)
+    private readonly factorVipBundleRepository: typeof GSFactorVipBundle,
+    @InjectModel(GSGuarantee)
+    private readonly guaranteeRepository: typeof GSGuarantee,
     private readonly traverseService: TraverseService,
-    @InjectModel(BPMNRequest)
-    private readonly requestRepository: typeof BPMNRequest,
-    @InjectModel(BPMNRequestState)
-    private readonly requestStateRepository: typeof BPMNRequestState,
-    @InjectModel(BPMNNode)
-    private readonly nodeRepository: typeof BPMNNode,
-    @InjectModel(BPMNNodeCommand)
-    private readonly nodeCommandRepository: typeof BPMNNodeCommand,
+
     @InjectConnection()
     private readonly sequelize: Sequelize,
     private readonly guaranteeTraverseService: GuaranteeTraverseService,
@@ -70,7 +70,38 @@ export class FactorFinalizedService {
   }
 
   async generateVipCard(factor: GSFactor) {
-    throw new Error('Method not implemented.');
+    const factorVipBundle = await this.factorVipBundleRepository.findOne(
+      new QueryOptionsBuilder()
+        .include({ model: GSVipBundleType, as: 'vipBundleType' })
+        .filter({ factorId: factor.id })
+        .build(),
+    );
+
+    const uid = new ShortUniqueId({ length: 10 });
+    const currentDate = new Date();
+    const momentEndDate = moment(currentDate).add(
+      factorVipBundle.vipBundleType.monthPeriod,
+      'M',
+    );
+    const endDate = momentEndDate.toDate();
+
+    const randomSerialNumber = uid.rnd();
+    const guarantee = await GSGuarantee.create({
+      providerId: GSProviderEnum.ARIAKISH_LOCAL,
+      guaranteeTypeId: GSGuaranteeTypeEnum.VIP,
+      guaranteeConfirmStatusId: GSGuaranteeConfirmStatus.Confirm,
+      serialNumber: randomSerialNumber,
+      startDate: currentDate,
+      endDate: endDate,
+      vipBundleTypeId: factorVipBundle.vipBundleTypeId,
+      totalCredit: factorVipBundle.fee,
+      availableCredit: factorVipBundle.fee,
+    });
+
+    await this.assignedGuaranteeRepository.create({
+      guaranteeId: guarantee.id,
+      userId: factor.userId,
+    });
   }
 
   private async additionalPackageToGuarantee(factor: GSFactor) {
