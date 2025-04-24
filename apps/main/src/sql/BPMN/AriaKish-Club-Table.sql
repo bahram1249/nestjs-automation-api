@@ -1729,7 +1729,7 @@ IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'gs-factor-vip-bundle-v2
 		)
 BEGIN
 	ALTER TABLE GSFactorVipBundles
-	    ADD fee bigint not null 
+	    ADD fee bigint not null
 
 	INSERT INTO Migrations(version, createdAt, updatedAt)
 	SELECT 'gs-factor-vip-bundle-v2', GETDATE(), GETDATE()

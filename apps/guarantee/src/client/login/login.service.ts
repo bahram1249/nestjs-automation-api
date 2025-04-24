@@ -78,6 +78,7 @@ export class LoginService {
         username: dto.phoneNumber,
         firstname: dto.firstname,
         lastname: dto.lastname,
+        nationalCode: dto.nationalCode,
       });
     }
     const signToken = await this.authService.signToken(user);
@@ -93,6 +94,7 @@ export class LoginService {
         'lastname',
         'username',
         'phoneNumber',
+        'nationalCode',
         'birthDate',
       ]),
     };
