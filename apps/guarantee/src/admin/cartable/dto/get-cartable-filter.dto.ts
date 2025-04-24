@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
-import { IsInt, IsNumber, IsOptional } from 'class-validator';
+import { IsInt, IsNumber, IsOptional, IsString } from 'class-validator';
 
 export class GetCartableFilteDto {
   @IsInt()
@@ -24,4 +24,40 @@ export class GetCartableFilteDto {
     description: 'requestStateId',
   })
   requestStateId?: bigint;
+
+  @IsString()
+  @IsOptional()
+  @ApiProperty({
+    required: false,
+    type: IsString,
+    description: 'nationalCode',
+  })
+  nationalCode?: string;
+
+  @IsString()
+  @IsOptional()
+  @ApiProperty({
+    required: false,
+    type: IsString,
+    description: 'phoneNumber',
+  })
+  phoneNumber?: string;
+
+  @IsString()
+  @IsOptional()
+  @ApiProperty({
+    required: false,
+    type: IsString,
+    description: 'firstname',
+  })
+  firstname?: string;
+
+  @IsString()
+  @IsOptional()
+  @ApiProperty({
+    required: false,
+    type: IsString,
+    description: 'lastname',
+  })
+  lastname?: string;
 }

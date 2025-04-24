@@ -186,6 +186,18 @@ export class CartableService {
           },
         ],
       })
+      .filterIf(filter.nationalCode != null, {
+        '$guaranteeRequest.user.nationalCode$': filter.nationalCode,
+      })
+      .filterIf(filter.phoneNumber != null, {
+        '$guaranteeRequest.user.phoneNumber$': filter.phoneNumber,
+      })
+      .filterIf(filter.firstname != null, {
+        '$guaranteeRequest.user.firstname$': filter.firstname,
+      })
+      .filterIf(filter.lastname != null, {
+        '$guaranteeRequest.user.lastname$': filter.lastname,
+      })
       .filterIf(filter.requestId != null, { requestId: filter.requestId })
       .filterIf(filter.requestStateId != null, { id: filter.requestStateId });
 
