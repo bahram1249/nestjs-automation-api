@@ -320,6 +320,25 @@ IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'bpmn-nodes-v1'
 
 GO
 
+-- Nodes v2
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'bpmn-nodes-v2'
+)
+    AND EXISTS (
+        SELECT 1 FROM Settings
+        WHERE ([key] = 'SITE_NAME' AND [value] IN ('BPMN'))
+    )
+    BEGIN
+
+        ALTER TABLE BPMNNodes
+            ADD [name] nvarchar(512) NULL,
+                [description] nvarchar(1024) NULL
+        
+        INSERT INTO Migrations(version, createdAt, updatedAt)
+        SELECT 'bpmn-nodes-v2', GETDATE(), GETDATE()
+    END
+
+GO
+
 -- Node Command Types
 IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'bpmn-nodecommandtypes-v1'
 )

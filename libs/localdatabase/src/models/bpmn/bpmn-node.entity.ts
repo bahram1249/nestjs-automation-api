@@ -111,4 +111,16 @@ export class BPMNNode extends Model {
     sourceKey: 'id',
   })
   nodeCommands: BPMNNodeCommand[];
+
+  @Column({
+    type: DataType.STRING,
+    allowNull: true,
+  })
+  name?: string;
+
+  @Column({
+    type: DataType.STRING,
+    allowNull: true,
+  })
+  description?: string;
 }
