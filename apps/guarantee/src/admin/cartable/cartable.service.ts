@@ -58,48 +58,6 @@ export class CartableService {
           },
         },
       ])
-      .filter({
-        [Op.or]: [
-          {
-            userId: user.id,
-          },
-          {
-            [Op.and]: [
-              {
-                roleId: {
-                  [Op.in]: roleIds,
-                },
-              },
-              {
-                organizationId: {
-                  [Op.is]: null,
-                },
-              },
-            ],
-          },
-          {
-            [Op.and]: [
-              {
-                roleId: {
-                  [Op.in]: roleIds,
-                },
-              },
-              {
-                organizationId: {
-                  [Op.in]: organizationIds,
-                },
-              },
-            ],
-          },
-        ],
-      })
-      .filterIf(filter.requestId != null, { requestId: filter.requestId })
-      .filterIf(filter.requestStateId != null, { id: filter.requestStateId });
-
-    const count = await this.repository.count(query.build());
-
-    query = query
-      .attributes(['id', 'requestId', 'activityId', 'createdAt', 'updatedAt'])
       .thenInclude({
         attributes: [
           'id',
@@ -115,7 +73,7 @@ export class CartableService {
         ],
         model: GSRequest,
         as: 'guaranteeRequest',
-        required: false,
+        required: true,
         include: [
           {
             attributes: ['id', 'title'],
@@ -143,9 +101,10 @@ export class CartableService {
             as: 'productType',
           },
           {
-            attributes: ['id', 'firstname', 'lastname'],
+            attributes: ['id', 'firstname', 'lastname', 'nationalCode'],
             model: User,
             as: 'user',
+            required: true,
           },
           {
             attributes: ['id', 'guaranteePeriodId', 'serialNumber'],
@@ -192,6 +151,49 @@ export class CartableService {
           },
         ],
       })
+      .filter({
+        [Op.or]: [
+          {
+            userId: user.id,
+          },
+          {
+            [Op.and]: [
+              {
+                roleId: {
+                  [Op.in]: roleIds,
+                },
+              },
+              {
+                organizationId: {
+                  [Op.is]: null,
+                },
+              },
+            ],
+          },
+          {
+            [Op.and]: [
+              {
+                roleId: {
+                  [Op.in]: roleIds,
+                },
+              },
+              {
+                organizationId: {
+                  [Op.in]: organizationIds,
+                },
+              },
+            ],
+          },
+        ],
+      })
+      .filterIf(filter.requestId != null, { requestId: filter.requestId })
+      .filterIf(filter.requestStateId != null, { id: filter.requestStateId });
+
+    const count = await this.repository.count(query.build());
+
+    query = query
+      .attributes(['id', 'requestId', 'activityId', 'createdAt', 'updatedAt'])
+
       .thenInclude({
         attributes: ['id', 'injectForm'],
         model: BPMNNode,
