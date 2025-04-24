@@ -11,10 +11,11 @@ export class CartableService {
   ) {}
 
   async findAll(user: User, filter: GetCartableDto) {
-    const { result, total } = await this.sharedCartableFilteringService.findAll(
-      user,
-      filter,
-    );
+    const { result, total } =
+      await this.sharedCartableFilteringService.findAllForCurrentUser(
+        user,
+        filter,
+      );
     return {
       result: result,
       total: total,

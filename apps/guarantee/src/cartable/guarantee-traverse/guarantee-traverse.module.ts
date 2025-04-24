@@ -10,11 +10,12 @@ import {
   BPMNRequest,
   BPMNRequestState,
 } from '@rahino/localdatabase/models';
+import { SharedCartableFilteringModule } from '@rahino/guarantee/shared/cartable-filtering/cartable-filtering.module';
 
 @Module({
   imports: [
     LocalizationModule,
-    GSCartableModule,
+    SharedCartableFilteringModule,
     QueryFilterModule,
     SequelizeModule.forFeature([
       BPMNRequestState,

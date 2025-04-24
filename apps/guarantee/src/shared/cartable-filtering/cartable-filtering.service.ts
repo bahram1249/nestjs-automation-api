@@ -36,7 +36,7 @@ export class SharedCartableFilteringService {
     private readonly organizationUserService: OrganizationUserService,
   ) {}
 
-  async findAll(user: User, filter: GetCartableDto) {
+  async findAllForCurrentUser(user: User, filter: GetCartableDto) {
     const roleIds = await this.roleService.findAllRoleId(user.id);
     const organizationIds =
       await this.organizationUserService.findAllOrganizationIds(user.id);

@@ -20,10 +20,11 @@ import {
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import { Op, Sequelize } from 'sequelize';
 import { NodeCommandTypeEnum } from '@rahino/bpmn/modules/node-command-type';
+import { SharedCartableFilteringService } from '@rahino/guarantee/shared/cartable-filtering/cartable-filtering.service';
 
 export class GuaranteeTraverseService {
   constructor(
-    private readonly cartableService: CartableService,
+    private readonly sharedCartableFilteringService: SharedCartableFilteringService,
     private readonly listFilterV2Factory: ListFilterV2Factory,
     private readonly localizationService: LocalizationService,
     @InjectModel(BPMNRequest)
@@ -45,7 +46,11 @@ export class GuaranteeTraverseService {
     filter.requestId = dto.requestId;
     filter.requestStateId = dto.requestStateId;
     filter.isClientSideCartable = dto.isClientSideCartable;
-    const findItems = await this.cartableService.findAll(user, filter);
+    const findItems =
+      await this.sharedCartableFilteringService.findAllForCurrentUser(
+        user,
+        filter,
+      );
     const items = findItems.result;
     if (items.length == 0)
       throw new BadRequestException(
