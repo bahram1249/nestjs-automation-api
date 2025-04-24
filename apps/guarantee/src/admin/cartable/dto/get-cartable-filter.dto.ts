@@ -8,7 +8,6 @@ export class GetCartableFilteDto {
   @IsOptional()
   @ApiProperty({
     required: false,
-    default: false,
     type: IsNumber,
     description: 'requestId',
   })
@@ -19,7 +18,6 @@ export class GetCartableFilteDto {
   @IsOptional()
   @ApiProperty({
     required: false,
-    default: false,
     type: IsNumber,
     description: 'requestStateId',
   })
@@ -60,4 +58,14 @@ export class GetCartableFilteDto {
     description: 'lastname',
   })
   lastname?: string;
+
+  @IsInt()
+  @Type(() => Number)
+  @IsOptional()
+  @ApiProperty({
+    required: false,
+    type: IsNumber,
+    description: 'requestTypeId',
+  })
+  requestTypeId?: number;
 }

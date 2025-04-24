@@ -198,6 +198,9 @@ export class CartableService {
       .filterIf(filter.lastname != null, {
         '$guaranteeRequest.user.lastname$': filter.lastname,
       })
+      .filterIf(filter.requestTypeId != null, {
+        '$guaranteeRequest.requestTypeId$': filter.requestTypeId,
+      })
       .filterIf(filter.requestId != null, { requestId: filter.requestId })
       .filterIf(filter.requestStateId != null, { id: filter.requestStateId });
 
