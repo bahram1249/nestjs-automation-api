@@ -18,7 +18,7 @@ import {
 } from '@nestjs/swagger';
 import { GetUser, JwtGuard } from '@rahino/auth';
 import { CartableService } from './cartable.service';
-import { GetCartableDto } from './dto';
+import { GetCartableDto } from '../../shared/cartable-filtering/dto';
 import { User } from '@rahino/database';
 
 @ApiBearerAuth()

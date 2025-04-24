@@ -1,7 +1,7 @@
 import { BadRequestException } from '@nestjs/common';
 import { User } from '@rahino/database';
 import { CartableService } from '@rahino/guarantee/admin/cartable';
-import { GetCartableDto } from '@rahino/guarantee/admin/cartable/dto';
+import { GetCartableDto } from '@rahino/guarantee/shared/cartable-filtering/dto';
 import { GuaranteeTraverseDto } from '@rahino/guarantee/shared/guarantee-traverse';
 import { ListFilterV2Factory } from '@rahino/query-filter/provider/list-filter-v2.factory';
 import { LocalizationService } from 'apps/main/src/common/localization';
