@@ -21,8 +21,8 @@ import {
   GSRequestType,
   GSVariant,
 } from '@rahino/localdatabase/models';
-import { GetCartableDto } from './dto';
-import { Op } from 'sequelize';
+import { CartableFindAllWithFilter, GetCartableDto } from './dto';
+import { Op, WhereOptions } from 'sequelize';
 import { RoleService } from '@rahino/core/user/role/role.service';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import { ActivityTypeEnum } from '@rahino/bpmn/modules/activity-type';
@@ -38,9 +38,55 @@ export class SharedCartableFilteringService {
 
   async findAllForCurrentUser(user: User, filter: GetCartableDto) {
     const roleIds = await this.roleService.findAllRoleId(user.id);
-    const organizationIds =
-      await this.organizationUserService.findAllOrganizationIds(user.id);
+    const organizationUsers =
+      await this.organizationUserService.findAllOrganizationRole(user.id);
 
+    const currentStateFilter: WhereOptions<any> = {
+      [Op.or]: [
+        {
+          userId: user.id,
+        },
+        {
+          [Op.and]: [
+            {
+              roleId: {
+                [Op.in]: roleIds,
+              },
+            },
+            {
+              organizationId: {
+                [Op.is]: null,
+              },
+            },
+          ],
+        },
+        {
+          [Op.or]: organizationUsers.map((organizationUser) => ({
+            [Op.and]: [
+              {
+                roleId: organizationUser.roleId,
+                organizationId: organizationUser.organizationId,
+              },
+            ],
+          })),
+        },
+      ],
+    };
+
+    const customFilter = filter as CartableFindAllWithFilter;
+    customFilter.cartableCurrentStateFilter = currentStateFilter;
+
+    customFilter.cartableActivityFilter = {
+      activityTypeId: filter.isClientSideCartable
+        ? ActivityTypeEnum.ClientState
+        : ActivityTypeEnum.SimpleState,
+      isEndActivity: false,
+    };
+
+    return this.findAllWithFilter(customFilter);
+  }
+
+  private async findAllWithFilter(filter: CartableFindAllWithFilter) {
     let query = new QueryOptionsBuilder()
       .include([
         {
@@ -48,12 +94,7 @@ export class SharedCartableFilteringService {
           model: BPMNActivity,
           as: 'activity',
           required: true,
-          where: {
-            activityTypeId: filter.isClientSideCartable
-              ? ActivityTypeEnum.ClientState
-              : ActivityTypeEnum.SimpleState,
-            isEndActivity: false,
-          },
+          where: filter.cartableActivityFilter,
         },
       ])
       .thenInclude({
@@ -149,41 +190,10 @@ export class SharedCartableFilteringService {
           },
         ],
       })
-      .filter({
-        [Op.or]: [
-          {
-            userId: user.id,
-          },
-          {
-            [Op.and]: [
-              {
-                roleId: {
-                  [Op.in]: roleIds,
-                },
-              },
-              {
-                organizationId: {
-                  [Op.is]: null,
-                },
-              },
-            ],
-          },
-          {
-            [Op.and]: [
-              {
-                roleId: {
-                  [Op.in]: roleIds,
-                },
-              },
-              {
-                organizationId: {
-                  [Op.in]: organizationIds,
-                },
-              },
-            ],
-          },
-        ],
-      })
+      .filterIf(
+        filter.cartableCurrentStateFilter != null,
+        filter.cartableCurrentStateFilter,
+      )
       .filterIf(filter.nationalCode != null, {
         '$guaranteeRequest.user.nationalCode$': filter.nationalCode,
       })
