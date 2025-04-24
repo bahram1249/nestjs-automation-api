@@ -2,10 +2,6 @@ import { Module } from '@nestjs/common';
 import { FactorFinalizedService } from './factor-service.service';
 import { SequelizeModule } from '@nestjs/sequelize';
 import {
-  BPMNNode,
-  BPMNNodeCommand,
-  BPMNRequest,
-  BPMNRequestState,
   GSAssignedGuarantee,
   GSAssignedGuaranteeAdditionalPackage,
   GSFactor,
