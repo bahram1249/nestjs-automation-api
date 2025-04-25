@@ -218,7 +218,7 @@ export class SharedCartableFilteringService {
             include: [
               {
                 model: GSAssignedGuarantee,
-                // Exclude GSAssignedGuarantee fields
+                attributes: ['id', 'guaranteeId', 'userId'],
                 include: [
                   {
                     model: GSAdditionalPackage,
