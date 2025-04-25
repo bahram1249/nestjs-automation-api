@@ -72,6 +72,7 @@ import { GSClientTransactionModule } from './client/transaction';
 import { GSAnonymousVipBundleTypeModule } from './anonymous/vip-bundle-types';
 import { GSPayVipBundleModule } from './client/pay-vip-bundle/pay-vip-bundle.module';
 import { CartableRequestTypeModule } from './cartable/request-type';
+import { GSTrackingRequestModule } from './admin/tracking-request';
 
 @Module({
   imports: [
@@ -161,6 +162,8 @@ import { CartableRequestTypeModule } from './cartable/request-type';
 
     GSPayVipBundleModule,
     CartableRequestTypeModule,
+
+    GSTrackingRequestModule,
   ],
 })
 export class GSModule implements NestModule {

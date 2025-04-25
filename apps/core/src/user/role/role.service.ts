@@ -52,4 +52,22 @@ export class RoleService {
     );
     return roles.map((item) => item.roleId);
   }
+
+  async isAccessToStaticRole(
+    userId: bigint,
+    staticId: number,
+  ): Promise<boolean> {
+    const staticRole = await this.repository.findOne(
+      new QueryOptionsBuilder().filter({ static_id: staticId }).build(),
+    );
+    if (!staticRole) return false;
+    const userRole = await this.userRoleRepository.findOne(
+      new QueryOptionsBuilder()
+        .filter({ userId: userId })
+        .filter({ roleId: staticRole.id })
+        .build(),
+    );
+    if (!userRole) return false;
+    return true;
+  }
 }

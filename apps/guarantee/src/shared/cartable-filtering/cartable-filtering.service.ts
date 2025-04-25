@@ -22,13 +22,14 @@ import {
   GSVariant,
 } from '@rahino/localdatabase/models';
 import { CartableFindAllWithFilter, GetCartableDto } from './dto';
-import { Op, WhereOptions } from 'sequelize';
+import { Op, Sequelize, WhereOptions } from 'sequelize';
 import { RoleService } from '@rahino/core/user/role/role.service';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import { ActivityTypeEnum } from '@rahino/bpmn/modules/activity-type';
 
 @Injectable()
 export class SharedCartableFilteringService {
+  private readonly superAdminStaticId = 1;
   constructor(
     @InjectModel(BPMNRequestState)
     private readonly repository: typeof BPMNRequestState,
@@ -84,6 +85,46 @@ export class SharedCartableFilteringService {
     };
 
     return this.findAllWithFilter(customFilter);
+  }
+
+  async findAllForTracking(user: User, filter: GetCartableDto) {
+    // organization role with same request organization
+    const organizationIds =
+      await this.organizationUserService.findAllOrganizationWithOrganizationRole(
+        user.id,
+      );
+    // supervisor role show all
+    const hasSuperVisorRole = await this.roleService.isAccessToStaticRole(
+      user.id,
+      this.superAdminStaticId,
+    );
+    // admin role show all
+    const hasAdminRole = await this.roleService.isAccessToStaticRole(
+      user.id,
+      this.superAdminStaticId,
+    );
+    // once tracking in my cartable
+    const trackingInCartable: WhereOptions<any> = Sequelize.literal(`EXISTS (
+      SELECT 1
+      FROM BPMNRequestHistories RH
+      WHERE RH.requestId = BPMNRequestState.requestId
+        AND RH.userExecuterId = ${user.id}
+      )`);
+    const customFilter = filter as CartableFindAllWithFilter;
+
+    customFilter.cartableTrackingRequestFilter = {
+      [Op.or]: [
+        {
+          '$guaranteeRequest.organizationId$': {
+            [Op.in]: organizationIds,
+          },
+        },
+        Sequelize.literal(`CAST(${hasAdminRole} AS bit) = 1`),
+        Sequelize.literal(`CAST(${hasSuperVisorRole} AS bit) = 1`),
+        trackingInCartable,
+      ],
+    };
+    return await this.findAllWithFilter(customFilter);
   }
 
   private async findAllWithFilter(filter: CartableFindAllWithFilter) {
@@ -190,6 +231,10 @@ export class SharedCartableFilteringService {
           },
         ],
       })
+      .filterIf(
+        filter.cartableTrackingRequestFilter != null,
+        filter.cartableTrackingRequestFilter,
+      )
       .filterIf(
         filter.cartableCurrentStateFilter != null,
         filter.cartableCurrentStateFilter,
