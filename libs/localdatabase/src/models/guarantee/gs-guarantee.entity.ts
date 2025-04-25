@@ -6,6 +6,8 @@ import {
   DataType,
   ForeignKey,
   BelongsTo,
+  BelongsToMany,
+  HasOne,
 } from 'sequelize-typescript';
 import { GSProvider } from './gs-provider.entity';
 import { GSBrand } from './gs-brand.entity';
@@ -16,6 +18,9 @@ import { GSVariant } from './gs-varaint.entity';
 import { GSProductType } from './gs-product-type.entity';
 import { GSVipBundleType } from './gs-vip-bundle-types.entity';
 import { GSVipGenerator } from './gs-vip-generator.entity';
+import { GSAdditionalPackage } from './gs-additional-package.entity';
+import { GSAssignedGuaranteeAdditionalPackage } from './gs-assigned-guarantee-additional-package.entity';
+import { GSAssignedGuarantee } from './gs-assigned-guarantee.entity';
 
 @Table({ tableName: 'GSGuarantees' })
 export class GSGuarantee extends Model {
@@ -186,4 +191,10 @@ export class GSGuarantee extends Model {
     foreignKey: 'vipGeneratorId',
   })
   vipGenerator?: GSVipGenerator;
+
+  @HasOne(() => GSAssignedGuarantee, {
+    foreignKey: 'guaranteeId',
+    sourceKey: 'id',
+  })
+  assignedGuarantee?: GSAssignedGuarantee;
 }

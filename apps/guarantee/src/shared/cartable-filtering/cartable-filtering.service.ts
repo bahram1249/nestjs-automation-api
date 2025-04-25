@@ -9,7 +9,9 @@ import {
   BPMNNodeCommand,
   BPMNNodeCommandType,
   BPMNRequestState,
+  GSAdditionalPackage,
   GSAddress,
+  GSAssignedGuarantee,
   GSBrand,
   GSCity,
   GSGuarantee,
@@ -213,6 +215,18 @@ export class SharedCartableFilteringService {
             attributes: ['id', 'guaranteePeriodId', 'serialNumber'],
             model: GSGuarantee,
             as: 'guarantee',
+            include: [
+              {
+                model: GSAssignedGuarantee,
+                attributes: [], // Exclude GSAssignedGuarantee fields
+                include: [GSAdditionalPackage],
+                where: {
+                  isDeleted: {
+                    [Op.is]: null,
+                  },
+                },
+              },
+            ],
           },
           {
             attributes: [

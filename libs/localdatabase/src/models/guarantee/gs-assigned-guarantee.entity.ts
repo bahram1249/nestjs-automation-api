@@ -6,9 +6,12 @@ import {
   DataType,
   ForeignKey,
   BelongsTo,
+  BelongsToMany,
 } from 'sequelize-typescript';
 import { User } from '@rahino/database';
 import { GSGuarantee } from './gs-guarantee.entity';
+import { GSAdditionalPackage } from './gs-additional-package.entity';
+import { GSAssignedGuaranteeAdditionalPackage } from './gs-assigned-guarantee-additional-package.entity';
 
 @Table({ tableName: 'GSAssignedGuarantees' })
 export class GSAssignedGuarantee extends Model {
@@ -44,4 +47,12 @@ export class GSAssignedGuarantee extends Model {
     allowNull: true,
   })
   isDeleted?: boolean;
+
+  @BelongsToMany(
+    () => GSAdditionalPackage,
+    () => GSAssignedGuaranteeAdditionalPackage,
+    'assignedGuaranteeId',
+    'additionalPackageId',
+  )
+  additionalPackages: GSAdditionalPackage[];
 }
