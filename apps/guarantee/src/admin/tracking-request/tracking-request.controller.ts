@@ -38,7 +38,7 @@ export class TrackingRequestController {
   @Get('/')
   @ApiQuery({
     name: 'filter',
-    type: GetCartableDto,
+    type: GetTrackingRequestExternalDto,
     style: 'deepObject',
     explode: true,
   })

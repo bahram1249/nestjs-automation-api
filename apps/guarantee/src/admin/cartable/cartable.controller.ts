@@ -38,7 +38,7 @@ export class CartableController {
   @Get('/')
   @ApiQuery({
     name: 'filter',
-    type: GetCartableDto,
+    type: GetCartableExternalDto,
     style: 'deepObject',
     explode: true,
   })
