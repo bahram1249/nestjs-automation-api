@@ -195,6 +195,7 @@ export class GSGuarantee extends Model {
   @HasOne(() => GSAssignedGuarantee, {
     foreignKey: 'guaranteeId',
     sourceKey: 'id',
+    as: 'assignedGuarantee',
   })
   assignedGuarantee?: GSAssignedGuarantee;
 }
