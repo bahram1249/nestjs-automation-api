@@ -19,6 +19,7 @@ import {
   GSRequest,
   GSRequestCategory,
   GSRequestType,
+  GSShippingWay,
   GSVariant,
 } from '@rahino/localdatabase/models';
 import { CartableFindAllWithFilter, GetCartableDto } from './dto';
@@ -156,6 +157,10 @@ export class SharedCartableFilteringService {
           'guaranteeId',
           'phoneNumber',
           'addressId',
+          'clientShipmentWayId',
+          'clientShipmentWayTrackingCode',
+          'cartableShipmentWayId',
+          'cartableShipmentWayTrackingCode',
         ],
         model: GSRequest,
         as: 'guaranteeRequest',
@@ -191,6 +196,18 @@ export class SharedCartableFilteringService {
             model: User,
             as: 'user',
             required: true,
+          },
+          {
+            attributes: ['id', 'title'],
+            model: GSShippingWay,
+            as: 'clientShipmentWay',
+            required: false,
+          },
+          {
+            attributes: ['id', 'title'],
+            model: GSShippingWay,
+            as: 'cartableShipmentWay',
+            required: false,
           },
           {
             attributes: ['id', 'guaranteePeriodId', 'serialNumber'],
