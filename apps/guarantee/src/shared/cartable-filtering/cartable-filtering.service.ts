@@ -76,6 +76,7 @@ export class SharedCartableFilteringService {
 
     const customFilter = filter as CartableFindAllWithFilter;
     customFilter.cartableCurrentStateFilter = currentStateFilter;
+    customFilter.includeNodeFilter = true;
 
     customFilter.cartableActivityFilter = {
       activityTypeId: filter.isClientSideCartable
@@ -114,6 +115,8 @@ export class SharedCartableFilteringService {
         AND RH.fromUserId = ${user.id}
       )`);
     const customFilter = filter as CartableFindAllWithFilter;
+
+    customFilter.includeNodeFilter = false;
 
     customFilter.cartableTrackingRequestFilter = {
       [Op.or]: [
@@ -265,7 +268,7 @@ export class SharedCartableFilteringService {
     query = query
       .attributes(['id', 'requestId', 'activityId', 'createdAt', 'updatedAt'])
 
-      .thenInclude({
+      .thenIncludeIf(filter.includeNodeFilter, {
         attributes: ['id', 'injectForm', 'name', 'description'],
         model: BPMNNode,
         as: 'nodes',

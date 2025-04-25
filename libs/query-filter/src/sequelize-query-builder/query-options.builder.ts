@@ -84,6 +84,15 @@ export class QueryOptionsBuilder {
     included.push(include);
     return this;
   }
+
+  thenIncludeIf(condition: Boolean, include: Includeable) {
+    if (condition) {
+      const included = this.options.include as Includeable[];
+      included.push(include);
+    }
+    return this;
+  }
+
   group(group: GroupOption) {
     this.options.group = group;
     return this;
