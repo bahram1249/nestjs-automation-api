@@ -20,6 +20,7 @@ import { GetUser, JwtGuard } from '@rahino/auth';
 import { CartableService } from './cartable.service';
 import { GetCartableDto } from '../../shared/cartable-filtering/dto';
 import { User } from '@rahino/database';
+import { GetCartableExternalDto } from './dto';
 
 @ApiBearerAuth()
 @UseGuards(JwtGuard, PermissionGuard)
@@ -42,7 +43,10 @@ export class CartableController {
     explode: true,
   })
   @HttpCode(HttpStatus.OK)
-  async findAll(@GetUser() user: User, @Query() filter: GetCartableDto) {
+  async findAll(
+    @GetUser() user: User,
+    @Query() filter: GetCartableExternalDto,
+  ) {
     return await this.service.findAll(user, filter);
   }
 }

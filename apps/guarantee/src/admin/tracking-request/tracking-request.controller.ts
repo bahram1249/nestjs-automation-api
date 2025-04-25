@@ -20,6 +20,7 @@ import { GetUser, JwtGuard } from '@rahino/auth';
 import { TrackingRequestService } from './tracking-request.service';
 import { GetCartableDto } from '../../shared/cartable-filtering/dto';
 import { User } from '@rahino/database';
+import { GetTrackingRequestExternalDto } from './dto';
 
 @ApiBearerAuth()
 @UseGuards(JwtGuard, PermissionGuard)
@@ -42,7 +43,10 @@ export class TrackingRequestController {
     explode: true,
   })
   @HttpCode(HttpStatus.OK)
-  async findAll(@GetUser() user: User, @Query() filter: GetCartableDto) {
+  async findAll(
+    @GetUser() user: User,
+    @Query() filter: GetTrackingRequestExternalDto,
+  ) {
     return await this.service.findAll(user, filter);
   }
 }
