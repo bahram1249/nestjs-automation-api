@@ -98,17 +98,20 @@ export class SharedCartableFilteringService {
       user.id,
       this.superAdminStaticId,
     );
+
+    const hasSuperVisorRoleNum = Number(hasSuperVisorRole);
     // admin role show all
     const hasAdminRole = await this.roleService.isAccessToStaticRole(
       user.id,
       this.superAdminStaticId,
     );
+    const hasAdminRoleNum = Number(hasAdminRole);
     // once tracking in my cartable
     const trackingInCartable: WhereOptions<any> = Sequelize.literal(`EXISTS (
       SELECT 1
       FROM BPMNRequestHistories RH
       WHERE RH.requestId = BPMNRequestState.requestId
-        AND RH.userExecuterId = ${user.id}
+        AND RH.fromUserId = ${user.id}
       )`);
     const customFilter = filter as CartableFindAllWithFilter;
 
@@ -119,8 +122,8 @@ export class SharedCartableFilteringService {
             [Op.in]: organizationIds,
           },
         },
-        Sequelize.literal(`CAST(${hasAdminRole} AS bit) = 1`),
-        Sequelize.literal(`CAST(${hasSuperVisorRole} AS bit) = 1`),
+        Sequelize.literal(`CAST(${hasAdminRoleNum} AS bit) = 1`),
+        Sequelize.literal(`CAST(${hasSuperVisorRoleNum} AS bit) = 1`),
         trackingInCartable,
       ],
     };
