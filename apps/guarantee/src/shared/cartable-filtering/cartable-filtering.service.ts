@@ -218,10 +218,18 @@ export class SharedCartableFilteringService {
             include: [
               {
                 model: GSAssignedGuarantee,
-                through: {
-                  attributes: [],
-                }, // Exclude GSAssignedGuarantee fields
-                include: [GSAdditionalPackage],
+                // Exclude GSAssignedGuarantee fields
+                include: [
+                  {
+                    model: GSAdditionalPackage,
+                    through: {
+                      attributes: [],
+                    },
+                    as: 'additionalPackages',
+                    required: false,
+                  },
+                ],
+                required: false,
                 where: {
                   isDeleted: {
                     [Op.is]: null,
