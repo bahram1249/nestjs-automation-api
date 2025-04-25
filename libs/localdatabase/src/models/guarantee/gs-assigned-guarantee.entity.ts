@@ -51,8 +51,6 @@ export class GSAssignedGuarantee extends Model {
   @BelongsToMany(
     () => GSAdditionalPackage,
     () => GSAssignedGuaranteeAdditionalPackage,
-    'assignedGuaranteeId',
-    'additionalPackageId',
   )
   additionalPackages: GSAdditionalPackage[];
 }
