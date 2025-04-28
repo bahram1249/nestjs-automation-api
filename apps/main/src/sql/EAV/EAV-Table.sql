@@ -126,6 +126,24 @@ END
 GO
 
 
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'eav-entitytype-v6' 
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'SITE_NAME' AND [value] IN ('ecommerce'))
+		)
+BEGIN
+
+	ALTER TABLE EAVEntityTypes 
+		ADD showLanding	bit NULL 
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'eav-entitytype-v6', GETDATE(), GETDATE()
+END
+
+GO
+
+
 IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'eav-attributetype-v1' 
 			)
 	AND EXISTS (

@@ -2,7 +2,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { replaceCharacterSlug } from '@rahino/commontools';
 import { AutoMap } from 'automapper-classes';
 import { Transform } from 'class-transformer';
-import { IsNumber, IsOptional, IsString } from 'class-validator';
+import { IsBoolean, IsNumber, IsOptional, IsString } from 'class-validator';
 
 export class EntityTypeDto {
   @AutoMap()
@@ -47,7 +47,7 @@ export class EntityTypeDto {
   @IsOptional()
   @IsString()
   @ApiProperty({
-    required: true,
+    required: false,
     type: String,
     description: 'metaTitle',
   })
@@ -57,7 +57,7 @@ export class EntityTypeDto {
   @IsOptional()
   @IsString()
   @ApiProperty({
-    required: true,
+    required: false,
     type: String,
     description: 'metaKeywords',
   })
@@ -67,7 +67,7 @@ export class EntityTypeDto {
   @IsOptional()
   @IsString()
   @ApiProperty({
-    required: true,
+    required: false,
     type: String,
     description: 'metaDescription',
   })
@@ -77,7 +77,7 @@ export class EntityTypeDto {
   @IsOptional()
   @IsString()
   @ApiProperty({
-    required: true,
+    required: false,
     type: String,
     description: 'description',
   })
@@ -87,9 +87,19 @@ export class EntityTypeDto {
   @IsOptional()
   @IsNumber()
   @ApiProperty({
-    required: true,
+    required: false,
     type: Number,
     description: 'priority',
   })
   public priority?: number;
+
+  @AutoMap()
+  @IsOptional()
+  @IsBoolean()
+  @ApiProperty({
+    required: false,
+    type: Boolean,
+    description: 'showLanding',
+  })
+  public showLanding?: boolean;
 }

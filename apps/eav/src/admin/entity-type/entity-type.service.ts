@@ -152,6 +152,7 @@ export class EntityTypeService {
         'parentEntityTypeId',
         'entityModelId',
         'priority',
+        'showLanding',
         'createdAt',
         'updatedAt',
       ])
@@ -178,6 +179,7 @@ export class EntityTypeService {
         'metaDescription',
         'description',
         'priority',
+        'showLanding',
         'createdAt',
         'updatedAt',
       ])
@@ -236,6 +238,7 @@ export class EntityTypeService {
         'metaDescription',
         'description',
         'priority',
+        'showLanding',
         'createdAt',
         'updatedAt',
       ])
@@ -287,6 +290,7 @@ export class EntityTypeService {
         'metaDescription',
         'description',
         'priority',
+        'showLanding',
         'createdAt',
         'updatedAt',
       ])
@@ -395,6 +399,7 @@ export class EntityTypeService {
         'metaDescription',
         'description',
         'priority',
+        'showLanding',
         'createdAt',
         'updatedAt',
       ])

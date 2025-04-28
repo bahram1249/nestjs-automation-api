@@ -112,4 +112,11 @@ export class EAVEntityType extends Model {
     allowNull: true,
   })
   public priority?: number;
+
+  @AutoMap()
+  @Column({
+    type: DataType.BOOLEAN,
+    allowNull: true,
+  })
+  public showLanding?: boolean;
 }
