@@ -1736,3 +1736,123 @@ BEGIN
 END
 
 GO
+
+-- gs-questions-v1
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'gs-questions-v1'
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings
+		WHERE ([key] = 'CUSTOMER_NAME' AND [value] IN ('AriaKish'))
+		)
+BEGIN
+	
+
+	CREATE TABLE GSQuestions (
+		id                          bigint identity (1,1)       PRIMARY KEY,
+        title						nvarchar(512)				NOT NULL,
+		isDeleted					bit							NULL,
+		priority					int							NULL,
+		maxWeight					decimal(5,2)				NULL,
+		[createdAt]					datetimeoffset				NOT NULL,
+		[updatedAt]					datetimeoffset				NOT NULL
+	);
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'gs-questions-v1', GETDATE(), GETDATE()
+END
+
+GO
+
+-- gs-answer-options-v1
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'gs-answer-options-v1'
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings
+		WHERE ([key] = 'CUSTOMER_NAME' AND [value] IN ('AriaKish'))
+		)
+BEGIN
+	
+
+	CREATE TABLE GSAnswerOptions (
+		id                          bigint identity (1,1)       PRIMARY KEY,
+		questionId					bigint						NOT NULL
+			CONSTRAINT FK_GSAnswerOptions_QuestionId
+				FOREIGN KEY REFERENCES GSQuestions(id),
+		title						nvarchar(256)				NOT NULL,
+		weight						decimal(5,2) 				NOT NULL DEFAULT 0.00,
+		priority					int 						NULL,
+		[createdAt]					datetimeoffset				NOT NULL,
+		[updatedAt]					datetimeoffset				NOT NULL
+	);
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'gs-answer-options-v1', GETDATE(), GETDATE()
+END
+
+GO
+
+
+-- gs-responses-v1
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'gs-responses-v1'
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings
+		WHERE ([key] = 'CUSTOMER_NAME' AND [value] IN ('AriaKish'))
+		)
+BEGIN
+	
+
+	CREATE TABLE GSResponses (
+		id                          bigint identity (1,1)       PRIMARY KEY,
+		requestId					bigint						NOT NULL
+			CONSTRAINT FK_GSResponses_RequestId
+				FOREIGN KEY REFERENCES GSRequests(id),
+		userId						bigint						NOT NULL
+			CONSTRAINT FK_GSResponses_UserId
+				FOREIGN KEY REFERENCES Users(id),
+		fromScore					DECIMAL(10,2)				NOT NULL,
+		totalScore					DECIMAL (10,2)				DEFAULT 0.00,
+		[createdAt]					datetimeoffset				NOT NULL,
+		[updatedAt]					datetimeoffset				NOT NULL
+	);
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'gs-responses-v1', GETDATE(), GETDATE()
+END
+
+GO
+
+
+
+-- gs-answer-records-v1
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'gs-answer-records-v1'
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings
+		WHERE ([key] = 'CUSTOMER_NAME' AND [value] IN ('AriaKish'))
+		)
+BEGIN
+	
+
+	CREATE TABLE GSAnswerRecords (
+		id                          bigint identity (1,1)       PRIMARY KEY,
+		responseId					bigint						NOT NULL
+			CONSTRAINT FK_GSAnswerRecords_ResponseId
+				FOREIGN KEY REFERENCES GSResponses(id),
+		answerId					bigint						NOT NULL
+			CONSTRAINT FK_GSAnswerRecords_AnswerId
+				FOREIGN KEY REFERENCES GSAnswerOptions(id),
+		answerOptionId				bigint						NOT NULL
+			CONSTRAINT FK_GSAnswerRecords_AnswerOptionId
+				FOREIGN KEY REFERENCES GSAnswerOptions(id),
+		weight						DECIMAL(5,2)				NOT NULL,
+		[createdAt]					datetimeoffset				NOT NULL,
+		[updatedAt]					datetimeoffset				NOT NULL
+	);
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'gs-answer-records-v1', GETDATE(), GETDATE()
+END
+
+GO
+
