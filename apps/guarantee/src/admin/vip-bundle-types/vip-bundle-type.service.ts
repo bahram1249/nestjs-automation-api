@@ -25,11 +25,20 @@ export class VipBundleTypeService {
   ) {}
 
   async findAll(filter: GetVipBundleTypeDto) {
-    let query = new QueryOptionsBuilder().filter({
-      title: {
-        [Op.like]: filter.search,
-      },
-    });
+    let query = new QueryOptionsBuilder()
+      .filter({
+        title: {
+          [Op.like]: filter.search,
+        },
+      })
+      .filter(
+        Sequelize.where(
+          Sequelize.fn('isnull', Sequelize.col('GSVipBundleType.isDeleted'), 0),
+          {
+            [Op.eq]: 0,
+          },
+        ),
+      );
 
     const count = await this.repository.count(query.build());
 
@@ -44,14 +53,7 @@ export class VipBundleTypeService {
         'createdAt',
         'updatedAt',
       ])
-      .filter(
-        Sequelize.where(
-          Sequelize.fn('isnull', Sequelize.col('GSVipBundleType.isDeleted'), 0),
-          {
-            [Op.eq]: 0,
-          },
-        ),
-      )
+
       .limit(filter.limit)
       .offset(filter.offset)
       .order({ orderBy: filter.orderBy, sortOrder: filter.sortOrder });
