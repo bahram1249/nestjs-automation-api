@@ -92,7 +92,7 @@ import { ProductFavoriteModule } from './user/product-favorite/product-favorite.
 import { ProductVideoRemovalModule } from './product-video-removal/product-video-removal.module';
 import { AdminNotificationModule } from './admin/notification/notification.module';
 import { NotificationModule } from './user/notification/notification.module';
-import { AdminHeaderNotificationModule } from './admin/header-notification/notification.module';
+import { AdminHeaderNotificationModule } from './admin/home-page-section/header-notification/notification.module';
 import { UserHeaderNotificationModule } from './user/header-notification/notification.module';
 import { CustomerCustomizeMoudle } from './customer-customize/customer-customize.module';
 import { GoldModule } from './customer-customize/gold/gold.module';
