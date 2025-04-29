@@ -96,7 +96,7 @@ import { AdminHeaderNotificationModule } from './admin/home-page-section/header-
 import { UserHeaderNotificationModule } from './user/header-notification/notification.module';
 import { CustomerCustomizeMoudle } from './customer-customize/customer-customize.module';
 import { GoldModule } from './customer-customize/gold/gold.module';
-import { FactorDiscountModule } from './admin/factor-discount/factor-discount.module';
+import { FactorDiscountModule } from './admin/discount-section/factor-discount/factor-discount.module';
 import { RetrievePriceRunnerService } from './customer-customize/gold/retrieve-price-job/services';
 import { SelectedProductModule } from './admin/selected-product/selected-product.module';
 import { SelectedProductItemModule } from './admin/selected-product-items/selected-product-item.module';

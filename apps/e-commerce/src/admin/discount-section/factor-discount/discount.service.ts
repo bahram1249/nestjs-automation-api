@@ -16,7 +16,7 @@ import { Mapper } from 'automapper-core';
 import { InjectMapper } from 'automapper-nestjs';
 import * as _ from 'lodash';
 import { User } from '@rahino/database';
-import { DiscountConditionTypeEnum } from '../discount-section/discount-condition-type/enum';
+import { DiscountConditionTypeEnum } from '../discount-condition-type/enum';
 
 @Injectable()
 export class DiscountService {
