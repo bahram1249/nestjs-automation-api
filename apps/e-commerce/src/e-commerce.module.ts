@@ -77,7 +77,7 @@ import { InventoryHistoryModule } from './admin/inventory-history/inventory-hist
 import { AdminPageModule } from './admin/page/page.module';
 import { PageModule } from './page/page.module';
 import { DashboardModule } from './user/dashboard/dashboard.module';
-import { CancellOrderModule } from './admin/cancell-order/cancell-order.module';
+import { CancellOrderModule } from './admin/order-section/cancell-order/cancell-order.module';
 import { UserCommentModule } from './user/comment/comment.module';
 import { ChargingWalletPaymentModule } from './user/charging-wallet-payment/charging-wallet-payment.module';
 import { AdminHomePageModule } from './admin/home-page-section/home-page/home-page.module';

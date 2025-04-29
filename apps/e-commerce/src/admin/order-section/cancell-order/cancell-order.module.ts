@@ -5,7 +5,7 @@ import { SequelizeModule } from '@nestjs/sequelize';
 import { User } from '@rahino/database';
 import { Permission } from '@rahino/database';
 import { ECOrder } from '@rahino/localdatabase/models';
-import { UtilOrderModule } from '../utilOrder/util-order.module';
+import { UtilOrderModule } from '../../utilOrder/util-order.module';
 import { ECOrderDetail } from '@rahino/localdatabase/models';
 import { SnappayModule } from '@rahino/ecommerce/user/shopping/payment/provider/snappay.module';
 import { ECPayment } from '@rahino/localdatabase/models';
