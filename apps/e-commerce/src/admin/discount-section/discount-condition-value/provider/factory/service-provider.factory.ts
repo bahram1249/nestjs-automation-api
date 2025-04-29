@@ -1,7 +1,7 @@
 import { Inject, Injectable, NotFoundException, Scope } from '@nestjs/common';
 import { Request } from 'express';
 import { REQUEST } from '@nestjs/core';
-import { DiscountConditionTypeEnum } from '@rahino/ecommerce/admin/discount-condition-type/enum';
+import { DiscountConditionTypeEnum } from '@rahino/ecommerce/admin/discount-section/discount-condition-type/enum';
 import {
   ProductMiddleService,
   EntityTypeMiddleService,
