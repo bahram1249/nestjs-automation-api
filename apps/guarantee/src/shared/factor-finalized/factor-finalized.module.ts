@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { FactorFinalizedService } from './factor-service.service';
+import { FactorFinalizedService } from './factor-finalized.service';
 import { SequelizeModule } from '@nestjs/sequelize';
 import {
   GSAssignedGuarantee,
@@ -11,6 +11,7 @@ import {
 } from '@rahino/localdatabase/models';
 import { TraverseModule } from '@rahino/bpmn/modules/traverse/traverse.module';
 import { GuaranteeTraverseModule } from '@rahino/guarantee/cartable/guarantee-traverse/guarantee-traverse.module';
+import { RialPriceModule } from '../rial-price';
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import { GuaranteeTraverseModule } from '@rahino/guarantee/cartable/guarantee-tr
     ]),
     TraverseModule,
     GuaranteeTraverseModule,
+    RialPriceModule,
   ],
   providers: [FactorFinalizedService],
   exports: [FactorFinalizedService],

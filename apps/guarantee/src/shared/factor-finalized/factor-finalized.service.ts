@@ -22,6 +22,7 @@ import * as moment from 'moment';
 import { GSProviderEnum } from '../provider';
 import { GSGuaranteeTypeEnum } from '../gurantee-type';
 import { GSGuaranteeConfirmStatus } from '../guarantee-confirm-status';
+import { RialPriceService } from '../rial-price';
 
 @Injectable()
 export class FactorFinalizedService {
@@ -39,6 +40,8 @@ export class FactorFinalizedService {
     @InjectModel(GSGuarantee)
     private readonly guaranteeRepository: typeof GSGuarantee,
     private readonly traverseService: TraverseService,
+
+    private readonly rialPriceService: RialPriceService,
 
     @InjectConnection()
     private readonly sequelize: Sequelize,
@@ -86,7 +89,7 @@ export class FactorFinalizedService {
     const endDate = momentEndDate.toDate();
 
     const randomSerialNumber = uid.rnd();
-    const guarantee = await GSGuarantee.create({
+    const guarantee = await this.guaranteeRepository.create({
       providerId: GSProviderEnum.ARIAKISH_LOCAL,
       guaranteeTypeId: GSGuaranteeTypeEnum.VIP,
       guaranteeConfirmStatusId: GSGuaranteeConfirmStatus.Confirm,
@@ -94,8 +97,14 @@ export class FactorFinalizedService {
       startDate: currentDate,
       endDate: endDate,
       vipBundleTypeId: factorVipBundle.vipBundleTypeId,
-      totalCredit: factorVipBundle.fee,
-      availableCredit: factorVipBundle.fee,
+      totalCredit: this.rialPriceService.getRialPrice({
+        price: Number(factorVipBundle.fee),
+        unitPriceId: factorVipBundle.unitPriceId,
+      }),
+      availableCredit: this.rialPriceService.getRialPrice({
+        price: Number(factorVipBundle.fee),
+        unitPriceId: factorVipBundle.unitPriceId,
+      }),
     });
 
     await this.assignedGuaranteeRepository.create({
