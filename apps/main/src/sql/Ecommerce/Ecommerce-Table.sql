@@ -2807,3 +2807,39 @@ END
 
 GO
 
+
+-- ec-linked-entity-type-brand-v1
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ec-linked-entity-type-brand-v1' 
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'SITE_NAME' AND [value] IN ('ecommerce'))
+		)
+BEGIN
+
+	CREATE TABLE ECLinkedEntityTypeBrands(
+		id								bigint identity(1,1)			PRIMARY KEY,
+		title							nvarchar(512)					NOT NULL,
+		entityTypeId					int								NOT NULL
+			CONSTRAINT FK_ECLinkedEntityTypeBrands_EntityTypeId
+				FOREIGN KEY REFERENCES EAVEntityTypes(id),
+		brandId							int								NOT NULL
+			CONSTRAINT FK_ECLinkedEntityTypeBrands_BrandId
+				FOREIGN KEY REFERENCES ECBrands(id),
+		metaTitle						nvarchar(512)					NULL,
+		metaDescription					nvarchar(512)					NULL,
+		metaKeywords					nvarchar(512)					NULL,
+		[description]					nvarchar(max)					NULL,
+		isDeleted						bit								NULL,
+		[createdAt]						datetimeoffset					NOT NULL,
+		[updatedAt]						datetimeoffset					NOT NULL
+	);
+
+
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'ec-linked-entity-type-brand-v1', GETDATE(), GETDATE()
+END
+
+GO
+

@@ -58,3 +58,4 @@ export * from './ec-vendor-user.entity';
 export * from './ec-vendor.entity';
 export * from './ec-wallet.entity';
 export * from './ec-entity-type-landing.entity';
+export * from './ec-linked-entity-type-brand.entity';
