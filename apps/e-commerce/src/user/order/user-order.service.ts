@@ -2,7 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { User } from '@rahino/database';
 import { ECOrder } from '@rahino/localdatabase/models';
-import { OrderQueryBuilder } from '@rahino/ecommerce/admin/utilOrder/service/order-query-builder.service';
+import { OrderQueryBuilder } from '@rahino/ecommerce/admin/order-section/utilOrder/service/order-query-builder.service';
 import { OrderStatusEnum } from '@rahino/ecommerce/util/enum';
 import { ListFilter } from '@rahino/query-filter';
 import { I18nTranslations } from 'apps/main/src/generated/i18n.generated';

@@ -6,9 +6,9 @@ import {
   OrderShipmentwayEnum,
   OrderStatusEnum,
 } from '@rahino/ecommerce/util/enum';
-import { OrderQueryBuilder } from '../../utilOrder/service/order-query-builder.service';
+import { OrderQueryBuilder } from '../utilOrder/service/order-query-builder.service';
 import { ListFilter } from '@rahino/query-filter';
-import { OrderUtilService } from '../../utilOrder/service/order-util.service';
+import { OrderUtilService } from '../utilOrder/service/order-util.service';
 import { I18nContext, I18nService } from 'nestjs-i18n';
 import { I18nTranslations } from 'apps/main/src/generated/i18n.generated';
 import { RoleUtilService } from '@rahino/core/user/role-util/role-util.service';

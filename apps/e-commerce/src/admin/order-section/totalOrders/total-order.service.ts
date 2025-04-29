@@ -9,7 +9,7 @@ import { InjectConnection, InjectModel } from '@nestjs/sequelize';
 import { User } from '@rahino/database';
 import { ECOrder } from '@rahino/localdatabase/models';
 import { OrderStatusEnum } from '@rahino/ecommerce/util/enum';
-import { OrderQueryBuilder } from '../../utilOrder/service/order-query-builder.service';
+import { OrderQueryBuilder } from '../utilOrder/service/order-query-builder.service';
 import { ECOrderDetail } from '@rahino/localdatabase/models';
 import { Sequelize, Transaction } from 'sequelize';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
@@ -21,7 +21,7 @@ import { ECProduct } from '@rahino/localdatabase/models';
 import { EAVEntityType } from '@rahino/localdatabase/models';
 import { RoleUtilService } from '@rahino/core/user/role-util/role-util.service';
 import { UserVendorService } from '@rahino/ecommerce/user/vendor/user-vendor.service';
-import { OrderUtilService } from '../../utilOrder/service/order-util.service';
+import { OrderUtilService } from '../utilOrder/service/order-util.service';
 import { FinalizedPaymentService } from '@rahino/ecommerce/user/shopping/payment/util/finalized-payment/finalized-payment.service';
 import {
   ChangeOrderStatusDto,
