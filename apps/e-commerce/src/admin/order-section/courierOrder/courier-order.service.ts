@@ -10,13 +10,13 @@ import {
   OrderShipmentwayEnum,
   OrderStatusEnum,
 } from '@rahino/ecommerce/util/enum';
-import { OrderQueryBuilder } from '../utilOrder/service/order-query-builder.service';
+import { OrderQueryBuilder } from '../../utilOrder/service/order-query-builder.service';
 import { ListFilter } from '@rahino/query-filter';
 import { CourierProcessDto } from './dto';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import { Sequelize } from 'sequelize';
 import { Op } from 'sequelize';
-import { OrderUtilService } from '../utilOrder/service/order-util.service';
+import { OrderUtilService } from '../../utilOrder/service/order-util.service';
 import { I18nContext, I18nService } from 'nestjs-i18n';
 import { I18nTranslations } from 'apps/main/src/generated/i18n.generated';
 import { ECCourier } from '@rahino/localdatabase/models';
