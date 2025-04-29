@@ -8,7 +8,10 @@ export class SmsSenderService {
   constructor(private readonly configService: ConfigService) {}
 
   async sendSms(dto: SmsSenderDto) {
-    const message = `${dto.message} %0D%0A لغو11`;
+    const message = encodeURIComponent(
+      `${dto.message}\nhttps://club.ariakish.com\nلغو11`,
+    );
+    //const message = `${dto.message} %0D%0A لغو11`;
     const res = await axios.get(
       `https://p.1000sms.ir/url/post/SendSMS.ashx.php?username=${this.configService.get(
         'RAHYAB_URL_USERNAME',
