@@ -2769,3 +2769,41 @@ END
 
 GO
 
+-- ec-entity-type-landings-v1
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ec-entity-type-landings-v1' 
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'SITE_NAME' AND [value] IN ('ecommerce'))
+		)
+BEGIN
+
+	CREATE TABLE ECEntityTypeLandings(
+		id								bigint identity(1,1)			PRIMARY KEY,
+		title							nvarchar(512)					NOT NULL,
+		slug							nvarchar(1024)					NOT NULL,
+		jsonContent						nvarchar(max)					NOT NULL,
+		priority						int								NULL,
+		[description]					nvarchar(max)					NULL,
+		metaTitle						nvarchar(256)					NULL,
+		metaDescription					nvarchar(512)					NULL,
+		metaKeywords					nvarchar(512)					NULL,
+		userId							bigint							NOT NULL
+			CONSTRAINT FK_ECEntityTypeLandings_UserId
+				FOREIGN KEY REFERENCES Users(id),
+		entityTypeId					int								NOT NULL
+			CONSTRAINT FK_ECEntityTypeLandings_EntityTypeId
+				FOREIGN KEY REFERENCES EAVEntityTypes(id),
+		isDeleted						bit								NULL,
+		[createdAt]						datetimeoffset					NOT NULL,
+		[updatedAt]						datetimeoffset					NOT NULL
+	);
+
+
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'ec-entity-type-landings-v1', GETDATE(), GETDATE()
+END
+
+GO
+

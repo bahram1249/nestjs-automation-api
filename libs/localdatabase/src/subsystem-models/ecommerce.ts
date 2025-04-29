@@ -11,6 +11,7 @@ import {
   ECDiscountConditionType,
   ECDiscountType,
   ECEntityTypeFactor,
+  ECEntityTypeLanding,
   ECEntityTypeSort,
   ECGuarantee,
   ECGuaranteeMonth,
@@ -58,7 +59,7 @@ import {
   ECVendorCommissionType,
   ECVendorUser,
   ECWallet,
-} from "../models/ecommerce-eav"; // Import everything from the barrel file
+} from '../models/ecommerce-eav'; // Import everything from the barrel file
 
 export const ecommerceEntities = [
   ECAddress,
@@ -120,4 +121,5 @@ export const ecommerceEntities = [
   ECVendorCommissionType,
   ECVendorUser,
   ECWallet,
+  ECEntityTypeLanding,
 ];
