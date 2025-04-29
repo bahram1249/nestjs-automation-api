@@ -69,7 +69,7 @@ import { EntityTypeFactorModule } from './admin/entity-type-factor/entity-type-f
 import { ProductCommentModule } from './product-comment/product-comment.module';
 import { AdminProductCommentModule } from './admin/product-comment/product-comment.module';
 import { ProductCommentStatusModule } from './admin/product-comment-status/product-comment-status.module';
-import { OrderStatusModule } from './admin/order-status/order-status.module';
+import { OrderStatusModule } from './admin/order-section/order-status/order-status.module';
 import { OrderShipmentWayModule } from './admin/order-shipmentway/order-shipmentway.module';
 import { AdminAddressModule } from './admin/address/address.module';
 import { ProductSaleModule } from './report/product-sale/product-sale.module';
