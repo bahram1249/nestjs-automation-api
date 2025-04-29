@@ -50,7 +50,7 @@ import { UserOrderModule } from './user/order/user-order.module';
 import { CourierModule } from './admin/courier/courier.module';
 import { CourierPriceModule } from './admin/courier-price/courier-price.module';
 import { CourierOrderModule } from './admin/order-section/courierOrder/courier-order.module';
-import { DeliveryOrderModule } from './admin/deliveryOrder/delivery-order.module';
+import { DeliveryOrderModule } from './admin/order-section/deliveryOrder/delivery-order.module';
 import { ProductDiscountModule } from './product-discount/product-discount.module';
 import { ProductDiscountJobRunnerService } from './product-discount/product-discount-job-runner.service';
 import { VariationPriceModule } from './admin/variation-price/variation-price.module';
