@@ -45,7 +45,7 @@ import { TransactionModule as AdminTransactionModule } from './admin/transaction
 import { PostageFeeModule } from './admin/postage-fee/postage-fee.module';
 import { PendingOrderModule } from './admin/pendingOrder/pending-order.module';
 import { PostageOrderModule } from './admin/order-section/postageOrder/postage-order.module';
-import { TotalOrderModule } from './admin/totalOrders/total-order.module';
+import { TotalOrderModule } from './admin/order-section/totalOrders/total-order.module';
 import { UserOrderModule } from './user/order/user-order.module';
 import { CourierModule } from './admin/courier/courier.module';
 import { CourierPriceModule } from './admin/courier-price/courier-price.module';
