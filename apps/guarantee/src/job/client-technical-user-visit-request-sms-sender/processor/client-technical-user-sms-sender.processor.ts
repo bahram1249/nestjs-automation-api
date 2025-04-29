@@ -18,7 +18,7 @@ export class ClientTechnicalUserVisitSmsSenderProcessor extends WorkerHost {
         message: template,
       });
     } catch (error) {
-      return Promise.reject(true);
+      return Promise.reject(error.message);
     }
     return Promise.resolve(true);
   }
