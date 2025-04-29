@@ -16,8 +16,8 @@ import {
 } from '@rahino/ecommerce/util/enum';
 import { ECOrderDetail } from '@rahino/localdatabase/models';
 import { UserVendorService } from '@rahino/ecommerce/user/vendor/user-vendor.service';
-import { OrderQueryBuilder } from '../utilOrder/service/order-query-builder.service';
-import { OrderUtilService } from '../utilOrder/service/order-util.service';
+import { OrderQueryBuilder } from '../../utilOrder/service/order-query-builder.service';
+import { OrderUtilService } from '../../utilOrder/service/order-util.service';
 import { ConfigService } from '@nestjs/config';
 import { ECommmerceSmsService } from '@rahino/ecommerce/util/sms/ecommerce-sms.service';
 

@@ -6,7 +6,7 @@ import { SequelizeModule } from '@nestjs/sequelize';
 import { User } from '@rahino/database';
 import { Permission } from '@rahino/database';
 import { ECOrder } from '@rahino/localdatabase/models';
-import { UtilOrderModule } from '../utilOrder/util-order.module';
+import { UtilOrderModule } from '../../utilOrder/util-order.module';
 import { ECOrderDetail } from '@rahino/localdatabase/models';
 import { ECommerceSmsModule } from '@rahino/ecommerce/util/sms/ecommerce-sms.module';
 
