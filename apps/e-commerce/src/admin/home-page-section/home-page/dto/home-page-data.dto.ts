@@ -8,9 +8,9 @@ import {
   MaxLength,
   MinLength,
 } from 'class-validator';
-import { HomePageTypeEnum } from '../../../util/enum/home-page-type.enum';
 import { ContentDtoType } from './content';
 import { isValidContent } from '../decorator';
+import { HomePageTypeEnum } from '@rahino/ecommerce/util/enum';
 
 export class HomePageDataDto {
   @IsNotEmpty()

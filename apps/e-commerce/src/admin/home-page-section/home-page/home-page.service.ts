@@ -5,7 +5,6 @@ import { User } from '@rahino/database';
 import { ListFilter } from '@rahino/query-filter';
 import { HomePageDto } from './dto/home-page.dto';
 import { ECHomePage } from '@rahino/localdatabase/models';
-import { HomePageTypeEnum } from '../../util/enum/home-page-type.enum';
 import { HomePageValidatorService } from './home-page-validator.service';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import {
@@ -14,6 +13,7 @@ import {
 } from '@rahino/ecommerce/home/constants';
 import { Queue } from 'bullmq';
 import { InjectQueue } from '@nestjs/bullmq';
+import { HomePageTypeEnum } from '@rahino/ecommerce/util/enum';
 
 @Injectable()
 export class HomePageService {
