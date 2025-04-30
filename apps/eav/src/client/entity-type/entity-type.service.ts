@@ -130,6 +130,7 @@ export class EntityTypeService {
         'entityModelId',
         'priority',
         'showLanding',
+        'isDeleted',
         'createdAt',
         'updatedAt',
       ])
@@ -157,6 +158,7 @@ export class EntityTypeService {
         'description',
         'priority',
         'showLanding',
+        'isDeleted',
         'createdAt',
         'updatedAt',
       ])
@@ -227,6 +229,7 @@ export class EntityTypeService {
         'description',
         'priority',
         'showLanding',
+        'isDeleted',
         'createdAt',
         'updatedAt',
       ])
