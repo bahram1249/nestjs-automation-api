@@ -53,13 +53,19 @@ export class ProductRepositoryService {
           .build(),
       );
       if (isExistsBefore) {
-        const oldItem = await this.findById(
-          await this.listFilterFactory.create(),
-          isExistsBefore.entityId,
-        );
+        const oldItemQuery =
+          await this.productQueryBuilderService.findAllAndCountQuery(
+            await this.listFilterFactory.create(),
+            isExistsBefore.entityId,
+            null,
+            true,
+          );
+
+        const oldItem = await this.repository.findOne(oldItemQuery.resultQuery);
+
         if (oldItem) {
           throw new RedirectException(
-            `/product/${oldItem.result.sku}/${oldItem.result.slug}`,
+            `/product/${oldItem.sku}/${oldItem.slug}`,
           );
         }
       }
