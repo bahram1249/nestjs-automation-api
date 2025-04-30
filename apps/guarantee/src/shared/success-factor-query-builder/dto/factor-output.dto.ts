@@ -15,4 +15,5 @@ export class GSFactorOutputDto {
   public factorItems: GSFactorItemOutputDto[];
   public transactions: GSFactorTransactionOutputDto[];
   public fullName: string;
+  public nationalCode: string;
 }

@@ -51,7 +51,13 @@ export class GSSuccessFactorQueryBuilderService {
       .thenInclude({
         model: User,
         as: 'user',
-        attributes: ['id', 'firstname', 'lastname', 'phoneNumber'],
+        attributes: [
+          'id',
+          'firstname',
+          'lastname',
+          'phoneNumber',
+          'nationalCode',
+        ],
       })
       .thenInclude({
         model: GSFactorAdditionalPackage,

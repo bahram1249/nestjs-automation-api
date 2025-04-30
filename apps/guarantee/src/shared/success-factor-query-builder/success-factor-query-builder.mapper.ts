@@ -47,6 +47,7 @@ export class GSSuccessFactorQueryBuilderMapper {
       factorItems: factorItems,
       transactions: transactions,
       fullName: item.user.firstname + ' ' + item.user.lastname,
+      nationalCode: item.user.nationalCode,
     };
   }
 
