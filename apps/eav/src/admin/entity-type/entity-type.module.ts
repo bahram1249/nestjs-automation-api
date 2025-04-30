@@ -17,6 +17,7 @@ import { MinioClientModule } from '@rahino/minio-client';
 import { ReverseProxyEntityTypesImageMiddleware } from './reverse-proxy.middleware';
 import { ThumbnailModule } from '@rahino/thumbnail';
 import { ConfigService } from '@nestjs/config';
+import { LocalizationModule } from 'apps/main/src/common/localization';
 
 @Module({
   imports: [
@@ -39,6 +40,7 @@ import { ConfigService } from '@nestjs/config';
         },
       }),
     }),
+    LocalizationModule,
   ],
   controllers: [EntityTypeController],
   providers: [EntityTypeService, EntityTypeProfile],

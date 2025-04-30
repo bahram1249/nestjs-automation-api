@@ -1,6 +1,7 @@
 import {
   BadRequestException,
   ForbiddenException,
+  GoneException,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
@@ -19,6 +20,7 @@ import { Response } from 'express';
 import { User } from '@rahino/database';
 import * as fs from 'fs';
 import { ThumbnailService } from '@rahino/thumbnail';
+import { LocalizationService } from 'apps/main/src/common/localization';
 
 @Injectable()
 export class EntityTypeService {
@@ -34,6 +36,7 @@ export class EntityTypeService {
     @InjectMapper()
     private readonly mapper: Mapper,
     private readonly thumbnailService: ThumbnailService,
+    private readonly localizationService: LocalizationService,
   ) {}
 
   async findAll(filter: GetEntityTypeDto) {
@@ -210,16 +213,27 @@ export class EntityTypeService {
           ],
         },
       ])
-      .filter({ id })
-      .filter(
-        Sequelize.where(
-          Sequelize.fn('isnull', Sequelize.col('EAVEntityType.isDeleted'), 0),
-          {
-            [Op.eq]: 0,
-          },
-        ),
-      );
+      .filter({ id });
+    // .filter(
+    //   Sequelize.where(
+    //     Sequelize.fn('isnull', Sequelize.col('EAVEntityType.isDeleted'), 0),
+    //     {
+    //       [Op.eq]: 0,
+    //     },
+    //   ),
+    // );
     const result = await this.repository.findOne(builder.build());
+
+    if (!result) {
+      throw new NotFoundException(
+        this.localizationService.translate('core.not_found_id'),
+      );
+    }
+
+    if (result.isDeleted) {
+      throw new GoneException('item is deleted!');
+    }
+
     return {
       result: result,
     };
@@ -321,21 +335,27 @@ export class EntityTypeService {
           ],
         },
       ])
-      .filter({ slug: slug })
-      .filter(
-        Sequelize.where(
-          Sequelize.fn('isnull', Sequelize.col('EAVEntityType.isDeleted'), 0),
-          {
-            [Op.eq]: 0,
-          },
-        ),
-      );
+      .filter({ slug: slug });
+    // .filter(
+    //   Sequelize.where(
+    //     Sequelize.fn('isnull', Sequelize.col('EAVEntityType.isDeleted'), 0),
+    //     {
+    //       [Op.eq]: 0,
+    //     },
+    //   ),
+    // );
     const result = await this.repository.findOne(builder.build());
+
     if (!result) {
       throw new NotFoundException(
-        'the item with this given slug is not founded!',
+        this.localizationService.translate('core.not_found_slug'),
       );
     }
+
+    if (result.isDeleted) {
+      throw new GoneException('item is deleted!');
+    }
+
     return {
       result: result,
     };
@@ -379,7 +399,9 @@ export class EntityTypeService {
     );
     if (searchSlug) {
       throw new BadRequestException(
-        'the item with this given slug is exists before!',
+        this.localizationService.translate(
+          'core.the_given_slug_is_exists_before',
+        ),
       );
     }
     const mappedItem = this.mapper.map(dto, EntityTypeDto, EAVEntityType);
@@ -447,7 +469,9 @@ export class EntityTypeService {
         .build(),
     );
     if (!item) {
-      throw new NotFoundException('the item with this given id not founded!');
+      throw new NotFoundException(
+        this.localizationService.translate('core.not_found_id'),
+      );
     }
 
     const entityModel = await this.entityModelRepository.findOne({
@@ -493,7 +517,9 @@ export class EntityTypeService {
     );
     if (searchSlug) {
       throw new BadRequestException(
-        'the item with this given slug is exists before!',
+        this.localizationService.translate(
+          'core.the_given_slug_is_exists_before',
+        ),
       );
     }
 
@@ -556,7 +582,9 @@ export class EntityTypeService {
         .build(),
     );
     if (!item) {
-      throw new NotFoundException('the item with this given id not founded!');
+      throw new NotFoundException(
+        this.localizationService.translate('core.not_found_id'),
+      );
     }
 
     item.isDeleted = true;
@@ -582,7 +610,9 @@ export class EntityTypeService {
         .build(),
     );
     if (!item) {
-      throw new NotFoundException('the item with this given id not founded!');
+      throw new NotFoundException(
+        this.localizationService.translate('core.not_found_id'),
+      );
     }
 
     // upload to s3 cloud
