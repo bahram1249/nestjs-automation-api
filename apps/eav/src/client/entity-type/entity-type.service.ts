@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { GoneException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { Op, Sequelize } from 'sequelize';
 import { EAVEntityType } from '@rahino/localdatabase/models';
@@ -187,15 +187,15 @@ export class EntityTypeService {
           ],
         },
       ])
-      .filter({ id })
-      .filter(
-        Sequelize.where(
-          Sequelize.fn('isnull', Sequelize.col('EAVEntityType.isDeleted'), 0),
-          {
-            [Op.eq]: 0,
-          },
-        ),
-      );
+      .filter({ id });
+    // .filter(
+    //   Sequelize.where(
+    //     Sequelize.fn('isnull', Sequelize.col('EAVEntityType.isDeleted'), 0),
+    //     {
+    //       [Op.eq]: 0,
+    //     },
+    //   ),
+    // );
 
     const result = await this.repository.findOne(builder.build());
     if (!result) {
@@ -203,6 +203,11 @@ export class EntityTypeService {
         this.localizationService.translate('core.not_found_id'),
       );
     }
+
+    if (!result.isDeleted) {
+      throw new GoneException('item is deleted !');
+    }
+
     return {
       result: result,
     };
@@ -252,21 +257,25 @@ export class EntityTypeService {
           ],
         },
       ])
-      .filter({ slug: slug })
-      .filter(
-        Sequelize.where(
-          Sequelize.fn('isnull', Sequelize.col('EAVEntityType.isDeleted'), 0),
-          {
-            [Op.eq]: 0,
-          },
-        ),
-      );
+      .filter({ slug: slug });
+    // .filter(
+    //   Sequelize.where(
+    //     Sequelize.fn('isnull', Sequelize.col('EAVEntityType.isDeleted'), 0),
+    //     {
+    //       [Op.eq]: 0,
+    //     },
+    //   ),
+    // );
 
     const result = await this.repository.findOne(builder.build());
     if (!result) {
       throw new NotFoundException(
         this.localizationService.translate('core.not_found_slug'),
       );
+    }
+
+    if (result.isDeleted) {
+      throw new GoneException('item is deleted!');
     }
 
     return {
