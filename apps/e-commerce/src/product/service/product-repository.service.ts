@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { GoneException, Injectable, NotFoundException } from '@nestjs/common';
 import { GetProductDto, GetUnPriceDto } from '../dto';
 import { InjectModel } from '@nestjs/sequelize';
 import { ECProduct } from '@rahino/localdatabase/models';
@@ -14,6 +14,7 @@ import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builde
 import { RedirectException } from '@rahino/ecommerce/util/exception';
 import { SlugVersionTypeEnum } from '@rahino/ecommerce/util/enum';
 import { ListFilterV2Factory } from '@rahino/query-filter/provider/list-filter-v2.factory';
+import { LocalizationService } from 'apps/main/src/common/localization';
 
 @Injectable()
 export class ProductRepositoryService {
@@ -29,6 +30,7 @@ export class ProductRepositoryService {
     private listFilterFactory: ListFilterV2Factory,
 
     private readonly config: ConfigService,
+    private readonly localizationService: LocalizationService,
   ) {}
 
   async findBySlug(filter: GetProductDto, slug: string) {
@@ -42,6 +44,8 @@ export class ProductRepositoryService {
 
     let product = await this.repository.findOne(resultQuery);
     if (!product) {
+      // if product change the slug
+
       const isExistsBefore = await this.slugVersionRepository.findOne(
         new QueryOptionsBuilder()
           .filter({ slug: slug })
@@ -59,7 +63,17 @@ export class ProductRepositoryService {
           );
         }
       }
-      throw new NotFoundException('the item with this given slug not founded!');
+
+      // if product deleted before
+      const productFoundAsDeleted = await this.repository.findOne(
+        new QueryOptionsBuilder().filter({ slug: slug }).build(),
+      );
+      if (productFoundAsDeleted) {
+        throw new GoneException('item is deleted');
+      }
+      throw new NotFoundException(
+        this.localizationService.translate('core.not_found_slug'),
+      );
     }
 
     product = await this.removeEmptyPriceService.applyProduct(product);
@@ -80,7 +94,9 @@ export class ProductRepositoryService {
 
     let product = await this.repository.findOne(resultQuery);
     if (!product) {
-      throw new NotFoundException('the item with this given id not founded!');
+      throw new NotFoundException(
+        this.localizationService.translate('core.not_found_id'),
+      );
     }
     product = await this.removeEmptyPriceService.applyProduct(product);
     product = await this.applyInventoryStatus.applyProduct(product);

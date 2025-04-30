@@ -22,6 +22,7 @@ import { EAVEntityType } from '@rahino/localdatabase/models';
 import { ECSlugVersion } from '@rahino/localdatabase/models';
 import { QueryFilterModule } from '@rahino/query-filter';
 import { DBLoggerModule } from '@rahino/logger';
+import { LocalizationModule } from 'apps/main/src/common/localization';
 
 @Module({
   imports: [
@@ -51,6 +52,7 @@ import { DBLoggerModule } from '@rahino/logger';
     SequelizeModule,
     QueryFilterModule,
     DBLoggerModule,
+    LocalizationModule,
   ],
   controllers: [ProductController],
   providers: [

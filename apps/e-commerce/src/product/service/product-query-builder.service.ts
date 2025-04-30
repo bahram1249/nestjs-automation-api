@@ -114,20 +114,6 @@ export class ProductQueryBuilderService {
                   model: EAVEntityType,
                   as: 'subEntityTypes',
                   required: false,
-                  include: [
-                    {
-                      attributes: ['id', 'fileName'],
-                      model: Attachment,
-                      as: 'attachment',
-                      required: false,
-                    },
-                  ],
-                },
-                {
-                  attributes: ['id', 'fileName'],
-                  model: Attachment,
-                  as: 'attachment',
-                  required: false,
                 },
               ],
             },
