@@ -82,7 +82,7 @@ import { UserCommentModule } from './user/comment/comment.module';
 import { ChargingWalletPaymentModule } from './user/charging-wallet-payment/charging-wallet-payment.module';
 import { AdminHomePageModule } from './admin/home-page-section/home-page/home-page.module';
 import { HomePagePhotoModule } from './admin/home-page-section/home-page-photo/home-page-photo.module';
-import { EntityTypeSortModule } from './admin/entity-type-sort/entity-type-sort.module';
+import { EntityTypeSortModule } from './admin/home-page-section/entity-type-sort/entity-type-sort.module';
 import { HomePhotoModule } from './home-photo/home-photo.module';
 import { HomePageModule } from './home/home.module';
 import { ProcessHomeRunnerService } from './home/process-home-runner.service';
