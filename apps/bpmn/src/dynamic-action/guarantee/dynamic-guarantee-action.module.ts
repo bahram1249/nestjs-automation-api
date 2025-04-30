@@ -6,6 +6,7 @@ import { NotificationSenderForClientShippingWayRequestActionModule } from './not
 import { NotificationSenderForClientTechnicalVisitTimeRequestActionModule } from './notification-sender-for-client-technical-visit-time-request-action';
 import { UpdateRequestFactorToSucessActionModule } from './update-request-factor-to-success-action';
 import { RemainingTransactionInCashActionModule } from './remaining-transaction-in-cash-action';
+import { UpdateRequestMandatoryAttendanceActionModule } from './update-request-mandatory-attendance-action';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { RemainingTransactionInCashActionModule } from './remaining-transaction-
     NotificationSenderForClientTechnicalVisitTimeRequestActionModule,
     UpdateRequestFactorToSucessActionModule,
     RemainingTransactionInCashActionModule,
+    UpdateRequestMandatoryAttendanceActionModule,
   ],
   exports: [
     SampleActionModule,

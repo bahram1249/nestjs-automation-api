@@ -212,4 +212,10 @@ export class GSRequest extends Model {
     allowNull: true,
   })
   cartableShipmentWayTrackingCode?: string;
+
+  @Column({
+    type: DataType.BOOLEAN,
+    allowNull: true,
+  })
+  mandatoryAttendance?: boolean;
 }

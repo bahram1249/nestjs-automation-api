@@ -909,6 +909,26 @@ END
 
 GO
 
+-- gs-request-v5
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'gs-requests-v5'
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings
+		WHERE ([key] = 'CUSTOMER_NAME' AND [value] IN ('AriaKish'))
+		)
+BEGIN
+
+	ALTER TABLE GSRequests
+		ADD mandatoryAttendance bit null
+
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'gs-requests-v5', GETDATE(), GETDATE()
+END
+
+GO
+
+
 
 -- gs-unit-prices v1 :-> rial, toman
 IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'gs-unit-prices-v1'
