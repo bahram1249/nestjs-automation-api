@@ -18,7 +18,6 @@ import {
 } from '@nestjs/swagger';
 import { GetUser, JwtGuard } from '@rahino/auth';
 import { TrackingRequestService } from './tracking-request.service';
-import { GetCartableDto } from '../../shared/cartable-filtering/dto';
 import { User } from '@rahino/database';
 import { GetTrackingRequestExternalDto } from './dto';
 
@@ -34,7 +33,7 @@ export class TrackingRequestController {
   constructor(private service: TrackingRequestService) {}
 
   @ApiOperation({ description: 'show all tracking requests' })
-  //@CheckPermission({ permissionSymbol: 'gs.admin.cartables.getall' })
+  @CheckPermission({ permissionSymbol: 'gs.admin.trackingrequests.getall' })
   @Get('/')
   @ApiQuery({
     name: 'filter',
