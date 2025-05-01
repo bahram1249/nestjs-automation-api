@@ -11,6 +11,7 @@ import {
   BPMNPROCESS,
   GSAssignedGuarantee,
   GSRequest,
+  GSRequestAttachment,
 } from '@rahino/localdatabase/models';
 import { LocalizationModule } from 'apps/main/src/common/localization';
 import { BPMNRequestModule } from '@rahino/bpmn/modules/request/request.module';
@@ -34,6 +35,7 @@ import { ReverseProxyGuaranteeImageMiddleware } from '@rahino/ecommerce/guarante
       GSAssignedGuarantee,
       BPMNPROCESS,
       Attachment,
+      GSRequestAttachment,
     ]),
     LocalizationModule,
     BullModule.forRootAsync({

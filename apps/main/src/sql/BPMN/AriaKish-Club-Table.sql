@@ -1899,3 +1899,65 @@ END
 
 GO
 
+
+
+
+-- gs-request-attachment-types
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'gs-request-attachment-types-v1'
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings
+		WHERE ([key] = 'CUSTOMER_NAME' AND [value] IN ('AriaKish'))
+		)
+BEGIN
+
+	CREATE TABLE GSRequestAttachmentTypes(
+		id 							int  						PRIMARY KEY,
+		title						nvarchar(256)				NOT NULL,	
+		[createdAt]					datetimeoffset				NOT NULL,
+		[updatedAt]					datetimeoffset				NOT NULL
+	)
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'gs-request-attachment-types-v1', GETDATE(), GETDATE()
+END
+
+GO
+
+
+
+-- gs-request-attachments
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'gs-requests-attachments-v1'
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings
+		WHERE ([key] = 'CUSTOMER_NAME' AND [value] IN ('AriaKish'))
+		)
+BEGIN
+	
+	
+	CREATE TABLE GSRequestAttachments(
+		id 							bigint identity(1,1)		PRIMARY KEY,
+		requestId					bigint						NOT NULL
+			CONSTRAINT FK_GSRequestAttachments_RequestId
+				FOREIGN KEY REFERENCES GSRequests(id),
+		attachmentId				bigint						NOT NULL
+			CONSTRAINT FK_GSRequestAttachments_AttachmentId
+				FOREIGN KEY REFERENCES Attachments(id),
+		requestAttachmentTypeId		int							NOT NULL
+			CONSTRAINT FK_GSRequestAttachments_RequestAttachmentTypeId
+				FOREIGN KEY REFERENCES GSRequestAttachmentTypes(id),
+		userId						bigint						NOT NULL
+			CONSTRAINT FK_GSRequestAttachments_UserId
+				FOREIGN KEY REFERENCES Users(id),
+		isDeleted					bit							NULL,
+		[createdAt]					datetimeoffset				NOT NULL,
+		[updatedAt]					datetimeoffset				NOT NULL
+	)
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'gs-requests-attachments-v1', GETDATE(), GETDATE()
+END
+
+GO
+

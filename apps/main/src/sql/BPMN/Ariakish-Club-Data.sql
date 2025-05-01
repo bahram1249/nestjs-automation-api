@@ -2548,3 +2548,27 @@ BEGIN
 END
 
 GO
+
+
+
+-- request attachment types data
+IF NOT EXISTS ( SELECT 1 FROM Migrations WHERE version = 'gs-request-attachment-types-Data-v1'
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings
+		WHERE ([key] = 'CUSTOMER_NAME' AND [value] IN ('AriaKish'))
+		)
+
+BEGIN
+
+	INSERT INTO GSRequestAttachmentTypes(id, title, createdAt, updatedAt)
+	VALUES (1, N'ثبت توسط مشتری در شروع درخواست', GETDATE(), GETDATE())
+			,(2, N'ثبت توسط نماینده در اتمام درخواست', GETDATE(), GETDATE())
+			,(3, N'ثبت به منظور سفارش قطعه', GETDATE(), GETDATE())
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'gs-request-attachment-types-Data-v1', GETDATE(), GETDATE()
+END
+
+GO
+

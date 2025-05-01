@@ -2,6 +2,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { I18nTranslations } from 'apps/main/src/generated/i18n.generated';
 import { AutoMap } from 'automapper-classes';
 import {
+  IsArray,
   IsNotEmpty,
   IsNumber,
   IsString,
@@ -10,6 +11,7 @@ import {
   MinLength,
 } from 'class-validator';
 import { i18nValidationMessage } from 'nestjs-i18n';
+import { AttachmentDto } from './attachment.dto';
 
 export class VipRequestDto {
   @MinLength(10, {
@@ -60,4 +62,7 @@ export class VipRequestDto {
   @AutoMap()
   @IsNumber()
   assignedProductAssignedGuaranteeId: bigint;
+
+  @IsArray()
+  attachments: AttachmentDto[] = [];
 }

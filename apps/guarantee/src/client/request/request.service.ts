@@ -16,6 +16,7 @@ import {
   GSProductType,
   GSProvince,
   GSRequest,
+  GSRequestAttachment,
   GSRequestCategory,
   GSRequestType,
   GSVariant,
@@ -45,6 +46,7 @@ import * as fs from 'fs';
 @Injectable()
 export class RequestService {
   private photoTempAttachmentType = 19;
+  private photoAttachmentType = 20;
   constructor(
     @InjectModel(GSRequest) private repository: typeof GSRequest,
     @InjectModel(GSAssignedGuarantee)
@@ -63,11 +65,21 @@ export class RequestService {
     private readonly minioClientService: MinioClientService,
     @InjectModel(Attachment)
     private readonly attachmentRepository: typeof Attachment,
+    @InjectModel(GSRequestAttachment)
+    private readonly requestAttachmentRepository: typeof GSRequestAttachment,
 
     private readonly thumbnailService: ThumbnailService,
   ) {}
 
   async createNormalGuaranteeRequest(user: User, dto: NormalRequestDto) {
+    if (dto.attachments.length == 0) {
+      throw new BadRequestException(
+        this.localizationService.translate(
+          'guarantee.you_have_to_upload_a_image_at_least_one',
+        ),
+      );
+    }
+
     const asssignedGuarantee = await this.assignedGuaranteeRepository.findOne(
       new QueryOptionsBuilder()
         .include([
@@ -168,11 +180,52 @@ export class RequestService {
         { transaction: transaction },
       );
       requestId = bpmnRequest.id;
+
+      for (let attachmentDto of dto.attachments) {
+        let findAttachment = await this.attachmentRepository.findOne(
+          new QueryOptionsBuilder()
+            .filter({ id: attachmentDto.attachmentId })
+            .filter({ attachmentTypeId: this.photoTempAttachmentType })
+            .filter(
+              Sequelize.where(
+                Sequelize.fn(
+                  'isnull',
+                  Sequelize.col('Attachment.isDeleted'),
+                  0,
+                ),
+                {
+                  [Op.eq]: 0,
+                },
+              ),
+            )
+            .build(),
+        );
+        if (!findAttachment) {
+          throw new BadRequestException(
+            this.localizationService.translate('core.dont_access_to_this_file'),
+          );
+        }
+
+        findAttachment.attachmentTypeId = this.photoAttachmentType;
+        await findAttachment.save({ transaction: transaction });
+
+        await this.requestAttachmentRepository.create(
+          {
+            requestId: requestId,
+            attachmentId: findAttachment.id,
+            requestAttachmentTypeId: this.photoTempAttachmentType,
+            userId: user.id,
+          },
+          { transaction: transaction },
+        );
+      }
+
       await transaction.commit();
       await this.normalGuaranteeRequestSmsSenderQueue.add(
         'normal_guarantee_request_sms_sender',
         {
           phoneNumber: user.phoneNumber,
+          requestTypeId: dto.requestTypeId,
         },
       );
     } catch (error) {
@@ -187,6 +240,13 @@ export class RequestService {
   }
 
   async createOutOfWarrantyRequest(user: User, dto: OutOfWarrantyRequestDto) {
+    if (dto.attachments.length == 0) {
+      throw new BadRequestException(
+        this.localizationService.translate(
+          'guarantee.you_have_to_upload_a_image_at_least_one',
+        ),
+      );
+    }
     const process = await this.processRepository.findOne(
       new QueryOptionsBuilder()
         .filter({
@@ -242,11 +302,52 @@ export class RequestService {
         { transaction: transaction },
       );
       requestId = bpmnRequest.id;
+
+      for (let attachmentDto of dto.attachments) {
+        let findAttachment = await this.attachmentRepository.findOne(
+          new QueryOptionsBuilder()
+            .filter({ id: attachmentDto.attachmentId })
+            .filter({ attachmentTypeId: this.photoTempAttachmentType })
+            .filter(
+              Sequelize.where(
+                Sequelize.fn(
+                  'isnull',
+                  Sequelize.col('Attachment.isDeleted'),
+                  0,
+                ),
+                {
+                  [Op.eq]: 0,
+                },
+              ),
+            )
+            .build(),
+        );
+        if (!findAttachment) {
+          throw new BadRequestException(
+            this.localizationService.translate('core.dont_access_to_this_file'),
+          );
+        }
+
+        findAttachment.attachmentTypeId = this.photoAttachmentType;
+        await findAttachment.save({ transaction: transaction });
+
+        await this.requestAttachmentRepository.create(
+          {
+            requestId: requestId,
+            attachmentId: findAttachment.id,
+            requestAttachmentTypeId: this.photoTempAttachmentType,
+            userId: user.id,
+          },
+          { transaction: transaction },
+        );
+      }
+
       await transaction.commit();
       await this.normalGuaranteeRequestSmsSenderQueue.add(
         'normal_guarantee_request_sms_sender',
         {
           phoneNumber: user.phoneNumber,
+          requestTypeId: dto.requestTypeId,
         },
       );
     } catch (error) {
@@ -261,6 +362,14 @@ export class RequestService {
   }
 
   async createVipGuaranteeRequest(user: User, dto: VipRequestDto) {
+    if (dto.attachments.length == 0) {
+      throw new BadRequestException(
+        this.localizationService.translate(
+          'guarantee.you_have_to_upload_a_image_at_least_one',
+        ),
+      );
+    }
+
     const { result: assigendProductAssignedGuarantee } =
       await this.assignedProductAssignedGuaranteeService.findById(
         user,
@@ -367,11 +476,52 @@ export class RequestService {
         { transaction: transaction },
       );
       requestId = bpmnRequest.id;
+
+      for (let attachmentDto of dto.attachments) {
+        let findAttachment = await this.attachmentRepository.findOne(
+          new QueryOptionsBuilder()
+            .filter({ id: attachmentDto.attachmentId })
+            .filter({ attachmentTypeId: this.photoTempAttachmentType })
+            .filter(
+              Sequelize.where(
+                Sequelize.fn(
+                  'isnull',
+                  Sequelize.col('Attachment.isDeleted'),
+                  0,
+                ),
+                {
+                  [Op.eq]: 0,
+                },
+              ),
+            )
+            .build(),
+        );
+        if (!findAttachment) {
+          throw new BadRequestException(
+            this.localizationService.translate('core.dont_access_to_this_file'),
+          );
+        }
+
+        findAttachment.attachmentTypeId = this.photoAttachmentType;
+        await findAttachment.save({ transaction: transaction });
+
+        await this.requestAttachmentRepository.create(
+          {
+            requestId: requestId,
+            attachmentId: findAttachment.id,
+            requestAttachmentTypeId: this.photoTempAttachmentType,
+            userId: user.id,
+          },
+          { transaction: transaction },
+        );
+      }
+
       await transaction.commit();
       await this.normalGuaranteeRequestSmsSenderQueue.add(
         'normal_guarantee_request_sms_sender',
         {
           phoneNumber: user.phoneNumber,
+          requestTypeId: dto.requestTypeId,
         },
       );
     } catch (error) {
