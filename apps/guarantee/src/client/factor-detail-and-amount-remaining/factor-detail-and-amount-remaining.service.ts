@@ -23,7 +23,7 @@ export class GSFactorDeatilAndRemainingAmountService {
         transactions: this.mapTransactions(result.transactions),
         partServices: result.partServices,
         solutionServices: result.solutionServices,
-        isOnlinePayment: result.isOnlinePayment,
+        isAvailableForOnlinePayment: result.isAvailableForOnlinePayment,
         factor: result.factor,
       },
     };

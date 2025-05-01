@@ -38,6 +38,19 @@ export class SubmitFactorInRequestLocationService {
           .build(),
       );
 
+      const isCash = !(dto.isOnline == true);
+      await this.repository.update(
+        {
+          isCash: isCash,
+        },
+        {
+          where: {
+            id: cartableItem.request.id,
+          },
+          transaction: transaction,
+        },
+      );
+
       // lets traverse request
       await this.traverseService.traverse({
         request: cartableItem.request,

@@ -218,4 +218,7 @@ export class GSRequest extends Model {
     allowNull: true,
   })
   mandatoryAttendance?: boolean;
+
+  @Column({ type: DataType.BOOLEAN, allowNull: true })
+  isCash?: boolean;
 }

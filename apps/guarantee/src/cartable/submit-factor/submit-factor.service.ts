@@ -16,6 +16,8 @@ export class SubmitFactorService {
     private readonly sequelize: Sequelize,
     private readonly traverseService: TraverseService,
     private readonly localizationService: LocalizationService,
+    @InjectModel(GSRequest)
+    private readonly requestRepository: typeof GSRequest,
   ) {}
 
   async traverse(user: User, dto: SubmitFactorDto) {
@@ -28,6 +30,19 @@ export class SubmitFactorService {
       isolationLevel: Transaction.ISOLATION_LEVELS.READ_COMMITTED,
     });
     try {
+      const isCash = !(dto.isOnline == true);
+      await this.requestRepository.update(
+        {
+          isCash: isCash,
+        },
+        {
+          where: {
+            id: cartableItem.request.id,
+          },
+          transaction: transaction,
+        },
+      );
+
       // lets traverse request
       await this.traverseService.traverse({
         request: cartableItem.request,

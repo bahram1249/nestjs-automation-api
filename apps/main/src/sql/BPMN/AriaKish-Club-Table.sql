@@ -929,6 +929,25 @@ END
 GO
 
 
+-- gs-request-v6
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'gs-requests-v6'
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings
+		WHERE ([key] = 'CUSTOMER_NAME' AND [value] IN ('AriaKish'))
+		)
+BEGIN
+
+	ALTER TABLE GSRequests
+		ADD isCash bit null
+
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'gs-requests-v6', GETDATE(), GETDATE()
+END
+
+GO
+
 
 -- gs-unit-prices v1 :-> rial, toman
 IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'gs-unit-prices-v1'

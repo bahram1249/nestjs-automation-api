@@ -128,7 +128,10 @@ export class GSSharedFactorDetailAndRemainingAmountService {
         transactions: paidTransactions,
         partServices: partServices,
         solutionServices: solutionServices,
-        isOnlinePayment: guaranteeOrganization.isOnlinePayment == true,
+        isAvailableForOnlinePayment:
+          guaranteeOrganization.isOnlinePayment == true &&
+          request.mandatoryAttendance == false,
+        isCash: request.isCash,
       },
     };
   }

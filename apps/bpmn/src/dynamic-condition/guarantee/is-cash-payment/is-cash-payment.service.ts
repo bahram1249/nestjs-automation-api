@@ -18,9 +18,10 @@ export class IsCashPaymentService implements ConditionServiceImp {
 
     if (
       result.remainingAmount > 0 &&
-      defaultValueIsNull(result.isOnlinePayment, false) == false
-    )
+      defaultValueIsNull(result.isCash, false) == true
+    ) {
       return true;
+    }
     return false;
   }
 }

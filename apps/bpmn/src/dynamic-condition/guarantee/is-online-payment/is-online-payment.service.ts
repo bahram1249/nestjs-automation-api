@@ -15,8 +15,9 @@ export class IsOnlinePaymentService implements ConditionServiceImp {
         dto.transaction,
       );
 
-    if (result.remainingAmount > 0 && result.isOnlinePayment == true)
+    if (result.remainingAmount > 0 && result.isCash == false) {
       return true;
+    }
     return false;
   }
 }
