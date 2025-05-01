@@ -5,9 +5,11 @@ import {
   DataType,
   ForeignKey,
   BelongsTo,
+  HasMany,
 } from 'sequelize-typescript';
 import { GSRequest } from './gs-request.entity';
 import { User } from '@rahino/database';
+import { GSAnswerRecord } from './gs-answer-record.entity';
 
 @Table({ tableName: 'GSResponses' })
 export class GSResponse extends Model {
@@ -44,4 +46,7 @@ export class GSResponse extends Model {
     allowNull: true,
   })
   totalScore?: number;
+
+  @HasMany(() => GSAnswerRecord)
+  answerRecords: GSAnswerRecord[];
 }
