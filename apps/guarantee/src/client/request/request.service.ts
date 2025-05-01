@@ -42,6 +42,7 @@ import { AssignedProductGuaranteeService } from '../assigned-product-guarantee/a
 import { MinioClientService } from '@rahino/minio-client';
 import { ThumbnailService } from '@rahino/thumbnail';
 import * as fs from 'fs';
+import { GSRequestAttachmentTypeEnum } from '@rahino/guarantee/shared/request-attachment-type';
 
 @Injectable()
 export class RequestService {
@@ -213,7 +214,8 @@ export class RequestService {
           {
             requestId: requestId,
             attachmentId: findAttachment.id,
-            requestAttachmentTypeId: this.photoTempAttachmentType,
+            requestAttachmentTypeId:
+              GSRequestAttachmentTypeEnum.SubmitByOwnerOnRequestStart,
             userId: user.id,
           },
           { transaction: transaction },
@@ -335,7 +337,8 @@ export class RequestService {
           {
             requestId: requestId,
             attachmentId: findAttachment.id,
-            requestAttachmentTypeId: this.photoTempAttachmentType,
+            requestAttachmentTypeId:
+              GSRequestAttachmentTypeEnum.SubmitByOwnerOnRequestStart,
             userId: user.id,
           },
           { transaction: transaction },
@@ -509,7 +512,8 @@ export class RequestService {
           {
             requestId: requestId,
             attachmentId: findAttachment.id,
-            requestAttachmentTypeId: this.photoTempAttachmentType,
+            requestAttachmentTypeId:
+              GSRequestAttachmentTypeEnum.SubmitByOwnerOnRequestStart,
             userId: user.id,
           },
           { transaction: transaction },
