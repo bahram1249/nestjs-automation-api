@@ -1,12 +1,14 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { GSRequestAttachmentDto } from './dto';
 import { InjectModel } from '@nestjs/sequelize';
-import { GSRequestAttachment } from '@rahino/localdatabase/models';
+import {
+  GSRequestAttachment,
+  GSRequestAttachmentType,
+} from '@rahino/localdatabase/models';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 
 import * as _ from 'lodash';
-import { LocalizationService } from 'apps/main/src/common/localization';
-import { Attachment } from '@rahino/database';
+import { Attachment, User } from '@rahino/database';
 
 @Injectable()
 export class RequestAttachmentService {
@@ -39,6 +41,16 @@ export class RequestAttachmentService {
           required: true,
         },
       ])
+      .thenInclude({
+        attributes: ['id', 'title'],
+        model: GSRequestAttachmentType,
+        as: 'requestAttachmentType',
+      })
+      .thenInclude({
+        model: User,
+        as: 'user',
+        attributes: ['id', 'firstname', 'lastname', 'phoneNumber'],
+      })
       .filter({ requestId: requestId })
       .limit(filter.limit, filter.ignorePaging)
       .offset(filter.offset, filter.ignorePaging)
