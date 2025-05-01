@@ -13,7 +13,7 @@ export class ReverseProxyGuaranteeRequestMiddleware implements NestMiddleware {
         'https://' + this.config.get<string>('MINIO_ENDPOINT') + '/requests', // target host
       changeOrigin: true,
       pathRewrite: {
-        '/api/guarantee/cartable/requestAttachments/image/': '',
+        '/v1/api/guarantee/cartable/requestAttachments/image/': '',
       },
       onProxyReq: (proxyReq, req, res) => {
         // console.log(
