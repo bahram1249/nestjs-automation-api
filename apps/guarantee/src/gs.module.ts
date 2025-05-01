@@ -75,6 +75,7 @@ import { CartableRequestTypeModule } from './cartable/request-type';
 import { GSTrackingRequestModule } from './admin/tracking-request';
 import { GSClientQuestionModule } from './client/question/question.module';
 import { GSClientSubmitSurveyModule } from './client/submit-survey';
+import { GSSuperVisorUserModule } from './admin/super-visor-user';
 
 @Module({
   imports: [
@@ -169,6 +170,7 @@ import { GSClientSubmitSurveyModule } from './client/submit-survey';
 
     GSClientQuestionModule,
     GSClientSubmitSurveyModule,
+    GSSuperVisorUserModule,
   ],
 })
 export class GSModule implements NestModule {

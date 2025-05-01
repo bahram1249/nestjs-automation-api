@@ -43,6 +43,7 @@ import {
   GSAnswerOption,
   GSResponse,
   GSAnswerRecord,
+  GSSuperVisorUser,
 } from '../models';
 
 export const guaranteeModels = [
@@ -90,4 +91,5 @@ export const guaranteeModels = [
   GSAnswerOption,
   GSResponse,
   GSAnswerRecord,
+  GSSuperVisorUser,
 ];

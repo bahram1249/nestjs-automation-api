@@ -43,3 +43,4 @@ export * from './gs-question.entity';
 export * from './gs-answer-option.entity';
 export * from './gs-response.entity';
 export * from './gs-answer-record.entity';
+export * from './gs-super-visor-user.entity';

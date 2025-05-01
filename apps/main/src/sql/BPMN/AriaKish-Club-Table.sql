@@ -1598,7 +1598,30 @@ END
 
 GO
 
+-- gs-supervisorusers
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'gs-supervisorusers-v1'
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings
+		WHERE ([key] = 'CUSTOMER_NAME' AND [value] IN ('AriaKish'))
+		)
+BEGIN
 
+	CREATE TABLE GSSuperVisorUsers (
+		id                          bigint identity(1,1)           	PRIMARY KEY,
+        userId						bigint							NOT NULL
+			CONSTRAINT FK_GSSuperVisorUsers_UserId
+				FOREIGN KEY REFERENCES Users(id),
+		
+		[createdAt]					datetimeoffset					NOT NULL,
+		[updatedAt]					datetimeoffset					NOT NULL
+	);
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'gs-supervisorusers-v1', GETDATE(), GETDATE()
+END
+
+GO
 
 -- gs-service-types
 IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'gs-service-types-v1'
