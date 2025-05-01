@@ -1,4 +1,5 @@
-import { Table, Column, Model, DataType } from 'sequelize-typescript';
+import { Table, Column, Model, DataType, HasMany } from 'sequelize-typescript';
+import { GSAnswerOption } from './gs-answer-option.entity';
 
 @Table({ tableName: 'GSQuestions' })
 export class GSQuestion extends Model {
@@ -27,4 +28,7 @@ export class GSQuestion extends Model {
     allowNull: true,
   })
   maxWeight?: number;
+
+  @HasMany(() => GSAnswerOption)
+  answerOptions?: GSAnswerOption[];
 }
