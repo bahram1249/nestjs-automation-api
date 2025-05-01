@@ -39,6 +39,10 @@ import {
   GSFactorService,
   GSVipGenerator,
   GSFactorVipBundle,
+  GSQuestion,
+  GSAnswerOption,
+  GSResponse,
+  GSAnswerRecord,
 } from '../models';
 
 export const guaranteeModels = [
@@ -82,4 +86,8 @@ export const guaranteeModels = [
   GSFactorService,
   GSVipGenerator,
   GSFactorVipBundle,
+  GSQuestion,
+  GSAnswerOption,
+  GSResponse,
+  GSAnswerRecord,
 ];

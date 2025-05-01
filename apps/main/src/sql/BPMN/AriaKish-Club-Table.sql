@@ -1859,9 +1859,9 @@ BEGIN
 		responseId					bigint						NOT NULL
 			CONSTRAINT FK_GSAnswerRecords_ResponseId
 				FOREIGN KEY REFERENCES GSResponses(id),
-		answerId					bigint						NOT NULL
-			CONSTRAINT FK_GSAnswerRecords_AnswerId
-				FOREIGN KEY REFERENCES GSAnswerOptions(id),
+		questionId					bigint						NOT NULL
+			CONSTRAINT FK_GSAnswerRecords_QuestionId
+				FOREIGN KEY REFERENCES GSQuestions(id),
 		answerOptionId				bigint						NOT NULL
 			CONSTRAINT FK_GSAnswerRecords_AnswerOptionId
 				FOREIGN KEY REFERENCES GSAnswerOptions(id),
