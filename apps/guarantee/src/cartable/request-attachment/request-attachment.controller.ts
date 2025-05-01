@@ -5,6 +5,7 @@ import {
   HttpStatus,
   Param,
   Query,
+  Res,
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
@@ -44,5 +45,17 @@ export class RequestAttachmentController {
     @Query() filter: GSRequestAttachmentDto,
   ) {
     return await this.service.findAll(requestId, filter);
+  }
+
+  @ApiOperation({ description: 'show request guarantee photo by fileName' })
+  @Get('/image/:fileName')
+  @HttpCode(HttpStatus.OK)
+  async getImage(
+    @Res({ passthrough: true }) res: Response,
+    @Param('fileName') fileName: string,
+  ) {
+    return {
+      ok: true,
+    };
   }
 }

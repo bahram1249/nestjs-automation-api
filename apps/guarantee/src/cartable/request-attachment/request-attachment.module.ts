@@ -1,9 +1,14 @@
-import { Module } from '@nestjs/common';
+import {
+  MiddlewareConsumer,
+  Module,
+  NestModule,
+  RequestMethod,
+} from '@nestjs/common';
 import { RequestAttachmentService } from './request-attachment.service';
 import { SequelizeModule } from '@nestjs/sequelize';
 import { GSRequestAttachment } from '@rahino/localdatabase/models';
 import { RequestAttachmentController } from './request-attachment.controller';
-import { LocalizationModule } from 'apps/main/src/common/localization';
+import { ReverseProxyGuaranteeRequestMiddleware } from './reverse-proxy.middleware';
 
 @Module({
   imports: [SequelizeModule, SequelizeModule.forFeature([GSRequestAttachment])],
@@ -11,4 +16,11 @@ import { LocalizationModule } from 'apps/main/src/common/localization';
   providers: [RequestAttachmentService],
   exports: [RequestAttachmentService],
 })
-export class CartableRequestAttachmentModule {}
+export class CartableRequestAttachmentModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(ReverseProxyGuaranteeRequestMiddleware).forRoutes({
+      path: '/v1/api/guarantee/cartable/requestAttachments/image/*',
+      method: RequestMethod.GET,
+    });
+  }
+}

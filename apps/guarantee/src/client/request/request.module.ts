@@ -23,7 +23,7 @@ import { GSClientAssignedProductAssignedGuaranteeModule } from '../assigned-prod
 import { MinioClientModule } from '@rahino/minio-client';
 import { Attachment } from '@rahino/database';
 import { ThumbnailModule } from '@rahino/thumbnail';
-import { ReverseProxyGuaranteeImageMiddleware } from '@rahino/ecommerce/guarantee/reverse-proxy.middleware';
+import { ReverseProxyGuaranteeRequestMiddleware } from './reverse-proxy.middleware';
 
 @Module({
   imports: [
@@ -72,7 +72,7 @@ import { ReverseProxyGuaranteeImageMiddleware } from '@rahino/ecommerce/guarante
 })
 export class GSClientRequestModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
-    consumer.apply(ReverseProxyGuaranteeImageMiddleware).forRoutes({
+    consumer.apply(ReverseProxyGuaranteeRequestMiddleware).forRoutes({
       path: '/v1/api/guarantee/client/requests/image/*',
       method: RequestMethod.GET,
     });
