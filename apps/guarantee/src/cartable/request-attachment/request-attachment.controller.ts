@@ -1,24 +1,34 @@
 import {
   Controller,
+  FileTypeValidator,
   Get,
   HttpCode,
   HttpStatus,
+  MaxFileSizeValidator,
   Param,
+  ParseFilePipe,
+  Post,
   Query,
   Res,
+  UploadedFile,
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
 import { JsonResponseTransformInterceptor } from '@rahino/response/interceptor';
 import {
   ApiBearerAuth,
+  ApiBody,
+  ApiConsumes,
   ApiOperation,
   ApiQuery,
   ApiTags,
 } from '@nestjs/swagger';
-import { JwtGuard } from '@rahino/auth';
+import { GetUser, JwtGuard } from '@rahino/auth';
 import { RequestAttachmentService } from './request-attachment.service';
 import { GSRequestAttachmentDto } from './dto';
+import { User } from '@rahino/database';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { imageOptions } from './file-options';
 
 @ApiBearerAuth()
 @UseGuards(JwtGuard)
@@ -45,6 +55,38 @@ export class RequestAttachmentController {
     @Query() filter: GSRequestAttachmentDto,
   ) {
     return await this.service.findAll(requestId, filter);
+  }
+
+  @UseInterceptors(FileInterceptor('file', imageOptions()))
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        file: {
+          type: 'string',
+          format: 'binary',
+        },
+      },
+    },
+  })
+  @Post('/image')
+  @HttpCode(HttpStatus.OK)
+  async uploadImage(
+    @GetUser() user: User,
+    @UploadedFile(
+      new ParseFilePipe({
+        validators: [
+          new FileTypeValidator({ fileType: /(jpg|png|jpeg)/ }),
+          new MaxFileSizeValidator({ maxSize: 7097152 }),
+        ],
+        fileIsRequired: false,
+        errorHttpStatusCode: HttpStatus.UNPROCESSABLE_ENTITY,
+      }),
+    )
+    file?: Express.Multer.File,
+  ) {
+    return await this.service.uploadImage(user, file);
   }
 
   @ApiOperation({ description: 'show request guarantee photo by fileName' })
