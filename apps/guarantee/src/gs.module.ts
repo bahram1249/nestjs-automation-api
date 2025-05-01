@@ -77,6 +77,8 @@ import { GSClientQuestionModule } from './client/question/question.module';
 import { GSClientSubmitSurveyModule } from './client/submit-survey';
 import { GSSuperVisorUserModule } from './admin/super-visor-user';
 import { CartableRequestAttachmentModule } from './cartable/request-attachment';
+import { GSCartableShippingWayModule } from './cartable/shipping-way/shipping-way.module';
+import { PickCartableShipmentWayModule } from './cartable/pick-shipment-way';
 
 @Module({
   imports: [
@@ -173,6 +175,9 @@ import { CartableRequestAttachmentModule } from './cartable/request-attachment';
     GSClientSubmitSurveyModule,
     GSSuperVisorUserModule,
     CartableRequestAttachmentModule,
+
+    GSCartableShippingWayModule,
+    PickCartableShipmentWayModule,
   ],
 })
 export class GSModule implements NestModule {

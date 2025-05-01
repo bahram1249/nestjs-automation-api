@@ -22,13 +22,13 @@ export class ShippingWayService {
           },
         ),
       )
-      .filter({ isClientSide: true });
+      .filter({ isCartableSide: true });
 
     const count = await this.repository.count(queryBuilder.build());
     const queryOptions = queryBuilder
       .attributes(['id', 'title', 'icon'])
-
       .build();
+
     const result = await this.repository.findAll(queryOptions);
     return {
       result: result,
