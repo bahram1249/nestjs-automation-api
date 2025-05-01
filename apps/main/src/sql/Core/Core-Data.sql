@@ -497,3 +497,26 @@ BEGIN
 END
 
 GO
+
+
+-- temp requests
+IF NOT EXISTS ((SELECT 1 FROM Migrations WHERE version = 'CORE-AttachmentTypes-Data-v17' 
+			))
+BEGIN
+	
+	INSERT INTO AttachmentTypes(id, typeName, createdAt, updatedAt)
+	SELECT 19, N'tempguaranteerequests', getdate(), getdate()
+
+	INSERT INTO AttachmentTypes(id, typeName, createdAt, updatedAt)
+	SELECT 20, N'guaranteerequests', getdate(), getdate()
+
+	INSERT INTO AttachmentTypes(id, typeName, createdAt, updatedAt)
+	SELECT 20, N'organizationbussinesslicense', getdate(), getdate()
+
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'CORE-AttachmentTypes-Data-v17', GETDATE(), GETDATE()
+END
+
+GO
+

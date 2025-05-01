@@ -20,7 +20,7 @@ import {
   GSRequestType,
   GSVariant,
 } from '@rahino/localdatabase/models';
-import { User } from '@rahino/database';
+import { Attachment, User } from '@rahino/database';
 import { LocalizationService } from 'apps/main/src/common/localization';
 import {
   GetRequestFilterDto,
@@ -38,9 +38,13 @@ import { AddressService } from '../address/address.service';
 import { InjectQueue } from '@nestjs/bullmq';
 import { NORMAL_GUARANTEE_REQUEST_SMS_SENDER_QUEUE } from '@rahino/guarantee/job/normal-guarantee-request-sms-sender/constants';
 import { AssignedProductGuaranteeService } from '../assigned-product-guarantee/assigned-product-guarantee.service';
+import { MinioClientService } from '@rahino/minio-client';
+import { ThumbnailService } from '@rahino/thumbnail';
+import * as fs from 'fs';
 
 @Injectable()
 export class RequestService {
+  private photoTempAttachmentType = 19;
   constructor(
     @InjectModel(GSRequest) private repository: typeof GSRequest,
     @InjectModel(GSAssignedGuarantee)
@@ -56,6 +60,11 @@ export class RequestService {
     private readonly normalGuaranteeRequestSmsSenderQueue,
 
     private readonly assignedProductAssignedGuaranteeService: AssignedProductGuaranteeService,
+    private readonly minioClientService: MinioClientService,
+    @InjectModel(Attachment)
+    private readonly attachmentRepository: typeof Attachment,
+
+    private readonly thumbnailService: ThumbnailService,
   ) {}
 
   async createNormalGuaranteeRequest(user: User, dto: NormalRequestDto) {
@@ -469,6 +478,40 @@ export class RequestService {
     return {
       result: result,
       total: count,
+    };
+  }
+
+  async uploadImage(user: User, file: Express.Multer.File) {
+    // upload to s3 cloud
+    const bucketName = 'requests';
+    await this.minioClientService.createBucket(bucketName);
+    const buffer = await this.thumbnailService.resize(file.path);
+    const uploadResult = await this.minioClientService.upload(
+      bucketName,
+      file.filename,
+      buffer,
+      {
+        'Content-Type': file.mimetype,
+      },
+    );
+
+    // create new one
+    const newAttachment = await this.attachmentRepository.create({
+      attachmentTypeId: this.photoTempAttachmentType,
+      fileName: file.filename,
+      originalFileName: file.originalname,
+      mimetype: file.mimetype,
+      etag: uploadResult.etag,
+      versionId: uploadResult.versionId,
+      bucketName: bucketName,
+      userId: user.id,
+    });
+
+    // remove file on current instanse
+    fs.rmSync(file.path);
+
+    return {
+      result: _.pick(newAttachment, ['id', 'fileName']),
     };
   }
 }

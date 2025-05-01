@@ -1,17 +1,25 @@
 import {
   Body,
   Controller,
+  FileTypeValidator,
   Get,
   HttpCode,
   HttpStatus,
+  MaxFileSizeValidator,
+  Param,
+  ParseFilePipe,
   Post,
   Query,
+  Res,
+  UploadedFile,
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
 import { JsonResponseTransformInterceptor } from '@rahino/response/interceptor';
 import {
   ApiBearerAuth,
+  ApiBody,
+  ApiConsumes,
   ApiOperation,
   ApiQuery,
   ApiTags,
@@ -26,11 +34,12 @@ import {
 } from './dto';
 import { GetUser } from '@rahino/auth';
 import { User } from '@rahino/database';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { imageOptions } from './file-options';
 
 @ApiTags('GS-Client-Request')
 @UseGuards(JwtGuard)
 @ApiBearerAuth()
-@UseInterceptors(JsonResponseTransformInterceptor)
 @Controller({
   path: '/api/guarantee/client/requests',
   version: ['1'],
@@ -38,6 +47,7 @@ import { User } from '@rahino/database';
 export class RequestController {
   constructor(private service: RequestService) {}
 
+  @UseInterceptors(JsonResponseTransformInterceptor)
   // // public url
   @ApiOperation({ description: 'show all current user requests' })
   @Get('/')
@@ -52,6 +62,7 @@ export class RequestController {
     return await this.service.findAll(user, filter);
   }
 
+  @UseInterceptors(JsonResponseTransformInterceptor)
   @ApiOperation({ description: 'create normal guarantee request' })
   @Post('/normalRequest')
   @HttpCode(HttpStatus.CREATED)
@@ -62,6 +73,7 @@ export class RequestController {
     return await this.service.createNormalGuaranteeRequest(user, dto);
   }
 
+  @UseInterceptors(JsonResponseTransformInterceptor)
   @ApiOperation({ description: 'create vip guarantee request' })
   @Post('/vipRequest')
   @HttpCode(HttpStatus.CREATED)
@@ -72,6 +84,7 @@ export class RequestController {
     return await this.service.createVipGuaranteeRequest(user, dto);
   }
 
+  @UseInterceptors(JsonResponseTransformInterceptor)
   @ApiOperation({ description: 'create out of warranty request' })
   @Post('/outOfWarrantyRequest')
   @HttpCode(HttpStatus.CREATED)
@@ -80,5 +93,50 @@ export class RequestController {
     @Body() dto: OutOfWarrantyRequestDto,
   ) {
     return await this.service.createOutOfWarrantyRequest(user, dto);
+  }
+
+  @UseInterceptors(JsonResponseTransformInterceptor)
+  @UseInterceptors(FileInterceptor('file', imageOptions()))
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        file: {
+          type: 'string',
+          format: 'binary',
+        },
+      },
+    },
+  })
+  @Post('/image')
+  @HttpCode(HttpStatus.OK)
+  async uploadImage(
+    @GetUser() user: User,
+    @UploadedFile(
+      new ParseFilePipe({
+        validators: [
+          new FileTypeValidator({ fileType: /(jpg|png|jpeg)/ }),
+          new MaxFileSizeValidator({ maxSize: 2097152 }),
+        ],
+        fileIsRequired: false,
+        errorHttpStatusCode: HttpStatus.UNPROCESSABLE_ENTITY,
+      }),
+    )
+    file?: Express.Multer.File,
+  ) {
+    return await this.service.uploadImage(user, file);
+  }
+
+  @ApiOperation({ description: 'show guarantee  photo by fileName' })
+  @Get('/image/:fileName')
+  @HttpCode(HttpStatus.OK)
+  async getImage(
+    @Res({ passthrough: true }) res: Response,
+    @Param('fileName') fileName: string,
+  ) {
+    return {
+      ok: true,
+    };
   }
 }

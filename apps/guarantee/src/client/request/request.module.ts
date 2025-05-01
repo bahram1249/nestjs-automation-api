@@ -1,4 +1,9 @@
-import { Module } from '@nestjs/common';
+import {
+  MiddlewareConsumer,
+  Module,
+  NestModule,
+  RequestMethod,
+} from '@nestjs/common';
 import { RequestController } from './request.controller';
 import { RequestService } from './request.service';
 import { SequelizeModule } from '@nestjs/sequelize';
@@ -14,13 +19,22 @@ import { BullModule } from '@nestjs/bullmq';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { NORMAL_GUARANTEE_REQUEST_SMS_SENDER_QUEUE } from '@rahino/guarantee/job/normal-guarantee-request-sms-sender/constants';
 import { GSClientAssignedProductAssignedGuaranteeModule } from '../assigned-product-guarantee/assigned-product-guarantee.module';
+import { MinioClientModule } from '@rahino/minio-client';
+import { Attachment } from '@rahino/database';
+import { ThumbnailModule } from '@rahino/thumbnail';
+import { ReverseProxyGuaranteeImageMiddleware } from '@rahino/ecommerce/guarantee/reverse-proxy.middleware';
 
 @Module({
   imports: [
     SequelizeModule,
     BPMNRequestModule,
     GSAddressModule,
-    SequelizeModule.forFeature([GSRequest, GSAssignedGuarantee, BPMNPROCESS]),
+    SequelizeModule.forFeature([
+      GSRequest,
+      GSAssignedGuarantee,
+      BPMNPROCESS,
+      Attachment,
+    ]),
     LocalizationModule,
     BullModule.forRootAsync({
       imports: [ConfigModule],
@@ -37,9 +51,28 @@ import { GSClientAssignedProductAssignedGuaranteeModule } from '../assigned-prod
       name: NORMAL_GUARANTEE_REQUEST_SMS_SENDER_QUEUE,
     }),
     GSClientAssignedProductAssignedGuaranteeModule,
+    MinioClientModule,
+    ThumbnailModule.registerAsync({
+      inject: [ConfigService],
+      useFactory: (config: ConfigService) => ({
+        resizeOptions: {
+          withoutEnlargement: false,
+          withoutReduction: true,
+          fit: 'fill',
+          position: 'center',
+        },
+      }),
+    }),
   ],
   controllers: [RequestController],
   providers: [RequestService],
   exports: [RequestService],
 })
-export class GSClientRequestModule {}
+export class GSClientRequestModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(ReverseProxyGuaranteeImageMiddleware).forRoutes({
+      path: '/v1/api/guarantee/client/requests/image/*',
+      method: RequestMethod.GET,
+    });
+  }
+}

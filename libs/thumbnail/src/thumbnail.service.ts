@@ -17,8 +17,8 @@ export class ThumbnailService {
     height?: number,
     resizeOptions?: sharp.ResizeOptions,
   ): Promise<Buffer> {
-    const _width = width || this.thumbnailOptions.width || 1980;
-    const _height = height || this.thumbnailOptions.height || 1080;
+    const _width = width || this.thumbnailOptions.width; //|| 1980;
+    const _height = height || this.thumbnailOptions.height; // || 1080;
     const _options = resizeOptions || this.thumbnailOptions.resizeOptions;
     return await sharp(filePath).resize(_width, _height, _options).toBuffer();
   }
