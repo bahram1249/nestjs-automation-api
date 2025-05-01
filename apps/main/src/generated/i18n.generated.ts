@@ -46,6 +46,7 @@ export type I18nTranslations = {
         "neighborhood_must_be_select_it": string;
     };
     "guarantee": {
+        "the_count_of_question_is_not_true": string;
         "cannot_find_any_active_contract_call_to_support": string;
         "the_max_character_of_request_description": string;
         "the_min_character_of_request_description": string;

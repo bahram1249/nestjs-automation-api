@@ -1,4 +1,5 @@
 {
+  "the_count_of_question_is_not_true": "تعداد سوالات که باید پاسخ داده شود اشتباه است",
   "cannot_find_any_active_contract_call_to_support": "هیچ قرارداد فعالی با نماینده یافت نشد،لطفا با پشتیبانی نماینده مرکزی تماس بگیرید",
   "the_max_character_of_request_description": "حداکثر کاراکتر توضیحات درخواست باید {constraints.0} باشد",
   "the_min_character_of_request_description": "حداقل کاراکتر توضیحات درخواست باید {constraints.0} باشد",
