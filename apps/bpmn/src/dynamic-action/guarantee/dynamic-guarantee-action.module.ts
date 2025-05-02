@@ -7,6 +7,7 @@ import { NotificationSenderForClientTechnicalVisitTimeRequestActionModule } from
 import { UpdateRequestFactorToSucessActionModule } from './update-request-factor-to-success-action';
 import { RemainingTransactionInCashActionModule } from './remaining-transaction-in-cash-action';
 import { UpdateRequestMandatoryAttendanceActionModule } from './update-request-mandatory-attendance-action';
+import { ResetFactorActionModule } from './reset-factor-action';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { UpdateRequestMandatoryAttendanceActionModule } from './update-request-m
     UpdateRequestFactorToSucessActionModule,
     RemainingTransactionInCashActionModule,
     UpdateRequestMandatoryAttendanceActionModule,
+    ResetFactorActionModule,
   ],
   exports: [
     SampleActionModule,
@@ -27,6 +29,8 @@ import { UpdateRequestMandatoryAttendanceActionModule } from './update-request-m
     NotificationSenderForClientTechnicalVisitTimeRequestActionModule,
     UpdateRequestFactorToSucessActionModule,
     RemainingTransactionInCashActionModule,
+    UpdateRequestMandatoryAttendanceActionModule,
+    ResetFactorActionModule,
   ],
 })
 export class DynamicGuaranteeActionModule {}
