@@ -65,7 +65,7 @@ import { PaymentTransactionReportModule } from './report/payment-transaction/pay
 import { PaymentGatewayModule } from './admin/payment-gateway/payment-gateway.module';
 import { InventoryReportModule } from './report/inventory/inventory-report.module';
 import { InventoryStatusModule } from './admin/inventory-status/inventory-status.module';
-import { EntityTypeFactorModule } from './admin/entity-type-factor/entity-type-factor.module';
+import { EntityTypeFactorModule } from './admin/additional-entity-type-section/entity-type-factor/entity-type-factor.module';
 import { ProductCommentModule } from './product-comment/product-comment.module';
 import { AdminProductCommentModule } from './admin/product-comment/product-comment.module';
 import { ProductCommentStatusModule } from './admin/product-comment-status/product-comment-status.module';
