@@ -79,6 +79,7 @@ import { GSSuperVisorUserModule } from './admin/super-visor-user';
 import { CartableRequestAttachmentModule } from './cartable/request-attachment';
 import { GSCartableShippingWayModule } from './cartable/shipping-way/shipping-way.module';
 import { PickCartableShipmentWayModule } from './cartable/pick-shipment-way';
+import { GSAdminResponseModule } from './admin/response';
 
 @Module({
   imports: [
@@ -178,6 +179,7 @@ import { PickCartableShipmentWayModule } from './cartable/pick-shipment-way';
 
     GSCartableShippingWayModule,
     PickCartableShipmentWayModule,
+    GSAdminResponseModule,
   ],
 })
 export class GSModule implements NestModule {
