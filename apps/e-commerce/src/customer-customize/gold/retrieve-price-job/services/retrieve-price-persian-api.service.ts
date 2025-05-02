@@ -335,7 +335,7 @@ export class RetrievePricePersianApiService {
             await this.inventoryPriceRepository.create({
               inventoryId: inventories[index].id,
               variationPriceId: inventoryPrice.variationPriceId,
-              price: inventoryPrice.price,
+              price: newPrice.price,
               buyPrice: newPrice.buyPrice,
               userId: 1,
             });
