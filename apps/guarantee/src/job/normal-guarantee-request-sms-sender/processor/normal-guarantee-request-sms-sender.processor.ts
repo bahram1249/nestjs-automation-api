@@ -2,6 +2,7 @@ import { Processor, WorkerHost } from '@nestjs/bullmq';
 import { Job } from 'bullmq';
 import { NORMAL_GUARANTEE_REQUEST_SMS_SENDER_QUEUE } from '../constants';
 import { SmsSenderService } from '@rahino/guarantee/shared/sms-sender';
+import { GSRequestTypeEnum } from '@rahino/guarantee/shared/request-type';
 
 @Processor(NORMAL_GUARANTEE_REQUEST_SMS_SENDER_QUEUE)
 export class NormalGuaranteeRequestSmsSenderProcessor extends WorkerHost {
@@ -11,7 +12,10 @@ export class NormalGuaranteeRequestSmsSenderProcessor extends WorkerHost {
 
   async process(job: Job<any, any, any>, token?: string): Promise<any> {
     try {
-      const template = `مشتری گرامی درخواست شما در کلاب آریاکیش ثبت گردید و پس از بررسی و تایید، با شما تماس گرفته خواهد شد.`;
+      const requestTypeEnum = job.data.requesetTypeId as GSRequestTypeEnum;
+      const requestType =
+        requestTypeEnum == GSRequestTypeEnum.Install ? 'نصب' : 'تعمیر';
+      const template = `مشتری گرامی درخواست ${requestType} شما در کلاب آریاکیش ثبت گردید و پس از بررسی و تایید، با شما تماس گرفته خواهد شد.`;
       await this.smsSenderService.sendSms({
         phoneNumber: job.data.phoneNumber,
         message: template,
