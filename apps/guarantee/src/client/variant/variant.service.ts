@@ -32,7 +32,7 @@ export class VariantService {
       ])
       .limit(filter.limit)
       .offset(filter.offset)
-      .order({ orderBy: filter.orderBy, sortOrder: filter.sortOrder });
+      .order({ orderBy: filter.orderBy, sortOrder: 'ASC' });
 
     const results = await this.repository.findAll(query.build());
 
