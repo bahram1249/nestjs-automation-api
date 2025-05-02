@@ -87,7 +87,7 @@ export class CartableWarrantyServiceTypeService {
         ];
         break;
       case GSRequestCategoryEnum.WithoutGuarantee:
-        types = [GSWarrantyServiceTypeEnum.IncludeWarranty];
+        types = [GSWarrantyServiceTypeEnum.OutOfWarranty];
         break;
       default:
         throw new InternalServerErrorException('invalid request category type');
