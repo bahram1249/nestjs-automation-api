@@ -81,6 +81,7 @@ export class ResponseService {
           {
             model: User,
             as: 'user',
+            attributes: ['id', 'firstname', 'lastname', 'phoneNumber'],
           },
         ])
         .filter({ id: entityId })
