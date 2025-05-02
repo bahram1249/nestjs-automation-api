@@ -123,4 +123,10 @@ export class BPMNNode extends Model {
     allowNull: true,
   })
   description?: string;
+
+  @Column({
+    type: DataType.BOOLEAN,
+    allowNull: true,
+  })
+  eventCall?: boolean;
 }

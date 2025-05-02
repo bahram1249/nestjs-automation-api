@@ -339,6 +339,24 @@ IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'bpmn-nodes-v2'
 
 GO
 
+-- Nodes v3
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'bpmn-nodes-v3'
+)
+    AND EXISTS (
+        SELECT 1 FROM Settings
+        WHERE ([key] = 'SITE_NAME' AND [value] IN ('BPMN'))
+    )
+    BEGIN
+
+        ALTER TABLE BPMNNodes
+            ADD eventCall bit null
+        
+        INSERT INTO Migrations(version, createdAt, updatedAt)
+        SELECT 'bpmn-nodes-v3', GETDATE(), GETDATE()
+    END
+
+GO
+
 -- Node Command Types
 IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'bpmn-nodecommandtypes-v1'
 )
