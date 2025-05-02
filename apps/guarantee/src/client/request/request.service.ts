@@ -199,6 +199,7 @@ export class RequestService {
                 },
               ),
             )
+            .transaction(transaction)
             .build(),
         );
         if (!findAttachment) {
@@ -322,6 +323,7 @@ export class RequestService {
                 },
               ),
             )
+            .transaction(transaction)
             .build(),
         );
         if (!findAttachment) {
@@ -497,6 +499,7 @@ export class RequestService {
                 },
               ),
             )
+            .transaction(transaction)
             .build(),
         );
         if (!findAttachment) {

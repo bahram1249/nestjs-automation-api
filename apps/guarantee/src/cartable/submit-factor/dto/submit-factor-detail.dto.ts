@@ -1,4 +1,5 @@
-import { IsBoolean, IsOptional, IsString } from 'class-validator';
+import { IsArray, IsBoolean, IsOptional, IsString } from 'class-validator';
+import { AttachmentDto } from './attachment.dto';
 
 export class SubmitFactorDetailDto {
   @IsOptional()
@@ -8,4 +9,7 @@ export class SubmitFactorDetailDto {
   @IsOptional()
   @IsBoolean()
   isOnline?: boolean;
+
+  @IsArray()
+  attachments: AttachmentDto[];
 }

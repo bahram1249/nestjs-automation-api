@@ -5,7 +5,8 @@ import { SequelizeModule } from '@nestjs/sequelize';
 import { GuaranteeTraverseModule } from '../guarantee-traverse/guarantee-traverse.module';
 import { TraverseModule } from '@rahino/bpmn/modules/traverse/traverse.module';
 import { LocalizationModule } from 'apps/main/src/common/localization';
-import { GSRequest } from '@rahino/localdatabase/models';
+import { GSRequest, GSRequestAttachment } from '@rahino/localdatabase/models';
+import { Attachment } from '@rahino/database';
 
 @Module({
   imports: [
@@ -13,7 +14,7 @@ import { GSRequest } from '@rahino/localdatabase/models';
     SequelizeModule,
     TraverseModule,
     LocalizationModule,
-    SequelizeModule.forFeature([GSRequest]),
+    SequelizeModule.forFeature([GSRequest, GSRequestAttachment, Attachment]),
   ],
   controllers: [SubmitFactorController],
   providers: [SubmitFactorService],
