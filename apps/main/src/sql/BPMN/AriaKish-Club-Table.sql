@@ -1617,6 +1617,33 @@ END
 
 GO
 
+-- gs-supplierpersons
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'gs-supplierpersons-v1'
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings
+		WHERE ([key] = 'CUSTOMER_NAME' AND [value] IN ('AriaKish'))
+		)
+BEGIN
+
+	CREATE TABLE GSSupplierPersons (
+		id                          bigint identity(1,1)           	PRIMARY KEY,
+        userId						bigint							NOT NULL
+			CONSTRAINT FK_GSSupplierPersons_UserId
+				FOREIGN KEY REFERENCES Users(id),
+		organizationId				int								NOT NULL
+			CONSTRAINT FK_GSSupplierPersons_OrganizationId
+				FOREIGN KEY REFERENCES GSGuaranteeOrganizations(id),
+		[createdAt]					datetimeoffset					NOT NULL,
+		[updatedAt]					datetimeoffset					NOT NULL
+	);
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'gs-supplierpersons-v1', GETDATE(), GETDATE()
+END
+
+GO
+
 -- gs-supervisorusers
 IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'gs-supervisorusers-v1'
 			)

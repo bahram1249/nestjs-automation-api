@@ -46,3 +46,4 @@ export * from './gs-answer-record.entity';
 export * from './gs-super-visor-user.entity';
 export * from './gs-request-attachment-type.entity';
 export * from './gs-request-attachment.entity';
+export * from './gs-supplier-person.entity';

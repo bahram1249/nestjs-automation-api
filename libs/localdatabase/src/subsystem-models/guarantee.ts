@@ -46,6 +46,7 @@ import {
   GSSuperVisorUser,
   GSRequestAttachmentType,
   GSRequestAttachment,
+  GSSupplierPerson,
 } from '../models';
 
 export const guaranteeModels = [
@@ -96,4 +97,5 @@ export const guaranteeModels = [
   GSSuperVisorUser,
   GSRequestAttachmentType,
   GSRequestAttachment,
+  GSSupplierPerson,
 ];
