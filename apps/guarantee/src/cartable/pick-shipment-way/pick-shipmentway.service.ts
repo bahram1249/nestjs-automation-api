@@ -21,7 +21,6 @@ export class PickShipmentWayService {
   ) {}
 
   async traverse(user: User, dto: PickShipmentWayDto) {
-    dto.isClientSideCartable = true;
     const cartableItem =
       await this.guaranteeTraverseService.validateAndReturnCartableItem(
         user,
@@ -35,8 +34,8 @@ export class PickShipmentWayService {
       // update request
       await this.requestRepository.update(
         {
-          cartableShipmentWayId: dto.clientShipmentWayId,
-          cartableShipmentWayTrackingCode: dto.clientShipmentWayTrackingCode,
+          cartableShipmentWayId: dto.cartableShipmentWayId,
+          cartableShipmentWayTrackingCode: dto.cartableShipmentWayTrackingCode,
         },
         {
           where: {

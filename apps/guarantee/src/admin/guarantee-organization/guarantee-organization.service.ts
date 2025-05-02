@@ -364,7 +364,7 @@ export class GuaranteeOrganizationService {
       );
 
       // update address
-      await this.addressService.update(
+      await this.addressService.updateByAnyUser(
         user,
         guaranteeOrganization.addressId,
         dto.address,

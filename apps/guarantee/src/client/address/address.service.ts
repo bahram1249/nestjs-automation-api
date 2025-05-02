@@ -432,7 +432,12 @@ export class AddressService {
     };
   }
 
-  async updateByAnyUser(user: User, entityId: bigint, dto: AddressDto) {
+  async updateByAnyUser(
+    user: User,
+    entityId: bigint,
+    dto: AddressDto,
+    transaction?: Transaction,
+  ) {
     const item = await this.repository.findOne(
       new QueryOptionsBuilder()
         .filter({ id: entityId })
@@ -541,6 +546,7 @@ export class AddressService {
           id: entityId,
         },
         returning: true,
+        transaction: transaction,
       },
     );
     return {

@@ -18,7 +18,7 @@ import { PickShipmentWayService } from './pick-shipmentway.service';
 @UseGuards(JwtGuard)
 @ApiTags('GS-CartablePickShipmentway')
 @Controller({
-  path: '/api/guarantee/client/pickShipmentway',
+  path: '/api/guarantee/cartable/pickShipmentway',
   version: ['1'],
 })
 @UseInterceptors(JsonResponseTransformInterceptor)
