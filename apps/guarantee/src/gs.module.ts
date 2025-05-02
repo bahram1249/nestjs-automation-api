@@ -82,6 +82,7 @@ import { PickCartableShipmentWayModule } from './cartable/pick-shipment-way';
 import { GSAdminResponseModule } from './admin/response';
 import { GSSupplierPersonModule } from './admin/suppliers-person';
 import { ConfirmSupplierModule } from './cartable/confirm-supplier';
+import { RevertToTechnicalUserModule } from './cartable/revert-to-technical-user';
 
 @Module({
   imports: [
@@ -184,6 +185,7 @@ import { ConfirmSupplierModule } from './cartable/confirm-supplier';
     GSAdminResponseModule,
     GSSupplierPersonModule,
     ConfirmSupplierModule,
+    RevertToTechnicalUserModule,
   ],
 })
 export class GSModule implements NestModule {
