@@ -102,6 +102,7 @@ import { SelectedProductModule } from './admin/selected-product/selected-product
 import { SelectedProductItemModule } from './admin/selected-product-items/selected-product-item.module';
 import { UserSelectedProductModule } from './user/selected-product/selected-product.module';
 import { ClientVendorModule } from './client/vendor/client-vendor.module';
+import { AdminLinkedEntityTypeBrandModule } from './admin/additional-entity-type-section/linked-entity-type-brand/linked-entity-type-brand.module';
 
 @Module({
   imports: [
@@ -202,6 +203,7 @@ import { ClientVendorModule } from './client/vendor/client-vendor.module';
     SelectedProductItemModule,
     UserSelectedProductModule,
     ClientVendorModule,
+    AdminLinkedEntityTypeBrandModule,
   ],
   providers: [
     {
