@@ -85,6 +85,7 @@ export class ConfirmSupplierService {
         nodeCommand: cartableItem.nodeCommand,
         transaction: transaction,
         description: dto.description,
+        userExecuterId: user.id,
       });
 
       // apply changes

@@ -35,6 +35,7 @@ export class ConfirmService {
         nodeCommand: cartableItem.nodeCommand,
         transaction: transaction,
         description: dto.description,
+        userExecuterId: user.id,
       });
 
       // apply changes
