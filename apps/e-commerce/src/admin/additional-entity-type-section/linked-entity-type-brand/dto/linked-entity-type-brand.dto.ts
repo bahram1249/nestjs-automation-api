@@ -16,9 +16,11 @@ export class LinkedEntityTypeBrandDto {
   @AutoMap()
   title: string;
 
+  @AutoMap()
   @IsNumber()
   entityTypeId: number;
 
+  @AutoMap()
   @IsNumber()
   brandId: number;
 
