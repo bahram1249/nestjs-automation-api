@@ -208,6 +208,31 @@ END
 GO
 
 
+
+-- suppliers
+IF NOT EXISTS ((SELECT 1 FROM Migrations WHERE version = 'CORE-Roles-Data-v7' 
+			))
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'CUSTOMER_NAME' AND [value] IN ('AriaKish'))
+		)
+BEGIN
+	
+	INSERT INTO Roles
+	(
+		roleName
+		,static_id
+		,createdAt
+		,updatedAt
+	) 
+	SELECT N'تامین کنندگان قطعه', 7, getdate(), getdate()
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'CORE-Roles-Data-v7', GETDATE(), GETDATE()
+END
+
+GO
+
 -- super admin
 IF NOT EXISTS ((SELECT 1 FROM Migrations WHERE version = 'CORE-UserRoles-Data-v1' 
 			))
