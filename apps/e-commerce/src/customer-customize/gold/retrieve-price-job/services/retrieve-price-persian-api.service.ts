@@ -22,6 +22,7 @@ import { Sequelize } from 'sequelize';
 import { InjectQueue } from '@nestjs/bullmq';
 import { Queue } from 'bullmq';
 import * as _ from 'lodash';
+import { DBLogger } from '@rahino/logger';
 
 @Injectable()
 export class RetrievePricePersianApiService {
@@ -53,10 +54,12 @@ export class RetrievePricePersianApiService {
     private productInventoryQueue: Queue,
     private listFilterFactory: ListFilterV2Factory,
     private readonly config: ConfigService,
+    private readonly logger: DBLogger,
   ) {}
 
   private async callApiToGetNewPrice() {
     try {
+      await this.logger.log('start to get price from persian api');
       const persianApiToken = this.config.get<string>('PERSIAN_API_TOKEN');
       const res = await axios.get(this.url, {
         headers: {
@@ -64,6 +67,7 @@ export class RetrievePricePersianApiService {
         },
         responseType: 'json',
       });
+      const resStringify = JSON.stringify(res.data);
       if (this.isSuccessful(res.status)) {
         // get all items
         const items: any[] = res.data.result.data;
@@ -73,7 +77,7 @@ export class RetrievePricePersianApiService {
         );
         // if not founded
         if (goldPriceItem == null) {
-          await this.enableProblem();
+          await this.enableProblem(resStringify);
           return;
         }
         await this.updateCurrentPrice(Number(goldPriceItem['قیمت']) / 10);
@@ -83,7 +87,7 @@ export class RetrievePricePersianApiService {
         );
 
         if (gold740PriceItem == null) {
-          await this.enableProblem();
+          await this.enableProblem(resStringify);
           return;
         }
         await this.updateGold740Price(Number(gold740PriceItem['قیمت']) / 10);
@@ -93,7 +97,7 @@ export class RetrievePricePersianApiService {
         );
 
         if (gold24PriceItem == null) {
-          await this.enableProblem();
+          await this.enableProblem(resStringify);
           return;
         }
 
@@ -104,7 +108,7 @@ export class RetrievePricePersianApiService {
         );
 
         if (goldSecondHandItem == null) {
-          await this.enableProblem();
+          await this.enableProblem(resStringify);
           return;
         }
 
@@ -114,10 +118,10 @@ export class RetrievePricePersianApiService {
 
         await this.disableProblem();
       } else {
-        await this.enableProblem();
+        await this.enableProblem(resStringify);
       }
-    } catch {
-      await this.enableProblem();
+    } catch (error) {
+      await this.enableProblem(error.message);
     }
   }
 
@@ -177,7 +181,8 @@ export class RetrievePricePersianApiService {
     return status >= 200 && status <= 299;
   }
 
-  private async enableProblem() {
+  private async enableProblem(reason: string) {
+    await this.logger.log(`Problem with retrieving price: ${reason}`);
     await this.settingRepository.update(
       {
         value: 'true',
@@ -256,6 +261,18 @@ export class RetrievePricePersianApiService {
           queryBuilder
             .limit(listFilter.limit)
             .offset((page - 1) * listFilter.limit)
+            .filter(
+              Sequelize.where(
+                Sequelize.fn(
+                  'isnull',
+                  Sequelize.col('ECInventory.isDeleted'),
+                  0,
+                ),
+                {
+                  [Op.eq]: 0,
+                },
+              ),
+            )
             .build(),
         );
         if (inventories.length == 0) {
@@ -282,6 +299,18 @@ export class RetrievePricePersianApiService {
       while (more) {
         let inventories = await this.inventoryRepository.findAll(
           queryBuilder
+            .filter(
+              Sequelize.where(
+                Sequelize.fn(
+                  'isnull',
+                  Sequelize.col('ECInventory.isDeleted'),
+                  0,
+                ),
+                {
+                  [Op.eq]: 0,
+                },
+              ),
+            )
             .limit(listFilter.limit)
             .offset((page - 1) * listFilter.limit)
             .build(),
