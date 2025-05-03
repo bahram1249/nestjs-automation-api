@@ -536,7 +536,7 @@ BEGIN
 	SELECT 20, N'guaranteerequests', getdate(), getdate()
 
 	INSERT INTO AttachmentTypes(id, typeName, createdAt, updatedAt)
-	SELECT 20, N'organizationbussinesslicense', getdate(), getdate()
+	SELECT 21, N'organizationbussinesslicense', getdate(), getdate()
 
 
 	INSERT INTO Migrations(version, createdAt, updatedAt)
