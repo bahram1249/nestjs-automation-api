@@ -545,3 +545,26 @@ END
 
 GO
 
+IF NOT EXISTS ((SELECT 1 FROM Migrations WHERE version = 'CORE-AttachmentTypes-Data-v18' 
+			))
+BEGIN
+	
+	INSERT INTO AttachmentTypes(id, typeName, createdAt, updatedAt)
+	SELECT 22, N'temporganization', getdate(), getdate()
+
+	
+	INSERT INTO AttachmentTypes(id, typeName, createdAt, updatedAt)
+	SELECT 23, N'national', getdate(), getdate()
+
+	INSERT INTO AttachmentTypes(id, typeName, createdAt, updatedAt)
+	SELECT 24, N'estate', getdate(), getdate()
+
+	INSERT INTO AttachmentTypes(id, typeName, createdAt, updatedAt)
+	SELECT 25, N'postal', getdate(), getdate()
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'CORE-AttachmentTypes-Data-v18', GETDATE(), GETDATE()
+END
+
+GO
+

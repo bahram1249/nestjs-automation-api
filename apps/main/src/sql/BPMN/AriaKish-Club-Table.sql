@@ -2007,3 +2007,48 @@ END
 
 GO
 
+-- gs-preregistration-organization-v1
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'gs-preregistration-organization-v1'
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings
+		WHERE ([key] = 'CUSTOMER_NAME' AND [value] IN ('AriaKish'))
+		)
+BEGIN
+	
+	CREATE TABLE GSPreRegistrationOrganizations(
+		id 							bigint identity(1,1)		PRIMARY KEY,
+		title						nvarchar(256)				NOT NULL,
+		addressId					bigint						NOT NULL
+			CONSTRAINT FK_GSPreRegistrationOrganizations_AddressId
+				FOREIGN KEY REFERENCES GSAddresses(id),
+		licenseDate					datetime					NOT NULL,
+		licenseAttachmentId			bigint						NOT NULL
+			CONSTRAINT FK_GSPreRegistrationOrganizations_LicenseAttachmentId
+				FOREIGN KEY REFERENCES Attachments(id),
+		nationalAttachmentId		bigint						NOT NULL
+			CONSTRAINT FK_GSPreRegistrationOrganizations_NationalAttachmentId
+				FOREIGN KEY REFERENCES Attachments(id),
+		estateAttachmentId			bigint						NOT NULL
+			CONSTRAINT FK_GSPreRegistrationOrganizations_EstateAttachmentId
+				FOREIGN KEY REFERENCES Attachments(id),
+		postalAttachmentId			bigint						NOT NULL
+			CONSTRAINT FK_GSPreRegistrationOrganizations_PostalAttachmentId
+				FOREIGN KEY REFERENCES Attachments(id),
+		postalCode					nvarchar(25)				NOT NULL,
+
+		firstname					nvarchar(256)				NOT NULL,
+		lastname					nvarchar(256)				NOT NULL,
+		phoneNumber					nvarchar(256)				NOT NULL,
+
+		isDeleted					bit							NULL,
+		[createdAt]					datetimeoffset				NOT NULL,
+		[updatedAt]					datetimeoffset				NOT NULL
+	)
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'gs-preregistration-organization-v1', GETDATE(), GETDATE()
+END
+
+GO
+

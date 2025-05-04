@@ -47,6 +47,7 @@ import {
   GSRequestAttachmentType,
   GSRequestAttachment,
   GSSupplierPerson,
+  GSPreRegistrationOrganization,
 } from '../models';
 
 export const guaranteeModels = [
@@ -98,4 +99,5 @@ export const guaranteeModels = [
   GSRequestAttachmentType,
   GSRequestAttachment,
   GSSupplierPerson,
+  GSPreRegistrationOrganization,
 ];

@@ -18,6 +18,7 @@ export class ScriptRunnerService {
 
     for (const query of queries) {
       var queryWithoutComment = query.replaceAll(/^--.*$/gm, '');
+      console.log(queryWithoutComment.replaceAll(/\s\s+/g, ' '));
       await this.sequelize.query(
         queryWithoutComment.replaceAll(/\s\s+/g, ' '),
         {

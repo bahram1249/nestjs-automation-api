@@ -83,6 +83,7 @@ import { GSAdminResponseModule } from './admin/response';
 import { GSSupplierPersonModule } from './admin/suppliers-person';
 import { ConfirmSupplierModule } from './cartable/confirm-supplier';
 import { RevertToTechnicalUserModule } from './cartable/revert-to-technical-user';
+import { GSAnonymousAttachmentModule } from './anonymous/attachment/attachment.module';
 
 @Module({
   imports: [
@@ -186,6 +187,8 @@ import { RevertToTechnicalUserModule } from './cartable/revert-to-technical-user
     GSSupplierPersonModule,
     ConfirmSupplierModule,
     RevertToTechnicalUserModule,
+
+    GSAnonymousAttachmentModule,
   ],
 })
 export class GSModule implements NestModule {
