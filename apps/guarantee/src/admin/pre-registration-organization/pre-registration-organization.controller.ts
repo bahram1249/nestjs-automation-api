@@ -8,6 +8,7 @@ import {
   Param,
   Patch,
   Query,
+  Res,
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
@@ -84,5 +85,17 @@ export class PreRegistrationOrganizationController {
   @HttpCode(HttpStatus.OK)
   async deleteById(@Param('id') entityId: number) {
     return await this.service.deleteById(entityId);
+  }
+
+  @ApiOperation({ description: 'show attachment  photo by fileName' })
+  @Get('/image/:fileName')
+  @HttpCode(HttpStatus.OK)
+  async getImage(
+    @Res({ passthrough: true }) res: Response,
+    @Param('fileName') fileName: string,
+  ) {
+    return {
+      ok: true,
+    };
   }
 }

@@ -1,4 +1,9 @@
-import { Module } from '@nestjs/common';
+import {
+  MiddlewareConsumer,
+  Module,
+  NestModule,
+  RequestMethod,
+} from '@nestjs/common';
 import { PreRegistrationOrganizationService } from './pre-registration-organization.service';
 import { SequelizeModule } from '@nestjs/sequelize';
 import { GSPreRegistrationOrganization } from '@rahino/localdatabase/models';
@@ -7,6 +12,7 @@ import { PreRegistrationOrganizationController } from './pre-registration-organi
 import { LocalizationModule } from 'apps/main/src/common/localization';
 import { GuaranteeOrganizationModule } from '../guarantee-organization';
 import { GuaranteeOrganizationContractModule } from '../guarantee-organization-contract';
+import { ReverseProxyOrganizationAttachmentMiddleware } from './reverse-proxy.middleware';
 
 @Module({
   imports: [
@@ -23,4 +29,11 @@ import { GuaranteeOrganizationContractModule } from '../guarantee-organization-c
   providers: [PreRegistrationOrganizationService],
   exports: [PreRegistrationOrganizationService],
 })
-export class AdminPreRegistrationOrganizationModule {}
+export class AdminPreRegistrationOrganizationModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(ReverseProxyOrganizationAttachmentMiddleware).forRoutes({
+      path: '/v1/api/guarantee/admin/preRegistrationOrganizations/image/*',
+      method: RequestMethod.GET,
+    });
+  }
+}
