@@ -663,6 +663,26 @@ BEGIN
 END
 
 GO
+
+
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'gs-guaranteeorganizations-v3'
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings
+		WHERE ([key] = 'CUSTOMER_NAME' AND [value] IN ('AriaKish'))
+		)
+BEGIN
+
+	ALTER TABLE GSGuaranteeOrganizations
+        ADD code nvarchar(256) null,
+			licenseDate datetime null
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'gs-guaranteeorganizations-v3', GETDATE(), GETDATE()
+END
+
+GO
+
 -- gs-guaranteeorganizationcontracts
 IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'gs-guaranteeorganizationcontracts-v1'
 			)
@@ -2052,3 +2072,22 @@ END
 
 GO
 
+
+-- gs-preregistration-organization-v2
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'gs-preregistration-organization-v2'
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings
+		WHERE ([key] = 'CUSTOMER_NAME' AND [value] IN ('AriaKish'))
+		)
+BEGIN
+	
+	ALTER TABLE GSPreRegistrationOrganizations
+		ADD isConfirm bit null,
+			confirmDate datetime null 
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'gs-preregistration-organization-v2', GETDATE(), GETDATE()
+END
+
+GO

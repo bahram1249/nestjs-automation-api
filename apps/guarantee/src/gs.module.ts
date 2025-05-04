@@ -86,6 +86,7 @@ import { RevertToTechnicalUserModule } from './cartable/revert-to-technical-user
 import { GSAnonymousAttachmentModule } from './anonymous/attachment/attachment.module';
 import { AnonymousPreRegistrationOrganizationModule } from './anonymous/pre-registration-organization';
 import { AnonymousOrganizationModule } from './anonymous/organization';
+import { AdminPreRegistrationOrganizationModule } from './admin/pre-registration-organization';
 
 @Module({
   imports: [
@@ -194,6 +195,8 @@ import { AnonymousOrganizationModule } from './anonymous/organization';
 
     AnonymousPreRegistrationOrganizationModule,
     AnonymousOrganizationModule,
+
+    AdminPreRegistrationOrganizationModule,
   ],
 })
 export class GSModule implements NestModule {

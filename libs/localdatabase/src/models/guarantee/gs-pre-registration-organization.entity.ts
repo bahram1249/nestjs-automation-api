@@ -119,4 +119,16 @@ export class GSPreRegistrationOrganization extends Model {
     allowNull: true,
   })
   isDeleted?: boolean;
+
+  @Column({
+    type: DataType.BOOLEAN,
+    allowNull: true,
+  })
+  isConfirm?: boolean;
+
+  @Column({
+    type: DataType.DATE,
+    allowNull: true,
+  })
+  confirmDate: Date;
 }

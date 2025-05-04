@@ -29,5 +29,6 @@ import { GSAddressModule } from '@rahino/guarantee/client/address/address.module
   ],
   controllers: [GuaranteeOrganizationController],
   providers: [GuaranteeOrganizationService, GuaranteeOrganizationProfile],
+  exports: [GuaranteeOrganizationService, GuaranteeOrganizationProfile],
 })
 export class GuaranteeOrganizationModule {}

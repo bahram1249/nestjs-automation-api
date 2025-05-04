@@ -21,5 +21,6 @@ import { Permission, User } from '@rahino/database';
     GuaranteeOrganizationContractService,
     GuaranteeOrganizationContractProfile,
   ],
+  exports: [GuaranteeOrganizationContractService],
 })
 export class GuaranteeOrganizationContractModule {}

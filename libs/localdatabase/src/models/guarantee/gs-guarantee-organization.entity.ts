@@ -6,6 +6,7 @@ import {
   ForeignKey,
   BelongsTo,
   HasMany,
+  AllowNull,
 } from 'sequelize-typescript';
 import { BPMNOrganization } from '../bpmn';
 import { GSAddress } from './gs-address.entity';
@@ -68,6 +69,20 @@ export class GSGuaranteeOrganization extends Model {
     allowNull: true,
   })
   isOnlinePayment?: boolean;
+
+  @AutoMap()
+  @Column({
+    type: DataType.DATE,
+    allowNull: true,
+  })
+  licenseDate?: Date;
+
+  @AutoMap()
+  @Column({
+    type: DataType.STRING,
+    allowNull: true,
+  })
+  code?: string;
 
   @HasMany(() => GSGuaranteeOrganizationContract, {
     as: 'organizationContracts',

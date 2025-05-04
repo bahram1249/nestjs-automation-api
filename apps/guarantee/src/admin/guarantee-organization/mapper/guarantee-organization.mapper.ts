@@ -31,6 +31,8 @@ export class GuaranteeOrganizationProfile extends AutomapperProfile {
         forMember((dest) => dest.id, ignore()),
       );
 
+      createMap(mapper, GSAddress, AddressDto);
+
       createMap(mapper, GuaranteeOrganizationDto, OrganizationDto);
     };
   }
