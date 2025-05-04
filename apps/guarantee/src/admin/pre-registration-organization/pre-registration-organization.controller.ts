@@ -33,10 +33,10 @@ import { ConfirmDto, GetPreRegistrationOrganization } from './dto';
   version: ['1'],
 })
 @UseInterceptors(JsonResponseTransformInterceptor)
-export class PreRegistrationOrganization {
+export class PreRegistrationOrganizationController {
   constructor(private service: PreRegistrationOrganizationService) {}
 
-  @ApiOperation({ description: 'show all brands' })
+  @ApiOperation({ description: 'show all pre registrations' })
   @CheckPermission({
     permissionSymbol: 'gs.admin.preregistrationorganizations.getall',
   })
@@ -52,7 +52,9 @@ export class PreRegistrationOrganization {
     return await this.service.findAll(filter);
   }
 
-  @ApiOperation({ description: 'show brand by given id' })
+  @ApiOperation({
+    description: 'show pre registration organization by given id',
+  })
   @CheckPermission({
     permissionSymbol: 'gs.admin.preregistrationorganizations.getone',
   })
