@@ -1,4 +1,5 @@
-import { IsString } from 'class-validator';
+import { ApiProperty } from '@nestjs/swagger';
+import { IsString, Matches } from 'class-validator';
 
 export class UserDto {
   @IsString()
@@ -7,5 +8,11 @@ export class UserDto {
   lastname: string;
 
   @IsString()
+  @Matches(new RegExp('^([0-9]){4}([0-9]){7,8}$'))
+  @ApiProperty({
+    required: true,
+    type: IsString,
+    description: 'phoneNumber',
+  })
   phoneNumber: string;
 }

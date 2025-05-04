@@ -61,6 +61,12 @@ export class PreRegistrationOrganizationService {
     }
 
     try {
+      if (!dto.address.postalCode) {
+        throw new BadRequestException(
+          this.localizationService.translate('guarantee.address_postalcode'),
+        );
+      }
+
       const address = await this.addressService.create(
         dto.address,
         null,
@@ -76,6 +82,7 @@ export class PreRegistrationOrganizationService {
       preRegistrationOrganization.lastname = dto.user.lastname;
       preRegistrationOrganization.phoneNumber = dto.user.phoneNumber;
       preRegistrationOrganization.addressId = address.result.id;
+      preRegistartionOrganization.postalCode = address.result.postalCode;
 
       licenseAttachment.attachmentTypeId = GSAttachmentTypeEnum.License;
       licenseAttachment.save({ transaction: transaction });
