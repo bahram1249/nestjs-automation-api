@@ -261,8 +261,8 @@ export class GuaranteeOrganizationService {
 
       // create address
       const address = await this.addressService.create(
-        user,
         dto.address,
+        user,
         transaction,
       );
 

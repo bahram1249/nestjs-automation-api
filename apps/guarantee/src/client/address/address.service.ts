@@ -154,7 +154,7 @@ export class AddressService {
     };
   }
 
-  async create(user: User, dto: AddressDto, transaction?: Transaction) {
+  async create(dto: AddressDto, user?: User, transaction?: Transaction) {
     const province = await this.provinceRepository.findOne(
       new QueryOptionsBuilder()
         .filter({ id: dto.provinceId })
@@ -235,7 +235,7 @@ export class AddressService {
     }
 
     const mappedItem = this.mapper.map(dto, AddressDto, GSAddress);
-    mappedItem.userId = user.id;
+    mappedItem.userId = user ? user.id : null;
     const result = await this.repository.create(
       _.omit(mappedItem.toJSON(), ['id']),
       { transaction: transaction },

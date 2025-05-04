@@ -61,7 +61,7 @@ export class AddressController {
   @Post('/')
   @HttpCode(HttpStatus.CREATED)
   async create(@GetUser() user: User, @Body() dto: AddressDto) {
-    return await this.service.create(user, dto);
+    return await this.service.create(dto, user);
   }
 
   @ApiOperation({ description: 'update address by user' })
