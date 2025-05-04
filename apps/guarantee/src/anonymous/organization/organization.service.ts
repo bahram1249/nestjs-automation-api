@@ -4,6 +4,7 @@ import { InjectModel } from '@nestjs/sequelize';
 import {
   BPMNOrganization,
   GSAddress,
+  GSCity,
   GSGuaranteeOrganization,
   GSProvince,
 } from '@rahino/localdatabase/models';
@@ -29,6 +30,11 @@ export class AnonymousOrganizationService {
             {
               model: GSProvince,
               as: 'province',
+              required: true,
+            },
+            {
+              model: GSCity,
+              as: 'city',
               required: true,
             },
           ],
@@ -80,7 +86,7 @@ export class AnonymousOrganizationService {
         name: item.organization.name,
         provinceName: item.address.province.name,
         cityName: item.address.city.name,
-        code: item['code'] ?? null,
+        code: item.code ?? null,
       };
     });
 
