@@ -1,5 +1,14 @@
 import { AutoMap } from 'automapper-classes';
-import { Table, Column, Model, DataType } from 'sequelize-typescript';
+import {
+  Table,
+  Column,
+  Model,
+  DataType,
+  ForeignKey,
+  BelongsTo,
+} from 'sequelize-typescript';
+import { GSAddress } from './gs-address.entity';
+import { Attachment } from '@rahino/database';
 
 @Table({ tableName: 'GSPreRegistrationOrganizations' })
 export class GSPreRegistrationOrganization extends Model {
@@ -20,7 +29,11 @@ export class GSPreRegistrationOrganization extends Model {
   @Column({
     type: DataType.BIGINT,
   })
+  @ForeignKey(() => GSAddress)
   addressId: bigint;
+
+  @BelongsTo(() => GSAddress, { as: 'address', foreignKey: 'addressId' })
+  address?: GSAddress;
 
   @AutoMap()
   @Column({
@@ -32,25 +45,53 @@ export class GSPreRegistrationOrganization extends Model {
   @Column({
     type: DataType.BIGINT,
   })
+  @ForeignKey(() => Attachment)
   licenseAttachmentId: bigint;
 
+  @BelongsTo(() => Attachment, {
+    as: 'licenseAttachment',
+    foreignKey: 'licenseAttachmentId',
+  })
+  licenseAttachment?: Attachment;
+
   @AutoMap()
   @Column({
     type: DataType.BIGINT,
   })
+  @ForeignKey(() => Attachment)
   nationalAttachmentId: bigint;
 
-  @AutoMap()
-  @Column({
-    type: DataType.BIGINT,
+  @BelongsTo(() => Attachment, {
+    as: 'nationalAttachment',
+    foreignKey: 'nationalAttachmentId',
   })
-  estateAttachmentId: bigint;
+  nationalAttachment?: Attachment;
 
   @AutoMap()
   @Column({
     type: DataType.BIGINT,
   })
+  @ForeignKey(() => Attachment)
+  estateAttachmentId: bigint;
+
+  @BelongsTo(() => Attachment, {
+    as: 'estateAttachment',
+    foreignKey: 'estateAttachmentId',
+  })
+  estateAttachment?: Attachment;
+
+  @AutoMap()
+  @Column({
+    type: DataType.BIGINT,
+  })
+  @ForeignKey(() => Attachment)
   postalAttachmentId: bigint;
+
+  @BelongsTo(() => Attachment, {
+    as: 'postalAttachment',
+    foreignKey: 'postalAttachmentId',
+  })
+  postalAttachment?: Attachment;
 
   @AutoMap()
   @Column({
