@@ -82,7 +82,7 @@ export class PreRegistrationOrganizationService {
       preRegistrationOrganization.lastname = dto.user.lastname;
       preRegistrationOrganization.phoneNumber = dto.user.phoneNumber;
       preRegistrationOrganization.addressId = address.result.id;
-      preRegistartionOrganization.postalCode = address.result.postalCode;
+      preRegistrationOrganization.postalCode = address.result.postalCode;
 
       licenseAttachment.attachmentTypeId = GSAttachmentTypeEnum.License;
       licenseAttachment.save({ transaction: transaction });
@@ -96,14 +96,14 @@ export class PreRegistrationOrganizationService {
       nationalAttachment.attachmentTypeId = GSAttachmentTypeEnum.National;
       nationalAttachment.save({ transaction: transaction });
 
-      preRegistartionOrganization.licenseAttachmentId = licenseAttachment.id;
-      preRegistartionOrganization.estateAttachmentId = estateAttachment.id;
-      preRegistartionOrganization.postalAttachmentId = postalAttachment.id;
-      preRegistartionOrganization.nationalAttachmentId = nationalAttachment.id;
+      preRegistrationOrganization.licenseAttachmentId = licenseAttachment.id;
+      preRegistrationOrganization.estateAttachmentId = estateAttachment.id;
+      preRegistrationOrganization.postalAttachmentId = postalAttachment.id;
+      preRegistrationOrganization.nationalAttachmentId = nationalAttachment.id;
 
       // create pre registration organization
-      preRegistartionOrganization = await this.repository.create(
-        _.omit(preRegistartionOrganization, ['id']),
+      await this.repository.create(
+        _.omit(preRegistrationOrganization, ['id']),
         { transaction: transaction },
       );
 
