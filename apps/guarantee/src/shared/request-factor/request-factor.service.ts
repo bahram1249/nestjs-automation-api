@@ -306,6 +306,16 @@ export class RequestFactorService {
           warrantyServiceTypeId: GSWarrantyServiceTypeEnum.IncludeWarranty,
         })
         .filter({ factorId: factor.id })
+        .filter(
+          Sequelize.where(
+            Sequelize.fn(
+              'isnull',
+              Sequelize.col('GSFactorService.isDeleted'),
+              0,
+            ),
+            { [Op.eq]: 0 },
+          ),
+        )
         .transaction(transaction)
         .build(),
     );
@@ -319,6 +329,7 @@ export class RequestFactorService {
       }),
     );
     const totalPrice = prices.reduce((prev, next) => prev + next, 0);
+    if (totalPrice == 0) return;
 
     const paymentGateway = await this.findNormalGuaranteePaymentGateway();
 
