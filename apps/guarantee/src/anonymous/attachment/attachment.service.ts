@@ -5,9 +5,10 @@ import { Attachment } from '@rahino/database';
 import { MinioClientService } from '@rahino/minio-client';
 import { ThumbnailService } from '@rahino/thumbnail';
 import * as fs from 'fs';
+import { GSAttachmentTypeEnum } from '@rahino/guarantee/shared/gs-attachment-type';
 @Injectable()
 export class AttachmentService {
-  private photoTempAttachmentType = 19;
+  private photoTempAttachmentType = GSAttachmentTypeEnum.TempOrganization;
   constructor(
     private readonly minioClientService: MinioClientService,
     @InjectModel(Attachment)
