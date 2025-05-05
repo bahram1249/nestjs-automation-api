@@ -33,7 +33,7 @@ export class PreRegistrationOrganizationService {
     const transaction = await this.sequelize.transaction({
       isolationLevel: Transaction.ISOLATION_LEVELS.READ_COMMITTED,
     });
-    let preRegistartionOrganization: GSPreRegistrationOrganization;
+    let preRegistrationOrganization: GSPreRegistrationOrganization;
 
     let licenseAttachment = await this.findTempAttachment(
       dto.licenseAttachmentId,
@@ -73,7 +73,7 @@ export class PreRegistrationOrganizationService {
         transaction,
       );
 
-      const preRegistrationOrganization = this.mapper.map(
+      preRegistrationOrganization = this.mapper.map(
         dto,
         PreRegistrationOrganizationDto,
         GSPreRegistrationOrganization,
@@ -103,7 +103,7 @@ export class PreRegistrationOrganizationService {
 
       // create pre registration organization
       await this.repository.create(
-        _.omit(preRegistrationOrganization, ['id']),
+        _.omit(preRegistrationOrganization.toJSON(), ['id']),
         { transaction: transaction },
       );
 
