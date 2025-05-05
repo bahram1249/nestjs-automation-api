@@ -9,7 +9,7 @@ import {
   GSProvince,
 } from '@rahino/localdatabase/models';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
-import { Op, Sequelize } from 'sequelize';
+import { Op, Sequelize, where } from 'sequelize';
 import * as _ from 'lodash';
 import { LocalizationService } from 'apps/main/src/common/localization';
 import { Attachment } from '@rahino/database';
@@ -66,6 +66,8 @@ export class PreRegistrationOrganizationService {
         'firstname',
         'lastname',
         'phoneNumber',
+        'isConfirm',
+        'confirmDate',
         'createdAt',
         'updatedAt',
       ])
@@ -143,6 +145,8 @@ export class PreRegistrationOrganizationService {
           'firstname',
           'lastname',
           'phoneNumber',
+          'isCofirm',
+          'confirmDate',
           'createdAt',
           'updatedAt',
         ])
@@ -322,6 +326,11 @@ export class PreRegistrationOrganizationService {
       endDate: confirm.endDate,
       representativeShare: confirm.representativeShare,
     });
+
+    await this.repository.update(
+      { isConfirm: true, confirmDate: new Date() },
+      { where: { id: id } },
+    );
 
     return {
       result: {
