@@ -114,6 +114,7 @@ export class RequestFactorService {
     const factor = await this.createFactor(
       totalPrice,
       representativeShareOfSolutionForOrganization,
+      activeContract.representativeShare,
       validateAndReturnCartableItemDto,
       createdByUser,
       transaction,
@@ -135,6 +136,7 @@ export class RequestFactorService {
   private async createFactor(
     tomanTotalPrice: number,
     representativeShareOfSolutionForOrganization: number,
+    representativeSharePercent: number,
     validateAndReturnCartableItem: ValidateAndReturnCartableItemDto,
     createdByUser: User,
     transaction: Transaction,
@@ -175,6 +177,7 @@ export class RequestFactorService {
         representativeShareOfSolution:
           rialRepresentativeShareOfSolutionForOrganization,
         createdByUserId: createdByUser.id,
+        representativeSharePercent: representativeSharePercent,
       },
 
       { transaction: transaction },
@@ -340,6 +343,19 @@ export class RequestFactorService {
     const factorServices = await GSFactorService.findAll(
       new QueryOptionsBuilder()
         .filter({ factorId: factor.id })
+        .filter({
+          warrantyServiceTypeId: GSWarrantyServiceTypeEnum.IncludeWarranty,
+        })
+        .filter(
+          Sequelize.where(
+            Sequelize.fn(
+              'isnull',
+              Sequelize.col('GSFactorService.isDeleted'),
+              0,
+            ),
+            { [Op.eq]: 0 },
+          ),
+        )
         .transaction(transaction)
         .build(),
     );

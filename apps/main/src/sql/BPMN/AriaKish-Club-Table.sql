@@ -1277,6 +1277,25 @@ END
 GO
 
 
+-- gs-factor-v9
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'gs-factors-v9'
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings
+		WHERE ([key] = 'CUSTOMER_NAME' AND [value] IN ('AriaKish'))
+		)
+BEGIN
+
+	ALTER TABLE GSFactors
+        Add representativeSharePercent decimal(10,2) null
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'gs-factors-v9', GETDATE(), GETDATE()
+END
+
+GO
+
+
 -- gs-paymentways
 IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'gs-paymentways-v1'
 			)

@@ -126,7 +126,7 @@ export class GSSuccessFactorQueryBuilderService {
           {
             model: GSPaymentGateway,
             as: 'paymentGateway',
-            attributes: ['id', 'title'],
+            attributes: ['id', 'title', 'paymentWayId'],
           },
         ],
         where: {

@@ -180,4 +180,66 @@ export class GSFactor extends Model {
     allowNull: true,
   })
   traverseNodeCommandId?: number;
+
+  @Column({
+    type: DataType.DECIMAL(10, 2),
+    allowNull: true,
+  })
+  representativeSharePercent?: number;
+
+  @Column({
+    type: DataType.BIGINT,
+    allowNull: true,
+  })
+  sumOfSolutionIncludeWarranty?: bigint;
+  @Column({
+    type: DataType.BIGINT,
+    allowNull: true,
+  })
+  sumOfSolutionOutOfWarranty?: bigint;
+  @Column({
+    type: DataType.BIGINT,
+    allowNull: true,
+  })
+  sumOfPartIncludeWarranty?: bigint;
+  @Column({
+    type: DataType.BIGINT,
+    allowNull: true,
+  })
+  sumOfPartOutOfWarranty?: bigint;
+  @Column({
+    type: DataType.BIGINT,
+    allowNull: true,
+  })
+  atLeastPayFromCustomerForOutOfWarranty?: bigint;
+  @Column({
+    type: DataType.BIGINT,
+    allowNull: true,
+  })
+  givenCashPayment?: bigint;
+  @Column({
+    type: DataType.BIGINT,
+    allowNull: true,
+  })
+  extraCashPaymentForUnavailableVip?: bigint;
+  @Column({
+    type: DataType.BIGINT,
+    allowNull: true,
+  })
+  organizationToCompany?: bigint;
+  @Column({
+    type: DataType.BIGINT,
+    allowNull: true,
+  })
+  companyToOrganization?: bigint;
+  @Column({
+    type: DataType.BIGINT,
+    allowNull: true,
+  })
+  sumOfOrganizationToCompany?: bigint;
+  @Column({
+    type: DataType.BIGINT,
+    allowNull: true,
+  })
+  sumOfCompanyToOrganization?: bigint;
 }
