@@ -91,6 +91,8 @@ export class GuaranteeOrganizationService {
         'userId',
         'isNationwide',
         'isOnlinePayment',
+        'licenseDate',
+        'code',
         'createdAt',
         'updatedAt',
       ])
@@ -157,6 +159,8 @@ export class GuaranteeOrganizationService {
         'userId',
         'isNationwide',
         'isOnlinePayment',
+        'licenseDate',
+        'code',
         'createdAt',
         'updatedAt',
       ])
@@ -274,6 +278,8 @@ export class GuaranteeOrganizationService {
           isOnlinePayment: dto.isOnlinePayment,
           userId: user.id,
           addressId: address.result.id,
+          code: dto.code,
+          licenseDate: dto.licenseDate,
         },
         { transaction: transaction },
       );
@@ -347,6 +353,8 @@ export class GuaranteeOrganizationService {
           isNationwide: dto.isNationwide,
           isOnlinePayment: dto.isOnlinePayment,
           userId: user.id,
+          code: dto.code,
+          licenseDate: dto.licenseDate,
         },
         {
           where: {
@@ -412,6 +420,8 @@ export class GuaranteeOrganizationService {
         'userId',
         'isNationwide',
         'isOnlinePayment',
+        'licenseDate',
+        'code',
       ]),
     };
   }
