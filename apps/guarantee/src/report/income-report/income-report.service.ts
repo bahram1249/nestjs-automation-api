@@ -71,7 +71,7 @@ export class IncomeReportService {
         'sumOfOrganizationToCompany',
         'sumOfCompanyToOrganization',
         'settlementDate',
-        [Sequelize.col('guranteeRequest.id'), 'requestId'],
+        [Sequelize.col('guaranteeRequest.id'), 'requestId'],
       ])
 
       .offset(filter.offset)
