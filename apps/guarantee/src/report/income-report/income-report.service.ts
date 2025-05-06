@@ -91,6 +91,7 @@ export class IncomeReportService {
         {
           model: GSRequest,
           as: 'guaranteeRequest',
+          attributes: [],
           required: true,
         },
       ])
