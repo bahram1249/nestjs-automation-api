@@ -87,6 +87,7 @@ import { GSAnonymousAttachmentModule } from './anonymous/attachment/attachment.m
 import { AnonymousPreRegistrationOrganizationModule } from './anonymous/pre-registration-organization';
 import { AnonymousOrganizationModule } from './anonymous/organization';
 import { AdminPreRegistrationOrganizationModule } from './admin/pre-registration-organization';
+import { IncomeReportModule } from './report/income-report/income-report.module';
 
 @Module({
   imports: [
@@ -197,6 +198,7 @@ import { AdminPreRegistrationOrganizationModule } from './admin/pre-registration
     AnonymousOrganizationModule,
 
     AdminPreRegistrationOrganizationModule,
+    IncomeReportModule,
   ],
 })
 export class GSModule implements NestModule {
