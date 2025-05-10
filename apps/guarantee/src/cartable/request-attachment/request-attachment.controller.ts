@@ -78,9 +78,9 @@ export class RequestAttachmentController {
       new ParseFilePipe({
         validators: [
           new FileTypeValidator({ fileType: /(jpg|png|jpeg)/ }),
-          new MaxFileSizeValidator({ maxSize: 7097152 }),
+          new MaxFileSizeValidator({ maxSize: 10097152 }),
         ],
-        fileIsRequired: false,
+        fileIsRequired: true,
         errorHttpStatusCode: HttpStatus.UNPROCESSABLE_ENTITY,
       }),
     )
