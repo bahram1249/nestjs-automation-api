@@ -1,0 +1,12 @@
+mc alias set myminio http://<minio-server-address>:<port> <access-key> <secret-key>
+
+
+
+mc mb myminio/organizations
+mc anonymous set download myminio/organizations
+
+
+mc mb myminio/requests
+mc anonymous set download myminio/requests
+
+
