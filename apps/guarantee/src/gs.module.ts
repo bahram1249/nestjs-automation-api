@@ -88,6 +88,7 @@ import { AnonymousPreRegistrationOrganizationModule } from './anonymous/pre-regi
 import { AnonymousOrganizationModule } from './anonymous/organization';
 import { AdminPreRegistrationOrganizationModule } from './admin/pre-registration-organization';
 import { IncomeReportModule } from './report/income-report/income-report.module';
+import { ClientSupplierStateRequestSmsSenderModule } from './job/client-supplier-state-request-sms-sender';
 
 @Module({
   imports: [
@@ -154,6 +155,7 @@ import { IncomeReportModule } from './report/income-report/income-report.module'
     ClientTechnicalUserVisitRequestSmsSenderModule,
     ClientShippingWayRequestSmsSenderModule,
     VipGeneratorJobModule,
+    ClientSupplierStateRequestSmsSenderModule,
 
     // test
     CartableAutoTraverseModule,
