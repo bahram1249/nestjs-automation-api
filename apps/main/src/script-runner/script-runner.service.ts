@@ -15,9 +15,11 @@ export class ScriptRunnerService {
     const content = fs.readFileSync(filePath, 'utf-8').toString();
 
     const queries = content.split(/GO(\s\s+|\n)/g);
+    const platform = process.platform;
+    const replacePattern = platform == 'win32' ? /^--.*$/g : /^--.*$/gm;
 
     for (const query of queries) {
-      var queryWithoutComment = query.replaceAll(/^--.*$/gm, '');
+      var queryWithoutComment = query.replaceAll(replacePattern, '');
       await this.sequelize.query(
         queryWithoutComment.replaceAll(/\s\s+/g, ' '),
         {
