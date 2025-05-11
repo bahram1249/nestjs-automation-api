@@ -37,7 +37,9 @@ export class VerifyDto {
 
   @IsString()
   @IsOptional()
-  @Matches(new RegExp('^([0-9]){10}$'))
+  @Matches(new RegExp('^([0-9]){10}$'), {
+    message: 'کد ملی باید 10 رقم باشد',
+  })
   @ApiProperty({
     required: false,
     type: IsString,
