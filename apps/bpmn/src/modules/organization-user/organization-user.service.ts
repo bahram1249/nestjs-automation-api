@@ -66,7 +66,7 @@ export class OrganizationUserService {
     const duplicate = await this.repository.findOne(
       new QueryOptionsBuilder()
         .filter({ userId: addUserOrganizationRole.userId })
-        .filter({ organizatinId: addUserOrganizationRole.organizationId })
+        .filter({ organizationId: addUserOrganizationRole.organizationId })
         .filter({ roleId: addUserOrganizationRole.roleId })
         .transaction(addUserOrganizationRole.transaction)
         .build(),
