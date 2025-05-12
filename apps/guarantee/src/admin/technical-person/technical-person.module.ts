@@ -10,6 +10,7 @@ import { TechnicalPersonController } from './technical-person.controller';
 import { TechnicalPersonProfile } from './mapper';
 import { OrganizationStuffModule } from '@rahino/guarantee/shared/organization-stuff';
 import { LocalizationModule } from 'apps/main/src/common/localization';
+import { BPMNOrganizationUserModule } from '@rahino/bpmn/modules/organization-user/organization-user.module';
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { LocalizationModule } from 'apps/main/src/common/localization';
     ]),
     LocalizationModule,
     OrganizationStuffModule,
+    BPMNOrganizationUserModule,
   ],
   controllers: [TechnicalPersonController],
   providers: [TechnicalPersonService, TechnicalPersonProfile],
