@@ -9,7 +9,7 @@ import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builde
 import { Sequelize } from 'sequelize-typescript';
 import { Op, QueryTypes } from 'sequelize';
 import { Setting } from '@rahino/database';
-import { CourierPriceEnum } from '@rahino/ecommerce/admin/courier-price/enum';
+import { CourierPriceEnum } from '@rahino/ecommerce/admin/order-section/courier-price/enum';
 import { ECDiscount } from '@rahino/localdatabase/models';
 import { ECDiscountType } from '@rahino/localdatabase/models';
 
