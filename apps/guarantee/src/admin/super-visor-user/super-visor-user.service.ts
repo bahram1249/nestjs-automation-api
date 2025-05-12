@@ -119,8 +119,28 @@ export class SuperVisorUserService {
   }
 
   async create(user: User, dto: SuperVisorUserDto) {
+    const duplicate = await this.repository.findOne(
+      new QueryOptionsBuilder()
+        .include({
+          model: User,
+          as: 'user',
+          required: true,
+          where: {
+            phoneNumber: dto.phoneNumber,
+          },
+        })
+        .build(),
+    );
+
+    if (duplicate) {
+      throw new BadRequestException(
+        this.localizationService.translate('core.duplicate_request'),
+      );
+    }
+
     let result: GSSuperVisorUser;
 
+    const findRole = await this.findRole();
     const transaction = await this.sequelize.transaction({
       isolationLevel: Transaction.ISOLATION_LEVELS.READ_COMMITTED,
     });
@@ -130,7 +150,7 @@ export class SuperVisorUserService {
       const user = await this.createOrUpdateUser(dto, transaction);
 
       // add technical person role to user
-      await this.insertSuperVisorUserRole(user, transaction);
+      await this.insertSuperVisorUserRole(user, findRole, transaction);
 
       // add technical person
       result = await this.repository.create(
@@ -141,7 +161,7 @@ export class SuperVisorUserService {
       await transaction.commit();
     } catch (error) {
       await transaction.rollback();
-      throw new InternalServerErrorException(error.message);
+      throw new BadRequestException(error.message);
     }
 
     return {
@@ -154,17 +174,34 @@ export class SuperVisorUserService {
       isolationLevel: Transaction.ISOLATION_LEVELS.READ_COMMITTED,
     });
 
+    const item = await this.repository.findOne(
+      new QueryOptionsBuilder().filter({ id: id }).build(),
+    );
+
+    if (!item) {
+      throw new NotFoundException(
+        this.localizationService.translate('core.not_found_id'),
+      );
+    }
+
+    if (item.user.phoneNumber != dto.phoneNumber) {
+      throw new BadRequestException(
+        this.localizationService.translate('core.phoneNumber_must_not_changed'),
+      );
+    }
+
+    const findRole = await this.findRole();
+
     try {
       // create user
       const user = await this.createOrUpdateUser(dto, transaction);
-
       // add technical person role to user
-      await this.insertSuperVisorUserRole(user, transaction);
+      await this.insertSuperVisorUserRole(user, findRole, transaction);
 
       await transaction.commit();
     } catch (error) {
       await transaction.rollback();
-      throw new InternalServerErrorException(error);
+      throw new BadRequestException(error.message);
     }
 
     return await this.findById(user, id);
@@ -172,7 +209,10 @@ export class SuperVisorUserService {
 
   async deleteById(user: User, entityId: number) {
     const item = await this.repository.findOne(
-      new QueryOptionsBuilder().filter({ id: entityId }).build(),
+      new QueryOptionsBuilder()
+        .include({ model: User, as: 'user' })
+        .filter({ id: entityId })
+        .build(),
     );
     if (!item) {
       throw new BadRequestException(
@@ -180,7 +220,21 @@ export class SuperVisorUserService {
       );
     }
 
-    await item.destroy();
+    const findRole = await this.findRole();
+
+    const transaction = await this.sequelize.transaction({
+      isolationLevel: Transaction.ISOLATION_LEVELS.READ_COMMITTED,
+    });
+
+    try {
+      await this.removeSuperVisorUserRole(item.user, findRole, transaction);
+      await item.destroy({ transaction });
+      await transaction.commit();
+    } catch (error) {
+      await transaction.rollback();
+      throw new BadRequestException(error.message);
+    }
+
     return {
       result: _.pick(item, ['id', 'userId', 'createdAt', 'updatedAt']),
     };
@@ -217,19 +271,11 @@ export class SuperVisorUserService {
     return updated[1][0];
   }
 
-  private async insertSuperVisorUserRole(user: User, transaction: Transaction) {
-    const role = await this.roleRepository.findOne(
-      new QueryOptionsBuilder()
-        .filter({
-          static_id: GuaranteeStaticRoleEnum.SupervisorRole,
-        })
-        .build(),
-    );
-    if (!role) {
-      throw new NotFoundException(
-        this.localizationService.translate('core.not_found_role'),
-      );
-    }
+  private async insertSuperVisorUserRole(
+    user: User,
+    role: Role,
+    transaction: Transaction,
+  ) {
     const userRole = await this.userRoleRepository.findOne(
       new QueryOptionsBuilder()
         .filter({ userId: user.id })
@@ -243,5 +289,30 @@ export class SuperVisorUserService {
         { transaction: transaction },
       );
     }
+  }
+
+  private async removeSuperVisorUserRole(
+    user: User,
+    role: Role,
+    transaction: Transaction,
+  ) {
+    await this.userRoleRepository.destroy({
+      where: {
+        userId: user.id,
+        roleId: role.id,
+      },
+      transaction: transaction,
+    });
+  }
+
+  private async findRole() {
+    const role = await this.roleRepository.findOne(
+      new QueryOptionsBuilder()
+        .filter({
+          static_id: GuaranteeStaticRoleEnum.SupervisorRole,
+        })
+        .build(),
+    );
+    return role;
   }
 }

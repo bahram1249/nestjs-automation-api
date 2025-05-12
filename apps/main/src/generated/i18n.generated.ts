@@ -17,6 +17,7 @@ export type I18nTranslations = {
         "process": string;
     };
     "core": {
+        "duplicate_request": string;
         "phoneNumber_must_not_changed": string;
         "firstname_or_lastname_must_be_send_it": string;
         "code_was_send_it_is_not_true": string;
