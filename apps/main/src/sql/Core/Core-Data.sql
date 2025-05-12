@@ -568,3 +568,19 @@ END
 
 GO
 
+
+IF NOT EXISTS ((SELECT 1 FROM Migrations WHERE version = 'CORE-AttachmentTypes-Data-v19' 
+			))
+BEGIN
+	
+	INSERT INTO AttachmentTypes(id, typeName, createdAt, updatedAt)
+	SELECT 26, N'ecommercepublicphoto', getdate(), getdate()
+
+	
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'CORE-AttachmentTypes-Data-v19', GETDATE(), GETDATE()
+END
+
+GO
+
