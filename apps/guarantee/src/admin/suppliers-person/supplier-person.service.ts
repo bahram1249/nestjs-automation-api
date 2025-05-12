@@ -60,6 +60,7 @@ export class SupplierPersonService {
             'lastname',
             'phoneNumber',
             'username',
+            'nationalCode',
           ],
         },
       ])
@@ -126,6 +127,7 @@ export class SupplierPersonService {
               'lastname',
               'phoneNumber',
               'username',
+              'nationalCode',
             ],
           },
         ])
@@ -262,6 +264,7 @@ export class SupplierPersonService {
       await transaction.commit();
     } catch (error) {
       await transaction.rollback();
+      throw new BadRequestException(error.message);
     }
 
     return {
@@ -282,6 +285,7 @@ export class SupplierPersonService {
     const user = await this.userRepository.findOne(
       new QueryOptionsBuilder()
         .filter({ phoneNumber: dto.phoneNumber })
+        .transaction(transaction)
         .build(),
     );
 

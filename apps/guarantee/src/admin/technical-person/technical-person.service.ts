@@ -61,6 +61,7 @@ export class TechnicalPersonService {
             'lastname',
             'phoneNumber',
             'username',
+            'nationalCode',
           ],
         },
       ])
@@ -127,6 +128,7 @@ export class TechnicalPersonService {
               'lastname',
               'phoneNumber',
               'username',
+              'nationalCode',
             ],
           },
         ])
@@ -285,6 +287,7 @@ export class TechnicalPersonService {
     const user = await this.userRepository.findOne(
       new QueryOptionsBuilder()
         .filter({ phoneNumber: dto.phoneNumber })
+        .transaction(transaction)
         .build(),
     );
 

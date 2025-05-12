@@ -23,4 +23,18 @@ export class TechnicalPersonDto {
     description: 'phoneNumber',
   })
   public phoneNumber: string;
+
+  @AutoMap()
+  @IsString()
+  @IsNotEmpty()
+  @Matches(new RegExp('^([0-9]){10}$'), {
+    message: 'کد ملی باید 10 رقم باشد',
+  })
+  @ApiProperty({
+    required: false,
+    type: IsString,
+    default: 'nationalCode',
+    description: 'nationalCode',
+  })
+  nationalCode: string;
 }
