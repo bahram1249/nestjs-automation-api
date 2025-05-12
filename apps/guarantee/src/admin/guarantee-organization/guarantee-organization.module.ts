@@ -11,6 +11,7 @@ import { GuaranteeOrganizationProfile } from './mapper';
 import { OrganizationModule } from '@rahino/bpmn/modules/organization';
 import { Permission, Role, User, UserRole } from '@rahino/database';
 import { GSAddressModule } from '@rahino/guarantee/client/address/address.module';
+import { BPMNOrganizationUserModule } from '@rahino/bpmn/modules/organization-user/organization-user.module';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { GSAddressModule } from '@rahino/guarantee/client/address/address.module
       Role,
       BPMNOrganizationUser,
     ]),
+    BPMNOrganizationUserModule,
   ],
   controllers: [GuaranteeOrganizationController],
   providers: [GuaranteeOrganizationService, GuaranteeOrganizationProfile],

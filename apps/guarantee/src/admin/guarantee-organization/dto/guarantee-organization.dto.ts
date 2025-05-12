@@ -1,4 +1,3 @@
-import { UserDto } from '@rahino/coreDashboard/user/dto';
 import { AddressDto } from '@rahino/guarantee/client/address/dto';
 import { AutoMap } from 'automapper-classes';
 import {
@@ -8,6 +7,7 @@ import {
   IsOptional,
   IsString,
 } from 'class-validator';
+import { UserDto } from './user.dto';
 
 export class GuaranteeOrganizationDto {
   @AutoMap()

@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Injectable,
   InternalServerErrorException,
   NotFoundException,
@@ -29,6 +30,7 @@ import { OrganizationDto } from '@rahino/bpmn/modules/organization/dto';
 import * as _ from 'lodash';
 import { GuaranteeStaticRoleEnum } from '@rahino/guarantee/shared/static-role/enum';
 import { AddressService } from '@rahino/guarantee/client/address/address.service';
+import { OrganizationUserService } from '@rahino/bpmn/modules/organization-user/organization-user.service';
 
 @Injectable()
 export class GuaranteeOrganizationService {
@@ -50,6 +52,8 @@ export class GuaranteeOrganizationService {
     private readonly mapper: Mapper,
     @InjectConnection()
     private readonly sequelize: Sequelize,
+
+    private readonly organizationUserService: OrganizationUserService,
   ) {}
 
   async findAll(filter: GetGuaranteeOrganizationDto) {
@@ -137,7 +141,13 @@ export class GuaranteeOrganizationService {
       .thenInclude({
         model: User,
         as: 'user',
-        attributes: ['id', 'firstname', 'lastname', 'phoneNumber'],
+        attributes: [
+          'id',
+          'firstname',
+          'lastname',
+          'phoneNumber',
+          'nationalCode',
+        ],
         required: false,
       })
 
@@ -213,7 +223,13 @@ export class GuaranteeOrganizationService {
       .thenInclude({
         model: User,
         as: 'user',
-        attributes: ['id', 'firstname', 'lastname', 'phoneNumber'],
+        attributes: [
+          'id',
+          'firstname',
+          'lastname',
+          'phoneNumber',
+          'nationalCode',
+        ],
         required: false,
       })
       .filter(
@@ -242,6 +258,26 @@ export class GuaranteeOrganizationService {
   }
 
   async create(dto: GuaranteeOrganizationDto) {
+    const duplicate = await this.repository.findOne(
+      new QueryOptionsBuilder()
+        .include({
+          model: User,
+          as: 'user',
+          where: {
+            phoneNumber: dto.user.phoneNumber,
+          },
+        })
+        .build(),
+    );
+
+    if (duplicate) {
+      throw new BadRequestException(
+        this.localizationService.translate('core.duplicate_request'),
+      );
+    }
+
+    const findRole = await this.findRole();
+
     const transaction = await this.sequelize.transaction({
       isolationLevel: Transaction.ISOLATION_LEVELS.READ_COMMITTED,
     });
@@ -254,14 +290,19 @@ export class GuaranteeOrganizationService {
       );
       // create or update user
       const user = await this.createOrUpdateUser(dto.user, transaction);
-      // assign organization role  to user
-      const userRole = await this.assignedOrganizationRole(user, transaction);
 
       // create organization on base table
       const organization = await this.organizationService.create(
         organizationMapped,
         transaction,
       );
+
+      await this.organizationUserService.addUserOrganizationRole({
+        userId: user.id,
+        organizationId: organization.id,
+        roleId: findRole.id,
+        transaction: transaction,
+      });
 
       // create address
       const address = await this.addressService.create(
@@ -284,14 +325,6 @@ export class GuaranteeOrganizationService {
         { transaction: transaction },
       );
 
-      // assign user to organization
-      await this.assignedOrganizationUser(
-        user,
-        guaranteeOrganization,
-        userRole.roleId,
-        transaction,
-      );
-
       await transaction.commit();
     } catch (error) {
       await transaction.rollback();
@@ -302,9 +335,6 @@ export class GuaranteeOrganizationService {
   }
 
   async updateById(id: number, dto: GuaranteeOrganizationDto) {
-    const transaction = await this.sequelize.transaction({
-      isolationLevel: Transaction.ISOLATION_LEVELS.READ_COMMITTED,
-    });
     let guaranteeOrganization = await this.repository.findOne(
       new QueryOptionsBuilder()
         .filter(
@@ -320,6 +350,7 @@ export class GuaranteeOrganizationService {
           ),
         )
         .filter({ id: id })
+        .include({ model: User, as: 'user' })
         .build(),
     );
     if (!guaranteeOrganization) {
@@ -327,6 +358,19 @@ export class GuaranteeOrganizationService {
         this.localizationService.translate('core.not_found'),
       );
     }
+
+    const findRole = await this.findRole();
+
+    if (guaranteeOrganization.user.phoneNumber != dto.user.phoneNumber) {
+      throw new BadRequestException(
+        this.localizationService.translate('core.phoneNumber_must_not_changed'),
+      );
+    }
+
+    const transaction = await this.sequelize.transaction({
+      isolationLevel: Transaction.ISOLATION_LEVELS.READ_COMMITTED,
+    });
+
     try {
       const organizationMapped = this.mapper.map(
         dto,
@@ -344,8 +388,13 @@ export class GuaranteeOrganizationService {
 
       // create or update user
       const user = await this.createOrUpdateUser(dto.user, transaction);
-      // assign organization role  to user
-      const userRole = await this.assignedOrganizationRole(user, transaction);
+
+      await this.organizationUserService.addUserOrganizationRole({
+        userId: user.id,
+        roleId: findRole.id,
+        organizationId: guaranteeOrganization.id,
+        transaction: transaction,
+      });
 
       // create guarantee organization
       await this.repository.update(
@@ -360,15 +409,8 @@ export class GuaranteeOrganizationService {
           where: {
             id: id,
           },
+          transaction: transaction,
         },
-      );
-
-      // assign user to organization
-      await this.assignedOrganizationUser(
-        user,
-        guaranteeOrganization,
-        userRole.roleId,
-        transaction,
       );
 
       // update address
@@ -391,6 +433,7 @@ export class GuaranteeOrganizationService {
   async deleteById(entityId: number) {
     const item = await this.repository.findOne(
       new QueryOptionsBuilder()
+        .include({ model: User, as: 'user' })
         .filter({ id: entityId })
         .filter(
           Sequelize.where(
@@ -411,8 +454,30 @@ export class GuaranteeOrganizationService {
         this.localizationService.translate('core.not_found_id'),
       );
     }
-    item.isDeleted = true;
-    await item.save();
+
+    const findRole = await this.findRole();
+
+    const transaction = await this.sequelize.transaction({
+      isolationLevel: Transaction.ISOLATION_LEVELS.READ_COMMITTED,
+    });
+
+    try {
+      item.isDeleted = true;
+      await item.save({ transaction: transaction });
+
+      await this.organizationUserService.removeUserOrganizationRole({
+        userId: item.userId,
+        roleId: findRole.id,
+        organizationId: item.id,
+        transaction: transaction,
+      });
+
+      await transaction.commit();
+    } catch (error) {
+      await transaction.rollback();
+      throw new BadRequestException(error.message);
+    }
+
     return {
       result: _.pick(item, [
         'id',
@@ -432,12 +497,25 @@ export class GuaranteeOrganizationService {
   ): Promise<User> {
     let user = await this.userRepository.findOne(
       new QueryOptionsBuilder()
-        .attributes(['id', 'firstname', 'lastname', 'username', 'phoneNumber'])
+        .attributes([
+          'id',
+          'firstname',
+          'lastname',
+          'username',
+          'phoneNumber',
+          'nationalCode',
+        ])
         .filter({ phoneNumber: dto.phoneNumber })
+        .transaction(transaction)
         .build(),
     );
     if (!user) {
-      const mappedItem = _.pick(dto, ['firstname', 'lastname', 'phoneNumber']);
+      const mappedItem = _.pick(dto, [
+        'firstname',
+        'lastname',
+        'phoneNumber',
+        'nationalCode',
+      ]);
       let insertItem = mappedItem as any;
       insertItem.username = dto.phoneNumber;
       user = await this.userRepository.create(insertItem, {
@@ -448,15 +526,13 @@ export class GuaranteeOrganizationService {
       user.lastname = dto.lastname;
       user.phoneNumber = dto.phoneNumber;
       user.username = dto.phoneNumber;
-      await user.save();
+      user.nationalCode = dto.nationalCode;
+      await user.save({ transaction: transaction });
     }
     return user;
   }
 
-  private async assignedOrganizationRole(
-    user: User,
-    transaction?: Transaction,
-  ): Promise<UserRole> {
+  private async findRole() {
     const organizationRole = await this.roleRepository.findOne(
       new QueryOptionsBuilder()
         .filter({ static_id: GuaranteeStaticRoleEnum.OrganizationRole })
@@ -467,49 +543,6 @@ export class GuaranteeOrganizationService {
         this.localizationService.translate('core.not_found_role'),
       );
     }
-
-    let isExistBefore = await this.userRoleRepository.findOne(
-      new QueryOptionsBuilder()
-        .filter({ userId: user.id, roleId: organizationRole.id })
-        .build(),
-    );
-    if (!isExistBefore) {
-      isExistBefore = await this.userRoleRepository.create(
-        {
-          userId: user.id,
-          roleId: organizationRole.id,
-        },
-        {
-          transaction: transaction,
-        },
-      );
-    }
-    return isExistBefore;
-  }
-
-  private async assignedOrganizationUser(
-    user: User,
-    guaranteeOrganization?: GSGuaranteeOrganization,
-    roleId?: number,
-    transaction?: Transaction,
-  ) {
-    const isExistsBefore = await this.organizationUserRepository.findOne(
-      new QueryOptionsBuilder()
-        .filter({ userId: user.id })
-        .filter({ organizationId: guaranteeOrganization.id })
-        .filter({ roleId: roleId })
-        .transaction(transaction)
-        .build(),
-    );
-    if (!isExistsBefore) {
-      await this.organizationUserRepository.create(
-        {
-          userId: user.id,
-          organizationId: guaranteeOrganization.id,
-          roleId: roleId,
-        },
-        { transaction: transaction },
-      );
-    }
+    return organizationRole;
   }
 }
