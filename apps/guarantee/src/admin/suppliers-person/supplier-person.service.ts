@@ -19,6 +19,7 @@ import { OrganizationStuffService } from '@rahino/guarantee/shared/organization-
 import { Role, User, UserRole } from '@rahino/database';
 import { LocalizationService } from 'apps/main/src/common/localization';
 import { GuaranteeStaticRoleEnum } from '@rahino/guarantee/shared/static-role/enum';
+import { OrganizationUserService } from '@rahino/bpmn/modules/organization-user/organization-user.service';
 
 @Injectable()
 export class SupplierPersonService {
@@ -39,6 +40,8 @@ export class SupplierPersonService {
     private readonly localizationService: LocalizationService,
     @InjectConnection()
     private readonly sequelize: Sequelize,
+
+    private readonly organizationUserService: OrganizationUserService,
   ) {}
 
   async findAll(user: User, filter: GetSupplierPersonDto) {
@@ -147,6 +150,8 @@ export class SupplierPersonService {
     const organization =
       await this.organizationStuffService.getOrganizationByUserId(user.id);
 
+    const role = await this.findStaticRole(GuaranteeStaticRoleEnum.Suppliers);
+
     let result: GSSupplierPerson;
 
     const transaction = await this.sequelize.transaction({
@@ -157,11 +162,12 @@ export class SupplierPersonService {
       // create user
       const user = await this.createOrUpdateUser(dto, transaction);
 
-      // add technical person role to user
-      await this.insertSupplierPersonRole(user, transaction);
-
-      // add to bpmn organization user
-      await this.addToBpmnOrganizationUser(user, organization.id, transaction);
+      await this.organizationUserService.addUserOrganizationRole({
+        userId: user.id,
+        roleId: role.id,
+        organizationId: organization.id,
+        transaction: transaction,
+      });
 
       // add technical person
       result = await this.repository.create(
@@ -184,6 +190,21 @@ export class SupplierPersonService {
     const organization =
       await this.organizationStuffService.getOrganizationByUserId(user.id);
 
+    const supplierPerson = await this.repository.findOne(
+      new QueryOptionsBuilder()
+        .include({ model: User, as: 'user' })
+        .filter({ id: id })
+        .build(),
+    );
+
+    if (supplierPerson.user.phoneNumber != dto.phoneNumber) {
+      throw new BadRequestException(
+        this.localizationService.translate('core.phoneNumber_must_not_changed'),
+      );
+    }
+
+    const role = await this.findStaticRole(GuaranteeStaticRoleEnum.Suppliers);
+
     const transaction = await this.sequelize.transaction({
       isolationLevel: Transaction.ISOLATION_LEVELS.READ_COMMITTED,
     });
@@ -192,11 +213,12 @@ export class SupplierPersonService {
       // create user
       const user = await this.createOrUpdateUser(dto, transaction);
 
-      // add technical person role to user
-      await this.insertSupplierPersonRole(user, transaction);
-
-      // add to bpmn organization user
-      await this.addToBpmnOrganizationUser(user, organization.id, transaction);
+      await this.organizationUserService.addUserOrganizationRole({
+        userId: user.id,
+        roleId: role.id,
+        organizationId: organization.id,
+        transaction: transaction,
+      });
 
       await transaction.commit();
     } catch (error) {
@@ -217,7 +239,31 @@ export class SupplierPersonService {
       );
     }
 
-    await item.destroy();
+    const organization =
+      await this.organizationStuffService.getOrganizationByUserId(user.id);
+
+    const findRole = await this.findStaticRole(
+      GuaranteeStaticRoleEnum.Suppliers,
+    );
+
+    const transaction = await this.sequelize.transaction({
+      isolationLevel: Transaction.ISOLATION_LEVELS.READ_COMMITTED,
+    });
+    try {
+      await item.destroy({ transaction: transaction });
+
+      await this.organizationUserService.removeUserOrganizationRole({
+        organizationId: organization.id,
+        userId: item.userId,
+        roleId: findRole.id,
+        transaction: transaction,
+      });
+
+      await transaction.commit();
+    } catch (error) {
+      await transaction.rollback();
+    }
+
     return {
       result: _.pick(item, [
         'id',
@@ -260,71 +306,15 @@ export class SupplierPersonService {
     return updated[1][0];
   }
 
-  private async insertSupplierPersonRole(user: User, transaction: Transaction) {
+  private async findStaticRole(staticId: number) {
     const role = await this.roleRepository.findOne(
-      new QueryOptionsBuilder()
-        .filter({
-          static_id: GuaranteeStaticRoleEnum.Suppliers,
-        })
-        .build(),
+      new QueryOptionsBuilder().filter({ static_id: staticId }).build(),
     );
     if (!role) {
-      throw new NotFoundException(
+      throw new BadRequestException(
         this.localizationService.translate('core.not_found_role'),
       );
     }
-    const userRole = await this.userRoleRepository.findOne(
-      new QueryOptionsBuilder()
-        .filter({ userId: user.id })
-        .filter({ roleId: role.id })
-        .transaction(transaction)
-        .build(),
-    );
-    if (!userRole) {
-      await this.userRoleRepository.create(
-        { userId: user.id, roleId: role.id },
-        { transaction: transaction },
-      );
-    }
-  }
-
-  private async addToBpmnOrganizationUser(
-    user: User,
-    organizationId: number,
-    transaction: Transaction,
-  ) {
-    const role = await this.roleRepository.findOne(
-      new QueryOptionsBuilder()
-        .filter({
-          static_id: GuaranteeStaticRoleEnum.Suppliers,
-        })
-        .build(),
-    );
-    if (!role) {
-      throw new NotFoundException(
-        this.localizationService.translate('core.not_found_role'),
-      );
-    }
-
-    const supplierBpmnOrganizationUser =
-      await this.bpmnOrganizationUserRepository.findOne(
-        new QueryOptionsBuilder()
-          .filter({ userId: user.id })
-          .filter({ organizationId: organizationId })
-          .filter({ roleId: role.id })
-          .transaction(transaction)
-          .build(),
-      );
-
-    if (!supplierBpmnOrganizationUser) {
-      await this.bpmnOrganizationUserRepository.create(
-        {
-          userId: user.id,
-          organizationId: organizationId,
-          roleId: role.id,
-        },
-        { transaction: transaction },
-      );
-    }
+    return role;
   }
 }
