@@ -105,6 +105,7 @@ import { ClientVendorModule } from './client/vendor/client-vendor.module';
 import { AdminLinkedEntityTypeBrandModule } from './admin/additional-entity-type-section/linked-entity-type-brand/linked-entity-type-brand.module';
 import { ClientLinkedEntityTypeBrandModule } from './client/linked-entity-type-brand/linked-entity-type-brand.module';
 import { AdminPublicPhotoModule } from './admin/public-photo/public-photo.module';
+import { ClientPublicPhotoModule } from './client/public-photo/public-photo.module';
 
 @Module({
   imports: [
@@ -208,6 +209,7 @@ import { AdminPublicPhotoModule } from './admin/public-photo/public-photo.module
     AdminLinkedEntityTypeBrandModule,
     ClientLinkedEntityTypeBrandModule,
     AdminPublicPhotoModule,
+    ClientPublicPhotoModule,
   ],
   providers: [
     {
