@@ -6,8 +6,8 @@ import { ECProduct } from '@rahino/localdatabase/models';
 import { ProductAttributeDto } from '../dto/product-attribute.dto';
 import { EntityAttributeValueDto } from '@rahino/eav/admin/entity-attribute-value/dto';
 import { ProductAttachmentDto } from '../dto/product-attachment.dto';
-import { PhotoDto } from '@rahino/ecommerce/product-photo/dto';
-import { VideoDto } from '@rahino/ecommerce/product-video/dto';
+import { PhotoDto } from '@rahino/ecommerce/admin/product-section/product-photo/dto';
+import { VideoDto } from '@rahino/ecommerce/admin/product-section/product-video/dto';
 
 @Injectable()
 export class ProductProfile extends AutomapperProfile {

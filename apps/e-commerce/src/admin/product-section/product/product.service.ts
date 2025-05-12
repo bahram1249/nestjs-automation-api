@@ -41,9 +41,9 @@ import { ProductAttributeDto } from './dto/product-attribute.dto';
 import { EntityAttributeValueDto } from '@rahino/eav/admin/entity-attribute-value/dto';
 import { EntityService } from '@rahino/eav/admin/entity/entity.service';
 import { ConfigService } from '@nestjs/config';
-import { ProductPhotoService } from '@rahino/ecommerce/product-photo/product-photo.service';
+import { ProductPhotoService } from '@rahino/ecommerce/admin/product-section/product-photo/product-photo.service';
 import { ProductAttachmentDto } from './dto/product-attachment.dto';
-import { PhotoDto } from '@rahino/ecommerce/product-photo/dto';
+import { PhotoDto } from '@rahino/ecommerce/admin/product-section/product-photo/dto';
 import {
   InventoryStatusEnum,
   VariationPriceIdEnum,
@@ -61,8 +61,8 @@ import {
 } from '@rahino/ecommerce/inventory/constants';
 import { InjectQueue } from '@nestjs/bullmq';
 import { Queue } from 'bullmq';
-import { ProductVideoService } from '@rahino/ecommerce/product-video/product-video.service';
-import { VideoDto } from '@rahino/ecommerce/product-video/dto';
+import { ProductVideoService } from '@rahino/ecommerce/admin/product-section/product-video/product-video.service';
+import { VideoDto } from '@rahino/ecommerce/admin/product-section/product-video/dto';
 import { SlugVersionTypeEnum } from '@rahino/ecommerce/util/enum';
 import { PermissionService } from '@rahino/core/user/permission/permission.service';
 

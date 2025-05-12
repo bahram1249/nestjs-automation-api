@@ -5,8 +5,8 @@ import { Setting } from '@rahino/database';
 import { ECInventoryPrice } from '@rahino/localdatabase/models';
 import { ECInventory } from '@rahino/localdatabase/models';
 import { ECProduct } from '@rahino/localdatabase/models';
-import { CAL_PRICE_PROVIDER_TOKEN } from '@rahino/ecommerce/admin/product/price-cal-factory/constants';
-import { ICalPrice } from '@rahino/ecommerce/admin/product/price-cal-factory/interface/cal-price.interface';
+import { CAL_PRICE_PROVIDER_TOKEN } from '@rahino/ecommerce/admin/product-section/product/price-cal-factory/constants';
+import { ICalPrice } from '@rahino/ecommerce/admin/product-section/product/price-cal-factory/interface/cal-price.interface';
 import {
   Constants,
   PRODUCT_INVENTORY_STATUS_QUEUE,

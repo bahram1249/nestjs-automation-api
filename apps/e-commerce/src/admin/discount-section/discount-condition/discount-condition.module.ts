@@ -8,7 +8,7 @@ import { ECDiscountCondition } from '@rahino/localdatabase/models';
 import { Permission } from '@rahino/database';
 import { User } from '@rahino/database';
 import { EntityTypeModule } from '@rahino/eav/admin/entity-type/entity-type.module';
-import { ProductModule } from '../../product/product.module';
+import { ProductModule } from '../../product-section/product/product.module';
 import { UserInventoryModule } from '@rahino/ecommerce/user/inventory/user-inventory.module';
 
 @Module({

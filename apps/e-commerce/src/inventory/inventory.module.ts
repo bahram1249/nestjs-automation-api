@@ -37,7 +37,7 @@ import { PaymentServiceProviderModule } from '../user/shopping/payment/provider/
 import { InventoryTrackChangeModule } from '../inventory-track-change/inventory-track-change.module';
 import { ECWallet } from '@rahino/localdatabase/models';
 import { RevertPaymentQtyModule } from './revert-payment-qty.module';
-import { CalPriceFactoryModule } from '../admin/product/price-cal-factory/cal-price-factory.module';
+import { CalPriceFactoryModule } from '../admin/product-section/product/price-cal-factory/cal-price-factory.module';
 
 @Module({
   imports: [

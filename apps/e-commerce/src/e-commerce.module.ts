@@ -4,7 +4,7 @@ import {
   Module,
   NestModule,
 } from '@nestjs/common';
-import { ProductModule as AdminProductModule } from './admin/product/product.module';
+import { ProductModule as AdminProductModule } from './admin/product-section/product/product.module';
 import { LoginModule } from './user/login/login.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { BrandModule } from './brand/brand.module';
@@ -16,7 +16,7 @@ import { ProvinceModule } from './province/province.module';
 import { CityModule } from './city/city.module';
 import { NeighborhoodModule } from './neighborhood/neighborhood.module';
 import { AddressModule } from './user/address/address.module';
-import { ProductPhotoModule } from './product-photo/product-photo.module';
+import { ProductPhotoModule } from './admin/product-section/product-photo/product-photo.module';
 import { ProductImageRemovalModule } from './product-image-removal/product-image-removal.module';
 import { ProductImageRemovalService } from './product-image-removal/product-image-removal.service';
 import { AdminVendorModule } from './admin/vendor/admin-vendor.module';
@@ -67,8 +67,8 @@ import { InventoryReportModule } from './report/inventory/inventory-report.modul
 import { InventoryStatusModule } from './admin/inventory-status/inventory-status.module';
 import { EntityTypeFactorModule } from './admin/additional-entity-type-section/entity-type-factor/entity-type-factor.module';
 import { ProductCommentModule } from './product-comment/product-comment.module';
-import { AdminProductCommentModule } from './admin/product-comment/product-comment.module';
-import { ProductCommentStatusModule } from './admin/product-comment-status/product-comment-status.module';
+import { AdminProductCommentModule } from './admin/product-section/product-comment/product-comment.module';
+import { ProductCommentStatusModule } from './admin/product-section/product-comment-status/product-comment-status.module';
 import { OrderStatusModule } from './admin/order-section/order-status/order-status.module';
 import { OrderShipmentWayModule } from './admin/order-section/order-shipmentway/order-shipmentway.module';
 import { AdminAddressModule } from './admin/address/address.module';
@@ -86,7 +86,7 @@ import { EntityTypeSortModule } from './admin/home-page-section/entity-type-sort
 import { HomePhotoModule } from './home-photo/home-photo.module';
 import { HomePageModule } from './home/home.module';
 import { ProcessHomeRunnerService } from './home/process-home-runner.service';
-import { ProductVideoModule } from './product-video/product-video.module';
+import { ProductVideoModule } from './admin/product-section/product-video/product-video.module';
 import { ProductVideoRemovalService } from './product-video-removal/product-video-removal.service';
 import { ProductFavoriteModule } from './user/product-favorite/product-favorite.module';
 import { ProductVideoRemovalModule } from './product-video-removal/product-video-removal.module';
@@ -98,8 +98,8 @@ import { CustomerCustomizeMoudle } from './customer-customize/customer-customize
 import { GoldModule } from './customer-customize/gold/gold.module';
 import { FactorDiscountModule } from './admin/discount-section/factor-discount/factor-discount.module';
 import { RetrievePriceRunnerService } from './customer-customize/gold/retrieve-price-job/services';
-import { SelectedProductModule } from './admin/selected-product/selected-product.module';
-import { SelectedProductItemModule } from './admin/selected-product-items/selected-product-item.module';
+import { SelectedProductModule } from './admin/product-section/selected-product/selected-product.module';
+import { SelectedProductItemModule } from './admin/product-section/selected-product-items/selected-product-item.module';
 import { UserSelectedProductModule } from './user/selected-product/selected-product.module';
 import { ClientVendorModule } from './client/vendor/client-vendor.module';
 import { AdminLinkedEntityTypeBrandModule } from './admin/additional-entity-type-section/linked-entity-type-brand/linked-entity-type-brand.module';

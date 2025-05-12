@@ -16,7 +16,7 @@ import { InjectMapper } from 'automapper-nestjs';
 import { Mapper } from 'automapper-core';
 import * as _ from 'lodash';
 import { EntityTypeService } from '@rahino/eav/admin/entity-type/entity-type.service';
-import { ProductService } from '../../product/product.service';
+import { ProductService } from '../../product-section/product/product.service';
 import { UserInventoryService } from '@rahino/ecommerce/user/inventory/user-inventory.service';
 import { ECDiscountConditionType } from '@rahino/localdatabase/models';
 
