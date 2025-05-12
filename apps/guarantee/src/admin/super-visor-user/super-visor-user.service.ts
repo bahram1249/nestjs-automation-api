@@ -47,6 +47,7 @@ export class SuperVisorUserService {
             'lastname',
             'phoneNumber',
             'username',
+            'nationalCode',
           ],
         },
       ])
@@ -101,6 +102,7 @@ export class SuperVisorUserService {
               'lastname',
               'phoneNumber',
               'username',
+              'nationalCode',
             ],
           },
         ])
@@ -247,6 +249,7 @@ export class SuperVisorUserService {
     const user = await this.userRepository.findOne(
       new QueryOptionsBuilder()
         .filter({ phoneNumber: dto.phoneNumber })
+        .transaction(transaction)
         .build(),
     );
 
