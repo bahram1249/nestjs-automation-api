@@ -1,8 +1,3 @@
-
-
-
-
-
 -- ec-order-status-Data-v1
 IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ec-order-status-Data-v1' 
 			)
@@ -2812,3 +2807,4 @@ BEGIN
 END
 
 GO
+

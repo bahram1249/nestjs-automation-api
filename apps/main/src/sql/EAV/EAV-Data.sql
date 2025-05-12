@@ -1,6 +1,3 @@
-
-
-
 -- eav
 -- attributetypes
 IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'eav-attributetypes-Data-v1' 
