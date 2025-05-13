@@ -177,7 +177,10 @@ export class SuperVisorUserService {
     });
 
     const item = await this.repository.findOne(
-      new QueryOptionsBuilder().filter({ id: id }).build(),
+      new QueryOptionsBuilder()
+        .include([{ model: User, as: 'user' }])
+        .filter({ id: id })
+        .build(),
     );
 
     if (!item) {
