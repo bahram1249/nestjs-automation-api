@@ -40,7 +40,10 @@ export class NotificationSenderForNewIncomingCartableRequestActionService
           .filter({ roleId: dto.requestState.roleId })
           .build(),
       );
-      await this.sendNotificationToOrganizationUsers(organizationUsers);
+      await this.sendNotificationToOrganizationUsers(
+        dto.request.id,
+        organizationUsers,
+      );
     } else if (dto.requestState.roleId != null) {
       const userRoles = await await this.userRoleRepository.findAll(
         new QueryOptionsBuilder()
@@ -53,7 +56,7 @@ export class NotificationSenderForNewIncomingCartableRequestActionService
           .filter({ roleId: dto.requestState.roleId })
           .build(),
       );
-      await this.sendNotificationToUserRoles(userRoles);
+      await this.sendNotificationToUserRoles(dto.request.id, userRoles);
     } else if (dto.requestState.userId != null) {
       const user = await this.userRepository.findOne(
         new QueryOptionsBuilder()
@@ -61,25 +64,29 @@ export class NotificationSenderForNewIncomingCartableRequestActionService
           .filter({ id: dto.requestState.userId })
           .build(),
       );
-      await this.sendNotification(user);
+      await this.sendNotification(dto.request.id, user);
     }
   }
 
   private async sendNotificationToOrganizationUsers(
+    requestId: bigint,
     bpmnOrganizationUsers: BPMNOrganizationUser[],
   ) {
     for (const bpmnOrganizationUser of bpmnOrganizationUsers) {
-      await this.sendNotification(bpmnOrganizationUser.user);
+      await this.sendNotification(requestId, bpmnOrganizationUser.user);
     }
   }
 
-  private async sendNotificationToUserRoles(userRoles: UserRole[]) {
+  private async sendNotificationToUserRoles(
+    requestId: bigint,
+    userRoles: UserRole[],
+  ) {
     for (const userRole of userRoles) {
-      await this.sendNotification(userRole.user);
+      await this.sendNotification(requestId, userRole.user);
     }
   }
 
-  private async sendNotification(user: User) {
+  private async sendNotification(requestId: bigint, user: User) {
     await this.newIncomingCartableRequestSmsSenderQueue.add(
       'send-incoming-cartable-request-sms',
       {
@@ -87,6 +94,7 @@ export class NotificationSenderForNewIncomingCartableRequestActionService
         firstname: user.firstname,
         lastname: user.lastname,
         phoneNumber: user.phoneNumber,
+        requestId: requestId,
       },
     );
   }
