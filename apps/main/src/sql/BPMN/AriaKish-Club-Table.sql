@@ -2133,7 +2133,7 @@ IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'gs-points-v1'
 BEGIN
 	
 	CREATE TABLE GSPoints(
-		id 							bigint identity(1,1)		PRIMARY KEY,
+		id 							bigint 						PRIMARY KEY,
 		title						nvarchar(256)				NOT NULL,
 		[point]						decimal(5,2)				NOT NULL,
 		[createdAt]					datetimeoffset				NOT NULL,

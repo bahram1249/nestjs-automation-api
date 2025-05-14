@@ -4,7 +4,7 @@ import { Table, Model, Column, DataType } from 'sequelize-typescript';
 export class GSPoint extends Model {
   @Column({
     type: DataType.BIGINT,
-    autoIncrement: true,
+    autoIncrement: false,
     primaryKey: true,
   })
   id: bigint;

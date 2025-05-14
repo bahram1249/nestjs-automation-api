@@ -90,6 +90,7 @@ import { AdminPreRegistrationOrganizationModule } from './admin/pre-registration
 import { IncomeReportModule } from './report/income-report/income-report.module';
 import { ClientSupplierStateRequestSmsSenderModule } from './job/client-supplier-state-request-sms-sender';
 import { ClientTechnicalStateRequestSmsSenderModule } from './job/client-technical-state-request-sms-sender';
+import { UserPointModule } from './client/user-point';
 
 @Module({
   imports: [
@@ -203,6 +204,8 @@ import { ClientTechnicalStateRequestSmsSenderModule } from './job/client-technic
 
     AdminPreRegistrationOrganizationModule,
     IncomeReportModule,
+
+    UserPointModule,
   ],
 })
 export class GSModule implements NestModule {
