@@ -8,6 +8,8 @@ import { UpdateRequestFactorToSucessActionModule } from './update-request-factor
 import { RemainingTransactionInCashActionModule } from './remaining-transaction-in-cash-action';
 import { UpdateRequestMandatoryAttendanceActionModule } from './update-request-mandatory-attendance-action';
 import { ResetFactorActionModule } from './reset-factor-action';
+import { PointInStartRequestActionModule } from './point-in-start-action';
+import { PointInSurveyRequestActionModule } from './point-in-survey-action';
 
 @Module({
   imports: [
@@ -20,6 +22,8 @@ import { ResetFactorActionModule } from './reset-factor-action';
     RemainingTransactionInCashActionModule,
     UpdateRequestMandatoryAttendanceActionModule,
     ResetFactorActionModule,
+    PointInStartRequestActionModule,
+    PointInSurveyRequestActionModule,
   ],
   exports: [
     SampleActionModule,
@@ -31,6 +35,8 @@ import { ResetFactorActionModule } from './reset-factor-action';
     RemainingTransactionInCashActionModule,
     UpdateRequestMandatoryAttendanceActionModule,
     ResetFactorActionModule,
+    PointInStartRequestActionModule,
+    PointInSurveyRequestActionModule,
   ],
 })
 export class DynamicGuaranteeActionModule {}

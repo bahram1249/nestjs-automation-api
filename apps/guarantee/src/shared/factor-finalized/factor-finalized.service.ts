@@ -7,6 +7,8 @@ import {
   GSFactorAdditionalPackage,
   GSFactorVipBundle,
   GSGuarantee,
+  GSPoint,
+  GSUserPoint,
   GSVipBundleType,
 } from '@rahino/localdatabase/models';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
@@ -23,6 +25,7 @@ import { GSProviderEnum } from '../provider';
 import { GSGuaranteeTypeEnum } from '../gurantee-type';
 import { GSGuaranteeConfirmStatus } from '../guarantee-confirm-status';
 import { RialPriceService } from '../rial-price';
+import { GSPointEnum } from '../gs-point';
 
 @Injectable()
 export class FactorFinalizedService {
@@ -39,6 +42,10 @@ export class FactorFinalizedService {
     private readonly factorVipBundleRepository: typeof GSFactorVipBundle,
     @InjectModel(GSGuarantee)
     private readonly guaranteeRepository: typeof GSGuarantee,
+    @InjectModel(GSPoint)
+    private readonly pointRepository: typeof GSPoint,
+    @InjectModel(GSUserPoint)
+    private readonly userPointRepository: typeof GSUserPoint,
     private readonly traverseService: TraverseService,
 
     private readonly rialPriceService: RialPriceService,
@@ -57,7 +64,8 @@ export class FactorFinalizedService {
       [GSFactorTypeEnum.PayRequestFactor]: () => this.traverse(user, factor),
       [GSFactorTypeEnum.BuyAdditionalPackage]: () =>
         this.additionalPackageToGuarantee(factor),
-      [GSFactorTypeEnum.BuyVipCard]: () => this.generateVipCard(factor),
+      [GSFactorTypeEnum.BuyVipCard]: () =>
+        this.generateVipCardAndAddPointToUser(factor),
     };
 
     const strategy = factorStrategies[factor.factorTypeId];
@@ -70,6 +78,27 @@ export class FactorFinalizedService {
     factor.factorStatusId = GSFactorStatusEnum.Paid;
     factor.settlementDate = new Date();
     await factor.save();
+  }
+
+  async generateVipCardAndAddPointToUser(factor: GSFactor) {
+    await this.generateVipCard(factor);
+    await this.addPointToUser(factor);
+  }
+
+  async addPointToUser(factor: GSFactor) {
+    const point = await this.pointRepository.findOne(
+      new QueryOptionsBuilder()
+        .filter({ id: GSPointEnum.POINT_IN_BuyVIPCard })
+        .build(),
+    );
+
+    if (point) {
+      await this.userPointRepository.create({
+        userId: factor.userId,
+        pointId: point.id,
+        pointScore: point.point,
+      });
+    }
   }
 
   async generateVipCard(factor: GSFactor) {

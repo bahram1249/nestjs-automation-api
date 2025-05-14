@@ -8,6 +8,8 @@ import {
   GSFactorAdditionalPackage,
   GSFactorVipBundle,
   GSGuarantee,
+  GSPoint,
+  GSUserPoint,
 } from '@rahino/localdatabase/models';
 import { TraverseModule } from '@rahino/bpmn/modules/traverse/traverse.module';
 import { GuaranteeTraverseModule } from '@rahino/guarantee/cartable/guarantee-traverse/guarantee-traverse.module';
@@ -23,6 +25,8 @@ import { RialPriceModule } from '../rial-price';
       GSAssignedGuarantee,
       GSFactorVipBundle,
       GSGuarantee,
+      GSPoint,
+      GSUserPoint,
     ]),
     TraverseModule,
     GuaranteeTraverseModule,

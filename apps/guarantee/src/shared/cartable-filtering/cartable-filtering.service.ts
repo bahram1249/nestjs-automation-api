@@ -286,7 +286,13 @@ export class SharedCartableFilteringService {
             as: 'productType',
           },
           {
-            attributes: ['id', 'firstname', 'lastname', 'nationalCode'],
+            attributes: [
+              'id',
+              'firstname',
+              'lastname',
+              'nationalCode',
+              'phoneNumber',
+            ],
             model: User,
             as: 'user',
             required: true,
