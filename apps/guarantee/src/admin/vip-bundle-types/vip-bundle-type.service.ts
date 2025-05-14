@@ -211,7 +211,11 @@ export class VipBundleTypeService {
         .filter({ id: entityId })
         .filter(
           Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('GSVipBundle.isDeleted'), 0),
+            Sequelize.fn(
+              'isnull',
+              Sequelize.col('GSVipBundleType.isDeleted'),
+              0,
+            ),
             {
               [Op.eq]: 0,
             },
