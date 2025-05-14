@@ -55,7 +55,7 @@ export class TrackingRequestController {
 
   @ApiOperation({ description: 'get current states of request' })
   @CheckPermission({ permissionSymbol: 'gs.admin.trackingrequests.getall' })
-  @Get('/')
+  @Get('/currentState')
   @ApiQuery({
     name: 'filter',
     type: RequestCurrentStateFilterDto,
