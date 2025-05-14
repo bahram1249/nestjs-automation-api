@@ -20,7 +20,7 @@ export class UserPointService {
   async totalScore(user: User) {
     const point = await this.knex('GSUserPoints')
       .select(this.knex.raw('SUM(GSUserPoints.pointScore) as pointScore'))
-      .where('ECOrders.GSUserPoints', '==', `${user.id}`)
+      .where('ECOrders.GSUserPoints', '=', `${user.id}`)
       .first();
 
     const score = point ? point['pointScore'] : 0;
