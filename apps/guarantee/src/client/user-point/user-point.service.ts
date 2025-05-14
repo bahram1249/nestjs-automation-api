@@ -23,7 +23,7 @@ export class UserPointService {
       .where('GSUserPoints.userId', '=', `${user.id}`)
       .first();
 
-    const score = point ? point['pointScore'] : 0;
+    const score = point['pointScore'] ? point['pointScore'] : 0;
 
     return {
       result: score,
