@@ -1287,7 +1287,18 @@ IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'gs-factors-v9'
 BEGIN
 
 	ALTER TABLE GSFactors
-        Add representativeSharePercent decimal(10,2) null
+        Add representativeSharePercent decimal(10,2) null,
+			sumOfSolutionIncludeWarranty bigint null,
+			sumOfSolutionOutOfWarranty bigint null,
+			sumOfPartIncludeWarranty bigint null,
+			sumOfPartOutOfWarranty bigint null,
+			atLeastPayFromCustomerForOutOfWarranty bigint null,
+			givenCashPayment bigint null,
+			extraCashPaymentForUnavailableVip bigint null,
+			organizationToCompany bigint null,
+			companyToOrganization bigint null,
+			sumOfOrganizationToCompany bigint null,
+			sumOfCompanyToOrganization bigint null
 
 	INSERT INTO Migrations(version, createdAt, updatedAt)
 	SELECT 'gs-factors-v9', GETDATE(), GETDATE()
@@ -2107,6 +2118,59 @@ BEGIN
 
 	INSERT INTO Migrations(version, createdAt, updatedAt)
 	SELECT 'gs-preregistration-organization-v2', GETDATE(), GETDATE()
+END
+
+GO
+
+
+-- gs-porints-v1
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'gs-points-v1'
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings
+		WHERE ([key] = 'CUSTOMER_NAME' AND [value] IN ('AriaKish'))
+		)
+BEGIN
+	
+	CREATE TABLE GSPoints(
+		id 							bigint identity(1,1)		PRIMARY KEY,
+		title						nvarchar(256)				NOT NULL,
+		[point]						decimal(5,2)				NOT NULL,
+		[createdAt]					datetimeoffset				NOT NULL,
+		[updatedAt]					datetimeoffset				NOT NULL
+	)
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'gs-points-v1', GETDATE(), GETDATE()
+END
+
+GO
+
+
+-- gs-userpoints-v1
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'gs-userpoints-v1'
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings
+		WHERE ([key] = 'CUSTOMER_NAME' AND [value] IN ('AriaKish'))
+		)
+BEGIN
+	
+	CREATE TABLE GSUserPoints(
+		id 							bigint identity(1,1)		PRIMARY KEY,
+		pointId						bigint						NOT NULL
+			CONSTRAINT FK_UserPoints_PointId
+				FOREIGN KEY REFERENCES GSPoints(id),
+		userId						bigint						NOT NULL
+			CONSTRAINT FK_UserPoints_UserId
+				FOREIGN KEY REFERENCES Users(id),
+		[pointScore]						decimal(10,2)				NOT NULL,
+		[createdAt]					datetimeoffset				NOT NULL,
+		[updatedAt]					datetimeoffset				NOT NULL
+	)
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'gs-userpoints-v1', GETDATE(), GETDATE()
 END
 
 GO
