@@ -31,8 +31,6 @@ import { ConfigService } from '@nestjs/config';
     ThumbnailModule.registerAsync({
       inject: [ConfigService],
       useFactory: (config: ConfigService) => ({
-        height: 1980,
-        width: 1280,
         resizeOptions: {
           withoutEnlargement: false,
           withoutReduction: true,
