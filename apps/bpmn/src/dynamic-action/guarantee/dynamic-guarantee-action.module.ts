@@ -11,6 +11,7 @@ import { ResetFactorActionModule } from './reset-factor-action';
 import { PointInStartRequestActionModule } from './point-in-start-action';
 import { PointInSurveyRequestActionModule } from './point-in-survey-action';
 import { NotificationSenderForClientOnlinePaymentRequestActionModule } from './notification-sender-for-client-online-payment-request-action';
+import { NotificationSenderForClientSurveyRequestActionModule } from './notification-sender-for-client-survey-request-action';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { NotificationSenderForClientOnlinePaymentRequestActionModule } from './n
     PointInStartRequestActionModule,
     PointInSurveyRequestActionModule,
     NotificationSenderForClientOnlinePaymentRequestActionModule,
+    NotificationSenderForClientSurveyRequestActionModule,
   ],
   exports: [
     SampleActionModule,
@@ -40,6 +42,7 @@ import { NotificationSenderForClientOnlinePaymentRequestActionModule } from './n
     PointInStartRequestActionModule,
     PointInSurveyRequestActionModule,
     NotificationSenderForClientOnlinePaymentRequestActionModule,
+    NotificationSenderForClientSurveyRequestActionModule,
   ],
 })
 export class DynamicGuaranteeActionModule {}

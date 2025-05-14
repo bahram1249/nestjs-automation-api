@@ -91,6 +91,8 @@ import { IncomeReportModule } from './report/income-report/income-report.module'
 import { ClientSupplierStateRequestSmsSenderModule } from './job/client-supplier-state-request-sms-sender';
 import { ClientTechnicalStateRequestSmsSenderModule } from './job/client-technical-state-request-sms-sender';
 import { UserPointModule } from './client/user-point';
+import { ClientOnlinePaymentRequestSmsSenderModule } from './job/client-online-payment-request-sms-sender';
+import { ClientSurveyRequestSmsSenderModule } from './job/client-online-survey-request-sms-sender';
 
 @Module({
   imports: [
@@ -159,6 +161,8 @@ import { UserPointModule } from './client/user-point';
     VipGeneratorJobModule,
     ClientSupplierStateRequestSmsSenderModule,
     ClientTechnicalStateRequestSmsSenderModule,
+    ClientOnlinePaymentRequestSmsSenderModule,
+    ClientSurveyRequestSmsSenderModule,
 
     // test
     CartableAutoTraverseModule,
