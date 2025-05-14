@@ -32,6 +32,7 @@ export class NotificationSenderForClienSupplierStateRequestActionService
           },
         ])
         .filter({ id: dto.request.id })
+        .transaction(dto.transaction)
         .build(),
     );
 

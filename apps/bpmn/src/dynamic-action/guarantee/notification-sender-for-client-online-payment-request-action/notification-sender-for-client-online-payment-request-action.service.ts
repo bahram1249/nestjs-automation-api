@@ -31,6 +31,7 @@ export class NotificationSenderForClientOnlinePaymentRequestActionService
             attributes: ['id', 'firstname', 'lastname', 'phoneNumber'],
           },
         ])
+        .transaction(dto.transaction)
         .filter({ id: dto.request.id })
         .build(),
     );
