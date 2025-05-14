@@ -3,7 +3,7 @@ import { SequelizeModule } from '@nestjs/sequelize';
 import { GSRequest } from '@rahino/localdatabase/models';
 import { BullModule } from '@nestjs/bullmq';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { NotificationSenderForClienTechnicalStateRequestActionService } from './notification-sender-for-client-technical-state-request-action.service';
+import { NotificationSenderForClientTechnicalStateRequestActionService } from './notification-sender-for-client-technical-state-request-action.service';
 import { CLIENT_TECHNICAL_STATE_REQUEST_SMS_SENDER_QUEUE } from '@rahino/guarantee/job/client-technical-state-request-sms-sender/constants';
 
 @Module({
@@ -26,8 +26,8 @@ import { CLIENT_TECHNICAL_STATE_REQUEST_SMS_SENDER_QUEUE } from '@rahino/guarant
   ],
   providers: [
     {
-      provide: 'NotificationSenderForClienTechnicalStateRequestActionService',
-      useClass: NotificationSenderForClienTechnicalStateRequestActionService,
+      provide: 'NotificationSenderForClientTechnicalStateRequestActionService',
+      useClass: NotificationSenderForClientTechnicalStateRequestActionService,
     },
   ],
 })

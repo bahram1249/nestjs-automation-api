@@ -10,7 +10,7 @@ import { Queue } from 'bullmq';
 import { CLIENT_TECHNICAL_STATE_REQUEST_SMS_SENDER_QUEUE } from '@rahino/guarantee/job/client-technical-state-request-sms-sender/constants';
 
 @Injectable()
-export class NotificationSenderForClienTechnicalStateRequestActionService
+export class NotificationSenderForClientTechnicalStateRequestActionService
   implements ActionServiceImp
 {
   constructor(
