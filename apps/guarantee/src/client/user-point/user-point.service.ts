@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { GetUserPointDto } from './dto';
 import { InjectModel } from '@nestjs/sequelize';
-import { GSUserPoint } from '@rahino/localdatabase/models';
+import { GSPoint, GSUserPoint } from '@rahino/localdatabase/models';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import * as _ from 'lodash';
 import { User } from '@rahino/database';
@@ -37,6 +37,7 @@ export class UserPointService {
     const count = await this.repository.count(query.build());
 
     query = query
+      .include([{ model: GSPoint, as: 'point', attributes: ['id', 'title'] }])
       .attributes([
         'id',
         'pointId',
