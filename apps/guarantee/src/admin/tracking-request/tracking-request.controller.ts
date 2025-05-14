@@ -20,6 +20,10 @@ import { GetUser, JwtGuard } from '@rahino/auth';
 import { TrackingRequestService } from './tracking-request.service';
 import { User } from '@rahino/database';
 import { GetTrackingRequestExternalDto } from './dto';
+import {
+  RequestCurrentStateFilterDto,
+  RequestCurrentStateOutputDto,
+} from '@rahino/guarantee/shared/cartable-filtering/dto';
 
 @ApiBearerAuth()
 @UseGuards(JwtGuard, PermissionGuard)
@@ -47,5 +51,22 @@ export class TrackingRequestController {
     @Query() filter: GetTrackingRequestExternalDto,
   ) {
     return await this.service.findAll(user, filter);
+  }
+
+  @ApiOperation({ description: 'get current states of request' })
+  @CheckPermission({ permissionSymbol: 'gs.admin.trackingrequests.getall' })
+  @Get('/')
+  @ApiQuery({
+    name: 'filter',
+    type: RequestCurrentStateFilterDto,
+    style: 'deepObject',
+    explode: true,
+  })
+  @HttpCode(HttpStatus.OK)
+  async findCurrentStates(
+    @GetUser() user: User,
+    @Query() filter: RequestCurrentStateFilterDto,
+  ): Promise<{ result: RequestCurrentStateOutputDto[] }> {
+    return await this.service.findCurrentStates(user, filter);
   }
 }

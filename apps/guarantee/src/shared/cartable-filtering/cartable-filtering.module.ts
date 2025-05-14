@@ -3,15 +3,23 @@ import { BPMNOrganizationUserModule } from '@rahino/bpmn/modules/organization-us
 
 import { SharedCartableFilteringService } from './cartable-filtering.service';
 import { SequelizeModule } from '@nestjs/sequelize';
-import { BPMNRequestState } from '@rahino/localdatabase/models';
+import {
+  BPMNOrganizationUser,
+  BPMNRequestState,
+} from '@rahino/localdatabase/models';
 import { RoleModule } from '@rahino/core/user/role/role.module';
+import { UserRole } from '@rahino/database';
 
 @Module({
   imports: [
     BPMNOrganizationUserModule,
     RoleModule,
 
-    SequelizeModule.forFeature([BPMNRequestState]),
+    SequelizeModule.forFeature([
+      BPMNRequestState,
+      BPMNOrganizationUser,
+      UserRole,
+    ]),
   ],
   providers: [SharedCartableFilteringService],
   exports: [SharedCartableFilteringService],

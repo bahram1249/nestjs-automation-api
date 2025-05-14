@@ -1,5 +1,9 @@
 import { Injectable } from '@nestjs/common';
-import { GetCartableDto } from '../../shared/cartable-filtering/dto';
+import {
+  GetCartableDto,
+  RequestCurrentStateFilterDto,
+  RequestCurrentStateOutputDto,
+} from '../../shared/cartable-filtering/dto';
 import * as _ from 'lodash';
 import { User } from '@rahino/database';
 import { SharedCartableFilteringService } from '@rahino/guarantee/shared/cartable-filtering/cartable-filtering.service';
@@ -21,6 +25,19 @@ export class TrackingRequestService {
     return {
       result: result,
       total: total,
+    };
+  }
+
+  async findCurrentStates(
+    user: User,
+    filter: RequestCurrentStateFilterDto,
+  ): Promise<{ result: RequestCurrentStateOutputDto[] }> {
+    const results = await this.sharedCartableFilteringService.findCurrentStates(
+      user,
+      filter,
+    );
+    return {
+      result: results,
     };
   }
 }

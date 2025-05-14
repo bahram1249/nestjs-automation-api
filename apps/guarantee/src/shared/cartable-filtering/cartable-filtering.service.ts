@@ -2,12 +2,14 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { OrganizationUserService } from '@rahino/bpmn/modules/organization-user/organization-user.service';
 
-import { User } from '@rahino/database';
+import { Role, User, UserRole } from '@rahino/database';
 import {
   BPMNActivity,
   BPMNNode,
   BPMNNodeCommand,
   BPMNNodeCommandType,
+  BPMNOrganization,
+  BPMNOrganizationUser,
   BPMNRequestState,
   GSAdditionalPackage,
   GSAddress,
@@ -24,7 +26,13 @@ import {
   GSShippingWay,
   GSVariant,
 } from '@rahino/localdatabase/models';
-import { CartableFindAllWithFilter, GetCartableDto } from './dto';
+import {
+  CartableFindAllWithFilter,
+  GetCartableDto,
+  RequestCurrentStateFilterDto,
+  RequestCurrentStateOutputDto,
+  RequestCurrentStateUserOutputDto,
+} from './dto';
 import { Op, Sequelize, WhereOptions } from 'sequelize';
 import { RoleService } from '@rahino/core/user/role/role.service';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
@@ -36,6 +44,10 @@ export class SharedCartableFilteringService {
   constructor(
     @InjectModel(BPMNRequestState)
     private readonly repository: typeof BPMNRequestState,
+    @InjectModel(BPMNOrganizationUser)
+    private readonly organizationUserRepository: typeof BPMNOrganizationUser,
+    @InjectModel(UserRole)
+    private readonly userRoleRepository: typeof UserRole,
     private readonly roleService: RoleService,
     private readonly organizationUserService: OrganizationUserService,
   ) {}
@@ -134,6 +146,86 @@ export class SharedCartableFilteringService {
       ],
     };
     return await this.findAllWithFilter(customFilter);
+  }
+
+  async findCurrentStates(
+    user: User,
+    filter: RequestCurrentStateFilterDto,
+  ): Promise<RequestCurrentStateOutputDto[]> {
+    const currentStates = await this.repository.findAll(
+      new QueryOptionsBuilder()
+        .include({ model: BPMNActivity, as: 'activity' })
+        .thenInclude({
+          model: User,
+          as: 'user',
+          attributes: ['id', 'firstname', 'lastname', 'phoneNumber'],
+        })
+        .thenInclude({ model: BPMNOrganization, as: 'organization' })
+        .thenInclude({ model: Role, as: 'role' })
+        .filter({ requestId: filter.requestId })
+        .build(),
+    );
+
+    let states = currentStates.map(
+      async (currentState): Promise<RequestCurrentStateOutputDto> => {
+        let users: RequestCurrentStateUserOutputDto[] = [];
+        if (currentState.userId != null) {
+          users.push({
+            id: currentState.user.id,
+            firstname: currentState.user.firstname,
+            lastname: currentState.user.lastname,
+            phoneNumber: currentState.user.phoneNumber,
+          });
+        } else if (
+          currentState.organizationId != null &&
+          currentState.roleId != null
+        ) {
+          const organizationUsers =
+            await this.organizationUserRepository.findAll(
+              new QueryOptionsBuilder()
+                .include({ model: User, as: 'user' })
+                .filter({ organizationId: currentState.organizationId })
+                .filter({ roleId: currentState.roleId })
+                .build(),
+            );
+          users.push(
+            ...organizationUsers.map(
+              (organizationUser): RequestCurrentStateUserOutputDto => ({
+                id: organizationUser.user.id,
+                firstname: organizationUser.user.firstname,
+                lastname: organizationUser.user.lastname,
+                phoneNumber: organizationUser.user.phoneNumber,
+              }),
+            ),
+          );
+        } else if (currentState.roleId) {
+          const userRoles = await this.userRoleRepository.findAll(
+            new QueryOptionsBuilder()
+              .include({ model: User, as: 'user' })
+              .filter({ roleId: currentState.roleId })
+              .build(),
+          );
+
+          users.push(
+            ...userRoles.map(
+              (userRole): RequestCurrentStateUserOutputDto => ({
+                id: userRole.user.id,
+                firstname: userRole.user.firstname,
+                lastname: userRole.user.lastname,
+                phoneNumber: userRole.user.phoneNumber,
+              }),
+            ),
+          );
+        }
+
+        return {
+          activityName: currentState.activity.name,
+          users: users,
+        };
+      },
+    );
+
+    return await Promise.all(states);
   }
 
   private async findAllWithFilter(filter: CartableFindAllWithFilter) {
