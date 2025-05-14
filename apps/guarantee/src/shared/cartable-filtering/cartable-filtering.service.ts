@@ -154,7 +154,7 @@ export class SharedCartableFilteringService {
   ): Promise<RequestCurrentStateOutputDto[]> {
     const currentStates = await this.repository.findAll(
       new QueryOptionsBuilder()
-        .include({ model: BPMNActivity, as: 'activity' })
+        .include([{ model: BPMNActivity, as: 'activity' }])
         .thenInclude({
           model: User,
           as: 'user',
@@ -183,7 +183,7 @@ export class SharedCartableFilteringService {
           const organizationUsers =
             await this.organizationUserRepository.findAll(
               new QueryOptionsBuilder()
-                .include({ model: User, as: 'user' })
+                .include([{ model: User, as: 'user' }])
                 .filter({ organizationId: currentState.organizationId })
                 .filter({ roleId: currentState.roleId })
                 .build(),
@@ -201,7 +201,7 @@ export class SharedCartableFilteringService {
         } else if (currentState.roleId) {
           const userRoles = await this.userRoleRepository.findAll(
             new QueryOptionsBuilder()
-              .include({ model: User, as: 'user' })
+              .include([{ model: User, as: 'user' }])
               .filter({ roleId: currentState.roleId })
               .build(),
           );
