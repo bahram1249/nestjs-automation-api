@@ -6,6 +6,7 @@ import {
   GSFactorService,
   GSFactorStatus,
   GSFactorType,
+  GSFactorVipBundle,
   GSGuaranteeOrganization,
   GSPaymentGateway,
   GSRequest,
@@ -13,6 +14,7 @@ import {
   GSSolution,
   GSTransaction,
   GSUnitPrice,
+  GSVipBundleType,
   GSWarrantyServiceType,
 } from '@rahino/localdatabase/models';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
@@ -71,6 +73,12 @@ export class GSSuccessFactorQueryBuilderService {
           },
         ],
         attributes: ['id', 'additionalPackageId', 'itemPrice', 'unitPriceId'],
+      })
+      .thenInclude({
+        model: GSFactorVipBundle,
+        as: 'factorVipBundles',
+        include: [{ model: GSVipBundleType, as: 'vipBundleType' }],
+        required: false,
       })
       .thenInclude({
         attributes: [

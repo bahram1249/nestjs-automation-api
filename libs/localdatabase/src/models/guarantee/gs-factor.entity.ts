@@ -19,6 +19,7 @@ import { GSFactorAdditionalPackage } from './gs-factor-additional-package.entity
 import { GSAdditionalPackage } from './gs-additional-package.entity';
 import { GSTransaction } from './gs-transaction.entity';
 import { GSFactorService } from './gs-factor-service.entity';
+import { GSFactorVipBundle } from './gs-factor-vip-bundle.entity';
 
 @Table({ tableName: 'GSFactors' })
 export class GSFactor extends Model {
@@ -156,6 +157,12 @@ export class GSFactor extends Model {
     foreignKey: 'factorId',
   })
   factorServices?: GSFactorService[];
+
+  @HasMany(() => GSFactorVipBundle, {
+    as: 'factorVipBundles',
+    foreignKey: 'factorId',
+  })
+  factorVipBundles?: GSFactorVipBundle[];
 
   @Column({
     type: DataType.BIGINT,

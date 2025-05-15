@@ -3,6 +3,7 @@ import {
   GSFactor,
   GSFactorAdditionalPackage,
   GSFactorService,
+  GSFactorVipBundle,
   GSTransaction,
 } from '@rahino/localdatabase/models';
 import { GSFactorTypeEnum } from '../factor-type';
@@ -30,6 +31,7 @@ export class GSSuccessFactorQueryBuilderMapper {
         factorItems = this.mapFactorServices(item.factorServices);
         break;
       case GSFactorTypeEnum.BuyVipCard:
+        factorItems = this.mapFactorVipBundles(item.factorVipBundles);
         break;
     }
     let transactions = this.mapTransactions(item.transactions);
@@ -49,6 +51,18 @@ export class GSSuccessFactorQueryBuilderMapper {
       fullName: item.user.firstname + ' ' + item.user.lastname,
       nationalCode: item.user.nationalCode,
     };
+  }
+
+  mapFactorVipBundles(
+    factorVipBundles: GSFactorVipBundle[],
+  ): GSFactorItemOutputDto[] {
+    return factorVipBundles.map(
+      (factorVipBundle): GSFactorItemOutputDto => ({
+        title: factorVipBundle.vipBundleType.title,
+        price: factorVipBundle.itemPrice,
+        qty: 1,
+      }),
+    );
   }
 
   mapAdditionalPackages(
