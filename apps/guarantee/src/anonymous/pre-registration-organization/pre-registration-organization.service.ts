@@ -103,7 +103,7 @@ export class PreRegistrationOrganizationService {
       preRegistrationOrganization.nationalAttachmentId = nationalAttachment.id;
 
       // create pre registration organization
-      await this.repository.create(
+      preRegistrationOrganization = await this.repository.create(
         _.omit(preRegistrationOrganization.toJSON(), ['id']),
         { transaction: transaction },
       );
