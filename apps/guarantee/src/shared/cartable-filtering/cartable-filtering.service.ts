@@ -37,6 +37,7 @@ import { Op, Sequelize, WhereOptions } from 'sequelize';
 import { RoleService } from '@rahino/core/user/role/role.service';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import { ActivityTypeEnum } from '@rahino/bpmn/modules/activity-type';
+import { GuaranteeStaticRoleEnum } from '../static-role/enum';
 
 @Injectable()
 export class SharedCartableFilteringService {
@@ -112,7 +113,7 @@ export class SharedCartableFilteringService {
     // supervisor role show all
     const hasSuperVisorRole = await this.roleService.isAccessToStaticRole(
       user.id,
-      this.superAdminStaticId,
+      GuaranteeStaticRoleEnum.SupervisorRole,
     );
 
     const hasSuperVisorRoleNum = Number(hasSuperVisorRole);
