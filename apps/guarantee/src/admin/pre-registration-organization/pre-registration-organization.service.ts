@@ -70,6 +70,7 @@ export class PreRegistrationOrganizationService {
         'confirmDate',
         'createdAt',
         'updatedAt',
+        'licenseCode',
       ])
       .include([
         {
@@ -147,6 +148,7 @@ export class PreRegistrationOrganizationService {
           'phoneNumber',
           'isCofirm',
           'confirmDate',
+          'licenseCode',
           'createdAt',
           'updatedAt',
         ])

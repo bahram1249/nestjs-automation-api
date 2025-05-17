@@ -9,6 +9,10 @@ export class PreRegistrationOrganizationDto {
   public title: string;
 
   @AutoMap()
+  @IsString()
+  public licenseCode: string;
+
+  @AutoMap()
   @IsDateString()
   public licenseDate: Date;
 

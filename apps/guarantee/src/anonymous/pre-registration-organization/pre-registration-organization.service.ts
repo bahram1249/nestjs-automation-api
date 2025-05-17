@@ -83,6 +83,7 @@ export class PreRegistrationOrganizationService {
       preRegistrationOrganization.phoneNumber = dto.user.phoneNumber;
       preRegistrationOrganization.addressId = address.result.id;
       preRegistrationOrganization.postalCode = address.result.postalCode;
+      preRegistrationOrganization.licenseCode = dto.licenseCode;
 
       licenseAttachment.attachmentTypeId = GSAttachmentTypeEnum.License;
       licenseAttachment.save({ transaction: transaction });
@@ -115,6 +116,7 @@ export class PreRegistrationOrganizationService {
 
     return {
       result: {
+        id: preRegistrationOrganization.id,
         message: this.localizationService.translate('core.success'),
       },
     };

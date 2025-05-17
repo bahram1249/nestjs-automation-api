@@ -131,4 +131,9 @@ export class GSPreRegistrationOrganization extends Model {
     allowNull: true,
   })
   confirmDate: Date;
+
+  @Column({
+    type: DataType.STRING,
+  })
+  licenseCode: string;
 }
