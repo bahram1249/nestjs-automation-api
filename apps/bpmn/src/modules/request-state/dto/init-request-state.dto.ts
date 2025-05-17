@@ -4,7 +4,7 @@ import { Transaction } from 'sequelize';
 export class InitRequestDto {
   request: BPMNRequest;
   processId: number;
-  userId?: number;
+  userId?: bigint;
   returnRequestStateId?: bigint;
   transaction?: Transaction;
 }

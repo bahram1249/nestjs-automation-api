@@ -93,6 +93,7 @@ import { ClientTechnicalStateRequestSmsSenderModule } from './job/client-technic
 import { UserPointModule } from './client/user-point';
 import { ClientOnlinePaymentRequestSmsSenderModule } from './job/client-online-payment-request-sms-sender';
 import { ClientSurveyRequestSmsSenderModule } from './job/client-online-survey-request-sms-sender';
+import { RevertRequestModule } from './cartable/revert-request';
 
 @Module({
   imports: [
@@ -210,6 +211,7 @@ import { ClientSurveyRequestSmsSenderModule } from './job/client-online-survey-r
     IncomeReportModule,
 
     UserPointModule,
+    RevertRequestModule,
   ],
 })
 export class GSModule implements NestModule {

@@ -4,6 +4,7 @@ import {
   BPMNOrganization,
   BPMNPROCESS,
   BPMNRequest,
+  BPMNRequestState,
 } from '@rahino/localdatabase/models';
 import { User } from '@rahino/database';
 import { InitRequestDto } from '@rahino/bpmn/modules/request/dto';
@@ -26,6 +27,8 @@ export class BPMNRequestService {
     private readonly organizationRepository: typeof BPMNOrganization,
     @InjectModel(User)
     private readonly userRepository: typeof User,
+    @InjectModel(BPMNRequestState)
+    private readonly requestStateRepository: typeof BPMNRequestState,
     private readonly traverseService: TraverseService,
     private readonly i18n: I18nService<I18nTranslations>,
     private readonly requestStateService: RequestStateService,
@@ -133,5 +136,38 @@ export class BPMNRequestService {
       throw new BadRequestException(error.message);
     }
     return request;
+  }
+
+  public async revertRequestToInit(
+    userId: bigint,
+    request: BPMNRequest,
+    transaction?: Transaction,
+  ) {
+    try {
+      await this.requestStateRepository.destroy({
+        where: {
+          requestId: request.id,
+        },
+        transaction: transaction,
+      });
+
+      const requestState = await this.requestStateService.initRequestState({
+        processId: request.processId,
+        request: request,
+        transaction: transaction,
+        userId: userId,
+      });
+
+      await this.traverseService.autoTraverse({
+        request: request,
+        requestState: requestState,
+        transaction: transaction,
+        description: 'بازگشت به عقب',
+        userExecuterId: userId,
+        executeBundle: uuidv4(),
+      });
+    } catch (error) {
+      throw new BadRequestException(error.message);
+    }
   }
 }

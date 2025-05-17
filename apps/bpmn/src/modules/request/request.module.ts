@@ -5,6 +5,7 @@ import {
   BPMNOrganization,
   BPMNPROCESS,
   BPMNRequest,
+  BPMNRequestState,
 } from '@rahino/localdatabase/models';
 import { User } from '@rahino/database';
 import { RequestStateModule } from '../request-state';
@@ -18,6 +19,7 @@ import { TraverseModule } from '../traverse/traverse.module';
       BPMNPROCESS,
       BPMNOrganization,
       User,
+      BPMNRequestState,
     ]),
     TraverseModule,
     RequestStateModule,
