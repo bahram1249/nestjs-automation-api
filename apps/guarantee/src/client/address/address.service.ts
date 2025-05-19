@@ -243,8 +243,8 @@ export class AddressService {
       
         SELECT 1 
         FROM GSProvinces
-        WHERE geographyPolygon.STContains(@Point) = 1 OR geographyPolygon is null
-        AND id = 8
+        WHERE geographyPolygon.STContains(@Point) = 1 OR geographyPolygon is null or (@Point.STDistance(geographyPolygon) / 1000 <= 60)
+        AND id = ${dto.provinceId}
       
       `,
     );
