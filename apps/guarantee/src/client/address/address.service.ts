@@ -160,7 +160,7 @@ export class AddressService {
 
   async create(dto: AddressDto, user?: User, transaction?: Transaction) {
     if (dto.neighborhoodId == 0) {
-      dto.neighborhoodId = 0;
+      dto.neighborhoodId = null;
     }
 
     const province = await this.provinceRepository.findOne(
@@ -292,7 +292,7 @@ export class AddressService {
     transaction?: Transaction,
   ) {
     if (dto.neighborhoodId == 0) {
-      dto.neighborhoodId = 0;
+      dto.neighborhoodId = null;
     }
 
     const item = await this.repository.findOne(
