@@ -4,7 +4,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { AddressDto, GetAddressDto } from './dto';
-import { InjectModel } from '@nestjs/sequelize';
+import { InjectConnection, InjectModel } from '@nestjs/sequelize';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import { Op, Sequelize, Transaction } from 'sequelize';
 import { InjectMapper } from 'automapper-nestjs';
@@ -19,6 +19,7 @@ import {
 import { User } from '@rahino/database';
 import { I18nTranslations } from 'apps/main/src/generated/i18n.generated';
 import { I18nContext, I18nService } from 'nestjs-i18n';
+import { LocalizationService } from 'apps/main/src/common/localization';
 
 @Injectable()
 export class AddressService {
@@ -30,6 +31,9 @@ export class AddressService {
     private neighborhoodRepository: typeof GSNeighborhood,
     @InjectMapper() private readonly mapper: Mapper,
     private readonly i18n: I18nService<I18nTranslations>,
+    @InjectConnection()
+    private readonly sequelize: Sequelize,
+    private readonly localizationService: LocalizationService,
   ) {}
 
   async findAll(user: User, filter: GetAddressDto) {
@@ -232,6 +236,25 @@ export class AddressService {
           }),
         );
       }
+    }
+
+    const provinceValidPoint = await this.sequelize.query(
+      `DECLARE @Point geography = geography::Point(${dto.latitude}, ${dto.longitude}, 4326)
+      
+        SELECT 1 
+        FROM GSProvinces
+        WHERE geographyPolygon.STContains(@Point) = 1 OR geographyPolygon is null
+        AND id = 8
+      
+      `,
+    );
+
+    if (provinceValidPoint[0][0] != null) {
+      throw new BadRequestException(
+        this.localizationService.translate(
+          'guarantee.point_in_this_province_not_valid',
+        ),
+      );
     }
 
     const mappedItem = this.mapper.map(dto, AddressDto, GSAddress);

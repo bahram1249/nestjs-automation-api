@@ -9,10 +9,13 @@ import {
   GSNeighborhood,
   GSProvince,
 } from '@rahino/localdatabase/models';
+import { LocalizationModule } from 'apps/main/src/common/localization';
 
 @Module({
   imports: [
+    SequelizeModule,
     SequelizeModule.forFeature([GSAddress, GSProvince, GSCity, GSNeighborhood]),
+    LocalizationModule,
   ],
   controllers: [AddressController],
   providers: [AddressService, AddressProfile],

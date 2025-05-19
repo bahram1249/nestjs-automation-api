@@ -1,6 +1,6 @@
-import { Table, Column, Model, DataType } from "sequelize-typescript";
+import { Table, Column, Model, DataType } from 'sequelize-typescript';
 
-@Table({ tableName: "GSProvinces" })
+@Table({ tableName: 'GSProvinces' })
 export class GSProvince extends Model {
   @Column({
     type: DataType.INTEGER,
@@ -25,4 +25,10 @@ export class GSProvince extends Model {
     allowNull: true,
   })
   order?: number;
+
+  @Column({
+    type: DataType.GEOGRAPHY('POLYGON'),
+    allowNull: false,
+  })
+  geographyPolygon: any;
 }

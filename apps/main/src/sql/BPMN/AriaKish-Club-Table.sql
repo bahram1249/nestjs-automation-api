@@ -511,6 +511,25 @@ END
 
 GO
 
+-- gs-provinces
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'gs-provinces-v2' 
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'CUSTOMER_NAME' AND [value] IN ('AriaKish'))
+		)
+BEGIN
+
+	ALTER TABLE GSProvinces
+		add geographyPolygon geography null
+
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'gs-provinces-v2', GETDATE(), GETDATE()
+END
+
+GO
+
 -- gs-cities
 IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'gs-cities-v1' 
 			)
