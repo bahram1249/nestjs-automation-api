@@ -249,7 +249,7 @@ export class AddressService {
       `,
     );
 
-    if (provinceValidPoint[0][0] != null) {
+    if (provinceValidPoint[0][0] == null) {
       throw new BadRequestException(
         this.localizationService.translate(
           'guarantee.point_in_this_province_not_valid',
