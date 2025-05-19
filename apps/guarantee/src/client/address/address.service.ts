@@ -159,6 +159,10 @@ export class AddressService {
   }
 
   async create(dto: AddressDto, user?: User, transaction?: Transaction) {
+    if (dto.neighborhoodId == 0) {
+      dto.neighborhoodId = 0;
+    }
+
     const province = await this.provinceRepository.findOne(
       new QueryOptionsBuilder()
         .filter({ id: dto.provinceId })
@@ -287,6 +291,10 @@ export class AddressService {
     dto: AddressDto,
     transaction?: Transaction,
   ) {
+    if (dto.neighborhoodId == 0) {
+      dto.neighborhoodId = 0;
+    }
+
     const item = await this.repository.findOne(
       new QueryOptionsBuilder()
         .filter({
