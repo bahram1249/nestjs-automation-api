@@ -37,7 +37,14 @@ export class DecreaseInventoryService {
     const payment = await this.paymentRepository.findOne(
       new QueryOptionsBuilder()
         .filter({ id: paymentId })
-        .filter({ paymentStatusId: PaymentStatusEnum.WaitingForPayment })
+        .filter({
+          paymentStatusId: {
+            [Op.in]: [
+              PaymentStatusEnum.WaitingForPayment,
+              PaymentStatusEnum.SuccessPayment,
+            ],
+          },
+        })
         .filter({ paymentTypeId: PaymentTypeEnum.ForOrder })
         .filter(
           Sequelize.where(
