@@ -42,6 +42,7 @@ export class DecreaseInventoryService {
             [Op.in]: [
               PaymentStatusEnum.WaitingForPayment,
               PaymentStatusEnum.SuccessPayment,
+              PaymentStatusEnum.DecreaseAmountOfWallet,
             ],
           },
         })
