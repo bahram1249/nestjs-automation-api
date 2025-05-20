@@ -83,8 +83,8 @@ export class WalletService implements PayInterface {
 
     // toman
 
-    if (wallet.currentAmount >= totalPrice) {
-      const currentWalletAmount = wallet.currentAmount - BigInt(totalPrice);
+    if (Number(wallet.currentAmount) >= totalPrice) {
+      const currentWalletAmount = Number(wallet.currentAmount) - totalPrice;
       await this.walletRepository.update(
         { currentAmount: currentWalletAmount },
         {
@@ -177,8 +177,10 @@ export class WalletService implements PayInterface {
         // update current wallet of amount
         await this.walletRepository.update(
           {
-            suspendedAmount: wallet.suspendedAmount + wallet.currentAmount,
-            currentAmount: wallet.currentAmount - wallet.currentAmount,
+            suspendedAmount:
+              Number(wallet.suspendedAmount) + Number(wallet.currentAmount),
+            currentAmount:
+              Number(wallet.currentAmount) - Number(wallet.currentAmount),
           },
           {
             where: {
