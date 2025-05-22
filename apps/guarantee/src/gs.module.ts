@@ -98,6 +98,7 @@ import { AnonymousSubscriptionModule } from './anonymous/subscription';
 import { SubscriptionSmsSenderModule } from './job/subscription-sms-sender';
 import { GSAdminSubscriptionModule } from './admin/subscription';
 import { PreRegistrationInitSmsSenderModule } from './job/pre-registration-init-sms-sender';
+import { PreRegistrationSucessSmsSenderModule } from './job/pre-registration-sucess-sms-sender';
 
 @Module({
   imports: [
@@ -170,6 +171,7 @@ import { PreRegistrationInitSmsSenderModule } from './job/pre-registration-init-
     ClientSurveyRequestSmsSenderModule,
     SubscriptionSmsSenderModule,
     PreRegistrationInitSmsSenderModule,
+    PreRegistrationSucessSmsSenderModule,
 
     // test
     CartableAutoTraverseModule,
