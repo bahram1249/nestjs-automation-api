@@ -97,6 +97,7 @@ import { RevertRequestModule } from './cartable/revert-request';
 import { AnonymousSubscriptionModule } from './anonymous/subscription';
 import { SubscriptionSmsSenderModule } from './job/subscription-sms-sender';
 import { GSAdminSubscriptionModule } from './admin/subscription';
+import { PreRegistrationInitSmsSenderModule } from './job/pre-registration-init-sms-sender';
 
 @Module({
   imports: [
@@ -168,6 +169,7 @@ import { GSAdminSubscriptionModule } from './admin/subscription';
     ClientOnlinePaymentRequestSmsSenderModule,
     ClientSurveyRequestSmsSenderModule,
     SubscriptionSmsSenderModule,
+    PreRegistrationInitSmsSenderModule,
 
     // test
     CartableAutoTraverseModule,
