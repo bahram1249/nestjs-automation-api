@@ -96,6 +96,7 @@ import { ClientSurveyRequestSmsSenderModule } from './job/client-online-survey-r
 import { RevertRequestModule } from './cartable/revert-request';
 import { AnonymousSubscriptionModule } from './anonymous/subscription';
 import { SubscriptionSmsSenderModule } from './job/subscription-sms-sender';
+import { GSAdminSubscriptionModule } from './admin/subscription';
 
 @Module({
   imports: [
@@ -217,6 +218,7 @@ import { SubscriptionSmsSenderModule } from './job/subscription-sms-sender';
     RevertRequestModule,
 
     AnonymousSubscriptionModule,
+    GSAdminSubscriptionModule,
   ],
 })
 export class GSModule implements NestModule {
