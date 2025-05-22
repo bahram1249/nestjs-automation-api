@@ -63,7 +63,9 @@ export class AnonymousOrganizationService {
           },
         ),
       )
-
+      .filterIf(filter.provinceId != null, {
+        '$address.provinceId$': filter.provinceId,
+      })
       .filter(
         Sequelize.literal(
           `EXISTS (
