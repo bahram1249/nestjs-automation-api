@@ -95,6 +95,7 @@ import { ClientOnlinePaymentRequestSmsSenderModule } from './job/client-online-p
 import { ClientSurveyRequestSmsSenderModule } from './job/client-online-survey-request-sms-sender';
 import { RevertRequestModule } from './cartable/revert-request';
 import { AnonymousSubscriptionModule } from './anonymous/subscription';
+import { SubscriptionSmsSenderModule } from './job/subscription-sms-sender';
 
 @Module({
   imports: [
@@ -165,6 +166,7 @@ import { AnonymousSubscriptionModule } from './anonymous/subscription';
     ClientTechnicalStateRequestSmsSenderModule,
     ClientOnlinePaymentRequestSmsSenderModule,
     ClientSurveyRequestSmsSenderModule,
+    SubscriptionSmsSenderModule,
 
     // test
     CartableAutoTraverseModule,
