@@ -48,6 +48,7 @@ export type I18nTranslations = {
         "neighborhood_must_be_select_it": string;
     };
     "guarantee": {
+        "you_joined_before": string;
         "point_in_this_province_not_valid": string;
         "address_postalcode": string;
         "you_have_to_upload_a_image_at_least_one": string;

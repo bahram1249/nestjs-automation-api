@@ -50,6 +50,7 @@ import {
   GSPreRegistrationOrganization,
   GSPoint,
   GSUserPoint,
+  GSSubscription,
 } from '../models';
 
 export const guaranteeModels = [
@@ -104,4 +105,5 @@ export const guaranteeModels = [
   GSPreRegistrationOrganization,
   GSPoint,
   GSUserPoint,
+  GSSubscription,
 ];
