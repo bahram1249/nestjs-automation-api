@@ -36,14 +36,14 @@ export class AddressDto {
   @IsNumber()
   provinceId: number;
 
-  @AutoMap()
-  @IsNumber()
-  cityId: number;
+  // @AutoMap()
+  // @IsNumber()
+  // cityId: number;
 
-  @AutoMap()
-  @IsNumber()
-  @IsOptional()
-  neighborhoodId?: number;
+  // @AutoMap()
+  // @IsNumber()
+  // @IsOptional()
+  // neighborhoodId?: number;
 
   @MinLength(3, {
     message: i18nValidationMessage<I18nTranslations>('validation.MIN'),

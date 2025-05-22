@@ -633,6 +633,26 @@ END
 
 GO
 
+-- gs-addresses-v2
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'gs-addresses-v2' 
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'CUSTOMER_NAME' AND [value] IN ('AriaKish'))
+		)
+BEGIN
+
+	ALTER TABLE GSAddresses 
+	ALTER COLUMN cityId int null
+
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'gs-addresses-v2', GETDATE(), GETDATE()
+END
+
+GO
+
+
 -- gs-guaranteeorganizations
 IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'gs-guaranteeorganizations-v1'
 			)

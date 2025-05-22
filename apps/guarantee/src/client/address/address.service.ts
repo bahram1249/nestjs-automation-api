@@ -159,9 +159,9 @@ export class AddressService {
   }
 
   async create(dto: AddressDto, user?: User, transaction?: Transaction) {
-    if (dto.neighborhoodId == 0) {
-      dto.neighborhoodId = null;
-    }
+    // if (dto.neighborhoodId == 0) {
+    //   dto.neighborhoodId = null;
+    // }
 
     const province = await this.provinceRepository.findOne(
       new QueryOptionsBuilder()
@@ -185,62 +185,62 @@ export class AddressService {
       );
     }
 
-    const city = await this.cityRepository.findOne(
-      new QueryOptionsBuilder()
-        .filter({ id: dto.cityId })
-        .filter({ provinceId: dto.provinceId })
-        .filter(
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('GSCity.isDeleted'), 0),
-            {
-              [Op.eq]: 0,
-            },
-          ),
-        )
-        .build(),
-    );
-    if (!city) {
-      throw new BadRequestException(
-        this.i18n.t('guarantee.city_not_found', {
-          lang: I18nContext.current().lang,
-        }),
-      );
-    }
+    // const city = await this.cityRepository.findOne(
+    //   new QueryOptionsBuilder()
+    //     .filter({ id: dto.cityId })
+    //     .filter({ provinceId: dto.provinceId })
+    //     .filter(
+    //       Sequelize.where(
+    //         Sequelize.fn('isnull', Sequelize.col('GSCity.isDeleted'), 0),
+    //         {
+    //           [Op.eq]: 0,
+    //         },
+    //       ),
+    //     )
+    //     .build(),
+    // );
+    // if (!city) {
+    //   throw new BadRequestException(
+    //     this.i18n.t('guarantee.city_not_found', {
+    //       lang: I18nContext.current().lang,
+    //     }),
+    //   );
+    // }
 
-    if (city.neighborhoodBase === true) {
-      if (!dto.neighborhoodId) {
-        throw new BadRequestException(
-          this.i18n.translate('guarantee.neighborhood_must_be_select_it', {
-            lang: I18nContext.current().lang,
-          }),
-        );
-      }
-      const neighborhood = await this.neighborhoodRepository.findOne(
-        new QueryOptionsBuilder()
-          .filter({ id: dto.neighborhoodId })
-          .filter({ cityId: dto.cityId })
-          .filter(
-            Sequelize.where(
-              Sequelize.fn(
-                'isnull',
-                Sequelize.col('GSNeighborhood.isDeleted'),
-                0,
-              ),
-              {
-                [Op.eq]: 0,
-              },
-            ),
-          )
-          .build(),
-      );
-      if (!neighborhood) {
-        throw new BadRequestException(
-          this.i18n.translate('guarantee.neighbordhood_not_found', {
-            lang: I18nContext.current().lang,
-          }),
-        );
-      }
-    }
+    // if (city.neighborhoodBase === true) {
+    //   if (!dto.neighborhoodId) {
+    //     throw new BadRequestException(
+    //       this.i18n.translate('guarantee.neighborhood_must_be_select_it', {
+    //         lang: I18nContext.current().lang,
+    //       }),
+    //     );
+    //   }
+    //   const neighborhood = await this.neighborhoodRepository.findOne(
+    //     new QueryOptionsBuilder()
+    //       .filter({ id: dto.neighborhoodId })
+    //       .filter({ cityId: dto.cityId })
+    //       .filter(
+    //         Sequelize.where(
+    //           Sequelize.fn(
+    //             'isnull',
+    //             Sequelize.col('GSNeighborhood.isDeleted'),
+    //             0,
+    //           ),
+    //           {
+    //             [Op.eq]: 0,
+    //           },
+    //         ),
+    //       )
+    //       .build(),
+    //   );
+    //   if (!neighborhood) {
+    //     throw new BadRequestException(
+    //       this.i18n.translate('guarantee.neighbordhood_not_found', {
+    //         lang: I18nContext.current().lang,
+    //       }),
+    //     );
+    //   }
+    // }
 
     const provinceValidPoint = await this.sequelize.query(
       `DECLARE @Point geography = geography::Point(${dto.latitude}, ${dto.longitude}, 4326)
@@ -291,9 +291,9 @@ export class AddressService {
     dto: AddressDto,
     transaction?: Transaction,
   ) {
-    if (dto.neighborhoodId == 0) {
-      dto.neighborhoodId = null;
-    }
+    // if (dto.neighborhoodId == 0) {
+    //   dto.neighborhoodId = null;
+    // }
 
     const item = await this.repository.findOne(
       new QueryOptionsBuilder()
@@ -341,62 +341,62 @@ export class AddressService {
       );
     }
 
-    const city = await this.cityRepository.findOne(
-      new QueryOptionsBuilder()
-        .filter({ id: dto.cityId })
-        .filter({ provinceId: dto.provinceId })
-        .filter(
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('GSCity.isDeleted'), 0),
-            {
-              [Op.eq]: 0,
-            },
-          ),
-        )
-        .build(),
-    );
-    if (!city) {
-      throw new BadRequestException(
-        this.i18n.t('guarantee.city_not_found', {
-          lang: I18nContext.current().lang,
-        }),
-      );
-    }
+    // const city = await this.cityRepository.findOne(
+    //   new QueryOptionsBuilder()
+    //     .filter({ id: dto.cityId })
+    //     .filter({ provinceId: dto.provinceId })
+    //     .filter(
+    //       Sequelize.where(
+    //         Sequelize.fn('isnull', Sequelize.col('GSCity.isDeleted'), 0),
+    //         {
+    //           [Op.eq]: 0,
+    //         },
+    //       ),
+    //     )
+    //     .build(),
+    // );
+    // if (!city) {
+    //   throw new BadRequestException(
+    //     this.i18n.t('guarantee.city_not_found', {
+    //       lang: I18nContext.current().lang,
+    //     }),
+    //   );
+    // }
 
-    if (city.neighborhoodBase === true) {
-      if (!dto.neighborhoodId) {
-        throw new BadRequestException(
-          this.i18n.translate('guarantee.neighborhood_must_be_select_it', {
-            lang: I18nContext.current().lang,
-          }),
-        );
-      }
-      const neighborhood = await this.neighborhoodRepository.findOne(
-        new QueryOptionsBuilder()
-          .filter({ id: dto.neighborhoodId })
-          .filter({ cityId: dto.cityId })
-          .filter(
-            Sequelize.where(
-              Sequelize.fn(
-                'isnull',
-                Sequelize.col('GSNeighborhood.isDeleted'),
-                0,
-              ),
-              {
-                [Op.eq]: 0,
-              },
-            ),
-          )
-          .build(),
-      );
-      if (!neighborhood) {
-        throw new BadRequestException(
-          this.i18n.translate('guarantee.neighbordhood_not_found', {
-            lang: I18nContext.current().lang,
-          }),
-        );
-      }
-    }
+    // if (city.neighborhoodBase === true) {
+    //   if (!dto.neighborhoodId) {
+    //     throw new BadRequestException(
+    //       this.i18n.translate('guarantee.neighborhood_must_be_select_it', {
+    //         lang: I18nContext.current().lang,
+    //       }),
+    //     );
+    //   }
+    //   const neighborhood = await this.neighborhoodRepository.findOne(
+    //     new QueryOptionsBuilder()
+    //       .filter({ id: dto.neighborhoodId })
+    //       .filter({ cityId: dto.cityId })
+    //       .filter(
+    //         Sequelize.where(
+    //           Sequelize.fn(
+    //             'isnull',
+    //             Sequelize.col('GSNeighborhood.isDeleted'),
+    //             0,
+    //           ),
+    //           {
+    //             [Op.eq]: 0,
+    //           },
+    //         ),
+    //       )
+    //       .build(),
+    //   );
+    //   if (!neighborhood) {
+    //     throw new BadRequestException(
+    //       this.i18n.translate('guarantee.neighbordhood_not_found', {
+    //         lang: I18nContext.current().lang,
+    //       }),
+    //     );
+    //   }
+    // }
 
     const mappedItem = this.mapper.map(dto, AddressDto, GSAddress);
     const result = await this.repository.update(
@@ -512,62 +512,62 @@ export class AddressService {
       );
     }
 
-    const city = await this.cityRepository.findOne(
-      new QueryOptionsBuilder()
-        .filter({ id: dto.cityId })
-        .filter({ provinceId: dto.provinceId })
-        .filter(
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('GSCity.isDeleted'), 0),
-            {
-              [Op.eq]: 0,
-            },
-          ),
-        )
-        .build(),
-    );
-    if (!city) {
-      throw new BadRequestException(
-        this.i18n.t('guarantee.city_not_found', {
-          lang: I18nContext.current().lang,
-        }),
-      );
-    }
+    // const city = await this.cityRepository.findOne(
+    //   new QueryOptionsBuilder()
+    //     .filter({ id: dto.cityId })
+    //     .filter({ provinceId: dto.provinceId })
+    //     .filter(
+    //       Sequelize.where(
+    //         Sequelize.fn('isnull', Sequelize.col('GSCity.isDeleted'), 0),
+    //         {
+    //           [Op.eq]: 0,
+    //         },
+    //       ),
+    //     )
+    //     .build(),
+    // );
+    // if (!city) {
+    //   throw new BadRequestException(
+    //     this.i18n.t('guarantee.city_not_found', {
+    //       lang: I18nContext.current().lang,
+    //     }),
+    //   );
+    // }
 
-    if (city.neighborhoodBase === true) {
-      if (!dto.neighborhoodId) {
-        throw new BadRequestException(
-          this.i18n.translate('guarantee.neighborhood_must_be_select_it', {
-            lang: I18nContext.current().lang,
-          }),
-        );
-      }
-      const neighborhood = await this.neighborhoodRepository.findOne(
-        new QueryOptionsBuilder()
-          .filter({ id: dto.neighborhoodId })
-          .filter({ cityId: dto.cityId })
-          .filter(
-            Sequelize.where(
-              Sequelize.fn(
-                'isnull',
-                Sequelize.col('GSNeighborhood.isDeleted'),
-                0,
-              ),
-              {
-                [Op.eq]: 0,
-              },
-            ),
-          )
-          .build(),
-      );
-      if (!neighborhood) {
-        throw new BadRequestException(
-          this.i18n.translate('guarantee.neighbordhood_not_found', {
-            lang: I18nContext.current().lang,
-          }),
-        );
-      }
-    }
+    // if (city.neighborhoodBase === true) {
+    //   if (!dto.neighborhoodId) {
+    //     throw new BadRequestException(
+    //       this.i18n.translate('guarantee.neighborhood_must_be_select_it', {
+    //         lang: I18nContext.current().lang,
+    //       }),
+    //     );
+    //   }
+    //   const neighborhood = await this.neighborhoodRepository.findOne(
+    //     new QueryOptionsBuilder()
+    //       .filter({ id: dto.neighborhoodId })
+    //       .filter({ cityId: dto.cityId })
+    //       .filter(
+    //         Sequelize.where(
+    //           Sequelize.fn(
+    //             'isnull',
+    //             Sequelize.col('GSNeighborhood.isDeleted'),
+    //             0,
+    //           ),
+    //           {
+    //             [Op.eq]: 0,
+    //           },
+    //         ),
+    //       )
+    //       .build(),
+    //   );
+    //   if (!neighborhood) {
+    //     throw new BadRequestException(
+    //       this.i18n.translate('guarantee.neighbordhood_not_found', {
+    //         lang: I18nContext.current().lang,
+    //       }),
+    //     );
+    //   }
+    // }
 
     const mappedItem = this.mapper.map(dto, AddressDto, GSAddress);
     const result = await this.repository.update(

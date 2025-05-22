@@ -55,9 +55,10 @@ export class GSAddress extends Model {
   @AutoMap()
   @Column({
     type: DataType.INTEGER,
+    allowNull: true,
   })
   @ForeignKey(() => GSCity)
-  cityId: number;
+  cityId?: number;
 
   @BelongsTo(() => GSCity, { foreignKey: 'cityId', as: 'city' })
   city?: GSCity;
