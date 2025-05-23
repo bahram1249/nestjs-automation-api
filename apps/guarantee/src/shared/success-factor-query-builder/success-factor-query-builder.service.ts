@@ -23,6 +23,7 @@ import { GSFactorTypeEnum } from '../factor-type';
 import { Op, Sequelize } from 'sequelize';
 import { User } from '@rahino/database';
 import { GSTransactionStatusEnum } from '../transaction-status';
+import { Order } from '@rahino/query-filter';
 
 @Injectable({ scope: Scope.REQUEST })
 export class GSSuccessFactorQueryBuilderService {
@@ -239,6 +240,11 @@ export class GSSuccessFactorQueryBuilderService {
 
   offset(count?: number) {
     this.builder = this.builder.offset(count);
+    return this;
+  }
+
+  order(orderArg: Order) {
+    this.builder = this.builder.order(orderArg);
     return this;
   }
 

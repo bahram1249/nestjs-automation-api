@@ -55,6 +55,7 @@ export class FactorService {
     query = query
       .requiredIncluded()
       .requiredAttributes()
+      .order({ sortOrder: filter.sortOrder, orderBy: filter.orderBy })
       .limit(filter.limit)
       .offset(filter.offset);
 
