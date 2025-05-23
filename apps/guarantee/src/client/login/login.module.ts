@@ -15,6 +15,8 @@ import { LOGIN_SMS_SENDER_QUEUE } from '@rahino/guarantee/job/login-sms-sender/c
 import { BullModule } from '@nestjs/bullmq';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { LocalizationModule } from 'apps/main/src/common/localization';
+import { BullBoardModule } from '@bull-board/nestjs';
+import { BullMQAdapter } from '@bull-board/api/bullMQAdapter';
 
 @Module({
   imports: [
@@ -35,6 +37,10 @@ import { LocalizationModule } from 'apps/main/src/common/localization';
     }),
     BullModule.registerQueueAsync({
       name: LOGIN_SMS_SENDER_QUEUE,
+    }),
+    BullBoardModule.forFeature({
+      name: LOGIN_SMS_SENDER_QUEUE,
+      adapter: BullMQAdapter,
     }),
   ],
   controllers: [LoginController],

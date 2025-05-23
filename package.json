@@ -20,6 +20,9 @@
     "test:e2e": "jest --config ./apps/main/test/jest-e2e.json"
   },
   "dependencies": {
+    "@bull-board/api": "^6.9.6",
+    "@bull-board/express": "^6.9.6",
+    "@bull-board/nestjs": "^6.9.6",
     "@golevelup/nestjs-modules": "^0.7.1",
     "@nestjs/bullmq": "^11.0.2",
     "@nestjs/cache-manager": "^2.1.1",
@@ -55,6 +58,7 @@
     "cookie-parser": "^1.4.6",
     "crypto-js": "^4.2.0",
     "exceljs": "^4.4.0",
+    "express-basic-auth": "^1.2.1",
     "express-handlebars": "^5.3.0",
     "express-session": "^1.17.3",
     "helmet": "^7.0.0",

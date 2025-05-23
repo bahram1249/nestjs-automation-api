@@ -100,6 +100,11 @@ import { GSAdminSubscriptionModule } from './admin/subscription';
 import { PreRegistrationInitSmsSenderModule } from './job/pre-registration-init-sms-sender';
 import { PreRegistrationSucessSmsSenderModule } from './job/pre-registration-sucess-sms-sender';
 import { PreRegistrationRejectDescriptionSmsSenderModule } from './job/pre-registration-reject-description-sms-sender';
+import { BullBoardModule } from '@bull-board/nestjs';
+import { ExpressAdapter } from '@bull-board/express';
+import basicAuth from 'express-basic-auth';
+import { BullModule } from '@nestjs/bullmq';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 
 @Module({
   imports: [
@@ -225,6 +230,23 @@ import { PreRegistrationRejectDescriptionSmsSenderModule } from './job/pre-regis
 
     AnonymousSubscriptionModule,
     GSAdminSubscriptionModule,
+
+    BullModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: (config: ConfigService) => ({
+        connection: {
+          host: config.get<string>('REDIS_ADDRESS'),
+          port: config.get<number>('REDIS_PORT'),
+          password: config.get<string>('REDIS_PASSWORD'),
+        },
+      }),
+    }),
+
+    BullBoardModule.forRoot({
+      route: '/queues',
+      adapter: ExpressAdapter,
+    }),
   ],
 })
 export class GSModule implements NestModule {
