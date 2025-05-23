@@ -1,8 +1,10 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNumber, IsOptional } from 'class-validator';
+import { Type } from 'class-transformer';
+import { IsInt, IsNumber, IsOptional } from 'class-validator';
 
 export class GetOrganizationDetailDto {
-  @IsNumber()
+  @IsInt()
+  @Type(() => Number)
   @IsOptional()
   @ApiProperty({
     required: false,
