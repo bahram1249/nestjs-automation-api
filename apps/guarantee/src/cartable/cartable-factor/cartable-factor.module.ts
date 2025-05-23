@@ -7,6 +7,7 @@ import { GSSuccessFactorQueryBuilderModule } from '@rahino/guarantee/shared/succ
 import { LocalizationModule } from 'apps/main/src/common/localization';
 import { OrganizationStuffModule } from '@rahino/guarantee/shared/organization-stuff';
 import { Permission, User } from '@rahino/database';
+import { RoleModule } from '@rahino/core/user/role/role.module';
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { Permission, User } from '@rahino/database';
     GSSuccessFactorQueryBuilderModule,
     LocalizationModule,
     OrganizationStuffModule,
+    RoleModule,
   ],
   controllers: [FactorController],
   providers: [FactorService],

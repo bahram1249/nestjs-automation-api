@@ -20,7 +20,7 @@ import {
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import { GSFactorStatusEnum } from '../factor-status';
 import { GSFactorTypeEnum } from '../factor-type';
-import { Op } from 'sequelize';
+import { Op, Sequelize } from 'sequelize';
 import { User } from '@rahino/database';
 import { GSTransactionStatusEnum } from '../transaction-status';
 
@@ -194,7 +194,11 @@ export class GSSuccessFactorQueryBuilderService {
     return this;
   }
 
-  cartableFilter(dto: { userId?: bigint; organizationId?: number }) {
+  cartableFilter(dto: {
+    userId?: bigint;
+    organizationId?: number;
+    showTotal?: boolean;
+  }) {
     const conditions = [];
     if (dto.userId != null) {
       conditions.push({ createdByUserId: dto.userId });
@@ -204,6 +208,11 @@ export class GSSuccessFactorQueryBuilderService {
         '$guaranteeRequest.organizationId$': dto.organizationId,
       });
     }
+
+    if (dto.showTotal) {
+      conditions.push(Sequelize.literal(` 1=1 `));
+    }
+
     this.builder = this.builder.filter({ [Op.or]: conditions });
     return this;
   }
