@@ -99,6 +99,7 @@ import { SubscriptionSmsSenderModule } from './job/subscription-sms-sender';
 import { GSAdminSubscriptionModule } from './admin/subscription';
 import { PreRegistrationInitSmsSenderModule } from './job/pre-registration-init-sms-sender';
 import { PreRegistrationSucessSmsSenderModule } from './job/pre-registration-sucess-sms-sender';
+import { PreRegistrationRejectDescriptionSmsSenderModule } from './job/pre-registration-reject-description-sms-sender';
 
 @Module({
   imports: [
@@ -172,6 +173,7 @@ import { PreRegistrationSucessSmsSenderModule } from './job/pre-registration-suc
     SubscriptionSmsSenderModule,
     PreRegistrationInitSmsSenderModule,
     PreRegistrationSucessSmsSenderModule,
+    PreRegistrationRejectDescriptionSmsSenderModule,
 
     // test
     CartableAutoTraverseModule,

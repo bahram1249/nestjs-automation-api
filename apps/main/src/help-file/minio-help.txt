@@ -38,3 +38,6 @@ mc anonymous set download myminio/entitytypes
 mc mb myminio/blogphotos
 mc anonymous set download myminio/blogphotos
 
+
+mc mb myminio/publicphotos
+mc anonymous set download myminio/publicphotos
