@@ -105,6 +105,7 @@ import { ExpressAdapter } from '@bull-board/express';
 import basicAuth from 'express-basic-auth';
 import { BullModule } from '@nestjs/bullmq';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { AnonymousPublicReportModule } from './anonymous/public-report';
 
 @Module({
   imports: [
@@ -230,6 +231,8 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 
     AnonymousSubscriptionModule,
     GSAdminSubscriptionModule,
+
+    AnonymousPublicReportModule,
 
     BullModule.forRootAsync({
       imports: [ConfigModule],
