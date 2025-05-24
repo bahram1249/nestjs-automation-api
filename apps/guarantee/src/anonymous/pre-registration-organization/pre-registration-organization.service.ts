@@ -12,7 +12,10 @@ import { Attachment } from '@rahino/database';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import { GSAttachmentTypeEnum } from '@rahino/guarantee/shared/gs-attachment-type';
 import { Op } from 'sequelize';
-
+import { InjectQueue } from '@nestjs/bullmq';
+import { Queue } from 'bullmq';
+import { PRE_REGISTRATION_INIT_SMS_SENDER_QUEUE } from '@rahino/guarantee/job/pre-registration-init-sms-sender/constants';
+@Injectable()
 @Injectable()
 export class PreRegistrationOrganizationService {
   constructor(
@@ -27,6 +30,9 @@ export class PreRegistrationOrganizationService {
     private readonly mapper: Mapper,
     @InjectConnection()
     private readonly sequelize: Sequelize,
+
+    @InjectQueue(PRE_REGISTRATION_INIT_SMS_SENDER_QUEUE)
+    private readonly preRegistrationInitSmsSenderQueue: Queue,
   ) {}
 
   async create(dto: PreRegistrationOrganizationDto) {
@@ -106,6 +112,14 @@ export class PreRegistrationOrganizationService {
       preRegistrationOrganization = await this.repository.create(
         _.omit(preRegistrationOrganization.toJSON(), ['id']),
         { transaction: transaction },
+      );
+
+      await this.preRegistrationInitSmsSenderQueue.add(
+        'PRE_REGISTRATION_INIT_SMS_SENDER',
+        {
+          firstname: preRegistrationOrganization.firstname,
+          lastname: preRegistrationOrganization.lastname,
+        },
       );
 
       await transaction.commit();

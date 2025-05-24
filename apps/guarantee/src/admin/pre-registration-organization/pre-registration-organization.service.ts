@@ -1,5 +1,9 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
-import { ConfirmDto, GetPreRegistrationOrganization } from './dto';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
+import { ConfirmDto, DeleteDto, GetPreRegistrationOrganization } from './dto';
 import { InjectModel } from '@nestjs/sequelize';
 import {
   GSAddress,
@@ -341,7 +345,7 @@ export class PreRegistrationOrganizationService {
     };
   }
 
-  async deleteById(entityId: number) {
+  async deleteById(entityId: number, deleteDto: DeleteDto) {
     const item = await this.repository.findOne(
       new QueryOptionsBuilder()
         .filter({ id: entityId })
@@ -357,9 +361,23 @@ export class PreRegistrationOrganizationService {
             },
           ),
         )
-
+        .filter(
+          Sequelize.where(
+            Sequelize.fn(
+              'isnull',
+              Sequelize.col('GSPreRegistrationOrganization.isConfirm'),
+            ),
+            null,
+          ),
+        )
         .build(),
     );
+
+    if (!item) {
+      throw new BadRequestException(
+        this.localizationService.translate('core.not_found'),
+      );
+    }
 
     item.isDeleted = true;
 
