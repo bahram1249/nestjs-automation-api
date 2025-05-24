@@ -11,7 +11,7 @@ export class PreRegistrationSucessSmsSenderProcessor extends WorkerHost {
 
   async process(job: Job<any, any, any>, token?: string): Promise<any> {
     try {
-      const template = `${job.data.firstname} ${job.data.lastname} عزیز، درخواست نمایندگی شما در آریاکیش تایید گردید، دسترسی های لازم در پنل برای شما ایجاد گردید..`;
+      const template = `${job.data.firstname} ${job.data.lastname} عزیز، درخواست نمایندگی شما در آریاکیش تایید گردید، دسترسی های لازم در پنل برای شما ایجاد گردید.`;
       await this.smsSenderService.sendSms({
         phoneNumber: job.data.phoneNumber,
         message: template,

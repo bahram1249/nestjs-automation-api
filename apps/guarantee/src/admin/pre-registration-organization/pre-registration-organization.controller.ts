@@ -24,7 +24,7 @@ import {
 
 import { JwtGuard } from '@rahino/auth';
 import { PreRegistrationOrganizationService } from './pre-registration-organization.service';
-import { ConfirmDto, GetPreRegistrationOrganization } from './dto';
+import { ConfirmDto, DeleteDto, GetPreRegistrationOrganization } from './dto';
 
 @ApiBearerAuth()
 @UseGuards(JwtGuard, PermissionGuard)
@@ -83,8 +83,11 @@ export class PreRegistrationOrganizationController {
   })
   @Delete('/:id')
   @HttpCode(HttpStatus.OK)
-  async deleteById(@Param('id') entityId: number) {
-    return await this.service.deleteById(entityId);
+  async deleteById(
+    @Param('id') entityId: number,
+    @Body() deleteDto: DeleteDto,
+  ) {
+    return await this.service.deleteById(entityId, deleteDto);
   }
 
   @ApiOperation({ description: 'show attachment  photo by fileName' })

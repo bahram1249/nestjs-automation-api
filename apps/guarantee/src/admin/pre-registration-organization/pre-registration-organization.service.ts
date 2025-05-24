@@ -22,7 +22,10 @@ import { GuaranteeOrganizationContractService } from '../guarantee-organization-
 import { InjectMapper } from 'automapper-nestjs';
 import { Mapper } from 'automapper-core';
 import { AddressDto } from '@rahino/guarantee/client/address/dto';
-
+import { InjectQueue } from '@nestjs/bullmq';
+import { PRE_REGISTRATION_SUCESS_SMS_SENDER_QUEUE } from '@rahino/guarantee/job/pre-registration-sucess-sms-sender/constants';
+import { Queue } from 'bullmq';
+import { PRE_REGISTRATION_REJECT_SMS_SENDER_QUEUE } from '@rahino/guarantee/job/pre-registration-reject-description-sms-sender/constants';
 @Injectable()
 export class PreRegistrationOrganizationService {
   constructor(
@@ -33,6 +36,11 @@ export class PreRegistrationOrganizationService {
     private readonly localizationService: LocalizationService,
     @InjectMapper()
     private readonly mapper: Mapper,
+
+    @InjectQueue(PRE_REGISTRATION_SUCESS_SMS_SENDER_QUEUE)
+    private readonly preRegistrationSucessSmsSenderQueue: Queue,
+    @InjectQueue(PRE_REGISTRATION_REJECT_SMS_SENDER_QUEUE)
+    private readonly preRegistrationRejectDescriptionSmsSenderQueue: Queue,
   ) {}
 
   async findAll(filter: GetPreRegistrationOrganization) {
@@ -338,6 +346,14 @@ export class PreRegistrationOrganizationService {
       { where: { id: id } },
     );
 
+    await this.preRegistrationSucessSmsSenderQueue.add(
+      'PreRegistrationSucessSmsSenderJob',
+      {
+        firstname: item.firstname,
+        lastname: item.lastname,
+      },
+    );
+
     return {
       result: {
         message: this.localizationService.translate('core.success'),
@@ -382,6 +398,15 @@ export class PreRegistrationOrganizationService {
     item.isDeleted = true;
 
     await item.save();
+
+    await this.preRegistrationRejectDescriptionSmsSenderQueue.add(
+      'preRegistrationRejectDescriptionSmsSender',
+      {
+        firstname: item.firstname,
+        lastname: item.lastname,
+        rejectDescription: deleteDto.rejectDescription,
+      },
+    );
 
     return {
       result: item,
