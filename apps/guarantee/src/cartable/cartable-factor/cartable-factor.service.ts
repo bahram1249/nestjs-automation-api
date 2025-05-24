@@ -69,6 +69,17 @@ export class FactorService {
   }
 
   async findById(user: User, entityId: bigint) {
+    const hasSuperVisorRole = await this.roleService.isAccessToStaticRole(
+      user.id,
+      GuaranteeStaticRoleEnum.SupervisorRole,
+    );
+
+    // admin role show all
+    const hasAdminRole = await this.roleService.isAccessToStaticRole(
+      user.id,
+      this.superAdminStaticId,
+    );
+
     const organizationId =
       await this.organizationStuffService.getOptionalOrganizationIdByUserId(
         user.id,
@@ -76,7 +87,11 @@ export class FactorService {
 
     let query = this.factorQueryBuilder
       .init()
-      .cartableFilter({ userId: user.id, organizationId: organizationId })
+      .cartableFilter({
+        userId: user.id,
+        organizationId: organizationId,
+        showTotal: hasAdminRole || hasSuperVisorRole,
+      })
       .filterFactorId(entityId)
       .requiredIncluded()
       .requiredAttributes();
