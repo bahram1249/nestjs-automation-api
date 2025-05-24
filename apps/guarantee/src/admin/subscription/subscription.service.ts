@@ -62,7 +62,6 @@ export class SubscriptionService {
     const subscriptions = await this.repository.findAll(
       new QueryOptionsBuilder()
         .attributes(['id', 'phoneNumber', 'createdAt', 'updatedAt'])
-
         .build(),
     );
 

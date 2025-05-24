@@ -48,6 +48,14 @@ export class SubscriptionController {
     return await this.service.findAll(filter);
   }
 
+  @ApiOperation({ description: 'download excel files' })
+  @CheckPermission({ permissionSymbol: 'gs.admin.subscriptions.getall' })
+  @Get('/excel')
+  @HttpCode(HttpStatus.OK)
+  async downloadExcel(@Res() res: Response) {
+    return await this.service.downloadExcel(res);
+  }
+
   @UseInterceptors(JsonResponseTransformInterceptor)
   @ApiOperation({ description: 'show subscription by given id' })
   @CheckPermission({ permissionSymbol: 'gs.admin.subscriptions.getone' })
@@ -55,13 +63,5 @@ export class SubscriptionController {
   @HttpCode(HttpStatus.OK)
   async findById(@Param('id') entityId: number) {
     return await this.service.findById(entityId);
-  }
-
-  @ApiOperation({ description: 'download excel files' })
-  @CheckPermission({ permissionSymbol: 'gs.admin.subscriptions.getall' })
-  @Get('/excel')
-  @HttpCode(HttpStatus.OK)
-  async downloadExcel(@Res() res: Response) {
-    return await this.service.downloadExcel(res);
   }
 }
