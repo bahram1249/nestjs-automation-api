@@ -69,7 +69,7 @@ export class SubscriptionService {
     const mappedItems = subscriptions.map((subscription) => ({
       id: subscription.id,
       phoneNumber: subscription.phoneNumber,
-      startDate: moment(subscription.createdAt)
+      createdAt: moment(subscription.createdAt)
         .tz('Asia/Tehran', false)
         .locale('fa')
         .format('jYYYY-jMM-jDD HH:mm:ss'),
