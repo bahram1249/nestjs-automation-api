@@ -229,7 +229,7 @@ export class AnonymousOrganizationService {
       .attributes([
         [
           Sequelize.literal(`
-        ISNULL(SUM([totalScore] / [fromScore] * 100) , 0)
+        ISNULL(AVG(([totalScore] / [fromScore]) * 100) , 0)
         `),
           'averageScore',
         ],
