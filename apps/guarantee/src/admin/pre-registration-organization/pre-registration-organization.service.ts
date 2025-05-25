@@ -383,7 +383,9 @@ export class PreRegistrationOrganizationService {
               'isnull',
               Sequelize.col('GSPreRegistrationOrganization.isConfirm'),
             ),
-            null,
+            {
+              [Op.eq]: 0,
+            },
           ),
         )
         .build(),
