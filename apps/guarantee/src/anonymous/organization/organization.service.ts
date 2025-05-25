@@ -113,6 +113,7 @@ export class AnonymousOrganizationService {
         provinceName: item.address.province.name,
         cityName: item.address.city.name,
         code: item.code ?? null,
+        fullName: item.user.firstname + ' ' + item.user.lastname,
       };
     });
 
@@ -228,11 +229,8 @@ export class AnonymousOrganizationService {
       .attributes([
         [
           Sequelize.literal(`
-        ISNULL(CASE 
-          WHEN SUM([fromScore]) = 0 THEN 0 
-          ELSE SUM([totalScore]) / SUM([fromScore] * 100) 
-        END, 0)
-      `),
+        ISNULL(SUM([totalScore] / [fromScore] * 100) , 0)
+        `),
           'averageScore',
         ],
       ])
