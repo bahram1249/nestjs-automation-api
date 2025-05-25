@@ -161,35 +161,35 @@ export class ProductService {
           model: EAVEntityType,
           as: 'entityType',
         },
-        {
-          attributes: [
-            'attributeId',
-            [
-              Sequelize.fn(
-                'isnull',
-                Sequelize.col('productAttributeValues.val'),
-                Sequelize.col('productAttributeValues.attributeValue.value'),
-              ),
-              'val',
-            ],
-            [Sequelize.col('attributeValueId'), 'attributeValueId'],
-          ],
-          model: EAVEntityAttributeValue,
-          as: 'productAttributeValues',
-          include: [
-            {
-              attributes: ['id', 'name', 'attributeTypeId'],
-              model: EAVAttribute,
-              as: 'attribute',
-            },
-            {
-              attributes: ['id', 'attributeId', 'value'],
-              model: EAVAttributeValue,
-              as: 'attributeValue',
-            },
-          ],
-          required: false,
-        },
+        // {
+        //   attributes: [
+        //     'attributeId',
+        //     [
+        //       Sequelize.fn(
+        //         'isnull',
+        //         Sequelize.col('productAttributeValues.val'),
+        //         Sequelize.col('productAttributeValues.attributeValue.value'),
+        //       ),
+        //       'val',
+        //     ],
+        //     [Sequelize.col('attributeValueId'), 'attributeValueId'],
+        //   ],
+        //   model: EAVEntityAttributeValue,
+        //   as: 'productAttributeValues',
+        //   include: [
+        //     {
+        //       attributes: ['id', 'name', 'attributeTypeId'],
+        //       model: EAVAttribute,
+        //       as: 'attribute',
+        //     },
+        //     {
+        //       attributes: ['id', 'attributeId', 'value'],
+        //       model: EAVAttributeValue,
+        //       as: 'attributeValue',
+        //     },
+        //   ],
+        //   required: false,
+        // },
         {
           attributes: [
             'id',
