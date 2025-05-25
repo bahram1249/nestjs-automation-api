@@ -11,6 +11,7 @@ import {
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import { Sequelize } from 'sequelize';
 import { Op } from 'sequelize';
+import { User } from '@rahino/database';
 
 @Injectable()
 export class AnonymousOrganizationService {
@@ -50,6 +51,11 @@ export class AnonymousOrganizationService {
             [Op.like]: filter.search,
           },
         },
+      })
+      .thenInclude({
+        attributes: ['id', 'firstname', 'lastname'],
+        model: User,
+        as: 'user',
       })
       .filter(
         Sequelize.where(
