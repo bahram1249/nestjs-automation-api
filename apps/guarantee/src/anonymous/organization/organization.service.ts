@@ -1,29 +1,47 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { GetOrganizationDto } from './dto';
 import { InjectModel } from '@nestjs/sequelize';
 import {
+  BPMNActivity,
   BPMNOrganization,
+  BPMNRequestState,
   GSAddress,
   GSCity,
   GSGuaranteeOrganization,
   GSProvince,
+  GSRequest,
+  GSResponse,
 } from '@rahino/localdatabase/models';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import { Sequelize } from 'sequelize';
 import { Op } from 'sequelize';
 import { User } from '@rahino/database';
+import { LocalizationService } from 'apps/main/src/common/localization';
 
 @Injectable()
 export class AnonymousOrganizationService {
   constructor(
     @InjectModel(GSGuaranteeOrganization)
     private readonly repository: typeof GSGuaranteeOrganization,
+    private readonly localizationService: LocalizationService,
+
+    @InjectModel(BPMNRequestState)
+    private readonly requestStateRepository: typeof BPMNRequestState,
+    @InjectModel(GSRequest)
+    private readonly requestRepository: typeof GSRequest,
+    @InjectModel(GSResponse)
+    private readonly responseRepository: typeof GSResponse,
   ) {}
 
   async findAll(filter: GetOrganizationDto) {
     let query = new QueryOptionsBuilder()
       .include([
         {
+          attributes: ['id', 'provinceId', 'cityId'],
           model: GSAddress,
           as: 'address',
           required: true,
@@ -101,6 +119,148 @@ export class AnonymousOrganizationService {
     return {
       result: mappedItems,
       total: count,
+    };
+  }
+
+  async findById(entityId: number) {
+    let query = new QueryOptionsBuilder()
+      .attributes(['id', 'licenseDate', 'code', 'addressId'])
+      .include([
+        {
+          attributes: ['id', 'provinceId', 'cityId'],
+          model: GSAddress,
+          as: 'address',
+          required: true,
+          include: [
+            {
+              attributes: ['id', 'name'],
+              model: GSProvince,
+              as: 'province',
+              required: true,
+            },
+            {
+              attributes: ['id', 'name'],
+              model: GSCity,
+              as: 'city',
+              required: true,
+            },
+          ],
+        },
+      ])
+      .thenInclude({
+        attributes: ['id', 'name'],
+        model: BPMNOrganization,
+        as: 'organization',
+        required: true,
+      })
+      .thenInclude({
+        attributes: ['id', 'firstname', 'lastname'],
+        model: User,
+        as: 'user',
+      })
+      .filter(
+        Sequelize.where(
+          Sequelize.fn(
+            'isnull',
+            Sequelize.col('GSGuaranteeOrganization.isDeleted'),
+            0,
+          ),
+          {
+            [Op.eq]: 0,
+          },
+        ),
+      )
+      .filter({ id: entityId })
+      .filter(
+        Sequelize.literal(
+          `EXISTS (
+        SELECT 1
+        FROM GSGuaranteeOrganizationContracts GGOC
+        WHERE GGOC.organizationId = GSGuaranteeOrganization.id
+        AND GETDATE() BETWEEN GGOC.startDate AND GGOC.endDate
+      )`.replaceAll(/\s\s+/g, ' '),
+        ),
+      );
+
+    const result = await this.repository.findOne(query.build());
+
+    if (!result) {
+      throw new NotFoundException(
+        this.localizationService.translate('core.not_found'),
+      );
+    }
+
+    const totalRequestCount = await this.requestRepository.count(
+      new QueryOptionsBuilder()
+        .filter({ organizationId: result.id })
+        .filter(
+          Sequelize.where(
+            Sequelize.fn('isnull', Sequelize.col('GSRequest.isDeleted'), 0),
+            {
+              [Op.eq]: 0,
+            },
+          ),
+        )
+        .build(),
+    );
+
+    let finishedRequestQuery = new QueryOptionsBuilder()
+      .include([
+        {
+          model: GSRequest,
+          as: 'guaranteeRequest',
+          required: true,
+        },
+        {
+          model: BPMNActivity,
+          as: 'activity',
+          required: true,
+        },
+      ])
+      .filter({ '$guaranteeRequest.organizationId$': result.id })
+      .filter({ '$activity.isEndActivity$': true });
+
+    const finishedRequestCount = await this.requestStateRepository.count(
+      finishedRequestQuery.build(),
+    );
+
+    let responseQuery = new QueryOptionsBuilder()
+      .attributes([
+        [
+          Sequelize.literal(`
+        ISNULL(CASE 
+          WHEN SUM([fromScore]) = 0 THEN 0 
+          ELSE SUM([totalScore]) / SUM([fromScore] * 100) 
+        END, 0)
+      `),
+          'averageScore',
+        ],
+      ])
+      .include([
+        {
+          attributes: [],
+          model: GSRequest,
+          as: 'request',
+          required: true,
+        },
+      ])
+      .filter({ '$request.organizationId$': result.id })
+      .raw(true);
+
+    const queryOptions = responseQuery.build();
+    queryOptions.limit = undefined;
+    queryOptions.offset = undefined;
+    queryOptions.order = [];
+
+    const surveyPoint = await this.responseRepository.findAll(queryOptions);
+
+    return {
+      result: {
+        organization: result,
+        totalRequestCount: totalRequestCount,
+        finishedRequestCount: finishedRequestCount,
+        averageScore: surveyPoint[0]['averageScore'],
+      },
     };
   }
 }
