@@ -2890,3 +2890,73 @@ END
 
 GO
 
+-- ec-shopping-cart-v1
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ec-shopping-cart-v1' 
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'SITE_NAME' AND [value] IN ('ecommerce'))
+		)
+BEGIN
+
+	CREATE TABLE ECShoppingCarts(
+		id								bigint identity(1,1)			PRIMARY KEY,
+		sessionId						nvarchar(256)					NOT NULL,
+		expire							datetime						NULL,
+		isPurchase						bit								NULL,
+		isDeleted						bit								NULL,
+		vendorId						int								NULL
+			CONSTRAINT FK_ECShoppingCarts_VendorId
+				FOREIGN KEY REFERENCES ECVendors(id),
+		shippingWayId					int 							NOT NULL
+			CONSTRAINT FK_ECShoppingCarts_ShippingWayId
+				FOREIGN KEY REFERENCES ECShippingWays(id),
+		
+		[createdAt]						datetimeoffset					NOT NULL,
+		[updatedAt]						datetimeoffset					NOT NULL
+	);
+
+
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'ec-shopping-cart-v1', GETDATE(), GETDATE()
+END
+
+GO
+
+-- ec-shopping-cart-product-v1
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ec-shopping-cart-product-v1' 
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'SITE_NAME' AND [value] IN ('ecommerce'))
+		)
+BEGIN
+
+	CREATE TABLE ECShoppingCartProducts(
+		id								bigint identity(1,1)			PRIMARY KEY,
+		shoppingCartId					bigint							NOT NULL
+			CONSTRAINT FK_ECShoppingCartProducts_ShoppingCartId
+				FOREIGN KEY REFERENCES ECShoppingCarts(id),
+		productId						bigint							NOT NULL
+			CONSTRAINT FK_ECShoppingCartProducts_ProductId
+				FOREIGN KEY REFERENCES ECProducts(id),
+		inventoryId						bigint							NOT NULL
+			CONSTRAINT FK_ECShoppingCartProducts_InventoryId
+				FOREIGN KEY REFERENCES ECInventories(id),	
+		qty								int								NOT NULL,
+		isDeleted						bit								NULL,
+		[createdAt]						datetimeoffset					NOT NULL,
+		[updatedAt]						datetimeoffset					NOT NULL
+	);
+
+
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'ec-shopping-cart-product-v1', GETDATE(), GETDATE()
+END
+
+GO
+
+
+

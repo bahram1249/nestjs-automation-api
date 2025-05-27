@@ -60,3 +60,5 @@ export * from './ec-wallet.entity';
 export * from './ec-entity-type-landing.entity';
 export * from './ec-linked-entity-type-brand.entity';
 export * from './ec-shippingway.entity';
+export * from './ec-shopping-cart.entity';
+export * from './ec-shopping-cart-product.entity';

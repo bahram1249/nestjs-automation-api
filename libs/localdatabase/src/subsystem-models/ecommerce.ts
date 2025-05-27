@@ -50,6 +50,8 @@ import {
   ECSelectedProductItem,
   ECSelectedProductType,
   ECShippingWay,
+  ECShoppingCart,
+  ECShoppingCartProduct,
   ECSlugVersion,
   ECSlugVersionType,
   ECStock,
@@ -126,4 +128,6 @@ export const ecommerceEntities = [
   ECEntityTypeLanding,
   ECLinkedEntityTypeBrand,
   ECShippingWay,
+  ECShoppingCart,
+  ECShoppingCartProduct,
 ];
