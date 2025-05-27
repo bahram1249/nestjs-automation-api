@@ -10,6 +10,7 @@ import { ECUserSession } from './ec-user-session.entity';
 import { ECProduct } from './ec-product.entity';
 import { ECInventory } from './ec-inventory.entity';
 import { AutoMap } from 'automapper-classes';
+import { ECVendor } from './ec-vendor.entity';
 
 @Table({ tableName: 'ECStocks' })
 export class ECStock extends Model {
@@ -70,4 +71,14 @@ export class ECStock extends Model {
     allowNull: true,
   })
   isDeleted?: boolean;
+
+  @Column({
+    type: DataType.INTEGER,
+    allowNull: true,
+  })
+  @ForeignKey(() => ECVendor)
+  vendorId?: number;
+
+  @BelongsTo(() => ECVendor, { as: 'vendor', foreignKey: 'vendorId' })
+  vendor?: ECVendor;
 }

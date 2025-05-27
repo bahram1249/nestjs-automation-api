@@ -19,14 +19,12 @@ export class ScriptRunnerService {
     const replacePattern = platform == 'win32' ? /^--.*$/g : /^--.*$/gm;
 
     for (const query of queries) {
-      var queryWithoutComment = query.replaceAll(replacePattern, '');
-      await this.sequelize.query(
-        queryWithoutComment.replaceAll(/\s\s+/g, ' '),
-        {
-          raw: true,
-          type: QueryTypes.RAW,
-        },
-      );
+      const queryWithoutComment = query.replaceAll(replacePattern, '');
+      //const replaceQuery = queryWithoutComment.replaceAll(/\s\s+/g, ' ');
+      await this.sequelize.query(queryWithoutComment, {
+        raw: true,
+        type: QueryTypes.RAW,
+      });
     }
   }
 }

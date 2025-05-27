@@ -1313,6 +1313,29 @@ GO
 
 
 
+-- ec-shippingway-v1
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ec-shippingway-v1' 
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'SITE_NAME' AND [value] IN ('ecommerce'))
+		)
+BEGIN
+
+	CREATE TABLE ECShippingWays(
+		id							int							PRIMARY KEY,
+		title						nvarchar(256)				NOT NULL,
+		[createdAt]					datetimeoffset				NOT NULL,
+		[updatedAt]					datetimeoffset				NOT NULL,
+	);
+
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'ec-shippingway-v1', GETDATE(), GETDATE()
+END
+
+GO
+
 -- ec-stocks-v1
 IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ec-stocks-v1' 
 			)
@@ -1366,6 +1389,30 @@ BEGIN
 
 	INSERT INTO Migrations(version, createdAt, updatedAt)
 	SELECT 'ec-stocks-v2', GETDATE(), GETDATE()
+END
+
+
+GO
+
+
+-- ec-stocks-v3
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ec-stocks-v3' 
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'SITE_NAME' AND [value] IN ('ecommerce'))
+		)
+BEGIN
+
+	ALTER TABLE ECStocks
+		ADD vendorId int null,
+			shippingWayId int null
+				CONSTRAINT FK_ECStocks_ShippingWayId
+					FOREIGN KEY REFERENCES ECShippingWays(id)
+			
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'ec-stocks-v3', GETDATE(), GETDATE()
 END
 
 

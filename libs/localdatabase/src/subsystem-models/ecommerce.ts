@@ -49,6 +49,7 @@ import {
   ECSelectedProduct,
   ECSelectedProductItem,
   ECSelectedProductType,
+  ECShippingWay,
   ECSlugVersion,
   ECSlugVersionType,
   ECStock,
@@ -124,4 +125,5 @@ export const ecommerceEntities = [
   ECWallet,
   ECEntityTypeLanding,
   ECLinkedEntityTypeBrand,
+  ECShippingWay,
 ];

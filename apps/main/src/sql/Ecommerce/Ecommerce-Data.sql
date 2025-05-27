@@ -2808,3 +2808,25 @@ END
 
 GO
 
+
+-- ec-shippingways-data-1
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ec-shippingways-Data-v1' 
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'SITE_NAME' AND [value] IN ('ecommerce'))
+		)
+BEGIN
+
+	INSERT INTO ECShippingWays(id, title ,createdAt, updatedAt)
+	VALUES (1, N'سوپر مارکتی(پیکی)', GETDATE(), GETDATE())
+			,(2, N'کالای بزرگ', GETDATE(), GETDATE())
+			
+			
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'ec-shippingways-Data-v1', GETDATE(), GETDATE()
+END
+
+GO
+
