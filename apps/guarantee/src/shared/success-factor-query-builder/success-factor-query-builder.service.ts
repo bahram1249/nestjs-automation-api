@@ -218,17 +218,19 @@ export class GSSuccessFactorQueryBuilderService {
       conditions.push(Sequelize.literal(` 1=1 `));
     }
 
+    const textConditions = [];
+
     if (dto.textFilter != null || dto.textFilter != '') {
-      conditions.push({
+      textConditions.push({
         '$user.phoneNumber$': dto.textFilter,
       });
-      conditions.push({
+      textConditions.push({
         '$user.nationalCode$': dto.textFilter,
       });
-      conditions.push({
+      textConditions.push({
         '$user.firstname$': dto.textFilter,
       });
-      conditions.push({
+      textConditions.push({
         '$user.lastname$': dto.textFilter,
       });
       // conditions.push({
@@ -239,7 +241,10 @@ export class GSSuccessFactorQueryBuilderService {
       // });
     }
 
-    this.builder = this.builder.filter({ [Op.or]: conditions });
+    this.builder = this.builder.filter({
+      [Op.and]: [{ [Op.or]: conditions }, { [Op.or]: textConditions }],
+    });
+
     return this;
   }
 
