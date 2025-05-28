@@ -5,9 +5,11 @@ import {
   DataType,
   ForeignKey,
   BelongsTo,
+  HasMany,
 } from 'sequelize-typescript';
 import { ECVendor } from './ec-vendor.entity';
 import { ECShippingWay } from './ec-shippingway.entity';
+import { ECShoppingCartProduct } from './ec-shopping-cart-product.entity';
 
 @Table({ tableName: 'ECShoppingCarts' })
 export class ECShoppingCart extends Model<ECShoppingCart> {
@@ -57,4 +59,10 @@ export class ECShoppingCart extends Model<ECShoppingCart> {
     foreignKey: 'shippingWayId',
   })
   shippingWay?: ECShippingWay;
+
+  @HasMany(() => ECShoppingCartProduct, {
+    as: 'shoppingCartProducts',
+    foreignKey: 'shoppingCartId',
+  })
+  shoppingCartProducts?: ECShoppingCartProduct[];
 }

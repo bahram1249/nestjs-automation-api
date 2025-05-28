@@ -5,6 +5,7 @@ import {
   IsArray,
   IsNotEmpty,
   IsNumber,
+  IsOptional,
   IsString,
   Matches,
   MaxLength,
@@ -14,21 +15,7 @@ import { i18nValidationMessage } from 'nestjs-i18n';
 import { AttachmentDto } from './attachment.dto';
 
 export class VipRequestDto {
-  @MinLength(10, {
-    message: i18nValidationMessage<I18nTranslations>(
-      'guarantee.the_min_character_of_request_description',
-    ),
-  })
-  @MaxLength(1024, {
-    message: i18nValidationMessage<I18nTranslations>(
-      'guarantee.the_max_character_of_request_description',
-    ),
-  })
-  @IsNotEmpty({
-    message: i18nValidationMessage<I18nTranslations>(
-      'guarantee.request_description_is_required',
-    ),
-  })
+  @IsOptional()
   @IsString()
   @AutoMap()
   description: string;
