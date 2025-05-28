@@ -111,7 +111,7 @@ export class AnonymousOrganizationService {
         id: item.id,
         name: item.organization.name,
         provinceName: item.address.province.name,
-        cityName: item.address.city.name,
+        cityName: item.address?.city?.name,
         code: item.code ?? null,
         fullName: item.user.firstname + ' ' + item.user.lastname,
       };
