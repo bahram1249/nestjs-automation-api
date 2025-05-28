@@ -46,23 +46,25 @@ export class GSSuccessFactorQueryBuilderService {
         ])
       : this.builder.include([]);
 
+    this.builder = this.builder.thenInclude({
+      model: User,
+      as: 'user',
+      attributes: [
+        'id',
+        'firstname',
+        'lastname',
+        'phoneNumber',
+        'nationalCode',
+      ],
+      required: true,
+    });
+
     return this;
   }
 
   requiredIncluded() {
     this.builder = this.builder
-      .thenInclude({
-        model: User,
-        as: 'user',
-        attributes: [
-          'id',
-          'firstname',
-          'lastname',
-          'phoneNumber',
-          'nationalCode',
-        ],
-        required: true,
-      })
+
       .thenInclude({
         model: GSFactorAdditionalPackage,
         as: 'factorAdditionalPackages',
@@ -222,6 +224,12 @@ export class GSSuccessFactorQueryBuilderService {
       });
       conditions.push({
         '$user.nationalCode$': dto.textFilter,
+      });
+      conditions.push({
+        '$user.firstname$': dto.textFilter,
+      });
+      conditions.push({
+        '$user.lastname$': dto.textFilter,
       });
       // conditions.push({
       //   '$guaranteeRequest.id$': dto.textFilter,
