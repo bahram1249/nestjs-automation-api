@@ -143,7 +143,7 @@ export class AnonymousOrganizationService {
               attributes: ['id', 'name'],
               model: GSCity,
               as: 'city',
-              required: true,
+              required: false,
             },
           ],
         },

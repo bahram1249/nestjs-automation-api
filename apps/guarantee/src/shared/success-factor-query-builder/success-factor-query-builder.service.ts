@@ -223,12 +223,12 @@ export class GSSuccessFactorQueryBuilderService {
       conditions.push({
         '$user.nationalCode$': dto.textFilter,
       });
-      conditions.push({
-        '$guaranteeRequest.id$': dto.textFilter,
-      });
-      conditions.push({
-        '$GSFactor.id$': dto.textFilter,
-      });
+      // conditions.push({
+      //   '$guaranteeRequest.id$': dto.textFilter,
+      // });
+      // conditions.push({
+      //   '$GSFactor.id$': dto.textFilter,
+      // });
     }
 
     this.builder = this.builder.filter({ [Op.or]: conditions });
