@@ -267,6 +267,18 @@ export class GuaranteeOrganizationService {
             phoneNumber: dto.user.phoneNumber,
           },
         })
+        .filter(
+          Sequelize.where(
+            Sequelize.fn(
+              'isnull',
+              Sequelize.col('GSGuaranteeOrganization.isDeleted'),
+              0,
+            ),
+            {
+              [Op.eq]: 0,
+            },
+          ),
+        )
         .build(),
     );
 
