@@ -46,6 +46,7 @@ export class FactorService {
         userId: user.id,
         organizationId: organizationId,
         showTotal: hasAdminRole || hasSuperVisorRole,
+        textFilter: filter.search,
       })
       .filterFactorId(filter.factorId)
       .dateGreaterThan(filter.greaterThan)

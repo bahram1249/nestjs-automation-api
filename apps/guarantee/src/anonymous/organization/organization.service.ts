@@ -54,7 +54,7 @@ export class AnonymousOrganizationService {
             {
               model: GSCity,
               as: 'city',
-              required: true,
+              required: false,
             },
           ],
         },

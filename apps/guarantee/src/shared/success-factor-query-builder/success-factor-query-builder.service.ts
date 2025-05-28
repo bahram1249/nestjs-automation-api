@@ -199,6 +199,7 @@ export class GSSuccessFactorQueryBuilderService {
     userId?: bigint;
     organizationId?: number;
     showTotal?: boolean;
+    textFilter?: string;
   }) {
     const conditions = [];
     if (dto.userId != null) {
@@ -212,6 +213,21 @@ export class GSSuccessFactorQueryBuilderService {
 
     if (dto.showTotal) {
       conditions.push(Sequelize.literal(` 1=1 `));
+    }
+
+    if (dto.textFilter != null || dto.textFilter != '') {
+      conditions.push({
+        '$user.phoneNumber$': dto.textFilter,
+      });
+      conditions.push({
+        '$user.nationalCode$': dto.textFilter,
+      });
+      conditions.push({
+        '$guaranteeRequest.id$': dto.textFilter,
+      });
+      conditions.push({
+        '$GSFactor.id$': dto.textFilter,
+      });
     }
 
     this.builder = this.builder.filter({ [Op.or]: conditions });
