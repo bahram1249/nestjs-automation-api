@@ -61,6 +61,7 @@ export class GSSuccessFactorQueryBuilderService {
           'phoneNumber',
           'nationalCode',
         ],
+        required: true,
       })
       .thenInclude({
         model: GSFactorAdditionalPackage,
