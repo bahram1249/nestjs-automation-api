@@ -222,16 +222,24 @@ export class GSSuccessFactorQueryBuilderService {
 
     if (dto.textFilter != null || dto.textFilter != '') {
       textConditions.push({
-        '$user.phoneNumber$': dto.textFilter,
+        '$user.phoneNumber$': {
+          [Op.like]: dto.textFilter,
+        },
       });
       textConditions.push({
-        '$user.nationalCode$': dto.textFilter,
+        '$user.nationalCode$': {
+          [Op.like]: dto.textFilter,
+        },
       });
       textConditions.push({
-        '$user.firstname$': dto.textFilter,
+        '$user.firstname$': {
+          [Op.like]: dto.textFilter,
+        },
       });
       textConditions.push({
-        '$user.lastname$': dto.textFilter,
+        '$user.lastname$': {
+          [Op.like]: dto.textFilter,
+        },
       });
       // conditions.push({
       //   '$guaranteeRequest.id$': dto.textFilter,
