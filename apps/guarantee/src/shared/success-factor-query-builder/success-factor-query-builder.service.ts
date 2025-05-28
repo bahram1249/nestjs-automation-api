@@ -249,8 +249,14 @@ export class GSSuccessFactorQueryBuilderService {
       // });
     }
 
+    const applyConditions = [{ [Op.or]: conditions }];
+
+    if (dto.textFilter != null && dto.textFilter != '') {
+      applyConditions.push({ [Op.or]: textConditions });
+    }
+
     this.builder = this.builder.filter({
-      [Op.and]: [{ [Op.or]: conditions }, { [Op.or]: textConditions }],
+      [Op.and]: applyConditions,
     });
 
     return this;
