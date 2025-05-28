@@ -46,22 +46,25 @@ export class GSSuccessFactorQueryBuilderService {
         ])
       : this.builder.include([]);
 
+    this.builder = this.builder.thenInclude({
+      model: User,
+      as: 'user',
+      attributes: [
+        'id',
+        'firstname',
+        'lastname',
+        'phoneNumber',
+        'nationalCode',
+      ],
+      required: true,
+    });
+
     return this;
   }
 
   requiredIncluded() {
     this.builder = this.builder
-      .thenInclude({
-        model: User,
-        as: 'user',
-        attributes: [
-          'id',
-          'firstname',
-          'lastname',
-          'phoneNumber',
-          'nationalCode',
-        ],
-      })
+
       .thenInclude({
         model: GSFactorAdditionalPackage,
         as: 'factorAdditionalPackages',
@@ -199,6 +202,7 @@ export class GSSuccessFactorQueryBuilderService {
     userId?: bigint;
     organizationId?: number;
     showTotal?: boolean;
+    textFilter?: string;
   }) {
     const conditions = [];
     if (dto.userId != null) {
@@ -214,7 +218,41 @@ export class GSSuccessFactorQueryBuilderService {
       conditions.push(Sequelize.literal(` 1=1 `));
     }
 
-    this.builder = this.builder.filter({ [Op.or]: conditions });
+    const textConditions = [];
+
+    if (dto.textFilter != null || dto.textFilter != '') {
+      textConditions.push({
+        '$user.phoneNumber$': {
+          [Op.like]: dto.textFilter,
+        },
+      });
+      textConditions.push({
+        '$user.nationalCode$': {
+          [Op.like]: dto.textFilter,
+        },
+      });
+      textConditions.push({
+        '$user.firstname$': {
+          [Op.like]: dto.textFilter,
+        },
+      });
+      textConditions.push({
+        '$user.lastname$': {
+          [Op.like]: dto.textFilter,
+        },
+      });
+      // conditions.push({
+      //   '$guaranteeRequest.id$': dto.textFilter,
+      // });
+      // conditions.push({
+      //   '$GSFactor.id$': dto.textFilter,
+      // });
+    }
+
+    this.builder = this.builder.filter({
+      [Op.and]: [{ [Op.or]: conditions }, { [Op.or]: textConditions }],
+    });
+
     return this;
   }
 
