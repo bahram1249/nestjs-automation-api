@@ -98,7 +98,7 @@ export class FaqService {
   async create(dto: FaqDto) {
     const duplicateItem = await this.repository.findOne(
       new QueryOptionsBuilder()
-        .filter({ title: dto.question })
+        .filter({ question: dto.question })
         .filter(
           Sequelize.where(
             Sequelize.fn('isnull', Sequelize.col('GSFaq.isDeleted'), 0),
@@ -148,7 +148,7 @@ export class FaqService {
 
     const duplicateItem = await this.repository.findOne(
       new QueryOptionsBuilder()
-        .filter({ title: dto.question })
+        .filter({ question: dto.question })
         .filter(
           Sequelize.where(
             Sequelize.fn('isnull', Sequelize.col('GSFaq.isDeleted'), 0),
