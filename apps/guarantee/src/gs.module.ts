@@ -107,6 +107,7 @@ import { BullModule } from '@nestjs/bullmq';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { AnonymousPublicReportModule } from './anonymous/public-report';
 import { GSFaqModule } from './admin/faq';
+import { GSAnonymousFaqModule } from './anonymous/faq';
 
 @Module({
   imports: [
@@ -248,6 +249,7 @@ import { GSFaqModule } from './admin/faq';
     }),
 
     GSFaqModule,
+    GSAnonymousFaqModule,
 
     // BullBoardModule.forRoot({
     //   route: '/queues',
