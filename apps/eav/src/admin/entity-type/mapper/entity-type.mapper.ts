@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { AutomapperProfile, InjectMapper } from 'automapper-nestjs';
-import { EntityTypeDto } from '../dto';
+import { EntityTypeDto, EntityTypeV2Dto } from '../dto';
 import { Mapper, createMap, forMember, ignore } from 'automapper-core';
 import { EAVEntityType } from '@rahino/localdatabase/models';
 
@@ -15,6 +15,13 @@ export class EntityTypeProfile extends AutomapperProfile {
       createMap(
         mapper,
         EntityTypeDto,
+        EAVEntityType,
+        forMember((dest) => dest.id, ignore()),
+      );
+
+      createMap(
+        mapper,
+        EntityTypeV2Dto,
         EAVEntityType,
         forMember((dest) => dest.id, ignore()),
       );

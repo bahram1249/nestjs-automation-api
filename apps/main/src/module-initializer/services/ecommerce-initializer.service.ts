@@ -46,5 +46,9 @@ export class ECommerceInitializerService
     await this.scriptRunnerService.runFromPath(
       './apps/main/src/sql/Ecommerce/Ecommerce-Data.sql',
     );
+
+    await this.scriptRunnerService.runFromPath(
+      './apps/main/src/sql/Ecommerce/Ecommerce-EAV-Table.sql',
+    );
   }
 }

@@ -16,6 +16,7 @@ import {
   UploadedFile,
   UseGuards,
   UseInterceptors,
+  Version,
 } from '@nestjs/common';
 import { CheckPermission } from '@rahino/permission-checker/decorator';
 import { PermissionGuard } from '@rahino/permission-checker/guard';
@@ -30,7 +31,7 @@ import {
 } from '@nestjs/swagger';
 
 import { JwtGuard } from '@rahino/auth';
-import { EntityTypeDto, GetEntityTypeDto } from './dto';
+import { EntityTypeDto, EntityTypeV2Dto, GetEntityTypeDto } from './dto';
 import { EntityTypeService } from './entity-type.service';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { GetUser } from '@rahino/auth';
@@ -63,12 +64,39 @@ export class EntityTypeController {
     return await this.service.findAll(filter);
   }
 
+  //@ApiBearerAuth()
+  @UseInterceptors(JsonResponseTransformInterceptor)
+  //@UseGuards(JwtGuard, PermissionGuard)
+  @ApiOperation({ description: 'show all entitytypes' })
+  @Version('2')
+  //@CheckPermission({ permissionSymbol: 'eav.admin.entitytype.getall' })
+  @Get('/')
+  @ApiQuery({
+    name: 'filter',
+    type: GetEntityTypeDto,
+    style: 'deepObject',
+    explode: true,
+  })
+  @HttpCode(HttpStatus.OK)
+  async findAllV2(@Query() filter: GetEntityTypeDto) {
+    return await this.service.findAllV2(filter);
+  }
+
   @UseInterceptors(JsonResponseTransformInterceptor)
   @ApiOperation({ description: 'show attribute by given slug' })
   @Get('/slug/:slug')
   @HttpCode(HttpStatus.OK)
   async findBySlug(@Param('slug') slug: string) {
     return await this.service.findBySlug(slug);
+  }
+
+  @Version('2')
+  @UseInterceptors(JsonResponseTransformInterceptor)
+  @ApiOperation({ description: 'show attribute by given slug' })
+  @Get('/slug/:slug')
+  @HttpCode(HttpStatus.OK)
+  async findBySlugV2(@Param('slug') slug: string) {
+    return await this.service.findBySlugV2(slug);
   }
 
   @ApiBearerAuth()
@@ -82,6 +110,18 @@ export class EntityTypeController {
     return await this.service.findById(entityId);
   }
 
+  @Version('v2')
+  @ApiBearerAuth()
+  @UseInterceptors(JsonResponseTransformInterceptor)
+  @UseGuards(JwtGuard, PermissionGuard)
+  @ApiOperation({ description: 'show attribute by given id' })
+  @CheckPermission({ permissionSymbol: 'eav.admin.entitytype.getone' })
+  @Get('/:id')
+  @HttpCode(HttpStatus.OK)
+  async findByIdV2(@Param('id') entityId: number) {
+    return await this.service.findByIdV2(entityId);
+  }
+
   @ApiBearerAuth()
   @UseInterceptors(JsonResponseTransformInterceptor)
   @UseGuards(JwtGuard, PermissionGuard)
@@ -93,6 +133,19 @@ export class EntityTypeController {
     return await this.service.create(dto);
   }
 
+  @Version('2')
+  @ApiBearerAuth()
+  @UseInterceptors(JsonResponseTransformInterceptor)
+  @UseGuards(JwtGuard, PermissionGuard)
+  @ApiOperation({ description: 'create entity type by modeltypeid' })
+  @CheckPermission({ permissionSymbol: 'eav.admin.entitytype.create' })
+  @Post('/')
+  @HttpCode(HttpStatus.CREATED)
+  async createV2(@Body() dto: EntityTypeV2Dto) {
+    return await this.service.createV2(dto);
+  }
+
+  @Version('2')
   @ApiBearerAuth()
   @UseInterceptors(JsonResponseTransformInterceptor)
   @UseGuards(JwtGuard, PermissionGuard)
@@ -100,8 +153,8 @@ export class EntityTypeController {
   @CheckPermission({ permissionSymbol: 'eav.admin.entitytype.update' })
   @Put('/:id')
   @HttpCode(HttpStatus.OK)
-  async update(@Param('id') entityId: number, @Body() dto: EntityTypeDto) {
-    return await this.service.update(entityId, dto);
+  async updateV2(@Param('id') entityId: number, @Body() dto: EntityTypeV2Dto) {
+    return await this.service.updateV2(entityId, dto);
   }
 
   @ApiBearerAuth()

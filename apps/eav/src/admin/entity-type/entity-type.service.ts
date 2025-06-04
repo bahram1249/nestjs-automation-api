@@ -9,8 +9,8 @@ import { InjectModel } from '@nestjs/sequelize';
 import { Op, Sequelize } from 'sequelize';
 import { InjectMapper } from 'automapper-nestjs';
 import { Mapper } from 'automapper-core';
-import { EAVEntityType } from '@rahino/localdatabase/models';
-import { EntityTypeDto, GetEntityTypeDto } from './dto';
+import { EAVEntityType, ECShippingWay } from '@rahino/localdatabase/models';
+import { EntityTypeDto, EntityTypeV2Dto, GetEntityTypeDto } from './dto';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import { EAVEntityModel } from '@rahino/localdatabase/models';
 import * as _ from 'lodash';
@@ -32,6 +32,8 @@ export class EntityTypeService {
     private readonly entityModelRepository: typeof EAVEntityModel,
     @InjectModel(Attachment)
     private readonly attachmentRepository: typeof Attachment,
+    @InjectModel(ECShippingWay)
+    private readonly shippingWayRepository: typeof ECShippingWay,
     private minioClientService: MinioClientService,
     @InjectMapper()
     private readonly mapper: Mapper,
@@ -169,6 +171,143 @@ export class EntityTypeService {
     };
   }
 
+  async findAllV2(filter: GetEntityTypeDto) {
+    let builder = new QueryOptionsBuilder()
+      .filter({
+        name: {
+          [Op.like]: filter.search,
+        },
+      })
+      .filter(
+        Sequelize.where(
+          Sequelize.fn('isnull', Sequelize.col('EAVEntityType.isDeleted'), 0),
+          {
+            [Op.eq]: 0,
+          },
+        ),
+      );
+    if (filter.entityModelId) {
+      builder = builder.filter({
+        entityModelId: filter.entityModelId,
+      });
+    }
+    if (filter.parentEntityTypeId) {
+      builder = builder.filter({
+        parentEntityTypeId: filter.parentEntityTypeId,
+      });
+    }
+    if (filter.ignoreChilds) {
+      builder = builder.filter({
+        parentEntityTypeId: {
+          [Op.is]: null,
+        },
+      });
+    }
+    const count = await this.repository.count(builder.build());
+    builder = builder
+      .include([
+        {
+          attributes: ['id', 'fileName'],
+          model: Attachment,
+          as: 'attachment',
+          required: false,
+        },
+        {
+          attributes: ['id', 'name'],
+          model: EAVEntityModel,
+          as: 'entityModel',
+        },
+        {
+          attributes: ['id', 'name', 'slug'],
+          model: EAVEntityType,
+          as: 'parentEntityType',
+          required: false,
+          include: [
+            {
+              attributes: ['id', 'fileName'],
+              model: Attachment,
+              as: 'attachment',
+              required: false,
+            },
+          ],
+        },
+        {
+          attributes: ['id', 'name', 'slug'],
+          model: EAVEntityType,
+          as: 'subEntityTypes',
+          required: false,
+          where: Sequelize.where(
+            Sequelize.fn(
+              'isnull',
+              Sequelize.col('subEntityTypes.isDeleted'),
+              0,
+            ),
+            {
+              [Op.eq]: 0,
+            },
+          ),
+          include: [
+            {
+              attributes: ['id', 'name', 'slug'],
+              model: EAVEntityType,
+              as: 'subEntityTypes',
+              required: false,
+              where: Sequelize.where(
+                Sequelize.fn(
+                  'isnull',
+                  Sequelize.col('subEntityTypes.subEntityTypes.isDeleted'),
+                  0,
+                ),
+                {
+                  [Op.eq]: 0,
+                },
+              ),
+              include: [
+                {
+                  attributes: ['id', 'fileName'],
+                  model: Attachment,
+                  as: 'attachment',
+                  required: false,
+                },
+              ],
+            },
+            {
+              attributes: ['id', 'fileName'],
+              model: Attachment,
+              as: 'attachment',
+              required: false,
+            },
+            {
+              attributes: ['id', 'title'],
+              model: ECShippingWay,
+              as: 'shippingWay',
+              required: false,
+            },
+          ],
+        },
+      ])
+      .attributes([
+        'id',
+        'name',
+        'slug',
+        'parentEntityTypeId',
+        'entityModelId',
+        'priority',
+        'showLanding',
+        'shippingWayId',
+        'createdAt',
+        'updatedAt',
+      ])
+      .limit(filter.limit, filter.ignorePaging)
+      .offset(filter.offset, filter.ignorePaging)
+      .order({ orderBy: filter.orderBy, sortOrder: filter.sortOrder });
+    const options = builder.build();
+    return {
+      result: await this.repository.findAll(options),
+      total: count,
+    };
+  }
+
   async findById(id: number) {
     const builder = new QueryOptionsBuilder()
       .attributes([
@@ -240,7 +379,7 @@ export class EntityTypeService {
     };
   }
 
-  async findByIdAnyway(id: number) {
+  async findByIdV2(id: number) {
     const builder = new QueryOptionsBuilder()
       .attributes([
         'id',
@@ -254,6 +393,7 @@ export class EntityTypeService {
         'description',
         'priority',
         'showLanding',
+        'shippingWayId',
         'isDeleted',
         'createdAt',
         'updatedAt',
@@ -283,6 +423,90 @@ export class EntityTypeService {
               required: false,
             },
           ],
+        },
+        {
+          attributes: ['id', 'title'],
+          model: ECShippingWay,
+          as: 'shippingWay',
+          required: false,
+        },
+      ])
+      .filter({ id });
+    // .filter(
+    //   Sequelize.where(
+    //     Sequelize.fn('isnull', Sequelize.col('EAVEntityType.isDeleted'), 0),
+    //     {
+    //       [Op.eq]: 0,
+    //     },
+    //   ),
+    // );
+    const result = await this.repository.findOne(builder.build());
+
+    if (!result) {
+      throw new NotFoundException(
+        this.localizationService.translate('core.not_found_id'),
+      );
+    }
+
+    if (result.isDeleted) {
+      throw new GoneException('item is deleted!');
+    }
+
+    return {
+      result: result,
+    };
+  }
+
+  async findByIdAnyway(id: number) {
+    const builder = new QueryOptionsBuilder()
+      .attributes([
+        'id',
+        'name',
+        'slug',
+        'parentEntityTypeId',
+        'entityModelId',
+        'metaTitle',
+        'metaKeywords',
+        'metaDescription',
+        'description',
+        'priority',
+        'showLanding',
+        'shippingWayId',
+        'isDeleted',
+        'createdAt',
+        'updatedAt',
+      ])
+      .include([
+        {
+          attributes: ['id', 'fileName'],
+          model: Attachment,
+          as: 'attachment',
+          required: false,
+        },
+        {
+          attributes: ['id', 'name'],
+          model: EAVEntityModel,
+          as: 'entityModel',
+        },
+        {
+          attributes: ['id', 'name', 'slug'],
+          model: EAVEntityType,
+          as: 'parentEntityType',
+          required: false,
+          include: [
+            {
+              attributes: ['id', 'fileName'],
+              model: Attachment,
+              as: 'attachment',
+              required: false,
+            },
+          ],
+        },
+        {
+          attributes: ['id', 'title'],
+          model: ECShippingWay,
+          as: 'shippingWay',
+          required: false,
         },
       ])
       .filter({ id });
@@ -336,6 +560,84 @@ export class EntityTypeService {
               required: false,
             },
           ],
+        },
+      ])
+      .filter({ slug: slug });
+    // .filter(
+    //   Sequelize.where(
+    //     Sequelize.fn('isnull', Sequelize.col('EAVEntityType.isDeleted'), 0),
+    //     {
+    //       [Op.eq]: 0,
+    //     },
+    //   ),
+    // );
+    const result = await this.repository.findOne(builder.build());
+
+    if (!result) {
+      throw new NotFoundException(
+        this.localizationService.translate('core.not_found_slug'),
+      );
+    }
+
+    if (result.isDeleted) {
+      throw new GoneException('item is deleted!');
+    }
+
+    return {
+      result: result,
+    };
+  }
+
+  async findBySlugV2(slug: string) {
+    const builder = new QueryOptionsBuilder()
+      .attributes([
+        'id',
+        'name',
+        'slug',
+        'parentEntityTypeId',
+        'entityModelId',
+        'metaTitle',
+        'metaKeywords',
+        'metaDescription',
+        'description',
+        'priority',
+        'showLanding',
+        'shippingWayId',
+        'isDeleted',
+        'createdAt',
+        'updatedAt',
+      ])
+      .include([
+        {
+          attributes: ['id', 'fileName'],
+          model: Attachment,
+          as: 'attachment',
+          required: false,
+        },
+        {
+          attributes: ['id', 'name'],
+          model: EAVEntityModel,
+          as: 'entityModel',
+        },
+        {
+          attributes: ['id', 'name', 'slug'],
+          model: EAVEntityType,
+          as: 'parentEntityType',
+          required: false,
+          include: [
+            {
+              attributes: ['id', 'fileName'],
+              model: Attachment,
+              as: 'attachment',
+              required: false,
+            },
+          ],
+        },
+        {
+          attributes: ['id', 'title'],
+          model: ECShippingWay,
+          as: 'shippingWay',
+          required: false,
         },
       ])
       .filter({ slug: slug });
@@ -457,6 +759,115 @@ export class EntityTypeService {
     };
   }
 
+  async createV2(dto: EntityTypeV2Dto) {
+    const entityModel = await this.entityModelRepository.findOne({
+      where: {
+        id: dto.entityModelId,
+      },
+    });
+    if (!entityModel) {
+      throw new ForbiddenException('the given entityModelId not founded!');
+    }
+
+    if (dto.parentEntityTypeId) {
+      const entityTypeParent = await this.repository.findOne({
+        where: {
+          id: dto.parentEntityTypeId,
+          entityModelId: dto.entityModelId,
+        },
+      });
+      if (!entityTypeParent) {
+        throw new ForbiddenException(
+          'the given parentEntityTypeId not founded!',
+        );
+      }
+    }
+    const searchSlug = await this.repository.findOne(
+      new QueryOptionsBuilder()
+        .filter({ slug: dto.slug })
+        .filter(
+          Sequelize.where(
+            Sequelize.fn('isnull', Sequelize.col('EAVEntityType.isDeleted'), 0),
+            {
+              [Op.eq]: 0,
+            },
+          ),
+        )
+        .build(),
+    );
+    if (searchSlug) {
+      throw new BadRequestException(
+        this.localizationService.translate(
+          'core.the_given_slug_is_exists_before',
+        ),
+      );
+    }
+
+    const shippingWay = await this.shippingWayRepository.findOne(
+      new QueryOptionsBuilder().filter({ id: dto.shippingWayId }).build(),
+    );
+
+    if (!shippingWay) {
+      throw new BadRequestException('the given shippingWayId not founded!');
+    }
+
+    const mappedItem = this.mapper.map(dto, EntityTypeV2Dto, EAVEntityType);
+    let entityType = await this.repository.create(
+      _.omit(mappedItem.toJSON(), ['id']),
+    );
+    let builder = new QueryOptionsBuilder();
+    const options = builder
+      .attributes([
+        'id',
+        'name',
+        'slug',
+        'parentEntityTypeId',
+        'entityModelId',
+        'metaTitle',
+        'metaKeywords',
+        'metaDescription',
+        'description',
+        'priority',
+        'showLanding',
+        'shippingWayId',
+        'createdAt',
+        'updatedAt',
+      ])
+      .filter({ id: entityType.id })
+      .include([
+        {
+          attributes: ['id', 'name'],
+          model: EAVEntityModel,
+          as: 'entityModel',
+        },
+        {
+          attributes: ['id', 'name', 'slug'],
+          model: EAVEntityType,
+          as: 'parentEntityType',
+          required: false,
+          include: [
+            {
+              attributes: ['id', 'fileName'],
+              model: Attachment,
+              as: 'attachment',
+              required: false,
+            },
+          ],
+        },
+        {
+          attributes: ['id', 'title'],
+          model: ECShippingWay,
+          as: 'shippingWay',
+          required: false,
+        },
+      ])
+      .build();
+
+    return {
+      result: await this.repository.findOne(options),
+    };
+  }
+
   async update(id: number, dto: EntityTypeDto) {
     let item = await this.repository.findOne(
       new QueryOptionsBuilder()
@@ -562,6 +973,133 @@ export class EntityTypeService {
               required: false,
             },
           ],
+        },
+      ])
+      .build();
+    return {
+      result: await this.repository.findOne(options),
+    };
+  }
+
+  async updateV2(id: number, dto: EntityTypeV2Dto) {
+    let item = await this.repository.findOne(
+      new QueryOptionsBuilder()
+        .filter({ id })
+        .filter(
+          Sequelize.where(
+            Sequelize.fn('isnull', Sequelize.col('EAVEntityType.isDeleted'), 0),
+            {
+              [Op.eq]: 0,
+            },
+          ),
+        )
+        .build(),
+    );
+    if (!item) {
+      throw new NotFoundException(
+        this.localizationService.translate('core.not_found_id'),
+      );
+    }
+
+    const entityModel = await this.entityModelRepository.findOne({
+      where: {
+        id: dto.entityModelId,
+      },
+    });
+    if (!entityModel) {
+      throw new ForbiddenException('the given entityModelId not founded!');
+    }
+
+    if (dto.parentEntityTypeId) {
+      const entityTypeParent = await this.repository.findOne({
+        where: {
+          id: dto.parentEntityTypeId,
+          entityModelId: dto.entityModelId,
+        },
+      });
+      if (!entityTypeParent) {
+        throw new ForbiddenException(
+          'the given parentEntityTypeId not founded!',
+        );
+      }
+    }
+
+    const searchSlug = await this.repository.findOne(
+      new QueryOptionsBuilder()
+        .filter({ slug: dto.slug })
+        .filter({
+          id: {
+            [Op.ne]: id,
+          },
+        })
+        .filter(
+          Sequelize.where(
+            Sequelize.fn('isnull', Sequelize.col('EAVEntityType.isDeleted'), 0),
+            {
+              [Op.eq]: 0,
+            },
+          ),
+        )
+        .build(),
+    );
+    if (searchSlug) {
+      throw new BadRequestException(
+        this.localizationService.translate(
+          'core.the_given_slug_is_exists_before',
+        ),
+      );
+    }
+
+    const shippingWay = await this.shippingWayRepository.findOne(
+      new QueryOptionsBuilder().filter({ id: dto.shippingWayId }).build(),
+    );
+
+    if (!shippingWay) {
+      throw new BadRequestException('the given shippingWayId not founded!');
+    }
+
+    const mappedItem = this.mapper.map(dto, EntityTypeV2Dto, EAVEntityType);
+    let entityType = await this.repository.update(
+      _.omit(mappedItem.toJSON(), ['id']),
+      {
+        where: { id },
+        returning: true,
+      },
+    );
+    let builder = new QueryOptionsBuilder();
+    const options = builder
+      .filter({ id: entityType[1][0].id })
+      .include([
+        {
+          attributes: ['id', 'fileName'],
+          model: Attachment,
+          as: 'attachment',
+          required: false,
+        },
+        {
+          attributes: ['id', 'name'],
+          model: EAVEntityModel,
+          as: 'entityModel',
+        },
+        {
+          attributes: ['id', 'name', 'slug'],
+          model: EAVEntityType,
+          as: 'parentEntityType',
+          required: false,
+          include: [
+            {
+              attributes: ['id', 'fileName'],
+              model: Attachment,
+              as: 'attachment',
+              required: false,
+            },
+          ],
+        },
+        {
+          attributes: ['id', 'title'],
+          model: ECShippingWay,
+          as: 'shippingWay',
+          required: false,
         },
       ])
       .build();

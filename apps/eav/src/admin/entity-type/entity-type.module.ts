@@ -8,7 +8,7 @@ import { EntityTypeController } from './entity-type.controller';
 import { EntityTypeService } from './entity-type.service';
 import { EntityTypeProfile } from './mapper';
 import { SequelizeModule } from '@nestjs/sequelize';
-import { EAVEntityType } from '@rahino/localdatabase/models';
+import { EAVEntityType, ECShippingWay } from '@rahino/localdatabase/models';
 import { User } from '@rahino/database';
 import { Permission } from '@rahino/database';
 import { EAVEntityModel } from '@rahino/localdatabase/models';
@@ -27,6 +27,7 @@ import { LocalizationModule } from 'apps/main/src/common/localization';
       EAVEntityType,
       EAVEntityModel,
       Attachment,
+      ECShippingWay,
     ]),
     MinioClientModule,
     ThumbnailModule.registerAsync({
