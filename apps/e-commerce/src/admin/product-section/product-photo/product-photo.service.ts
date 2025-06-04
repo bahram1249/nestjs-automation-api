@@ -170,6 +170,7 @@ export class ProductPhotoService {
           transaction: transaction,
         },
       );
+      priority++;
     }
   }
 
