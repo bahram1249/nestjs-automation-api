@@ -339,7 +339,7 @@ BEGIN
 		attachmentId				bigint						NOT NULL,
 		[createdAt]					datetimeoffset				NOT NULL,
 		[updatedAt]					datetimeoffset				NOT NULL,
-		PRIMARY KEY CLUSTERED(entityId, attachmentId),
+		CONSTRAINT PK_EAVEntityPhotos PRIMARY KEY CLUSTERED(entityId, attachmentId),
 	);
 
 
@@ -350,6 +350,48 @@ END
 
 GO
 
+
+
+-- eav product photos
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'eav-product-photos-v2' 
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'SITE_NAME' AND [value] IN ('ecommerce'))
+		)
+BEGIN
+
+	ALTER TABLE EAVEntityPhotos ADD [priority] int not null DEFAULT 0
+
+
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'eav-product-photos-v2', GETDATE(), GETDATE()
+END
+
+GO
+
+
+-- eav product photos
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'eav-product-photos-v3' 
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'SITE_NAME' AND [value] IN ('ecommerce'))
+		)
+BEGIN
+
+	ALTER TABLE EAVEntityPhotos 
+		ADD CONSTRAINT PK_EAVEntityPhotos 
+			PRIMARY KEY CLUSTERED (entityId, [priority], attachmentId)
+
+
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'eav-product-photos-v3', GETDATE(), GETDATE()
+END
+
+GO
 
 -- eav products videos
 IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'eav-product-videos-v1' 

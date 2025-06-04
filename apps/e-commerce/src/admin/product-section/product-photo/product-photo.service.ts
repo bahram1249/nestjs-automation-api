@@ -134,6 +134,7 @@ export class ProductPhotoService {
     photos?: PhotoDto[],
     transaction?: Transaction,
   ) {
+    let priority = 1;
     for (const photo of photos) {
       let findAttachment = await this.attachmentRepository.findOne(
         new QueryOptionsBuilder()
@@ -163,6 +164,7 @@ export class ProductPhotoService {
         {
           entityId: productId,
           attachmentId: findAttachment.id,
+          priority: priority,
         },
         {
           transaction: transaction,

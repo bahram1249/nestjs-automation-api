@@ -35,4 +35,10 @@ export class EAVEntityPhoto extends Model {
     foreignKey: 'attachmentId',
   })
   attachment?: Attachment;
+
+  @Column({
+    type: DataType.INTEGER,
+    allowNull: true,
+  })
+  priority?: number;
 }
