@@ -11,7 +11,7 @@ import { Permission } from '@rahino/database';
 import { User } from '@rahino/database';
 import { VendorProfile } from './mapper';
 import { UserRoleModule } from '@rahino/core/admin/user-role/user-role.module';
-import { ECVendor } from '@rahino/localdatabase/models';
+import { ECCity, ECProvince, ECVendor } from '@rahino/localdatabase/models';
 import { ECVendorUser } from '@rahino/localdatabase/models';
 import { Role } from '@rahino/database';
 import { MinioClientModule } from '@rahino/minio-client';
@@ -22,6 +22,7 @@ import { ConfigService } from '@nestjs/config';
 import { SessionModule } from '../../user/session/session.module';
 import { ECVariationPrice } from '@rahino/localdatabase/models';
 import { ECVendorCommission } from '@rahino/localdatabase/models';
+import { LocalizationModule } from 'apps/main/src/common/localization';
 
 @Module({
   imports: [
@@ -37,8 +38,11 @@ import { ECVendorCommission } from '@rahino/localdatabase/models';
       Attachment,
       ECVariationPrice,
       ECVendorCommission,
+      ECProvince,
+      ECCity,
     ]),
     SequelizeModule,
+    LocalizationModule,
     ThumbnailModule.registerAsync({
       inject: [ConfigService],
       useFactory: (config: ConfigService) => ({

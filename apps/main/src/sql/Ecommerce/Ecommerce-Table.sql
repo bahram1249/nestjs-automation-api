@@ -372,6 +372,50 @@ END
 GO
 
 
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ecommerce-vendors-v3' 
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'SITE_NAME' AND [value] IN ('ecommerce'))
+		)
+BEGIN
+
+	ALTER TABLE ECVendors 
+		ADD coordinates GEOGRAPHY NULL,
+			provinceId int null
+				CONSTRAINT FK_ECVendors_ProvinceId
+					FOREIGN KEY REFERENCES ECProvinces(id),
+			cityId int null
+				CONSTRAINT FK_ECVendors_CityId
+					FOREIGN KEY REFERENCES ECCities(id)
+
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'ecommerce-vendors-v3', GETDATE(), GETDATE()
+END
+
+GO
+
+
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ecommerce-vendors-v4' 
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'SITE_NAME' AND [value] IN ('ecommerce'))
+		)
+BEGIN
+
+	ALTER TABLE ECVendors 
+		ADD latitude nvarchar(256),
+			longitude nvarchar(256)
+
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'ecommerce-vendors-v4', GETDATE(), GETDATE()
+END
+
+GO
+
 
 IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ecommerce-vendorusers-v1' 
 			)

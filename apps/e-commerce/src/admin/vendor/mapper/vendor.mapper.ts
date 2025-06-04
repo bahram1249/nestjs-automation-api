@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { AutomapperProfile, InjectMapper } from 'automapper-nestjs';
-import { VendorDto, VendorUserDto } from '../dto';
+import { VendorDto, VendorUserDto, VendorV2Dto } from '../dto';
 import { Mapper, createMap, forMember, ignore } from 'automapper-core';
 import { ECVendor } from '@rahino/localdatabase/models';
 import { User } from '@rahino/database';
@@ -16,6 +16,13 @@ export class VendorProfile extends AutomapperProfile {
       createMap(
         mapper,
         VendorDto,
+        ECVendor,
+        forMember((dest) => dest.id, ignore()),
+      );
+
+      createMap(
+        mapper,
+        VendorV2Dto,
         ECVendor,
         forMember((dest) => dest.id, ignore()),
       );

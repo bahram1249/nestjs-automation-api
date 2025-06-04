@@ -13,6 +13,8 @@ import { User } from '@rahino/database';
 import { AutoMap } from 'automapper-classes';
 import { ECVendorUser } from './ec-vendor-user.entity';
 import { ECVendorCommission } from './ec-vendor-commision.entity';
+import { ECProvince } from './ec-province.entity';
+import { ECCity } from './ec-city.entity';
 
 @Table({ tableName: 'ECVendors' })
 export class ECVendor extends Model {
@@ -116,4 +118,47 @@ export class ECVendor extends Model {
     sourceKey: 'id',
   })
   commissions: ECVendorCommission[];
+
+  @AutoMap()
+  @Column({
+    type: DataType.GEOGRAPHY('POINT', 4326),
+    allowNull: true,
+  })
+  coordinates: object;
+
+  @AutoMap()
+  @Column({
+    type: DataType.INTEGER,
+    allowNull: true,
+  })
+  @ForeignKey(() => ECProvince)
+  provinceId?: number;
+
+  @BelongsTo(() => ECProvince, { foreignKey: 'provinceId', as: 'province' })
+  province?: ECProvince;
+
+  @AutoMap()
+  @Column({
+    type: DataType.STRING,
+    allowNull: true,
+  })
+  @ForeignKey(() => ECCity)
+  cityId?: number;
+
+  @BelongsTo(() => ECCity, { foreignKey: 'cityId', as: 'city' })
+  city?: ECCity;
+
+  @Column({
+    type: DataType.STRING,
+    allowNull: true,
+  })
+  @AutoMap()
+  latitude?: string;
+
+  @Column({
+    type: DataType.STRING,
+    allowNull: true,
+  })
+  @AutoMap()
+  longitude?: string;
 }

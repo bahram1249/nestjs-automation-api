@@ -1,4 +1,6 @@
 {
+  "city_not_found": "city not founded!",
+  "province_not_found": "province not founded!",
   "at_least_inventory_qty_must_be_greater_than_zero": "at least inventory qty must be greater than zero",
   "the_inventory_isnt_available": "the inventory isn't available",
   "user_exists_before": "the user you enter exists before",
