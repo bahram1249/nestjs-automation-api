@@ -24,11 +24,20 @@ export class FaqService {
   ) {}
 
   async findAll(filter: GetFaqDto) {
-    let query = new QueryOptionsBuilder().filter({
-      question: {
-        [Op.like]: filter.search,
-      },
-    });
+    let query = new QueryOptionsBuilder()
+      .filter({
+        question: {
+          [Op.like]: filter.search,
+        },
+      })
+      .filter(
+        Sequelize.where(
+          Sequelize.fn('isnull', Sequelize.col('GSFaq.isDeleted'), 0),
+          {
+            [Op.eq]: 0,
+          },
+        ),
+      );
 
     const count = await this.repository.count(query.build());
 
@@ -64,6 +73,14 @@ export class FaqService {
           'createdAt',
           'updatedAt',
         ])
+        .filter(
+          Sequelize.where(
+            Sequelize.fn('isnull', Sequelize.col('GSFaq.isDeleted'), 0),
+            {
+              [Op.eq]: 0,
+            },
+          ),
+        )
         .filter({ id: entityId })
         .build(),
     );
@@ -80,7 +97,17 @@ export class FaqService {
 
   async create(dto: FaqDto) {
     const duplicateItem = await this.repository.findOne(
-      new QueryOptionsBuilder().filter({ title: dto.question }).build(),
+      new QueryOptionsBuilder()
+        .filter({ title: dto.question })
+        .filter(
+          Sequelize.where(
+            Sequelize.fn('isnull', Sequelize.col('GSFaq.isDeleted'), 0),
+            {
+              [Op.eq]: 0,
+            },
+          ),
+        )
+        .build(),
     );
     if (duplicateItem) {
       throw new BadRequestException(
@@ -100,7 +127,17 @@ export class FaqService {
 
   async updateById(id: number, dto: FaqDto) {
     const updatedItem = await this.repository.findOne(
-      new QueryOptionsBuilder().filter({ id: id }).build(),
+      new QueryOptionsBuilder()
+        .filter({ id: id })
+        .filter(
+          Sequelize.where(
+            Sequelize.fn('isnull', Sequelize.col('GSFaq.isDeleted'), 0),
+            {
+              [Op.eq]: 0,
+            },
+          ),
+        )
+        .build(),
     );
 
     if (!updatedItem) {
@@ -112,6 +149,14 @@ export class FaqService {
     const duplicateItem = await this.repository.findOne(
       new QueryOptionsBuilder()
         .filter({ title: dto.question })
+        .filter(
+          Sequelize.where(
+            Sequelize.fn('isnull', Sequelize.col('GSFaq.isDeleted'), 0),
+            {
+              [Op.eq]: 0,
+            },
+          ),
+        )
         .filter({
           id: {
             [Op.ne]: id,
