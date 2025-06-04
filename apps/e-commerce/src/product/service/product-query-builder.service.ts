@@ -560,11 +560,11 @@ export class ProductQueryBuilderService {
       'price',
       'asc',
     ]);
-    queryResultBuilder = queryResultBuilder.order([
-      { model: Attachment, as: 'attachments' },
-      'id',
-      'asc',
-    ]);
+    // queryResultBuilder = queryResultBuilder.order([
+    //   { model: Attachment, as: 'attachments' },
+    //   'id',
+    //   'asc',
+    // ]);
     return {
       resultQuery: queryResultBuilder.build(),
       countQuery: queryBuilder.build(),

@@ -30,6 +30,7 @@ import {
   ECInventoryPrice,
   ECVariationPrice,
   ECPublishStatus,
+  EAVEntityPhoto,
 } from '@rahino/localdatabase/models';
 import { User, Attachment } from '@rahino/database';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
@@ -371,6 +372,10 @@ export class ProductService {
           model: Attachment,
           as: 'attachments',
           required: false,
+          through: { attributes: ['priority'] },
+          order: [
+            [{ model: EAVEntityPhoto, as: 'productPhotos' }, 'priority', 'asc'],
+          ],
         },
         {
           attributes: ['id', 'fileName'],
@@ -626,9 +631,14 @@ export class ProductService {
             model: Attachment,
             as: 'attachments',
             required: false,
-            through: {
-              attributes: [],
-            },
+            through: { attributes: ['priority'] },
+            order: [
+              [
+                { model: EAVEntityPhoto, as: 'productPhotos' },
+                'priority',
+                'asc',
+              ],
+            ],
           },
           {
             attributes: ['id', 'fileName'],
