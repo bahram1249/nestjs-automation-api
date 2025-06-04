@@ -10,13 +10,10 @@ import { JwtModule } from '@nestjs/jwt';
 import { Menu } from '@rahino/database';
 import { RolePermission } from '@rahino/database';
 import { PermissionMenu } from '@rahino/database';
-import { SmsSenderModule } from '@rahino/guarantee/shared/sms-sender';
 import { LOGIN_SMS_SENDER_QUEUE } from '@rahino/guarantee/job/login-sms-sender/constants';
 import { BullModule } from '@nestjs/bullmq';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { LocalizationModule } from 'apps/main/src/common/localization';
-import { BullBoardModule } from '@bull-board/nestjs';
-import { BullMQAdapter } from '@bull-board/api/bullMQAdapter';
 
 @Module({
   imports: [
@@ -38,10 +35,10 @@ import { BullMQAdapter } from '@bull-board/api/bullMQAdapter';
     BullModule.registerQueueAsync({
       name: LOGIN_SMS_SENDER_QUEUE,
     }),
-    BullBoardModule.forFeature({
-      name: LOGIN_SMS_SENDER_QUEUE,
-      adapter: BullMQAdapter,
-    }),
+    // BullBoardModule.forFeature({
+    //   name: LOGIN_SMS_SENDER_QUEUE,
+    //   adapter: BullMQAdapter,
+    // }),
   ],
   controllers: [LoginController],
   providers: [AuthService, JwtStrategy, LoginService],
