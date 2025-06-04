@@ -9,10 +9,13 @@ BEGIN
 
 	ALTER TABLE EAVEntityTypes 
         ADD shippingWayId int NULL
-            CONSTRAINT FK_EAVEntityTypes ECShippingWays(id)
+            CONSTRAINT FK_EAVEntityTypes_ShippingWayId
+				FOREIGN KEY REFERENCES ECShippingWays(id)
 
 	INSERT INTO Migrations(version, createdAt, updatedAt)
 	SELECT 'eav-ecommerce-eav-entity-type-v1', GETDATE(), GETDATE()
 END
 
 GO
+
+

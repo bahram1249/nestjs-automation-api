@@ -381,6 +381,10 @@ IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'eav-product-photos-v3'
 		)
 BEGIN
 
+
+	ALTER TABLE EAVEntityPhotos
+		DROP CONSTRAINT PK_EAVEntityPhotos
+
 	ALTER TABLE EAVEntityPhotos 
 		ADD CONSTRAINT PK_EAVEntityPhotos 
 			PRIMARY KEY CLUSTERED (entityId, [priority], attachmentId)
