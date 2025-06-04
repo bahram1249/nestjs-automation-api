@@ -84,6 +84,7 @@ export class TraverseService {
       request: dto.request,
       requestState: dto.requestState,
       transaction: dto.transaction,
+      userExecuterId: dto.userExecuterId,
     });
 
     // traverse based referral
@@ -518,6 +519,7 @@ export class TraverseService {
       request,
       requestState: newRequestState,
       transaction,
+      userExecuterId: userExecuterId,
     });
 
     // Set histories

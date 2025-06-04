@@ -3,7 +3,6 @@ import { InjectModel } from '@nestjs/sequelize';
 import { ExecuteActionDto } from '@rahino/bpmn/modules/action/dto';
 import { ActionServiceImp } from '@rahino/bpmn/modules/action/interface';
 import { GSSharedFactorDetailAndRemainingAmountService } from '@rahino/guarantee/shared/factor-detail-and-remaining-amount';
-import { GSFactorStatusEnum } from '@rahino/guarantee/shared/factor-status';
 import { GSPaymentWayEnum } from '@rahino/guarantee/shared/payment-way';
 import { GSTransactionStatusEnum } from '@rahino/guarantee/shared/transaction-status';
 import { GSUnitPriceEnum } from '@rahino/guarantee/shared/unit-price';

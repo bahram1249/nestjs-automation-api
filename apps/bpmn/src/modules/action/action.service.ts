@@ -52,6 +52,7 @@ export class ActionService {
         request: dto.request,
         requestState: dto.requestState,
         transaction: dto.transaction,
+        userExecuterId: dto.userExecuterId,
       });
     }
   }
@@ -70,6 +71,7 @@ export class ActionService {
         request: dto.request,
         requestState: dto.requestState,
         transaction: dto.transaction,
+        userExecuterId: dto.userExecuterId,
       });
     }
   }
@@ -93,6 +95,7 @@ export class ActionService {
           requestState: dto.requestState,
           node: dto.node,
           transaction: dto.transaction,
+          userExecuterId: dto.userExecuterId,
         }),
       [ActionTypeEnum.SourceAction]: () =>
         this.runSourceAction({
@@ -101,6 +104,7 @@ export class ActionService {
           requestState: dto.requestState,
           node: dto.node,
           transaction: dto.transaction,
+          userExecuterId: dto.userExecuterId,
         }),
     };
     const executeAction = actionStrategies[action.actionTypeId];
@@ -126,6 +130,7 @@ export class ActionService {
         request: dto.request,
         requestState: dto.requestState,
         transaction: dto.transaction,
+        userExecuterId: dto.userExecuterId,
       },
     });
   }

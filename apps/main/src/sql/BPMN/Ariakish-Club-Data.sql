@@ -2484,6 +2484,28 @@ END
 
 GO
 
+
+-- transaction status v3
+IF NOT EXISTS ( SELECT 1 FROM Migrations WHERE version = 'gs-transaction-statuses-Data-v3'
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings
+		WHERE ([key] = 'CUSTOMER_NAME' AND [value] IN ('AriaKish'))
+		)
+
+BEGIN
+
+	INSERT INTO GSTransactionStatuses(id, title, createdAt, updatedAt)
+	VALUES (5, N'بازگشت اعتبار VIP', GETDATE(), GETDATE())
+
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'gs-transaction-statuses-Data-v3', GETDATE(), GETDATE()
+END
+
+GO
+
+
 -- shipping ways
 IF NOT EXISTS ( SELECT 1 FROM Migrations WHERE version = 'gs-shipping-ways-Data-v1'
 			)

@@ -3,4 +3,5 @@ export enum GSTransactionStatusEnum {
   Cancell = 2,
   UnPaid = 3,
   Paid = 4,
+  RevertVip = 5,
 }

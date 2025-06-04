@@ -1,10 +1,24 @@
 import { Module } from '@nestjs/common';
 import { ResetFactorActionService } from './reset-factor-action.service';
 import { SequelizeModule } from '@nestjs/sequelize';
-import { GSFactor } from '@rahino/localdatabase/models';
+import {
+  GSFactor,
+  GSGuarantee,
+  GSPaymentGateway,
+  GSRequest,
+  GSTransaction,
+} from '@rahino/localdatabase/models';
 
 @Module({
-  imports: [SequelizeModule.forFeature([GSFactor])],
+  imports: [
+    SequelizeModule.forFeature([
+      GSFactor,
+      GSPaymentGateway,
+      GSTransaction,
+      GSRequest,
+      GSGuarantee,
+    ]),
+  ],
   providers: [
     { provide: 'ResetFactorActionService', useClass: ResetFactorActionService },
   ],

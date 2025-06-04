@@ -12,4 +12,5 @@ export class RunSQLActionDto {
   action: BPMNAction;
   node: BPMNNode;
   transaction: Transaction;
+  userExecuterId?: bigint;
 }

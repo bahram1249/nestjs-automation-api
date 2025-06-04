@@ -11,4 +11,5 @@ export class RunActionDto {
   requestState: BPMNRequestState;
   node: BPMNNode;
   transaction: Transaction;
+  userExecuterId?: bigint;
 }

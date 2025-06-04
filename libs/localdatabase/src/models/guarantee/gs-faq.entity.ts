@@ -5,6 +5,7 @@ export class GSFaq extends Model {
   @Column({
     type: DataType.INTEGER,
     primaryKey: true,
+    autoIncrement: true,
   })
   id: number;
   @Column({
