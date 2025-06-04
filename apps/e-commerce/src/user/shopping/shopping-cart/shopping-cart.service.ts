@@ -41,7 +41,7 @@ export class ShoppingCartService {
             required: true,
           },
           {
-            attributes: ['id', 'name', 'slug'],
+            attributes: ['id', 'name', 'slug', 'latitude', 'longitude'],
             model: ECVendor,
             as: 'vendor',
           },
@@ -104,8 +104,8 @@ export class ShoppingCartService {
             id: shoppingCart?.vendor?.id,
             title: shoppingCart?.vendor?.name,
             slug: shoppingCart?.vendor?.slug,
-            lat: '',
-            long: '',
+            latitude: shoppingCart?.vendor?.latitude,
+            longitude: shoppingCart?.vendor?.longitude,
           },
           shoppingProducts,
         };

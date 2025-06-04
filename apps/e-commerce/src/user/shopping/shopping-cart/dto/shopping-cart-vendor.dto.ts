@@ -1,7 +1,7 @@
 export class ShoppingCartVendorDto {
   id: number;
   title: string;
-  lat: string;
-  long: string;
+  latitude: string;
+  longitude: string;
   slug: string;
 }
