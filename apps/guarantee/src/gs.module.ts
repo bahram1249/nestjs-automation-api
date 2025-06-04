@@ -106,6 +106,7 @@ import basicAuth from 'express-basic-auth';
 import { BullModule } from '@nestjs/bullmq';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { AnonymousPublicReportModule } from './anonymous/public-report';
+import { GSFaqModule } from './admin/faq';
 
 @Module({
   imports: [
@@ -246,10 +247,12 @@ import { AnonymousPublicReportModule } from './anonymous/public-report';
       }),
     }),
 
-    BullBoardModule.forRoot({
-      route: '/queues',
-      adapter: ExpressAdapter,
-    }),
+    GSFaqModule,
+
+    // BullBoardModule.forRoot({
+    //   route: '/queues',
+    //   adapter: ExpressAdapter,
+    // }),
   ],
 })
 export class GSModule implements NestModule {

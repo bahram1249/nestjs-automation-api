@@ -2256,3 +2256,31 @@ BEGIN
 END
 
 GO
+
+
+
+-- gs-faqs-v1
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'gs-faqs-v1'
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings
+		WHERE ([key] = 'CUSTOMER_NAME' AND [value] IN ('AriaKish'))
+		)
+BEGIN
+
+	CREATE TABLE GSFaqs(
+		id 							int identity(1,1)			PRIMARY KEY,
+		question					nvarchar(max)				NOT NULL,
+		answer						nvarchar(max)				NOT NULL,
+		priority					int							NULL,
+		isDeleted					bit							NULL,		
+		[createdAt]					datetimeoffset				NOT NULL,
+		[updatedAt]					datetimeoffset				NOT NULL
+	)
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'gs-faqs-v1', GETDATE(), GETDATE()
+END
+
+GO
+

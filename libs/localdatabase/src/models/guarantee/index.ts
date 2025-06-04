@@ -51,3 +51,4 @@ export * from './gs-pre-registration-organization.entity';
 export * from './gs-points.entity';
 export * from './gs-user-point.entity';
 export * from './gs-subscription.entity';
+export * from './gs-faq.entity';

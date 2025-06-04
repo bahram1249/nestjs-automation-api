@@ -51,6 +51,7 @@ import {
   GSPoint,
   GSUserPoint,
   GSSubscription,
+  GSFaq,
 } from '../models';
 
 export const guaranteeModels = [
@@ -106,4 +107,5 @@ export const guaranteeModels = [
   GSPoint,
   GSUserPoint,
   GSSubscription,
+  GSFaq,
 ];
