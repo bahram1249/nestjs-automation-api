@@ -106,6 +106,7 @@ import { AdminLinkedEntityTypeBrandModule } from './admin/additional-entity-type
 import { ClientLinkedEntityTypeBrandModule } from './client/linked-entity-type-brand/linked-entity-type-brand.module';
 import { AdminPublicPhotoModule } from './admin/public-photo/public-photo.module';
 import { ClientPublicPhotoModule } from './client/public-photo/public-photo.module';
+import { ShoppingCartModule } from './user/shopping/shopping-cart/shopping-cart.module';
 
 @Module({
   imports: [
@@ -210,6 +211,8 @@ import { ClientPublicPhotoModule } from './client/public-photo/public-photo.modu
     ClientLinkedEntityTypeBrandModule,
     AdminPublicPhotoModule,
     ClientPublicPhotoModule,
+
+    ShoppingCartModule,
   ],
   providers: [
     {
