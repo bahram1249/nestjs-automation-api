@@ -791,12 +791,12 @@ export class VendorService {
 
       // mapped vendor item
       const mappedItem = this.mapper.map(dto, VendorV2Dto, ECVendor);
-      mappedItem.coordinates = {
-        coordinates: {
-          type: 'Point',
-          coordinates: [Number(dto.longitude), Number(dto.latitude)], // Note: [lng, lat]
-        },
-      };
+      mappedItem.coordinates = Sequelize.fn(
+        'ST_GeomFromText',
+        `POINT(${dto.longitude} ${dto.latitude})`,
+        4326,
+      );
+
       const insertItem = _.omit(mappedItem.toJSON(), ['id']);
       insertItem.userId = user.id;
 
@@ -1455,12 +1455,11 @@ export class VendorService {
       // mapped vendor item
       const mappedItem = this.mapper.map(dto, VendorV2Dto, ECVendor);
 
-      mappedItem.coordinates = {
-        coordinates: {
-          type: 'Point',
-          coordinates: [Number(dto.longitude), Number(dto.latitude)], // Note: [lng, lat]
-        },
-      };
+      mappedItem.coordinates = Sequelize.fn(
+        'ST_GeomFromText',
+        `POINT(${dto.longitude} ${dto.latitude})`,
+        4326,
+      );
       // update vendor item
       vendor = (
         await this.repository.update(_.omit(mappedItem.toJSON(), ['id']), {
