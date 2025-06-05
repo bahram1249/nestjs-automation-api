@@ -121,7 +121,7 @@ export class ECVendor extends Model {
 
   @AutoMap()
   @Column({
-    type: DataType.GEOGRAPHY('POINT', 4326),
+    type: DataType.GEOMETRY('POINT', 4326),
     allowNull: true,
   })
   coordinates: any;
