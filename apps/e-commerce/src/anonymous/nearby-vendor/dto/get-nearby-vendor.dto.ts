@@ -1,11 +1,8 @@
-import { IsOptional, IsString } from 'class-validator';
+import { IntersectionType } from '@nestjs/swagger';
+import { GetNearByVendorDetailDto } from './get-nearbyby-vendor-detail.dto';
+import { ListFilter } from '@rahino/query-filter';
 
-export class GetNearbyVendorDto {
-  @IsString()
-  @IsOptional()
-  latitude: string = '35.69980278233824';
-
-  @IsString()
-  @IsOptional()
-  longitude: string = '51.33797088877799';
-}
+export class GetNearbyVendorDto extends IntersectionType(
+  ListFilter,
+  GetNearByVendorDetailDto,
+) {}

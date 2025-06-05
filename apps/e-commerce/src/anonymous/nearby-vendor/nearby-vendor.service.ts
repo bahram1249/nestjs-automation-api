@@ -1,10 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { InjectConnection, InjectModel } from '@nestjs/sequelize';
 import * as _ from 'lodash';
-import { ECVendor } from '@rahino/localdatabase/models';
+import { ECCity, ECProvince, ECVendor } from '@rahino/localdatabase/models';
 import { GetNearbyVendorDto } from './dto';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import { Op, Sequelize } from 'sequelize';
+import { Attachment } from '@rahino/database';
 
 @Injectable()
 export class NearbyVendorService {
@@ -41,11 +42,54 @@ export class NearbyVendorService {
           },
         ),
       )
+
       .replacements(replacements);
 
     const count = await this.repository.count(queryBuilder.build());
 
-    queryBuilder = queryBuilder.attributes(['id', 'name', 'slug']);
+    queryBuilder = queryBuilder
+      .attributes([
+        'id',
+        'name',
+        'slug',
+        'address',
+        'priorityOrder',
+        'metaTitle',
+        'metaKeywords',
+        'metaDescription',
+        'provinceId',
+        'cityId',
+        'latitude',
+        'longitude',
+      ])
+      .include([
+        {
+          attributes: ['id', 'fileName'],
+          model: Attachment,
+          as: 'attachment',
+          required: false,
+        },
+        {
+          attributes: ['id', 'name'],
+          model: ECProvince,
+          as: 'province',
+          required: false,
+        },
+        {
+          attributes: ['id', 'name'],
+          model: ECCity,
+          as: 'city',
+          required: false,
+        },
+      ])
+      .order([
+        Sequelize.literal(
+          `coordinates.STDistance(geography::Point(:latitude, :longitude, 4326))`,
+        ),
+        'ASC',
+      ])
+      .limit(dto.limit)
+      .offset(dto.offset);
 
     const result = await this.repository.findAll(queryBuilder.build());
     return {
