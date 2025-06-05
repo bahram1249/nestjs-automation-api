@@ -13,6 +13,9 @@ import {
   ECShoppingCartProduct,
 } from '@rahino/localdatabase/models';
 import { InventoryModule } from '@rahino/ecommerce/inventory/inventory.module';
+import { BullModule } from '@nestjs/bullmq';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { SHOPPING_CART_PRODUCT_REMOVE_QUEUE } from './constants';
 
 @Module({
   imports: [
@@ -24,6 +27,21 @@ import { InventoryModule } from '@rahino/ecommerce/inventory/inventory.module';
     QueryFilterModule,
     SequelizeModule.forFeature([ECShoppingCart, ECShoppingCartProduct]),
     InventoryModule,
+
+    BullModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: (config: ConfigService) => ({
+        connection: {
+          host: config.get<string>('REDIS_ADDRESS'),
+          port: config.get<number>('REDIS_PORT'),
+          password: config.get<string>('REDIS_PASSWORD'),
+        },
+      }),
+    }),
+    BullModule.registerQueueAsync({
+      name: SHOPPING_CART_PRODUCT_REMOVE_QUEUE,
+    }),
   ],
   controllers: [ShoppingCartController],
   providers: [ShoppingCartService],

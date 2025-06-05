@@ -24,6 +24,13 @@ import { LocalizationService } from 'apps/main/src/common/localization';
 import { InventoryService } from '@rahino/ecommerce/inventory/services';
 import { ConfigService } from '@nestjs/config';
 import { addDays } from '@rahino/commontools';
+import { InventoryStatusEnum } from '@rahino/ecommerce/inventory/enum';
+import { InjectQueue } from '@nestjs/bullmq';
+import {
+  SHOPPING_CART_PRODUCT_REMOVE_JOB,
+  SHOPPING_CART_PRODUCT_REMOVE_QUEUE,
+} from './constants';
+import { Queue } from 'bullmq';
 @Injectable()
 export class ShoppingCartService {
   constructor(
@@ -37,6 +44,9 @@ export class ShoppingCartService {
     private readonly localizationService: LocalizationService,
     private readonly inventorySerivice: InventoryService,
     private readonly config: ConfigService,
+
+    @InjectQueue(SHOPPING_CART_PRODUCT_REMOVE_QUEUE)
+    private readonly shoppingCartProductRemoveQueue: Queue,
   ) {}
 
   async findAll(
@@ -293,6 +303,20 @@ export class ShoppingCartService {
             product.productId,
           );
 
+        if (
+          productFromRepository.result.inventoryStatusId ==
+            InventoryStatusEnum.unavailable ||
+          productFromRepository.result.inventories[0].qty < product.qty
+        ) {
+          // make a job to remove this product from shopping cart
+          await this.shoppingCartProductRemoveQueue.add(
+            SHOPPING_CART_PRODUCT_REMOVE_JOB,
+            {
+              shoppingCartId: product.shoppingCartId,
+              shoppingCartProductId: product.id,
+            },
+          );
+        }
         return {
           id: product?.id,
           productId: product?.productId,
