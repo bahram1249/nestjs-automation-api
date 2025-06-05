@@ -34,6 +34,8 @@ export type I18nTranslations = {
         "success": string;
     };
     "ecommerce": {
+        "shipping_card_product_is_not_founded": string;
+        "shipping_card_is_not_founded": string;
         "city_not_found": string;
         "province_not_found": string;
         "at_least_inventory_qty_must_be_greater_than_zero": string;

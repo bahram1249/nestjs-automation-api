@@ -1,4 +1,6 @@
 {
+  "shipping_card_product_is_not_founded": "shipping card product is not founded!",
+  "shipping_card_is_not_founded": "shipping card is not founded!",
   "city_not_found": "city not founded!",
   "province_not_found": "province not founded!",
   "at_least_inventory_qty_must_be_greater_than_zero": "at least inventory qty must be greater than zero",

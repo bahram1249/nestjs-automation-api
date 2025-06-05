@@ -14,6 +14,7 @@ import {
   AddProductShoppingCartDto,
   GetShoppingCartDto,
   RemoveShoppingCartDto,
+  RemoveShoppingCartProductDto,
   ShoppingCartDto,
 } from './dto';
 import { ShoppingCartProductDto } from './dto/shopping-cart-product.dto';
@@ -166,10 +167,10 @@ export class ShoppingCartService {
     return await this.findAll({ shoppingCartId: shoppingCart.id }, session);
   }
 
-  async removeShoppingCart(session: ECUserSession, dto: RemoveShoppingCartDto) {
+  async removeShoppingCart(session: ECUserSession, shoppingCartId: bigint) {
     const shoppingCart = await this.shoppingCartRepository.findOne(
       new QueryOptionsBuilder()
-        .filter({ id: dto.shoppingCartId })
+        .filter({ id: shoppingCartId })
         .filter({ sessionId: session.id })
         .filter(
           Sequelize.where(
@@ -199,11 +200,64 @@ export class ShoppingCartService {
     );
 
     if (!shoppingCart) {
-      throw new BadRequestException('');
+      throw new BadRequestException(
+        this.localizationService.translate(
+          'ecommerce.shipping_card_is_not_founded',
+        ),
+      );
     }
 
     shoppingCart.isDeleted = true;
     await shoppingCart.save();
+
+    return {
+      result: this.localizationService.translate('core.success'),
+    };
+  }
+
+  async removeShoppingCartProduct(
+    session: ECUserSession,
+    shoppingCartProductId: bigint,
+  ) {
+    const shoppingCartProduct =
+      await this.shoppingCartProductRepository.findOne(
+        new QueryOptionsBuilder()
+          .include([
+            {
+              model: ECShoppingCart,
+              as: 'shoppingCart',
+              required: true,
+              where: {
+                sessionId: session.id,
+              },
+            },
+          ])
+          .filter({ id: shoppingCartProductId })
+          .filter(
+            Sequelize.where(
+              Sequelize.fn(
+                'isnull',
+                Sequelize.col('ECShoppingCartProduct.isDeleted'),
+                0,
+              ),
+              {
+                [Op.eq]: 0,
+              },
+            ),
+          )
+          .build(),
+      );
+
+    if (!shoppingCartProduct) {
+      throw new BadRequestException(
+        this.localizationService.translate(
+          'ecommerce.shipping_card_product_is_not_founded',
+        ),
+      );
+    }
+
+    shoppingCartProduct.isDeleted = true;
+    await shoppingCartProduct.save();
 
     return {
       result: this.localizationService.translate('core.success'),

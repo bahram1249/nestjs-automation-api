@@ -1,4 +1,6 @@
 {
+  "shipping_card_product_is_not_founded": "محصول انتخابی از سبد یافت نشد",
+  "shipping_card_is_not_founded": "سبد خرید یافت نشد",
   "city_not_found": "شهر یافت نشد",
   "province_not_found": "استان یافت نشد",
   "at_least_inventory_qty_must_be_greater_than_zero": "حداقل موجودی اضافه شده باید بزرگتر از صفر باشد",

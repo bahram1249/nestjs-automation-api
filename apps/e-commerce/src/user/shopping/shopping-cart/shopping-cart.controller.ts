@@ -1,9 +1,11 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   HttpCode,
   HttpStatus,
+  Param,
   Post,
   Query,
   UseGuards,
@@ -21,7 +23,11 @@ import { OptionalJwtGuard } from '@rahino/auth';
 import { SessionGuard } from '../../session/guard';
 import { GetECSession } from 'apps/main/src/decorator';
 import { ECUserSession } from '@rahino/localdatabase/models';
-import { AddProductShoppingCartDto, GetShoppingCartDto } from './dto';
+import {
+  AddProductShoppingCartDto,
+  GetShoppingCartDto,
+  RemoveShoppingCartDto,
+} from './dto';
 
 @ApiTags('shoppingCarts')
 @ApiBearerAuth()
@@ -57,5 +63,30 @@ export class ShoppingCartController {
     @GetECSession() session: ECUserSession,
   ) {
     return await this.service.addProduct(session, dto);
+  }
+
+  @UseGuards(OptionalJwtGuard, SessionGuard)
+  @ApiOperation({ description: 'remove shoppingCart product' })
+  @Delete('/shoppingCartProduct/:id')
+  @HttpCode(HttpStatus.OK)
+  async removeShoppingCartProduct(
+    @Param('id') shoppingCartProductId: bigint,
+    @GetECSession() session: ECUserSession,
+  ) {
+    return await this.service.removeShoppingCartProduct(
+      session,
+      shoppingCartProductId,
+    );
+  }
+
+  @UseGuards(OptionalJwtGuard, SessionGuard)
+  @ApiOperation({ description: 'remove shoppingCart' })
+  @Delete('/:id')
+  @HttpCode(HttpStatus.OK)
+  async removeShoppingCart(
+    @Param('id') shoppingCartId: bigint,
+    @GetECSession() session: ECUserSession,
+  ) {
+    return await this.service.removeShoppingCart(session, shoppingCartId);
   }
 }
