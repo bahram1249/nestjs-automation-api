@@ -1,4 +1,5 @@
 import {
+  BindOrReplacements,
   FindAndCountOptions,
   FindAttributeOptions,
   GroupOption,
@@ -90,6 +91,11 @@ export class QueryOptionsBuilder {
       const included = this.options.include as Includeable[];
       included.push(include);
     }
+    return this;
+  }
+
+  replacements(replacements: BindOrReplacements) {
+    this.options.replacements = replacements;
     return this;
   }
 

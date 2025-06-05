@@ -416,7 +416,8 @@ END
 
 GO
 
-IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ecommerce-vendors-v5' 
+
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ecommerce-vendors-v7' 
 			)
 	AND EXISTS (
 		SELECT 1 FROM Settings 
@@ -424,19 +425,26 @@ IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ecommerce-vendors-v5'
 		)
 BEGIN
 
-	ALTER TABLE ECVendors 
-		DROP COLUMN coordinates
-
-	ALTER TABLE ECVendors
-		ADD coordinates GEOMETRY NULL
-
+	CREATE SPATIAL INDEX IX_GeoLocation_ECVendors_Coordinates
+	ON ECVendors(coordinates)
+	USING GEOGRAPHY_GRID
+	WITH (
+		GRIDS = (LEVEL_1 = MEDIUM, LEVEL_2 = MEDIUM, LEVEL_3 = MEDIUM, LEVEL_4 = MEDIUM),
+		CELLS_PER_OBJECT = 16,
+		PAD_INDEX = OFF,
+		STATISTICS_NORECOMPUTE = OFF,
+		SORT_IN_TEMPDB = OFF,
+		DROP_EXISTING = OFF,
+		ONLINE = OFF,
+		ALLOW_ROW_LOCKS = ON,
+		ALLOW_PAGE_LOCKS = ON
+	);
 
 	INSERT INTO Migrations(version, createdAt, updatedAt)
-	SELECT 'ecommerce-vendors-v5', GETDATE(), GETDATE()
+	SELECT 'ecommerce-vendors-v7', GETDATE(), GETDATE()
 END
 
 GO
-
 
 IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ecommerce-vendorusers-v1' 
 			)
