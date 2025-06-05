@@ -150,9 +150,12 @@ export class ShoppingCartService {
 
     if (product.qty <= 0) {
       await this.removeShoppingCartProduct(session, currentProduct.id);
+      return {
+        result: this.localizationService.translate('core.success'),
+      };
     }
 
-    if (currentProduct && product.qty > 0) {
+    if (currentProduct) {
       currentProduct.qty = product.qty;
       await currentProduct.save();
     } else {
