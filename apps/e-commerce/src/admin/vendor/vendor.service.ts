@@ -792,7 +792,7 @@ export class VendorService {
       // mapped vendor item
       const mappedItem = this.mapper.map(dto, VendorV2Dto, ECVendor);
       mappedItem.coordinates = Sequelize.fn(
-        'GEOGRAPHY::STGeomFromText',
+        'geography::STPointFromText',
         `POINT(${dto.latitude} ${dto.longitude})`,
         4326,
       );
@@ -1456,7 +1456,7 @@ export class VendorService {
       const mappedItem = this.mapper.map(dto, VendorV2Dto, ECVendor);
 
       mappedItem.coordinates = Sequelize.fn(
-        'GEOGRAPHY::STGeomFromText',
+        'geography::STPointFromText',
         `POINT(${dto.latitude} ${dto.longitude})`,
         4326,
       );
