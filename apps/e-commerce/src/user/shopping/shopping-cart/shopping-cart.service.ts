@@ -104,7 +104,7 @@ export class ShoppingCartService {
         )
         .filterIf(filter.vendorId != null, { vendorId: filter.vendorId })
         .filterIf(filter.shoppingCartId != null, {
-          shoppingCartId: filter.shoppingCartId,
+          id: filter.shoppingCartId,
         })
         .build(),
     );
