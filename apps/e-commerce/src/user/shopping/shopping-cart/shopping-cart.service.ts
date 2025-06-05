@@ -62,7 +62,9 @@ export class ShoppingCartService {
             model: ECShoppingCartProduct,
             as: 'shoppingCartProducts',
             where: {
-              isDeleted: true,
+              isDeleted: {
+                [Op.is]: null,
+              },
             },
             required: true,
           },
