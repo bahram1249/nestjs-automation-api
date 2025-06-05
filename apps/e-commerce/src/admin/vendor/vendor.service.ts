@@ -794,7 +794,7 @@ export class VendorService {
       mappedItem.coordinates = {
         coordinates: {
           type: 'Point',
-          coordinates: [dto.longitude, dto.latitude], // Note: [lng, lat]
+          coordinates: [Number(dto.longitude), Number(dto.latitude)], // Note: [lng, lat]
         },
       };
       const insertItem = _.omit(mappedItem.toJSON(), ['id']);
@@ -1458,7 +1458,7 @@ export class VendorService {
       mappedItem.coordinates = {
         coordinates: {
           type: 'Point',
-          coordinates: [dto.longitude, dto.latitude], // Note: [lng, lat]
+          coordinates: [Number(dto.longitude), Number(dto.latitude)], // Note: [lng, lat]
         },
       };
       // update vendor item

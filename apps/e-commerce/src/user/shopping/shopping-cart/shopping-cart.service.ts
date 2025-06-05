@@ -13,6 +13,7 @@ import { Op, Sequelize } from 'sequelize';
 import {
   AddProductShoppingCartDto,
   GetShoppingCartDto,
+  RemoveShoppingCartDto,
   ShoppingCartDto,
 } from './dto';
 import { ShoppingCartProductDto } from './dto/shopping-cart-product.dto';
@@ -163,6 +164,50 @@ export class ShoppingCartService {
     }
 
     return await this.findAll({ shoppingCartId: shoppingCart.id }, session);
+  }
+
+  async removeShoppingCart(session: ECUserSession, dto: RemoveShoppingCartDto) {
+    const shoppingCart = await this.shoppingCartRepository.findOne(
+      new QueryOptionsBuilder()
+        .filter({ id: dto.shoppingCartId })
+        .filter({ sessionId: session.id })
+        .filter(
+          Sequelize.where(
+            Sequelize.fn(
+              'isnull',
+              Sequelize.col('ECShoppingCart.isDeleted'),
+              0,
+            ),
+            {
+              [Op.eq]: 0,
+            },
+          ),
+        )
+        .filter(
+          Sequelize.where(
+            Sequelize.fn(
+              'isnull',
+              Sequelize.col('ECShoppingCart.isPurchase'),
+              0,
+            ),
+            {
+              [Op.eq]: 0,
+            },
+          ),
+        )
+        .build(),
+    );
+
+    if (!shoppingCart) {
+      throw new BadRequestException('');
+    }
+
+    shoppingCart.isDeleted = true;
+    await shoppingCart.save();
+
+    return {
+      result: this.localizationService.translate('core.success'),
+    };
   }
 
   private async createShoppingCartProduct(
