@@ -1,8 +1,10 @@
 import {
+  Body,
   Controller,
   Get,
   HttpCode,
   HttpStatus,
+  Post,
   Query,
   UseGuards,
   UseInterceptors,
@@ -19,7 +21,7 @@ import { OptionalJwtGuard } from '@rahino/auth';
 import { SessionGuard } from '../../session/guard';
 import { GetECSession } from 'apps/main/src/decorator';
 import { ECUserSession } from '@rahino/localdatabase/models';
-import { GetShoppingCartDto } from './dto';
+import { AddProductShoppingCartDto, GetShoppingCartDto } from './dto';
 
 @ApiTags('shoppingCarts')
 @ApiBearerAuth()
@@ -44,5 +46,16 @@ export class ShoppingCartController {
   @HttpCode(HttpStatus.OK)
   async findAll(@Query() filter, @GetECSession() session: ECUserSession) {
     return await this.service.findAll(filter, session);
+  }
+
+  @UseGuards(OptionalJwtGuard, SessionGuard)
+  @ApiOperation({ description: 'add product to shoppingCart' })
+  @Post('/')
+  @HttpCode(HttpStatus.OK)
+  async addProductShoppingCart(
+    @Body() dto: AddProductShoppingCartDto,
+    @GetECSession() session: ECUserSession,
+  ) {
+    return await this.service.addProduct(session, dto);
   }
 }
