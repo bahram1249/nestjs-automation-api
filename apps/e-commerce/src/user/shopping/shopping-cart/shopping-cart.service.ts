@@ -113,10 +113,7 @@ export class ShoppingCartService {
     return await this.mappingShoppingCart(shoppingCarts);
   }
 
-  async addProduct(
-    session: ECUserSession,
-    product: AddProductShoppingCartDto,
-  ): Promise<ShoppingCartDto[]> {
+  async addProduct(session: ECUserSession, product: AddProductShoppingCartDto) {
     const inventory = await this.inventorySerivice.findById(
       product.inventoryId,
     );
@@ -152,21 +149,20 @@ export class ShoppingCartService {
     }
 
     if (product.qty <= 0) {
-      throw new BadRequestException(
-        this.localizationService.translate(
-          'ecommerce.the_inventory_isnt_available',
-        ),
-      );
+      await this.removeShoppingCartProduct(session, currentProduct.id);
     }
 
-    if (currentProduct) {
+    if (currentProduct && product.qty > 0) {
       currentProduct.qty = product.qty;
       await currentProduct.save();
     } else {
       await this.createShoppingCartProduct(shoppingCart, inventory, product);
     }
 
-    return await this.findAll({ shoppingCartId: shoppingCart.id }, session);
+    return {
+      result: this.localizationService.translate('core.success'),
+    };
+    //return await this.findAll({ shoppingCartId: shoppingCart.id }, session);
   }
 
   async removeShoppingCart(session: ECUserSession, shoppingCartId: bigint) {
@@ -402,6 +398,7 @@ export class ShoppingCartService {
               inventoryId: product.inventoryId,
             }),
             product.productId,
+            false,
           );
 
         if (

@@ -89,13 +89,17 @@ export class ProductRepositoryService {
     };
   }
 
-  async findById(filter: GetProductDto, productId: bigint) {
+  async findById(
+    filter: GetProductDto,
+    productId: bigint,
+    includeAttribute?: boolean,
+  ) {
     const { resultQuery, countQuery } =
       await this.productQueryBuilderService.findAllAndCountQuery(
         filter,
         productId,
         null,
-        true,
+        includeAttribute || true,
       );
 
     let product = await this.repository.findOne(resultQuery);

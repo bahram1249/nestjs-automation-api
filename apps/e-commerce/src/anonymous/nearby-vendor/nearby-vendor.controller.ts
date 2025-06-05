@@ -10,7 +10,7 @@ import {
 
 import { JsonResponseTransformInterceptor } from '@rahino/response/interceptor';
 import { ApiOperation, ApiQuery, ApiTags } from '@nestjs/swagger';
-import { NearbyVendorService } from './neadby-vendor.service';
+import { NearbyVendorService } from './nearby-vendor.service';
 import { OptionalJwtGuard } from '@rahino/auth';
 import { OptionalSessionGuard } from '@rahino/ecommerce/user/session/guard';
 import { ListFilter } from '@rahino/query-filter';

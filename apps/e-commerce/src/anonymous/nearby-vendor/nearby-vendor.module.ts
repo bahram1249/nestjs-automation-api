@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { NearbyVendorController } from './nearby-vendor.controller';
-import { NearbyVendorService } from './neadby-vendor.service';
+import { NearbyVendorService } from './nearby-vendor.service';
 import { SequelizeModule } from '@nestjs/sequelize';
 import { ECVendor } from '@rahino/localdatabase/models';
 import { SessionModule } from '@rahino/ecommerce/user/session/session.module';

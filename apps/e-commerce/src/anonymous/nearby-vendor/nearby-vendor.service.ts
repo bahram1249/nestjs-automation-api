@@ -8,7 +8,7 @@ import { Op, Sequelize } from 'sequelize';
 
 @Injectable()
 export class NearbyVendorService {
-  private readonly distanceMeters = 10 * 1000;
+  private readonly distanceMeters = 5 * 1000;
 
   constructor(
     @InjectModel(ECVendor) private repository: typeof ECVendor,
