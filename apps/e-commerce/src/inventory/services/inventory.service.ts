@@ -2,7 +2,11 @@
 import { InventoryDto } from '../dto';
 import { Sequelize, Transaction } from 'sequelize';
 import { InjectModel } from '@nestjs/sequelize';
-import { ECInventory } from '@rahino/localdatabase/models';
+import {
+  EAVEntityType,
+  ECInventory,
+  ECProduct,
+} from '@rahino/localdatabase/models';
 import { InjectMapper } from 'automapper-nestjs';
 import { Mapper } from 'automapper-core';
 import * as _ from 'lodash';
@@ -62,7 +66,7 @@ export class InventoryService {
             required: false,
           },
           {
-            attributes: ['id', 'name'],
+            attributes: ['id', 'name', 'slug', 'latitude', 'longitude'],
             model: ECVendor,
             as: 'vendor',
             required: false,
@@ -134,6 +138,18 @@ export class InventoryService {
             ),
           },
         ])
+        .thenInclude({
+          model: ECProduct,
+          as: 'product',
+          required: true,
+          include: [
+            {
+              model: EAVEntityType,
+              as: 'entityType',
+              required: true,
+            },
+          ],
+        })
         .filter(
           Sequelize.where(
             Sequelize.fn('isnull', Sequelize.col('ECInventory.isDeleted'), 0),

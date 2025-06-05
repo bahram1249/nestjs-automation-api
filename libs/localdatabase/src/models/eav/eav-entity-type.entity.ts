@@ -124,11 +124,11 @@ export class EAVEntityType extends Model {
 
   @AutoMap()
   @Column({
-    type: DataType.BOOLEAN,
+    type: DataType.INTEGER,
     allowNull: true,
   })
   @ForeignKey(() => ECShippingWay)
-  public shippingWayId?: boolean;
+  public shippingWayId?: number;
 
   @BelongsTo(() => ECShippingWay, {
     as: 'shippingWay',

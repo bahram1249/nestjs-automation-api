@@ -8,7 +8,11 @@ import { DBLoggerModule } from '@rahino/logger';
 import { ProductModule } from '@rahino/ecommerce/product/product.module';
 import { QueryFilterModule } from '@rahino/query-filter';
 import { SequelizeModule } from '@nestjs/sequelize';
-import { ECShoppingCart } from '@rahino/localdatabase/models';
+import {
+  ECShoppingCart,
+  ECShoppingCartProduct,
+} from '@rahino/localdatabase/models';
+import { InventoryModule } from '@rahino/ecommerce/inventory/inventory.module';
 
 @Module({
   imports: [
@@ -18,7 +22,8 @@ import { ECShoppingCart } from '@rahino/localdatabase/models';
     DBLoggerModule,
     ProductModule,
     QueryFilterModule,
-    SequelizeModule.forFeature([ECShoppingCart]),
+    SequelizeModule.forFeature([ECShoppingCart, ECShoppingCartProduct]),
+    InventoryModule,
   ],
   controllers: [ShoppingCartController],
   providers: [ShoppingCartService],

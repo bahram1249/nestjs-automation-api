@@ -21,5 +21,5 @@ export class GetShoppingCartDto {
     type: IsNumber,
     description: 'shoppingCartId',
   })
-  shoppingCartId?: number;
+  shoppingCartId?: bigint;
 }
