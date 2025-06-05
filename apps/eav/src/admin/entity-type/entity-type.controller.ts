@@ -110,7 +110,7 @@ export class EntityTypeController {
     return await this.service.findById(entityId);
   }
 
-  @Version('v2')
+  @Version('2')
   @ApiBearerAuth()
   @UseInterceptors(JsonResponseTransformInterceptor)
   @UseGuards(JwtGuard, PermissionGuard)
