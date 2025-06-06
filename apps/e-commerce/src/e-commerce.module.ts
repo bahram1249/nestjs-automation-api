@@ -109,6 +109,7 @@ import { ClientPublicPhotoModule } from './client/public-photo/public-photo.modu
 import { ShoppingCartModule } from './user/shopping/shopping-cart/shopping-cart.module';
 import { ShippingWayModule } from './anonymous/shipping-way/shipping-way.module';
 import { AnonymousNearbyVendorModule } from './anonymous/nearby-vendor/nearby-vendor.module';
+import { AnonymousVendorEntityTypeModule } from './anonymous/vendor-entity-type/vendor-entity-type.module';
 
 @Module({
   imports: [
@@ -217,6 +218,7 @@ import { AnonymousNearbyVendorModule } from './anonymous/nearby-vendor/nearby-ve
     ShoppingCartModule,
     ShippingWayModule,
     AnonymousNearbyVendorModule,
+    AnonymousVendorEntityTypeModule,
   ],
   providers: [
     {

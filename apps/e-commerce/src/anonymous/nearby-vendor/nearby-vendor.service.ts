@@ -11,10 +11,7 @@ import { Attachment } from '@rahino/database';
 export class NearbyVendorService {
   private readonly distanceMeters = 5 * 1000;
 
-  constructor(
-    @InjectModel(ECVendor) private repository: typeof ECVendor,
-    @InjectConnection() private readonly sequelize: Sequelize,
-  ) {}
+  constructor(@InjectModel(ECVendor) private repository: typeof ECVendor) {}
 
   async findAll(dto: GetNearbyVendorDto) {
     const replacements = {

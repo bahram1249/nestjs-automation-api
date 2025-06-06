@@ -6,11 +6,7 @@ import { ECVendor } from '@rahino/localdatabase/models';
 import { SessionModule } from '@rahino/ecommerce/user/session/session.module';
 
 @Module({
-  imports: [
-    SessionModule,
-    SequelizeModule.forFeature([ECVendor]),
-    SequelizeModule,
-  ],
+  imports: [SessionModule, SequelizeModule.forFeature([ECVendor])],
   controllers: [NearbyVendorController],
   providers: [NearbyVendorService],
 })
