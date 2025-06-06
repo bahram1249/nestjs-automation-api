@@ -55,6 +55,7 @@ export class VendorEntityTypeService {
          AND EP.publishStatusId = ${PublishStatusEnum.publish} 
          AND ISNULL(EI.isDeleted, 0) = 0 
          AND EAVEntityType.id = EP.entityTypeId
+         AND EI.vendorId = ${filter.vendorId}
         )`.replaceAll(/\s\s+/g, ' '),
         ),
       );
@@ -115,6 +116,7 @@ export class VendorEntityTypeService {
                AND EP.publishStatusId = ${PublishStatusEnum.publish} 
                AND ISNULL(EI.isDeleted, 0) = 0 
                AND subEntityTypes.id = EP.entityTypeId
+               AND EI.vendorId = ${filter.vendorId}
               )`.replaceAll(/\s\s+/g, ' '),
               ),
             ],
@@ -147,6 +149,7 @@ export class VendorEntityTypeService {
                     AND EP.publishStatusId = ${PublishStatusEnum.publish} 
                     AND ISNULL(EI.isDeleted, 0) = 0 
                     AND [subEntityTypes->subEntityTypes].id = EP.entityTypeId
+                    AND EI.vendorId = ${filter.vendorId}
                     )`.replaceAll(/\s\s+/g, ' '),
                   ),
                 ],
