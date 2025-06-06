@@ -110,6 +110,7 @@ import { ShoppingCartModule } from './user/shopping/shopping-cart/shopping-cart.
 import { ShippingWayModule } from './anonymous/shipping-way/shipping-way.module';
 import { AnonymousNearbyVendorModule } from './anonymous/nearby-vendor/nearby-vendor.module';
 import { AnonymousVendorEntityTypeModule } from './anonymous/vendor-entity-type/vendor-entity-type.module';
+import { AnonymousInventoryStatusModule } from './anonymous/inventory-status/inventory-status.module';
 
 @Module({
   imports: [
@@ -219,6 +220,7 @@ import { AnonymousVendorEntityTypeModule } from './anonymous/vendor-entity-type/
     ShippingWayModule,
     AnonymousNearbyVendorModule,
     AnonymousVendorEntityTypeModule,
+    AnonymousInventoryStatusModule,
   ],
   providers: [
     {

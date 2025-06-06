@@ -56,6 +56,11 @@ export class VendorEntityTypeService {
          AND ISNULL(EI.isDeleted, 0) = 0 
          AND EAVEntityType.id = EP.entityTypeId
          AND EI.vendorId = ${filter.vendorId}
+         AND ${
+           filter.inventoryStatusId
+             ? 'EI.inventoryStatusId = ' + filter.inventoryStatusId.toString()
+             : '1=1'
+         }
         )`.replaceAll(/\s\s+/g, ' '),
         ),
       );
@@ -117,6 +122,12 @@ export class VendorEntityTypeService {
                AND ISNULL(EI.isDeleted, 0) = 0 
                AND subEntityTypes.id = EP.entityTypeId
                AND EI.vendorId = ${filter.vendorId}
+               AND ${
+                 filter.inventoryStatusId
+                   ? 'EI.inventoryStatusId = ' +
+                     filter.inventoryStatusId.toString()
+                   : '1=1'
+               }
               )`.replaceAll(/\s\s+/g, ' '),
               ),
             ],
@@ -150,6 +161,12 @@ export class VendorEntityTypeService {
                     AND ISNULL(EI.isDeleted, 0) = 0 
                     AND [subEntityTypes->subEntityTypes].id = EP.entityTypeId
                     AND EI.vendorId = ${filter.vendorId}
+                    AND ${
+                      filter.inventoryStatusId
+                        ? 'EI.inventoryStatusId = ' +
+                          filter.inventoryStatusId.toString()
+                        : '1=1'
+                    }
                     )`.replaceAll(/\s\s+/g, ' '),
                   ),
                 ],
