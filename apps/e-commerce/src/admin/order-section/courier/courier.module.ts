@@ -8,11 +8,15 @@ import { CourierProfile } from './mapper';
 import { UserRoleModule } from '@rahino/core/admin/user-role/user-role.module';
 import { Role } from '@rahino/database';
 import { CourierController } from './courier.controller';
+import { UserVendorModule } from '@rahino/ecommerce/user/vendor/user-vendor.module';
+import { LocalizationModule } from 'apps/main/src/common/localization';
 
 @Module({
   imports: [
     SequelizeModule.forFeature([User, Permission, Role, ECCourier]),
     UserRoleModule,
+    UserVendorModule,
+    LocalizationModule,
   ],
   controllers: [CourierController],
   providers: [CourierService, CourierProfile],

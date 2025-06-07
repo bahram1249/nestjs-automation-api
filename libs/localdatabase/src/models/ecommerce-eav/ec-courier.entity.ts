@@ -7,6 +7,7 @@ import {
   BelongsTo,
 } from 'sequelize-typescript';
 import { User } from '@rahino/database';
+import { ECVendor } from './ec-vendor.entity';
 
 @Table({ tableName: 'ECCouriers' })
 export class ECCourier extends Model {
@@ -28,4 +29,14 @@ export class ECCourier extends Model {
     allowNull: true,
   })
   isDeleted?: boolean;
+
+  @Column({
+    type: DataType.NUMBER,
+    allowNull: true,
+  })
+  @ForeignKey(() => ECVendor)
+  vendorId?: number;
+
+  @BelongsTo(() => ECVendor, { foreignKey: 'vendorId', as: 'vendor' })
+  vendor?: ECVendor;
 }

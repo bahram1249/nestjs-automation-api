@@ -10,6 +10,7 @@ import {
   Query,
   UseGuards,
   UseInterceptors,
+  Version,
 } from '@nestjs/common';
 import {
   ApiBearerAuth,
@@ -24,7 +25,7 @@ import { CheckPermission } from '@rahino/permission-checker/decorator';
 import { GetUser } from '@rahino/auth';
 import { User } from '@rahino/database';
 import { CourierService } from './courier.service';
-import { CourierDto, GetCourierDto } from './dto';
+import { CourierDto, CourierV2Dto, GetCourierDto } from './dto';
 
 @ApiTags('Admin-Couriers')
 @ApiBearerAuth()
@@ -52,6 +53,21 @@ export class CourierController {
     return await this.service.findAll(user, filter);
   }
 
+  @Version('2')
+  @ApiOperation({ description: 'show all couriers' })
+  @Get('/')
+  @ApiQuery({
+    name: 'filter',
+    type: GetCourierDto,
+    style: 'deepObject',
+    explode: true,
+  })
+  @CheckPermission({ permissionSymbol: 'ecommerce.admin.couriers.getall' })
+  @HttpCode(HttpStatus.OK)
+  async findAllV2(@Query() filter: GetCourierDto, @GetUser() user: User) {
+    return await this.service.findAllV2(user, filter);
+  }
+
   @UseGuards(JwtGuard, PermissionGuard)
   @ApiBearerAuth()
   @ApiOperation({ description: 'show courier by given id' })
@@ -62,6 +78,17 @@ export class CourierController {
     return await this.service.findById(entityId, user);
   }
 
+  @Version('2')
+  @UseGuards(JwtGuard, PermissionGuard)
+  @ApiBearerAuth()
+  @ApiOperation({ description: 'show courier by given id' })
+  @CheckPermission({ permissionSymbol: 'ecommerce.admin.couriers.getone' })
+  @Get('/:id')
+  @HttpCode(HttpStatus.OK)
+  async findByIdV2(@Param('id') entityId: number, @GetUser() user: User) {
+    return await this.service.findByIdV2(entityId, user);
+  }
+
   @UseGuards(JwtGuard, PermissionGuard)
   @ApiBearerAuth()
   @ApiOperation({ description: 'create courier by admin' })
@@ -70,6 +97,17 @@ export class CourierController {
   @HttpCode(HttpStatus.CREATED)
   async create(@GetUser() user: User, @Body() dto: CourierDto) {
     return await this.service.create(user, dto);
+  }
+
+  @Version('2')
+  @UseGuards(JwtGuard, PermissionGuard)
+  @ApiBearerAuth()
+  @ApiOperation({ description: 'create courier by admin' })
+  @CheckPermission({ permissionSymbol: 'ecommerce.admin.couriers.create' })
+  @Post('/')
+  @HttpCode(HttpStatus.CREATED)
+  async createV2(@GetUser() user: User, @Body() dto: CourierV2Dto) {
+    return await this.service.createV2(user, dto);
   }
 
   @UseGuards(JwtGuard, PermissionGuard)

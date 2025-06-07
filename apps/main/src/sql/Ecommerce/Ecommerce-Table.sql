@@ -2358,6 +2358,27 @@ END
 
 GO
 
+-- ec-courier
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ec-couriers-v2' 
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'SITE_NAME' AND [value] IN ('ecommerce'))
+		)
+BEGIN
+
+
+	ALTER TABLE ECCouriers
+		ADD vendorId int null
+			CONSTRAINT FK_ECCouriers_VendorId
+				FOREIGN KEY REFERENCES ECVendors(id)
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'ec-couriers-v2', GETDATE(), GETDATE()
+END
+
+GO
+
 
 -- ec-entityTypeFactors-v1
 IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ec-entityTypeFactors-v1' 
