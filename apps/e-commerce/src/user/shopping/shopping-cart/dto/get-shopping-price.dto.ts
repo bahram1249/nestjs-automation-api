@@ -1,16 +1,11 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Type } from 'class-transformer';
-import { IsInt, IsNumber, IsOptional, IsString } from 'class-validator';
+import { IsNumber, IsOptional, IsString } from 'class-validator';
 
 export class GetShoppingPriceDto {
-  @IsInt()
-  @Type(() => Number)
-  @ApiProperty({
-    type: IsNumber,
-    description: 'shoppingCartId',
-  })
+  @IsNumber()
   shoppingCartId: bigint;
 
+  @IsOptional()
   @IsString()
   @ApiProperty({
     type: IsString,
@@ -18,6 +13,7 @@ export class GetShoppingPriceDto {
   })
   couponCode?: string;
 
+  @IsOptional()
   @IsString()
   @ApiProperty({
     type: IsString,
@@ -25,6 +21,7 @@ export class GetShoppingPriceDto {
   })
   latitude?: string;
 
+  @IsOptional()
   @IsString()
   @ApiProperty({
     type: IsString,
