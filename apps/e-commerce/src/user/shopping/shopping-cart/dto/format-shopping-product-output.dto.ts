@@ -8,12 +8,12 @@ export class FormatShoppingCartProductOutputDto {
   shoppingCartId: bigint;
   shoppingCartProductId: bigint;
   discountId?: number;
-  discountFeePerItem?: bigint;
+  discountFeePerItem?: number;
   discountFee?: number;
-  basePrice: bigint;
+  basePrice: number;
   totalProductPrice: number;
   totalPrice: number;
-  afterDiscount: bigint;
+  afterDiscount: number;
   copunCode?: string;
   weight?: number;
 }

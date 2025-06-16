@@ -6,3 +6,4 @@ export * from './remove-shopping-cart-product.dto';
 export * from './get-shopping-price.dto';
 export * from './format-shopping-product-output.dto';
 export * from './apply-shopping-cart-product-coupon-discount-output.dto';
+export * from './shopping-cart-product.dto';
