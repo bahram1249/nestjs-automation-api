@@ -8,7 +8,7 @@ export class GetShoppingPriceDto {
   @IsOptional()
   @IsString()
   @ApiProperty({
-    type: IsString,
+    type: String,
     description: 'couponCode',
   })
   couponCode?: string;
@@ -16,7 +16,7 @@ export class GetShoppingPriceDto {
   @IsOptional()
   @IsString()
   @ApiProperty({
-    type: IsString,
+    type: String,
     description: 'latitude',
   })
   latitude?: string;
@@ -24,7 +24,7 @@ export class GetShoppingPriceDto {
   @IsOptional()
   @IsString()
   @ApiProperty({
-    type: IsString,
+    type: String,
     description: 'longitude',
   })
   longitude?: string;
