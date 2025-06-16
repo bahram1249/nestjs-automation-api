@@ -365,7 +365,7 @@ export class ShoppingCartService {
       `SELECT 
         id, 
         name, 
-        coordinates.STDistance(geography::Point(:latitude, :longitude, 4326) AS distanceInMeters
+        coordinates.STDistance(geography::Point(:latitude, :longitude, 4326)) AS distanceInMeters
        FROM ECVendors
        WHERE id = :vendorId`,
       {
