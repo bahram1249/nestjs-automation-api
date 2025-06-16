@@ -11,11 +11,13 @@ import { SequelizeModule } from '@nestjs/sequelize';
 import {
   ECShoppingCart,
   ECShoppingCartProduct,
+  ECVendor,
 } from '@rahino/localdatabase/models';
 import { InventoryModule } from '@rahino/ecommerce/inventory/inventory.module';
 import { BullModule } from '@nestjs/bullmq';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { SHOPPING_CART_PRODUCT_REMOVE_QUEUE } from './constants';
+import { ApplyDiscountModule } from '@rahino/ecommerce/shared/apply-discount';
 
 @Module({
   imports: [
@@ -25,9 +27,13 @@ import { SHOPPING_CART_PRODUCT_REMOVE_QUEUE } from './constants';
     DBLoggerModule,
     ProductModule,
     QueryFilterModule,
-    SequelizeModule.forFeature([ECShoppingCart, ECShoppingCartProduct]),
+    SequelizeModule.forFeature([
+      ECShoppingCart,
+      ECShoppingCartProduct,
+      ECVendor,
+    ]),
     InventoryModule,
-
+    ApplyDiscountModule,
     BullModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],

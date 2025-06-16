@@ -34,6 +34,10 @@ export type I18nTranslations = {
         "success": string;
     };
     "ecommerce": {
+        "the_maximum_of_used_this_coupon_code_reach": string;
+        "cannot_find_any_coupon_code_for_this_selected_product": string;
+        "you_dont_allow_to_use_this_coupon_code": string;
+        "cannot_find_discount_coupon": string;
         "shipping_card_product_is_not_founded": string;
         "shipping_card_is_not_founded": string;
         "city_not_found": string;

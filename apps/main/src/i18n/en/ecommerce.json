@@ -1,4 +1,8 @@
 {
+  "the_maximum_of_used_this_coupon_code_reach": "the maximum of used this coupon code reach",
+  "cannot_find_any_coupon_code_for_this_selected_product": "cannot find any coupon code for this selected product",
+  "you_dont_allow_to_use_this_coupon_code": "you dont allow yo use this coupon code",
+  "cannot_find_discount_coupon": "cannot find discount coupon",
   "shipping_card_product_is_not_founded": "shipping card product is not founded!",
   "shipping_card_is_not_founded": "shipping card is not founded!",
   "city_not_found": "city not founded!",

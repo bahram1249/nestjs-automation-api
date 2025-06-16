@@ -627,7 +627,7 @@ export class ApplyDiscountService {
     return { stock: stock, countApllied: countApllied };
   }
 
-  private async _applyCopunCodeToInventory(
+  public async _applyCopunCodeToInventory(
     product: ECProduct,
     inventory: ECInventory,
     discount: ECDiscount,
@@ -685,7 +685,7 @@ export class ApplyDiscountService {
     return discountApplied;
   }
 
-  private async findDiscountByCouponCode(couponCode: string) {
+  public async findDiscountByCouponCode(couponCode: string) {
     return await this.repository.findOne(
       new QueryOptionsBuilder()
         .include([

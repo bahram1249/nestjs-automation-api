@@ -13,6 +13,7 @@ import { ProductDiscountSetterService } from './product-discount-setter.service'
 import { ProductDiscountJobRunnerService } from './product-discount-job-runner.service';
 import { ProductDiscountProcessor } from './product-discount.processor';
 import { DBLoggerModule } from '@rahino/logger';
+import { ApplyDiscountModule } from '../shared/apply-discount';
 
 @Module({
   imports: [
@@ -33,6 +34,7 @@ import { DBLoggerModule } from '@rahino/logger';
     }),
     DBLoggerModule,
     QueryFilterModule,
+    ApplyDiscountModule,
     ProductModule,
   ],
   providers: [

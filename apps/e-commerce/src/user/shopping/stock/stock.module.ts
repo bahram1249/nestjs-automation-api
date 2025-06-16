@@ -32,6 +32,7 @@ import { ShipmentModule } from './services/shipment-price';
 import { PaymentServiceProviderModule } from '../payment/provider/payment-provider.module';
 import { PaymentRuleModule } from '../payment-rule/payment-rule.module';
 import { LocalizationModule } from 'apps/main/src/common/localization';
+import { ApplyDiscountModule } from '@rahino/ecommerce/shared/apply-discount';
 
 @Module({
   imports: [
@@ -52,6 +53,7 @@ import { LocalizationModule } from 'apps/main/src/common/localization';
     ProductModule,
     DBLoggerModule,
     PaymentServiceProviderModule,
+    ApplyDiscountModule,
     BullModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],

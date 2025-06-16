@@ -29,6 +29,7 @@ import { RevertPaymentProcessor } from './revert-payment/revert-payment.processo
 import { ECPayment } from '@rahino/localdatabase/models';
 import { DBLoggerModule } from '@rahino/logger';
 import { PaymentRuleModule } from '../payment-rule/payment-rule.module';
+import { ApplyDiscountModule } from '@rahino/ecommerce/shared/apply-discount';
 
 @Module({
   imports: [
@@ -53,6 +54,7 @@ import { PaymentRuleModule } from '../payment-rule/payment-rule.module';
     AddressModule,
     InventoryModule,
     ProductModule,
+    ApplyDiscountModule,
     DBLoggerModule,
     BullModule.registerQueueAsync({
       name: DECREASE_INVENTORY_QUEUE,

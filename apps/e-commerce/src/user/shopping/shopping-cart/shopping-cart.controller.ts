@@ -26,6 +26,7 @@ import { ECUserSession } from '@rahino/localdatabase/models';
 import {
   AddProductShoppingCartDto,
   GetShoppingCartDto,
+  GetShoppingPriceDto,
   RemoveShoppingCartDto,
 } from './dto';
 
@@ -52,6 +53,17 @@ export class ShoppingCartController {
   @HttpCode(HttpStatus.OK)
   async findAll(@Query() filter, @GetECSession() session: ECUserSession) {
     return await this.service.findAll(filter, session);
+  }
+
+  @UseGuards(OptionalJwtGuard, SessionGuard)
+  @ApiOperation({ description: 'get price of shoppingCart' })
+  @Post('/price')
+  @HttpCode(HttpStatus.OK)
+  async getShoppingCartPrice(
+    @Body() dto: GetShoppingPriceDto,
+    @GetECSession() session: ECUserSession,
+  ) {
+    return await this.service.getShoppingPrice(dto, session);
   }
 
   @UseGuards(OptionalJwtGuard, SessionGuard)

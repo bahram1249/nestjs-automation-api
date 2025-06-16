@@ -23,6 +23,7 @@ import { ECSlugVersion } from '@rahino/localdatabase/models';
 import { QueryFilterModule } from '@rahino/query-filter';
 import { DBLoggerModule } from '@rahino/logger';
 import { LocalizationModule } from 'apps/main/src/common/localization';
+import { ApplyDiscountModule } from '../shared/apply-discount';
 
 @Module({
   imports: [
@@ -53,21 +54,17 @@ import { LocalizationModule } from 'apps/main/src/common/localization';
     QueryFilterModule,
     DBLoggerModule,
     LocalizationModule,
+    ApplyDiscountModule,
   ],
   controllers: [ProductController],
   providers: [
     ProductService,
     ProductQueryBuilderService,
-    ApplyDiscountService,
     ApplyInventoryStatus,
     RemoveEmptyPriceService,
     ProductRepositoryService,
     QueryNextPageProductProcessor,
   ],
-  exports: [
-    ProductRepositoryService,
-    ApplyDiscountService,
-    ProductQueryBuilderService,
-  ],
+  exports: [ProductRepositoryService, ProductQueryBuilderService],
 })
 export class ProductModule {}

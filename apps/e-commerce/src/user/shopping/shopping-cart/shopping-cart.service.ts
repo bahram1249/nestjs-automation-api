@@ -1,6 +1,7 @@
 import { BadRequestException, Inject, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import {
+  ECDiscount,
   ECInventory,
   ECShippingWay,
   ECShoppingCart,
@@ -12,9 +13,10 @@ import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builde
 import { Op, Sequelize } from 'sequelize';
 import {
   AddProductShoppingCartDto,
+  ApplyShoppingCartProductCouponDiscountOutputDto,
+  FormatShoppingCartProductOutputDto,
   GetShoppingCartDto,
-  RemoveShoppingCartDto,
-  RemoveShoppingCartProductDto,
+  GetShoppingPriceDto,
   ShoppingCartDto,
 } from './dto';
 import { ShoppingCartProductDto } from './dto/shopping-cart-product.dto';
@@ -25,7 +27,7 @@ import { ProductRepositoryService } from '@rahino/ecommerce/product/service/prod
 import { LocalizationService } from 'apps/main/src/common/localization';
 import { InventoryService } from '@rahino/ecommerce/inventory/services';
 import { ConfigService } from '@nestjs/config';
-import { addDays } from '@rahino/commontools';
+import { addDays, isNotNullOrEmpty } from '@rahino/commontools';
 import { InventoryStatusEnum } from '@rahino/ecommerce/inventory/enum';
 import { InjectQueue } from '@nestjs/bullmq';
 import {
@@ -33,6 +35,8 @@ import {
   SHOPPING_CART_PRODUCT_REMOVE_QUEUE,
 } from './constants';
 import { Queue } from 'bullmq';
+import { ApplyDiscountService } from '@rahino/ecommerce/product/service';
+import { defaultValueIsNull } from '@rahino/commontools/functions/default-value-isnull';
 @Injectable()
 export class ShoppingCartService {
   constructor(
@@ -46,6 +50,9 @@ export class ShoppingCartService {
     private readonly localizationService: LocalizationService,
     private readonly inventorySerivice: InventoryService,
     private readonly config: ConfigService,
+    private readonly applyDiscountService: ApplyDiscountService,
+    @InjectModel(ECVendor)
+    private readonly vendorRepository: typeof ECVendor,
 
     @InjectQueue(SHOPPING_CART_PRODUCT_REMOVE_QUEUE)
     private readonly shoppingCartProductRemoveQueue: Queue,
@@ -111,6 +118,229 @@ export class ShoppingCartService {
         .build(),
     );
     return await this.mappingShoppingCart(shoppingCarts);
+  }
+
+  async getShoppingPrice(filter: GetShoppingPriceDto, session: ECUserSession) {
+    const shoppingCartItems = await this.getShoppingCartElements(
+      filter,
+      session,
+    );
+
+    let totalShipmentPrice = 0;
+
+    // total discount
+    // realprice of item product
+    // product price after discount
+    // total price
+
+    const totalPrice = shoppingCartItems
+      .map((shoppingCartItem) => shoppingCartItem.totalPrice)
+      .reduce((prev, current) => prev + current, 0);
+    const totalDiscount = shoppingCartItems
+      .map((shoppingCartItem) => shoppingCartItem.discountFee)
+      .reduce((prev, current) => prev + current, 0);
+    const totalProductPrice = shoppingCartItems
+      .map((shoppingCartItem) => shoppingCartItem.totalProductPrice)
+      .reduce((prev, current) => prev + current, 0);
+
+    // if (shoppingCartItems.length > 0 && filter.addressId != null) {
+    //   const vendorId = shoppingCartItems[0].vendorId;
+    //   const vendor = await this.vendorRepository.findOne(
+    //     new QueryOptionsBuilder().filter({ id: vendorId }).build(),
+    //   );
+    // }
+
+    return {
+      result: {
+        totalPrice,
+        totalDiscount,
+        totalProductPrice,
+      },
+    };
+  }
+
+  async getShoppingCartElements(
+    filter: GetShoppingPriceDto,
+    session: ECUserSession,
+  ): Promise<FormatShoppingCartProductOutputDto[]> {
+    const shoppingCarts = await this.findAll(
+      { shoppingCartId: filter.shoppingCartId },
+      session,
+    );
+
+    if (shoppingCarts.length == 0) {
+      return [];
+    }
+
+    const shoppingCart = shoppingCarts[0];
+
+    let shoppingCartProducts = shoppingCart.shoppingProducts.filter(
+      (shoppingCartProduct) =>
+        shoppingCartProduct.product.inventoryStatusId ==
+          InventoryStatusEnum.available &&
+        shoppingCartProduct.product.inventories[0].qty >=
+          shoppingCartProduct.qty,
+    );
+
+    // apply discount coupon
+    if (isNotNullOrEmpty(filter.couponCode)) {
+      const result = await this.applyDiscountCoupon(
+        shoppingCartProducts,
+        filter.couponCode,
+      );
+      shoppingCartProducts = result.shoppingCartProducts;
+    }
+
+    await this.formatShoppingProducts(shoppingCartProducts);
+  }
+
+  private async applyDiscountCoupon(
+    shoppingCartProducts: ShoppingCartProductDto[],
+    couponCode: string,
+  ): Promise<{
+    shoppingCartProducts: ShoppingCartProductDto[];
+    discount: ECDiscount;
+    countApplied: number;
+  }> {
+    const discount =
+      await this.applyDiscountService.findDiscountByCouponCode(couponCode);
+    if (!discount) {
+      throw new BadRequestException(
+        this.localizationService.translate(
+          'ecommerce.cannot_find_discount_coupon',
+        ),
+      );
+    }
+    const result = await this._canApplyCouponDiscount(
+      shoppingCartProducts,
+      discount,
+    );
+
+    return {
+      shoppingCartProducts: result.shoppingCartProducts,
+      discount: discount,
+      countApplied: result.appliedItem,
+    };
+  }
+
+  private async _canApplyCouponDiscount(
+    shoppingCartProducts: ShoppingCartProductDto[],
+    discount: ECDiscount,
+  ) {
+    const available =
+      defaultValueIsNull(discount.limit, 0) -
+      defaultValueIsNull(discount.used, 0);
+    if (discount.limit != null && available <= 0) {
+      throw new BadRequestException(
+        this.localizationService.translate(
+          'ecommerce.you_dont_allow_to_use_this_coupon_code',
+        ),
+      );
+    }
+    const promises = [];
+    for (let index = 0; index < shoppingCartProducts.length; index++) {
+      let shoppingCartProduct = shoppingCartProducts[index];
+      promises.push(
+        this._applyShoppingCartProductCouponDiscount(
+          shoppingCartProduct,
+          discount,
+        ),
+      );
+    }
+    const results: ApplyShoppingCartProductCouponDiscountOutputDto[] =
+      await Promise.all(promises);
+    const shoppingCartProductsEdited: ShoppingCartProductDto[] = results.map(
+      (results) => results.shoppingCartProduct,
+    );
+    const appliedItem: number = results
+      .map((results) => results.countApllied)
+      .reduce((prev, current) => prev + current, 0);
+    if (appliedItem == 0) {
+      throw new BadRequestException(
+        this.localizationService.translate(
+          'ecommerce.cannot_find_any_coupon_code_for_this_selected_product',
+        ),
+      );
+    }
+    if (appliedItem > available && discount.limit != null) {
+      throw new BadRequestException(
+        this.localizationService.translate(
+          'ecommerce.the_maximum_of_used_this_coupon_code_reach',
+        ),
+      );
+    }
+    return { shoppingCartProducts: shoppingCartProductsEdited, appliedItem };
+  }
+
+  private async _applyShoppingCartProductCouponDiscount(
+    shoppingCartProduct: ShoppingCartProductDto,
+    discount: ECDiscount,
+  ): Promise<ApplyShoppingCartProductCouponDiscountOutputDto> {
+    // quantity of applied
+    let countApllied = 0;
+    let { inventory, applied } =
+      await this.applyDiscountService._applyCopunCodeToInventory(
+        shoppingCartProduct.product,
+        shoppingCartProduct.product.inventories[0],
+        discount,
+      );
+
+    if (applied) {
+      // set count of applied
+      countApllied = shoppingCartProduct.qty;
+    }
+    shoppingCartProduct.product.inventories[0] = inventory;
+    return {
+      shoppingCartProduct: shoppingCartProduct,
+      countApllied: countApllied,
+    };
+  }
+
+  private async formatShoppingProducts(
+    shoppingCartProducts: ShoppingCartProductDto[],
+  ): Promise<FormatShoppingCartProductOutputDto[]> {
+    const mappedShoppingProducts = shoppingCartProducts.map(
+      async (
+        shoppingCartProduct,
+      ): Promise<FormatShoppingCartProductOutputDto> => {
+        return this.formatShoppingProduct(shoppingCartProduct);
+      },
+    );
+
+    return await Promise.all(mappedShoppingProducts);
+  }
+
+  private formatShoppingProduct(
+    shoppingCartProduct: ShoppingCartProductDto,
+  ): FormatShoppingCartProductOutputDto {
+    let output: FormatShoppingCartProductOutputDto =
+      new FormatShoppingCartProductOutputDto();
+    output.shoppingCartId = shoppingCartProduct.shoppingCartId;
+    output.shoppingCartProductId = shoppingCartProduct.id;
+    output.productId = shoppingCartProduct.productId;
+    output.inventoryId = shoppingCartProduct.inventoryId;
+    output.basePrice =
+      shoppingCartProduct.product.inventories[0].firstPrice.price;
+    output.qty = shoppingCartProduct.qty;
+    output.discountId =
+      shoppingCartProduct.product.inventories[0].firstPrice?.appliedDiscount
+        ?.id;
+    output.inventoryPriceId =
+      shoppingCartProduct.product.inventories[0].firstPrice.id;
+    output.variationPriceId =
+      shoppingCartProduct.product.inventories[0].firstPrice.variationPriceId;
+    output.vendorId = shoppingCartProduct.product.inventories[0].vendorId;
+    output.afterDiscount = shoppingCartProduct.product.inventories[0].firstPrice
+      ?.appliedDiscount
+      ? shoppingCartProduct.product.inventories[0].firstPrice?.appliedDiscount
+          .newPrice
+      : output.basePrice;
+
+    output.discountFeePerItem = output.basePrice - output.afterDiscount;
+    output.discountFee = Number(output.discountFeePerItem) * output.qty;
+    output.totalProductPrice = Number(output.basePrice) * output.qty;
+    output.totalPrice = Number(output.afterDiscount) * output.qty;
+    return output;
   }
 
   async addProduct(session: ECUserSession, product: AddProductShoppingCartDto) {
@@ -421,6 +651,7 @@ export class ShoppingCartService {
         }
         return {
           id: product?.id,
+          shoppingCartId: product?.shoppingCartId,
           productId: product?.productId,
           qty: product?.qty,
           inventoryId: product?.inventoryId,
