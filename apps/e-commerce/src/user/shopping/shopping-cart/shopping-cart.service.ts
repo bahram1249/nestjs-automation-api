@@ -1,5 +1,5 @@
 import { BadRequestException, Inject, Injectable } from '@nestjs/common';
-import { InjectModel } from '@nestjs/sequelize';
+import { InjectConnection, InjectModel } from '@nestjs/sequelize';
 import {
   ECDiscount,
   ECInventory,
@@ -10,7 +10,7 @@ import {
   ECVendor,
 } from '@rahino/localdatabase/models';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
-import { Op, Sequelize } from 'sequelize';
+import { Op, QueryTypes, Sequelize } from 'sequelize';
 import {
   AddProductShoppingCartDto,
   ApplyShoppingCartProductCouponDiscountOutputDto,
@@ -37,8 +37,12 @@ import {
 import { Queue } from 'bullmq';
 import { ApplyDiscountService } from '@rahino/ecommerce/product/service';
 import { defaultValueIsNull } from '@rahino/commontools/functions/default-value-isnull';
+import { NEARBY_SHOPPING_KM } from '@rahino/ecommerce/shared/constants';
+import { Setting } from '@rahino/database';
+import { CourierPriceEnum } from '@rahino/ecommerce/admin/order-section/courier-price/enum';
 @Injectable()
 export class ShoppingCartService {
+  private readonly distanceMeters = NEARBY_SHOPPING_KM * 1000;
   constructor(
     @InjectModel(ECShoppingCart)
     private readonly shoppingCartRepository: typeof ECShoppingCart,
@@ -53,6 +57,11 @@ export class ShoppingCartService {
     private readonly applyDiscountService: ApplyDiscountService,
     @InjectModel(ECVendor)
     private readonly vendorRepository: typeof ECVendor,
+    @InjectModel(Setting)
+    private readonly settingRepository: typeof Setting,
+
+    @InjectConnection()
+    private readonly sequelize: Sequelize,
 
     @InjectQueue(SHOPPING_CART_PRODUCT_REMOVE_QUEUE)
     private readonly shoppingCartProductRemoveQueue: Queue,
@@ -127,6 +136,7 @@ export class ShoppingCartService {
     );
 
     let totalShipmentPrice = 0;
+    let allowProcess = false;
 
     // total discount
     // realprice of item product
@@ -143,18 +153,65 @@ export class ShoppingCartService {
       .map((shoppingCartItem) => shoppingCartItem.totalProductPrice)
       .reduce((prev, current) => prev + current, 0);
 
-    // if (shoppingCartItems.length > 0 && filter.addressId != null) {
-    //   const vendorId = shoppingCartItems[0].vendorId;
-    //   const vendor = await this.vendorRepository.findOne(
-    //     new QueryOptionsBuilder().filter({ id: vendorId }).build(),
-    //   );
-    // }
+    if (
+      shoppingCartItems.length > 0 &&
+      isNotNullOrEmpty(filter.latitude) &&
+      isNotNullOrEmpty(filter.longitude)
+    ) {
+      const vendorId = shoppingCartItems[0].vendorId;
+
+      const vendors = await this.sequelize.query(
+        `
+        SELECT 
+          id, 
+          name, 
+          coordinates.STDistance(geography::Point(:latitude, :longitude, 4326)) AS distanceInMeters
+        FROM 
+          ECVendors
+        WHERE id = :vendorId
+      `,
+        {
+          replacements: {
+            latitude: filter.latitude,
+            longitude: filter.longitude,
+            vendorId: vendorId,
+          },
+          type: QueryTypes.SELECT, // Ensures you get plain objects
+        },
+      );
+      const vendor = vendors[0];
+
+      const vendorDistanceInMeters = vendor['distanceInMeters'] as number;
+
+      if (vendorDistanceInMeters <= this.distanceMeters) {
+        allowProcess = true;
+
+        const baseCourierPrice = await this.settingRepository.findOne(
+          new QueryOptionsBuilder()
+            .filter({ key: CourierPriceEnum.BASE_COURIER_PRICE })
+            .build(),
+        );
+        const courierPriceByKilometer = await this.settingRepository.findOne(
+          new QueryOptionsBuilder()
+            .filter({ key: CourierPriceEnum.COURIER_PRICE_BY_KILOMETRE })
+            .build(),
+        );
+
+        const km = vendorDistanceInMeters / 1000;
+
+        totalShipmentPrice;
+        Number(baseCourierPrice.value) +
+          km * Number(courierPriceByKilometer.value);
+      }
+    }
 
     return {
       result: {
         totalPrice,
         totalDiscount,
         totalProductPrice,
+        totalShipmentPrice,
+        allowProcess,
       },
     };
   }

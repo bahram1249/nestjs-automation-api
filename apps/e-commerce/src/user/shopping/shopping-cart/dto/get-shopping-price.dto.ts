@@ -18,12 +18,17 @@ export class GetShoppingPriceDto {
   })
   couponCode?: string;
 
-  @IsOptional()
-  @IsInt()
-  @Type(() => Number)
+  @IsString()
   @ApiProperty({
-    type: IsNumber,
-    description: 'addressId',
+    type: IsString,
+    description: 'latitude',
   })
-  addressId?: bigint;
+  latitude?: string;
+
+  @IsString()
+  @ApiProperty({
+    type: IsString,
+    description: 'longitude',
+  })
+  longitude?: string;
 }

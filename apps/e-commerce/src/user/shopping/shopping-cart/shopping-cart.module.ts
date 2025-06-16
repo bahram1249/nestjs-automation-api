@@ -18,6 +18,7 @@ import { BullModule } from '@nestjs/bullmq';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { SHOPPING_CART_PRODUCT_REMOVE_QUEUE } from './constants';
 import { ApplyDiscountModule } from '@rahino/ecommerce/shared/apply-discount';
+import { Setting } from '@rahino/database';
 
 @Module({
   imports: [
@@ -27,10 +28,12 @@ import { ApplyDiscountModule } from '@rahino/ecommerce/shared/apply-discount';
     DBLoggerModule,
     ProductModule,
     QueryFilterModule,
+    SequelizeModule,
     SequelizeModule.forFeature([
       ECShoppingCart,
       ECShoppingCartProduct,
       ECVendor,
+      Setting,
     ]),
     InventoryModule,
     ApplyDiscountModule,

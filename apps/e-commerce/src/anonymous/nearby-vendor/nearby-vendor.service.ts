@@ -6,10 +6,11 @@ import { GetNearbyVendorDto } from './dto';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import { Op, Sequelize } from 'sequelize';
 import { Attachment } from '@rahino/database';
+import { NEARBY_SHOPPING_KM } from '@rahino/ecommerce/shared/constants';
 
 @Injectable()
 export class NearbyVendorService {
-  private readonly distanceMeters = 5 * 1000;
+  private readonly distanceMeters = NEARBY_SHOPPING_KM * 1000;
 
   constructor(@InjectModel(ECVendor) private repository: typeof ECVendor) {}
 
