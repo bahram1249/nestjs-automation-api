@@ -1,6 +1,5 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
-import { User } from '@rahino/database';
 import { VariationPriceEnum } from '@rahino/ecommerce/user/shopping/stock/enum';
 import { ECPaymentGateway } from '@rahino/localdatabase/models';
 import { ListFilter } from '@rahino/query-filter';
@@ -16,7 +15,7 @@ export class PaymentGatewayService {
   ) {}
   async findAll(filter: ListFilter) {
     let queryBuilder = new QueryOptionsBuilder()
-      .attributes(['id', 'name', 'titleMessage', 'description', 'imageUrl'])
+
       .filter(
         Sequelize.where(
           Sequelize.fn(
@@ -30,9 +29,18 @@ export class PaymentGatewayService {
         ),
       )
       .filter({ variationPriceId: VariationPriceEnum.firstPrice });
+
+    const count = await this.repository.count(queryBuilder.build());
+    queryBuilder = queryBuilder.attributes([
+      'id',
+      'name',
+      'titleMessage',
+      'description',
+      'imageUrl',
+    ]);
     return {
       result: await this.repository.findAll(queryBuilder.build()),
-      total: await this.repository.count(queryBuilder.build()),
+      total: count,
     };
   }
 }
