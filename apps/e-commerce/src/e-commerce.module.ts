@@ -111,6 +111,7 @@ import { ShippingWayModule } from './anonymous/shipping-way/shipping-way.module'
 import { AnonymousNearbyVendorModule } from './anonymous/nearby-vendor/nearby-vendor.module';
 import { AnonymousVendorEntityTypeModule } from './anonymous/vendor-entity-type/vendor-entity-type.module';
 import { AnonymousInventoryStatusModule } from './anonymous/inventory-status/inventory-status.module';
+import { AnonymousPaymentGatewayModule } from './anonymous/payment-gateway/payment-gateway.module';
 
 @Module({
   imports: [
@@ -221,6 +222,7 @@ import { AnonymousInventoryStatusModule } from './anonymous/inventory-status/inv
     AnonymousNearbyVendorModule,
     AnonymousVendorEntityTypeModule,
     AnonymousInventoryStatusModule,
+    AnonymousPaymentGatewayModule,
   ],
   providers: [
     {
