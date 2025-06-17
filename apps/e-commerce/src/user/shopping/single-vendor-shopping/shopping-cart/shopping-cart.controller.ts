@@ -20,7 +20,7 @@ import {
 } from '@nestjs/swagger';
 import { JsonResponseTransformInterceptor } from '@rahino/response/interceptor';
 import { OptionalJwtGuard } from '@rahino/auth';
-import { SessionGuard } from '../../session/guard';
+import { SessionGuard } from '../../../session/guard';
 import { GetECSession } from 'apps/main/src/decorator';
 import { ECUserSession } from '@rahino/localdatabase/models';
 import {
