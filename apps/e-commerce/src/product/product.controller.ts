@@ -12,7 +12,7 @@ import {
 import { JsonResponseTransformInterceptor } from '@rahino/response/interceptor';
 import { ApiOperation, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { OptionalJwtGuard } from '@rahino/auth';
-import { GetProductDto, GetUnPriceDto } from './dto';
+import { GetProductDto, GetProductLatLonDto, GetUnPriceDto } from './dto';
 import { ProductService } from './product.service';
 import { OptionalSessionGuard } from '../user/session/guard';
 
@@ -27,6 +27,21 @@ export class ProductController {
   constructor(private service: ProductService) {}
 
   // public url
+
+  @ApiOperation({ description: 'show all products by vendor nearby' })
+  @Get('/byVendorNearby')
+  @ApiQuery({
+    name: 'filter',
+    type: GetProductDto,
+    style: 'deepObject',
+    explode: true,
+  })
+  @HttpCode(HttpStatus.OK)
+  async findByVendorNearby(
+    @Query(new ValidationPipe({ transform: true })) filter: GetProductLatLonDto,
+  ) {
+    return await this.service.findAllByVendorNearby(filter);
+  }
 
   @ApiOperation({ description: 'show all products' })
   @Get('/')

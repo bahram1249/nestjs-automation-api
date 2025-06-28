@@ -1,13 +1,13 @@
 import { GoneException, Injectable, NotFoundException } from '@nestjs/common';
-import { GetProductDto, GetUnPriceDto } from '../dto';
+import { GetProductDto, GetProductLatLonDto, GetUnPriceDto } from '../dto';
 import { InjectModel } from '@nestjs/sequelize';
-import { ECProduct } from '@rahino/localdatabase/models';
+import { ECProduct, ECVendor } from '@rahino/localdatabase/models';
 import * as _ from 'lodash';
 import { ProductQueryBuilderService } from './product-query-builder.service';
 import { ApplyDiscountService } from '../../shared/apply-discount/apply-discount.service';
 import { ApplyInventoryStatus } from './apply-inventory-status.service';
 import { RemoveEmptyPriceService } from './remove-empty-price.service';
-import { Sequelize } from 'sequelize';
+import { Op, Sequelize } from 'sequelize';
 import { ConfigService } from '@nestjs/config';
 import { ECSlugVersion } from '@rahino/localdatabase/models';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
@@ -23,6 +23,10 @@ export class ProductRepositoryService {
     private readonly repository: typeof ECProduct,
     @InjectModel(ECSlugVersion)
     private readonly slugVersionRepository: typeof ECSlugVersion,
+
+    @InjectModel(ECVendor)
+    private readonly vendorRepository: typeof ECVendor,
+
     private readonly productQueryBuilderService: ProductQueryBuilderService,
     private readonly applyDiscountService: ApplyDiscountService,
     private readonly applyInventoryStatus: ApplyInventoryStatus,
@@ -131,6 +135,26 @@ export class ProductRepositoryService {
     };
   }
 
+  async findAllWithLatLon(filter: GetProductLatLonDto) {
+    const nearbyVendors = await this.getNearbyVendors(filter);
+
+    filter.vendorIds = nearbyVendors;
+
+    const { resultQuery, countQuery } =
+      await this.productQueryBuilderService.findAllAndCountQuery(filter);
+
+    let results = await this.repository.findAll(resultQuery);
+
+    results = await this.removeEmptyPriceService.applyProducts(results);
+    results = await this.applyInventoryStatus.applyProducts(results);
+    results = await this.applyDiscountService.applyProducts(results);
+
+    return {
+      result: results,
+      total: await this.repository.count(countQuery), //count,
+    };
+  }
+
   async findAllAndCount(filter: GetProductDto) {
     const { resultQuery, countQuery } =
       await this.productQueryBuilderService.findAllAndCountQuery(filter);
@@ -186,5 +210,42 @@ export class ProductRepositoryService {
     return {
       result: results,
     };
+  }
+
+  private async getNearbyVendors(filter: GetProductLatLonDto) {
+    const replacements = {
+      longitude: Number(filter.longitude),
+      latitude: Number(filter.latitude),
+    };
+
+    let queryBuilder = new QueryOptionsBuilder()
+      .attributes(['id'])
+      .filter({
+        coordinates: {
+          [Op.not]: null,
+        },
+      })
+
+      .filter(
+        Sequelize.where(
+          Sequelize.fn('isnull', Sequelize.col('ECVendor.isDeleted'), 0),
+          {
+            [Op.eq]: 0,
+          },
+        ),
+      )
+      .order([
+        Sequelize.literal(
+          `coordinates.STDistance(geography::Point(:latitude, :longitude, 4326))`,
+        ),
+        'ASC',
+      ])
+      .limit(10)
+      .offset(0)
+      .replacements(replacements);
+
+    const result = await this.vendorRepository.findAll(queryBuilder.build());
+
+    return result.map((v) => v.id);
   }
 }

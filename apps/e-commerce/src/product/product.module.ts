@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { ProductService } from './product.service';
 import { ProductController } from './product.controller';
 import { SequelizeModule } from '@nestjs/sequelize';
-import { ECProduct } from '@rahino/localdatabase/models';
+import { ECProduct, ECVendor } from '@rahino/localdatabase/models';
 import {
   ApplyDiscountService,
   ProductQueryBuilderService,
@@ -14,8 +14,14 @@ import { SessionModule } from '../user/session/session.module';
 import { ProductRepositoryService } from './service/product-repository.service';
 import { BullModule } from '@nestjs/bullmq';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { QUERY_NEXT_PAGE_PRODUCT_QUEUE } from './constants';
-import { QueryNextPageProductProcessor } from './processor';
+import {
+  QUERY_NEXT_PAGE_PRODUCT_QUEUE,
+  QUERY_NEXT_PAGE_PRODUCT_WITH_LAT_LON_QUEUE,
+} from './constants';
+import {
+  QueryNextPageProductProcessor,
+  QueryNextPageProductWithLatLonProcessor,
+} from './processor';
 import { ApplyInventoryStatus } from './service/apply-inventory-status.service';
 import { ECInventoryStatus } from '@rahino/localdatabase/models';
 import { EAVEntityType } from '@rahino/localdatabase/models';
@@ -43,12 +49,16 @@ import { ApplyDiscountModule } from '../shared/apply-discount';
     BullModule.registerQueueAsync({
       name: QUERY_NEXT_PAGE_PRODUCT_QUEUE,
     }),
+    BullModule.registerQueueAsync({
+      name: QUERY_NEXT_PAGE_PRODUCT_WITH_LAT_LON_QUEUE,
+    }),
     SequelizeModule.forFeature([
       ECProduct,
       ECDiscount,
       ECInventoryStatus,
       EAVEntityType,
       ECSlugVersion,
+      ECVendor,
     ]),
     SequelizeModule,
     QueryFilterModule,
@@ -64,6 +74,7 @@ import { ApplyDiscountModule } from '../shared/apply-discount';
     RemoveEmptyPriceService,
     ProductRepositoryService,
     QueryNextPageProductProcessor,
+    QueryNextPageProductWithLatLonProcessor,
   ],
   exports: [ProductRepositoryService, ProductQueryBuilderService],
 })
