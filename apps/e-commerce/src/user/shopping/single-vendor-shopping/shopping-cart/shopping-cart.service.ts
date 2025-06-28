@@ -96,7 +96,9 @@ export class SingleVendorShoppingCartService {
 
       return {
         result: {
-          ...priceSummary,
+          totalPrice: priceSummary.totalPrice + totalShipmentPrice,
+          totalDiscount: priceSummary.totalDiscount,
+          totalProductPrice: priceSummary.totalProductPrice,
           totalShipmentPrice,
           allowProcess,
         },
@@ -344,7 +346,7 @@ export class SingleVendorShoppingCartService {
       this.getSettingValue(CourierPriceEnum.COURIER_PRICE_BY_KILOMETRE),
     ]);
 
-    const km = vendorDistanceInMeters / 1000;
+    const km = Math.round(vendorDistanceInMeters / 1000);
     const totalShipmentPrice = Number(basePrice) + km * Number(pricePerKm);
 
     return { allowProcess: true, totalShipmentPrice };

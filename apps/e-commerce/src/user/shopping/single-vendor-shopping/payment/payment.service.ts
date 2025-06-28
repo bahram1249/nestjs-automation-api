@@ -396,7 +396,7 @@ export class SingleVendorPaymentService {
       this.getSettingValue(CourierPriceEnum.COURIER_PRICE_BY_KILOMETRE),
     ]);
 
-    const km = vendor.distanceInMeters / 1000;
+    const km = Math.round(vendor.distanceInMeters / 1000);
     const totalShipmentPrice = Number(basePrice) + km * Number(pricePerKm);
     return totalShipmentPrice;
   }
