@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { ShoppingCartService } from './shopping-cart.service';
+import { SingleVendorShoppingCartService } from './shopping-cart.service';
 import { ShoppingCartController } from './shopping-cart.controller';
 import { LocalizationModule } from 'apps/main/src/common/localization';
 import { AddressModule } from '../../../address/address.module';
@@ -53,6 +53,7 @@ import { Setting } from '@rahino/database';
     }),
   ],
   controllers: [ShoppingCartController],
-  providers: [ShoppingCartService],
+  providers: [SingleVendorShoppingCartService],
+  exports: [SingleVendorShoppingCartService],
 })
-export class ShoppingCartModule {}
+export class SingleVendorShoppingCartModule {}

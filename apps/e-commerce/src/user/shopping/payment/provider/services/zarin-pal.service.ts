@@ -1,7 +1,6 @@
 import { User } from '@rahino/database';
 import { PayInterface } from '../interface';
 import {
-  OrderStatusEnum,
   PaymentStatusEnum,
   PaymentTypeEnum,
 } from '@rahino/ecommerce/util/enum';
@@ -19,7 +18,6 @@ import { ECPayment } from '@rahino/localdatabase/models';
 import axios from 'axios';
 import { ZarinPalDto } from '@rahino/ecommerce/verify-payment/dto';
 import { ECOrder } from '@rahino/localdatabase/models';
-import { RevertInventoryQtyService } from '@rahino/ecommerce/inventory/services';
 import { FinalizedPaymentService } from '../../util/finalized-payment/finalized-payment.service';
 import { RevertPaymentQtyService } from '@rahino/ecommerce/inventory/services/revert-payment-qty.service';
 

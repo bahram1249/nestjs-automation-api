@@ -34,6 +34,7 @@ export type I18nTranslations = {
         "success": string;
     };
     "ecommerce": {
+        "the_vendor_you_choose_is_not_in_valid_area": string;
         "the_maximum_of_used_this_coupon_code_reach": string;
         "cannot_find_any_coupon_code_for_this_selected_product": string;
         "you_dont_allow_to_use_this_coupon_code": string;

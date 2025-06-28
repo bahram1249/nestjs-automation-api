@@ -20,7 +20,7 @@ import { emptyListFilter } from '@rahino/query-filter/provider/constants';
 import { ProductRepositoryService } from '@rahino/ecommerce/product/service/product-repository.service';
 import { LocalizationService } from 'apps/main/src/common/localization';
 import { InventoryService } from '@rahino/ecommerce/inventory/services';
-import { addDays, isNotNullOrEmpty } from '@rahino/commontools';
+import { addDays, isNotNullOrEmpty, sumProperty } from '@rahino/commontools';
 import { InventoryStatusEnum } from '@rahino/ecommerce/inventory/enum';
 import { ApplyDiscountService } from '@rahino/ecommerce/product/service';
 import { defaultValueIsNull } from '@rahino/commontools/functions/default-value-isnull';
@@ -44,7 +44,7 @@ import {
 import { InjectQueue } from '@nestjs/bullmq';
 
 @Injectable()
-export class ShoppingCartService {
+export class SingleVendorShoppingCartService {
   private readonly distanceMeters = NEARBY_SHOPPING_KM * 1000;
 
   constructor(
@@ -151,6 +151,33 @@ export class ShoppingCartService {
     return {
       result: this.localizationService.translate('core.success'),
     };
+  }
+
+  public async getShoppingCartElements(
+    filter: GetShoppingPriceDto,
+    session: ECUserSession,
+  ): Promise<FormatShoppingCartProductOutputDto[]> {
+    const shoppingCarts = await this.findAll(
+      { shoppingCartId: filter.shoppingCartId },
+      session,
+    );
+
+    if (shoppingCarts.length === 0) return [];
+
+    const shoppingCart = shoppingCarts[0];
+    let shoppingCartProducts = this.filterAvailableProducts(
+      shoppingCart.shoppingProducts,
+    );
+
+    if (isNotNullOrEmpty(filter.couponCode)) {
+      const result = await this.applyDiscountCoupon(
+        shoppingCartProducts,
+        filter.couponCode,
+      );
+      shoppingCartProducts = result.shoppingCartProducts;
+    }
+
+    return this.formatShoppingProducts(shoppingCartProducts);
   }
 
   // ==================== PRIVATE METHODS ====================
@@ -274,33 +301,6 @@ export class ShoppingCartService {
     );
   }
 
-  private async getShoppingCartElements(
-    filter: GetShoppingPriceDto,
-    session: ECUserSession,
-  ): Promise<FormatShoppingCartProductOutputDto[]> {
-    const shoppingCarts = await this.findAll(
-      { shoppingCartId: filter.shoppingCartId },
-      session,
-    );
-
-    if (shoppingCarts.length === 0) return [];
-
-    const shoppingCart = shoppingCarts[0];
-    let shoppingCartProducts = this.filterAvailableProducts(
-      shoppingCart.shoppingProducts,
-    );
-
-    if (isNotNullOrEmpty(filter.couponCode)) {
-      const result = await this.applyDiscountCoupon(
-        shoppingCartProducts,
-        filter.couponCode,
-      );
-      shoppingCartProducts = result.shoppingCartProducts;
-    }
-
-    return this.formatShoppingProducts(shoppingCartProducts);
-  }
-
   private filterAvailableProducts(products: ShoppingCartProductDto[]) {
     return products.filter(
       (product) =>
@@ -309,18 +309,12 @@ export class ShoppingCartService {
     );
   }
 
-  private calculatePriceSummary(items: FormatShoppingCartProductOutputDto[]) {
+  public calculatePriceSummary(items: FormatShoppingCartProductOutputDto[]) {
     return {
-      totalPrice: this.sumProperty(items, 'totalPrice'),
-      totalDiscount: this.sumProperty(items, 'discountFee'),
-      totalProductPrice: this.sumProperty(items, 'totalProductPrice'),
+      totalPrice: sumProperty(items, 'totalPrice'),
+      totalDiscount: sumProperty(items, 'discountFee'),
+      totalProductPrice: sumProperty(items, 'totalProductPrice'),
     };
-  }
-
-  private sumProperty(items: any[], prop: string): number {
-    return items
-      .map((item) => item[prop])
-      .reduce((prev, current) => prev + current, 0);
   }
 
   private hasValidLocation(filter: GetShoppingPriceDto): boolean {

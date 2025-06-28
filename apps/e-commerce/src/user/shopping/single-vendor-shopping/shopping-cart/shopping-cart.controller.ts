@@ -11,7 +11,7 @@ import {
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
-import { ShoppingCartService } from './shopping-cart.service';
+import { SingleVendorShoppingCartService } from './shopping-cart.service';
 import {
   ApiBearerAuth,
   ApiOperation,
@@ -39,7 +39,7 @@ import {
 })
 @Controller()
 export class ShoppingCartController {
-  constructor(private readonly service: ShoppingCartService) {}
+  constructor(private readonly service: SingleVendorShoppingCartService) {}
 
   @UseGuards(OptionalJwtGuard, SessionGuard)
   @ApiOperation({ description: 'show all shoppingCarts' })

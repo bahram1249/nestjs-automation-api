@@ -5,3 +5,4 @@ export * from './safe-json-parse';
 export * from './number-with-commas';
 export * from './add-days';
 export * from './is-not-null-or-empty';
+export * from './sum-property';
