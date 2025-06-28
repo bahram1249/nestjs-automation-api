@@ -15,6 +15,7 @@ export class HomePageProcessor extends WorkerHost {
 
   async process(job: Job<any, any, any>, token?: string): Promise<any> {
     try {
+      await this.redisRepository.removeKeysByPattern('home:*');
       const items = await this.service.processAll();
       await this.redisRepository.set('home', 'items', JSON.stringify(items));
     } catch {

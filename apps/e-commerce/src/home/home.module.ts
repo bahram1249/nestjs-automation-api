@@ -15,6 +15,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { HOME_PAGE_QUEUE } from './constants';
 import { ProcessHomeRunnerService } from './process-home-runner.service';
 import { RedisClientModule } from '@rahino/redis-client';
+import { ProcessHomeByLatLonService } from './process-home-by-lat-lon.service';
 
 @Module({
   imports: [
@@ -48,6 +49,7 @@ import { RedisClientModule } from '@rahino/redis-client';
     ProcessHomeService,
     HomePageProcessor,
     ProcessHomeRunnerService,
+    ProcessHomeByLatLonService,
   ],
 })
 export class HomePageModule {}
