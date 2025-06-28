@@ -178,6 +178,11 @@ export class SingleVendorPaymentService {
       throw new InternalServerErrorException(error.message);
     }
 
+    return {
+      result: {
+        redirectUrl: redirectUrl,
+      },
+    };
     // redirect to payment
   }
 
