@@ -2,9 +2,9 @@ import { Injectable } from '@nestjs/common';
 import { InjectConnection, InjectModel } from '@nestjs/sequelize';
 import * as _ from 'lodash';
 import { ECCity, ECProvince, ECVendor } from '@rahino/localdatabase/models';
-import { GetNearbyVendorDto } from './dto';
+import { GetNearbyVendorDto, ValidAreaDto, VendorDistanceDto } from './dto';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
-import { Op, Sequelize } from 'sequelize';
+import { Op, QueryTypes, Sequelize } from 'sequelize';
 import { Attachment } from '@rahino/database';
 import { NEARBY_SHOPPING_KM } from '@rahino/ecommerce/shared/constants';
 
@@ -12,7 +12,11 @@ import { NEARBY_SHOPPING_KM } from '@rahino/ecommerce/shared/constants';
 export class NearbyVendorService {
   private readonly distanceMeters = NEARBY_SHOPPING_KM * 1000;
 
-  constructor(@InjectModel(ECVendor) private repository: typeof ECVendor) {}
+  constructor(
+    @InjectModel(ECVendor) private repository: typeof ECVendor,
+    @InjectConnection()
+    private readonly sequelize: Sequelize,
+  ) {}
 
   async findAll(dto: GetNearbyVendorDto) {
     const replacements = {
@@ -94,5 +98,47 @@ export class NearbyVendorService {
       result: result,
       total: count,
     };
+  }
+
+  async inValidArea(dto: ValidAreaDto) {
+    let inValidArea = false;
+    const vendor = await this.getVendorWithDistance(
+      dto.vendorId,
+      dto.latitude,
+      dto.longitude,
+    );
+
+    if (vendor.distanceInMeters <= this.distanceMeters) {
+      inValidArea = true;
+    }
+    return {
+      result: {
+        inValidArea,
+      },
+    };
+  }
+
+  private async getVendorWithDistance(
+    vendorId: number,
+    latitude: string,
+    longitude: string,
+  ) {
+    const vendors = await this.sequelize.query<VendorDistanceDto>(
+      `SELECT 
+        id, 
+        name, 
+        coordinates.STDistance(geography::Point(:latitude, :longitude, 4326)) AS distanceInMeters
+       FROM ECVendors
+       WHERE id = :vendorId`,
+      {
+        replacements: {
+          latitude: Number(latitude),
+          longitude: Number(longitude),
+          vendorId,
+        },
+        type: QueryTypes.SELECT,
+      },
+    );
+    return vendors[0];
   }
 }

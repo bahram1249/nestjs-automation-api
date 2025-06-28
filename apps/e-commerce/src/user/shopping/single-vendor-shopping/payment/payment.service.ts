@@ -41,7 +41,6 @@ import {
   VendorCommissionTypeEnum,
 } from '@rahino/ecommerce/util/enum';
 import * as moment from 'moment-jalaali';
-import { bool } from 'sharp';
 import { DecreaseInventoryService } from '@rahino/ecommerce/inventory/services';
 import {
   REVERT_INVENTORY_QTY_JOB,
@@ -52,6 +51,7 @@ import { Queue } from 'bullmq';
 
 @Injectable()
 export class SingleVendorPaymentService {
+  private readonly distanceMeters = NEARBY_SHOPPING_KM * 1000;
   constructor(
     private readonly shoppingCartService: SingleVendorShoppingCartService,
     @Inject(ECOMMERCE_SINGLE_VENDOR_PAYMENT_PROVIDER_TOKEN)

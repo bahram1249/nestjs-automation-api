@@ -95,8 +95,9 @@ export class SingleVendorZarinPalService implements SingleVendorPayInterface {
         paymentId: payment.id,
       };
     } catch (error) {
+      console.log(error);
       throw new InternalServerErrorException(
-        'something failed in payments requests',
+        `something failed in payments requests: ${error.message}`,
       );
     }
   }
