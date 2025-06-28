@@ -3,7 +3,7 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { AddressDto, GetAddressDto } from './dto';
+import { AddressDto, AddressV2Dto, GetAddressDto } from './dto';
 import { InjectModel } from '@nestjs/sequelize';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import { Op, Sequelize } from 'sequelize';
@@ -92,6 +92,62 @@ export class AddressService {
     };
   }
 
+  async findAllV2(user: User, filter: GetAddressDto) {
+    const queryBuilder = new QueryOptionsBuilder()
+      .filter({
+        userId: user.id,
+      })
+      .filter({
+        name: {
+          [Op.like]: filter.search,
+        },
+      })
+      .filter(
+        Sequelize.where(
+          Sequelize.fn('isnull', Sequelize.col('ECAddress.isDeleted'), 0),
+          {
+            [Op.eq]: 0,
+          },
+        ),
+      );
+    const count = await this.repository.count(queryBuilder.build());
+    const queryOptions = queryBuilder
+      .attributes([
+        'id',
+        'name',
+        'latitude',
+        'longitude',
+        'provinceId',
+        'cityId',
+        'street',
+        'alley',
+        'plaque',
+        'floorNumber',
+        'postalCode',
+      ])
+      .include([
+        {
+          attributes: ['id', 'name'],
+          model: ECProvince,
+          as: 'province',
+        },
+        {
+          attributes: ['id', 'name'],
+          model: ECCity,
+          as: 'city',
+        },
+      ])
+      .limit(filter.limit, filter.ignorePaging)
+      .offset(filter.offset, filter.ignorePaging)
+      .order({ orderBy: filter.orderBy, sortOrder: filter.sortOrder })
+      .build();
+    const result = await this.repository.findAll(queryOptions);
+    return {
+      result: result,
+      total: count,
+    };
+  }
+
   async findById(user: User, entityId: bigint) {
     const address = await this.repository.findOne(
       new QueryOptionsBuilder()
@@ -136,6 +192,56 @@ export class AddressService {
             attributes: ['id', 'name'],
             model: ECNeighborhood,
             as: 'neighborhood',
+          },
+        ])
+        .build(),
+    );
+    if (!address) {
+      throw new NotFoundException('the item with this given id not founded!');
+    }
+    return {
+      result: address,
+    };
+  }
+
+  async findByIdV2(user: User, entityId: bigint) {
+    const address = await this.repository.findOne(
+      new QueryOptionsBuilder()
+        .attributes([
+          'id',
+          'name',
+          'latitude',
+          'longitude',
+          'provinceId',
+          'cityId',
+          'street',
+          'alley',
+          'plaque',
+          'floorNumber',
+          'postalCode',
+        ])
+        .filter({
+          userId: user.id,
+        })
+        .filter({ id: entityId })
+        .filter(
+          Sequelize.where(
+            Sequelize.fn('isnull', Sequelize.col('ECAddress.isDeleted'), 0),
+            {
+              [Op.eq]: 0,
+            },
+          ),
+        )
+        .include([
+          {
+            attributes: ['id', 'name'],
+            model: ECProvince,
+            as: 'province',
+          },
+          {
+            attributes: ['id', 'name'],
+            model: ECCity,
+            as: 'city',
           },
         ])
         .build(),
@@ -230,6 +336,65 @@ export class AddressService {
         'provinceId',
         'cityId',
         'neighborhoodId',
+        'street',
+        'alley',
+        'plaque',
+        'floorNumber',
+        'postalCode',
+      ]),
+    };
+  }
+
+  async createV2(user: User, dto: AddressV2Dto) {
+    const province = await this.provinceRepository.findOne(
+      new QueryOptionsBuilder()
+        .filter({ id: dto.provinceId })
+        .filter(
+          Sequelize.where(
+            Sequelize.fn('isnull', Sequelize.col('ECProvince.isDeleted'), 0),
+            {
+              [Op.eq]: 0,
+            },
+          ),
+        )
+        .build(),
+    );
+
+    if (!province) {
+      throw new BadRequestException('the given provinceId not founded!');
+    }
+
+    const city = await this.cityRepository.findOne(
+      new QueryOptionsBuilder()
+        .filter({ id: dto.cityId })
+        .filter({ provinceId: dto.provinceId })
+        .filter(
+          Sequelize.where(
+            Sequelize.fn('isnull', Sequelize.col('ECCity.isDeleted'), 0),
+            {
+              [Op.eq]: 0,
+            },
+          ),
+        )
+        .build(),
+    );
+    if (!city) {
+      throw new BadRequestException('the given cityId not founded!');
+    }
+
+    const mappedItem = this.mapper.map(dto, AddressV2Dto, ECAddress);
+    mappedItem.userId = user.id;
+    const result = await this.repository.create(
+      _.omit(mappedItem.toJSON(), ['id']),
+    );
+    return {
+      result: _.pick(result, [
+        'id',
+        'name',
+        'latitude',
+        'longitude',
+        'provinceId',
+        'cityId',
         'street',
         'alley',
         'plaque',
@@ -346,6 +511,90 @@ export class AddressService {
         'provinceId',
         'cityId',
         'neighborhoodId',
+        'street',
+        'alley',
+        'plaque',
+        'floorNumber',
+        'postalCode',
+      ]),
+    };
+  }
+
+  async updateV2(user: User, entityId: bigint, dto: AddressV2Dto) {
+    const item = await this.repository.findOne(
+      new QueryOptionsBuilder()
+        .filter({
+          userId: user.id,
+        })
+        .filter({ id: entityId })
+        .filter(
+          Sequelize.where(
+            Sequelize.fn('isnull', Sequelize.col('ECAddress.isDeleted'), 0),
+            {
+              [Op.eq]: 0,
+            },
+          ),
+        )
+        .build(),
+    );
+    if (!item) {
+      throw new NotFoundException('the item with this given id not founded!');
+    }
+
+    const province = await this.provinceRepository.findOne(
+      new QueryOptionsBuilder()
+        .filter({ id: dto.provinceId })
+        .filter(
+          Sequelize.where(
+            Sequelize.fn('isnull', Sequelize.col('ECProvince.isDeleted'), 0),
+            {
+              [Op.eq]: 0,
+            },
+          ),
+        )
+        .build(),
+    );
+
+    if (!province) {
+      throw new BadRequestException('the given provinceId not founded!');
+    }
+
+    const city = await this.cityRepository.findOne(
+      new QueryOptionsBuilder()
+        .filter({ id: dto.cityId })
+        .filter({ provinceId: dto.provinceId })
+        .filter(
+          Sequelize.where(
+            Sequelize.fn('isnull', Sequelize.col('ECCity.isDeleted'), 0),
+            {
+              [Op.eq]: 0,
+            },
+          ),
+        )
+        .build(),
+    );
+    if (!city) {
+      throw new BadRequestException('the given cityId not founded!');
+    }
+
+    const mappedItem = this.mapper.map(dto, AddressV2Dto, ECAddress);
+    const result = await this.repository.update(
+      _.omit(mappedItem.toJSON(), ['id']),
+      {
+        where: {
+          id: entityId,
+        },
+        returning: true,
+      },
+    );
+    return {
+      result: _.pick(result[1][0], [
+        'id',
+        'name',
+        'latitude',
+        'longitude',
+        'provinceId',
+        'cityId',
         'street',
         'alley',
         'plaque',
