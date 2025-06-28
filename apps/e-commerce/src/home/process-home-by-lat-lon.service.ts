@@ -309,7 +309,7 @@ export class ProcessHomeByLatLonService {
       type: HomePageTypeEnum.PRODUCT,
       link:
         baseUrl +
-        `/v1/api/ecommerce/products?orderBy=${sort.sortField}&sortOrder=${sort.sortOrder}&latitude=${latLon.latitude}&longitude=${latLon.longitude}`,
+        `/v1/api/ecommerce/products/byVendorNearby?orderBy=${sort.sortField}&sortOrder=${sort.sortOrder}&latitude=${latLon.latitude}&longitude=${latLon.longitude}`,
       totalLink: frontUrl + `/search`,
       requestBased: true,
     };
