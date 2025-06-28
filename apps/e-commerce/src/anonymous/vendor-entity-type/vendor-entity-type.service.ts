@@ -9,6 +9,7 @@ import * as _ from 'lodash';
 import { Attachment } from '@rahino/database';
 import { LocalizationService } from 'apps/main/src/common/localization';
 import { PublishStatusEnum } from '@rahino/ecommerce/product/enum';
+import { InventoryStatusEnum } from '@rahino/ecommerce/inventory/enum';
 
 @Injectable()
 export class VendorEntityTypeService {
@@ -56,7 +57,8 @@ export class VendorEntityTypeService {
         LEFT JOIN EAVEntityTypes EPET3
         ON EPET3.parentEntityTypeId = EPET2.id
         WHERE ISNULL(EP.isDeleted, 0) = 0 
-         AND EP.publishStatusId = ${PublishStatusEnum.publish} 
+         AND EP.publishStatusId = ${PublishStatusEnum.publish}
+         AND EP.inventoryStatusId = ${InventoryStatusEnum.available}
          AND ISNULL(EI.isDeleted, 0) = 0 
          AND EP.entityTypeId IN (EAVEntityType.id, EPET2.id, EPET3.id) 
          AND EI.vendorId = ${filter.vendorId}
@@ -124,7 +126,8 @@ export class VendorEntityTypeService {
               LEFT JOIN EAVEntityTypes EPET2
               ON EPET2.parentEntityTypeId = subEntityTypes.id
               WHERE ISNULL(EP.isDeleted, 0) = 0 
-               AND EP.publishStatusId = ${PublishStatusEnum.publish} 
+               AND EP.publishStatusId = ${PublishStatusEnum.publish}
+               AND EP.inventoryStatusId = ${InventoryStatusEnum.available} 
                AND ISNULL(EI.isDeleted, 0) = 0 
                AND EP.entityTypeId IN (subEntityTypes.id, EPET2.id)
                AND EI.vendorId = ${filter.vendorId}
@@ -163,7 +166,8 @@ export class VendorEntityTypeService {
                     LEFT JOIN ECInventories EI 
                     ON EP.id = EI.productId 
                     WHERE ISNULL(EP.isDeleted, 0) = 0 
-                    AND EP.publishStatusId = ${PublishStatusEnum.publish} 
+                    AND EP.publishStatusId = ${PublishStatusEnum.publish}
+                    AND EP.inventoryStatusId = ${InventoryStatusEnum.available}
                     AND ISNULL(EI.isDeleted, 0) = 0 
                     AND [subEntityTypes->subEntityTypes].id = EP.entityTypeId
                     AND EI.vendorId = ${filter.vendorId}
