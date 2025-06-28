@@ -66,6 +66,13 @@ export class AddressController {
     return await this.service.findAllV2(user, filter);
   }
 
+  @ApiOperation({ description: 'get latest address by user id' })
+  @Get('/latest')
+  @HttpCode(HttpStatus.OK)
+  async findLatestAddress(@GetUser() user: User) {
+    return await this.service.findLatestAddress(user);
+  }
+
   @ApiOperation({ description: 'show address by given id' })
   @Get('/:id')
   @HttpCode(HttpStatus.OK)

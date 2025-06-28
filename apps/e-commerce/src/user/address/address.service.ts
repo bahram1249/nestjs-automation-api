@@ -10,7 +10,7 @@ import { Op, Sequelize } from 'sequelize';
 import { InjectMapper } from 'automapper-nestjs';
 import { Mapper } from 'automapper-core';
 import * as _ from 'lodash';
-import { ECAddress } from '@rahino/localdatabase/models';
+import { ECAddress, ECOrder } from '@rahino/localdatabase/models';
 import { User } from '@rahino/database';
 import { ECProvince } from '@rahino/localdatabase/models';
 import { ECCity } from '@rahino/localdatabase/models';
@@ -26,6 +26,8 @@ export class AddressService {
     @InjectModel(ECCity) private cityRepository: typeof ECCity,
     @InjectModel(ECNeighborhood)
     private neighborhoodRepository: typeof ECNeighborhood,
+    @InjectModel(ECOrder)
+    private readonly orderRepository: typeof ECOrder,
     @InjectMapper() private readonly mapper: Mapper,
     private readonly i18n: I18nService<I18nTranslations>,
   ) {}
@@ -145,6 +147,106 @@ export class AddressService {
     return {
       result: result,
       total: count,
+    };
+  }
+
+  async findLatestAddress(user: User) {
+    const address = await this.repository.findOne(
+      new QueryOptionsBuilder()
+        .attributes([
+          'id',
+          'name',
+          'latitude',
+          'longitude',
+          'provinceId',
+          'cityId',
+          'neighborhoodId',
+          'street',
+          'alley',
+          'plaque',
+          'floorNumber',
+          'postalCode',
+          'createdAt',
+        ])
+        .filter({
+          userId: user.id,
+        })
+        .filter(
+          Sequelize.where(
+            Sequelize.fn('isnull', Sequelize.col('ECAddress.isDeleted'), 0),
+            {
+              [Op.eq]: 0,
+            },
+          ),
+        )
+        .include([
+          {
+            attributes: ['id', 'name'],
+            model: ECProvince,
+            as: 'province',
+          },
+          {
+            attributes: ['id', 'name'],
+            model: ECCity,
+            as: 'city',
+          },
+          {
+            attributes: ['id', 'name'],
+            model: ECNeighborhood,
+            as: 'neighborhood',
+          },
+        ])
+        .order({ orderBy: 'createdAt', sortOrder: 'DESC' })
+        .limit(1)
+        .build(),
+    );
+
+    const order = await this.orderRepository.findOne(
+      new QueryOptionsBuilder()
+        .include([
+          {
+            attributes: [
+              'id',
+              'name',
+              'latitude',
+              'longitude',
+              'provinceId',
+              'cityId',
+              'neighborhoodId',
+              'street',
+              'alley',
+              'plaque',
+              'floorNumber',
+              'postalCode',
+            ],
+            model: ECAddress,
+            as: 'address',
+          },
+        ])
+        .filter({ userId: user.id })
+        .order({ orderBy: 'createdAt', sortOrder: 'DESC' })
+        .build(),
+    );
+
+    let latestAddress: ECAddress | null = null;
+
+    const addressFromOrder = order?.address ?? null;
+
+    if (address && addressFromOrder) {
+      latestAddress =
+        new Date(address.createdAt) > new Date(addressFromOrder.createdAt)
+          ? address
+          : addressFromOrder;
+    } else if (address) {
+      latestAddress = address;
+    } else if (addressFromOrder) {
+      latestAddress = addressFromOrder;
+    } else {
+      latestAddress = null;
+    }
+
+    return {
+      result: latestAddress,
     };
   }
 
