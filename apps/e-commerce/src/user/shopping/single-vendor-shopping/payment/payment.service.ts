@@ -155,6 +155,7 @@ export class SingleVendorPaymentService {
         shipmentAmount: totalShippingPrice,
         totalPrice: priceSummary.totalPrice + totalShippingPrice,
         user: user,
+        orderId: order.id,
         transaction: transaction,
       });
       redirectUrl = paymentRes.redirectUrl;
