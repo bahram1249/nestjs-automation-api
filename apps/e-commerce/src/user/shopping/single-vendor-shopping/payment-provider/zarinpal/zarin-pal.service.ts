@@ -43,7 +43,7 @@ export class SingleVendorZarinPalService implements SingleVendorPayInterface {
         paymentGatewayId: paymentGateway.id,
         paymentTypeId: dto.paymentType,
         paymentStatusId: PaymentStatusEnum.WaitingForPayment,
-        totalprice: dto.totalPrice * 10,
+        totalprice: dto.totalPrice,
         orderId: dto.orderId,
         userId: dto.user.id,
       },
@@ -57,7 +57,7 @@ export class SingleVendorZarinPalService implements SingleVendorPayInterface {
     const data = {
       merchant_id: paymentGateway.username,
       callback_url: baseUrl + '/v1/api/ecommerce/verifyPayments/zarinpal',
-      amount: dto.totalPrice * 10,
+      amount: dto.totalPrice,
       metadata: {
         mobile: dto.user.phoneNumber,
       },
