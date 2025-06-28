@@ -50,11 +50,15 @@ export class VendorEntityTypeService {
         SELECT 1 
         FROM ECProducts EP 
         LEFT JOIN ECInventories EI 
-        ON EP.id = EI.productId 
+        ON EP.id = EI.productId
+        LEFT JOIN EAVEntityTypes EPET2
+        ON EPET2.parentEntityTypeId = EAVEntityType.id
+        LEFT JOIN EAVEntityTypes EPET3
+        ON EPET3.parentEntityTypeId = EPET2.id
         WHERE ISNULL(EP.isDeleted, 0) = 0 
          AND EP.publishStatusId = ${PublishStatusEnum.publish} 
          AND ISNULL(EI.isDeleted, 0) = 0 
-         AND EAVEntityType.id = EP.entityTypeId
+         AND EP.entityTypeId IN (EAVEntityType.id, EPET2.id, EPET3.id) 
          AND EI.vendorId = ${filter.vendorId}
          AND ${
            filter.inventoryStatusId
@@ -117,10 +121,12 @@ export class VendorEntityTypeService {
               FROM ECProducts EP 
               LEFT JOIN ECInventories EI 
               ON EP.id = EI.productId 
+              LEFT JOIN EAVEntityTypes EPET2
+              ON EPET2.parentEntityTypeId = subEntityTypes.id
               WHERE ISNULL(EP.isDeleted, 0) = 0 
                AND EP.publishStatusId = ${PublishStatusEnum.publish} 
                AND ISNULL(EI.isDeleted, 0) = 0 
-               AND subEntityTypes.id = EP.entityTypeId
+               AND EP.entityTypeId IN (subEntityTypes.id, EPET2.id)
                AND EI.vendorId = ${filter.vendorId}
                AND ${
                  filter.inventoryStatusId
