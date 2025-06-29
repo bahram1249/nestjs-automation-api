@@ -494,9 +494,11 @@ export class SingleVendorShoppingCartService {
     product: ShoppingCartProductDto,
   ): FormatShoppingCartProductOutputDto {
     const inventoryPrice = product.product.inventories[0].firstPrice;
+
     const basePrice = Number(inventoryPrice.price);
-    const afterDiscount =
-      Number(inventoryPrice?.appliedDiscount?.newPrice) ?? basePrice;
+    const afterDiscount = Number(
+      inventoryPrice?.appliedDiscount?.newPrice ?? basePrice,
+    );
     const discountFeePerItem = basePrice - afterDiscount;
 
     return {
