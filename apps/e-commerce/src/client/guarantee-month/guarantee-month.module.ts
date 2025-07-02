@@ -3,7 +3,7 @@ import { GuaranteeMonthController } from './guarantee-month.controller';
 import { GuaranteeMonthService } from './guarantee-month.service';
 import { SequelizeModule } from '@nestjs/sequelize';
 import { ECGuaranteeMonth } from '@rahino/localdatabase/models';
-import { SessionModule } from '../user/session/session.module';
+import { SessionModule } from '../../user/session/session.module';
 
 @Module({
   imports: [SessionModule, SequelizeModule.forFeature([ECGuaranteeMonth])],
