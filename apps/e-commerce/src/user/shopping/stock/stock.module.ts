@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { StockController } from './stock.controller';
 import { StockService } from './stock.service';
-import { ProductModule } from '@rahino/ecommerce/product/product.module';
+import { ProductModule } from '@rahino/ecommerce/client/product/product.module';
 import { QueryFilterModule } from '@rahino/query-filter';
 import { StockProfile } from './mapper';
 import { InventoryModule } from '@rahino/ecommerce/inventory/inventory.module';

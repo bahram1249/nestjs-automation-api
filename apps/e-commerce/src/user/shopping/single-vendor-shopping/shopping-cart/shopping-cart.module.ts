@@ -5,7 +5,7 @@ import { LocalizationModule } from 'apps/main/src/common/localization';
 import { AddressModule } from '../../../address/address.module';
 import { SessionModule } from '../../../session/session.module';
 import { DBLoggerModule } from '@rahino/logger';
-import { ProductModule } from '@rahino/ecommerce/product/product.module';
+import { ProductModule } from '@rahino/ecommerce/client/product/product.module';
 import { QueryFilterModule } from '@rahino/query-filter';
 import { SequelizeModule } from '@nestjs/sequelize';
 import {

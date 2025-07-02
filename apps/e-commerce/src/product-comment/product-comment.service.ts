@@ -18,7 +18,7 @@ import { ECProductCommentFactor } from '@rahino/localdatabase/models';
 import { ECEntityTypeFactor } from '@rahino/localdatabase/models';
 import { EAVEntityType } from '@rahino/localdatabase/models';
 import { ECProduct } from '@rahino/localdatabase/models';
-import { PublishStatusEnum } from '../product/enum';
+import { PublishStatusEnum } from '../client/product/enum';
 import { I18nTranslations } from 'apps/main/src/generated/i18n.generated';
 import { I18nContext, I18nService } from 'nestjs-i18n';
 

@@ -29,7 +29,7 @@ import { BullModule } from '@nestjs/bullmq';
 import { REQUEST_LOGGING_QUEUE } from './logging/constants';
 import { ConfigService } from '@nestjs/config';
 import { LoggingModule } from './logging/logging.module';
-import { ProductModule } from './product/product.module';
+import { ProductModule } from './client/product/product.module';
 import { DiscountTypeModule } from './admin/discount-section/discount-type/discount-type.module';
 import { DiscountActionTypeModule } from './admin/discount-section/discount-action-type/discount-action-type.module';
 import { DiscountActionRuleModule } from './admin/discount-section/discount-action-rule/discount-action-rule.module';

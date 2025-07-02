@@ -17,12 +17,12 @@ import {
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import { ListFilter } from '@rahino/query-filter';
 import { emptyListFilter } from '@rahino/query-filter/provider/constants';
-import { ProductRepositoryService } from '@rahino/ecommerce/product/service/product-repository.service';
+import { ProductRepositoryService } from '@rahino/ecommerce/client/product/service/product-repository.service';
 import { LocalizationService } from 'apps/main/src/common/localization';
 import { InventoryService } from '@rahino/ecommerce/inventory/services';
 import { addDays, isNotNullOrEmpty, sumProperty } from '@rahino/commontools';
 import { InventoryStatusEnum } from '@rahino/ecommerce/inventory/enum';
-import { ApplyDiscountService } from '@rahino/ecommerce/product/service';
+import { ApplyDiscountService } from '@rahino/ecommerce/client/product/service';
 import { defaultValueIsNull } from '@rahino/commontools/functions/default-value-isnull';
 import { NEARBY_SHOPPING_KM } from '@rahino/ecommerce/shared/constants';
 import { Setting } from '@rahino/database';

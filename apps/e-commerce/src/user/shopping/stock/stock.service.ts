@@ -11,7 +11,7 @@ import { InjectModel } from '@nestjs/sequelize';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import { Sequelize } from 'sequelize';
 import { Op } from 'sequelize';
-import { ProductRepositoryService } from '@rahino/ecommerce/product/service/product-repository.service';
+import { ProductRepositoryService } from '@rahino/ecommerce/client/product/service/product-repository.service';
 import { emptyListFilter } from '@rahino/query-filter/provider/constants';
 import { ListFilter } from '@rahino/query-filter';
 import * as _ from 'lodash';
@@ -36,7 +36,7 @@ import { ECProvince } from '@rahino/localdatabase/models';
 import { ECVariationPrice } from '@rahino/localdatabase/models';
 import { StockPriceService } from './services/price';
 import { ShipmentInteface } from './services/shipment-price/interface';
-import { ApplyDiscountService } from '@rahino/ecommerce/product/service';
+import { ApplyDiscountService } from '@rahino/ecommerce/client/product/service';
 import { PaymentServiceManualProviderFactory } from '../payment/provider/factory/payment-service-manual-provider.factory';
 import { ValidateAddressService } from '../payment-rule/services/validate-address.service';
 

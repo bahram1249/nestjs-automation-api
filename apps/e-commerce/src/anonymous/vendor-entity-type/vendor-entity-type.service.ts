@@ -8,7 +8,7 @@ import { EAVEntityModel } from '@rahino/localdatabase/models';
 import * as _ from 'lodash';
 import { Attachment } from '@rahino/database';
 import { LocalizationService } from 'apps/main/src/common/localization';
-import { PublishStatusEnum } from '@rahino/ecommerce/product/enum';
+import { PublishStatusEnum } from '@rahino/ecommerce/client/product/enum';
 import { InventoryStatusEnum } from '@rahino/ecommerce/inventory/enum';
 
 @Injectable()

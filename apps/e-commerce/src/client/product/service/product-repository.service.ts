@@ -4,7 +4,7 @@ import { InjectModel } from '@nestjs/sequelize';
 import { ECProduct, ECVendor } from '@rahino/localdatabase/models';
 import * as _ from 'lodash';
 import { ProductQueryBuilderService } from './product-query-builder.service';
-import { ApplyDiscountService } from '../../shared/apply-discount/apply-discount.service';
+import { ApplyDiscountService } from '../../../shared/apply-discount/apply-discount.service';
 import { ApplyInventoryStatus } from './apply-inventory-status.service';
 import { RemoveEmptyPriceService } from './remove-empty-price.service';
 import { Op, Sequelize } from 'sequelize';

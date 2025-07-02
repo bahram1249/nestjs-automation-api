@@ -16,7 +16,7 @@ import { CategoryContentDto } from './dto/content/category-content.dto';
 import { BrandContentDto } from './dto/content/brand-content.dto';
 import { AmazingContentDto } from './dto/content/amazing-content.dto';
 import { ProductContentDto } from './dto/content/product-content.dto';
-import { SelectedProductDto } from '@rahino/ecommerce/product/dto/selected-product.dto';
+import { SelectedProductDto } from '@rahino/ecommerce/client/product/dto/selected-product.dto';
 
 @Injectable()
 export class HomePageValidatorService {

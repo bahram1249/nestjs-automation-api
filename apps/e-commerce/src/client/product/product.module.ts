@@ -3,14 +3,10 @@ import { ProductService } from './product.service';
 import { ProductController } from './product.controller';
 import { SequelizeModule } from '@nestjs/sequelize';
 import { ECProduct, ECVendor } from '@rahino/localdatabase/models';
-import {
-  ApplyDiscountService,
-  ProductQueryBuilderService,
-  RemoveEmptyPriceService,
-} from './service';
+import { ProductQueryBuilderService, RemoveEmptyPriceService } from './service';
 import { RedisClientModule } from '@rahino/redis-client';
 import { ECDiscount } from '@rahino/localdatabase/models';
-import { SessionModule } from '../user/session/session.module';
+import { SessionModule } from '../../user/session/session.module';
 import { ProductRepositoryService } from './service/product-repository.service';
 import { BullModule } from '@nestjs/bullmq';
 import { ConfigModule, ConfigService } from '@nestjs/config';
@@ -29,7 +25,7 @@ import { ECSlugVersion } from '@rahino/localdatabase/models';
 import { QueryFilterModule } from '@rahino/query-filter';
 import { DBLoggerModule } from '@rahino/logger';
 import { LocalizationModule } from 'apps/main/src/common/localization';
-import { ApplyDiscountModule } from '../shared/apply-discount';
+import { ApplyDiscountModule } from '../../shared/apply-discount';
 
 @Module({
   imports: [

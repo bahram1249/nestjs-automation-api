@@ -44,7 +44,7 @@ import { Queue } from 'bullmq';
 import { InjectQueue } from '@nestjs/bullmq';
 import { ConfigService } from '@nestjs/config';
 import { DecreaseInventoryService } from '@rahino/ecommerce/inventory/services';
-import { ApplyDiscountService } from '@rahino/ecommerce/product/service';
+import { ApplyDiscountService } from '@rahino/ecommerce/client/product/service';
 import { ECInventoryPrice } from '@rahino/localdatabase/models';
 import { ECVendorCommission } from '@rahino/localdatabase/models';
 import * as moment from 'moment-jalaali';

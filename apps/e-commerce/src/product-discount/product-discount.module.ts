@@ -4,7 +4,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { PRODUCT_DISCOUNT_QUEUE } from './constansts';
 import { ProductDiscountService } from './product-discount.service';
 import { QueryFilterModule } from '@rahino/query-filter';
-import { ProductModule } from '../product/product.module';
+import { ProductModule } from '../client/product/product.module';
 import { SequelizeModule } from '@nestjs/sequelize';
 import { ECProduct } from '@rahino/localdatabase/models';
 import { ECInventory } from '@rahino/localdatabase/models';

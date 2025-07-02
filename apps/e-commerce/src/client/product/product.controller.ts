@@ -14,7 +14,7 @@ import { ApiOperation, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { OptionalJwtGuard } from '@rahino/auth';
 import { GetProductDto, GetProductLatLonDto, GetUnPriceDto } from './dto';
 import { ProductService } from './product.service';
-import { OptionalSessionGuard } from '../user/session/guard';
+import { OptionalSessionGuard } from '../../user/session/guard';
 
 @ApiTags('Products')
 @UseGuards(OptionalJwtGuard, OptionalSessionGuard)

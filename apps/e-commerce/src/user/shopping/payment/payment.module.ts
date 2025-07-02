@@ -21,7 +21,7 @@ import {
 } from '@rahino/ecommerce/inventory/constants';
 import { InventoryModule } from '@rahino/ecommerce/inventory/inventory.module';
 import { ECDiscount } from '@rahino/localdatabase/models';
-import { ProductModule } from '@rahino/ecommerce/product/product.module';
+import { ProductModule } from '@rahino/ecommerce/client/product/product.module';
 import { ECInventoryPrice } from '@rahino/localdatabase/models';
 import { ECVendorCommission } from '@rahino/localdatabase/models';
 import { REVERT_PAYMENT_QUEUE } from './revert-payment/revert-payment.constants';

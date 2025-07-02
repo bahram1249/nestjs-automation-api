@@ -8,7 +8,7 @@ import { DiscountConditionTypeEnum } from '../admin/discount-section/discount-co
 import { ECDiscount } from '@rahino/localdatabase/models';
 import { InjectModel } from '@nestjs/sequelize';
 import { DiscountInterface } from '../admin/discount-section/discount/interface';
-import { ApplyDiscountService } from '../product/service';
+import { ApplyDiscountService } from '../client/product/service';
 
 export class ProductDiscountSetterService {
   constructor(
