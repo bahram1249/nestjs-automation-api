@@ -75,7 +75,7 @@ import { AdminAddressModule } from './admin/address/address.module';
 import { ProductSaleModule } from './report/product-sale/product-sale.module';
 import { InventoryHistoryModule } from './admin/product-section/inventory-history/inventory-history.module';
 import { AdminPageModule } from './admin/page/page.module';
-import { PageModule } from './page/page.module';
+import { PageModule } from './client/page/page.module';
 import { DashboardModule } from './user/dashboard/dashboard.module';
 import { CancellOrderModule } from './admin/order-section/cancell-order/cancell-order.module';
 import { UserCommentModule } from './user/comment/comment.module';
