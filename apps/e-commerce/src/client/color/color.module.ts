@@ -6,7 +6,7 @@ import { Permission } from '@rahino/database';
 import { User } from '@rahino/database';
 import { ColorProfile } from './mapper';
 import { ECColor } from '@rahino/localdatabase/models';
-import { SessionModule } from '../user/session/session.module';
+import { SessionModule } from '../../user/session/session.module';
 
 @Module({
   imports: [
