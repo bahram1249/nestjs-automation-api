@@ -13,7 +13,7 @@ import { ApiOperation, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { CityService } from './city.service';
 import { GetCityDto } from './dto';
 import { OptionalJwtGuard } from '@rahino/auth';
-import { OptionalSessionGuard } from '../user/session/guard';
+import { OptionalSessionGuard } from '../../user/session/guard';
 
 @ApiTags('Cities')
 @Controller({
