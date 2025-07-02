@@ -54,7 +54,7 @@ import { DeliveryOrderModule } from './admin/order-section/deliveryOrder/deliver
 import { ProductDiscountModule } from './product-discount/product-discount.module';
 import { ProductDiscountJobRunnerService } from './product-discount/product-discount-job-runner.service';
 import { VariationPriceModule } from './admin/product-section/variation-price/variation-price.module';
-import { TorobProductModule } from './torob-product/torob-product.module';
+import { TorobProductModule } from './anonymous/torob-product/torob-product.module';
 import { AdminSaleModule } from './report/admin-sale/admin-sale.module';
 import { PersianDateMonthModule } from './persiandate/bymonth/persian-date-month.module';
 import { VendorSaleModule } from './report/vendor-sale/vendor-sale.module';

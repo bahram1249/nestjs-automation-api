@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { ProductRepositoryService } from '../client/product/service/product-repository.service';
+import { ProductRepositoryService } from '../../client/product/service/product-repository.service';
 import { ListFilterV2Factory } from '@rahino/query-filter/provider/list-filter-v2.factory';
 import { TorobProductFormatterService } from './torob-product-formatter.service';
 import { ConfigService } from '@nestjs/config';
