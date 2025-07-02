@@ -12,7 +12,7 @@ import { ColorModule } from './color/color.module';
 import { GuaranteeModule } from './guarantee/guarantee.module';
 import { GuaranteeMonthModule } from './guarantee-month/guarantee-month.module';
 import { PublishStatusModule } from './publish-status/publish-status.module';
-import { ProvinceModule } from './province/province.module';
+import { ProvinceModule } from './client/province/province.module';
 import { CityModule } from './city/city.module';
 import { NeighborhoodModule } from './neighborhood/neighborhood.module';
 import { AddressModule } from './user/address/address.module';

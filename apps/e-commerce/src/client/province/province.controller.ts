@@ -11,7 +11,7 @@ import { JsonResponseTransformInterceptor } from '@rahino/response/interceptor';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { ProvinceService } from './province.service';
 import { OptionalJwtGuard } from '@rahino/auth';
-import { OptionalSessionGuard } from '../user/session/guard';
+import { OptionalSessionGuard } from '../../user/session/guard';
 
 @ApiTags('Provinces')
 @Controller({
