@@ -16,7 +16,7 @@ import { MinioClientModule } from '@rahino/minio-client';
 import { ReverseProxyGuaranteeImageMiddleware } from './reverse-proxy.middleware';
 import { ThumbnailModule } from '@rahino/thumbnail';
 import { ConfigService } from '@nestjs/config';
-import { SessionModule } from '../user/session/session.module';
+import { SessionModule } from '../../user/session/session.module';
 
 @Module({
   imports: [

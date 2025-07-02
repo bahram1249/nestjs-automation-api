@@ -9,7 +9,7 @@ import { LoginModule } from './user/login/login.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { BrandModule } from './brand/brand.module';
 import { ColorModule } from './client/color/color.module';
-import { GuaranteeModule } from './guarantee/guarantee.module';
+import { GuaranteeModule } from './client/guarantee/guarantee.module';
 import { GuaranteeMonthModule } from './guarantee-month/guarantee-month.module';
 import { PublishStatusModule } from './publish-status/publish-status.module';
 import { ProvinceModule } from './client/province/province.module';

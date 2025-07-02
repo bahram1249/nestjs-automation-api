@@ -40,7 +40,7 @@ import { User } from '@rahino/database';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { imageOptions } from './file-options';
 import { Response } from 'express';
-import { OptionalSessionGuard } from '../user/session/guard';
+import { OptionalSessionGuard } from '../../user/session/guard';
 
 @ApiTags('Guarantees')
 @Controller({
