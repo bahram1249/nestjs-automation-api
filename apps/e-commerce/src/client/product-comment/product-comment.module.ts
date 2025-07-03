@@ -7,7 +7,7 @@ import { EAVEntityType } from '@rahino/localdatabase/models';
 import { ECProduct } from '@rahino/localdatabase/models';
 import { ECProductCommentFactor } from '@rahino/localdatabase/models';
 import { ECEntityTypeFactor } from '@rahino/localdatabase/models';
-import { SessionModule } from '../user/session/session.module';
+import { SessionModule } from '../../user/session/session.module';
 
 @Module({
   imports: [

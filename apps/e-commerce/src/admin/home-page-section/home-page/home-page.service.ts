@@ -10,7 +10,7 @@ import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builde
 import {
   HOME_PAGE_JOB,
   HOME_PAGE_QUEUE,
-} from '@rahino/ecommerce/home/constants';
+} from '@rahino/ecommerce/client/home/constants';
 import { Queue } from 'bullmq';
 import { InjectQueue } from '@nestjs/bullmq';
 import { HomePageTypeEnum } from '@rahino/ecommerce/util/enum';

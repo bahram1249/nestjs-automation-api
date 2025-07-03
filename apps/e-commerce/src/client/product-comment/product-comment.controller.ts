@@ -19,7 +19,7 @@ import {
 } from '@nestjs/swagger';
 
 import { JwtGuard } from '@rahino/auth';
-import { OptionalSessionGuard } from '../user/session/guard';
+import { OptionalSessionGuard } from '../../user/session/guard';
 import { ProductCommentService } from './product-comment.service';
 import { ListFilter } from '@rahino/query-filter';
 import { ProductCommentDto } from './dto';

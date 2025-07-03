@@ -12,7 +12,7 @@ import { ECEntityTypeSort } from '@rahino/localdatabase/models';
 import { ECBrand } from '@rahino/localdatabase/models';
 import { BullModule } from '@nestjs/bullmq';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { HOME_PAGE_QUEUE } from '@rahino/ecommerce/home/constants';
+import { HOME_PAGE_QUEUE } from '@rahino/ecommerce/client/home/constants';
 
 @Module({
   imports: [

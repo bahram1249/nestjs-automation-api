@@ -12,13 +12,13 @@ import { ECProductComment } from '@rahino/localdatabase/models';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import { Sequelize, Transaction } from 'sequelize';
 import { Op } from 'sequelize';
-import { ProductCommentStatusEnum } from '../util/enum';
+import { ProductCommentStatusEnum } from '../../util/enum';
 import { ECProductCommentStatus } from '@rahino/localdatabase/models';
 import { ECProductCommentFactor } from '@rahino/localdatabase/models';
 import { ECEntityTypeFactor } from '@rahino/localdatabase/models';
 import { EAVEntityType } from '@rahino/localdatabase/models';
 import { ECProduct } from '@rahino/localdatabase/models';
-import { PublishStatusEnum } from '../client/product/enum';
+import { PublishStatusEnum } from '../../client/product/enum';
 import { I18nTranslations } from 'apps/main/src/generated/i18n.generated';
 import { I18nContext, I18nService } from 'nestjs-i18n';
 
