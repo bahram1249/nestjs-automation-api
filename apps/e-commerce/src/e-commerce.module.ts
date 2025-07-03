@@ -14,7 +14,7 @@ import { GuaranteeMonthModule } from './client/guarantee-month/guarantee-month.m
 import { PublishStatusModule } from './publish-status/publish-status.module';
 import { ProvinceModule } from './client/province/province.module';
 import { CityModule } from './client/city/city.module';
-import { NeighborhoodModule } from './neighborhood/neighborhood.module';
+import { NeighborhoodModule } from './client/neighborhood/neighborhood.module';
 import { AddressModule } from './user/address/address.module';
 import { ProductPhotoModule } from './admin/product-section/product-photo/product-photo.module';
 import { ProductImageRemovalModule } from './product-image-removal/product-image-removal.module';
