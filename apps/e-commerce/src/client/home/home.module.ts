@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { HomePageController } from './home.controller';
 import { HomePageService } from './home.service';
 import { SequelizeModule } from '@nestjs/sequelize';
-import { SessionModule } from '../user/session/session.module';
+import { SessionModule } from '../../user/session/session.module';
 import { ECHomePage } from '@rahino/localdatabase/models';
 import { ProcessHomeService } from './process-home.service';
 import { ECEntityTypeSort } from '@rahino/localdatabase/models';

@@ -84,8 +84,8 @@ import { AdminHomePageModule } from './admin/home-page-section/home-page/home-pa
 import { HomePagePhotoModule } from './admin/home-page-section/home-page-photo/home-page-photo.module';
 import { EntityTypeSortModule } from './admin/home-page-section/entity-type-sort/entity-type-sort.module';
 import { HomePhotoModule } from './client/home-photo/home-photo.module';
-import { HomePageModule } from './home/home.module';
-import { ProcessHomeRunnerService } from './home/process-home-runner.service';
+import { HomePageModule } from './client/home/home.module';
+import { ProcessHomeRunnerService } from './client/home/process-home-runner.service';
 import { ProductVideoModule } from './admin/product-section/product-video/product-video.module';
 import { ProductVideoRemovalService } from './product-video-removal/product-video-removal.service';
 import { ProductFavoriteModule } from './user/product-favorite/product-favorite.module';
