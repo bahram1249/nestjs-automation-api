@@ -83,7 +83,7 @@ import { ChargingWalletPaymentModule } from './user/charging-wallet-payment/char
 import { AdminHomePageModule } from './admin/home-page-section/home-page/home-page.module';
 import { HomePagePhotoModule } from './admin/home-page-section/home-page-photo/home-page-photo.module';
 import { EntityTypeSortModule } from './admin/home-page-section/entity-type-sort/entity-type-sort.module';
-import { HomePhotoModule } from './home-photo/home-photo.module';
+import { HomePhotoModule } from './client/home-photo/home-photo.module';
 import { HomePageModule } from './home/home.module';
 import { ProcessHomeRunnerService } from './home/process-home-runner.service';
 import { ProductVideoModule } from './admin/product-section/product-video/product-video.module';
