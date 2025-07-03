@@ -4,11 +4,11 @@ import { ECInventory } from '@rahino/localdatabase/models';
 import { ECProduct } from '@rahino/localdatabase/models';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import { Op, Sequelize } from 'sequelize';
-import { DiscountConditionTypeEnum } from '../admin/discount-section/discount-condition-type/enum';
+import { DiscountConditionTypeEnum } from '../../admin/discount-section/discount-condition-type/enum';
 import { ECDiscount } from '@rahino/localdatabase/models';
 import { InjectModel } from '@nestjs/sequelize';
-import { DiscountInterface } from '../admin/discount-section/discount/interface';
-import { ApplyDiscountService } from '../client/product/service';
+import { DiscountInterface } from '../../admin/discount-section/discount/interface';
+import { ApplyDiscountService } from '../../client/product/service';
 
 export class ProductDiscountSetterService {
   constructor(

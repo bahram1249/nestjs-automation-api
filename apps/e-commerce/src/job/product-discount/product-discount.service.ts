@@ -1,11 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { ListFilter } from '@rahino/query-filter';
-import { ProductQueryBuilderService } from '../client/product/service';
+import { ProductQueryBuilderService } from '../../client/product/service';
 import { InjectModel } from '@nestjs/sequelize';
 import { ECProduct } from '@rahino/localdatabase/models';
 import { ProductDiscountSetterService } from './product-discount-setter.service';
 import * as _ from 'lodash';
-import { InventoryStatusEnum } from '../inventory/enum';
+import { InventoryStatusEnum } from '../../inventory/enum';
 
 @Injectable()
 export class ProductDiscountService {
