@@ -356,7 +356,10 @@ export class CourierService {
       );
     }
     await this.userRoleService.insertRoleToUser(role, findUser);
-    const item = await this.repository.create({ userId: findUser.id });
+    const item = await this.repository.create({
+      userId: findUser.id,
+      vendorId: dto.vendorId,
+    });
 
     return {
       result: item,

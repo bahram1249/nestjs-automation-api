@@ -26,6 +26,7 @@ import { GetUser } from '@rahino/auth';
 import { User } from '@rahino/database';
 import { CourierService } from './courier.service';
 import { CourierDto, CourierV2Dto, GetCourierDto } from './dto';
+import { UserCourierV2Dto } from './dto/user-courier-v2-dto';
 
 @ApiTags('Admin-Couriers')
 @ApiBearerAuth()

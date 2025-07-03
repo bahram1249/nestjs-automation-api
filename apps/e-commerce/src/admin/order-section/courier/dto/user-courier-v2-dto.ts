@@ -22,6 +22,7 @@ export class UserCourierV2Dto {
     message: i18nValidationMessage<I18nTranslations>('validation.NOT_EMPTY'),
   })
   @AutoMap()
+  @IsString()
   firstname: string;
 
   @MinLength(3, {
@@ -34,6 +35,7 @@ export class UserCourierV2Dto {
     message: i18nValidationMessage<I18nTranslations>('validation.NOT_EMPTY'),
   })
   @AutoMap()
+  @IsString()
   lastname: string;
 
   @MinLength(3, {
@@ -53,6 +55,7 @@ export class UserCourierV2Dto {
     default: 'string',
     description: 'phoneNumber',
   })
+  @IsString()
   phoneNumber: string;
 
   @IsNumber()
