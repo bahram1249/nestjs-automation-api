@@ -112,6 +112,7 @@ export class ClientVendorService {
           'id',
           'name',
           'slug',
+          'address',
           'description',
           'metaTitle',
           'metaKeywords',
