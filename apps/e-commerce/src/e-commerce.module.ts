@@ -11,7 +11,7 @@ import { BrandModule } from './client/brand/brand.module';
 import { ColorModule } from './client/color/color.module';
 import { GuaranteeModule } from './client/guarantee/guarantee.module';
 import { GuaranteeMonthModule } from './client/guarantee-month/guarantee-month.module';
-import { PublishStatusModule } from './publish-status/publish-status.module';
+import { PublishStatusModule } from '@rahino/ecommerce/anonymous/publish-status/publish-status.module';
 import { ProvinceModule } from './client/province/province.module';
 import { CityModule } from './client/city/city.module';
 import { NeighborhoodModule } from './client/neighborhood/neighborhood.module';
