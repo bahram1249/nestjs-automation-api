@@ -8,7 +8,7 @@ import {
   VendorMiddleService,
 } from './services';
 import { EntityTypeModule } from '@rahino/eav/admin/entity-type/entity-type.module';
-import { UserVendorModule } from '@rahino/ecommerce/user/vendor/user-vendor.module';
+import { UserVendorModule } from '@rahino/ecommerce/user/user-vendor/user-vendor.module';
 import { ProductModule } from '../../../product-section/product/product.module';
 import { UserInventoryModule } from '@rahino/ecommerce/user/inventory/user-inventory.module';
 

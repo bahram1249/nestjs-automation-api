@@ -8,7 +8,7 @@ import { CourierProfile } from './mapper';
 import { UserRoleModule } from '@rahino/core/admin/user-role/user-role.module';
 import { Role } from '@rahino/database';
 import { CourierController } from './courier.controller';
-import { UserVendorModule } from '@rahino/ecommerce/user/vendor/user-vendor.module';
+import { UserVendorModule } from '@rahino/ecommerce/user/user-vendor/user-vendor.module';
 import { LocalizationModule } from 'apps/main/src/common/localization';
 
 @Module({

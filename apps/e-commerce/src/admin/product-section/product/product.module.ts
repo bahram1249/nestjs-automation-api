@@ -11,7 +11,7 @@ import { EntityModule } from '@rahino/eav/admin/entity/entity.module';
 import { ProductPhotoModule } from '@rahino/ecommerce/admin/product-section/product-photo/product-photo.module';
 import { EAVEntityType } from '@rahino/localdatabase/models';
 import { InventoryModule } from '@rahino/ecommerce/inventory/inventory.module';
-import { UserVendorModule } from '@rahino/ecommerce/user/vendor/user-vendor.module';
+import { UserVendorModule } from '@rahino/ecommerce/user/user-vendor/user-vendor.module';
 import { QueryFilterModule } from '@rahino/query-filter';
 import { BullModule } from '@nestjs/bullmq';
 import { PRODUCT_INVENTORY_STATUS_QUEUE } from '@rahino/ecommerce/inventory/constants';

@@ -11,7 +11,7 @@ import { InjectModel } from '@nestjs/sequelize';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import { Op, Sequelize } from 'sequelize';
 import { DiscountConditionTypeEnum } from '../discount-condition-type/enum';
-import { UserVendorService } from '@rahino/ecommerce/user/vendor/user-vendor.service';
+import { UserVendorService } from '@rahino/ecommerce/user/user-vendor/user-vendor.service';
 import { InjectMapper } from 'automapper-nestjs';
 import { Mapper } from 'automapper-core';
 import * as _ from 'lodash';

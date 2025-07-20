@@ -21,7 +21,7 @@ import { I18nContext, I18nService } from 'nestjs-i18n';
 import { I18nTranslations } from 'apps/main/src/generated/i18n.generated';
 import { ECCourier } from '@rahino/localdatabase/models';
 import { ECommmerceSmsService } from '@rahino/ecommerce/util/sms/ecommerce-sms.service';
-import { UserVendorService } from '@rahino/ecommerce/user/vendor/user-vendor.service';
+import { UserVendorService } from '@rahino/ecommerce/user/user-vendor/user-vendor.service';
 
 @Injectable()
 export class CourierOrderService {

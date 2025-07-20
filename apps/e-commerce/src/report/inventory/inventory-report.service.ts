@@ -2,7 +2,7 @@ import { ForbiddenException, Injectable } from '@nestjs/common';
 import { GetInventoryDto } from './dto';
 import { InjectModel } from '@nestjs/sequelize';
 import { ECInventory } from '@rahino/localdatabase/models';
-import { UserVendorService } from '@rahino/ecommerce/user/vendor/user-vendor.service';
+import { UserVendorService } from '@rahino/ecommerce/user/user-vendor/user-vendor.service';
 import { User } from '@rahino/database';
 import { I18nContext, I18nService } from 'nestjs-i18n';
 import { I18nTranslations } from 'apps/main/src/generated/i18n.generated';

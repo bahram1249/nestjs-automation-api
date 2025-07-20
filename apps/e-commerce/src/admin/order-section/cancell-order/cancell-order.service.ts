@@ -10,7 +10,7 @@ import { ECPayment } from '@rahino/localdatabase/models';
 import { ECPaymentGateway } from '@rahino/localdatabase/models';
 import { SnapPayService } from '@rahino/ecommerce/user/shopping/payment/provider/services';
 import { RoleUtilService } from '@rahino/core/user/role-util/role-util.service';
-import { UserVendorService } from '@rahino/ecommerce/user/vendor/user-vendor.service';
+import { UserVendorService } from '@rahino/ecommerce/user/user-vendor/user-vendor.service';
 import { OrderUtilService } from '../utilOrder/service/order-util.service';
 import { FinalizedPaymentService } from '@rahino/ecommerce/user/shopping/payment/util/finalized-payment/finalized-payment.service';
 import { ECOrderStatus } from '@rahino/localdatabase/models';

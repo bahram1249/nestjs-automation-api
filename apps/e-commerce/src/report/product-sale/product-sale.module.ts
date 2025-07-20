@@ -7,7 +7,7 @@ import { Permission } from '@rahino/database';
 import { ECOrderDetail } from '@rahino/localdatabase/models';
 import { PersianDate } from '@rahino/database';
 import { SaleQueryBuilderModule } from '../sale-query-builder/sale-query-builder.module';
-import { UserVendorModule } from '@rahino/ecommerce/user/vendor/user-vendor.module';
+import { UserVendorModule } from '@rahino/ecommerce/user/user-vendor/user-vendor.module';
 
 @Module({
   imports: [

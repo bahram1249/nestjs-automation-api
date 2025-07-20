@@ -6,7 +6,7 @@ import {
 } from '../interface';
 import { ListFilter } from '@rahino/query-filter';
 import { User } from '@rahino/database';
-import { UserVendorService } from '@rahino/ecommerce/user/vendor/user-vendor.service';
+import { UserVendorService } from '@rahino/ecommerce/user/user-vendor/user-vendor.service';
 
 @Injectable()
 export class VendorMiddleService implements ConditionValueSourceInterface {

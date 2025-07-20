@@ -53,7 +53,7 @@ import {
   InventoryService,
   InventoryValidationService,
 } from '@rahino/ecommerce/inventory/services';
-import { UserVendorService } from '@rahino/ecommerce/user/vendor/user-vendor.service';
+import { UserVendorService } from '@rahino/ecommerce/user/user-vendor/user-vendor.service';
 import { ListFilter } from '@rahino/query-filter';
 import { emptyListFilter } from '@rahino/query-filter/provider/constants';
 import {

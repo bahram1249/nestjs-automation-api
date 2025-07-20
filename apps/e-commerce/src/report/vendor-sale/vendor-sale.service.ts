@@ -13,7 +13,7 @@ import { SaleQueryBuilderService } from '../sale-query-builder/sale-query-builde
 import { ECOrderDetail } from '@rahino/localdatabase/models';
 import { Sequelize } from 'sequelize';
 import { User } from '@rahino/database';
-import { UserVendorService } from '@rahino/ecommerce/user/vendor/user-vendor.service';
+import { UserVendorService } from '@rahino/ecommerce/user/user-vendor/user-vendor.service';
 
 @Injectable()
 export class VendorSaleService {

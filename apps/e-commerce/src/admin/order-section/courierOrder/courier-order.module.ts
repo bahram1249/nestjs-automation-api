@@ -8,7 +8,7 @@ import { ECOrder } from '@rahino/localdatabase/models';
 import { UtilOrderModule } from '../utilOrder/util-order.module';
 import { ECCourier } from '@rahino/localdatabase/models';
 import { ECommerceSmsModule } from '@rahino/ecommerce/util/sms/ecommerce-sms.module';
-import { UserVendorModule } from '@rahino/ecommerce/user/vendor/user-vendor.module';
+import { UserVendorModule } from '@rahino/ecommerce/user/user-vendor/user-vendor.module';
 
 @Module({
   imports: [

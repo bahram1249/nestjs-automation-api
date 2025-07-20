@@ -11,7 +11,7 @@ import { SnappayModule } from '@rahino/ecommerce/user/shopping/payment/provider/
 import { ECPayment } from '@rahino/localdatabase/models';
 import { ECPaymentGateway } from '@rahino/localdatabase/models';
 import { RoleUtilModule } from '@rahino/core/user/role-util/role-util.module';
-import { UserVendorModule } from '@rahino/ecommerce/user/vendor/user-vendor.module';
+import { UserVendorModule } from '@rahino/ecommerce/user/user-vendor/user-vendor.module';
 import { FinalizedPaymentModule } from '@rahino/ecommerce/user/shopping/payment/util/finalized-payment/finalized-payment.module';
 import { ECOrderStatus } from '@rahino/localdatabase/models';
 import { ECOrderShipmentWay } from '@rahino/localdatabase/models';

@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { DiscountConditionController } from './discount-condition.controller';
 import { DiscountConditionService } from './discount-condition.service';
-import { UserVendorModule } from '@rahino/ecommerce/user/vendor/user-vendor.module';
+import { UserVendorModule } from '@rahino/ecommerce/user/user-vendor/user-vendor.module';
 import { DiscountConditionProfile } from './mapper';
 import { SequelizeModule } from '@nestjs/sequelize';
 import { ECDiscountCondition } from '@rahino/localdatabase/models';

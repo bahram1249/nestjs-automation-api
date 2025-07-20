@@ -19,7 +19,7 @@ import * as _ from 'lodash';
 import { UserRoleService } from '@rahino/core/admin/user-role/user-role.service';
 import { Role } from '@rahino/database';
 import { UserCourierV2Dto } from './dto/user-courier-v2-dto';
-import { UserVendorService } from '@rahino/ecommerce/user/vendor/user-vendor.service';
+import { UserVendorService } from '@rahino/ecommerce/user/user-vendor/user-vendor.service';
 import { LocalizationService } from 'apps/main/src/common/localization';
 
 @Injectable()

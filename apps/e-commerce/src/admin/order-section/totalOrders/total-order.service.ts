@@ -20,7 +20,7 @@ import { SnapPayService } from '@rahino/ecommerce/user/shopping/payment/provider
 import { ECProduct } from '@rahino/localdatabase/models';
 import { EAVEntityType } from '@rahino/localdatabase/models';
 import { RoleUtilService } from '@rahino/core/user/role-util/role-util.service';
-import { UserVendorService } from '@rahino/ecommerce/user/vendor/user-vendor.service';
+import { UserVendorService } from '@rahino/ecommerce/user/user-vendor/user-vendor.service';
 import { OrderUtilService } from '../utilOrder/service/order-util.service';
 import { FinalizedPaymentService } from '@rahino/ecommerce/user/shopping/payment/util/finalized-payment/finalized-payment.service';
 import {

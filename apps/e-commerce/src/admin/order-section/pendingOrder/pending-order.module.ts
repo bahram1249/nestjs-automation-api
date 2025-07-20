@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { PendingOrderController } from './pending-order.controller';
 import { PendingOrderService } from './pending-order.service';
-import { UserVendorModule } from '@rahino/ecommerce/user/vendor/user-vendor.module';
+import { UserVendorModule } from '@rahino/ecommerce/user/user-vendor/user-vendor.module';
 import { SequelizeModule } from '@nestjs/sequelize';
 import { User } from '@rahino/database';
 import { Permission } from '@rahino/database';

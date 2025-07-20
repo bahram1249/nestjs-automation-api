@@ -6,7 +6,7 @@ import { Op, Sequelize } from 'sequelize';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import { ECColor } from '@rahino/localdatabase/models';
 import { User } from '@rahino/database';
-import { UserVendorService } from '@rahino/ecommerce/user/vendor/user-vendor.service';
+import { UserVendorService } from '@rahino/ecommerce/user/user-vendor/user-vendor.service';
 import { ECGuarantee } from '@rahino/localdatabase/models';
 import { ECGuaranteeMonth } from '@rahino/localdatabase/models';
 import { VendorAddressService } from '@rahino/ecommerce/vendor-address/vendor-address.service';

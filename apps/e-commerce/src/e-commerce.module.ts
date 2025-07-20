@@ -20,7 +20,7 @@ import { ProductPhotoModule } from './admin/product-section/product-photo/produc
 import { ProductImageRemovalModule } from './job/product-image-removal/product-image-removal.module';
 import { ProductImageRemovalService } from './job/product-image-removal/product-image-removal.service';
 import { AdminVendorModule } from './admin/vendor/admin-vendor.module';
-import { UserVendorModule } from './user/vendor/user-vendor.module';
+import { UserVendorModule } from './user/user-vendor/user-vendor.module';
 import { VendorAddressModule } from './vendor-address/vendor-address.module';
 import { SessionModule } from './user/session/session.module';
 import { APP_INTERCEPTOR } from '@nestjs/core';

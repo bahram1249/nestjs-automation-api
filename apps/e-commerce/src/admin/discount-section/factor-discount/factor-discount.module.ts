@@ -7,7 +7,7 @@ import { ECDiscount } from '@rahino/localdatabase/models';
 import { Permission } from '@rahino/database';
 import { User } from '@rahino/database';
 import { ECDiscountType } from '@rahino/localdatabase/models';
-import { UserVendorModule } from '@rahino/ecommerce/user/vendor/user-vendor.module';
+import { UserVendorModule } from '@rahino/ecommerce/user/user-vendor/user-vendor.module';
 
 @Module({
   imports: [

@@ -10,7 +10,7 @@ import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builde
 import { I18nContext, I18nService } from 'nestjs-i18n';
 import { I18nTranslations } from 'apps/main/src/generated/i18n.generated';
 import { User } from '@rahino/database';
-import { UserVendorService } from '@rahino/ecommerce/user/vendor/user-vendor.service';
+import { UserVendorService } from '@rahino/ecommerce/user/user-vendor/user-vendor.service';
 import { Knex } from 'knex';
 import { InjectKnex } from 'nestjs-knex';
 import { OrderStatusEnum } from '@rahino/ecommerce/util/enum';

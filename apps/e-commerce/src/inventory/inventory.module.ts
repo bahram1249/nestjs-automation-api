@@ -1,5 +1,5 @@
 ﻿import { Module } from '@nestjs/common';
-import { UserVendorModule } from '@rahino/ecommerce/user/vendor/user-vendor.module';
+import { UserVendorModule } from '@rahino/ecommerce/user/user-vendor/user-vendor.module';
 import { VendorAddressModule } from '@rahino/ecommerce/vendor-address/vendor-address.module';
 import { SequelizeModule } from '@nestjs/sequelize';
 import { ECVariationPrice } from '@rahino/localdatabase/models';

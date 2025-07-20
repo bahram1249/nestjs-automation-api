@@ -16,7 +16,7 @@ import { Mapper } from 'automapper-core';
 import { InjectMapper } from 'automapper-nestjs';
 import * as _ from 'lodash';
 import { User } from '@rahino/database';
-import { UserVendorService } from '@rahino/ecommerce/user/vendor/user-vendor.service';
+import { UserVendorService } from '@rahino/ecommerce/user/user-vendor/user-vendor.service';
 import { ECDiscountCondition } from '@rahino/localdatabase/models';
 import { DiscountConditionTypeEnum } from '../discount-condition-type/enum';
 import { PermissionService } from '@rahino/core/user/permission/permission.service';
