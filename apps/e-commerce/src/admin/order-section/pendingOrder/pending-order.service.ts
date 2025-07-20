@@ -19,7 +19,7 @@ import { UserVendorService } from '@rahino/ecommerce/user/user-vendor/user-vendo
 import { OrderQueryBuilder } from '../utilOrder/service/order-query-builder.service';
 import { OrderUtilService } from '../utilOrder/service/order-util.service';
 import { ConfigService } from '@nestjs/config';
-import { ECommmerceSmsService } from '@rahino/ecommerce/util/sms/ecommerce-sms.service';
+import { ECommmerceSmsService } from '@rahino/ecommerce/shared/sms/ecommerce-sms.service';
 
 @Injectable()
 export class PendingOrderService {

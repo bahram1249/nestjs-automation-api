@@ -6,7 +6,7 @@ import { User } from '@rahino/database';
 import { Permission } from '@rahino/database';
 import { ECOrder } from '@rahino/localdatabase/models';
 import { UtilOrderModule } from '../utilOrder/util-order.module';
-import { ECommerceSmsModule } from '@rahino/ecommerce/util/sms/ecommerce-sms.module';
+import { ECommerceSmsModule } from '@rahino/ecommerce/shared/sms/ecommerce-sms.module';
 
 @Module({
   imports: [

@@ -11,7 +11,7 @@ import {
   PaymentTypeEnum,
 } from '@rahino/ecommerce/shared/enum';
 import { PaymentGatewayCommissionTypeEnum } from '@rahino/ecommerce/shared/enum/payment-gateway-commission-type.enum';
-import { ECommmerceSmsService } from '@rahino/ecommerce/util/sms/ecommerce-sms.service';
+import { ECommmerceSmsService } from '@rahino/ecommerce/shared/sms/ecommerce-sms.service';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import * as moment from 'moment-jalaali';
 import { Op, Transaction } from 'sequelize';

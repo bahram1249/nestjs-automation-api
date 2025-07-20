@@ -15,7 +15,7 @@ import { Op } from 'sequelize';
 import { OrderUtilService } from '../utilOrder/service/order-util.service';
 import { I18nContext, I18nService } from 'nestjs-i18n';
 import { I18nTranslations } from 'apps/main/src/generated/i18n.generated';
-import { ECommmerceSmsService } from '@rahino/ecommerce/util/sms/ecommerce-sms.service';
+import { ECommmerceSmsService } from '@rahino/ecommerce/shared/sms/ecommerce-sms.service';
 
 @Injectable()
 export class PostageOrderService {
