@@ -159,8 +159,8 @@ export class UserVendorService {
         ])
         .build(),
     );
-    if (!findVendor) return false;
-    return true;
+    if (findVendor) return true;
+    return false;
   }
 
   async findVendorAnyway(user: User, vendorId: number): Promise<ECVendorUser> {
