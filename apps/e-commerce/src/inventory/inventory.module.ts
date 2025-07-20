@@ -34,7 +34,7 @@ import { ECPayment } from '@rahino/localdatabase/models';
 import { ECOrder } from '@rahino/localdatabase/models';
 import { RevertInventoryQtyProcessor } from './processor/revert-inventory-qty.processor';
 import { PaymentServiceProviderModule } from '../user/shopping/payment/provider/payment-provider.module';
-import { InventoryTrackChangeModule } from '../inventory-track-change/inventory-track-change.module';
+import { InventoryTrackChangeModule } from '../shared/inventory-track-change/inventory-track-change.module';
 import { ECWallet } from '@rahino/localdatabase/models';
 import { RevertPaymentQtyModule } from './revert-payment-qty.module';
 import { CalPriceFactoryModule } from '../admin/product-section/product/price-cal-factory/cal-price-factory.module';

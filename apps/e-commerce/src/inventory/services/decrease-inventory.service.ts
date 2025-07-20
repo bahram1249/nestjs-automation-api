@@ -18,7 +18,7 @@ import {
 import { ECOrder } from '@rahino/localdatabase/models';
 import { ECOrderDetail } from '@rahino/localdatabase/models';
 import { inventoryStatusService } from './inventory-status.service';
-import { InventoryTrackChangeService } from '@rahino/ecommerce/inventory-track-change/inventory-track-change.service';
+import { InventoryTrackChangeService } from '@rahino/ecommerce/shared/inventory-track-change/inventory-track-change.service';
 
 @Injectable()
 export class DecreaseInventoryService {
