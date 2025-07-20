@@ -9,7 +9,7 @@ import * as _ from 'lodash';
 import { Attachment } from '@rahino/database';
 import { LocalizationService } from 'apps/main/src/common/localization';
 import { PublishStatusEnum } from '@rahino/ecommerce/client/product/enum';
-import { InventoryStatusEnum } from '@rahino/ecommerce/inventory/enum';
+import { InventoryStatusEnum } from '@rahino/ecommerce/shared/inventory/enum';
 
 @Injectable()
 export class VendorEntityTypeService {

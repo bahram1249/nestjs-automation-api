@@ -19,7 +19,7 @@ import axios from 'axios';
 import { ZarinPalDto } from '@rahino/ecommerce/verify-payment/dto';
 import { ECOrder } from '@rahino/localdatabase/models';
 import { FinalizedPaymentService } from '../../util/finalized-payment/finalized-payment.service';
-import { RevertPaymentQtyService } from '@rahino/ecommerce/inventory/services/revert-payment-qty.service';
+import { RevertPaymentQtyService } from '@rahino/ecommerce/shared/inventory/services/revert-payment-qty.service';
 
 export class ZarinPalService implements PayInterface {
   private baseUrl = '';

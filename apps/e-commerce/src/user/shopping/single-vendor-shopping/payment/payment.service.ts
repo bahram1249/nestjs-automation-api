@@ -41,11 +41,11 @@ import {
   VendorCommissionTypeEnum,
 } from '@rahino/ecommerce/shared/enum';
 import * as moment from 'moment-jalaali';
-import { DecreaseInventoryService } from '@rahino/ecommerce/inventory/services';
+import { DecreaseInventoryService } from '@rahino/ecommerce/shared/inventory/services';
 import {
   REVERT_INVENTORY_QTY_JOB,
   REVERT_INVENTORY_QTY_QUEUE,
-} from '@rahino/ecommerce/inventory/constants';
+} from '@rahino/ecommerce/shared/inventory/constants';
 import { InjectQueue } from '@nestjs/bullmq';
 import { Queue } from 'bullmq';
 

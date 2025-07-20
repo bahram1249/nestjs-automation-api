@@ -13,7 +13,7 @@ import {
   ECShoppingCartProduct,
   ECVendor,
 } from '@rahino/localdatabase/models';
-import { InventoryModule } from '@rahino/ecommerce/inventory/inventory.module';
+import { InventoryModule } from '@rahino/ecommerce/shared/inventory/inventory.module';
 import { BullModule } from '@nestjs/bullmq';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { SHOPPING_CART_PRODUCT_REMOVE_QUEUE } from './constants';

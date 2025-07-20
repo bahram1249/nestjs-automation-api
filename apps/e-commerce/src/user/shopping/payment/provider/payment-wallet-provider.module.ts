@@ -5,7 +5,7 @@ import { ECommerceSmsModule } from '@rahino/ecommerce/shared/sms/ecommerce-sms.m
 import { FinalizedPaymentModule } from '../util/finalized-payment/finalized-payment.module';
 import { ZarinPalModule } from './zarinpal.module';
 import { PaymentServiceManualWalletPurposeProviderFactory } from './factory/payment-service-manual-wallet-purpose-provider.factory';
-import { RevertPaymentQtyModule } from '@rahino/ecommerce/inventory/revert-payment-qty.module';
+import { RevertPaymentQtyModule } from '@rahino/ecommerce/shared/inventory/revert-payment-qty.module';
 
 @Module({
   imports: [

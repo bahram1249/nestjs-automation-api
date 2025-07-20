@@ -17,7 +17,7 @@ import {
   ECVendor,
 } from '@rahino/localdatabase/models';
 import { Attachment } from '@rahino/database';
-import { InventoryStatusEnum } from '@rahino/ecommerce/inventory/enum';
+import { InventoryStatusEnum } from '@rahino/ecommerce/shared/inventory/enum';
 import {
   IncludeOptionsBuilder,
   QueryOptionsBuilder,

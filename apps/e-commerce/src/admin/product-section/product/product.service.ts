@@ -48,18 +48,18 @@ import { PhotoDto } from '@rahino/ecommerce/admin/product-section/product-photo/
 import {
   InventoryStatusEnum,
   VariationPriceIdEnum,
-} from '@rahino/ecommerce/inventory/enum';
+} from '@rahino/ecommerce/shared/inventory/enum';
 import {
   InventoryService,
   InventoryValidationService,
-} from '@rahino/ecommerce/inventory/services';
+} from '@rahino/ecommerce/shared/inventory/services';
 import { UserVendorService } from '@rahino/ecommerce/user/user-vendor/user-vendor.service';
 import { ListFilter } from '@rahino/query-filter';
 import { emptyListFilter } from '@rahino/query-filter/provider/constants';
 import {
   Constants,
   PRODUCT_INVENTORY_STATUS_QUEUE,
-} from '@rahino/ecommerce/inventory/constants';
+} from '@rahino/ecommerce/shared/inventory/constants';
 import { InjectQueue } from '@nestjs/bullmq';
 import { Queue } from 'bullmq';
 import { ProductVideoService } from '@rahino/ecommerce/admin/product-section/product-video/product-video.service';

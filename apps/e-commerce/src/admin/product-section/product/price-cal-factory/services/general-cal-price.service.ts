@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { ICalPrice } from '../interface/cal-price.interface';
-import { InventoryPriceDto } from '@rahino/ecommerce/inventory/dto/inventory-price.dto';
+import { InventoryPriceDto } from '@rahino/ecommerce/shared/inventory/dto/inventory-price.dto';
 import { ProductPriceDto } from '../interface/ProductPriceDto.type';
 import { InventoryPriceIncludeBuyPriceDto } from '../interface';
 import * as _ from 'lodash';

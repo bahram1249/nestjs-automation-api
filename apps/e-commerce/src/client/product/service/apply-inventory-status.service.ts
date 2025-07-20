@@ -4,7 +4,7 @@ import { safeJsonParse } from '@rahino/commontools';
 import { ECInventoryStatus } from '@rahino/localdatabase/models';
 import { ECInventory } from '@rahino/localdatabase/models';
 import { ECProduct } from '@rahino/localdatabase/models';
-import { InventoryStatusEnum } from '@rahino/ecommerce/inventory/enum';
+import { InventoryStatusEnum } from '@rahino/ecommerce/shared/inventory/enum';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import { RedisRepository } from '@rahino/redis-client';
 

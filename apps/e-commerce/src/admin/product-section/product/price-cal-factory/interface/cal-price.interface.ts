@@ -1,4 +1,4 @@
-import { InventoryPriceDto } from '@rahino/ecommerce/inventory/dto/inventory-price.dto';
+import { InventoryPriceDto } from '@rahino/ecommerce/shared/inventory/dto/inventory-price.dto';
 import { ProductPriceDto } from './ProductPriceDto.type';
 import { InventoryPriceIncludeBuyPriceDto } from './inventory-price-include-buy-price.dto';
 

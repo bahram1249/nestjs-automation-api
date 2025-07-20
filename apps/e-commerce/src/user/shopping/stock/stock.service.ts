@@ -28,7 +28,7 @@ import { Queue } from 'bullmq';
 import { QueueEvents } from 'bullmq';
 import { Job } from 'bullmq';
 import { ConfigService } from '@nestjs/config';
-import { InventoryStatusEnum } from '@rahino/ecommerce/inventory/enum';
+import { InventoryStatusEnum } from '@rahino/ecommerce/shared/inventory/enum';
 import { ECPaymentGateway } from '@rahino/localdatabase/models';
 import { User } from '@rahino/database';
 import { AddressService } from '../../address/address.service';

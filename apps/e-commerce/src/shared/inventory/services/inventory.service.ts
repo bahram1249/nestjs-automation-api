@@ -11,7 +11,7 @@ import { InjectMapper } from 'automapper-nestjs';
 import { Mapper } from 'automapper-core';
 import * as _ from 'lodash';
 import { User } from '@rahino/database';
-import { InventoryStatusEnum } from '@rahino/ecommerce/inventory/enum';
+import { InventoryStatusEnum } from '@rahino/ecommerce/shared/inventory/enum';
 import { ECInventoryPrice } from '@rahino/localdatabase/models';
 import { Op } from 'sequelize';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';

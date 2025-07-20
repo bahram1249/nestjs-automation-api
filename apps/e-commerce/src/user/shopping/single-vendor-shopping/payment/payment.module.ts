@@ -15,11 +15,11 @@ import {
   ECShoppingCart,
   ECVendorCommission,
 } from '@rahino/localdatabase/models';
-import { InventoryModule } from '@rahino/ecommerce/inventory/inventory.module';
+import { InventoryModule } from '@rahino/ecommerce/shared/inventory/inventory.module';
 import { BullModule } from '@nestjs/bullmq';
 import { REVERT_PAYMENT_QUEUE } from '../../payment/revert-payment/revert-payment.constants';
 import { ConfigService } from '@nestjs/config';
-import { REVERT_INVENTORY_QTY_QUEUE } from '@rahino/ecommerce/inventory/constants';
+import { REVERT_INVENTORY_QTY_QUEUE } from '@rahino/ecommerce/shared/inventory/constants';
 
 @Module({
   imports: [

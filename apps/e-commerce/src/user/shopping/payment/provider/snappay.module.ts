@@ -7,7 +7,7 @@ import { ECOrder } from '@rahino/localdatabase/models';
 import { ECommerceSmsModule } from '@rahino/ecommerce/shared/sms/ecommerce-sms.module';
 import { User } from '@rahino/database';
 import { FinalizedPaymentModule } from '../util/finalized-payment/finalized-payment.module';
-import { RevertPaymentQtyModule } from '@rahino/ecommerce/inventory/revert-payment-qty.module';
+import { RevertPaymentQtyModule } from '@rahino/ecommerce/shared/inventory/revert-payment-qty.module';
 
 @Module({
   imports: [

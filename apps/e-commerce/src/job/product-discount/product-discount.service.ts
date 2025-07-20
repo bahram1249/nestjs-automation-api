@@ -5,7 +5,7 @@ import { InjectModel } from '@nestjs/sequelize';
 import { ECProduct } from '@rahino/localdatabase/models';
 import { ProductDiscountSetterService } from './product-discount-setter.service';
 import * as _ from 'lodash';
-import { InventoryStatusEnum } from '../../inventory/enum';
+import { InventoryStatusEnum } from '@rahino/ecommerce/shared/inventory/enum';
 
 @Injectable()
 export class ProductDiscountService {

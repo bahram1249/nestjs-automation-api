@@ -18,8 +18,8 @@ import { ConfigService } from '@nestjs/config';
 import {
   DECREASE_INVENTORY_QUEUE,
   REVERT_INVENTORY_QTY_QUEUE,
-} from '@rahino/ecommerce/inventory/constants';
-import { InventoryModule } from '@rahino/ecommerce/inventory/inventory.module';
+} from '@rahino/ecommerce/shared/inventory/constants';
+import { InventoryModule } from '@rahino/ecommerce/shared/inventory/inventory.module';
 import { ECDiscount } from '@rahino/localdatabase/models';
 import { ProductModule } from '@rahino/ecommerce/client/product/product.module';
 import { ECInventoryPrice } from '@rahino/localdatabase/models';

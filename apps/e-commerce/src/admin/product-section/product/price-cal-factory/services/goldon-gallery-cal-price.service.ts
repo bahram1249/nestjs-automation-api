@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { ICalPrice } from '../interface/cal-price.interface';
-import { InventoryPriceDto } from '@rahino/ecommerce/inventory/dto/inventory-price.dto';
+import { InventoryPriceDto } from '@rahino/ecommerce/shared/inventory/dto/inventory-price.dto';
 import { InjectModel } from '@nestjs/sequelize';
 import { Setting } from '@rahino/database';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';

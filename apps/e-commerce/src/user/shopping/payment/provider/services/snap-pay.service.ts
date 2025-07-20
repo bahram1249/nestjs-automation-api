@@ -23,7 +23,7 @@ import { Response } from 'express';
 import { ConfigService } from '@nestjs/config';
 import { User } from '@rahino/database';
 import { FinalizedPaymentService } from '../../util/finalized-payment/finalized-payment.service';
-import { RevertPaymentQtyService } from '@rahino/ecommerce/inventory/services/revert-payment-qty.service';
+import { RevertPaymentQtyService } from '@rahino/ecommerce/shared/inventory/services/revert-payment-qty.service';
 
 export class SnapPayService implements PayInterface {
   private baseUrl = '';

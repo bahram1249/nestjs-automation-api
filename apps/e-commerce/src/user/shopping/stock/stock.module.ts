@@ -4,7 +4,7 @@ import { StockService } from './stock.service';
 import { ProductModule } from '@rahino/ecommerce/client/product/product.module';
 import { QueryFilterModule } from '@rahino/query-filter';
 import { StockProfile } from './mapper';
-import { InventoryModule } from '@rahino/ecommerce/inventory/inventory.module';
+import { InventoryModule } from '@rahino/ecommerce/shared/inventory/inventory.module';
 import { StockAvailabilityInventoryService } from './services';
 import {
   StockInventoryProcessor,

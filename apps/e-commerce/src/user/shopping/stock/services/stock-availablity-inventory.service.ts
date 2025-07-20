@@ -7,7 +7,7 @@ import { InjectModel } from '@nestjs/sequelize';
 import { ECStock } from '@rahino/localdatabase/models';
 import { StockDto } from '../dto';
 import { ECUserSession } from '@rahino/localdatabase/models';
-import { InventoryService } from '@rahino/ecommerce/inventory/services';
+import { InventoryService } from '@rahino/ecommerce/shared/inventory/services';
 import { InjectMapper } from 'automapper-nestjs';
 import { Mapper } from 'automapper-core';
 import * as _ from 'lodash';

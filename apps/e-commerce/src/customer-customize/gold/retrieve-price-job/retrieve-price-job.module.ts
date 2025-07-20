@@ -13,7 +13,7 @@ import { RetrievePriceProcessor } from './processor';
 import { BullModule } from '@nestjs/bullmq';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { RETRIEVE_PRICE_QUEUE } from './constants';
-import { PRODUCT_INVENTORY_STATUS_QUEUE } from '@rahino/ecommerce/inventory/constants';
+import { PRODUCT_INVENTORY_STATUS_QUEUE } from '@rahino/ecommerce/shared/inventory/constants';
 import { DBLoggerModule } from '@rahino/logger';
 
 @Module({

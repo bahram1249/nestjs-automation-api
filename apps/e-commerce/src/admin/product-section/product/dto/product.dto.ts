@@ -13,7 +13,7 @@ import {
 } from 'class-validator';
 import { ProductAttachmentDto } from './product-attachment.dto';
 import { ProductAttributeDto } from './product-attribute.dto';
-import { InventoryDto } from '@rahino/ecommerce/inventory/dto';
+import { InventoryDto } from '@rahino/ecommerce/shared/inventory/dto';
 import { ApiProperty } from '@nestjs/swagger';
 import { I18nTranslations } from 'apps/main/src/generated/i18n.generated';
 import { i18nValidationMessage } from 'nestjs-i18n';

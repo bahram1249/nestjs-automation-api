@@ -5,7 +5,7 @@ import { ECInventory } from '@rahino/localdatabase/models';
 import { ECPayment } from '@rahino/localdatabase/models';
 import { ECOrder } from '@rahino/localdatabase/models';
 import { ECProduct } from '@rahino/localdatabase/models';
-import { InventoryTrackChangeModule } from '../shared/inventory-track-change/inventory-track-change.module';
+import { InventoryTrackChangeModule } from '../inventory-track-change/inventory-track-change.module';
 
 @Module({
   imports: [

@@ -10,7 +10,7 @@ import { StockPaymentDto, WalletPaymentDto } from './dto';
 import { ECOMMERCE_PAYMENT_PROVIDER_TOKEN } from './provider/constants';
 import { PayInterface } from './provider/interface';
 import { StockService } from '../stock/stock.service';
-import { InventoryStatusEnum } from '@rahino/ecommerce/inventory/enum';
+import { InventoryStatusEnum } from '@rahino/ecommerce/shared/inventory/enum';
 import { AddressService } from '../../address/address.service';
 import { ECProvince } from '@rahino/localdatabase/models';
 import { InjectConnection, InjectModel } from '@nestjs/sequelize';
@@ -39,11 +39,11 @@ import { ECStock } from '@rahino/localdatabase/models';
 import {
   REVERT_INVENTORY_QTY_JOB,
   REVERT_INVENTORY_QTY_QUEUE,
-} from '@rahino/ecommerce/inventory/constants';
+} from '@rahino/ecommerce/shared/inventory/constants';
 import { Queue } from 'bullmq';
 import { InjectQueue } from '@nestjs/bullmq';
 import { ConfigService } from '@nestjs/config';
-import { DecreaseInventoryService } from '@rahino/ecommerce/inventory/services';
+import { DecreaseInventoryService } from '@rahino/ecommerce/shared/inventory/services';
 import { ApplyDiscountService } from '@rahino/ecommerce/client/product/service';
 import { ECInventoryPrice } from '@rahino/localdatabase/models';
 import { ECVendorCommission } from '@rahino/localdatabase/models';
