@@ -9,7 +9,7 @@ import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builde
 import {
   PaymentStatusEnum,
   PaymentTypeEnum,
-} from '@rahino/ecommerce/util/enum';
+} from '@rahino/ecommerce/shared/enum';
 import { Op, Sequelize } from 'sequelize';
 import { PaymentServiceManualProviderFactory } from '@rahino/ecommerce/user/shopping/payment/provider/factory/payment-service-manual-provider.factory';
 import { ECWallet } from '@rahino/localdatabase/models';

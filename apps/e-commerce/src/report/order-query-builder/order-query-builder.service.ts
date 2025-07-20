@@ -5,7 +5,7 @@ import { ECPayment } from '@rahino/localdatabase/models';
 import {
   OrderShipmentwayEnum,
   OrderStatusEnum,
-} from '@rahino/ecommerce/util/enum';
+} from '@rahino/ecommerce/shared/enum';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import { FindAttributeOptions, Op, Sequelize } from 'sequelize';
 

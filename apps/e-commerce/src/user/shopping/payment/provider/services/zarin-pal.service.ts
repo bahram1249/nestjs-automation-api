@@ -3,7 +3,7 @@ import { PayInterface } from '../interface';
 import {
   PaymentStatusEnum,
   PaymentTypeEnum,
-} from '@rahino/ecommerce/util/enum';
+} from '@rahino/ecommerce/shared/enum';
 import { Op, Sequelize, Transaction } from 'sequelize';
 import { ECOrderDetail } from '@rahino/localdatabase/models';
 import {

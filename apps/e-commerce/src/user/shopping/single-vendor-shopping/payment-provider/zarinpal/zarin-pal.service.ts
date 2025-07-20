@@ -11,7 +11,7 @@ import { InjectModel } from '@nestjs/sequelize';
 import { ConfigService } from '@nestjs/config';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import { Op, Sequelize } from 'sequelize';
-import { PaymentStatusEnum } from '@rahino/ecommerce/util/enum';
+import { PaymentStatusEnum } from '@rahino/ecommerce/shared/enum';
 import axios from 'axios';
 
 @Injectable()

@@ -39,7 +39,7 @@ import {
   OrderStatusEnum,
   PaymentTypeEnum,
   VendorCommissionTypeEnum,
-} from '@rahino/ecommerce/util/enum';
+} from '@rahino/ecommerce/shared/enum';
 import * as moment from 'moment-jalaali';
 import { DecreaseInventoryService } from '@rahino/ecommerce/inventory/services';
 import {

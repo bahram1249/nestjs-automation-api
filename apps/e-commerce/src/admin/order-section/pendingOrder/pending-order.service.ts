@@ -13,7 +13,7 @@ import { Op } from 'sequelize';
 import {
   OrderDetailStatusEnum,
   OrderStatusEnum,
-} from '@rahino/ecommerce/util/enum';
+} from '@rahino/ecommerce/shared/enum';
 import { ECOrderDetail } from '@rahino/localdatabase/models';
 import { UserVendorService } from '@rahino/ecommerce/user/user-vendor/user-vendor.service';
 import { OrderQueryBuilder } from '../utilOrder/service/order-query-builder.service';

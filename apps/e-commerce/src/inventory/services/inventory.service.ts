@@ -23,7 +23,7 @@ import { ECGuaranteeMonth } from '@rahino/localdatabase/models';
 import { ECProvince } from '@rahino/localdatabase/models';
 import { ECVariationPrice } from '@rahino/localdatabase/models';
 import { InventoryTrackChangeService } from '@rahino/ecommerce/inventory-track-change/inventory-track-change.service';
-import { InventoryTrackChangeStatusEnum } from '@rahino/ecommerce/util/enum';
+import { InventoryTrackChangeStatusEnum } from '@rahino/ecommerce/shared/enum';
 import { CAL_PRICE_PROVIDER_TOKEN } from '@rahino/ecommerce/admin/product-section/product/price-cal-factory/constants';
 import { ICalPrice } from '@rahino/ecommerce/admin/product-section/product/price-cal-factory/interface/cal-price.interface';
 import { ProductDto } from '@rahino/ecommerce/admin/product-section/product/dto';

@@ -3,7 +3,7 @@ import {
   OrderStatusEnum,
   PaymentStatusEnum,
   PaymentTypeEnum,
-} from '@rahino/ecommerce/util/enum';
+} from '@rahino/ecommerce/shared/enum';
 import { InjectModel } from '@nestjs/sequelize';
 import { ECPaymentGateway } from '@rahino/localdatabase/models';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';

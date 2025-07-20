@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { StockPriceInterface } from '../price';
 import { ShipmentInteface } from './interface';
-import { OrderShipmentwayEnum } from '@rahino/ecommerce/util/enum';
+import { OrderShipmentwayEnum } from '@rahino/ecommerce/shared/enum';
 import { InjectConnection, InjectModel } from '@nestjs/sequelize';
 import { ECAddress } from '@rahino/localdatabase/models';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';

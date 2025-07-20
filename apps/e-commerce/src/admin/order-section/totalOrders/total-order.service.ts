@@ -8,7 +8,7 @@ import {
 import { InjectConnection, InjectModel } from '@nestjs/sequelize';
 import { User } from '@rahino/database';
 import { ECOrder } from '@rahino/localdatabase/models';
-import { OrderStatusEnum } from '@rahino/ecommerce/util/enum';
+import { OrderStatusEnum } from '@rahino/ecommerce/shared/enum';
 import { OrderQueryBuilder } from '../utilOrder/service/order-query-builder.service';
 import { ECOrderDetail } from '@rahino/localdatabase/models';
 import { Sequelize, Transaction } from 'sequelize';

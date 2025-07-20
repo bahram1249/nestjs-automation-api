@@ -7,7 +7,7 @@ import { PersianDate } from '@rahino/database';
 import { I18nContext, I18nService } from 'nestjs-i18n';
 import { I18nTranslations } from 'apps/main/src/generated/i18n.generated';
 import { OrderQueryBuilderService } from '../order-query-builder/order-query-builder.service';
-import { OrderStatusEnum } from '@rahino/ecommerce/util/enum';
+import { OrderStatusEnum } from '@rahino/ecommerce/shared/enum';
 import { Sequelize } from 'sequelize';
 
 @Injectable()

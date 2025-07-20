@@ -5,7 +5,7 @@ import { ECOrder } from '@rahino/localdatabase/models';
 import {
   OrderShipmentwayEnum,
   OrderStatusEnum,
-} from '@rahino/ecommerce/util/enum';
+} from '@rahino/ecommerce/shared/enum';
 import { OrderQueryBuilder } from '../utilOrder/service/order-query-builder.service';
 import { ListFilter } from '@rahino/query-filter';
 import { OrderUtilService } from '../utilOrder/service/order-util.service';

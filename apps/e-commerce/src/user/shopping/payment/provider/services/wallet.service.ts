@@ -8,7 +8,7 @@ import { User } from '@rahino/database';
 import {
   PaymentStatusEnum,
   PaymentTypeEnum,
-} from '@rahino/ecommerce/util/enum';
+} from '@rahino/ecommerce/shared/enum';
 import { Sequelize, Transaction } from 'sequelize';
 import { ECOrderDetail } from '@rahino/localdatabase/models';
 import { InjectModel } from '@nestjs/sequelize';

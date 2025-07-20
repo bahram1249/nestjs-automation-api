@@ -13,7 +13,7 @@ import {
 } from '@rahino/ecommerce/client/home/constants';
 import { Queue } from 'bullmq';
 import { InjectQueue } from '@nestjs/bullmq';
-import { HomePageTypeEnum } from '@rahino/ecommerce/util/enum';
+import { HomePageTypeEnum } from '@rahino/ecommerce/shared/enum';
 
 @Injectable()
 export class HomePageService {

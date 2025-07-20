@@ -11,7 +11,7 @@ import { ECProductComment } from '@rahino/localdatabase/models';
 import { ECProductCommentStatus } from '@rahino/localdatabase/models';
 import { ECProductCommentFactor } from '@rahino/localdatabase/models';
 import { ECEntityTypeFactor } from '@rahino/localdatabase/models';
-import { ProductCommentStatusEnum } from '@rahino/ecommerce/util/enum/product-comment-status.enum';
+import { ProductCommentStatusEnum } from '@rahino/ecommerce/shared/enum/product-comment-status.enum';
 import { SCORE_COMMENT_JOB, SCORE_COMMENT_QUEUE } from './constants';
 import { InjectQueue } from '@nestjs/bullmq';
 import { Queue } from 'bullmq';

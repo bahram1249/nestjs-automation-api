@@ -10,7 +10,7 @@ import {
 } from 'class-validator';
 import { ContentDtoType } from './content';
 import { isValidContent } from '../decorator';
-import { HomePageTypeEnum } from '@rahino/ecommerce/util/enum';
+import { HomePageTypeEnum } from '@rahino/ecommerce/shared/enum';
 
 export class HomePageDataDto {
   @IsNotEmpty()

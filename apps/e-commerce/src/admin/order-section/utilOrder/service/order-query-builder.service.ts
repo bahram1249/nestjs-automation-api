@@ -21,7 +21,7 @@ import { ECVendor } from '@rahino/localdatabase/models';
 import {
   OrderShipmentwayEnum,
   OrderStatusEnum,
-} from '@rahino/ecommerce/util/enum';
+} from '@rahino/ecommerce/shared/enum';
 import { Order } from '@rahino/query-filter';
 import {
   IncludeOptionsBuilder,

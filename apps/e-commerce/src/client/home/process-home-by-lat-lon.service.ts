@@ -3,7 +3,7 @@ import { InjectModel } from '@nestjs/sequelize';
 import { ECHomePage } from '@rahino/localdatabase/models';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import { Op, Sequelize } from 'sequelize';
-import { HomePageTypeEnum } from '../../util/enum';
+import { HomePageTypeEnum } from '../../shared/enum';
 import { BrandContentDto } from '../../admin/home-page-section/home-page/dto/content/brand-content.dto';
 import { CategoryContentDto } from '../../admin/home-page-section/home-page/dto/content/category-content.dto';
 import { ConfigService } from '@nestjs/config';

@@ -30,7 +30,7 @@ import {
   PaymentTypeEnum,
   ProvinceEnum,
   VendorCommissionTypeEnum,
-} from '@rahino/ecommerce/util/enum';
+} from '@rahino/ecommerce/shared/enum';
 import { ECOrder } from '@rahino/localdatabase/models';
 import { ECOrderDetail } from '@rahino/localdatabase/models';
 import { ECProduct } from '@rahino/localdatabase/models';
@@ -52,7 +52,7 @@ import {
   REVERT_PAYMENT_JOB,
   REVERT_PAYMENT_QUEUE,
 } from './revert-payment/revert-payment.constants';
-import { CityEnum } from '@rahino/ecommerce/util/enum/city.enum';
+import { CityEnum } from '@rahino/ecommerce/shared/enum/city.enum';
 import { ValidateAddressService } from '../payment-rule/services/validate-address.service';
 
 @Injectable()

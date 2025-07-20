@@ -3,7 +3,7 @@ import { InjectModel } from '@nestjs/sequelize';
 import { User } from '@rahino/database';
 import { ECOrder } from '@rahino/localdatabase/models';
 import { OrderQueryBuilder } from '@rahino/ecommerce/admin/order-section/utilOrder/service/order-query-builder.service';
-import { OrderStatusEnum } from '@rahino/ecommerce/util/enum';
+import { OrderStatusEnum } from '@rahino/ecommerce/shared/enum';
 import { ListFilter } from '@rahino/query-filter';
 import { I18nTranslations } from 'apps/main/src/generated/i18n.generated';
 import { I18nContext, I18nService } from 'nestjs-i18n';

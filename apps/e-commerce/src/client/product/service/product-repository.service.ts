@@ -12,7 +12,7 @@ import { ConfigService } from '@nestjs/config';
 import { ECSlugVersion } from '@rahino/localdatabase/models';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import { RedirectException } from '@rahino/ecommerce/util/exception';
-import { SlugVersionTypeEnum } from '@rahino/ecommerce/util/enum';
+import { SlugVersionTypeEnum } from '@rahino/ecommerce/shared/enum';
 import { ListFilterV2Factory } from '@rahino/query-filter/provider/list-filter-v2.factory';
 import { LocalizationService } from 'apps/main/src/common/localization';
 

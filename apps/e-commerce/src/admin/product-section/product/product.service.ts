@@ -64,7 +64,7 @@ import { InjectQueue } from '@nestjs/bullmq';
 import { Queue } from 'bullmq';
 import { ProductVideoService } from '@rahino/ecommerce/admin/product-section/product-video/product-video.service';
 import { VideoDto } from '@rahino/ecommerce/admin/product-section/product-video/dto';
-import { SlugVersionTypeEnum } from '@rahino/ecommerce/util/enum';
+import { SlugVersionTypeEnum } from '@rahino/ecommerce/shared/enum';
 import { PermissionService } from '@rahino/core/user/permission/permission.service';
 
 @Injectable()

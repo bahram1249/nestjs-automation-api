@@ -10,7 +10,7 @@ import { OrderQueryBuilderService } from '../order-query-builder/order-query-bui
 import {
   OrderShipmentwayEnum,
   OrderStatusEnum,
-} from '@rahino/ecommerce/util/enum';
+} from '@rahino/ecommerce/shared/enum';
 import { Sequelize } from 'sequelize';
 
 @Injectable()

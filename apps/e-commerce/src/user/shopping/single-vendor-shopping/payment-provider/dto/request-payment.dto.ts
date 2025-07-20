@@ -1,5 +1,5 @@
 import { User } from '@rahino/database';
-import { PaymentTypeEnum } from '@rahino/ecommerce/util/enum';
+import { PaymentTypeEnum } from '@rahino/ecommerce/shared/enum';
 import { Transaction } from 'sequelize';
 
 export class SingleVendorRequestPaymentDto {

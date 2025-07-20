@@ -5,7 +5,7 @@ import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builde
 import { Op, Sequelize } from 'sequelize';
 import { StockPriceInterface } from '../price';
 import { ShipmentInteface } from './interface';
-import { OrderShipmentwayEnum } from '@rahino/ecommerce/util/enum';
+import { OrderShipmentwayEnum } from '@rahino/ecommerce/shared/enum';
 import { ECDiscount } from '@rahino/localdatabase/models';
 import { ECDiscountType } from '@rahino/localdatabase/models';
 

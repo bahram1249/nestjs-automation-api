@@ -1,4 +1,4 @@
-import { OrderShipmentwayEnum } from '@rahino/ecommerce/util/enum';
+import { OrderShipmentwayEnum } from '@rahino/ecommerce/shared/enum';
 import { StockPriceInterface } from '../../price';
 
 export interface ShipmentInteface {

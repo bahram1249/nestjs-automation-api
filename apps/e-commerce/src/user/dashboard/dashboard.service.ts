@@ -7,7 +7,7 @@ import { ECWallet } from '@rahino/localdatabase/models';
 import {
   OrderStatusEnum,
   ProductCommentStatusEnum,
-} from '@rahino/ecommerce/util/enum';
+} from '@rahino/ecommerce/shared/enum';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import { Op } from 'sequelize';
 import { Sequelize } from 'sequelize';

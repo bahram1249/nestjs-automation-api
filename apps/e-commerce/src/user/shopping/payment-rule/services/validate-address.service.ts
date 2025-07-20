@@ -1,8 +1,8 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { AddressService } from '@rahino/ecommerce/user/address/address.service';
 import { validateAddressDto } from '../dto';
-import { ProvinceEnum } from '@rahino/ecommerce/util/enum';
-import { CityEnum } from '@rahino/ecommerce/util/enum/city.enum';
+import { ProvinceEnum } from '@rahino/ecommerce/shared/enum';
+import { CityEnum } from '@rahino/ecommerce/shared/enum/city.enum';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import { InjectModel } from '@nestjs/sequelize';
 import { ECProvince } from '@rahino/localdatabase/models';

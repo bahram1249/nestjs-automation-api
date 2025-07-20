@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { StockPriceInterface } from '../price';
 import { ShipmentInteface } from './interface';
-import { OrderShipmentwayEnum } from '@rahino/ecommerce/util/enum';
+import { OrderShipmentwayEnum } from '@rahino/ecommerce/shared/enum';
 
 @Injectable()
 export class TipaxShipmentPrice implements ShipmentInteface {

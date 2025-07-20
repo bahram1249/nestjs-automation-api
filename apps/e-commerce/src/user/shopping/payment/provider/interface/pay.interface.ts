@@ -1,6 +1,6 @@
 import { User } from '@rahino/database';
 import { ECOrderDetail } from '@rahino/localdatabase/models';
-import { PaymentTypeEnum } from '@rahino/ecommerce/util/enum';
+import { PaymentTypeEnum } from '@rahino/ecommerce/shared/enum';
 import { Transaction } from 'sequelize';
 
 export interface PayInterface {

@@ -9,7 +9,7 @@ import { ECPayment } from '@rahino/localdatabase/models';
 import {
   InventoryTrackChangeStatusEnum,
   PaymentTypeEnum,
-} from '@rahino/ecommerce/util/enum';
+} from '@rahino/ecommerce/shared/enum';
 import { ECOrder } from '@rahino/localdatabase/models';
 import { ECOrderDetail } from '@rahino/localdatabase/models';
 import { inventoryStatusService } from './inventory-status.service';

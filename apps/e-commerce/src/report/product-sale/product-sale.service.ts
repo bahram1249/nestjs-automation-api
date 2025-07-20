@@ -13,7 +13,7 @@ import { User } from '@rahino/database';
 import { UserVendorService } from '@rahino/ecommerce/user/user-vendor/user-vendor.service';
 import { Knex } from 'knex';
 import { InjectKnex } from 'nestjs-knex';
-import { OrderStatusEnum } from '@rahino/ecommerce/util/enum';
+import { OrderStatusEnum } from '@rahino/ecommerce/shared/enum';
 
 @Injectable()
 export class ProductSaleService {

@@ -12,7 +12,7 @@ import { ECProductComment } from '@rahino/localdatabase/models';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import { Sequelize, Transaction } from 'sequelize';
 import { Op } from 'sequelize';
-import { ProductCommentStatusEnum } from '../../util/enum';
+import { ProductCommentStatusEnum } from '../../shared/enum';
 import { ECProductCommentStatus } from '@rahino/localdatabase/models';
 import { ECProductCommentFactor } from '@rahino/localdatabase/models';
 import { ECEntityTypeFactor } from '@rahino/localdatabase/models';

@@ -6,7 +6,7 @@ import * as _ from 'lodash';
 import { User } from '@rahino/database';
 import { ListFilter } from '@rahino/query-filter';
 import { ECProductComment } from '@rahino/localdatabase/models';
-import { ProductCommentStatusEnum } from '@rahino/ecommerce/util/enum';
+import { ProductCommentStatusEnum } from '@rahino/ecommerce/shared/enum';
 import { ECProductCommentStatus } from '@rahino/localdatabase/models';
 import { ECProduct } from '@rahino/localdatabase/models';
 import { ECProductCommentFactor } from '@rahino/localdatabase/models';

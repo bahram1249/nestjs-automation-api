@@ -8,7 +8,7 @@ import { ECInventory } from '@rahino/localdatabase/models';
 import { ECOrder } from '@rahino/localdatabase/models';
 import { ECProduct } from '@rahino/localdatabase/models';
 import { ECVendor } from '@rahino/localdatabase/models';
-import { OrderStatusEnum } from '@rahino/ecommerce/util/enum';
+import { OrderStatusEnum } from '@rahino/ecommerce/shared/enum';
 import { Order } from '@rahino/query-filter';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import { FindAttributeOptions, GroupOption, Op, Sequelize } from 'sequelize';
