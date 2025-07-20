@@ -40,7 +40,8 @@ export class DiscountService {
   ) {}
 
   async findAll(user: User, filter: GetDiscountDto) {
-    const vendorIdsStringify = await this.retrunVendorIdsAsString(user);
+    const vendorIdsStringify =
+      await this.userVendorService.findVendorIdsAsString(user);
     const queryBuilder = new QueryOptionsBuilder()
       .filter({
         name: {
@@ -120,7 +121,8 @@ export class DiscountService {
   }
 
   async findById(entityId: bigint, user: User, transaction?: Transaction) {
-    const vendorIdsStringify = await this.retrunVendorIdsAsString(user);
+    const vendorIdsStringify =
+      await this.userVendorService.findVendorIdsAsString(user);
     const queryBuilder = new QueryOptionsBuilder()
       .attributes([
         'id',
@@ -251,7 +253,8 @@ export class DiscountService {
   }
 
   async update(entityId: bigint, dto: DiscountDto, user: User) {
-    const vendorIdsStringify = await this.retrunVendorIdsAsString(user);
+    const vendorIdsStringify =
+      await this.userVendorService.findVendorIdsAsString(user);
     const { error } = await this.validation(dto);
     if (error) {
       throw new BadRequestException(error);
@@ -376,12 +379,5 @@ export class DiscountService {
       return { code: 400, error: 'Coupon Code is Required' };
     }
     return { code: 200 };
-  }
-
-  private async retrunVendorIdsAsString(user: User) {
-    const vendorIds = await this.userVendorService.findVendorIds(user);
-    const vendorIdsString = vendorIds.map((item) => item.toString());
-    let vendorIdsStringify = vendorIdsString.join(', ');
-    return vendorIdsStringify != '' ? vendorIdsStringify : 'NULL';
   }
 }

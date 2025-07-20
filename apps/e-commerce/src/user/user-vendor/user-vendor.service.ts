@@ -210,4 +210,11 @@ export class UserVendorService {
     const vendorIds = vendorAccess.map((item) => item.vendorId);
     return vendorIds;
   }
+
+  async findVendorIdsAsString(user: User) {
+    const vendorIds = await this.findVendorIds(user);
+    const vendorIdsString = vendorIds.map((item) => item.toString());
+    let vendorIdsStringify = vendorIdsString.join(', ');
+    return vendorIdsStringify != '' ? vendorIdsStringify : 'NULL';
+  }
 }

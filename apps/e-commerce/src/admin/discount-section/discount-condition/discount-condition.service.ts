@@ -34,7 +34,8 @@ export class DiscountConditionService {
   ) {}
 
   async findAll(user: User, filter: GetDiscountConditionDto) {
-    const vendorIdsStringify = await this.retrunVendorIdsAsString(user);
+    const vendorIdsStringify =
+      await this.userVendorService.findVendorIdsAsString(user);
     let queryBuilder = new QueryOptionsBuilder()
       .include([
         {
@@ -125,7 +126,8 @@ export class DiscountConditionService {
   }
 
   async findById(user: User, entityId: bigint) {
-    const vendorIdsStringify = await this.retrunVendorIdsAsString(user);
+    const vendorIdsStringify =
+      await this.userVendorService.findVendorIdsAsString(user);
     let queryBuilder = new QueryOptionsBuilder()
       .include([
         {
@@ -277,7 +279,8 @@ export class DiscountConditionService {
   }
 
   async deleteById(user: User, entityId: bigint) {
-    const vendorIdsStringify = await this.retrunVendorIdsAsString(user);
+    const vendorIdsStringify =
+      await this.userVendorService.findVendorIdsAsString(user);
     let queryBuilder = new QueryOptionsBuilder()
       .filter({ id: entityId })
       .filter(
@@ -316,12 +319,5 @@ export class DiscountConditionService {
     return {
       result: result,
     };
-  }
-
-  private async retrunVendorIdsAsString(user: User) {
-    const vendorIds = await this.userVendorService.findVendorIds(user);
-    const vendorIdsString = vendorIds.map((item) => item.toString());
-    let vendorIdsStringify = vendorIdsString.join(', ');
-    return vendorIdsStringify != '' ? vendorIdsStringify : 'NULL';
   }
 }
