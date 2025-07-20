@@ -20,6 +20,7 @@ import { UserVendorService } from '@rahino/ecommerce/user/user-vendor/user-vendo
 import { ECDiscountCondition } from '@rahino/localdatabase/models';
 import { DiscountConditionTypeEnum } from '../discount-condition-type/enum';
 import { PermissionService } from '@rahino/core/user/permission/permission.service';
+import { PERMISSION_SUPEREDIT_DISCOUNTS } from '@rahino/ecommerce/shared/constants';
 
 @Injectable()
 export class DiscountService {
@@ -201,10 +202,9 @@ export class DiscountService {
       throw new BadRequestException("You don't have access to this vendor");
     }
 
-    const editPermissionSymbol = 'ecommerce.admin.discounts.superedit';
     const { result: superEditAccess } = await this.permissionService.isAccess(
       user,
-      editPermissionSymbol,
+      PERMISSION_SUPEREDIT_DISCOUNTS,
     );
 
     const mappedItem = this.mapper.map(dto, DiscountDto, ECDiscount);
@@ -282,10 +282,9 @@ export class DiscountService {
       throw new NotFoundException('the item with this given id not founded!');
     }
 
-    const editPermissionSymbol = 'ecommerce.admin.discounts.superedit';
     const { result: superEditAccess } = await this.permissionService.isAccess(
       user,
-      editPermissionSymbol,
+      PERMISSION_SUPEREDIT_DISCOUNTS,
     );
 
     const mappedItem = this.mapper.map(dto, DiscountDto, ECDiscount);
