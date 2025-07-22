@@ -2,6 +2,7 @@
   "duplicate_request": "درخواست تکراری است",
   "phoneNumber_must_not_changed": "شماره تلفن نباید تغییر کند",
   "firstname_or_lastname_must_be_send_it": "نام یا نام خانوادگی میبایست ارسال شود",
+  "national_code_must_be_send_it": "کد ملی میبایست ارسال گردد",
   "code_was_send_it_is_not_true": "کد ارسالی صحیح نمیباشد",
   "item_exists": "آیتم تکراری میباشد",
   "user": "کاربر",

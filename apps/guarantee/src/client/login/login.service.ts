@@ -5,7 +5,10 @@ import { InjectModel } from '@nestjs/sequelize';
 import { RedisRepository } from '@rahino/redis-client/repository';
 import { AuthService } from '@rahino/core/auth/auth.service';
 import * as _ from 'lodash';
-import { getIntegerRandomArbitrary } from '@rahino/commontools';
+import {
+  getIntegerRandomArbitrary,
+  isNotNullOrEmpty,
+} from '@rahino/commontools';
 import { InjectQueue } from '@nestjs/bullmq';
 import { Queue } from 'bullmq';
 import { LOGIN_SMS_SENDER_QUEUE } from '@rahino/guarantee/job/login-sms-sender/constants';
@@ -66,10 +69,17 @@ export class LoginService {
       },
     });
     if (!user) {
-      if (dto.firstname == null || dto.lastname == null) {
+      if (!isNotNullOrEmpty(dto.firstname) || !isNotNullOrEmpty(dto.lastname)) {
         throw new BadRequestException(
           this.localizationService.translate(
             'core.firstname_or_lastname_must_be_send_it',
+          ),
+        );
+      }
+      if (!isNotNullOrEmpty(dto.nationalCode)) {
+        throw new BadRequestException(
+          this.localizationService.translate(
+            'core.national_code_must_be_send_it',
           ),
         );
       }

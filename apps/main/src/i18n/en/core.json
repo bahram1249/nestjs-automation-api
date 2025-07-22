@@ -2,6 +2,7 @@
   "duplicate_request": "duplicate request",
   "phoneNumber_must_not_changed": "phoneNumber must not changed",
   "firstname_or_lastname_must_be_send_it": "firstname or lastname must be send it",
+  "national_code_must_be_send_it": "national code must be send it",
   "code_was_send_it_is_not_true": "the code was send it is not true",
   "item_exists": "the item is exists",
   "user": "user",
