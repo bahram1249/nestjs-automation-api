@@ -11,5 +11,5 @@ export class SubmitFactorDetailDto {
   isOnline?: boolean;
 
   @IsArray()
-  attachments: AttachmentDto[];
+  attachments: AttachmentDto[] = [];
 }

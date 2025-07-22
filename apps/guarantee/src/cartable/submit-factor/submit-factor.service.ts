@@ -29,13 +29,13 @@ export class SubmitFactorService {
   ) {}
 
   async traverse(user: User, dto: SubmitFactorDto) {
-    if (dto.attachments.length == 0) {
-      throw new BadRequestException(
-        this.localizationService.translate(
-          'guarantee.you_have_to_upload_a_image_at_least_one',
-        ),
-      );
-    }
+    // if (dto.attachments.length == 0) {
+    //   throw new BadRequestException(
+    //     this.localizationService.translate(
+    //       'guarantee.you_have_to_upload_a_image_at_least_one',
+    //     ),
+    //   );
+    // }
 
     const cartableItem =
       await this.guaranteeTraverseService.validateAndReturnCartableItem(
