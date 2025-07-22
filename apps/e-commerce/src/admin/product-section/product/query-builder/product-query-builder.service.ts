@@ -38,7 +38,7 @@ export class ProductQueryBuilderService {
   async findAllAndCount(
     vendorIds: number[],
     filter: GetProductDto,
-    productId?: number,
+    productId?: bigint,
   ): Promise<{
     resultQuery: FindAndCountOptions<any>;
     countQuery: FindAndCountOptions<any>;

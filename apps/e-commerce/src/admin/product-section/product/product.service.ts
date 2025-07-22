@@ -118,6 +118,7 @@ export class ProductService {
       await this.productQueryBuilderService.findAllAndCount(
         vendorIds,
         productFilter,
+        id,
       );
 
     const product = await this.repository.findOne(resultQuery);
