@@ -411,7 +411,6 @@ export class SharedCartableFilteringService {
             LEFT JOIN GSGuarantees G
             ON Req.guaranteeId = G.id
             WHERE [Req].id = BPMNRequestState.requestId
-              AND ISNULL([G].isDeleted, 0) = 0
               AND [G].serialNumber LIKE N'%${filter.serialNumber}%') `.replaceAll(
             /\s\s+/g,
             ' ',
