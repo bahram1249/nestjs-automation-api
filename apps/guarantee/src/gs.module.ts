@@ -108,6 +108,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { AnonymousPublicReportModule } from './anonymous/public-report';
 import { GSFaqModule } from './admin/faq';
 import { GSAnonymousFaqModule } from './anonymous/faq';
+import { GSClientProfileModule } from './client/profile/gsprofile.module';
 
 @Module({
   imports: [
@@ -250,6 +251,8 @@ import { GSAnonymousFaqModule } from './anonymous/faq';
 
     GSFaqModule,
     GSAnonymousFaqModule,
+
+    GSClientProfileModule,
 
     // BullBoardModule.forRoot({
     //   route: '/queues',
