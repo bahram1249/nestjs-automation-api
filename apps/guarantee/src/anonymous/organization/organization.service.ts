@@ -41,7 +41,7 @@ export class AnonymousOrganizationService {
     let query = new QueryOptionsBuilder()
       .include([
         {
-          attributes: ['id', 'provinceId', 'cityId'],
+          attributes: ['id', 'provinceId', 'cityId', 'latitude', 'longitude'],
           model: GSAddress,
           as: 'address',
           required: true,
@@ -114,6 +114,8 @@ export class AnonymousOrganizationService {
         cityName: item.address?.city?.name,
         code: item.code ?? null,
         fullName: item.user.firstname + ' ' + item.user.lastname,
+        latitude: item.address.latitude,
+        longitude: item.address.longitude,
       };
     });
 
@@ -128,7 +130,7 @@ export class AnonymousOrganizationService {
       .attributes(['id', 'licenseDate', 'code', 'addressId'])
       .include([
         {
-          attributes: ['id', 'provinceId', 'cityId'],
+          attributes: ['id', 'provinceId', 'cityId', 'latitude', 'longitude'],
           model: GSAddress,
           as: 'address',
           required: true,
