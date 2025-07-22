@@ -10,7 +10,7 @@ import { ModelType } from 'sequelize-typescript';
 export class IncludeOptionsBuilder {
   private options: IncludeOptions;
   constructor(
-    includeOptionsBuilderInit: Omit<IncludeOptions, 'where'>,
+    includeOptionsBuilderInit: IncludeOptions,
     //   {
     //   model: ModelType<any, any>;
     //   as: string;

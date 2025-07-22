@@ -21,6 +21,8 @@ import { ProductVideoModule } from '@rahino/ecommerce/admin/product-section/prod
 import { ECSlugVersion } from '@rahino/localdatabase/models';
 import { PermissionModule } from '@rahino/core/user/permission/permission.module';
 import { CalPriceFactoryModule } from './price-cal-factory/cal-price-factory.module';
+import { ProductQueryBuilderService } from './query-builder/product-query-builder.service';
+import { LocalizationModule } from 'apps/main/src/common/localization';
 
 @Module({
   imports: [
@@ -52,9 +54,10 @@ import { CalPriceFactoryModule } from './price-cal-factory/cal-price-factory.mod
         },
       }),
     }),
+    LocalizationModule,
   ],
   controllers: [ProductController],
-  providers: [ProductService, ProductProfile],
+  providers: [ProductService, ProductProfile, ProductQueryBuilderService],
   exports: [ProductService],
 })
 export class ProductModule {}
