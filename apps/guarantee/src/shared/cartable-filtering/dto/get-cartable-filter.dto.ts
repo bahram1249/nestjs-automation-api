@@ -68,4 +68,13 @@ export class GetCartableFilteDto {
     description: 'requestTypeId',
   })
   requestTypeId?: number;
+
+  @IsString()
+  @IsOptional()
+  @ApiProperty({
+    required: false,
+    type: IsString,
+    description: 'serialNumber',
+  })
+  serialNumber?: string;
 }

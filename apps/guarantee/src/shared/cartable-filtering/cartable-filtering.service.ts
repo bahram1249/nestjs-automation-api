@@ -401,7 +401,23 @@ export class SharedCartableFilteringService {
         '$guaranteeRequest.requestTypeId$': filter.requestTypeId,
       })
       .filterIf(filter.requestId != null, { requestId: filter.requestId })
-      .filterIf(filter.requestStateId != null, { id: filter.requestStateId });
+      .filterIf(filter.requestStateId != null, { id: filter.requestStateId })
+      .filterIf(
+        filter.serialNumber != null,
+        Sequelize.literal(
+          `EXISTS (
+            SELECT 1
+            FROM GSRequests AS Req
+            LEFT JOIN GSGuarantees G
+            ON Req.guaranteeId = G.id
+            WHERE [Req].id = BPMNRequestState.requestId
+              AND ISNULL([G].isDeleted, 0) = 0
+              AND [G].serialNumber LIKE N'%${filter.serialNumber}%' `.replaceAll(
+            /\s\s+/g,
+            ' ',
+          ),
+        ),
+      );
 
     const count = await this.repository.count(query.build());
 
