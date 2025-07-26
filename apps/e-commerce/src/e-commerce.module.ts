@@ -113,6 +113,7 @@ import { AnonymousVendorEntityTypeModule } from './anonymous/vendor-entity-type/
 import { AnonymousInventoryStatusModule } from './anonymous/inventory-status/inventory-status.module';
 import { AnonymousPaymentGatewayModule } from './anonymous/payment-gateway/payment-gateway.module';
 import { SingleVendorPaymentModule } from './user/shopping/single-vendor-shopping/payment';
+import { AdminLogisticModule } from './admin/logistic-section/logistic/admin-logistic.module';
 
 @Module({
   imports: [
@@ -225,6 +226,8 @@ import { SingleVendorPaymentModule } from './user/shopping/single-vendor-shoppin
     AnonymousInventoryStatusModule,
     AnonymousPaymentGatewayModule,
     SingleVendorPaymentModule,
+
+    AdminLogisticModule,
   ],
   providers: [
     {

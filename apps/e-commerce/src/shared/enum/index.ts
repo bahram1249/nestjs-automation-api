@@ -10,3 +10,4 @@ export * from './home-page-type.enum';
 export * from './slug-version-type.enum';
 export * from './product-price-formula-enum';
 export * from './province.enum';
+export * from './role.enum';

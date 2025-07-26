@@ -22,6 +22,9 @@ import {
   ECInventoryStatus,
   ECInventoryTrackChangeStatus,
   ECLinkedEntityTypeBrand,
+  ECLogistic,
+  ECLogisticShipmentWay,
+  ECLogisticUser,
   ECNeighborhood,
   ECNotification,
   ECOrder,
@@ -130,4 +133,7 @@ export const ecommerceEntities = [
   ECShippingWay,
   ECShoppingCart,
   ECShoppingCartProduct,
+  ECLogistic,
+  ECLogisticShipmentWay,
+  ECLogisticUser,
 ];

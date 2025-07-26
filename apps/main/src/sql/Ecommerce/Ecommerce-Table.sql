@@ -3053,4 +3053,91 @@ END
 GO
 
 
+-- ec-logistics
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ec-logistics-v1' 
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'SITE_NAME' AND [value] IN ('ecommerce'))
+		)
+BEGIN
+
+	CREATE TABLE ECLogistics(
+		id								bigint identity(1,1)			PRIMARY KEY,
+		title							nvarchar(256)					NOT NULL,
+		isDeleted						bit								NULL,
+		[createdAt]						datetimeoffset					NOT NULL,
+		[updatedAt]						datetimeoffset					NOT NULL
+	);
+
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'ec-logistics-v1', GETDATE(), GETDATE()
+END
+
+GO
+
+
+-- ec-logisticshipmentways-v1
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ec-logisticshipmentways-v1' 
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'SITE_NAME' AND [value] IN ('ecommerce'))
+		)
+BEGIN
+
+	CREATE TABLE ECLogisticShipmentWays(
+		id								bigint identity(1,1)			PRIMARY KEY,
+		logisticId						bigint							NOT NULL
+			CONSTRAINT FK_ECLogisticsShipmentWays_LogisticId
+				FOREIGN KEY REFERENCES ECLogistics(id),
+		orderShipmentWayId				int								NOT NULL
+			CONSTRAINT FK_ECLogisticsShipmentWays_OrderShipmentWayId
+				FOREIGN KEY REFERENCES ECOrderShipmentWays(id),
+		provinceId						int								NULL
+			CONSTRAINT FK_ECLogisticsShipmentWays_ProvinceId
+				FOREIGN KEY REFERENCES ECProvinces(id),
+		[createdAt]						datetimeoffset					NOT NULL,
+		[updatedAt]						datetimeoffset					NOT NULL
+		
+	);
+
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'ec-logisticshipmentways-v1', GETDATE(), GETDATE()
+END
+
+GO
+
+
+-- ec-logisticsusers-v1
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ec-logisticusers-v1' 
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'SITE_NAME' AND [value] IN ('ecommerce'))
+		)
+BEGIN
+
+	CREATE TABLE ECLogisticUsers(
+		id								bigint identity(1,1)			PRIMARY KEY,
+		logisticId						bigint							NOT NULL
+			CONSTRAINT FK_ECLogisticUsers_LogisticId
+				FOREIGN KEY REFERENCES ECLogistics(id),
+		userId							bigint							NOT NULL
+			CONSTRAINT FK_ECLogisticUsers_UserId
+				FOREIGN KEY REFERENCES Users(id),
+		isDefault						bit								NULL,
+		isDeleted						bit								NULL,
+		[createdAt]						datetimeoffset					NOT NULL,
+		[updatedAt]						datetimeoffset					NOT NULL
+		
+	);
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'ec-logisticusers-v1', GETDATE(), GETDATE()
+END
+
+GO
 

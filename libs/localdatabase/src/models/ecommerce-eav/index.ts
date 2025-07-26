@@ -62,3 +62,6 @@ export * from './ec-linked-entity-type-brand.entity';
 export * from './ec-shippingway.entity';
 export * from './ec-shopping-cart.entity';
 export * from './ec-shopping-cart-product.entity';
+export * from './ec-logistic.entity';
+export * from './ec-logistic-shipment-way.entity';
+export * from './ec-logistic-user.entity';

@@ -1,7 +1,8 @@
 declare @Result nvarchar(max) = ''
-declare @TableName nvarchar(max) = 'GSVipGenerators'
+declare @TableName nvarchar(max) = 'ECLogistics'
 
 SELECT @Result = @Result +
+  '@AutoMap()' + CHAR(13)+CHAR(10)
   '@Column({' 
   + CHAR(13)+CHAR(10) + 'type: '
   +  SequelizeColumnType

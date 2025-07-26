@@ -208,7 +208,6 @@ END
 GO
 
 
-
 -- suppliers
 IF NOT EXISTS ((SELECT 1 FROM Migrations WHERE version = 'CORE-Roles-Data-v7' 
 			))
@@ -232,6 +231,31 @@ BEGIN
 END
 
 GO
+
+-- logistics
+IF NOT EXISTS ((SELECT 1 FROM Migrations WHERE version = 'CORE-Roles-Data-v8' 
+			))
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'SITE_NAME' AND [value] IN ('ECommerce'))
+		)
+BEGIN
+	
+	INSERT INTO Roles
+	(
+		roleName
+		,static_id
+		,createdAt
+		,updatedAt
+	) 
+	SELECT N'لاجستیک', 8, getdate(), getdate()
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'CORE-Roles-Data-v8', GETDATE(), GETDATE()
+END
+
+GO
+
 
 -- super admin
 IF NOT EXISTS ((SELECT 1 FROM Migrations WHERE version = 'CORE-UserRoles-Data-v1' 
