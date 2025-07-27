@@ -1,6 +1,5 @@
 import {
   BadRequestException,
-  ForbiddenException,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
@@ -13,10 +12,7 @@ import { Mapper } from 'automapper-core';
 import * as _ from 'lodash';
 import { ECLogistic, ECLogisticUser } from '@rahino/localdatabase/models';
 import { User } from '@rahino/database';
-import { Role } from '@rahino/database';
-import { UserRoleService } from '@rahino/core/admin/user-role/user-role.service';
 import { LocalizationService } from 'apps/main/src/common/localization';
-import { ECRoleEnum } from '@rahino/ecommerce/shared/enum';
 import { LogisticUserRoleHandlerService } from '../logistic-user-role-handler/logistic-user-role-handler.service';
 
 @Injectable()
@@ -24,10 +20,6 @@ export class LogisticService {
   constructor(
     @InjectModel(ECLogistic)
     private readonly repository: typeof ECLogistic,
-    @InjectModel(Role)
-    private readonly roleRepository: typeof Role,
-    @InjectModel(User)
-    private readonly userRepository: typeof User,
     @InjectModel(ECLogisticUser)
     private readonly logisticUserRepository: typeof ECLogisticUser,
 
@@ -35,7 +27,6 @@ export class LogisticService {
     private readonly mapper: Mapper,
     @InjectConnection()
     private readonly sequelize: Sequelize,
-    private readonly userRoleService: UserRoleService,
     private readonly localizationService: LocalizationService,
     private readonly logisticUserRoleHandlerService: LogisticUserRoleHandlerService,
   ) {}
@@ -189,17 +180,6 @@ export class LogisticService {
       );
     }
 
-    const logisticRole = await this.roleRepository.findOne(
-      new QueryOptionsBuilder()
-        .filter({ static_id: ECRoleEnum.Logistic })
-        .build(),
-    );
-    if (!logisticRole) {
-      throw new ForbiddenException(
-        this.localizationService.translate('core.not_found_role'),
-      );
-    }
-
     const transaction = await this.sequelize.transaction({
       isolationLevel: Transaction.ISOLATION_LEVELS.READ_COMMITTED,
     });
@@ -276,41 +256,6 @@ export class LogisticService {
       );
     }
 
-    // find default user of this logistic
-    let defaultLogisticUser = await this.logisticUserRepository.findOne(
-      new QueryOptionsBuilder()
-        .include([
-          {
-            model: User,
-            as: 'user',
-          },
-          {
-            model: ECLogistic,
-            as: 'logistic',
-          },
-        ])
-        .filter({ logisticId: item.id })
-        .filter({ isDefault: true })
-        .filter(
-          Sequelize.where(
-            Sequelize.fn(
-              'isnull',
-              Sequelize.col('ECLogisticUser.isDeleted'),
-              0,
-            ),
-            {
-              [Op.eq]: 0,
-            },
-          ),
-        )
-        .build(),
-    );
-    if (!defaultLogisticUser) {
-      throw new ForbiddenException(
-        'default user of this logistic is not founded!',
-      );
-    }
-
     const transaction = await this.sequelize.transaction({
       isolationLevel: Transaction.ISOLATION_LEVELS.READ_COMMITTED,
     });
@@ -366,18 +311,6 @@ export class LogisticService {
     if (!item) {
       throw new NotFoundException(
         this.localizationService.translate('core.not_found_id'),
-      );
-    }
-
-    // find logistic role
-    const logisticRole = await this.roleRepository.findOne(
-      new QueryOptionsBuilder()
-        .filter({ static_id: ECRoleEnum.Logistic })
-        .build(),
-    );
-    if (!logisticRole) {
-      throw new ForbiddenException(
-        this.localizationService.translate('core.not_found_role'),
       );
     }
 
