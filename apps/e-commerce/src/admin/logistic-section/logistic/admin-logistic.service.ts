@@ -4,7 +4,7 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { LogisticDto, GetLogisticDto, LogisticUserDto } from './dto';
+import { LogisticDto, GetLogisticDto } from './dto';
 import { InjectConnection, InjectModel } from '@nestjs/sequelize';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import { Op, Sequelize, Transaction } from 'sequelize';
@@ -17,6 +17,7 @@ import { Role } from '@rahino/database';
 import { UserRoleService } from '@rahino/core/admin/user-role/user-role.service';
 import { LocalizationService } from 'apps/main/src/common/localization';
 import { ECRoleEnum } from '@rahino/ecommerce/shared/enum';
+import { LogisticUserRoleHandlerService } from '../logistic-user-role-handler/logistic-user-role-handler.service';
 
 @Injectable()
 export class LogisticService {
@@ -35,8 +36,8 @@ export class LogisticService {
     @InjectConnection()
     private readonly sequelize: Sequelize,
     private readonly userRoleService: UserRoleService,
-
     private readonly localizationService: LocalizationService,
+    private readonly logisticUserRoleHandlerService: LogisticUserRoleHandlerService,
   ) {}
 
   async findAll(filter: GetLogisticDto) {
@@ -199,34 +200,11 @@ export class LogisticService {
       );
     }
 
-    // find user if exists before
-    let userLogistic = await this.userRepository.findOne(
-      new QueryOptionsBuilder()
-        .filter({ phoneNumber: dto.user.phoneNumber })
-        .build(),
-    );
-
     const transaction = await this.sequelize.transaction({
       isolationLevel: Transaction.ISOLATION_LEVELS.READ_COMMITTED,
     });
     let logistic: ECLogistic = null;
     try {
-      if (!userLogistic) {
-        const mappedUserItem = this.mapper.map(dto.user, LogisticUserDto, User);
-        const insertUserItem = _.omit(mappedUserItem.toJSON(), ['id']);
-        insertUserItem.username = mappedUserItem.phoneNumber;
-        userLogistic = await this.userRepository.create(insertUserItem, {
-          transaction: transaction,
-        });
-      }
-
-      // insert logistic role to user
-      await this.userRoleService.insertRoleToUser(
-        logisticRole,
-        userLogistic,
-        transaction,
-      );
-
       // mapped logistic item
       const mappedItem = this.mapper.map(dto, LogisticDto, ECLogistic);
       const insertItem = _.omit(mappedItem.toJSON(), ['id']);
@@ -236,15 +214,12 @@ export class LogisticService {
         transaction: transaction,
       });
 
-      // insert default vendor user
-      const logisticUser = await this.logisticUserRepository.create(
-        {
-          userId: userLogistic.id,
-          logisticId: logistic.id,
-          isDefault: true,
-        },
-        { transaction: transaction },
-      );
+      await this.logisticUserRoleHandlerService.addUserToLogistic({
+        logisticId: logistic.id,
+        user: dto.user,
+        isDefault: true,
+        transaction: transaction,
+      });
 
       await transaction.commit();
     } catch (error) {
@@ -301,18 +276,6 @@ export class LogisticService {
       );
     }
 
-    // find logistic role
-    const logisticRole = await this.roleRepository.findOne(
-      new QueryOptionsBuilder()
-        .filter({ static_id: ECRoleEnum.Logistic })
-        .build(),
-    );
-    if (!logisticRole) {
-      throw new ForbiddenException(
-        this.localizationService.translate('core.not_found_role'),
-      );
-    }
-
     // find default user of this logistic
     let defaultLogisticUser = await this.logisticUserRepository.findOne(
       new QueryOptionsBuilder()
@@ -353,91 +316,6 @@ export class LogisticService {
     });
     let logistic: ECLogistic = null;
     try {
-      if (defaultLogisticUser.user.phoneNumber != dto.user.phoneNumber) {
-        // remove default user of this vendor
-        defaultLogisticUser.isDeleted = true;
-        defaultLogisticUser = await defaultLogisticUser.save({
-          transaction: transaction,
-        });
-
-        // remove logistic role from this old user if is not exists in another logistic
-        const existsInAnotherVendor = await this.logisticUserRepository.findOne(
-          new QueryOptionsBuilder()
-            .filter({ userId: defaultLogisticUser.user.id })
-            .filter(
-              Sequelize.where(
-                Sequelize.fn(
-                  'isnull',
-                  Sequelize.col('ECLogisticUser.isDeleted'),
-                  0,
-                ),
-                {
-                  [Op.eq]: 0,
-                },
-              ),
-            )
-            .transaction(transaction)
-            .build(),
-        );
-        if (!existsInAnotherVendor) {
-          // remove logistic role
-          await this.userRoleService.removeRoleFromUser(
-            logisticRole,
-            defaultLogisticUser.user,
-            transaction,
-          );
-        }
-
-        // find user if exists before
-        let userLogistic = await this.userRepository.findOne(
-          new QueryOptionsBuilder()
-            .filter({ phoneNumber: dto.user.phoneNumber })
-            .transaction(transaction)
-            .build(),
-        );
-        if (!userLogistic) {
-          // insert user if is not exists before
-          const mappedUserItem = this.mapper.map(
-            dto.user,
-            LogisticUserDto,
-            User,
-          );
-          const insertUserItem = _.omit(mappedUserItem.toJSON(), ['id']);
-          insertUserItem.username = mappedUserItem.phoneNumber;
-          userLogistic = await this.userRepository.create(insertUserItem, {
-            transaction: transaction,
-          });
-        }
-
-        // insert logistic role to user
-        await this.userRoleService.insertRoleToUser(
-          logisticRole,
-          userLogistic,
-          transaction,
-        );
-
-        // insert user to this logistic as default
-        const logisticUser = await this.logisticUserRepository.create(
-          {
-            userId: userLogistic.id,
-            logisticId: item.id,
-            isDefault: true,
-          },
-          {
-            transaction: transaction,
-          },
-        );
-      } else {
-        const mappedUserItem = this.mapper.map(dto.user, LogisticUserDto, User);
-        const updateUserItem = _.omit(mappedUserItem.toJSON(), ['id']);
-        updateUserItem.username = mappedUserItem.phoneNumber;
-        await this.userRepository.update(updateUserItem, {
-          where: { id: defaultLogisticUser.user.id },
-          transaction: transaction,
-          returning: true,
-        });
-      }
-
       // mapped logistic item
       const mappedItem = this.mapper.map(dto, LogisticDto, ECLogistic);
       // update logistic item
@@ -450,6 +328,14 @@ export class LogisticService {
           returning: true,
         })
       )[1][0];
+
+      await this.logisticUserRoleHandlerService.addUserToLogistic({
+        logisticId: logistic.id,
+        user: dto.user,
+        isDefault: true,
+        isUpdateLogistic: true,
+        transaction: transaction,
+      });
 
       await transaction.commit();
     } catch (error) {
@@ -533,33 +419,12 @@ export class LogisticService {
           .build(),
       );
 
-      // remove logistic role from this old user if is not exists in another logistic
-      const existsInAnotherVendor = await this.logisticUserRepository.findOne(
-        new QueryOptionsBuilder()
-          .filter({ userId: defaultLogisticUser.user.id })
-          .filter(
-            Sequelize.where(
-              Sequelize.fn(
-                'isnull',
-                Sequelize.col('ECLogisticUser.isDeleted'),
-                0,
-              ),
-              {
-                [Op.eq]: 0,
-              },
-            ),
-          )
-          .transaction(transaction)
-          .build(),
-      );
-      if (!existsInAnotherVendor) {
-        // remove logistic role
-        await this.userRoleService.removeRoleFromUser(
-          logisticRole,
-          defaultLogisticUser.user,
-          transaction,
-        );
-      }
+      await this.logisticUserRoleHandlerService.removeUserFromLogistic({
+        user: defaultLogisticUser.user,
+        logisticId: item.id,
+        transaction: transaction,
+      });
+
       await transaction.commit();
     } catch (error) {
       await transaction.rollback();

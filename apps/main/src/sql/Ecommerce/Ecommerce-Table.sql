@@ -1,4 +1,86 @@
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ecommerce-provinces-v1' 
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'SITE_NAME' AND [value] IN ('ecommerce'))
+		)
+BEGIN
 
+	CREATE TABLE ECProvinces (
+		id							int							PRIMARY KEY,
+		[name]						nvarchar(256)				NOT NULL,
+		[slug]						nvarchar(256)				NOT NULL,
+		isDeleted					bit							NULL,
+		[order]						int							NULL,
+		[createdAt]					datetimeoffset				NOT NULL,
+		[updatedAt]					datetimeoffset				NOT NULL,
+	);
+
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'ecommerce-provinces-v1', GETDATE(), GETDATE()
+END
+
+GO
+
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ecommerce-cities-v1' 
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'SITE_NAME' AND [value] IN ('ecommerce'))
+		)
+BEGIN
+
+	CREATE TABLE ECCities (
+		id							int							PRIMARY KEY,
+		[name]						nvarchar(256)				NOT NULL,
+		[slug]						nvarchar(256)				NULL,
+		
+		[neighborhoodBase]			bit							NULL,
+		[provinceId]				int							NOT NULL
+			CONSTRAINT FK_ECCities_ProvinceId
+				FOREIGN KEY REFERENCES ECProvinces(id),
+		[order]						int							NULL,
+		isDeleted					bit							NULL,
+		[createdAt]					datetimeoffset				NOT NULL,
+		[updatedAt]					datetimeoffset				NOT NULL,
+	);
+
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'ecommerce-cities-v1', GETDATE(), GETDATE()
+END
+
+GO
+
+
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ecommerce-neighborhoods-v1' 
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'SITE_NAME' AND [value] IN ('ecommerce'))
+		)
+BEGIN
+
+	CREATE TABLE ECNeighborhoods (
+		id							int							PRIMARY KEY,
+		[name]						nvarchar(256)				NOT NULL,
+		[slug]						nvarchar(256)				NULL,
+		[order]						int							NULL,
+		[cityId]				int								NOT NULL
+			CONSTRAINT FK_ECNeighborhoods_CityId
+				FOREIGN KEY REFERENCES ECCities(id),
+		isDeleted					bit							NULL,
+		[createdAt]					datetimeoffset				NOT NULL,
+		[updatedAt]					datetimeoffset				NOT NULL,
+	);
+
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'ecommerce-neighborhoods-v1', GETDATE(), GETDATE()
+END
+
+GO
 
 IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ecommerce-brands-v1' 
 			)
@@ -476,89 +558,7 @@ END
 GO
 
 
-IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ecommerce-provinces-v1' 
-			)
-	AND EXISTS (
-		SELECT 1 FROM Settings 
-		WHERE ([key] = 'SITE_NAME' AND [value] IN ('ecommerce'))
-		)
-BEGIN
 
-	CREATE TABLE ECProvinces (
-		id							int							PRIMARY KEY,
-		[name]						nvarchar(256)				NOT NULL,
-		[slug]						nvarchar(256)				NOT NULL,
-		isDeleted					bit							NULL,
-		[order]						int							NULL,
-		[createdAt]					datetimeoffset				NOT NULL,
-		[updatedAt]					datetimeoffset				NOT NULL,
-	);
-
-
-	INSERT INTO Migrations(version, createdAt, updatedAt)
-	SELECT 'ecommerce-provinces-v1', GETDATE(), GETDATE()
-END
-
-GO
-
-IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ecommerce-cities-v1' 
-			)
-	AND EXISTS (
-		SELECT 1 FROM Settings 
-		WHERE ([key] = 'SITE_NAME' AND [value] IN ('ecommerce'))
-		)
-BEGIN
-
-	CREATE TABLE ECCities (
-		id							int							PRIMARY KEY,
-		[name]						nvarchar(256)				NOT NULL,
-		[slug]						nvarchar(256)				NULL,
-		
-		[neighborhoodBase]			bit							NULL,
-		[provinceId]				int							NOT NULL
-			CONSTRAINT FK_ECCities_ProvinceId
-				FOREIGN KEY REFERENCES ECProvinces(id),
-		[order]						int							NULL,
-		isDeleted					bit							NULL,
-		[createdAt]					datetimeoffset				NOT NULL,
-		[updatedAt]					datetimeoffset				NOT NULL,
-	);
-
-
-	INSERT INTO Migrations(version, createdAt, updatedAt)
-	SELECT 'ecommerce-cities-v1', GETDATE(), GETDATE()
-END
-
-GO
-
-
-IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ecommerce-neighborhoods-v1' 
-			)
-	AND EXISTS (
-		SELECT 1 FROM Settings 
-		WHERE ([key] = 'SITE_NAME' AND [value] IN ('ecommerce'))
-		)
-BEGIN
-
-	CREATE TABLE ECNeighborhoods (
-		id							int							PRIMARY KEY,
-		[name]						nvarchar(256)				NOT NULL,
-		[slug]						nvarchar(256)				NULL,
-		[order]						int							NULL,
-		[cityId]				int								NOT NULL
-			CONSTRAINT FK_ECNeighborhoods_CityId
-				FOREIGN KEY REFERENCES ECCities(id),
-		isDeleted					bit							NULL,
-		[createdAt]					datetimeoffset				NOT NULL,
-		[updatedAt]					datetimeoffset				NOT NULL,
-	);
-
-
-	INSERT INTO Migrations(version, createdAt, updatedAt)
-	SELECT 'ecommerce-neighborhoods-v1', GETDATE(), GETDATE()
-END
-
-GO
 
 IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ecommerce-addresses-v1' 
 			)

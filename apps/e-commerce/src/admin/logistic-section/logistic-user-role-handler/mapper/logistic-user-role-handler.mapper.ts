@@ -1,11 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { AutomapperProfile, InjectMapper } from 'automapper-nestjs';
-import { LogisticDto } from '../dto';
 import { Mapper, createMap, forMember, ignore } from 'automapper-core';
-import { ECLogistic } from '@rahino/localdatabase/models';
+import { User } from '@rahino/database';
+import { LogisticUserDto } from '../dto';
 
 @Injectable()
-export class LogisticProfile extends AutomapperProfile {
+export class LogisticUserRoleHandlerProfile extends AutomapperProfile {
   constructor(@InjectMapper() mapper: Mapper) {
     super(mapper);
   }
@@ -14,8 +14,8 @@ export class LogisticProfile extends AutomapperProfile {
     return (mapper) => {
       createMap(
         mapper,
-        LogisticDto,
-        ECLogistic,
+        LogisticUserDto,
+        User,
         forMember((dest) => dest.id, ignore()),
       );
     };

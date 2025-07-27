@@ -10,6 +10,7 @@ import { ECLogistic, ECLogisticUser } from '@rahino/localdatabase/models';
 import { MinioClientModule } from '@rahino/minio-client';
 import { LocalizationModule } from 'apps/main/src/common/localization';
 import { SessionModule } from '@rahino/ecommerce/user/session/session.module';
+import { LogisticUserRoleHandlerModule } from '../logistic-user-role-handler/logistic-user-role-handler.module';
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import { SessionModule } from '@rahino/ecommerce/user/session/session.module';
     ]),
     SequelizeModule,
     LocalizationModule,
+    LogisticUserRoleHandlerModule,
   ],
   controllers: [AdminLogisticController],
   providers: [LogisticService, LogisticProfile],
