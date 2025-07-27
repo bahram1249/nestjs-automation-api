@@ -1,10 +1,9 @@
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
-import { AdminLogisticController } from './admin-logistic.controller';
-import { LogisticService } from './admin-logistic.service';
+import { AdminLogisticUserController } from './admin-logistic-user.controller';
+import { AdminLogisticUserService } from './admin-logistic-user.service';
 import { SequelizeModule } from '@nestjs/sequelize';
-import { Permission, Role } from '@rahino/database';
+import { Permission } from '@rahino/database';
 import { User } from '@rahino/database';
-import { LogisticProfile } from './mapper';
 import { UserRoleModule } from '@rahino/core/admin/user-role/user-role.module';
 import { ECLogistic, ECLogisticUser } from '@rahino/localdatabase/models';
 import { MinioClientModule } from '@rahino/minio-client';
@@ -16,14 +15,14 @@ import { LogisticUserRoleHandlerModule } from '../logistic-user-role-handler/log
   imports: [
     SessionModule,
     UserRoleModule,
-    SequelizeModule.forFeature([User, Permission, ECLogistic, ECLogisticUser]),
+    SequelizeModule.forFeature([User, Permission, ECLogisticUser]),
     SequelizeModule,
     LocalizationModule,
     LogisticUserRoleHandlerModule,
   ],
-  controllers: [AdminLogisticController],
-  providers: [LogisticService, LogisticProfile],
+  controllers: [AdminLogisticUserController],
+  providers: [AdminLogisticUserService],
 })
-export class AdminLogisticModule implements NestModule {
+export class AdminLogisticUserModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {}
 }

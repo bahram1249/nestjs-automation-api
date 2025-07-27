@@ -114,6 +114,7 @@ import { AnonymousInventoryStatusModule } from './anonymous/inventory-status/inv
 import { AnonymousPaymentGatewayModule } from './anonymous/payment-gateway/payment-gateway.module';
 import { SingleVendorPaymentModule } from './user/shopping/single-vendor-shopping/payment';
 import { AdminLogisticModule } from './admin/logistic-section/logistic/admin-logistic.module';
+import { AdminLogisticUserModule } from './admin/logistic-section/logistic-user/admin-logistic-user.module';
 
 @Module({
   imports: [
@@ -228,6 +229,7 @@ import { AdminLogisticModule } from './admin/logistic-section/logistic/admin-log
     SingleVendorPaymentModule,
 
     AdminLogisticModule,
+    AdminLogisticUserModule,
   ],
   providers: [
     {

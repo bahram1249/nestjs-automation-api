@@ -78,7 +78,7 @@ export class AdminLogisticController {
 
   @ApiOperation({ description: 'delete vendor by admin' })
   @Delete('/:id')
-  @CheckPermission({ permissionSymbol: 'ecommerce.vendors.delete' })
+  @CheckPermission({ permissionSymbol: 'ecommerce.logistics.delete' })
   @HttpCode(HttpStatus.OK)
   async deleteById(@Param('id') entityId: bigint) {
     return await this.service.deleteById(entityId);
