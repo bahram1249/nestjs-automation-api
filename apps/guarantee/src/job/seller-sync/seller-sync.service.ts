@@ -11,6 +11,7 @@ export class SellerSyncService {
   ) {}
 
   async sync() {
+    console.log('sync called');
     await this.syncSellerQueue.add(
       'sync-seller',
       {},

@@ -24,9 +24,11 @@ import { Setting } from '@rahino/database';
 import { SellerVaraintModule } from '@rahino/guarantee/util/seller-variant';
 import { SellerVariantProcessor } from './processor/sync-seller-variant.processor';
 import { SellerProcesssor } from './processor/sync-seller.processor';
+import { DBLoggerModule } from '@rahino/logger';
 
 @Module({
   imports: [
+    DBLoggerModule,
     SellerBrandModule,
     SellerProductTypeModule,
     SellerWarrantyModule,
