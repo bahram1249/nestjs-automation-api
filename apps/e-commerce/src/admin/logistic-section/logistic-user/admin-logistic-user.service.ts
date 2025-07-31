@@ -1,16 +1,10 @@
-import {
-  BadRequestException,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { CreateLogisticUserDto, GetLogisticUserDto } from './dto';
 import { InjectConnection, InjectModel } from '@nestjs/sequelize';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import { Op, Sequelize, Transaction } from 'sequelize';
-import { InjectMapper } from 'automapper-nestjs';
-import { Mapper } from 'automapper-core';
 import * as _ from 'lodash';
-import { ECLogistic, ECLogisticUser } from '@rahino/localdatabase/models';
+import { ECLogisticUser } from '@rahino/localdatabase/models';
 import { User } from '@rahino/database';
 import { LocalizationService } from 'apps/main/src/common/localization';
 import { LogisticUserRoleHandlerService } from '../logistic-user-role-handler/logistic-user-role-handler.service';
