@@ -145,6 +145,17 @@ export class EntityTypeController {
     return await this.service.createV2(dto);
   }
 
+  @ApiBearerAuth()
+  @UseInterceptors(JsonResponseTransformInterceptor)
+  @UseGuards(JwtGuard, PermissionGuard)
+  @ApiOperation({ description: 'update entity type' })
+  @CheckPermission({ permissionSymbol: 'eav.admin.entitytype.update' })
+  @Put('/:id')
+  @HttpCode(HttpStatus.OK)
+  async update(@Param('id') entityId: number, @Body() dto: EntityTypeV2Dto) {
+    return await this.service.update(entityId, dto);
+  }
+
   @Version('2')
   @ApiBearerAuth()
   @UseInterceptors(JsonResponseTransformInterceptor)
