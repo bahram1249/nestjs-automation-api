@@ -82,11 +82,22 @@ export class AdminLogisticUserService {
   }
 
   async create(user: User, dto: CreateLogisticUserDto) {
-    await this.logisticUserRoleHandlerService.addUserToLogistic({
-      logisticId: dto.logisticId,
-      user: dto,
-      isDefault: false,
+    const transaction = await this.sequelize.transaction({
+      isolationLevel: Transaction.ISOLATION_LEVELS.READ_COMMITTED,
     });
+
+    try {
+      await this.logisticUserRoleHandlerService.addUserToLogistic({
+        logisticId: dto.logisticId,
+        user: dto,
+        isDefault: false,
+      });
+      await transaction.commit();
+    } catch (error) {
+      await transaction.rollback();
+      throw new BadRequestException(error.message);
+    }
+
     return {
       result: this.localizationService.translate('core.success'),
     };
