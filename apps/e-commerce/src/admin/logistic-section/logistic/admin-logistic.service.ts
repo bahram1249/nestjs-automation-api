@@ -349,6 +349,7 @@ export class LogisticService {
               },
             ),
           )
+          .transaction(transaction)
           .build(),
       );
 
