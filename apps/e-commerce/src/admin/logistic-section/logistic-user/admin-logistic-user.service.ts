@@ -111,13 +111,32 @@ export class AdminLogisticUserService {
             },
           ),
         )
+        .filter(
+          Sequelize.where(
+            Sequelize.fn('isnull', Sequelize.col('isDefault'), 0),
+            {
+              [Op.eq]: 0,
+            },
+          ),
+        )
         .build(),
     );
 
-    await this.logisticUserRoleHandlerService.removeUserFromLogistic({
-      logisticId: item.logisticId,
-      user: item.user,
+    const transaction = await this.sequelize.transaction({
+      isolationLevel: Transaction.ISOLATION_LEVELS.READ_COMMITTED,
     });
+
+    try {
+      await this.logisticUserRoleHandlerService.removeUserFromLogistic({
+        logisticId: item.logisticId,
+        user: item.user,
+      });
+
+      await transaction.commit();
+    } catch (error) {
+      await transaction.rollback();
+      throw new BadRequestException(error.message);
+    }
 
     return {
       result: this.localizationService.translate('core.success'),
