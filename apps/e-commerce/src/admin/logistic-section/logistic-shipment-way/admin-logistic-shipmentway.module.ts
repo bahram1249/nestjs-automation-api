@@ -1,11 +1,11 @@
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
-import { AdminLogisticController } from './admin-logistic.controller';
-import { LogisticService } from './admin-logistic.service';
+import { AdminLogisticUserController } from './admin-logistic-shipmentway.controller';
+import { AdminLogisticShipmentWayService } from './admin-logistic-shipmentway.service';
 import { SequelizeModule } from '@nestjs/sequelize';
-import { Permission, User } from '@rahino/database';
-import { LogisticProfile } from './mapper';
+import { Permission } from '@rahino/database';
+import { User } from '@rahino/database';
 import { UserRoleModule } from '@rahino/core/admin/user-role/user-role.module';
-import { ECLogistic, ECLogisticUser } from '@rahino/localdatabase/models';
+import { ECLogisticShipmentWay } from '@rahino/localdatabase/models';
 import { LocalizationModule } from 'apps/main/src/common/localization';
 import { SessionModule } from '@rahino/ecommerce/user/session/session.module';
 import { LogisticUserRoleHandlerModule } from '../logistic-user-role-handler/logistic-user-role-handler.module';
@@ -14,14 +14,14 @@ import { LogisticUserRoleHandlerModule } from '../logistic-user-role-handler/log
   imports: [
     SessionModule,
     UserRoleModule,
-    SequelizeModule.forFeature([User, Permission, ECLogistic, ECLogisticUser]),
+    SequelizeModule.forFeature([User, Permission, ECLogisticShipmentWay]),
     SequelizeModule,
     LocalizationModule,
     LogisticUserRoleHandlerModule,
   ],
-  controllers: [AdminLogisticController],
-  providers: [LogisticService, LogisticProfile],
+  controllers: [AdminLogisticUserController],
+  providers: [AdminLogisticShipmentWayService],
 })
-export class AdminLogisticModule implements NestModule {
+export class AdminLogisticShipmentWayModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {}
 }

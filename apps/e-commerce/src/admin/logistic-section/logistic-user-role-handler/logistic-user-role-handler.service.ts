@@ -5,6 +5,7 @@ import { ECLogistic, ECLogisticUser } from '@rahino/localdatabase/models';
 import { Mapper } from 'automapper-core';
 import { InjectMapper } from 'automapper-nestjs';
 import {
+  AccessToLogisticDto,
   AddUserToLogisticDto,
   ExistsInAnotherLogisticDto,
   LogisticUserDto,
@@ -47,6 +48,7 @@ export class LogisticUserRoleHandlerService {
     let userLogistic = await this.userRepository.findOne(
       new QueryOptionsBuilder()
         .filter({ phoneNumber: dto.user.phoneNumber })
+        .transaction(dto.transaction)
         .build(),
     );
 
@@ -96,6 +98,7 @@ export class LogisticUserRoleHandlerService {
               },
             ),
           )
+          .transaction(dto.transaction)
           .build(),
       );
       if (!defaultLogisticUser) {
@@ -121,6 +124,7 @@ export class LogisticUserRoleHandlerService {
           await this.userRoleService.removeRoleFromUser(
             logisticRole,
             defaultLogisticUser.user,
+            dto.transaction,
           );
         }
       }
@@ -219,5 +223,33 @@ export class LogisticUserRoleHandlerService {
         dto.transaction,
       );
     }
+  }
+
+  async checkAccessToLogistic(dto: AccessToLogisticDto) {
+    const logisticUser = await this.logisticUserRepository.findOne(
+      new QueryOptionsBuilder()
+        .filter(
+          Sequelize.where(
+            Sequelize.fn(
+              'isnull',
+              Sequelize.col('ECLogisticUser.isDeleted'),
+              0,
+            ),
+            {
+              [Op.eq]: 0,
+            },
+          ),
+        )
+        .filter({ userId: dto.user.id })
+        .filter({ logisticId: dto.logisticId })
+        .transaction(dto.transaction)
+        .build(),
+    );
+    if (!logisticUser)
+      throw new ForbiddenException(
+        this.localizationService.translate(
+          'ecommerce.dont_access_to_this_logistic',
+        ),
+      );
   }
 }

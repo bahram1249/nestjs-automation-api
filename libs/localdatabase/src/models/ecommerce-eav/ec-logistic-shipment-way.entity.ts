@@ -52,4 +52,10 @@ export class ECLogisticShipmentWay extends Model {
 
   @BelongsTo(() => ECProvince, { as: 'province', foreignKey: 'provinceId' })
   province?: ECProvince;
+
+  @Column({
+    type: DataType.BOOLEAN,
+    allowNull: true,
+  })
+  isDeleted?: boolean;
 }

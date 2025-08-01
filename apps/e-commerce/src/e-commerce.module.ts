@@ -115,6 +115,7 @@ import { AnonymousPaymentGatewayModule } from './anonymous/payment-gateway/payme
 import { SingleVendorPaymentModule } from './user/shopping/single-vendor-shopping/payment';
 import { AdminLogisticModule } from './admin/logistic-section/logistic/admin-logistic.module';
 import { AdminLogisticUserModule } from './admin/logistic-section/logistic-user/admin-logistic-user.module';
+import { AdminLogisticShipmentWayModule } from './admin/logistic-section/logistic-shipment-way/admin-logistic-shipmentway.module';
 
 @Module({
   imports: [
@@ -230,6 +231,7 @@ import { AdminLogisticUserModule } from './admin/logistic-section/logistic-user/
 
     AdminLogisticModule,
     AdminLogisticUserModule,
+    AdminLogisticShipmentWayModule,
   ],
   providers: [
     {
