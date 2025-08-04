@@ -15,6 +15,7 @@ import { PermissionGuard } from '@rahino/permission-checker/guard';
 import { JsonResponseTransformInterceptor } from '@rahino/response/interceptor';
 import {
   ApiBearerAuth,
+  ApiBody,
   ApiOperation,
   ApiQuery,
   ApiTags,
@@ -56,6 +57,7 @@ export class AdminLogisticUserController {
     return await this.service.findAll(user, logisticId, filter);
   }
 
+  @ApiBody({ type: CreateLogisticShipmentWayDto })
   @ApiOperation({ description: 'create logistic user by admin' })
   @CheckPermission({
     permissionSymbol: 'ecommerce.logisticshipmentways.create',

@@ -58,7 +58,7 @@ export class AdminLogisticShipmentWayService {
       {
         model: ECOrderShipmentWay,
         as: 'orderShipmentWay',
-        attributes: ['id', 'name'],
+        attributes: ['id', 'name', 'isPeriodic'],
       },
       { model: ECLogistic, as: 'logistic', attributes: ['id', 'title'] },
     ]);
@@ -138,7 +138,7 @@ export class AdminLogisticShipmentWayService {
     };
   }
 
-  async createOrSkip(
+  private async createOrSkip(
     dto: CreateLogisticShipmentWayDto,
     transaction?: Transaction,
   ) {

@@ -1767,6 +1767,26 @@ END
 GO
 
 
+-- ec-order-shipment-ways-2
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ec-order-shipment-ways-v2' 
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'SITE_NAME' AND [value] IN ('ecommerce'))
+		)
+BEGIN
+
+	ALTER TABLE ECOrderShipmentWays
+		add isPeriodic bit null
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'ec-order-shipment-ways-v2', GETDATE(), GETDATE()
+END
+
+GO
+
+
+
 -- ec-orders
 IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ec-orders-v1' 
 			)

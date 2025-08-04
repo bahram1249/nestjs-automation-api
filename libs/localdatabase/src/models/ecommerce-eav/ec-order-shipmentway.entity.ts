@@ -11,4 +11,10 @@ export class ECOrderShipmentWay extends Model {
     type: DataType.STRING,
   })
   name: string;
+
+  @Column({
+    type: DataType.BOOLEAN,
+    allowNull: true,
+  })
+  isPeriodic?: boolean;
 }
