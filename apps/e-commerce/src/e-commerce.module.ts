@@ -118,6 +118,7 @@ import { AdminLogisticUserModule } from './admin/logistic-section/logistic-user/
 import { AdminLogisticShipmentWayModule } from './admin/logistic-section/logistic-shipment-way/admin-logistic-shipmentway.module';
 import { AdminLogisticSendingPeriodModule } from './admin/logistic-section/logistic-sending-period/logistic-sending-period.module';
 import { AdminLogisticWeeklyPeriodModule } from './admin/logistic-section/logistic-weekly-period/logistic-weekly-period.module';
+import { ScheduleSendingTypeModule } from './admin/logistic-section/schedule-sending-type/schedule-sending-type.module';
 
 @Module({
   imports: [
@@ -236,6 +237,7 @@ import { AdminLogisticWeeklyPeriodModule } from './admin/logistic-section/logist
     AdminLogisticShipmentWayModule,
     AdminLogisticSendingPeriodModule,
     AdminLogisticWeeklyPeriodModule,
+    ScheduleSendingTypeModule,
   ],
   providers: [
     {
