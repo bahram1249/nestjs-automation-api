@@ -11,6 +11,7 @@ import { ECLogisticWeeklyPeriod } from './ec-logistic-weekly-period.entity';
 
 @Table({ tableName: 'ECLogisticWeeklyPeriodTimes' })
 export class ECLogisticWeeklyPeriodTime extends Model {
+  @AutoMap()
   @Column({
     type: DataType.BIGINT,
     autoIncrement: true,

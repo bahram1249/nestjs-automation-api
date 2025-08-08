@@ -5,9 +5,11 @@ import {
   DataType,
   ForeignKey,
   BelongsTo,
+  HasMany,
 } from 'sequelize-typescript';
 import { AutoMap } from 'automapper-classes';
 import { ECLogisticSendingPeriod } from './ec-logistic-sending-period.entity';
+import { ECLogisticWeeklyPeriodTime } from './ec-logistic-weekly-period-time.entity';
 
 @Table({ tableName: 'ECLogisticWeeklyPeriods' })
 export class ECLogisticWeeklyPeriod extends Model {
@@ -41,4 +43,10 @@ export class ECLogisticWeeklyPeriod extends Model {
     allowNull: true,
   })
   isDeleted?: boolean;
+
+  @HasMany(() => ECLogisticWeeklyPeriodTime, {
+    as: 'logisticWeeklyPeriodTimes',
+    foreignKey: 'logisticWeeklyPeriodId',
+  })
+  logisticWeeklyPeriodTimes?: ECLogisticWeeklyPeriodTime[];
 }
