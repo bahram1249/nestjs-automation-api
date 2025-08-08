@@ -3241,3 +3241,60 @@ END
 GO
 
 
+
+-- ec-logisticweeklyperiods-v1
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ec-logisticweeklyperiods-v1' 
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'SITE_NAME' AND [value] IN ('ecommerce'))
+		)
+BEGIN
+
+
+	CREATE TABLE ECLogisticWeeklyPeriods(
+		id								bigint identity(1,1)			PRIMARY KEY,
+		logisticSendingPeriodId			bigint							NOT NULL
+			CONSTRAINT FK_ECLogisticWeeklyPeriods_Logistic_SendingPeriodId
+				FOREIGN KEY REFERENCES ECLogisticSendingPeriods(id),
+		weekNumber						int								NOT NULL,
+		isDeleted						bit								NULL,
+		[createdAt]						datetimeoffset					NOT NULL,
+		[updatedAt]						datetimeoffset					NOT NULL
+	);
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'ec-logisticweeklyperiods-v1', GETDATE(), GETDATE()
+END
+
+GO
+
+
+-- ec-logisticweeklyperiodtimes-v1
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ec-logisticweeklyperiodtimes-v1' 
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'SITE_NAME' AND [value] IN ('ecommerce'))
+		)
+BEGIN
+
+
+	CREATE TABLE ECLogisticWeeklyPeriodTimes(
+		id								bigint identity(1,1)			PRIMARY KEY,
+		logisticWeeklyPeriodId			bigint							NOT NULL
+			CONSTRAINT FK_ECLogisticWeeklyPeriodTimes_LogisticWeeklyPeriodId
+				FOREIGN KEY REFERENCES ECLogisticWeeklyPeriods(id),
+		startTime						time							NOT NULL,
+		endTime							time							NOT NULL,
+		isDeleted						bit								NULL,
+		[createdAt]						datetimeoffset					NOT NULL,
+		[updatedAt]						datetimeoffset					NOT NULL
+	);
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'ec-logisticweeklyperiodtimes-v1', GETDATE(), GETDATE()
+END
+
+GO
+

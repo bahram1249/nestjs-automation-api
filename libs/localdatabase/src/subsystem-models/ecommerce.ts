@@ -26,6 +26,8 @@ import {
   ECLogisticSendingPeriod,
   ECLogisticShipmentWay,
   ECLogisticUser,
+  ECLogisticWeeklyPeriod,
+  ECLogisticWeeklyPeriodTime,
   ECNeighborhood,
   ECNotification,
   ECOrder,
@@ -140,4 +142,6 @@ export const ecommerceEntities = [
   ECLogisticUser,
   ECScheduleSendingType,
   ECLogisticSendingPeriod,
+  ECLogisticWeeklyPeriod,
+  ECLogisticWeeklyPeriodTime,
 ];

@@ -67,3 +67,5 @@ export * from './ec-logistic-shipment-way.entity';
 export * from './ec-logistic-user.entity';
 export * from './ec-schedule-sending-type.entity';
 export * from './ec-logistic-sending-period.entity';
+export * from './ec-logistic-weekly-period.entity';
+export * from './ec-logistic-weekly-period-time.entity';
