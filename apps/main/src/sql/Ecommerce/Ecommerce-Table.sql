@@ -3219,12 +3219,13 @@ IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ec-logisticsendingperio
 		)
 BEGIN
 
+
 	CREATE TABLE ECLogisticSendingPeriods(
 		id								bigint identity(1,1)			PRIMARY KEY,
 		logisticShipmentWayId			bigint							NOT NULL
 			CONSTRAINT FK_ECLogisticSendingPeriods_LogisticShipmentWayId
 				FOREIGN KEY REFERENCES ECLogisticShipmentWays(id),
-		scheduleSendingId				int								NOT NULL,
+		scheduleSendingTypeId				int								NOT NULL,
 		startDate						datetime						NULL,
 		endDate							datetime						NULL,
 		isDeleted						bit								NULL,
