@@ -57,6 +57,7 @@ export type I18nTranslations = {
         "dont_access_to_this_vendor": string;
         "dont_access_to_this_logistic": string;
         "neighborhood_must_be_select_it": string;
+        "cannot_defined_this_period_becuase_another_period_defined_between_this_time": string;
     };
     "guarantee": {
         "you_joined_before": string;

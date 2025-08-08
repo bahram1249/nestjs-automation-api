@@ -116,6 +116,7 @@ import { SingleVendorPaymentModule } from './user/shopping/single-vendor-shoppin
 import { AdminLogisticModule } from './admin/logistic-section/logistic/admin-logistic.module';
 import { AdminLogisticUserModule } from './admin/logistic-section/logistic-user/admin-logistic-user.module';
 import { AdminLogisticShipmentWayModule } from './admin/logistic-section/logistic-shipment-way/admin-logistic-shipmentway.module';
+import { AdminLogisticSendingPeriodModule } from './admin/logistic-section/logistic-sending-period/logistic-sending-period.module';
 
 @Module({
   imports: [
@@ -232,6 +233,7 @@ import { AdminLogisticShipmentWayModule } from './admin/logistic-section/logisti
     AdminLogisticModule,
     AdminLogisticUserModule,
     AdminLogisticShipmentWayModule,
+    AdminLogisticSendingPeriodModule,
   ],
   providers: [
     {

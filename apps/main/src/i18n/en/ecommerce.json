@@ -20,5 +20,6 @@
   "date_is_invalid": "date is invalid",
   "dont_access_to_this_vendor": "you don't access to this vendor",
   "dont_access_to_this_logistic": "you don't access to this logistic",
-  "neighborhood_must_be_select_it": "neighborhood must be select it!"
+  "neighborhood_must_be_select_it": "neighborhood must be select it!",
+  "cannot_defined_this_period_becuase_another_period_defined_between_this_time": "cannot defined this period becuase another period defined between this time"
 }

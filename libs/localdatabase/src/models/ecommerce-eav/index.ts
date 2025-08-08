@@ -65,3 +65,5 @@ export * from './ec-shopping-cart-product.entity';
 export * from './ec-logistic.entity';
 export * from './ec-logistic-shipment-way.entity';
 export * from './ec-logistic-user.entity';
+export * from './ec-schedule-sending-type.entity';
+export * from './ec-logistic-sending-period.entity';

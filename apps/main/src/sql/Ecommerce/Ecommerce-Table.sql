@@ -243,6 +243,34 @@ END
 
 GO
 
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ecommerce-schedule-sending-types-v1' 
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'SITE_NAME' AND [value] IN ('ecommerce'))
+		)
+BEGIN
+
+	CREATE TABLE ECScheduleSendingTypes (
+		id							int							PRIMARY KEY,
+		[title]						nvarchar(256)				NOT NULL,
+		icon						nvarchar(256)				NULL,
+		[createdAt]					datetimeoffset				NOT NULL,
+		[updatedAt]					datetimeoffset				NOT NULL,
+	);
+
+	INSERT INTO ECScheduleSendingTypes(id, title, createdAt, updatedAt)
+	VALUES (1, N'ارسال معمولی', GETDATE(), GETDATE())
+		,(2, N'ارسال اکسپرس', GETDATE(), GETDATE())
+
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'ecommerce-schedule-sending-types-v1', GETDATE(), GETDATE()
+END
+
+GO
+
+
 
 IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ecommerce-inventory-status-v2' 
 			)
@@ -3180,4 +3208,35 @@ BEGIN
 END
 
 GO
+
+
+-- ec-logisticsendingperiods-v1
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ec-logisticsendingperiods-v1' 
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'SITE_NAME' AND [value] IN ('ecommerce'))
+		)
+BEGIN
+
+	CREATE TABLE ECLogisticSendingPeriods(
+		id								bigint identity(1,1)			PRIMARY KEY,
+		logisticShipmentWayId			bigint							NOT NULL
+			CONSTRAINT FK_ECLogisticSendingPeriods_LogisticShipmentWayId
+				FOREIGN KEY REFERENCES ECLogisticShipmentWays(id),
+		scheduleSendingId				int								NOT NULL,
+		startDate						datetime						NULL,
+		endDate							datetime						NULL,
+		isDeleted						bit								NULL,
+		[createdAt]						datetimeoffset					NOT NULL,
+		[updatedAt]						datetimeoffset					NOT NULL
+		
+	);
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'ec-logisticsendingperiods-v1', GETDATE(), GETDATE()
+END
+
+GO
+
 
