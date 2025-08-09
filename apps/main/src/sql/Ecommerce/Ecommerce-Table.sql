@@ -3298,3 +3298,22 @@ END
 
 GO
 
+-- ec-logisticweeklyperiodtimes-v1
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ec-logisticweeklyperiodtimes-v2' 
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'SITE_NAME' AND [value] IN ('ecommerce'))
+		)
+BEGIN
+
+
+	ALTER TABLE ECLogisticWeeklyPeriodTimes
+		ADD capacity int not null
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'ec-logisticweeklyperiodtimes-v2', GETDATE(), GETDATE()
+END
+
+GO
+

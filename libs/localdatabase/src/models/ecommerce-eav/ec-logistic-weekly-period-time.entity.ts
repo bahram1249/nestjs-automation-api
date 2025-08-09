@@ -25,6 +25,12 @@ export class ECLogisticWeeklyPeriodTime extends Model {
   @ForeignKey(() => ECLogisticWeeklyPeriod)
   logisticWeeklyPeriodId: bigint;
 
+  @AutoMap()
+  @Column({
+    type: DataType.NUMBER,
+  })
+  capacity: number;
+
   @BelongsTo(() => ECLogisticWeeklyPeriod, {
     as: 'logisticWeeklyPeriod',
     foreignKey: 'logisticWeeklyPeriodId',

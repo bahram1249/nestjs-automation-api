@@ -14,4 +14,8 @@ export class LogisticWeeklyPeriodTimeDto {
   @AutoMap()
   @IsString()
   endTime: string;
+
+  @AutoMap()
+  @IsNumber()
+  capacity: number;
 }
