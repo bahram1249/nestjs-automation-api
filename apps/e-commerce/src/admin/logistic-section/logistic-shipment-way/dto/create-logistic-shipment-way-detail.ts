@@ -7,6 +7,7 @@ export class CreateLogisticShipmentWayDetailDto {
   @IsNumber()
   logisticId: bigint;
 
+  @ApiProperty()
   @IsArray()
   @IsOptional()
   @IsObject()
