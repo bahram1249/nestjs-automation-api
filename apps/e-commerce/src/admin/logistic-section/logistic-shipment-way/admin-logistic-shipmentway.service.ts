@@ -1,5 +1,5 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { CreateLogisticShipmentWayDto, GetLogisticUserDto } from './dto';
+import { CreateLogisticShipmentWayDto, GetLogisticShipmentWayDto } from './dto';
 import { InjectConnection, InjectModel } from '@nestjs/sequelize';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import { Op, Sequelize, Transaction } from 'sequelize';
@@ -26,14 +26,18 @@ export class AdminLogisticShipmentWayService {
     private readonly logisticUserRoleHandlerService: LogisticUserRoleHandlerService,
   ) {}
 
-  async findAll(user: User, logisticId: bigint, filter: GetLogisticUserDto) {
+  async findAll(
+    user: User,
+    logisticId: bigint,
+    filter: GetLogisticShipmentWayDto,
+  ) {
     await this.logisticUserRoleHandlerService.checkAccessToLogistic({
       logisticId: logisticId,
       user,
     });
 
     let queryBuilder = new QueryOptionsBuilder()
-      .attributes(['id', 'provinceId', 'logisticId', 'orderShipmentWayId'])
+
       .filter(
         Sequelize.where(
           Sequelize.fn(
@@ -53,6 +57,7 @@ export class AdminLogisticShipmentWayService {
     );
 
     queryBuilder = queryBuilder
+      .attributes(['id', 'provinceId', 'logisticId', 'orderShipmentWayId'])
       .include([
         { model: ECProvince, as: 'province', attributes: ['id', 'name'] },
         {

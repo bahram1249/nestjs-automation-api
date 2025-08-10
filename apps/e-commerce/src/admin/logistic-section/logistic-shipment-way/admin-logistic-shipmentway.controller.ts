@@ -22,7 +22,7 @@ import {
 } from '@nestjs/swagger';
 import { JwtGuard } from '@rahino/auth';
 import { AdminLogisticShipmentWayService } from './admin-logistic-shipmentway.service';
-import { CreateLogisticShipmentWayDto, GetLogisticUserDto } from './dto';
+import { CreateLogisticShipmentWayDto, GetLogisticShipmentWayDto } from './dto';
 import { GetUser } from '@rahino/auth';
 import { User } from '@rahino/database';
 
@@ -34,7 +34,7 @@ import { User } from '@rahino/database';
   path: '/api/ecommerce/admin/logisticShipmentWays',
   version: ['1'],
 })
-export class AdminLogisticUserController {
+export class AdminLogisticShipmentWayController {
   constructor(private service: AdminLogisticShipmentWayService) {}
 
   @ApiOperation({ description: 'show all logistic shipment ways' })
@@ -44,13 +44,13 @@ export class AdminLogisticUserController {
   @Get('/:logisticId')
   @ApiQuery({
     name: 'filter',
-    type: GetLogisticUserDto,
+    type: GetLogisticShipmentWayDto,
     style: 'deepObject',
     explode: true,
   })
   @HttpCode(HttpStatus.OK)
   async findAll(
-    @Query() filter: GetLogisticUserDto,
+    @Query() filter: GetLogisticShipmentWayDto,
     @Param('logisticId') logisticId: bigint,
     @GetUser() user: User,
   ) {

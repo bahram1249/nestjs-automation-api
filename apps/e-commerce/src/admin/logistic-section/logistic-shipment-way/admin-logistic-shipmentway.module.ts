@@ -1,5 +1,5 @@
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
-import { AdminLogisticUserController } from './admin-logistic-shipmentway.controller';
+import { AdminLogisticShipmentWayController } from './admin-logistic-shipmentway.controller';
 import { AdminLogisticShipmentWayService } from './admin-logistic-shipmentway.service';
 import { SequelizeModule } from '@nestjs/sequelize';
 import { Permission } from '@rahino/database';
@@ -19,7 +19,7 @@ import { LogisticUserRoleHandlerModule } from '../logistic-user-role-handler/log
     LocalizationModule,
     LogisticUserRoleHandlerModule,
   ],
-  controllers: [AdminLogisticUserController],
+  controllers: [AdminLogisticShipmentWayController],
   providers: [AdminLogisticShipmentWayService],
 })
 export class AdminLogisticShipmentWayModule implements NestModule {
