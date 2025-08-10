@@ -1,11 +1,15 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  InternalServerErrorException,
+} from '@nestjs/common';
 import { LogisticWeeklyPeriodDto, GetLogistiWeeklyPeriodDto } from './dto';
 import {
   ECLogisticSendingPeriod,
   ECLogisticWeeklyPeriod,
   ECLogisticWeeklyPeriodTime,
 } from '@rahino/localdatabase/models';
-import { InjectModel } from '@nestjs/sequelize';
+import { InjectConnection, InjectModel } from '@nestjs/sequelize';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import { Op, Sequelize, Transaction } from 'sequelize';
 import { Mapper } from 'automapper-core';
@@ -29,6 +33,8 @@ export class LogisticWeeklyPeriodService {
     @InjectMapper()
     private readonly mapper: Mapper,
     private readonly localizationService: LocalizationService,
+    @InjectConnection()
+    private readonly sequelize: Sequelize,
   ) {}
 
   async findAll(user: User, filter: GetLogistiWeeklyPeriodDto) {
@@ -117,88 +123,97 @@ export class LogisticWeeklyPeriodService {
   }
 
   async create(user: User, dto: LogisticWeeklyPeriodDto) {
-    let transaction: Transaction = null;
-    const logisticSendingPeriod =
-      await this.logisticSendingPeriodRepository.findOne(
-        new QueryOptionsBuilder()
-          .filter({
-            logisticSendingPeriodId: dto.logisticSendingPeriodId,
-          })
-          .filter(
-            Sequelize.where(
-              Sequelize.fn(
-                'isnull',
-                Sequelize.col('ECLogisticSendingPeriod.isDeleted'),
-                0,
+    const transaction = await this.sequelize.transaction({
+      isolationLevel: Transaction.ISOLATION_LEVELS.READ_COMMITTED,
+    });
+
+    try {
+      const logisticSendingPeriod =
+        await this.logisticSendingPeriodRepository.findOne(
+          new QueryOptionsBuilder()
+            .filter({
+              logisticSendingPeriodId: dto.logisticSendingPeriodId,
+            })
+            .filter(
+              Sequelize.where(
+                Sequelize.fn(
+                  'isnull',
+                  Sequelize.col('ECLogisticSendingPeriod.isDeleted'),
+                  0,
+                ),
+                {
+                  [Op.eq]: 0,
+                },
               ),
-              {
-                [Op.eq]: 0,
+            )
+            .build(),
+        );
+
+      if (!logisticSendingPeriod) {
+        throw new BadRequestException(
+          this.localizationService.translate('core.not_found_id'),
+        );
+      }
+
+      const oldLogisticWeeklyPeriodIds = dto.logisticWeeklyPeriods
+        ?.filter((item) => isNotNull(item.id))
+        .map((logisticWeeklyPeriod) => logisticWeeklyPeriod.id);
+
+      const oldLogisticWeeklyPeriodMustDeleted =
+        await this.logisticWeeklyPeriodRepository.findAll(
+          new QueryOptionsBuilder()
+            .filter({
+              logisticSendingPeriodId: dto.logisticSendingPeriodId,
+            })
+            .filter(
+              Sequelize.where(
+                Sequelize.fn(
+                  'isnull',
+                  Sequelize.col('ECLogisticWeeklyPeriod.isDeleted'),
+                  0,
+                ),
+                {
+                  [Op.eq]: 0,
+                },
+              ),
+            )
+            .filter({
+              id: {
+                [Op.notIn]: oldLogisticWeeklyPeriodIds,
               },
-            ),
-          )
-          .build(),
-      );
+            })
+            .build(),
+        );
 
-    if (!logisticSendingPeriod) {
-      throw new BadRequestException(
-        this.localizationService.translate('core.not_found_id'),
-      );
-    }
-
-    const oldLogisticWeeklyPeriodIds = dto.logisticWeeklyPeriods
-      ?.filter((item) => isNotNull(item.id))
-      .map((logisticWeeklyPeriod) => logisticWeeklyPeriod.id);
-
-    const oldLogisticWeeklyPeriodMustDeleted =
-      await this.logisticWeeklyPeriodRepository.findAll(
-        new QueryOptionsBuilder()
-          .filter({
-            logisticSendingPeriodId: dto.logisticSendingPeriodId,
-          })
-          .filter(
-            Sequelize.where(
-              Sequelize.fn(
-                'isnull',
-                Sequelize.col('ECLogisticWeeklyPeriod.isDeleted'),
-                0,
-              ),
-              {
-                [Op.eq]: 0,
+      if (oldLogisticWeeklyPeriodMustDeleted.length > 0) {
+        await this.logisticWeeklyPeriodRepository.update(
+          { isDeleted: 1 },
+          {
+            where: {
+              id: {
+                [Op.in]: oldLogisticWeeklyPeriodMustDeleted.map(
+                  (item) => item.id,
+                ),
               },
-            ),
-          )
-          .filter({
-            id: {
-              [Op.notIn]: oldLogisticWeeklyPeriodIds,
-            },
-          })
-          .build(),
-      );
-
-    if (oldLogisticWeeklyPeriodMustDeleted.length > 0) {
-      await this.logisticWeeklyPeriodRepository.update(
-        { isDeleted: 1 },
-        {
-          where: {
-            id: {
-              [Op.in]: oldLogisticWeeklyPeriodMustDeleted.map(
-                (item) => item.id,
-              ),
             },
           },
-        },
-      );
-    }
-
-    await Promise.all(
-      dto.logisticWeeklyPeriods?.map(async (logisticWeeklyPeriod) => {
-        await this.createOrUpdateLogisticWeeklyPeriod(
-          dto.logisticSendingPeriodId,
-          logisticWeeklyPeriod,
-          transaction,
         );
-      }),
-    );
+      }
+
+      await Promise.all(
+        dto.logisticWeeklyPeriods?.map(async (logisticWeeklyPeriod) => {
+          await this.createOrUpdateLogisticWeeklyPeriod(
+            dto.logisticSendingPeriodId,
+            logisticWeeklyPeriod,
+            transaction,
+          );
+        }),
+      );
+      await transaction.commit();
+    } catch (error) {
+      await transaction.rollback();
+      throw new BadRequestException(error.message);
+    }
 
     return await this.findAll(user, {
       logisticSendingPeriodId: dto.logisticSendingPeriodId,
