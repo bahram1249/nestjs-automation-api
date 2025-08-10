@@ -12036,7 +12036,7 @@ BEGIN
 	DECLARE @groupId int = null;
 
 	DECLARE @entityName nvarchar(256) = N'LogisticShipment'
-	DECLARE @groupName nvarchar(256) = N'ecommerce.logisticshipmentways.getall'
+	DECLARE @groupName nvarchar(256) = N'ecommerce.logisticshipmentways'
 	
 	DECLARE @permissionSymbolGetAll nvarchar(512) = @groupName + '.getall';
 	DECLARE @permissionSymbolCreate nvarchar(512) = @groupName + '.create';

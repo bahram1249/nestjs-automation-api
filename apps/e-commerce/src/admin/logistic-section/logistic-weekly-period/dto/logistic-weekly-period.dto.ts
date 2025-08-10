@@ -17,7 +17,6 @@ export class LogisticWeeklyPeriodDto {
 
   @AutoMap()
   @IsArray()
-  @IsObject()
   @IsOptional()
   logisticWeeklyPeriods?: LogisticWeeklyPeriodDetailDto[];
 }

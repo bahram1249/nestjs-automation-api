@@ -10,6 +10,5 @@ export class CreateLogisticShipmentWayDetailDto {
   @ApiProperty()
   @IsArray()
   @IsOptional()
-  @IsObject()
   shipmentWayDetails?: ShipmentWayDetailDto[];
 }
