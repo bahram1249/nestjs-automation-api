@@ -46,22 +46,23 @@ export class AdminLogisticShipmentWayService {
           },
         ),
       )
-      .filter({ logisticId: logisticId })
-      .order({ orderBy: filter.orderBy, sortOrder: filter.sortOrder });
+      .filter({ logisticId: logisticId });
 
     const count = await this.logisticShipmentWayRepository.count(
       queryBuilder.build(),
     );
 
-    queryBuilder = queryBuilder.include([
-      { model: ECProvince, as: 'province', attributes: ['id', 'name'] },
-      {
-        model: ECOrderShipmentWay,
-        as: 'orderShipmentWay',
-        attributes: ['id', 'name', 'isPeriodic'],
-      },
-      { model: ECLogistic, as: 'logistic', attributes: ['id', 'title'] },
-    ]);
+    queryBuilder = queryBuilder
+      .include([
+        { model: ECProvince, as: 'province', attributes: ['id', 'name'] },
+        {
+          model: ECOrderShipmentWay,
+          as: 'orderShipmentWay',
+          attributes: ['id', 'name', 'isPeriodic'],
+        },
+        { model: ECLogistic, as: 'logistic', attributes: ['id', 'title'] },
+      ])
+      .order({ orderBy: filter.orderBy, sortOrder: filter.sortOrder });
 
     const result = await this.logisticShipmentWayRepository.findAll(
       queryBuilder.build(),
