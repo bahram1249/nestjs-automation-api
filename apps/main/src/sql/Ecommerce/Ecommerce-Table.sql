@@ -3317,3 +3317,34 @@ END
 
 GO
 
+
+-- ec-vendor-logistic-v1
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ec-vendor-logistic-v1' 
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'SITE_NAME' AND [value] IN ('ecommerce'))
+		)
+BEGIN
+
+
+	CREATE TABLE ECVendorLogistics(
+		id								bigint identity(1,1)			PRIMARY KEY,
+		vendorId						int								NOT NULL
+			CONSTRAINT FK_ECVendorLogistics_VendorId
+				FOREIGN KEY REFERENCES ECVendors(id),
+		logisticId						bigint							NOT NULL
+			CONSTRAINT FK_ECVendorLogistics_LogisticId
+				FOREIGN KEY REFERENCES ECLogistics(id),
+		isDefault						bit 							NULL,
+		isDeleted						bit								NULL,
+		[createdAt]						datetimeoffset					NOT NULL,
+		[updatedAt]						datetimeoffset					NOT NULL
+	);
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'ec-vendor-logistic-v1', GETDATE(), GETDATE()
+END
+
+GO
+

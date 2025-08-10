@@ -68,6 +68,7 @@ import {
   ECVendorAddress,
   ECVendorCommission,
   ECVendorCommissionType,
+  ECVendorLogistic,
   ECVendorUser,
   ECWallet,
 } from '../models/ecommerce-eav'; // Import everything from the barrel file
@@ -144,4 +145,5 @@ export const ecommerceEntities = [
   ECLogisticSendingPeriod,
   ECLogisticWeeklyPeriod,
   ECLogisticWeeklyPeriodTime,
+  ECVendorLogistic,
 ];

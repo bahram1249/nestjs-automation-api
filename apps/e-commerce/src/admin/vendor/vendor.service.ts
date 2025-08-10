@@ -12,7 +12,12 @@ import { Op, Sequelize, Transaction } from 'sequelize';
 import { InjectMapper } from 'automapper-nestjs';
 import { Mapper } from 'automapper-core';
 import * as _ from 'lodash';
-import { ECCity, ECProvince, ECVendor } from '@rahino/localdatabase/models';
+import {
+  ECCity,
+  ECProvince,
+  ECVendor,
+  ECVendorLogistic,
+} from '@rahino/localdatabase/models';
 import { User } from '@rahino/database';
 import { Role } from '@rahino/database';
 import { UserRoleService } from '@rahino/core/admin/user-role/user-role.service';
@@ -25,6 +30,7 @@ import { ECVendorCommission } from '@rahino/localdatabase/models';
 import { ECVariationPrice } from '@rahino/localdatabase/models';
 import { ECVendorCommissionType } from '@rahino/localdatabase/models';
 import { LocalizationService } from 'apps/main/src/common/localization';
+import { isNotNull } from '@rahino/commontools';
 
 @Injectable()
 export class VendorService {
@@ -56,6 +62,9 @@ export class VendorService {
     private readonly provinceRepository: typeof ECProvince,
     @InjectModel(ECCity)
     private readonly cityRepository: typeof ECCity,
+
+    @InjectModel(ECVendorLogistic)
+    private readonly vendorLogisticRepository: typeof ECVendorLogistic,
 
     private readonly localizationService: LocalizationService,
   ) {}
@@ -573,6 +582,19 @@ export class VendorService {
         },
         { transaction: transaction },
       );
+
+      if (isNotNull(dto.logisticId)) {
+        await this.vendorLogisticRepository.create(
+          {
+            vendorId: vendor.id,
+            logisticId: dto.logisticId,
+            isDefault: true,
+          },
+          {
+            transaction: transaction,
+          },
+        );
+      }
 
       const variationPrices = await this.variationPriceRepository.findAll(
         new QueryOptionsBuilder().transaction(transaction).build(),
@@ -1129,6 +1151,8 @@ export class VendorService {
           returning: true,
         })
       )[1][0];
+
+      await this.upsertVendorLogistic(dto, vendor, transaction);
 
       const variationPrices = await this.variationPriceRepository.findAll(
         new QueryOptionsBuilder().transaction(transaction).build(),
@@ -1757,5 +1781,55 @@ export class VendorService {
     return {
       result: _.pick(newAttachment, ['id', 'fileName']),
     };
+  }
+
+  private async upsertVendorLogistic(
+    dto: VendorDto,
+    vendor: ECVendor,
+    transaction: Transaction,
+  ) {
+    const defaultVendorLogisticCondition = {
+      [Op.and]: [
+        { vendorId: vendor.id },
+        { isDefault: true },
+        Sequelize.where(
+          Sequelize.fn(
+            'isnull',
+            Sequelize.col('ECVendorLogistic.isDeleted'),
+            0,
+          ),
+          { [Op.eq]: 0 },
+        ),
+      ],
+    };
+
+    const markDefaultAsDeleted = async () => {
+      await this.vendorLogisticRepository.update(
+        { isDeleted: true },
+        { where: defaultVendorLogisticCondition, transaction },
+      );
+    };
+
+    if (isNotNull(dto.logisticId)) {
+      const vendorLogistic = await this.vendorLogisticRepository.findOne(
+        new QueryOptionsBuilder()
+          .filter({ vendorId: vendor.id })
+          .filter({ isDefault: true })
+          .filter(defaultVendorLogisticCondition[Op.and][2])
+          .transaction(transaction)
+          .build(),
+      );
+
+      if (!vendorLogistic || vendorLogistic.logisticId !== dto.logisticId) {
+        await this.vendorLogisticRepository.create(
+          { vendorId: vendor.id, logisticId: dto.logisticId, isDefault: true },
+          { transaction },
+        );
+      } else {
+        await markDefaultAsDeleted();
+      }
+    } else {
+      await markDefaultAsDeleted();
+    }
   }
 }

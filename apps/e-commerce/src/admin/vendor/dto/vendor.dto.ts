@@ -83,4 +83,14 @@ export class VendorDto {
 
   @IsArray()
   commissions: CommissionDto[];
+
+  @AutoMap()
+  @IsOptional()
+  @IsNumber()
+  @ApiProperty({
+    required: true,
+    type: String,
+    description: 'logisticId',
+  })
+  public logisticId?: bigint;
 }

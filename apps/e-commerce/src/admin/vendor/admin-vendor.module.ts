@@ -11,7 +11,12 @@ import { Permission } from '@rahino/database';
 import { User } from '@rahino/database';
 import { VendorProfile } from './mapper';
 import { UserRoleModule } from '@rahino/core/admin/user-role/user-role.module';
-import { ECCity, ECProvince, ECVendor } from '@rahino/localdatabase/models';
+import {
+  ECCity,
+  ECProvince,
+  ECVendor,
+  ECVendorLogistic,
+} from '@rahino/localdatabase/models';
 import { ECVendorUser } from '@rahino/localdatabase/models';
 import { Role } from '@rahino/database';
 import { MinioClientModule } from '@rahino/minio-client';
@@ -40,6 +45,7 @@ import { LocalizationModule } from 'apps/main/src/common/localization';
       ECVendorCommission,
       ECProvince,
       ECCity,
+      ECVendorLogistic,
     ]),
     SequelizeModule,
     LocalizationModule,
