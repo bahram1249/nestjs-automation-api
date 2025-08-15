@@ -6,9 +6,11 @@ import {
   DataType,
   ForeignKey,
   BelongsTo,
+  HasMany,
 } from 'sequelize-typescript';
 import { ECLogisticShipmentWay } from './ec-logistic-shipment-way.entity';
 import { ECScheduleSendingType } from './ec-schedule-sending-type.entity';
+import { ECLogisticWeeklyPeriod } from './ec-logistic-weekly-period.entity';
 
 @Table({ tableName: 'ECLogisticSendingPeriods' })
 export class ECLogisticSendingPeriod extends Model {
@@ -26,10 +28,10 @@ export class ECLogisticSendingPeriod extends Model {
   logisticShipmentWayId: bigint;
 
   @BelongsTo(() => ECLogisticShipmentWay, {
-    as: 'logisticShipmentWay',
+    as: 'shipmentWay',
     foreignKey: 'logisticShipmentWayId',
   })
-  logisticShipmentWay: ECLogisticShipmentWay;
+  shipmentWay: ECLogisticShipmentWay;
 
   @AutoMap()
   @Column({
@@ -62,4 +64,10 @@ export class ECLogisticSendingPeriod extends Model {
     allowNull: true,
   })
   isDeleted?: boolean;
+
+  @HasMany(() => ECLogisticWeeklyPeriod, {
+    as: 'weeklyPeriods',
+    foreignKey: 'logisticSendingPeriodId',
+  })
+  weeklyPeriods?: ECLogisticWeeklyPeriod[];
 }

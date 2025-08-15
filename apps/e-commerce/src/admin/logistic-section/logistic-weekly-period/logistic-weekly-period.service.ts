@@ -62,7 +62,7 @@ export class LogisticWeeklyPeriodService {
       .include([
         {
           model: ECLogisticWeeklyPeriodTime,
-          as: 'logisticWeeklyPeriodTimes',
+          as: 'weeklyPeriodTimes',
           where: {
             isDeleted: {
               [Op.eq]: null,
@@ -86,7 +86,7 @@ export class LogisticWeeklyPeriodService {
       .include([
         {
           model: ECLogisticWeeklyPeriodTime,
-          as: 'logisticWeeklyPeriodTimes',
+          as: 'weeklyPeriodTimes',
           where: {
             isDeleted: {
               [Op.eq]: null,

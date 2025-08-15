@@ -992,6 +992,27 @@ END
 GO
 
 
+-- ecommerce inventories-v4
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ecommerce-inventories-v4' 
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'SITE_NAME' AND [value] IN ('ecommerce'))
+		)
+BEGIN
+
+	ALTER TABLE ECInventories
+		ADD scheduleSendingTypeId int null default 1
+			CONSTRAINT FK_ECInventories_ScheduleSendingTypeId
+				FOREIGN KEY REFERENCES ECScheduleSendingTypes(id)
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'ecommerce-inventories-v4', GETDATE(), GETDATE()
+END
+
+GO
+
+
 -- ecommerce inventory-prices
 IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ecommerce-inventory-prices-v1' 
 			)

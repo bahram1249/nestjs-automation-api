@@ -5,11 +5,13 @@ import {
   DataType,
   ForeignKey,
   BelongsTo,
+  HasMany,
 } from 'sequelize-typescript';
 import { AutoMap } from 'automapper-classes';
 import { ECLogistic } from './ec-logistic.entity';
 import { ECOrderShipmentWay } from './ec-order-shipmentway.entity';
 import { ECProvince } from './ec-province.entity';
+import { ECLogisticSendingPeriod } from './ec-logistic-sending-period.entity';
 
 @Table({ tableName: 'ECLogisticShipmentWays' })
 export class ECLogisticShipmentWay extends Model {
@@ -58,4 +60,10 @@ export class ECLogisticShipmentWay extends Model {
     allowNull: true,
   })
   isDeleted?: boolean;
+
+  @HasMany(() => ECLogisticSendingPeriod, {
+    as: 'sendingPeriods',
+    foreignKey: 'logisticShipmentWayId',
+  })
+  sendingPeriods?: ECLogisticSendingPeriod[];
 }

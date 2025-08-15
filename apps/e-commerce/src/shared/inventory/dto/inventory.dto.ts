@@ -70,4 +70,9 @@ export class InventoryDto {
   @IsString()
   @AutoMap()
   inventoryDescriptor?: string;
+
+  @IsOptional()
+  @IsNumber()
+  @AutoMap()
+  scheduleSendingTypeId?: number;
 }

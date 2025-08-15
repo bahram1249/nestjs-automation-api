@@ -15,6 +15,7 @@ import { ECVendorUser } from './ec-vendor-user.entity';
 import { ECVendorCommission } from './ec-vendor-commision.entity';
 import { ECProvince } from './ec-province.entity';
 import { ECCity } from './ec-city.entity';
+import { ECVendorLogistic } from './ec-vendor-logistic.entity';
 
 @Table({ tableName: 'ECVendors' })
 export class ECVendor extends Model {
@@ -161,4 +162,10 @@ export class ECVendor extends Model {
   })
   @AutoMap()
   longitude?: string;
+
+  @HasOne(() => ECVendorLogistic, {
+    as: 'vendorLogistic',
+    foreignKey: 'vendorId',
+  })
+  vendorLogistic?: ECVendorLogistic;
 }

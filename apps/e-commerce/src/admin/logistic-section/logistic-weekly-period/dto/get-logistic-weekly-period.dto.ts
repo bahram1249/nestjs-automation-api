@@ -7,7 +7,6 @@ export class GetLogistiWeeklyPeriodDto {
   @Type(() => Number)
   @ApiProperty({
     required: true,
-    default: false,
     type: IsNumber,
     description: 'logisticSendingPeriodId',
   })

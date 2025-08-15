@@ -1,6 +1,14 @@
-import { Table, Column, Model, DataType, HasOne } from 'sequelize-typescript';
+import {
+  Table,
+  Column,
+  Model,
+  DataType,
+  HasOne,
+  HasMany,
+} from 'sequelize-typescript';
 import { AutoMap } from 'automapper-classes';
 import { ECLogisticUser } from './ec-logistic-user.entity';
+import { ECLogisticShipmentWay } from './ec-logistic-shipment-way.entity';
 
 @Table({ tableName: 'ECLogistics' })
 export class ECLogistic extends Model {
@@ -27,4 +35,10 @@ export class ECLogistic extends Model {
     foreignKey: 'logisticId',
   })
   logisticUser?: ECLogisticUser;
+
+  @HasMany(() => ECLogisticShipmentWay, {
+    as: 'shipmentWays',
+    foreignKey: 'logisticId',
+  })
+  shipmentWays?: ECLogisticShipmentWay[];
 }

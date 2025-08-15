@@ -19,6 +19,7 @@ import { User } from '@rahino/database';
 import { AutoMap } from 'automapper-classes';
 import { ECInventoryPrice } from './ec-inventory-price.entity';
 import { Op } from 'sequelize';
+import { ECScheduleSendingType } from './ec-schedule-sending-type.entity';
 
 @Table({ tableName: 'ECInventories' })
 export class ECInventory extends Model {
@@ -221,4 +222,18 @@ export class ECInventory extends Model {
     allowNull: true,
   })
   inventoryDescriptor?: string;
+
+  @AutoMap()
+  @Column({
+    type: DataType.INTEGER,
+    allowNull: true,
+  })
+  @ForeignKey(() => ECScheduleSendingType)
+  scheduleSendingTypeId?: number;
+
+  @BelongsTo(() => ECScheduleSendingType, {
+    as: 'scheduleSendingType',
+    foreignKey: 'scheduleSendingTypeId',
+  })
+  scheduleSendingType?: ECScheduleSendingType;
 }

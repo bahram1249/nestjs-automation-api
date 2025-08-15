@@ -45,8 +45,8 @@ export class ECLogisticWeeklyPeriod extends Model {
   isDeleted?: boolean;
 
   @HasMany(() => ECLogisticWeeklyPeriodTime, {
-    as: 'logisticWeeklyPeriodTimes',
+    as: 'weeklyPeriodTimes',
     foreignKey: 'logisticWeeklyPeriodId',
   })
-  logisticWeeklyPeriodTimes?: ECLogisticWeeklyPeriodTime[];
+  weeklyPeriodTimes?: ECLogisticWeeklyPeriodTime[];
 }

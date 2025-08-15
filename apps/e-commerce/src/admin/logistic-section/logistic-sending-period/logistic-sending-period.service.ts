@@ -43,7 +43,7 @@ export class LogisticSendingPeriodService {
       .include([
         {
           model: ECLogisticShipmentWay,
-          as: 'logisticShipmentWay',
+          as: 'shipmentWay',
         },
         {
           model: ECScheduleSendingType,
@@ -86,7 +86,7 @@ export class LogisticSendingPeriodService {
       .include([
         {
           model: ECLogisticShipmentWay,
-          as: 'logisticShipmentWay',
+          as: 'shipmentWay',
         },
         {
           model: ECScheduleSendingType,
@@ -155,12 +155,12 @@ export class LogisticSendingPeriodService {
                 [Op.between]: [
                   Sequelize.fn(
                     'isnull',
-                    Sequelize.col('LogisticSendingPeriod.startDate'),
+                    Sequelize.col('ECLogisticSendingPeriod.startDate'),
                     Sequelize.fn('getdate'),
                   ),
                   Sequelize.fn(
                     'isnull',
-                    Sequelize.col('LogisticSendingPeriod.endDate'),
+                    Sequelize.col('ECLogisticSendingPeriod.endDate'),
                     Sequelize.fn('getdate'),
                   ),
                 ],
@@ -176,12 +176,12 @@ export class LogisticSendingPeriodService {
                 [Op.between]: [
                   Sequelize.fn(
                     'isnull',
-                    Sequelize.col('LogisticSendingPeriod.startDate'),
+                    Sequelize.col('ECLogisticSendingPeriod.startDate'),
                     Sequelize.fn('getdate'),
                   ),
                   Sequelize.fn(
                     'isnull',
-                    Sequelize.col('LogisticSendingPeriod.endDate'),
+                    Sequelize.col('ECLogisticSendingPeriod.endDate'),
                     Sequelize.fn('getdate'),
                   ),
                 ],
@@ -239,12 +239,12 @@ export class LogisticSendingPeriodService {
                 [Op.between]: [
                   Sequelize.fn(
                     'isnull',
-                    Sequelize.col('LogisticSendingPeriod.startDate'),
+                    Sequelize.col('ECLogisticSendingPeriod.startDate'),
                     Sequelize.fn('getdate'),
                   ),
                   Sequelize.fn(
                     'isnull',
-                    Sequelize.col('LogisticSendingPeriod.endDate'),
+                    Sequelize.col('ECLogisticSendingPeriod.endDate'),
                     Sequelize.fn('getdate'),
                   ),
                 ],
@@ -260,12 +260,12 @@ export class LogisticSendingPeriodService {
                 [Op.between]: [
                   Sequelize.fn(
                     'isnull',
-                    Sequelize.col('LogisticSendingPeriod.startDate'),
+                    Sequelize.col('ECLogisticSendingPeriod.startDate'),
                     Sequelize.fn('getdate'),
                   ),
                   Sequelize.fn(
                     'isnull',
-                    Sequelize.col('LogisticSendingPeriod.endDate'),
+                    Sequelize.col('ECLogisticSendingPeriod.endDate'),
                     Sequelize.fn('getdate'),
                   ),
                 ],
