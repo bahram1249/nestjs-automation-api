@@ -1,6 +1,14 @@
-import { IsNumber } from 'class-validator';
+import { ApiProperty } from '@nestjs/swagger';
+import { Type } from 'class-transformer';
+import { IsInt, IsNumber } from 'class-validator';
 
 export class LogisticShipmentWayDto {
-  @IsNumber()
-  logisticShipmentWayId: number;
+  @IsInt()
+  @Type(() => Number)
+  @ApiProperty({
+    required: true,
+    type: IsNumber,
+    description: 'logisticShipmentWayId',
+  })
+  logisticShipmentWayId?: bigint;
 }
