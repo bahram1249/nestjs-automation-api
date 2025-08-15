@@ -137,6 +137,7 @@ export class LogisticSendingPeriodService {
             Sequelize.fn(
               'isnull',
               Sequelize.col('ECLogisticSendingPeriod.isDeleted'),
+              0,
             ),
             {
               [Op.eq]: 0,
@@ -221,6 +222,7 @@ export class LogisticSendingPeriodService {
             Sequelize.fn(
               'isnull',
               Sequelize.col('ECLogisticSendingPeriod.isDeleted'),
+              0,
             ),
             {
               [Op.eq]: 0,
