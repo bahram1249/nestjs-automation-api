@@ -132,7 +132,7 @@ export class LogisticWeeklyPeriodService {
         await this.logisticSendingPeriodRepository.findOne(
           new QueryOptionsBuilder()
             .filter({
-              logisticSendingPeriodId: dto.logisticSendingPeriodId,
+              id: dto.logisticSendingPeriodId,
             })
             .filter(
               Sequelize.where(
