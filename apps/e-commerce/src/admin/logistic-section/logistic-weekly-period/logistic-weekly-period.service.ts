@@ -231,7 +231,6 @@ export class LogisticWeeklyPeriodService {
   ) {
     if (isNotNull(dto.id)) {
       return await this.updateLogisticWeeklyPeriod(
-        dto.id,
         dto,
         logisticWeeklyPeriodId,
         transaction,
@@ -247,7 +246,6 @@ export class LogisticWeeklyPeriodService {
   }
 
   async updateLogisticWeeklyPeriod(
-    id: number,
     dto: LogisticWeeklyPeriodDetailDto,
     logisticSendingPeriodId: number,
     transaction: Transaction,
@@ -262,7 +260,7 @@ export class LogisticWeeklyPeriodService {
     updateItem.logisticSendingPeriodId = logisticSendingPeriodId;
 
     await this.logisticWeeklyPeriodRepository.update(updateItem, {
-      where: { id: updateItem.id },
+      where: { id: dto.id },
       transaction,
     });
 
@@ -288,7 +286,9 @@ export class LogisticWeeklyPeriodService {
         {
           where: {
             id: {
-              [Op.in]: oldLogisticWeeklyPeriodTimesMustDeleted,
+              [Op.in]: oldLogisticWeeklyPeriodTimesMustDeleted.map(
+                (item) => item.id,
+              ),
             },
           },
           transaction: transaction,
@@ -368,10 +368,11 @@ export class LogisticWeeklyPeriodService {
       ECLogisticWeeklyPeriodTime,
     );
 
-    const insetedItem = _.omit(mappedItem.toJSON(), ['id']);
-    insetedItem.logisticWeeklyPeriodId = logisticWeeklyPeriodId;
+    const insertedItem = _.omit(mappedItem.toJSON(), ['id']);
+    console.log(insertedItem);
+    insertedItem.logisticWeeklyPeriodId = logisticWeeklyPeriodId;
 
-    await this.logisticWeeklyPeriodTimeRepository.create(insetedItem, {
+    await this.logisticWeeklyPeriodTimeRepository.create(insertedItem, {
       transaction: transaction,
     });
   }
@@ -388,9 +389,9 @@ export class LogisticWeeklyPeriodService {
     );
 
     const updatedItem = _.omit(mappedItem.toJSON());
-    updatedItem.logisticWeeklyPeriodId = logisticWeeklyPeriodId;
+    //updatedItem.logisticWeeklyPeriodId = logisticWeeklyPeriodId;
 
-    await this.logisticWeeklyPeriodTimeRepository.create(updatedItem, {
+    await this.logisticWeeklyPeriodTimeRepository.update(updatedItem, {
       where: {
         id: dto.id,
       },
