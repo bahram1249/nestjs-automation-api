@@ -7,6 +7,7 @@ import {
   ECLogisticWeeklyPeriodTime,
 } from '@rahino/localdatabase/models';
 import { LogisticWeeklyPeriodTimeDto } from '../dto/logistic-weekly-period-time.dto';
+import { LogisticWeeklyPeriodDetailDto } from '../dto/logistic-weekly-period-detail.dto';
 
 @Injectable()
 export class LogisticWeeklyPeriodProfile extends AutomapperProfile {
@@ -16,7 +17,7 @@ export class LogisticWeeklyPeriodProfile extends AutomapperProfile {
 
   override get profile() {
     return (mapper) => {
-      createMap(mapper, LogisticWeeklyPeriodDto, ECLogisticWeeklyPeriod);
+      createMap(mapper, LogisticWeeklyPeriodDetailDto, ECLogisticWeeklyPeriod);
       createMap(
         mapper,
         LogisticWeeklyPeriodTimeDto,
