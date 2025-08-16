@@ -146,6 +146,7 @@ export class LogisticWeeklyPeriodService {
                 },
               ),
             )
+            .transaction(transaction)
             .build(),
         );
 
@@ -182,12 +183,14 @@ export class LogisticWeeklyPeriodService {
                 [Op.notIn]: oldLogisticWeeklyPeriodIds,
               },
             })
+            .transaction(transaction)
             .build(),
         );
 
       if (oldLogisticWeeklyPeriodMustDeleted.length > 0) {
         await this.logisticWeeklyPeriodRepository.update(
           { isDeleted: 1 },
+
           {
             where: {
               id: {
@@ -196,6 +199,7 @@ export class LogisticWeeklyPeriodService {
                 ),
               },
             },
+            transaction: transaction,
           },
         );
       }

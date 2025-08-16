@@ -7,6 +7,7 @@ import {
   ForeignKey,
   BelongsTo,
   HasMany,
+  AfterFind,
 } from 'sequelize-typescript';
 import { ECLogisticShipmentWay } from './ec-logistic-shipment-way.entity';
 import { ECScheduleSendingType } from './ec-schedule-sending-type.entity';
@@ -70,4 +71,31 @@ export class ECLogisticSendingPeriod extends Model {
     foreignKey: 'logisticSendingPeriodId',
   })
   weeklyPeriods?: ECLogisticWeeklyPeriod[];
+
+  @AfterFind
+  static async formatAssociatedWeeklyPeriodTimes(
+    instance: ECLogisticSendingPeriod,
+  ) {
+    if (instance.weeklyPeriods && instance.weeklyPeriods.length > 0) {
+      for (const weeklyPeriod of instance.weeklyPeriods) {
+        if (
+          weeklyPeriod.weeklyPeriodTimes &&
+          weeklyPeriod.weeklyPeriodTimes.length > 0
+        ) {
+          for (const timeItem of weeklyPeriod.weeklyPeriodTimes) {
+            // Format startTime
+            if (timeItem.startTime) {
+              timeItem.startTime = timeItem.startTime
+                .split('T')[1]
+                ?.split('.')[0]; // Format to HH:mm:ss
+            }
+            // Format endTime
+            if (timeItem.endTime) {
+              timeItem.endTime = timeItem.endTime.split('T')[1]?.split('.')[0]; // Format to HH:mm:ss
+            }
+          }
+        }
+      }
+    }
+  }
 }
