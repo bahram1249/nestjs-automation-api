@@ -9,6 +9,7 @@ import {
 } from 'sequelize-typescript';
 import { AutoMap } from 'automapper-classes';
 import { ECLogisticWeeklyPeriod } from './ec-logistic-weekly-period.entity';
+import { isNotNull } from '@rahino/commontools';
 
 @Table({ tableName: 'ECLogisticWeeklyPeriodTimes' })
 export class ECLogisticWeeklyPeriodTime extends Model {
@@ -58,11 +59,13 @@ export class ECLogisticWeeklyPeriodTime extends Model {
   // Hook to format startTime and endTime after finding records
   @AfterFind
   static formatTimeFields(instance: ECLogisticWeeklyPeriodTime) {
-    if (instance.startTime) {
-      instance.startTime = instance.startTime.split('T')[1]?.split('.')[0]; // Format to HH:mm:ss
-    }
-    if (instance.endTime) {
-      instance.endTime = instance.endTime.split('T')[1]?.split('.')[0]; // Format to HH:mm:ss
+    if (isNotNull(instance)) {
+      if (instance.startTime) {
+        instance.startTime = instance.startTime.split('T')[1]?.split('.')[0]; // Format to HH:mm:ss
+      }
+      if (instance.endTime) {
+        instance.endTime = instance.endTime.split('T')[1]?.split('.')[0]; // Format to HH:mm:ss
+      }
     }
   }
 }
