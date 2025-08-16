@@ -78,6 +78,7 @@ export class ECLogisticSendingPeriod extends Model {
     instance: ECLogisticSendingPeriod,
   ) {
     if (
+      isNotNull(instance) &&
       isNotNull(instance.weeklyPeriods) &&
       instance.weeklyPeriods.length > 0
     ) {
