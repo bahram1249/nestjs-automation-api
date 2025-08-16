@@ -12,6 +12,7 @@ import {
 import { ECLogisticShipmentWay } from './ec-logistic-shipment-way.entity';
 import { ECScheduleSendingType } from './ec-schedule-sending-type.entity';
 import { ECLogisticWeeklyPeriod } from './ec-logistic-weekly-period.entity';
+import { isNotNull } from '@rahino/commontools';
 
 @Table({ tableName: 'ECLogisticSendingPeriods' })
 export class ECLogisticSendingPeriod extends Model {
@@ -76,10 +77,13 @@ export class ECLogisticSendingPeriod extends Model {
   static async formatAssociatedWeeklyPeriodTimes(
     instance: ECLogisticSendingPeriod,
   ) {
-    if (instance.weeklyPeriods && instance.weeklyPeriods.length > 0) {
+    if (
+      isNotNull(instance.weeklyPeriods) &&
+      instance.weeklyPeriods.length > 0
+    ) {
       for (const weeklyPeriod of instance.weeklyPeriods) {
         if (
-          weeklyPeriod.weeklyPeriodTimes &&
+          isNotNull(weeklyPeriod.weeklyPeriodTimes) &&
           weeklyPeriod.weeklyPeriodTimes.length > 0
         ) {
           for (const timeItem of weeklyPeriod.weeklyPeriodTimes) {
