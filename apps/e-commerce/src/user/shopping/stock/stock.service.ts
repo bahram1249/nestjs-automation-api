@@ -98,6 +98,7 @@ export class StockService {
         )
         .build(),
     );
+    stocks = JSON.parse(JSON.stringify(stocks));
     for (let index = 0; index < stocks.length; index++) {
       const stock = stocks[index];
       const queryItem = await this.productRepositoryService.findById(
