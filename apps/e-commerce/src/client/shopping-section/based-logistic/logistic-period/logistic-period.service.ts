@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
-import { PersianDate } from '@rahino/database';
+import { PersianDate, User } from '@rahino/database';
 import {
   ECInventory,
   ECLogistic,
@@ -18,6 +18,9 @@ import {
 } from '@rahino/localdatabase/models';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import { Op, Sequelize } from 'sequelize';
+import { ClientLogisticPeriodDto } from './dto';
+import { AddressService } from '@rahino/ecommerce/user/address/address.service';
+import { ClientValidateAddressService } from '../validate-address/client-validate-address.service';
 
 @Injectable()
 export class LogisticPeriodService {
@@ -28,9 +31,20 @@ export class LogisticPeriodService {
     private readonly persianDateRepository: typeof PersianDate,
     @InjectModel(ECLogisticShipmentWay)
     private readonly logisticShipmentWayRepository: typeof ECLogisticShipmentWay,
+    private readonly addressService: AddressService,
+    private readonly clientValidateAddressService: ClientValidateAddressService,
   ) {}
 
-  async getDeliveryOptions(session: ECUserSession, provinceId: number) {
+  async getDeliveryOptions(
+    user: User,
+    session: ECUserSession,
+    dto: ClientLogisticPeriodDto,
+  ) {
+    const { result: userAddress } = await this.addressService.findById(
+      user,
+      dto.addressId,
+    );
+
     const stocks = await this.stockRepository.findAll(
       new QueryOptionsBuilder()
         .attributes(['id', 'inventoryId', 'productId', 'qty'])
@@ -65,17 +79,22 @@ export class LogisticPeriodService {
           {
             model: ECInventory,
             as: 'inventory',
-            attributes: ['id', 'vendorId', 'scheduleSendingTypeId'],
+            attributes: [
+              'id',
+              'vendorId',
+              'scheduleSendingTypeId',
+              'onlyProvinceId',
+            ],
             include: [
               {
                 model: ECScheduleSendingType,
                 as: 'scheduleSendingType',
-                attributes: ['id', 'parentId', 'title'],
+                attributes: ['id', 'parentId', 'title', 'icon'],
                 include: [
                   {
                     model: ECScheduleSendingType,
                     as: 'parent',
-                    attributes: ['id', 'title'],
+                    attributes: ['id', 'title', 'icon'],
                   },
                 ],
               },
@@ -120,6 +139,11 @@ export class LogisticPeriodService {
         .build(),
     );
 
+    await this.clientValidateAddressService.validateAddress({
+      address: userAddress,
+      stocks: stocks,
+    });
+
     const logisticIds = [
       ...new Set(
         stocks.map((stock) => stock.inventory.vendor.vendorLogistic.logisticId),
@@ -140,7 +164,7 @@ export class LogisticPeriodService {
               },
             ),
             {
-              provinceId: provinceId,
+              provinceId: userAddress.provinceId,
             },
             {
               logisticId: {
@@ -154,7 +178,7 @@ export class LogisticPeriodService {
           {
             model: ECOrderShipmentWay,
             as: 'orderShipmentWay',
-            attributes: ['id', 'name'],
+            attributes: ['id', 'name', 'icon'],
           },
           {
             model: ECLogisticSendingPeriod,
@@ -205,6 +229,20 @@ export class LogisticPeriodService {
                 ],
               },
             ],
+            where: {
+              [Op.and]: [
+                Sequelize.where(
+                  Sequelize.fn(
+                    'isnull',
+                    Sequelize.col('sendingPeriods.isDeleted'),
+                    0,
+                  ),
+                  {
+                    [Op.eq]: 0,
+                  },
+                ),
+              ],
+            },
           },
         ])
         .build(),
@@ -239,15 +277,19 @@ export class LogisticPeriodService {
         subgroups: Array<{
           originalScheduleSendingTypeId: number;
           originalScheduleSendingTypeName: string;
+          originalScheduleSendingTypeIcon: string | null;
           parentScheduleSendingTypeId: number | null;
           parentScheduleSendingTypeName: string | null;
+          parentScheduleSendingTypeIcon: string | null;
           stocks: ECStock[];
           sendingOptions: Array<{
             typeId: number;
             typeName: string;
+            typeIcon: string | null;
             shipmentWays: Array<{
               shipmentWayId: number;
               shipmentWayName: string;
+              shipmentWayIcon: string | null;
               possibleDates: Array<{
                 gregorianDate: Date;
                 persianDate: string;
@@ -279,9 +321,13 @@ export class LogisticPeriodService {
       const originalScheduleTypeId = stock.inventory.scheduleSendingTypeId;
       const originalScheduleTypeName =
         stock.inventory.scheduleSendingType.title;
+      const originalScheduleTypeIcon = stock.inventory.scheduleSendingType.icon;
       const parentScheduleTypeId = stock.inventory.scheduleSendingType.parentId;
       const parentScheduleTypeName = stock.inventory.scheduleSendingType.parent
         ? stock.inventory.scheduleSendingType.parent.title
+        : null;
+      const parentScheduleTypeIcon = stock.inventory.scheduleSendingType.parent
+        ? stock.inventory.scheduleSendingType.parent.icon
         : null;
 
       if (!groups[Number(logisticId)]) {
@@ -305,8 +351,10 @@ export class LogisticPeriodService {
         subgroup = {
           originalScheduleSendingTypeId: originalScheduleTypeId,
           originalScheduleSendingTypeName: originalScheduleTypeName,
+          originalScheduleSendingTypeIcon: originalScheduleTypeIcon,
           parentScheduleSendingTypeId: parentScheduleTypeId,
           parentScheduleSendingTypeName: parentScheduleTypeName,
+          parentScheduleSendingTypeIcon: parentScheduleTypeIcon,
           stocks: [],
           sendingOptions: [],
         };
@@ -334,6 +382,10 @@ export class LogisticPeriodService {
             index === 0
               ? subgroup.originalScheduleSendingTypeName
               : subgroup.parentScheduleSendingTypeName;
+          const typeIcon =
+            index === 0
+              ? subgroup.originalScheduleSendingTypeIcon
+              : subgroup.parentScheduleSendingTypeIcon;
           const shipmentWaysOutput = relevantShipmentWays.map((shipmentWay) => {
             const possibleDates = [];
 
@@ -386,6 +438,7 @@ export class LogisticPeriodService {
             return {
               shipmentWayId: Number(shipmentWay.id),
               shipmentWayName: shipmentWay.orderShipmentWay.name,
+              shipmentWayIcon: shipmentWay.orderShipmentWay.icon,
               possibleDates,
             };
           });
@@ -426,6 +479,7 @@ export class LogisticPeriodService {
           subgroup.sendingOptions.push({
             typeId,
             typeName,
+            typeIcon,
             shipmentWays: shipmentWaysOutput,
             bestSelection,
           });

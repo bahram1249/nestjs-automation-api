@@ -10,11 +10,12 @@ import { ECLogisticShipmentWay, ECStock } from '@rahino/localdatabase/models';
 import { LocalizationModule } from 'apps/main/src/common/localization';
 import { AddressModule } from '@rahino/ecommerce/user/address/address.module';
 import { SessionModule } from '@rahino/ecommerce/user/session/session.module';
+import { ClientValidateAddressModule } from '../validate-address/client-validate-address.module';
 
 @Module({
   imports: [
     LocalizationModule,
-
+    ClientValidateAddressModule,
     SequelizeModule.forFeature([
       User,
       ECStock,

@@ -17,4 +17,10 @@ export class ECOrderShipmentWay extends Model {
     allowNull: true,
   })
   isPeriodic?: boolean;
+
+  @Column({
+    type: DataType.STRING,
+    allowNull: true,
+  })
+  icon: string;
 }

@@ -1855,6 +1855,24 @@ END
 
 GO
 
+-- ec-order-shipment-ways-2
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ec-order-shipment-ways-v3' 
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'SITE_NAME' AND [value] IN ('ecommerce'))
+		)
+BEGIN
+
+	ALTER TABLE ECOrderShipmentWays
+		add icon nvarchar(256) null
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'ec-order-shipment-ways-v3', GETDATE(), GETDATE()
+END
+
+GO
+
 
 
 -- ec-orders
