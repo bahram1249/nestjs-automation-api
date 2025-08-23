@@ -74,7 +74,7 @@ export class LogisticPeriodService {
           {
             model: ECProduct,
             as: 'product',
-            attributes: ['id', 'title'],
+            attributes: ['id', 'title', 'slug', 'entityTypeId', 'weight'],
           },
           {
             model: ECInventory,
@@ -413,27 +413,26 @@ export class LogisticPeriodService {
                 currentDate.getTime() + offsetDay * 24 * 60 * 60 * 1000,
               );
               for (const persianDate of persianDates) {
-                if (persianDate.GregorianDate < offsetStartDate) continue;
+                const gregorianDate = new Date(persianDate.GregorianDate); // Convert to Date object
+                if (gregorianDate < offsetStartDate) continue;
                 const weekNumber = persianDate.WeekDayNumber;
                 const times = [];
 
                 for (const sendingPeriod of relevantPeriods) {
                   if (
                     sendingPeriod.startDate &&
-                    persianDate.GregorianDate < sendingPeriod.startDate
+                    gregorianDate < sendingPeriod.startDate
                   )
                     continue;
                   if (
                     sendingPeriod.endDate &&
-                    persianDate.GregorianDate > sendingPeriod.endDate
+                    gregorianDate > sendingPeriod.endDate
                   )
                     continue;
                   for (const weeklyPeriod of sendingPeriod.weeklyPeriods) {
                     if (weeklyPeriod.weekNumber === weekNumber) {
                       for (const time of weeklyPeriod.weeklyPeriodTimes) {
-                        const fullStartTime = new Date(
-                          persianDate.GregorianDate,
-                        );
+                        const fullStartTime = new Date(gregorianDate);
                         const [startHour, startMinute, startSecond] =
                           time.startTime.split(':').map(Number);
                         fullStartTime.setHours(
@@ -448,7 +447,7 @@ export class LogisticPeriodService {
                         );
 
                         const isToday =
-                          persianDate.GregorianDate.toDateString() ===
+                          gregorianDate.toDateString() ===
                           currentDate.toDateString();
 
                         if (isToday && fullStartTime <= threeHoursLater) {

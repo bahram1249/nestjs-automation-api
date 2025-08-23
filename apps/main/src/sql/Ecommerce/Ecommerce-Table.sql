@@ -259,9 +259,6 @@ BEGIN
 		[updatedAt]					datetimeoffset				NOT NULL,
 	);
 
-	INSERT INTO ECScheduleSendingTypes(id, title, icon,createdAt, updatedAt)
-	VALUES (1, N'ارسال معمولی', 'normalSending.png',GETDATE(), GETDATE())
-		,(2, N'ارسال اکسپرس', 'expressSending.png',GETDATE(), GETDATE())
 
 
 	INSERT INTO Migrations(version, createdAt, updatedAt)
@@ -279,7 +276,12 @@ IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ecommerce-schedule-send
 BEGIN
 
 	ALTER TABLE ECScheduleSendingTypes
-		ADD offsetDay int null
+		ADD offsetDay int null;
+
+
+	INSERT INTO ECScheduleSendingTypes(id, title, icon, offsetDay,createdAt, updatedAt)
+	VALUES (1, N'ارسال معمولی', 'normalSending.png', 2, GETDATE(), GETDATE())
+		,(2, N'ارسال اکسپرس', 'expressSending.png', 0, GETDATE(), GETDATE())
 
 
 	INSERT INTO Migrations(version, createdAt, updatedAt)
