@@ -104,7 +104,8 @@ export class StockService {
         _.extend(this.emptyListFilter, { inventoryId: stock.inventoryId }),
         stock.productId,
       );
-      stock.set('product', queryItem.result);
+      stock.product = queryItem.result;
+
       stocks[index] = stock;
       if (
         stock.product.inventoryStatusId == InventoryStatusEnum.unavailable ||
