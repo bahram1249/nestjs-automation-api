@@ -412,6 +412,30 @@ export class LogisticPeriodService {
                   for (const weeklyPeriod of sendingPeriod.weeklyPeriods) {
                     if (weeklyPeriod.weekNumber === weekNumber) {
                       for (const time of weeklyPeriod.weeklyPeriodTimes) {
+                        const fullStartTime = new Date(
+                          persianDate.GregorianDate,
+                        );
+                        const [startHour, startMinute, startSecond] =
+                          time.startTime.split(':').map(Number);
+                        fullStartTime.setHours(
+                          startHour,
+                          startMinute,
+                          startSecond,
+                          0,
+                        );
+
+                        const threeHoursLater = new Date(
+                          currentDate.getTime() + 3 * 60 * 60 * 1000,
+                        );
+
+                        const isToday =
+                          persianDate.GregorianDate.toDateString() ===
+                          currentDate.toDateString();
+
+                        if (isToday && fullStartTime <= threeHoursLater) {
+                          continue;
+                        }
+
                         times.push({
                           weeklyPeriodTimeId: time.id,
                           startTime: time.startTime,
