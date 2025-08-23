@@ -119,6 +119,7 @@ import { AdminLogisticShipmentWayModule } from './admin/logistic-section/logisti
 import { AdminLogisticSendingPeriodModule } from './admin/logistic-section/logistic-sending-period/logistic-sending-period.module';
 import { AdminLogisticWeeklyPeriodModule } from './admin/logistic-section/logistic-weekly-period/logistic-weekly-period.module';
 import { ScheduleSendingTypeModule } from './admin/logistic-section/schedule-sending-type/schedule-sending-type.module';
+import { ClientLogisticPeriodModule } from './client/shopping-section/based-logistic/logistic-period/logistic-period.module';
 
 @Module({
   imports: [
@@ -238,6 +239,8 @@ import { ScheduleSendingTypeModule } from './admin/logistic-section/schedule-sen
     AdminLogisticSendingPeriodModule,
     AdminLogisticWeeklyPeriodModule,
     ScheduleSendingTypeModule,
+
+    ClientLogisticPeriodModule,
   ],
   providers: [
     {
@@ -272,7 +275,7 @@ export class ECommerceModule implements NestModule {
     app.get(ProductVideoRemovalService).run();
 
     // add discount cacher
-    app.get(ProductDiscountJobRunnerService).run();
+    //app.get(ProductDiscountJobRunnerService).run();
 
     // add dynamic cacher of home page elements
     app.get(ProcessHomeRunnerService).run();

@@ -270,6 +270,27 @@ END
 
 GO
 
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ecommerce-schedule-sending-types-v2' 
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'SITE_NAME' AND [value] IN ('ecommerce'))
+		)
+BEGIN
+
+	ALTER TABLE ECScheduleSendingTypes 
+		ADD parentId int null
+			CONSTRAINT FK_ECScheduleSendingTypes_ParentId
+				FOREIGN KEY REFERENCES ECScheduleSendingTypes(id);
+
+	
+
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'ecommerce-schedule-sending-types-v2', GETDATE(), GETDATE()
+END
+
+GO
 
 
 IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ecommerce-inventory-status-v2' 

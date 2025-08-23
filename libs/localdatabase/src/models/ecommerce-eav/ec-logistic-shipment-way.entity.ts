@@ -6,12 +6,14 @@ import {
   ForeignKey,
   BelongsTo,
   HasMany,
+  AfterFind,
 } from 'sequelize-typescript';
 import { AutoMap } from 'automapper-classes';
 import { ECLogistic } from './ec-logistic.entity';
 import { ECOrderShipmentWay } from './ec-order-shipmentway.entity';
 import { ECProvince } from './ec-province.entity';
 import { ECLogisticSendingPeriod } from './ec-logistic-sending-period.entity';
+import { isNotNull } from '@rahino/commontools';
 
 @Table({ tableName: 'ECLogisticShipmentWays' })
 export class ECLogisticShipmentWay extends Model {
@@ -66,4 +68,57 @@ export class ECLogisticShipmentWay extends Model {
     foreignKey: 'logisticShipmentWayId',
   })
   sendingPeriods?: ECLogisticSendingPeriod[];
+
+  @AfterFind
+  static async formatAssociatedWeeklyPeriodTimes(
+    instanceOrInstances: ECLogisticShipmentWay | ECLogisticShipmentWay[],
+  ) {
+    if (Array.isArray(instanceOrInstances)) {
+      for (const instance of instanceOrInstances) {
+        ECLogisticShipmentWay.formatSingleInstance(instance);
+      }
+    } else {
+      ECLogisticShipmentWay.formatSingleInstance(instanceOrInstances);
+    }
+  }
+
+  private static formatSingleInstance(instance: ECLogisticShipmentWay) {
+    if (
+      isNotNull(instance) &&
+      isNotNull(instance.sendingPeriods) &&
+      instance.sendingPeriods.length > 0
+    ) {
+      for (const sendingPeriod of instance.sendingPeriods) {
+        if (
+          isNotNull(sendingPeriod.weeklyPeriods) &&
+          sendingPeriod.weeklyPeriods.length > 0
+        ) {
+          for (const weeklyPeriod of sendingPeriod.weeklyPeriods) {
+            for (const timeItem of weeklyPeriod.weeklyPeriodTimes) {
+              // Format startTime
+              if (timeItem.startTime) {
+                timeItem.startTime = new Date(
+                  timeItem.startTime,
+                ).toLocaleTimeString('en-US', {
+                  hour: '2-digit',
+                  minute: '2-digit',
+                  hour12: false,
+                });
+              }
+              // Format endTime
+              if (timeItem.endTime) {
+                timeItem.endTime = timeItem.endTime = new Date(
+                  timeItem.endTime,
+                ).toLocaleTimeString('en-US', {
+                  hour: '2-digit',
+                  minute: '2-digit',
+                  hour12: false,
+                });
+              }
+            }
+          }
+        }
+      }
+    }
+  }
 }

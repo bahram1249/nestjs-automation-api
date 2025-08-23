@@ -36,7 +36,8 @@ export class ECStock extends Model {
   @ForeignKey(() => ECProduct)
   productId: bigint;
 
-  @Column({ type: DataType.VIRTUAL, allowNull: true })
+  //@Column({ type: DataType.VIRTUAL, allowNull: true })
+  @BelongsTo(() => ECProduct, { as: 'product', foreignKey: 'productId' })
   product?: ECProduct;
 
   @AutoMap()

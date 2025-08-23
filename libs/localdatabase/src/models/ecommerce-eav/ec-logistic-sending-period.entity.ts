@@ -72,11 +72,20 @@ export class ECLogisticSendingPeriod extends Model {
     foreignKey: 'logisticSendingPeriodId',
   })
   weeklyPeriods?: ECLogisticWeeklyPeriod[];
-
   @AfterFind
   static async formatAssociatedWeeklyPeriodTimes(
-    instance: ECLogisticSendingPeriod,
+    instanceOrInstances: ECLogisticSendingPeriod | ECLogisticSendingPeriod[],
   ) {
+    if (Array.isArray(instanceOrInstances)) {
+      for (const instance of instanceOrInstances) {
+        ECLogisticSendingPeriod.formatSingleInstance(instance);
+      }
+    } else {
+      ECLogisticSendingPeriod.formatSingleInstance(instanceOrInstances);
+    }
+  }
+
+  private static formatSingleInstance(instance: ECLogisticSendingPeriod) {
     if (
       isNotNull(instance) &&
       isNotNull(instance.weeklyPeriods) &&
@@ -88,15 +97,26 @@ export class ECLogisticSendingPeriod extends Model {
           weeklyPeriod.weeklyPeriodTimes.length > 0
         ) {
           for (const timeItem of weeklyPeriod.weeklyPeriodTimes) {
-            // Format startTime
+            // Format startTime to HH:mm
             if (timeItem.startTime) {
-              timeItem.startTime = timeItem.startTime
-                .split('T')[1]
-                ?.split('.')[0]; // Format to HH:mm:ss
+              timeItem.startTime = new Date(
+                timeItem.startTime,
+              ).toLocaleTimeString('en-US', {
+                hour: '2-digit',
+                minute: '2-digit',
+                hour12: false,
+              });
             }
-            // Format endTime
+            // Format endTime to HH:mm
             if (timeItem.endTime) {
-              timeItem.endTime = timeItem.endTime.split('T')[1]?.split('.')[0]; // Format to HH:mm:ss
+              timeItem.endTime = new Date(timeItem.endTime).toLocaleTimeString(
+                'en-US',
+                {
+                  hour: '2-digit',
+                  minute: '2-digit',
+                  hour12: false,
+                },
+              );
             }
           }
         }

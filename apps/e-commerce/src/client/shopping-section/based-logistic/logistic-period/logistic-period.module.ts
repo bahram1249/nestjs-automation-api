@@ -1,0 +1,34 @@
+import { Module } from '@nestjs/common';
+import { LogisticPeriodController } from './logistic-period.controller';
+import { LogisticPeriodService } from './logistic-period.service';
+import { ProductModule } from '@rahino/ecommerce/client/product/product.module';
+import { QueryFilterModule } from '@rahino/query-filter';
+import { DBLoggerModule } from '@rahino/logger';
+import { SequelizeModule } from '@nestjs/sequelize';
+import { PersianDate, User } from '@rahino/database';
+import { ECLogisticShipmentWay, ECStock } from '@rahino/localdatabase/models';
+import { LocalizationModule } from 'apps/main/src/common/localization';
+import { AddressModule } from '@rahino/ecommerce/user/address/address.module';
+import { SessionModule } from '@rahino/ecommerce/user/session/session.module';
+
+@Module({
+  imports: [
+    LocalizationModule,
+
+    SequelizeModule.forFeature([
+      User,
+      ECStock,
+      PersianDate,
+      ECLogisticShipmentWay,
+    ]),
+    AddressModule,
+    SessionModule,
+    QueryFilterModule,
+    ProductModule,
+    DBLoggerModule,
+  ],
+  controllers: [LogisticPeriodController],
+  providers: [LogisticPeriodService],
+  exports: [LogisticPeriodService],
+})
+export class ClientLogisticPeriodModule {}
