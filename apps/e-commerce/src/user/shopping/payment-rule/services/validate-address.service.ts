@@ -22,16 +22,15 @@ export class ValidateAddressService {
     for (let index = 0; index < dto.stocks.length; index++) {
       const stock = dto.stocks[index];
       if (
-        stock.product.inventories[0].onlyProvinceId != null &&
-        (stock.product.inventories[0].onlyProvinceId !=
-          findAddress.provinceId ||
-          (stock.product.inventories[0].onlyProvinceId == ProvinceEnum.Tehran &&
+        stock.inventory.onlyProvinceId != null &&
+        (stock.inventory.onlyProvinceId != findAddress.provinceId ||
+          (stock.inventory.onlyProvinceId == ProvinceEnum.Tehran &&
             findAddress.cityId != CityEnum.Tehran))
       ) {
         const province = await this.provinceRepository.findOne(
           new QueryOptionsBuilder()
             .filter({
-              id: stock.product.inventories[0].onlyProvinceId,
+              id: stock.inventory.onlyProvinceId,
             })
             .build(),
         );
