@@ -89,12 +89,12 @@ export class LogisticPeriodService {
               {
                 model: ECScheduleSendingType,
                 as: 'scheduleSendingType',
-                attributes: ['id', 'parentId', 'title', 'icon'],
+                attributes: ['id', 'parentId', 'title', 'icon', 'offsetDay'],
                 include: [
                   {
                     model: ECScheduleSendingType,
                     as: 'parent',
-                    attributes: ['id', 'title', 'icon'],
+                    attributes: ['id', 'title', 'icon', 'offsetDay'],
                   },
                 ],
               },
@@ -278,9 +278,11 @@ export class LogisticPeriodService {
           originalScheduleSendingTypeId: number;
           originalScheduleSendingTypeName: string;
           originalScheduleSendingTypeIcon: string | null;
+          originalScheduleSendingTypeOffsetDay: number | null;
           parentScheduleSendingTypeId: number | null;
           parentScheduleSendingTypeName: string | null;
           parentScheduleSendingTypeIcon: string | null;
+          parentScheduleSendingTypeOffsetDay: number | null;
           stocks: ECStock[];
           sendingOptions: Array<{
             typeId: number;
@@ -300,6 +302,7 @@ export class LogisticPeriodService {
                   endTime: string;
                   sendingPeriodId: number;
                   weeklyPeriodId: number;
+                  capacity: number;
                 }>;
               }>;
             }>;
@@ -322,12 +325,18 @@ export class LogisticPeriodService {
       const originalScheduleTypeName =
         stock.inventory.scheduleSendingType.title;
       const originalScheduleTypeIcon = stock.inventory.scheduleSendingType.icon;
+      const originalScheduleTypeOffsetDay =
+        stock.inventory.scheduleSendingType.offsetDay;
       const parentScheduleTypeId = stock.inventory.scheduleSendingType.parentId;
       const parentScheduleTypeName = stock.inventory.scheduleSendingType.parent
         ? stock.inventory.scheduleSendingType.parent.title
         : null;
       const parentScheduleTypeIcon = stock.inventory.scheduleSendingType.parent
         ? stock.inventory.scheduleSendingType.parent.icon
+        : null;
+      const parentScheduleTypeOffsetDay = stock.inventory.scheduleSendingType
+        .parent
+        ? stock.inventory.scheduleSendingType.parent.offsetDay
         : null;
 
       if (!groups[Number(logisticId)]) {
@@ -352,9 +361,11 @@ export class LogisticPeriodService {
           originalScheduleSendingTypeId: originalScheduleTypeId,
           originalScheduleSendingTypeName: originalScheduleTypeName,
           originalScheduleSendingTypeIcon: originalScheduleTypeIcon,
+          originalScheduleSendingTypeOffsetDay: originalScheduleTypeOffsetDay,
           parentScheduleSendingTypeId: parentScheduleTypeId,
           parentScheduleSendingTypeName: parentScheduleTypeName,
           parentScheduleSendingTypeIcon: parentScheduleTypeIcon,
+          parentScheduleSendingTypeOffsetDay: parentScheduleTypeOffsetDay,
           stocks: [],
           sendingOptions: [],
         };
@@ -386,6 +397,10 @@ export class LogisticPeriodService {
             index === 0
               ? subgroup.originalScheduleSendingTypeIcon
               : subgroup.parentScheduleSendingTypeIcon;
+          const offsetDay =
+            index === 0
+              ? subgroup.originalScheduleSendingTypeOffsetDay || 0
+              : subgroup.parentScheduleSendingTypeOffsetDay || 0;
           const shipmentWaysOutput = relevantShipmentWays.map((shipmentWay) => {
             const possibleDates = [];
 
@@ -394,7 +409,11 @@ export class LogisticPeriodService {
             );
 
             if (relevantPeriods.length > 0) {
+              const offsetStartDate = new Date(
+                currentDate.getTime() + offsetDay * 24 * 60 * 60 * 1000,
+              );
               for (const persianDate of persianDates) {
+                if (persianDate.GregorianDate < offsetStartDate) continue;
                 const weekNumber = persianDate.WeekDayNumber;
                 const times = [];
 
@@ -442,6 +461,7 @@ export class LogisticPeriodService {
                           endTime: time.endTime,
                           sendingPeriodId: sendingPeriod.id,
                           weeklyPeriodId: weeklyPeriod.id,
+                          capacity: time.capacity,
                         });
                       }
                     }

@@ -38,4 +38,11 @@ export class ECScheduleSendingType extends Model {
     foreignKey: 'parentId',
   })
   parent?: ECScheduleSendingType;
+
+  @AutoMap()
+  @Column({
+    type: DataType.INTEGER,
+    allowNull: true,
+  })
+  offsetDay?: number;
 }
