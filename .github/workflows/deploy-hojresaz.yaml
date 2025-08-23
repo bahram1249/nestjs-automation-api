@@ -17,4 +17,4 @@ jobs:
         run: |
           npm install -g @chabokan.net/cli
           chabok login -t $CHABOKAN_TOKEN
-          chabok deploy -s nest-hojre-demo
+          chabok deploy -s nest-hojre-big
