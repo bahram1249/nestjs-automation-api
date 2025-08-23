@@ -4,6 +4,7 @@ import {
   Get,
   HttpCode,
   HttpStatus,
+  Post,
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
@@ -30,7 +31,7 @@ export class LogisticPeriodController {
 
   @UseGuards(OptionalJwtGuard, SessionGuard)
   @ApiOperation({ description: 'show all logistic periods' })
-  @Get('/')
+  @Post('/')
   @HttpCode(HttpStatus.OK)
   async findAll(
     @GetECSession() session: ECUserSession,
