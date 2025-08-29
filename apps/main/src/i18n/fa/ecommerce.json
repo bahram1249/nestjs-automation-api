@@ -21,5 +21,10 @@
   "dont_access_to_this_vendor": "شما به این فروشگاه دسترسی ندارید",
   "dont_access_to_this_logistic": "شما به این لاجستیک دسترسی ندارید",
   "neighborhood_must_be_select_it": "محله باید انتخاب شود",
-  "cannot_defined_this_period_becuase_another_period_defined_between_this_time": "نمیتوان این دوره زمانی را تعریف کرد بخاطر اینکه قبلا در این بازه دوره زمانی دیگری تعریف شده است"
+  "cannot_defined_this_period_becuase_another_period_defined_between_this_time": "نمیتوان این دوره زمانی را تعریف کرد بخاطر اینکه قبلا در این بازه دوره زمانی دیگری تعریف شده است",
+  "shipment": {
+    "delivery": "ارسال با پیک",
+    "post": "ارسال با پست",
+    "unknown": "نامشخص"
+  }
 }

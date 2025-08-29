@@ -1,0 +1,18 @@
+import { Module } from '@nestjs/common';
+import { SequelizeModule } from '@nestjs/sequelize';
+import { ClientShipmentPriceService } from './shipment-price.service';
+import { ECPostageFee, ECAddress, ECDiscount, ECDiscountType } from '@rahino/localdatabase/models';
+import { Setting } from '@rahino/database';
+import { DeliveryShipmentPriceService } from './delivery-shipment-price.service';
+import { PostShipmentPriceService } from './post-shipment-price.service';
+import { LocalizationModule } from 'apps/main/src/common/localization';
+
+@Module({
+  imports: [
+    SequelizeModule.forFeature([ECPostageFee, ECAddress, Setting, ECDiscount, ECDiscountType]),
+    LocalizationModule,
+  ],
+  providers: [DeliveryShipmentPriceService, PostShipmentPriceService, ClientShipmentPriceService],
+  exports: [DeliveryShipmentPriceService, PostShipmentPriceService, ClientShipmentPriceService],
+})
+export class ClientShipmentPriceModule {}

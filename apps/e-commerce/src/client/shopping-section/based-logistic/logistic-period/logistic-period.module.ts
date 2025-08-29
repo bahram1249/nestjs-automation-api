@@ -11,11 +11,13 @@ import { LocalizationModule } from 'apps/main/src/common/localization';
 import { AddressModule } from '@rahino/ecommerce/user/address/address.module';
 import { SessionModule } from '@rahino/ecommerce/user/session/session.module';
 import { ClientValidateAddressModule } from '../validate-address/client-validate-address.module';
+import { ClientShipmentPriceModule } from '../shipment-price/shipment-price.module';
 
 @Module({
   imports: [
     LocalizationModule,
     ClientValidateAddressModule,
+    ClientShipmentPriceModule,
     SequelizeModule.forFeature([
       User,
       ECStock,

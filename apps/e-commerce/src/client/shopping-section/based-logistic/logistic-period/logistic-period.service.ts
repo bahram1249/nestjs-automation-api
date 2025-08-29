@@ -21,6 +21,8 @@ import { Op, Sequelize } from 'sequelize';
 import { ClientLogisticPeriodDto } from './dto';
 import { AddressService } from '@rahino/ecommerce/user/address/address.service';
 import { ClientValidateAddressService } from '../validate-address/client-validate-address.service';
+import { ClientShipmentPriceService } from '../shipment-price/shipment-price.service';
+import { OrderShipmentwayEnum } from '@rahino/ecommerce/shared/enum';
 
 @Injectable()
 export class LogisticPeriodService {
@@ -33,6 +35,7 @@ export class LogisticPeriodService {
     private readonly logisticShipmentWayRepository: typeof ECLogisticShipmentWay,
     private readonly addressService: AddressService,
     private readonly clientValidateAddressService: ClientValidateAddressService,
+    private readonly clientShipmentPriceService: ClientShipmentPriceService,
   ) {}
 
   async getDeliveryOptions(
@@ -40,6 +43,7 @@ export class LogisticPeriodService {
     session: ECUserSession,
     dto: ClientLogisticPeriodDto,
   ) {
+    console.log(user);
     const { result: userAddress } = await this.addressService.findById(
       user,
       dto.addressId,
@@ -384,125 +388,149 @@ export class LogisticPeriodService {
       const relevantShipmentWays = shipmentWays.filter(
         (sw) => Number(sw.logisticId) == Number(logisticId),
       );
-
       for (const typeId of uniqueTypeIds) {
         const info = typeInfo[typeId];
         const offsetDay = info.offsetDay || 0;
         const shipmentWaysOutput = relevantShipmentWays.map((shipmentWay) => {
           const possibleDates = [];
+          // Calculate shipment price strictly based on this shipment way type (no fallback)
+          const shipmentStocks = groupStocks.map((s) => ({
+            weight: Number(s.product?.weight || 0),
+            qty: Number(s.qty || 0),
+            freeShipment: false,
+            totalPrice: 0,
+          }));
+          const shipmentPricePromise = this.clientShipmentPriceService.cal(
+            shipmentStocks,
+            dto.addressId,
+            Number(shipmentWay.orderShipmentWay.id) as OrderShipmentwayEnum,
+          );
 
           const relevantPeriods = shipmentWay.sendingPeriods.filter(
             (sp) => sp.scheduleSendingTypeId === typeId,
           );
 
-          if (relevantPeriods.length > 0) {
-            const offsetStartDate = new Date(
-              currentDate.getTime() + offsetDay * 24 * 60 * 60 * 1000,
-            );
-            for (const persianDate of persianDates) {
-              const gregorianDate = new Date(persianDate.GregorianDate); // Convert to Date object
-              if (gregorianDate < offsetStartDate) continue;
-              const weekNumber = persianDate.WeekDayNumber;
-              const times = [];
+          const offsetStartDate = new Date(
+            currentDate.getTime() + offsetDay * 24 * 60 * 60 * 1000,
+          );
 
-              for (const sendingPeriod of relevantPeriods) {
-                if (
-                  sendingPeriod.startDate &&
-                  gregorianDate < sendingPeriod.startDate
-                )
-                  continue;
-                if (
-                  sendingPeriod.endDate &&
-                  gregorianDate > sendingPeriod.endDate
-                )
-                  continue;
-                for (const weeklyPeriod of sendingPeriod.weeklyPeriods) {
-                  if (weeklyPeriod.weekNumber === weekNumber) {
-                    for (const time of weeklyPeriod.weeklyPeriodTimes) {
-                      const fullStartTime = new Date(gregorianDate);
-                      const [startHour, startMinute, startSecond] =
-                        time.startTime.split(':').map(Number);
-                      fullStartTime.setHours(
-                        startHour,
-                        startMinute,
-                        startSecond,
-                        0,
-                      );
+          for (const persianDate of persianDates) {
+            const gregorianDate = new Date(persianDate.GregorianDate);
+            if (gregorianDate < offsetStartDate) continue;
+            const weekNumber = persianDate.WeekDayNumber;
+            const times = [] as any[];
 
-                      const threeHoursLater = new Date(
-                        currentDate.getTime() + 3 * 60 * 60 * 1000,
-                      );
+            for (const sendingPeriod of relevantPeriods) {
+              if (
+                sendingPeriod.startDate &&
+                gregorianDate < sendingPeriod.startDate
+              )
+                continue;
+              if (
+                sendingPeriod.endDate &&
+                gregorianDate > sendingPeriod.endDate
+              )
+                continue;
+              for (const weeklyPeriod of sendingPeriod.weeklyPeriods) {
+                if (weeklyPeriod.weekNumber === weekNumber) {
+                  for (const time of weeklyPeriod.weeklyPeriodTimes) {
+                    const fullStartTime = new Date(gregorianDate);
+                    const [startHour, startMinute, startSecond] = time.startTime
+                      .split(':')
+                      .map(Number);
+                    fullStartTime.setHours(
+                      startHour,
+                      startMinute,
+                      startSecond,
+                      0,
+                    );
 
-                      const isToday =
-                        gregorianDate.toDateString() ===
-                        currentDate.toDateString();
+                    const threeHoursLater = new Date(
+                      currentDate.getTime() + 3 * 60 * 60 * 1000,
+                    );
 
-                      if (isToday && fullStartTime <= threeHoursLater) {
-                        continue;
-                      }
+                    const isToday =
+                      gregorianDate.toDateString() ===
+                      currentDate.toDateString();
 
-                      times.push({
-                        weeklyPeriodTimeId: time.id,
-                        startTime: time.startTime,
-                        endTime: time.endTime,
-                        sendingPeriodId: sendingPeriod.id,
-                        weeklyPeriodId: weeklyPeriod.id,
-                        capacity: time.capacity,
-                      });
+                    if (isToday && fullStartTime <= threeHoursLater) {
+                      continue;
                     }
+
+                    times.push({
+                      weeklyPeriodTimeId: time.id,
+                      startTime: time.startTime,
+                      endTime: time.endTime,
+                      sendingPeriodId: sendingPeriod.id,
+                      weeklyPeriodId: weeklyPeriod.id,
+                      capacity: time.capacity,
+                    });
                   }
                 }
               }
+            }
 
-              if (times.length > 0) {
-                possibleDates.push({
-                  gregorianDate: persianDate.GregorianDate,
-                  persianDate: persianDate.YearMonthDay,
-                  weekDayName: persianDate.WeekDayName,
-                  times,
-                });
-              }
+            if (times.length > 0) {
+              possibleDates.push({
+                gregorianDate: persianDate.GregorianDate,
+                persianDate: persianDate.YearMonthDay,
+                weekDayName: persianDate.WeekDayName,
+                times,
+              });
             }
           }
 
-          return {
+          const priceData = {
             shipmentWayId: Number(shipmentWay.id),
             shipmentWayName: shipmentWay.orderShipmentWay.name,
             shipmentWayIcon: shipmentWay.orderShipmentWay.icon,
             possibleDates,
-          };
+          } as any;
+          return shipmentPricePromise.then((sp) => ({
+            ...priceData,
+            price: sp.price,
+            realShipmentPrice: sp.realShipmentPrice,
+          }));
         });
 
         let bestSelection = null;
         let earliestDate = null;
         let earliestStartTime = null;
 
-        shipmentWaysOutput.forEach((way) => {
-          way.possibleDates.forEach((pd) => {
-            pd.times.forEach((t) => {
-              const thisDate = new Date(pd.gregorianDate);
-              const thisStart = t.startTime;
-              if (
-                !earliestDate ||
-                thisDate < earliestDate ||
-                (thisDate.getTime() === earliestDate.getTime() &&
-                  thisStart < earliestStartTime)
-              ) {
-                earliestDate = thisDate;
-                earliestStartTime = thisStart;
-                bestSelection = {
-                  shipmentWayId: way.shipmentWayId,
-                  gregorianDate: thisDate,
-                  weeklyPeriodTimeId: t.weeklyPeriodTimeId,
-                };
-              }
-            });
-          });
-        });
+        // Resolve shipment price promises before selecting best date
+        const shipmentWaysResolved = await Promise.all(shipmentWaysOutput);
 
-        if (!bestSelection && shipmentWaysOutput.length > 0) {
+        // Old-style guard: only pick best when there are relevant periods
+        const relevantPeriods = shipmentWaysResolved.flatMap((way) =>
+          (way.possibleDates || []).flatMap((pd) =>
+            (pd.times || []).map((t) => ({ way, pd, t })),
+          ),
+        );
+
+        if (relevantPeriods.length > 0) {
+          relevantPeriods.forEach(({ way, pd, t }) => {
+            const thisDate = new Date(pd.gregorianDate);
+            const thisStart = t.startTime;
+            if (
+              !earliestDate ||
+              thisDate < earliestDate ||
+              (thisDate.getTime() === earliestDate.getTime() &&
+                thisStart < earliestStartTime)
+            ) {
+              earliestDate = thisDate;
+              earliestStartTime = thisStart;
+              bestSelection = {
+                shipmentWayId: way.shipmentWayId,
+                gregorianDate: thisDate,
+                weeklyPeriodTimeId: t.weeklyPeriodTimeId,
+              };
+            }
+          });
+        }
+
+        if (!bestSelection && shipmentWaysResolved.length > 0) {
           bestSelection = {
-            shipmentWayId: Number(shipmentWaysOutput[0].shipmentWayId),
+            shipmentWayId: Number(shipmentWaysResolved[0].shipmentWayId),
           };
         }
 
@@ -520,7 +548,7 @@ export class LogisticPeriodService {
           typeId,
           typeName: info.name,
           typeIcon: info.icon,
-          shipmentWays: shipmentWaysOutput,
+          shipmentWays: shipmentWaysResolved,
           bestSelection,
           supportedStockIds,
         });
