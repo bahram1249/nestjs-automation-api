@@ -482,6 +482,8 @@ export class LogisticPeriodService {
 
           const priceData = {
             shipmentWayId: Number(shipmentWay.id),
+            // expose backend semantic shipment way type/id for FE
+            orderShipmentwayId: Number(shipmentWay.orderShipmentWayId),
             shipmentWayName: shipmentWay.orderShipmentWay.name,
             shipmentWayIcon: shipmentWay.orderShipmentWay.icon,
             possibleDates,
