@@ -88,6 +88,7 @@ export class LogisticPeriodService {
               'vendorId',
               'scheduleSendingTypeId',
               'onlyProvinceId',
+              'offsetDay',
             ],
             include: [
               {
@@ -390,7 +391,20 @@ export class LogisticPeriodService {
       );
       for (const typeId of uniqueTypeIds) {
         const info = typeInfo[typeId];
-        const offsetDay = info.offsetDay || 0;
+        // Compute extra inventory-level offset for stocks that support this type (either direct or via parent)
+        const supportedStocksForType = groupStocks.filter(
+          (stock) =>
+            stock.inventory.scheduleSendingTypeId === typeId ||
+            stock.inventory.scheduleSendingType.parentId === typeId,
+        );
+        const extraInventoryOffset = supportedStocksForType.length
+          ? Math.max(
+              ...supportedStocksForType.map(
+                (s) => Number(s.inventory.offsetDay || 0),
+              ),
+            )
+          : 0;
+        const offsetDay = (info.offsetDay || 0) + extraInventoryOffset;
         const shipmentWaysOutput = relevantShipmentWays.map((shipmentWay) => {
           const possibleDates = [];
           // Calculate shipment price strictly based on this shipment way type (no fallback)

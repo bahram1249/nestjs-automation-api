@@ -236,4 +236,11 @@ export class ECInventory extends Model {
     foreignKey: 'scheduleSendingTypeId',
   })
   scheduleSendingType?: ECScheduleSendingType;
+
+  @AutoMap()
+  @Column({
+    type: DataType.INTEGER,
+    allowNull: true,
+  })
+  offsetDay?: number;
 }
