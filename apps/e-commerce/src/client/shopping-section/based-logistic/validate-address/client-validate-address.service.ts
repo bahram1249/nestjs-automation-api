@@ -5,12 +5,14 @@ import { ECProvince } from '@rahino/localdatabase/models';
 import { CityEnum } from '@rahino/ecommerce/shared/enum/city.enum';
 import { ProvinceEnum } from '@rahino/ecommerce/shared/enum';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
+import { LocalizationService } from 'apps/main/src/common/localization/localization.service';
 
 @Injectable()
 export class ClientValidateAddressService {
   constructor(
     @InjectModel(ECProvince)
     private readonly provinceRepository: typeof ECProvince,
+    private readonly l10n: LocalizationService,
   ) {}
 
   async validateAddress(dto: ValidateAddressDto) {
@@ -30,7 +32,10 @@ export class ClientValidateAddressService {
             .build(),
         );
         throw new BadRequestException(
-          `${stock.product.title} فقط مجوز ارسال به استان ${province.name} را دارد.`,
+          this.l10n.translate('ecommerce.province_delivery_restriction', {
+            productTitle: stock.product.title,
+            provinceName: province.name,
+          }),
         );
       }
     }

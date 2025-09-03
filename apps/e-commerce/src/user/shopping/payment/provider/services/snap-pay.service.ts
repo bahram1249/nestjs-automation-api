@@ -106,6 +106,7 @@ export class SnapPayService implements PayInterface {
           orderId: orderId,
           userId: user.id,
           transactionId: randomTransactionId,
+          paymentVersion: 1,
         },
         {
           transaction: transaction,

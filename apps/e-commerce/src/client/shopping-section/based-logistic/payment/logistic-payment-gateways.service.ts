@@ -1,0 +1,79 @@
+import { Injectable, BadRequestException } from '@nestjs/common';
+import { InjectModel } from '@nestjs/sequelize';
+import { ECStock, ECPaymentGateway, ECVariationPrice } from '@rahino/localdatabase/models';
+import { ECUserSession } from '@rahino/localdatabase/models';
+import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
+import { Op, Sequelize } from 'sequelize';
+import { StockService } from '@rahino/ecommerce/user/shopping/stock/stock.service';
+import { StockPriceService } from '@rahino/ecommerce/user/shopping/stock/services/price';
+import { InventoryStatusEnum } from '@rahino/ecommerce/shared/inventory/enum';
+import { LocalizationService } from 'apps/main/src/common/localization/localization.service';
+
+@Injectable()
+export class LogisticPaymentGatewaysService {
+  constructor(
+    private readonly stockService: StockService,
+    private readonly priceService: StockPriceService,
+    @InjectModel(ECPaymentGateway)
+    private readonly gatewayRepo: typeof ECPaymentGateway,
+    @InjectModel(ECVariationPrice)
+    private readonly variationPriceRepo: typeof ECVariationPrice,
+    private readonly l10n: LocalizationService,
+  ) {}
+
+  async list(session: ECUserSession): Promise<Array<{ id: number; name: string; imageUrl: string }>> {
+    // Get enriched active stocks from StockService
+    const allStocks = (await this.stockService.findAll(session)).result as any[];
+
+    // Filter available items with sufficient qty
+    const stocks = (allStocks || []).filter(
+      (stock) =>
+        stock?.product?.inventoryStatusId === InventoryStatusEnum.available &&
+        stock?.product?.inventories?.[0]?.qty >= stock?.qty,
+    );
+
+    if (!stocks || stocks.length === 0) {
+      throw new BadRequestException(
+        this.l10n.translate('ecommerce.no_active_stock_in_session' as any),
+      );
+    }
+
+    // Load all variation prices and group stocks by variation prices via price service
+    const variationPrices = await this.variationPriceRepo.findAll();
+    const variationPriceStocks = await this.priceService.calByVariationPrices(
+      stocks,
+      variationPrices,
+      undefined,
+    );
+
+    // For each variation price, collect supported gateways
+    const gatewayMap = new Map<number, { id: number; name: string; imageUrl: string }>();
+    for (const vps of variationPriceStocks) {
+      const gateways = await this.gatewayRepo.findAll(
+        new QueryOptionsBuilder()
+          .attributes(['id', 'name', 'imageUrl'])
+          .filter({ variationPriceId: vps.variationPrice.id })
+          .filter(
+            Sequelize.where(
+              Sequelize.fn('isnull', Sequelize.col('ECPaymentGateway.isDeleted'), 0),
+              { [Op.eq]: 0 },
+            ),
+          )
+          .build(),
+      );
+
+      for (const g of gateways || []) {
+        const id = g.id as any as number;
+        if (!gatewayMap.has(id)) {
+          gatewayMap.set(id, {
+            id,
+            name: (g as any).name,
+            imageUrl: (g as any).imageUrl,
+          });
+        }
+      }
+    }
+
+    return Array.from(gatewayMap.values());
+  }
+}

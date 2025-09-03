@@ -23,6 +23,8 @@ END
 
 GO
 
+
+
 IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ecommerce-cities-v1' 
 			)
 	AND EXISTS (
@@ -3101,8 +3103,10 @@ BEGIN
 		[description]					nvarchar(max)					NULL,
 		isDeleted						bit								NULL,
 		[createdAt]						datetimeoffset					NOT NULL,
-		[updatedAt]						datetimeoffset					NOT NULL
+		[updatedAt]						datetimeoffset					NOT NULL,
 	);
+
+
 
 
 
@@ -3135,8 +3139,10 @@ BEGIN
 				FOREIGN KEY REFERENCES ECShippingWays(id),
 		
 		[createdAt]						datetimeoffset					NOT NULL,
-		[updatedAt]						datetimeoffset					NOT NULL
+		[updatedAt]						datetimeoffset					NOT NULL,
 	);
+
+
 
 
 
@@ -3169,8 +3175,10 @@ BEGIN
 		qty								int								NOT NULL,
 		isDeleted						bit								NULL,
 		[createdAt]						datetimeoffset					NOT NULL,
-		[updatedAt]						datetimeoffset					NOT NULL
+		[updatedAt]						datetimeoffset					NOT NULL,
 	);
+
+
 
 
 
@@ -3195,7 +3203,7 @@ BEGIN
 		title							nvarchar(256)					NOT NULL,
 		isDeleted						bit								NULL,
 		[createdAt]						datetimeoffset					NOT NULL,
-		[updatedAt]						datetimeoffset					NOT NULL
+		[updatedAt]						datetimeoffset					NOT NULL,
 	);
 
 
@@ -3204,7 +3212,6 @@ BEGIN
 END
 
 GO
-
 
 -- ec-logisticshipmentways-v1
 IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ec-logisticshipmentways-v1' 
@@ -3419,7 +3426,7 @@ BEGIN
 		isDefault						bit 							NULL,
 		isDeleted						bit								NULL,
 		[createdAt]						datetimeoffset					NOT NULL,
-		[updatedAt]						datetimeoffset					NOT NULL
+		[updatedAt]						datetimeoffset					NOT NULL,
 	);
 
 	INSERT INTO Migrations(version, createdAt, updatedAt)
@@ -3427,4 +3434,193 @@ BEGIN
 END
 
 GO
+
+
+-- ec-logistic-orders
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ec-logistic-orders-v1' 
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'SITE_NAME' AND [value] IN ('ecommerce'))
+		)
+BEGIN
+
+	CREATE TABLE ECLogisticOrders(
+		id							bigint	identity(1,1)		PRIMARY KEY,
+		totalProductPrice			bigint					NULL,
+		totalDiscountFee			bigint					NULL,
+		totalShipmentPrice			bigint					NULL,
+		realShipmentPrice			bigint					NULL,
+		totalPrice					bigint					NULL,
+		orderStatusId				int						NOT NULL
+			CONSTRAINT FK_ECLogisticOrders_OrderStatusId
+				FOREIGN KEY REFERENCES ECOrderStatus(id),
+		sessionId					nvarchar(256)			NULL,
+		userId						bigint					NOT NULL
+			CONSTRAINT FK_ECLogisticOrders_UserId
+				FOREIGN KEY REFERENCES Users(id),
+		addressId					bigint					NULL
+			CONSTRAINT FK_ECLogisticOrders_AddressId
+				FOREIGN KEY REFERENCES ECAddresses(id),
+		postReceipt					nvarchar(256)			NULL,
+		transactionId				nvarchar(256)			NULL,
+		paymentId					bigint					NULL,
+		paymentCommissionAmount	bigint					NULL,
+		gregorianAtPersian			datetime				NULL,
+		noteDescription				nvarchar(1024)			NULL,
+		isDeleted					bit						NULL,
+		[createdAt]					datetimeoffset			NOT NULL,
+		[updatedAt]					datetimeoffset			NOT NULL,
+	);
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'ec-logistic-orders-v1', GETDATE(), GETDATE()
+END
+
+GO
+
+-- ec-logistic-order-groupeds
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ec-logistic-order-groupeds-v1' 
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'SITE_NAME' AND [value] IN ('ecommerce'))
+		)
+BEGIN
+
+	CREATE TABLE ECLogisticOrderGroupeds(
+		id									bigint	identity(1,1)		PRIMARY KEY,
+		logisticOrderId						bigint					NOT NULL
+			CONSTRAINT FK_ECLogisticOrderGroupeds_LogisticOrderId
+				FOREIGN KEY REFERENCES ECLogisticOrders(id),
+		logisticId							bigint					NOT NULL
+			CONSTRAINT FK_ECLogisticOrderGroupeds_LogisticId
+				FOREIGN KEY REFERENCES ECLogistics(id),
+		logisticShipmentWayId				bigint					NOT NULL
+			CONSTRAINT FK_ECLogisticOrderGroupeds_LogisticShipmentWayId
+				FOREIGN KEY REFERENCES ECLogisticShipmentWays(id),
+		logisticSendingPeriodId				bigint					NOT NULL
+			CONSTRAINT FK_ECLogisticOrderGroupeds_LogisticSendingPeriodId
+				FOREIGN KEY REFERENCES ECLogisticSendingPeriods(id),
+		logisticWeeklyPeriodId				bigint					NULL
+			CONSTRAINT FK_ECLogisticOrderGroupeds_LogisticWeeklyPeriodId
+				FOREIGN KEY REFERENCES ECLogisticWeeklyPeriods(id),
+		logisticWeeklyPeriodTimeId			bigint					NULL
+			CONSTRAINT FK_ECLogisticOrderGroupeds_LogisticWeeklyPeriodTimeId
+				FOREIGN KEY REFERENCES ECLogisticWeeklyPeriodTimes(id),
+		orderStatusId						int						NOT NULL
+			CONSTRAINT FK_ECLogisticOrderGroupeds_OrderStatusId
+				FOREIGN KEY REFERENCES ECOrderStatus(id),
+		totalProductPrice					bigint					NULL,
+		totalDiscountFee					bigint					NULL,
+		shipmentPrice						bigint					NULL,
+		realShipmentPrice					bigint					NULL,
+		totalPrice							bigint					NULL,
+		[createdAt]						datetimeoffset			NOT NULL,
+		[updatedAt]						datetimeoffset			NOT NULL,
+	);
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'ec-logistic-order-groupeds-v1', GETDATE(), GETDATE()
+END
+
+GO
+
+-- ec-logistic-order-grouped-details
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ec-logistic-order-grouped-details-v1' 
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'SITE_NAME' AND [value] IN ('ecommerce'))
+		)
+BEGIN
+
+	CREATE TABLE ECLogisticOrderGroupedDetails(
+		id									bigint	identity(1,1)		PRIMARY KEY,
+		groupedId							bigint					NOT NULL
+			CONSTRAINT FK_ECLogisticOrderGroupedDetails_GroupedId
+				FOREIGN KEY REFERENCES ECLogisticOrderGroupeds(id),
+		orderDetailStatusId					int						NOT NULL
+			CONSTRAINT FK_ECLogisticOrderGroupedDetails_OrderDetailStatusId
+				FOREIGN KEY REFERENCES ECOrderDetailStatus(id),
+		vendorId							int						NOT NULL
+			CONSTRAINT FK_ECLogisticOrderGroupedDetails_VendorId
+				FOREIGN KEY REFERENCES ECVendors(id),
+		productId							bigint					NOT NULL
+			CONSTRAINT FK_ECLogisticOrderGroupedDetails_ProductId
+				FOREIGN KEY REFERENCES ECProducts(id),
+		inventoryId							bigint					NOT NULL
+			CONSTRAINT FK_ECLogisticOrderGroupedDetails_InventoryId
+				FOREIGN KEY REFERENCES ECInventories(id),
+		inventoryPriceId					bigint					NOT NULL
+			CONSTRAINT FK_ECLogisticOrderGroupedDetails_InventoryPriceId
+				FOREIGN KEY REFERENCES ECInventoryPrices(id),
+		stockId								bigint					NULL,
+		qty									int						NULL,
+		productPrice						bigint					NULL,
+		discountFee							bigint					NULL,
+		discountFeePerItem					bigint					NULL,
+		discountId							bigint					NULL
+			CONSTRAINT FK_ECLogisticOrderGroupedDetails_DiscountId
+				FOREIGN KEY REFERENCES ECDiscounts(id),
+		totalPrice							bigint					NULL,
+		userId								bigint					NULL
+			CONSTRAINT FK_ECLogisticOrderGroupedDetails_UserId
+				FOREIGN KEY REFERENCES Users(id),
+		vendorCommissionId					bigint					NULL
+			CONSTRAINT FK_ECLogisticOrderGroupedDetails_VendorCommissionId
+				FOREIGN KEY REFERENCES ECVendorCommissions(id),
+		commissionAmount					bigint					NULL,
+		gregorianAtPersian					datetime				NULL,
+		isDeleted							bit						NULL,
+		[createdAt]						datetimeoffset			NOT NULL,
+		[updatedAt]						datetimeoffset			NOT NULL,
+	);
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'ec-logistic-order-grouped-details-v1', GETDATE(), GETDATE()
+END
+
+GO
+
+-- ecommerce-payments-logisticOrderId-v1
+IF NOT EXISTS (
+    SELECT 1 FROM Migrations WHERE version = 'ecommerce-payments-logisticOrderId-v1'
+  )
+  AND EXISTS (
+    SELECT 1 FROM Settings 
+    WHERE ([key] = 'SITE_NAME' AND [value] IN ('ecommerce'))
+  )
+BEGIN
+
+  ALTER TABLE ECPayments
+    ADD logisticOrderId bigint NULL
+      CONSTRAINT FK_ECPayments_LogisticOrderId
+        FOREIGN KEY REFERENCES ECLogisticOrders(id);
+
+  INSERT INTO Migrations(version, createdAt, updatedAt)
+  SELECT 'ecommerce-payments-logisticOrderId-v1', GETDATE(), GETDATE()
+END
+
+GO
+
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ecommerce-payments-version-v1'
+            )
+    AND EXISTS (
+        SELECT 1 FROM Settings 
+        WHERE ([key] = 'SITE_NAME' AND [value] IN ('ecommerce'))
+    )
+BEGIN
+
+  
+        ALTER TABLE ECPayments 
+            ADD paymentVersion int NULL
+    
+
+    INSERT INTO Migrations(version, createdAt, updatedAt)
+    SELECT 'ecommerce-payments-version-v1', GETDATE(), GETDATE()
+END
+
+GO
+
 

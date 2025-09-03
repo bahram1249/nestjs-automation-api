@@ -58,6 +58,25 @@ export type I18nTranslations = {
         "dont_access_to_this_logistic": string;
         "neighborhood_must_be_select_it": string;
         "cannot_defined_this_period_becuase_another_period_defined_between_this_time": string;
+        "no_active_stock_in_session": string;
+        "invalid_payment": string;
+        "invalid_payment_request": string;
+        "client_id_not_provided": string;
+        "secret_not_provided": string;
+        "username_not_provided": string;
+        "password_not_provided": string;
+        "invalid_token": string;
+        "invalid_token_body": string;
+        "payment_not_found": string;
+        "logistic_order_id_not_set_on_payment": string;
+        "cannot_find_stocks": string;
+        "invalid_groups_unknown_stock_id": string;
+        "payment_method_not_defined": string;
+        "invalid_data_source": string;
+        "main_wallet_not_found": string;
+        "payment_for_charging_not_found": string;
+        "payment_request_failed": string;
+        "province_delivery_restriction": string;
         "shipment": {
             "delivery": string;
             "post": string;

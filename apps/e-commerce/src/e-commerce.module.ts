@@ -120,6 +120,7 @@ import { AdminLogisticSendingPeriodModule } from './admin/logistic-section/logis
 import { AdminLogisticWeeklyPeriodModule } from './admin/logistic-section/logistic-weekly-period/logistic-weekly-period.module';
 import { ScheduleSendingTypeModule } from './admin/logistic-section/schedule-sending-type/schedule-sending-type.module';
 import { ClientLogisticPeriodModule } from './client/shopping-section/based-logistic/logistic-period/logistic-period.module';
+import { ClientLogisticPaymentModule } from './client/shopping-section/based-logistic/payment/logistic-payment.module';
 
 @Module({
   imports: [
@@ -241,6 +242,7 @@ import { ClientLogisticPeriodModule } from './client/shopping-section/based-logi
     ScheduleSendingTypeModule,
 
     ClientLogisticPeriodModule,
+    ClientLogisticPaymentModule,
   ],
   providers: [
     {

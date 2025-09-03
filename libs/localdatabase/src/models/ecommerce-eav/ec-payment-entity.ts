@@ -10,6 +10,7 @@ import { ECPaymentGateway } from './ec-payment-gateway.entity';
 import { ECPaymentType } from './ec-payment-type.entity';
 import { ECPaymentStatus } from './ec-payment-status.entity';
 import { ECOrder } from './ec-order.entity';
+import { ECLogisticOrder } from './ec-logistic-order.entity';
 import { User } from '@rahino/database';
 
 @Table({ tableName: 'ECPayments' })
@@ -87,6 +88,17 @@ export class ECPayment extends Model {
   @BelongsTo(() => ECOrder, { as: 'order', foreignKey: 'orderId' })
   order?: ECOrder;
 
+  // New field for logistics-native payments
+  @Column({
+    type: DataType.BIGINT,
+    allowNull: true,
+  })
+  @ForeignKey(() => ECLogisticOrder)
+  logisticOrderId?: bigint;
+
+  @BelongsTo(() => ECLogisticOrder, { as: 'logisticOrder', foreignKey: 'logisticOrderId' })
+  logisticOrder?: ECLogisticOrder;
+
   @Column({
     type: DataType.BIGINT,
   })
@@ -94,6 +106,14 @@ export class ECPayment extends Model {
 
   @BelongsTo(() => User, { as: 'user', foreignKey: 'userId' })
   user?: User;
+
+  // 1 = legacy, 2 = logistic
+  @Column({
+    type: DataType.INTEGER,
+    allowNull: true,
+    field: 'paymentVersion',
+  })
+  paymentVersion?: number;
 
   @Column({
     type: DataType.BOOLEAN,

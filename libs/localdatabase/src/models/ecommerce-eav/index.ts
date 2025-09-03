@@ -70,3 +70,6 @@ export * from './ec-logistic-sending-period.entity';
 export * from './ec-logistic-weekly-period.entity';
 export * from './ec-logistic-weekly-period-time.entity';
 export * from './ec-vendor-logistic.entity';
+export * from './ec-logistic-order.entity';
+export * from './ec-logistic-order-grouped.entity';
+export * from './ec-logistic-order-grouped-detail.entity';

@@ -1,0 +1,111 @@
+import {
+  Table,
+  Column,
+  Model,
+  DataType,
+  ForeignKey,
+  BelongsTo,
+  HasMany,
+} from 'sequelize-typescript';
+import { ECLogisticOrder } from './ec-logistic-order.entity';
+import { ECLogistic } from './ec-logistic.entity';
+import { ECLogisticShipmentWay } from './ec-logistic-shipment-way.entity';
+import { ECLogisticSendingPeriod } from './ec-logistic-sending-period.entity';
+import { ECLogisticWeeklyPeriod } from './ec-logistic-weekly-period.entity';
+import { ECLogisticWeeklyPeriodTime } from './ec-logistic-weekly-period-time.entity';
+import { ECOrderStatus } from './ec-order-status.entity';
+import { ECLogisticOrderGroupedDetail } from './ec-logistic-order-grouped-detail.entity';
+
+@Table({ tableName: 'ECLogisticOrderGroupeds' })
+export class ECLogisticOrderGrouped extends Model {
+  @Column({ type: DataType.BIGINT, primaryKey: true, autoIncrement: true })
+  id: bigint;
+
+  @Column({ type: DataType.BIGINT })
+  @ForeignKey(() => ECLogisticOrder)
+  logisticOrderId: bigint;
+
+  @BelongsTo(() => ECLogisticOrder, {
+    as: 'logisticOrder',
+    foreignKey: 'logisticOrderId',
+  })
+  logisticOrder?: ECLogisticOrder;
+
+  @Column({ type: DataType.BIGINT })
+  @ForeignKey(() => ECLogistic)
+  logisticId: bigint;
+
+  @BelongsTo(() => ECLogistic, { as: 'logistic', foreignKey: 'logisticId' })
+  logistic?: ECLogistic;
+
+  @Column({ type: DataType.BIGINT })
+  @ForeignKey(() => ECLogisticShipmentWay)
+  logisticShipmentWayId: bigint;
+
+  @BelongsTo(() => ECLogisticShipmentWay, {
+    as: 'logisticShipmentWay',
+    foreignKey: 'logisticShipmentWayId',
+  })
+  logisticShipmentWay?: ECLogisticShipmentWay;
+
+  @Column({ type: DataType.BIGINT })
+  @ForeignKey(() => ECLogisticSendingPeriod)
+  logisticSendingPeriodId: bigint;
+
+  @BelongsTo(() => ECLogisticSendingPeriod, {
+    as: 'logisticSendingPeriod',
+    foreignKey: 'logisticSendingPeriodId',
+  })
+  logisticSendingPeriod?: ECLogisticSendingPeriod;
+
+  @Column({ type: DataType.BIGINT, allowNull: true })
+  @ForeignKey(() => ECLogisticWeeklyPeriod)
+  logisticWeeklyPeriodId?: bigint;
+
+  @BelongsTo(() => ECLogisticWeeklyPeriod, {
+    as: 'logisticWeeklyPeriod',
+    foreignKey: 'logisticWeeklyPeriodId',
+  })
+  logisticWeeklyPeriod?: ECLogisticWeeklyPeriod;
+
+  @Column({ type: DataType.BIGINT, allowNull: true })
+  @ForeignKey(() => ECLogisticWeeklyPeriodTime)
+  logisticWeeklyPeriodTimeId?: bigint;
+
+  @BelongsTo(() => ECLogisticWeeklyPeriodTime, {
+    as: 'logisticWeeklyPeriodTime',
+    foreignKey: 'logisticWeeklyPeriodTimeId',
+  })
+  logisticWeeklyPeriodTime?: ECLogisticWeeklyPeriodTime;
+
+  @Column({ type: DataType.INTEGER })
+  @ForeignKey(() => ECOrderStatus)
+  orderStatusId: number;
+
+  @BelongsTo(() => ECOrderStatus, {
+    as: 'orderStatus',
+    foreignKey: 'orderStatusId',
+  })
+  orderStatus?: ECOrderStatus;
+
+  @Column({ type: DataType.BIGINT, allowNull: true })
+  totalProductPrice?: bigint;
+
+  @Column({ type: DataType.BIGINT, allowNull: true })
+  totalDiscountFee?: bigint;
+
+  @Column({ type: DataType.BIGINT, allowNull: true })
+  shipmentPrice?: bigint;
+
+  @Column({ type: DataType.BIGINT, allowNull: true })
+  realShipmentPrice?: bigint;
+
+  @Column({ type: DataType.BIGINT, allowNull: true })
+  totalPrice?: bigint;
+
+  @HasMany(() => ECLogisticOrderGroupedDetail, {
+    as: 'details',
+    foreignKey: 'groupedId',
+  })
+  details?: ECLogisticOrderGroupedDetail[];
+}

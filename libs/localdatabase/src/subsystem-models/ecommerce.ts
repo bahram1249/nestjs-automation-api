@@ -23,6 +23,9 @@ import {
   ECInventoryTrackChangeStatus,
   ECLinkedEntityTypeBrand,
   ECLogistic,
+  ECLogisticOrder,
+  ECLogisticOrderGrouped,
+  ECLogisticOrderGroupedDetail,
   ECLogisticSendingPeriod,
   ECLogisticShipmentWay,
   ECLogisticUser,
@@ -146,4 +149,7 @@ export const ecommerceEntities = [
   ECLogisticWeeklyPeriod,
   ECLogisticWeeklyPeriodTime,
   ECVendorLogistic,
+  ECLogisticOrder,
+  ECLogisticOrderGrouped,
+  ECLogisticOrderGroupedDetail,
 ];

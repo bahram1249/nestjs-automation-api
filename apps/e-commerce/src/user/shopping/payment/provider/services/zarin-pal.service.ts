@@ -75,6 +75,7 @@ export class ZarinPalService implements PayInterface {
         totalprice: totalPrice * 10,
         orderId: orderId,
         userId: user.id,
+        paymentVersion: 1,
       },
       {
         transaction: transaction,
