@@ -1,4 +1,4 @@
-﻿import { IsArray, IsNumber, IsOptional, IsString } from 'class-validator';
+import { IsArray, IsNumber, IsOptional, IsString } from 'class-validator';
 import { AutoMap } from 'automapper-classes';
 import { InventoryPriceDto } from './inventory-price.dto';
 
@@ -75,4 +75,9 @@ export class InventoryDto {
   @IsNumber()
   @AutoMap()
   scheduleSendingTypeId?: number;
+
+  @IsOptional()
+  @IsNumber()
+  @AutoMap()
+  offsetDay?: number;
 }

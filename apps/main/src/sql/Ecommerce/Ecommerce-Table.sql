@@ -1056,6 +1056,25 @@ END
 GO
 
 
+-- ecommerce inventories-v5
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ecommerce-inventories-v5' 
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'SITE_NAME' AND [value] IN ('ecommerce'))
+		)
+BEGIN
+
+	ALTER TABLE ECInventories
+		ADD offsetDay int null
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'ecommerce-inventories-v5', GETDATE(), GETDATE()
+END
+
+GO
+
+
 -- ecommerce inventory-prices
 IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ecommerce-inventory-prices-v1' 
 			)
