@@ -6,7 +6,7 @@ import { QueryFilterModule } from '@rahino/query-filter';
 import { DBLoggerModule } from '@rahino/logger';
 import { SequelizeModule } from '@nestjs/sequelize';
 import { PersianDate, User } from '@rahino/database';
-import { ECLogisticShipmentWay, ECStock } from '@rahino/localdatabase/models';
+import { ECLogisticOrderGrouped, ECLogisticShipmentWay, ECStock } from '@rahino/localdatabase/models';
 import { LocalizationModule } from 'apps/main/src/common/localization';
 import { AddressModule } from '@rahino/ecommerce/user/address/address.module';
 import { SessionModule } from '@rahino/ecommerce/user/session/session.module';
@@ -23,6 +23,7 @@ import { ClientShipmentPriceModule } from '../shipment-price/shipment-price.modu
       ECStock,
       PersianDate,
       ECLogisticShipmentWay,
+      ECLogisticOrderGrouped,
     ]),
     AddressModule,
     SessionModule,

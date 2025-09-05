@@ -103,6 +103,10 @@ export class ECLogisticOrderGrouped extends Model {
   @Column({ type: DataType.BIGINT, allowNull: true })
   totalPrice?: bigint;
 
+  // Selected sending date (Gregorian). Optional; validated at payment time
+  @Column({ type: DataType.DATE, allowNull: true })
+  sendingGregorianDate?: Date;
+
   @HasMany(() => ECLogisticOrderGroupedDetail, {
     as: 'details',
     foreignKey: 'groupedId',

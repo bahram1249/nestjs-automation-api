@@ -42,6 +42,27 @@ export class LogisticEcommerceSmsService {
     }
   }
 
+  async sendByCourier(text: string, to: string) {
+    // {0} {1} عزیز، سفارش شما توسط {2} با کدپیگیری {3} با موفقیت ارسال شد
+    const activeSms =
+      (await this.config.get('ECOMMERCE_COURIER_SEND_SMS_CODE_STATUS')) ===
+      'true';
+    if (activeSms) {
+      const body = this.config.get('ECOMMERCE_COURIER_SEND_SMS_CODE');
+      await this.smsService.sendMessage({ text, to, bodyId: body });
+    }
+  }
+
+  async sendByPost(text: string, to: string) {
+    // {0} {1} عزیز، سفارش شما توسط {2} با کدپیگیری {3} با موفقیت ارسال شد
+    const activeSms =
+      (await this.config.get('ECOMMERCE_POST_SEND_SMS_CODE_STATUS')) === 'true';
+    if (activeSms) {
+      const body = this.config.get('ECOMMERCE_POST_SEND_SMS_CODE');
+      await this.smsService.sendMessage({ text, to, bodyId: body });
+    }
+  }
+
   async successfulOrderToVendor(paymentId: bigint, transaction?: Transaction) {
     const activeSms =
       (await this.config.get('ECOMMERCE_SUSSESSFUL_ORDER_SMS_STATUS')) ===

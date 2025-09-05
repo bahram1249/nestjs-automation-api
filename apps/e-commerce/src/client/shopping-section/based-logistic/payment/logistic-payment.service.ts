@@ -42,6 +42,7 @@ import { Queue } from 'bullmq';
 import { LOGISTIC_REVERT_PAYMENT_JOB, LOGISTIC_REVERT_PAYMENT_QUEUE } from './revert-payment/revert-payment.constants';
 import * as moment from 'moment-jalaali';
 import { LocalizationService } from 'apps/main/src/common/localization/localization.service';
+import { LogisticPeriodService } from '../logistic-period/logistic-period.service';
 
 @Injectable()
 export class LogisticPaymentService {
@@ -75,6 +76,7 @@ export class LogisticPaymentService {
     @InjectQueue(LOGISTIC_REVERT_PAYMENT_QUEUE)
     private readonly revertPaymentQueue: Queue,
     private readonly l10n: LocalizationService,
+    private readonly logisticPeriodService: LogisticPeriodService,
   ) {}
 
   async stock(
@@ -90,6 +92,9 @@ export class LogisticPaymentService {
     // 2) Build variation context and validate groups
     const variationPriceStock = await this.calcVariationPriceStock(stocks, body.variationPriceId, body.couponCode);
     this.validateGroupsAgainstStocks(body.groups, variationPriceStock);
+
+    // 2.1) Optional: validate provided sendingDate against logistic period availability
+    await this.validateSendingDates(user, session, body.addressId as any, body.groups);
 
     // 3) Shipment pricing
     const pricingGroups = this.buildPricingGroups(body.groups, variationPriceStock);
@@ -281,6 +286,7 @@ export class LogisticPaymentService {
           logisticSendingPeriodId: (g.sendingPeriodId as any) ?? null,
           logisticWeeklyPeriodId: (g.weeklyPeriodId as any) ?? null,
           logisticWeeklyPeriodTimeId: (g.weeklyPeriodTimeId as any) ?? null,
+          sendingGregorianDate: g.sendingDate ? new Date(g.sendingDate) : null,
           orderStatusId: OrderStatusEnum.WaitingForPayment,
           totalProductPrice: 0,
           totalDiscountFee: 0,
@@ -298,6 +304,65 @@ export class LogisticPaymentService {
       groupTotals[grpKey] = { product: 0, discount: 0, shipment: 0, realShipment: 0, total: 0 };
     }
     return { groupMap, groupTotals };
+  }
+
+  private async validateSendingDates(
+    user: User,
+    session: ECUserSession,
+    addressId: number,
+    groups: any[],
+  ) {
+    const { result } = await this.logisticPeriodService.getDeliveryOptions(user, session, { addressId } as any);
+
+    const dateEq = (a: Date | string, b: Date | string) => {
+      const da = new Date(a);
+      const db = new Date(b);
+      return da.toDateString() === db.toDateString();
+    };
+
+    for (const g of groups) {
+      if (!g.sendingDate) continue; // nothing to validate
+
+      const targetGroup = (result as any[] || []).find((rg: any) => Number(rg.logisticId) === Number(g.logisticId));
+      if (!targetGroup) {
+        throw new BadRequestException('invalid sending date group');
+      }
+
+      let ok = false;
+      for (const so of targetGroup.sendingOptions || []) {
+        for (const way of so.shipmentWays || []) {
+          if (Number(way.shipmentWayId) !== Number(g.shipmentWayId)) continue;
+          for (const pd of way.possibleDates || []) {
+            if (!dateEq(pd.gregorianDate, g.sendingDate)) continue;
+            const times = pd.times || [];
+            if (g.weeklyPeriodTimeId) {
+              const hasTime = times.some(
+                (t: any) =>
+                  Number(t.weeklyPeriodTimeId) === Number(g.weeklyPeriodTimeId) &&
+                  (g.sendingPeriodId ? Number(t.sendingPeriodId) === Number(g.sendingPeriodId) : true) &&
+                  (g.weeklyPeriodId ? Number(t.weeklyPeriodId) === Number(g.weeklyPeriodId) : true),
+              );
+              if (hasTime) {
+                ok = true;
+                break;
+              }
+            } else {
+              // no specific time required; having any time on this date is accepted
+              if (times.length > 0) {
+                ok = true;
+                break;
+              }
+            }
+          }
+          if (ok) break;
+        }
+        if (ok) break;
+      }
+
+      if (!ok) {
+        throw new BadRequestException('invalid sending date');
+      }
+    }
   }
 
   private fillShipmentTotals(groupTotals: Record<string, any>, shipmentPricing: any) {

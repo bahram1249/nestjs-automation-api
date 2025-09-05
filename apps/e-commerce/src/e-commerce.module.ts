@@ -121,6 +121,12 @@ import { AdminLogisticWeeklyPeriodModule } from './admin/logistic-section/logist
 import { ScheduleSendingTypeModule } from './admin/logistic-section/schedule-sending-type/schedule-sending-type.module';
 import { ClientLogisticPeriodModule } from './client/shopping-section/based-logistic/logistic-period/logistic-period.module';
 import { ClientLogisticPaymentModule } from './client/shopping-section/based-logistic/payment/logistic-payment.module';
+import { LogisticCourierOrderModule } from './admin/logistic-order-section/courierOrder/logistic-courier-order.module';
+import { LogisticPendingOrderModule } from './admin/logistic-order-section/pendingOrder/logistic-pending-order.module';
+import { LogisticPostageOrderModule } from './admin/logistic-order-section/postageOrder/logistic-postage-order.module';
+import { LogisticDeliveryOrderModule } from './admin/logistic-order-section/deliveryOrder/logistic-delivery-order.module';
+import { LogisticCancellOrderModule } from './admin/logistic-order-section/cancell-order/logistic-cancell-order.module';
+import { ClientOrderModule } from './client/order/client-order.module';
 
 @Module({
   imports: [
@@ -243,6 +249,12 @@ import { ClientLogisticPaymentModule } from './client/shopping-section/based-log
 
     ClientLogisticPeriodModule,
     ClientLogisticPaymentModule,
+    LogisticPendingOrderModule,
+    LogisticPostageOrderModule,
+    LogisticCourierOrderModule,
+    LogisticDeliveryOrderModule,
+    LogisticCancellOrderModule,
+    ClientOrderModule,
   ],
   providers: [
     {

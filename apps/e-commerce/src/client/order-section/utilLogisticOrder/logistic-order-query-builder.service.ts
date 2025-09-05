@@ -1,0 +1,316 @@
+import { Injectable, Scope } from '@nestjs/common';
+import { Attachment, User } from '@rahino/database';
+import {
+  ECAddress,
+  ECCity,
+  ECColor,
+  ECDiscount,
+  ECGuarantee,
+  ECGuaranteeMonth,
+  ECInventory,
+  ECLogisticOrder,
+  ECLogisticOrderGrouped,
+  ECLogisticOrderGroupedDetail,
+  ECLogistic,
+  ECLogisticShipmentWay,
+  ECLogisticSendingPeriod,
+  ECLogisticWeeklyPeriod,
+  ECLogisticWeeklyPeriodTime,
+  ECNeighborhood,
+  ECOrderStatus,
+  ECPayment,
+  ECProduct,
+  ECProvince,
+  ECOrderShipmentWay,
+  ECScheduleSendingType,
+  ECVendor,
+} from '@rahino/localdatabase/models';
+import { OrderStatusEnum } from '@rahino/ecommerce/shared/enum';
+import { Order, SortOrder } from '@rahino/query-filter';
+import {
+  IncludeOptionsBuilder,
+  QueryOptionsBuilder,
+} from '@rahino/query-filter/sequelize-query-builder';
+import { Op, Sequelize } from 'sequelize';
+
+@Injectable({ scope: Scope.REQUEST })
+export class LogisticOrderQueryBuilder {
+  private builder: QueryOptionsBuilder;
+  constructor() {
+    this.builder = new QueryOptionsBuilder();
+    this.builder = this.builder.include([]);
+  }
+
+  subQuery(enable: boolean) {
+    this.builder = this.builder.subQuery(enable);
+    return this;
+  }
+
+  nonDeletedOrder() {
+    this.builder = this.builder.filter(
+      Sequelize.where(
+        Sequelize.fn('isnull', Sequelize.col('ECLogisticOrder.isDeleted'), 0),
+        { [Op.eq]: 0 },
+      ),
+    );
+    return this;
+  }
+
+  addOnlyUser(userId: bigint) {
+    this.builder = this.builder.filter({ userId });
+    return this;
+  }
+
+  addOrderId(orderId: bigint) {
+    this.builder = this.builder.filter({ id: orderId });
+    return this;
+  }
+
+  addNegativeOrderStatus(status: OrderStatusEnum) {
+    this.builder = this.builder.filter({
+      orderStatusId: { [Op.ne]: status },
+    });
+    return this;
+  }
+
+  search(text?: string) {
+    if (!text) return this;
+    this.builder = this.builder.filter({
+      [Op.or]: [
+        { transactionId: { [Op.like]: text } },
+        { id: { [Op.like]: text } },
+      ],
+    });
+    return this;
+  }
+
+  order(params: { orderBy?: string; sortOrder?: SortOrder | string }) {
+    const orderBy = params?.orderBy;
+    const sortOrder = (params?.sortOrder as string) ?? undefined;
+    this.builder = this.builder.order({ orderBy, sortOrder });
+    return this;
+  }
+
+  offset(offset?: number) {
+    this.builder = this.builder.offset(offset);
+    return this;
+  }
+
+  limit(limit?: number) {
+    this.builder = this.builder.limit(limit);
+    return this;
+  }
+
+  includeOrderStatus() {
+    this.builder = this.builder.thenInclude({
+      attributes: ['id', 'name'],
+      model: ECOrderStatus,
+      as: 'orderStatus',
+    });
+    return this;
+  }
+
+  includePayment() {
+    this.builder = this.builder.thenInclude({
+      attributes: ['id', 'paymentGatewayId', 'refCode', 'amount'],
+      model: ECPayment,
+      as: 'payment',
+    });
+    return this;
+  }
+
+  includeUser() {
+    this.builder = this.builder.thenInclude({
+      attributes: ['id', 'firstname', 'lastname', 'username', 'phoneNumber'],
+      model: User,
+      as: 'user',
+    });
+    return this;
+  }
+
+  includeAddress() {
+    this.builder = this.builder.thenInclude({
+      attributes: [
+        'id',
+        'name',
+        'latitude',
+        'longitude',
+        'provinceId',
+        'cityId',
+        'neighborhoodId',
+        'street',
+        'alley',
+        'plaque',
+        'floorNumber',
+        'postalCode',
+      ],
+      model: ECAddress,
+      as: 'address',
+      include: [
+        { attributes: ['id', 'name'], model: ECProvince, as: 'province' },
+        { attributes: ['id', 'name'], model: ECCity, as: 'city' },
+        { attributes: ['id', 'name'], model: ECNeighborhood, as: 'neighborhood' },
+      ],
+    });
+    return this;
+  }
+
+  includeGroupsAndDetails() {
+    // groups
+    let groupsInclude = new IncludeOptionsBuilder({
+      model: ECLogisticOrderGrouped,
+      as: 'groups',
+      required: false,
+      attributes: [
+        'id',
+        'logisticId',
+        'logisticShipmentWayId',
+        'logisticSendingPeriodId',
+        'logisticWeeklyPeriodId',
+        'logisticWeeklyPeriodTimeId',
+        'orderStatusId',
+        'totalProductPrice',
+        'totalDiscountFee',
+        'shipmentPrice',
+        'realShipmentPrice',
+        'totalPrice',
+      ],
+      include: [
+        {
+          attributes: ['id', 'name'],
+          model: ECOrderStatus,
+          as: 'orderStatus',
+          required: false,
+        },
+        // logistic
+        {
+          attributes: ['id', 'title'],
+          model: ECLogistic,
+          as: 'logistic',
+          required: false,
+        },
+        // logistic shipment way and its lookups
+        {
+          attributes: ['id', 'logisticId', 'orderShipmentWayId', 'provinceId'],
+          model: ECLogisticShipmentWay,
+          as: 'logisticShipmentWay',
+          required: false,
+          include: [
+            {
+              attributes: ['id', 'name'],
+              model: ECOrderShipmentWay,
+              as: 'orderShipmentWay',
+              required: false,
+            },
+            {
+              attributes: ['id', 'name'],
+              model: ECProvince,
+              as: 'province',
+              required: false,
+            },
+          ],
+        },
+        // logistic sending period and its lookups
+        {
+          attributes: ['id', 'logisticShipmentWayId', 'scheduleSendingTypeId', 'startDate', 'endDate'],
+          model: ECLogisticSendingPeriod,
+          as: 'logisticSendingPeriod',
+          required: false,
+          include: [
+            {
+              attributes: ['id', 'name'],
+              model: ECScheduleSendingType,
+              as: 'scheduleSendingType',
+              required: false,
+            },
+          ],
+        },
+        // weekly period
+        {
+          attributes: ['id', 'logisticSendingPeriodId', 'weekNumber'],
+          model: ECLogisticWeeklyPeriod,
+          as: 'logisticWeeklyPeriod',
+          required: false,
+        },
+        // weekly period time
+        {
+          attributes: ['id', 'logisticWeeklyPeriodId', 'startTime', 'endTime'],
+          model: ECLogisticWeeklyPeriodTime,
+          as: 'logisticWeeklyPeriodTime',
+          required: false,
+        },
+      ],
+    });
+
+    // details under groups
+    const detailsInclude = new IncludeOptionsBuilder({
+      model: ECLogisticOrderGroupedDetail,
+      as: 'details',
+      required: false,
+      attributes: [
+        'id',
+        'groupedId',
+        'orderDetailStatusId',
+        'vendorId',
+        'productId',
+        'inventoryId',
+        'qty',
+        'productPrice',
+        'discountFee',
+        'discountFeePerItem',
+        'discountId',
+        'totalPrice',
+        'userId',
+        'createdAt',
+        'updatedAt',
+      ],
+      include: [
+        { attributes: ['id', 'name', 'slug'], model: ECVendor, as: 'vendor', required: false },
+        {
+          attributes: ['id', 'title', 'slug', 'sku'],
+          model: ECProduct,
+          as: 'product',
+          required: false,
+          include: [
+            {
+              attributes: ['id', 'colorId', 'guaranteeId', 'guaranteeMonthId'],
+              model: ECInventory,
+              as: 'inventories',
+              required: false,
+              where: Sequelize.where(Sequelize.col('groups.details.inventoryId'), {
+                [Op.eq]: Sequelize.col('groups.details.product.inventories.id'),
+              }),
+              include: [
+                { attributes: ['id', 'name', 'hexCode'], model: ECColor, as: 'color', required: false },
+                { attributes: ['id', 'name', 'slug'], model: ECGuarantee, as: 'guarantee', required: false },
+                { attributes: ['id', 'name'], model: ECGuaranteeMonth, as: 'guaranteeMonth', required: false },
+              ],
+            },
+            {
+              attributes: ['id', 'fileName'],
+              through: { attributes: [] },
+              model: Attachment,
+              as: 'attachments',
+              required: false,
+            },
+          ],
+        },
+        { attributes: ['id', 'name'], model: ECDiscount, as: 'discount', required: false },
+      ],
+    });
+
+    groupsInclude = groupsInclude.thenInclude(detailsInclude.build());
+
+    this.builder = this.builder.thenInclude(groupsInclude.build());
+    return this;
+  }
+
+  filter(condition: any) {
+    this.builder = this.builder.filter(condition);
+    return this;
+  }
+
+  build() {
+    return this.builder.build();
+  }
+}

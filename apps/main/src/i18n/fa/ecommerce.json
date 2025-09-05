@@ -41,6 +41,9 @@
   "payment_for_charging_not_found": "درگاه مناسب برای شارژ کیف پول یافت نشد",
   "payment_request_failed": "خطا در ارسال درخواست پرداخت: {message}",
   "province_delivery_restriction": "{productTitle} فقط به استان {provinceName} قابل ارسال است.",
+  "logistic_order_not_found": "سفارش لجستیک یافت نشد",
+  "logistic_group_not_found": "گروه لجستیک یافت نشد",
+  "logistic_detail_not_found": "جزئیات سفارش لجستیک یافت نشد",
   "shipment": {
     "delivery": "ارسال با پیک",
     "post": "ارسال با پست",

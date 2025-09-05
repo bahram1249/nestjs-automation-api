@@ -41,6 +41,9 @@
   "payment_for_charging_not_found": "the payment for charging not founded!",
   "payment_request_failed": "something failed in payments requests: {message}",
   "province_delivery_restriction": "{productTitle} can only be delivered to {provinceName} province.",
+  "logistic_order_not_found": "logistic order not found",
+  "logistic_group_not_found": "logistic group not found",
+  "logistic_detail_not_found": "logistic order detail not found",
   "shipment": {
     "delivery": "Courier Delivery",
     "post": "Postal Delivery",

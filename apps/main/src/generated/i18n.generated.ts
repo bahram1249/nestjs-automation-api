@@ -77,6 +77,9 @@ export type I18nTranslations = {
         "payment_for_charging_not_found": string;
         "payment_request_failed": string;
         "province_delivery_restriction": string;
+        "logistic_order_not_found": string;
+        "logistic_group_not_found": string;
+        "logistic_detail_not_found": string;
         "shipment": {
             "delivery": string;
             "post": string;
