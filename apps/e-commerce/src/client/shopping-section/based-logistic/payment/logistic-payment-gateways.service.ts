@@ -1,6 +1,9 @@
 import { Injectable, BadRequestException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
-import { ECPaymentGateway, ECVariationPrice } from '@rahino/localdatabase/models';
+import {
+  ECPaymentGateway,
+  ECVariationPrice,
+} from '@rahino/localdatabase/models';
 import { ECUserSession } from '@rahino/localdatabase/models';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import { Op, Sequelize } from 'sequelize';
@@ -21,9 +24,11 @@ export class LogisticPaymentGatewaysService {
     private readonly l10n: LocalizationService,
   ) {}
 
-  async list(session: ECUserSession): Promise<Array<{ id: number; name: string; imageUrl: string }>> {
+  async list(
+    session: ECUserSession,
+  ): Promise<Array<{ id: number; name: string; imageUrl: string }>> {
     // Get enriched active stocks from StockService
-    const {result: allStocks} = await this.stockService.findAll(session);
+    const { result: allStocks } = await this.stockService.findAll(session);
 
     // Filter available items with sufficient qty
     const stocks = (allStocks || []).filter(
@@ -43,19 +48,39 @@ export class LogisticPaymentGatewaysService {
     const variationPriceStocks = await this.priceService.calByVariationPrices(
       stocks,
       variationPrices,
-      null
+      null,
     );
 
     // For each variation price, collect supported gateways
-    const gatewayMap = new Map<number, { id: number; name: string; imageUrl: string }>();
+    const gatewayMap = new Map<
+      number,
+      {
+        id: number;
+        name: string;
+        imageUrl: string;
+        variationPriceId: number;
+        variationPriceTitle: string;
+      }
+    >();
     for (const vps of variationPriceStocks) {
       const gateways = await this.gatewayRepo.findAll(
         new QueryOptionsBuilder()
-          .attributes(['id', 'name', 'imageUrl'])
+          .include([
+            {
+              model: ECVariationPrice,
+              attributes: ['id', 'name'],
+              required: true,
+            },
+          ])
+          .attributes(['id', 'name', 'imageUrl', 'variationPriceId'])
           .filter({ variationPriceId: vps.variationPrice.id })
           .filter(
             Sequelize.where(
-              Sequelize.fn('isnull', Sequelize.col('ECPaymentGateway.isDeleted'), 0),
+              Sequelize.fn(
+                'isnull',
+                Sequelize.col('ECPaymentGateway.isDeleted'),
+                0,
+              ),
               { [Op.eq]: 0 },
             ),
           )
@@ -69,6 +94,8 @@ export class LogisticPaymentGatewaysService {
             id,
             name: g.name,
             imageUrl: g.imageUrl,
+            variationPriceId: g.variationPriceId,
+            variationPriceTitle: g.variationPrice.name,
           });
         }
       }
