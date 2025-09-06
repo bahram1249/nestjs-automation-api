@@ -44,6 +44,11 @@
   "logistic_order_not_found": "سفارش لجستیک یافت نشد",
   "logistic_group_not_found": "گروه لجستیک یافت نشد",
   "logistic_detail_not_found": "جزئیات سفارش لجستیک یافت نشد",
+  "fileNotProvided": "فایل اکسل ارسال نشده است",
+  "invalidExcelFile": "فایل اکسل معتبر نیست",
+  "invalidExcelSheet": "شیت اکسل یافت نشد",
+  "invalidExcelHeaders": "هدرهای الزامی اکسل نامعتبر است",
+  "vendorAddressNotFound": "آدرس فروشنده یافت نشد",
   "shipment": {
     "delivery": "ارسال با پیک",
     "post": "ارسال با پست",

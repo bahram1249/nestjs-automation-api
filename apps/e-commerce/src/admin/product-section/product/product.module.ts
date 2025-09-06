@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { ProductService } from './product.service';
 import { ProductController } from './product.controller';
 import { SequelizeModule } from '@nestjs/sequelize';
-import { ECProduct } from '@rahino/localdatabase/models';
+import { ECInventory, ECInventoryPrice, ECProduct, ECVendorAddress } from '@rahino/localdatabase/models';
 import { User } from '@rahino/database';
 import { Permission } from '@rahino/database';
 import { ProductProfile } from './mapper';
@@ -23,11 +23,15 @@ import { PermissionModule } from '@rahino/core/user/permission/permission.module
 import { CalPriceFactoryModule } from './price-cal-factory/cal-price-factory.module';
 import { ProductQueryBuilderService } from './query-builder/product-query-builder.service';
 import { LocalizationModule } from 'apps/main/src/common/localization';
+import { InventoryTrackChangeModule } from '@rahino/ecommerce/shared/inventory-track-change/inventory-track-change.module';
 
 @Module({
   imports: [
     SequelizeModule.forFeature([
       ECProduct,
+      ECInventory,
+      ECInventoryPrice,
+      ECVendorAddress,
       User,
       Permission,
       EAVEntityType,
@@ -38,6 +42,7 @@ import { LocalizationModule } from 'apps/main/src/common/localization';
     ProductPhotoModule,
     ProductVideoModule,
     InventoryModule,
+    InventoryTrackChangeModule,
     UserVendorModule,
     QueryFilterModule,
     SequelizeModule,

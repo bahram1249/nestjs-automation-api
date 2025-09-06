@@ -44,6 +44,11 @@
   "logistic_order_not_found": "logistic order not found",
   "logistic_group_not_found": "logistic group not found",
   "logistic_detail_not_found": "logistic order detail not found",
+  "fileNotProvided": "Excel file not provided",
+  "invalidExcelFile": "Invalid Excel file",
+  "invalidExcelSheet": "Excel sheet not found",
+  "invalidExcelHeaders": "Invalid Excel headers",
+  "vendorAddressNotFound": "Vendor address not found",
   "shipment": {
     "delivery": "Courier Delivery",
     "post": "Postal Delivery",

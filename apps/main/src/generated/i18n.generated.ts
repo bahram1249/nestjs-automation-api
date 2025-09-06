@@ -80,6 +80,11 @@ export type I18nTranslations = {
         "logistic_order_not_found": string;
         "logistic_group_not_found": string;
         "logistic_detail_not_found": string;
+        "fileNotProvided": string;
+        "invalidExcelFile": string;
+        "invalidExcelSheet": string;
+        "invalidExcelHeaders": string;
+        "vendorAddressNotFound": string;
         "shipment": {
             "delivery": string;
             "post": string;
