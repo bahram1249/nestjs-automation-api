@@ -19,7 +19,10 @@ import {
   ECUserSession,
   ECPaymentGateway,
 } from '@rahino/localdatabase/models';
-import { LogisticStockPaymentDto, LogisticPaymentRequestResult } from './dto/logistic-payment.dto';
+import {
+  LogisticStockPaymentDto,
+  LogisticPaymentRequestResult,
+} from './dto/logistic-payment.dto';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import { Op, Sequelize, Transaction } from 'sequelize';
 import {
@@ -31,7 +34,10 @@ import {
 import { ClientShipmentPriceService } from '../shipment-price/shipment-price.service';
 import { ApplyDiscountService } from '@rahino/ecommerce/client/product/service';
 import { StockService } from '@rahino/ecommerce/user/shopping/stock/stock.service';
-import { StockPriceService, VariationStockInterface } from '@rahino/ecommerce/user/shopping/stock/services/price';
+import {
+  StockPriceService,
+  VariationStockInterface,
+} from '@rahino/ecommerce/user/shopping/stock/services/price';
 import { AddressService } from '@rahino/ecommerce/user/address/address.service';
 import { ClientValidateAddressService } from '../validate-address/client-validate-address.service';
 import { LOGISTIC_PAYMENT_PROVIDER_TOKEN } from './provider/constants';
@@ -39,7 +45,10 @@ import { LogisticPayInterface } from './provider/interface/logistic-pay.interfac
 import { InjectQueue } from '@nestjs/bullmq';
 import { Queue } from 'bullmq';
 // Removed legacy inventory revert queue; logistic flow uses a dedicated revert-payment processor
-import { LOGISTIC_REVERT_PAYMENT_JOB, LOGISTIC_REVERT_PAYMENT_QUEUE } from './revert-payment/revert-payment.constants';
+import {
+  LOGISTIC_REVERT_PAYMENT_JOB,
+  LOGISTIC_REVERT_PAYMENT_QUEUE,
+} from './revert-payment/revert-payment.constants';
 import * as moment from 'moment-jalaali';
 import { LocalizationService } from 'apps/main/src/common/localization/localization.service';
 import { LogisticPeriodService } from '../logistic-period/logistic-period.service';
@@ -90,20 +99,43 @@ export class LogisticPaymentService {
     stocks = await this.applyCouponIfAny(stocks, body.couponCode);
 
     // 2) Build variation context and validate groups
-    const variationPriceStock = await this.calcVariationPriceStock(stocks, body.variationPriceId, body.couponCode);
+    const variationPriceStock = await this.calcVariationPriceStock(
+      stocks,
+      body.variationPriceId,
+      body.couponCode,
+    );
     this.validateGroupsAgainstStocks(body.groups, variationPriceStock);
 
     // 2.1) Optional: validate provided sendingDate against logistic period availability
-    await this.validateSendingDates(user, session, body.addressId as any, body.groups);
+    await this.validateSendingDates(
+      user,
+      session,
+      body.addressId as any,
+      body.groups,
+    );
 
     // 3) Shipment pricing
-    const pricingGroups = this.buildPricingGroups(body.groups, variationPriceStock);
-    const shipmentPricing = await this.clientShipmentPriceService.calSelections(pricingGroups as any, body.addressId);
+    const pricingGroups = this.buildPricingGroups(
+      body.groups,
+      variationPriceStock,
+    );
+    const shipmentPricing = await this.clientShipmentPriceService.calSelections(
+      pricingGroups as any,
+      body.addressId,
+    );
 
     // 4) Totals and gateway validation
-    const { totalPriceProducts, totalDiscount, totalShipment, totalRealShipment, totalPayable } =
-      this.computeTotals(variationPriceStock, shipmentPricing);
-    await this.validatePaymentGateway(variationPriceStock.variationPrice.id, body.paymentId);
+    const {
+      totalPriceProducts,
+      totalDiscount,
+      totalShipment,
+      totalRealShipment,
+      totalPayable,
+    } = this.computeTotals(variationPriceStock, shipmentPricing);
+    await this.validatePaymentGateway(
+      variationPriceStock.variationPrice.id,
+      body.paymentId,
+    );
 
     const transaction = await this.sequelize.transaction({
       isolationLevel: Transaction.ISOLATION_LEVELS.READ_UNCOMMITTED,
@@ -111,13 +143,23 @@ export class LogisticPaymentService {
 
     try {
       // 5) Create order and groups
-      const order = await this.createOrder(session, user, body, {
-        totalPriceProducts,
-        totalDiscount,
-        totalShipment,
-        totalRealShipment,
-      }, transaction);
-      const { groupMap, groupTotals } = await this.createGroupedOrders(order.id, body.groups, transaction);
+      const order = await this.createOrder(
+        session,
+        user,
+        body,
+        {
+          totalPriceProducts,
+          totalDiscount,
+          totalShipment,
+          totalRealShipment,
+        },
+        transaction,
+      );
+      const { groupMap, groupTotals } = await this.createGroupedOrders(
+        order.id,
+        body.groups,
+        transaction,
+      );
       this.fillShipmentTotals(groupTotals, shipmentPricing);
 
       // 6) Persist details and update group totals
@@ -150,53 +192,83 @@ export class LogisticPaymentService {
     } catch (e) {
       await transaction.rollback();
       throw new InternalServerErrorException(
-        this.l10n.translate('ecommerce.payment_request_failed', { message: e.message }),
+        this.l10n.translate('ecommerce.payment_request_failed', {
+          message: e.message,
+        }),
       );
     }
   }
 
   // region: helpers
   private async getValidSessionStocks(session: ECUserSession) {
-    const stockResult = (await this.stockService.findAll(session)).result;
+    const { result: stockResult } = await this.stockService.findAll(session);
     const stocks = stockResult.filter(
       (stock) =>
         stock.product.inventoryStatusId != null &&
         stock.product.inventories[0].qty >= stock.qty,
     );
     if (stocks.length === 0) {
-      throw new BadRequestException(this.l10n.translate('ecommerce.cannot_find_stocks'));
+      throw new BadRequestException(
+        this.l10n.translate('ecommerce.cannot_find_stocks'),
+      );
     }
     return stocks;
   }
 
+  /**
+   * Validates if the given address is valid for the given stocks
+   *
+   * @param user - The user that is making the payment
+   * @param addressId - The id of the address to check
+   * @param stocks - The array of stocks that the user is trying to purchase
+   * @throws BadRequestException if the address is not valid for the given stocks
+   */
   private async validateAddress(user: User, addressId: bigint, stocks: any[]) {
-    const { result: userAddress } = await this.addressService.findById(user, addressId);
-    await this.clientValidateAddressService.validateAddress({ address: userAddress, stocks });
+    const { result: userAddress } = await this.addressService.findById(
+      user,
+      addressId,
+    );
+    await this.clientValidateAddressService.paymentValidateAddress({
+      address: userAddress,
+      stocks,
+    });
   }
 
   private async applyCouponIfAny(stocks: any[], couponCode?: string) {
     if (!couponCode) return stocks;
-    const applied = await this.applyDiscountService.applyStocksCouponDiscount(stocks, couponCode);
+    const applied = await this.applyDiscountService.applyStocksCouponDiscount(
+      stocks,
+      couponCode,
+    );
     return applied.stocks;
   }
 
-  private async calcVariationPriceStock(stocks: any[], variationPriceId: bigint, couponCode?: string) {
+  private async calcVariationPriceStock(
+    stocks: any[],
+    variationPriceId: bigint,
+    couponCode?: string,
+  ) {
     const variationPrices = await this.variationPriceRepository.findAll(
       new QueryOptionsBuilder().filter({ id: variationPriceId }).build(),
     );
-    const variationPriceStocks = await this.stockPriceService.calByVariationPrices(
-      stocks,
-      variationPrices,
-      couponCode,
-    );
+    const variationPriceStocks =
+      await this.stockPriceService.calByVariationPrices(
+        stocks,
+        variationPrices,
+        couponCode,
+      );
     if (variationPriceStocks.length === 0) {
-      throw new BadRequestException(this.l10n.translate('ecommerce.invalid_payment'));
+      throw new BadRequestException(
+        this.l10n.translate('ecommerce.invalid_payment'),
+      );
     }
     return variationPriceStocks[0];
   }
 
   private validateGroupsAgainstStocks(groups: any[], variationPriceStock: any) {
-    const validStockIds = new Set(variationPriceStock.stocks.map((s) => String(s.stockId)));
+    const validStockIds = new Set(
+      variationPriceStock.stocks.map((s) => String(s.stockId)),
+    );
     for (const g of groups) {
       for (const stockId of g.stockIds) {
         if (stockId == null || !validStockIds.has(String(stockId))) {
@@ -211,8 +283,14 @@ export class LogisticPaymentService {
   private buildPricingGroups(groups: any[], variationPriceStock: any) {
     return groups.map((g) => {
       const stocks = g.stockIds.map((id) => {
-        const s = variationPriceStock.stocks.find((vs) => String(vs.stockId) === String(id));
-        return { stockId: s.stockId, qty: s.qty, totalPrice: s.totalPrice } as any;
+        const s = variationPriceStock.stocks.find(
+          (vs) => String(vs.stockId) === String(id),
+        );
+        return {
+          stockId: s.stockId,
+          qty: s.qty,
+          totalPrice: s.totalPrice,
+        } as any;
       });
       return { ...g, stocks } as any;
     });
@@ -226,14 +304,26 @@ export class LogisticPaymentService {
       .map((s) => (s.discountFee ? s.discountFee : 0))
       .reduce((a, b) => a + b, 0);
     const totalShipment = Number(shipmentPricing.totalPrice || 0);
-    const totalRealShipment = Number(shipmentPricing.totalRealShipmentPrice || 0);
-    const totalPayable = variationPriceStock.stocks
-      .map((s) => s.totalPrice)
-      .reduce((a, b) => a + b, 0) + totalShipment;
-    return { totalPriceProducts, totalDiscount, totalShipment, totalRealShipment, totalPayable };
+    const totalRealShipment = Number(
+      shipmentPricing.totalRealShipmentPrice || 0,
+    );
+    const totalPayable =
+      variationPriceStock.stocks
+        .map((s) => s.totalPrice)
+        .reduce((a, b) => a + b, 0) + totalShipment;
+    return {
+      totalPriceProducts,
+      totalDiscount,
+      totalShipment,
+      totalRealShipment,
+      totalPayable,
+    };
   }
 
-  private async validatePaymentGateway(variationPriceId: number | bigint, paymentId: number | bigint) {
+  private async validatePaymentGateway(
+    variationPriceId: number | bigint,
+    paymentId: number | bigint,
+  ) {
     const paymentGateway = await this.paymentGatewayRepository.findOne(
       new QueryOptionsBuilder()
         .attributes(['id', 'name'])
@@ -241,7 +331,11 @@ export class LogisticPaymentService {
         .filter({ id: paymentId })
         .filter(
           Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('ECPaymentGateway.isDeleted'), 0),
+            Sequelize.fn(
+              'isnull',
+              Sequelize.col('ECPaymentGateway.isDeleted'),
+              0,
+            ),
             { [Op.eq]: 0 },
           ),
         )
@@ -254,7 +348,12 @@ export class LogisticPaymentService {
     session: ECUserSession,
     user: User,
     body: LogisticStockPaymentDto,
-    totals: { totalPriceProducts: number; totalDiscount: number; totalShipment: number; totalRealShipment: number },
+    totals: {
+      totalPriceProducts: number;
+      totalDiscount: number;
+      totalShipment: number;
+      totalRealShipment: number;
+    },
     transaction: Transaction,
   ) {
     return this.logisticOrderRepository.create(
@@ -263,19 +362,29 @@ export class LogisticPaymentService {
         totalDiscountFee: totals.totalDiscount,
         totalShipmentPrice: totals.totalShipment,
         realShipmentPrice: totals.totalRealShipment,
-        totalPrice: totals.totalPriceProducts - totals.totalDiscount + totals.totalShipment,
+        totalPrice:
+          totals.totalPriceProducts -
+          totals.totalDiscount +
+          totals.totalShipment,
         orderStatusId: OrderStatusEnum.WaitingForPayment,
         sessionId: session.id,
         userId: user.id,
         addressId: body.addressId,
         noteDescription: body.noteDescription,
-        gregorianAtPersian: moment().tz('Asia/Tehran', false).locale('en').format('YYYY-MM-DD HH:mm:ss'),
+        gregorianAtPersian: moment()
+          .tz('Asia/Tehran', false)
+          .locale('en')
+          .format('YYYY-MM-DD HH:mm:ss'),
       },
       { transaction },
     );
   }
 
-  private async createGroupedOrders(orderId: bigint, groups: any[], transaction: Transaction) {
+  private async createGroupedOrders(
+    orderId: bigint,
+    groups: any[],
+    transaction: Transaction,
+  ) {
     const groupMap: Record<string, ECLogisticOrderGrouped> = {};
     for (const g of groups) {
       const grp = await this.logisticOrderGroupedRepository.create(
@@ -296,12 +405,33 @@ export class LogisticPaymentService {
         },
         { transaction },
       );
-      groupMap[`${g.logisticId}:${g.shipmentWayId}:${g.sendingPeriodId ?? 'n'}:${g.weeklyPeriodId ?? 'n'}:${g.weeklyPeriodTimeId ?? 'n'}`] = grp;
+      groupMap[
+        `${g.logisticId}:${g.shipmentWayId}:${g.sendingPeriodId ?? 'n'}:${
+          g.weeklyPeriodId ?? 'n'
+        }:${g.weeklyPeriodTimeId ?? 'n'}`
+      ] = grp;
     }
-    const groupTotals: Record<string, { product: number; discount: number; shipment: number; realShipment: number; total: number }> = {};
+    const groupTotals: Record<
+      string,
+      {
+        product: number;
+        discount: number;
+        shipment: number;
+        realShipment: number;
+        total: number;
+      }
+    > = {};
     for (const g of groups) {
-      const grpKey = `${g.logisticId}:${g.shipmentWayId}:${g.sendingPeriodId ?? 'n'}:${g.weeklyPeriodId ?? 'n'}:${g.weeklyPeriodTimeId ?? 'n'}`;
-      groupTotals[grpKey] = { product: 0, discount: 0, shipment: 0, realShipment: 0, total: 0 };
+      const grpKey = `${g.logisticId}:${g.shipmentWayId}:${
+        g.sendingPeriodId ?? 'n'
+      }:${g.weeklyPeriodId ?? 'n'}:${g.weeklyPeriodTimeId ?? 'n'}`;
+      groupTotals[grpKey] = {
+        product: 0,
+        discount: 0,
+        shipment: 0,
+        realShipment: 0,
+        total: 0,
+      };
     }
     return { groupMap, groupTotals };
   }
@@ -312,7 +442,11 @@ export class LogisticPaymentService {
     addressId: number,
     groups: any[],
   ) {
-    const { result } = await this.logisticPeriodService.getDeliveryOptions(user, session, { addressId } as any);
+    const { result } = await this.logisticPeriodService.getDeliveryOptions(
+      user,
+      session,
+      { addressId } as any,
+    );
 
     const dateEq = (a: Date | string, b: Date | string) => {
       const da = new Date(a);
@@ -323,7 +457,9 @@ export class LogisticPaymentService {
     for (const g of groups) {
       if (!g.sendingDate) continue; // nothing to validate
 
-      const targetGroup = (result as any[] || []).find((rg: any) => Number(rg.logisticId) === Number(g.logisticId));
+      const targetGroup = ((result as any[]) || []).find(
+        (rg: any) => Number(rg.logisticId) === Number(g.logisticId),
+      );
       if (!targetGroup) {
         throw new BadRequestException('invalid sending date group');
       }
@@ -338,9 +474,14 @@ export class LogisticPaymentService {
             if (g.weeklyPeriodTimeId) {
               const hasTime = times.some(
                 (t: any) =>
-                  Number(t.weeklyPeriodTimeId) === Number(g.weeklyPeriodTimeId) &&
-                  (g.sendingPeriodId ? Number(t.sendingPeriodId) === Number(g.sendingPeriodId) : true) &&
-                  (g.weeklyPeriodId ? Number(t.weeklyPeriodId) === Number(g.weeklyPeriodId) : true),
+                  Number(t.weeklyPeriodTimeId) ===
+                    Number(g.weeklyPeriodTimeId) &&
+                  (g.sendingPeriodId
+                    ? Number(t.sendingPeriodId) === Number(g.sendingPeriodId)
+                    : true) &&
+                  (g.weeklyPeriodId
+                    ? Number(t.weeklyPeriodId) === Number(g.weeklyPeriodId)
+                    : true),
               );
               if (hasTime) {
                 ok = true;
@@ -365,9 +506,14 @@ export class LogisticPaymentService {
     }
   }
 
-  private fillShipmentTotals(groupTotals: Record<string, any>, shipmentPricing: any) {
+  private fillShipmentTotals(
+    groupTotals: Record<string, any>,
+    shipmentPricing: any,
+  ) {
     for (const priced of shipmentPricing.groups) {
-      const k = `${priced.logisticId}:${priced.shipmentWayId}:${priced.sendingPeriodId ?? 'n'}:${priced.weeklyPeriodId ?? 'n'}:${priced.weeklyPeriodTimeId ?? 'n'}`;
+      const k = `${priced.logisticId}:${priced.shipmentWayId}:${
+        priced.sendingPeriodId ?? 'n'
+      }:${priced.weeklyPeriodId ?? 'n'}:${priced.weeklyPeriodTimeId ?? 'n'}`;
       if (groupTotals[k]) {
         groupTotals[k].shipment = Number(priced.price || 0);
         groupTotals[k].realShipment = Number(priced.realShipmentPrice || 0);
@@ -385,14 +531,21 @@ export class LogisticPaymentService {
   ) {
     const allGroupedDetails = [] as ECLogisticOrderGroupedDetail[];
     for (const g of groups) {
-      const grpKey = `${g.logisticId}:${g.shipmentWayId}:${g.sendingPeriodId ?? 'n'}:${g.weeklyPeriodId ?? 'n'}:${g.weeklyPeriodTimeId ?? 'n'}`;
+      const grpKey = `${g.logisticId}:${g.shipmentWayId}:${
+        g.sendingPeriodId ?? 'n'
+      }:${g.weeklyPeriodId ?? 'n'}:${g.weeklyPeriodTimeId ?? 'n'}`;
       const grp = groupMap[grpKey];
       for (const stockId of g.stockIds) {
-        const s = variationPriceStock.stocks.find((vs) => String(vs.stockId) === String(stockId));
+        const s = variationPriceStock.stocks.find(
+          (vs) => String(vs.stockId) === String(stockId),
+        );
         if (!s) throw new BadRequestException('invalid stock in group');
 
         const inventoryPrice = await this.inventoryPriceRepository.findOne(
-          new QueryOptionsBuilder().filter({ id: s.inventoryPriceId }).transaction(transaction).build(),
+          new QueryOptionsBuilder()
+            .filter({ id: s.inventoryPriceId })
+            .transaction(transaction)
+            .build(),
         );
         const vendorCommission = await this.vendorCommissionRepository.findOne(
           new QueryOptionsBuilder()
@@ -400,7 +553,11 @@ export class LogisticPaymentService {
             .filter({ variationPriceId: inventoryPrice.variationPriceId })
             .filter(
               Sequelize.where(
-                Sequelize.fn('isnull', Sequelize.col('ECVendorCommission.isDeleted'), 0),
+                Sequelize.fn(
+                  'isnull',
+                  Sequelize.col('ECVendorCommission.isDeleted'),
+                  0,
+                ),
                 { [Op.eq]: 0 },
               ),
             )
@@ -410,9 +567,16 @@ export class LogisticPaymentService {
 
         let commissionAmount = 0;
         if (vendorCommission) {
-          if (vendorCommission.commissionTypeId === VendorCommissionTypeEnum.byPercentage) {
-            commissionAmount = (s.totalPrice * Number(vendorCommission.amount)) / 100;
-          } else if (vendorCommission.commissionTypeId === VendorCommissionTypeEnum.byAmount) {
+          if (
+            vendorCommission.commissionTypeId ===
+            VendorCommissionTypeEnum.byPercentage
+          ) {
+            commissionAmount =
+              (s.totalPrice * Number(vendorCommission.amount)) / 100;
+          } else if (
+            vendorCommission.commissionTypeId ===
+            VendorCommissionTypeEnum.byAmount
+          ) {
             commissionAmount = Number(vendorCommission.amount);
           }
         }
@@ -435,7 +599,10 @@ export class LogisticPaymentService {
             commissionAmount,
             vendorCommissionId: vendorCommission?.id as any,
             userId: user.id,
-            gregorianAtPersian: moment().tz('Asia/Tehran', false).locale('en').format('YYYY-MM-DD HH:mm:ss'),
+            gregorianAtPersian: moment()
+              .tz('Asia/Tehran', false)
+              .locale('en')
+              .format('YYYY-MM-DD HH:mm:ss'),
           },
           { transaction },
         );
@@ -450,7 +617,16 @@ export class LogisticPaymentService {
 
   private async updateGroupedTotals(
     groupMap: Record<string, ECLogisticOrderGrouped>,
-    groupTotals: Record<string, { product: number; discount: number; shipment: number; realShipment: number; total: number }>,
+    groupTotals: Record<
+      string,
+      {
+        product: number;
+        discount: number;
+        shipment: number;
+        realShipment: number;
+        total: number;
+      }
+    >,
     transaction: Transaction,
   ) {
     for (const key of Object.keys(groupTotals)) {
@@ -476,12 +652,20 @@ export class LogisticPaymentService {
     await this.revertPaymentQueue.add(
       LOGISTIC_REVERT_PAYMENT_JOB,
       { paymentId },
-      { attempts: 100, backoff: { type: 'exponential', delay: 60000 }, removeOnComplete: true, delay },
+      {
+        attempts: 100,
+        backoff: { type: 'exponential', delay: 60000 },
+        removeOnComplete: true,
+        delay,
+      },
     );
   }
   // endregion
 
-  private async purchaseStocks(stocks: VariationStockInterface['stocks'], transaction: Transaction) {
+  private async purchaseStocks(
+    stocks: VariationStockInterface['stocks'],
+    transaction: Transaction,
+  ) {
     for (const s of stocks) {
       await this.stockRepository.update(
         { isPurchase: true },
