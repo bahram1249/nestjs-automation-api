@@ -168,6 +168,7 @@ export class LogisticOrderQueryBuilder {
         'logisticSendingPeriodId',
         'logisticWeeklyPeriodId',
         'logisticWeeklyPeriodTimeId',
+        'sendingGregorianDate',
         'orderStatusId',
         'totalProductPrice',
         'totalDiscountFee',
