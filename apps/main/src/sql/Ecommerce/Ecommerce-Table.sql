@@ -3611,6 +3611,25 @@ GO
 
 
 -- ec-logistic-order-grouped-details
+-- ec-logistic-order-groupeds-logisticSendingPeriodId-nullable-v1
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ec-logistic-order-groupeds-logisticSendingPeriodId-nullable-v1'
+)
+    AND EXISTS (
+        SELECT 1 FROM Settings
+        WHERE ([key] = 'SITE_NAME' AND [value] IN ('ecommerce'))
+    )
+    BEGIN
+
+        ALTER TABLE ECLogisticOrderGroupeds
+            ALTER COLUMN logisticSendingPeriodId bigint NULL;
+
+        INSERT INTO Migrations(version, createdAt, updatedAt)
+        SELECT 'ec-logistic-order-groupeds-logisticSendingPeriodId-nullable-v1', GETDATE(), GETDATE()
+    END
+
+GO
+
+-- ec-logistic-order-grouped-details
 IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ec-logistic-order-grouped-details-v1' 
 			)
 	AND EXISTS (

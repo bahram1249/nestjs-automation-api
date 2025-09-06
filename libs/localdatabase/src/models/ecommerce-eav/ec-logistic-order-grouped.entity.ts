@@ -48,9 +48,9 @@ export class ECLogisticOrderGrouped extends Model {
   })
   logisticShipmentWay?: ECLogisticShipmentWay;
 
-  @Column({ type: DataType.BIGINT })
+  @Column({ type: DataType.BIGINT, allowNull: true })
   @ForeignKey(() => ECLogisticSendingPeriod)
-  logisticSendingPeriodId: bigint;
+  logisticSendingPeriodId?: bigint;
 
   @BelongsTo(() => ECLogisticSendingPeriod, {
     as: 'logisticSendingPeriod',
