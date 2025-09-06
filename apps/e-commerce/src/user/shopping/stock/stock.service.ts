@@ -99,11 +99,13 @@ export class StockService {
         .build(),
     );
     stocks = JSON.parse(JSON.stringify(stocks));
+    console.log(stocks)
     for (let index = 0; index < stocks.length; index++) {
       const stock = stocks[index];
       const queryItem = await this.productRepositoryService.findById(
         _.extend(this.emptyListFilter, { inventoryId: stock.inventoryId }),
         stock.productId,
+        false
       );
       stock.product = queryItem.result;
 

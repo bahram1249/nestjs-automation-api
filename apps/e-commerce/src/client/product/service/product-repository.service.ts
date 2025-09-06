@@ -103,7 +103,7 @@ export class ProductRepositoryService {
         filter,
         productId,
         null,
-        includeAttribute || true,
+        includeAttribute ?? true,
       );
 
     let product = await this.repository.findOne(resultQuery);

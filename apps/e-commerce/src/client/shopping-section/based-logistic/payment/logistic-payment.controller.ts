@@ -1,5 +1,4 @@
 import { Body, Controller, Get, HttpCode, HttpStatus, Post, UseGuards, UseInterceptors } from '@nestjs/common';
-import { Request } from 'express';
 import { LogisticPaymentService } from './logistic-payment.service';
 import {
   LogisticStockPaymentDto,
@@ -27,7 +26,7 @@ export class LogisticPaymentController {
     private readonly gatewaysService: LogisticPaymentGatewaysService,
   ) {}
 
-  @Post('stock')
+  @Post('/stock')
   async stock(
     @GetUser() user: User,
     @GetECSession() session: ECUserSession,
@@ -37,7 +36,7 @@ export class LogisticPaymentController {
     return { result };
   }
 
-  @Get('gateways')
+  @Get('/gateways')
   @HttpCode(HttpStatus.OK)
   async gateways(@GetECSession() session: ECUserSession) {
     const result = await this.gatewaysService.list(session);

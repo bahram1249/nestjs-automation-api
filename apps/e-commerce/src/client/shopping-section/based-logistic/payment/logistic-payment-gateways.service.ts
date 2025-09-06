@@ -1,6 +1,6 @@
 import { Injectable, BadRequestException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
-import { ECStock, ECPaymentGateway, ECVariationPrice } from '@rahino/localdatabase/models';
+import { ECPaymentGateway, ECVariationPrice } from '@rahino/localdatabase/models';
 import { ECUserSession } from '@rahino/localdatabase/models';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import { Op, Sequelize } from 'sequelize';
@@ -23,7 +23,7 @@ export class LogisticPaymentGatewaysService {
 
   async list(session: ECUserSession): Promise<Array<{ id: number; name: string; imageUrl: string }>> {
     // Get enriched active stocks from StockService
-    const allStocks = (await this.stockService.findAll(session)).result as any[];
+    const {result: allStocks} = await this.stockService.findAll(session);
 
     // Filter available items with sufficient qty
     const stocks = (allStocks || []).filter(
@@ -34,7 +34,7 @@ export class LogisticPaymentGatewaysService {
 
     if (!stocks || stocks.length === 0) {
       throw new BadRequestException(
-        this.l10n.translate('ecommerce.no_active_stock_in_session' as any),
+        this.l10n.translate('ecommerce.no_active_stock_in_session'),
       );
     }
 
@@ -43,7 +43,7 @@ export class LogisticPaymentGatewaysService {
     const variationPriceStocks = await this.priceService.calByVariationPrices(
       stocks,
       variationPrices,
-      undefined,
+      null
     );
 
     // For each variation price, collect supported gateways
@@ -67,8 +67,8 @@ export class LogisticPaymentGatewaysService {
         if (!gatewayMap.has(id)) {
           gatewayMap.set(id, {
             id,
-            name: (g as any).name,
-            imageUrl: (g as any).imageUrl,
+            name: g.name,
+            imageUrl: g.imageUrl,
           });
         }
       }
