@@ -3564,6 +3564,25 @@ IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ec-logistic-order-group
 
 GO
 
+
+-- ec-logistic-order-groupeds-v3
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ec-logistic-order-groupeds-v3'
+)
+    AND EXISTS (
+        SELECT 1 FROM Settings
+        WHERE ([key] = 'SITE_NAME' AND [value] IN ('ecommerce'))
+    )
+    BEGIN
+
+        ALTER TABLE ECLogisticOrderGroupeds
+            ADD isDeleted bit NULL;
+
+        INSERT INTO Migrations(version, createdAt, updatedAt)
+        SELECT 'ec-logistic-order-groupeds-v3', GETDATE(), GETDATE()
+    END
+
+GO
+
 -- ec-logistic-order-groupeds-index-sending-capacity-v1
 IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ec-logistic-order-groupeds-index-sending-capacity-v1'
 )

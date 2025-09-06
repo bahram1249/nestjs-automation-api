@@ -107,6 +107,9 @@ export class ECLogisticOrderGrouped extends Model {
   @Column({ type: DataType.DATE, allowNull: true })
   sendingGregorianDate?: Date;
 
+  @Column({ type: DataType.BOOLEAN, allowNull: true })
+  isDeleted?: boolean;
+
   @HasMany(() => ECLogisticOrderGroupedDetail, {
     as: 'details',
     foreignKey: 'groupedId',
