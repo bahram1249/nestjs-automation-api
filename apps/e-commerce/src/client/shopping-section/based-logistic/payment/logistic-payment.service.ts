@@ -98,6 +98,30 @@ export class LogisticPaymentService {
     await this.validateAddress(user, body.addressId, stocks);
     stocks = await this.applyCouponIfAny(stocks, body.couponCode);
 
+    // 1.1) Validate groups and stockIds presence
+    if (!body.groups || !Array.isArray(body.groups) || body.groups.length === 0) {
+      throw new BadRequestException(
+        this.l10n.translate('ecommerce.invalid_groups_no_stocks'),
+      );
+    }
+    for (const g of body.groups) {
+      if (!Array.isArray(g.stockIds) || g.stockIds.length === 0) {
+        throw new BadRequestException(
+          this.l10n.translate('ecommerce.invalid_groups_no_stocks'),
+        );
+      }
+      if (
+        g.weeklyPeriodTimeId != null &&
+        (g.sendingDate == null || String(g.sendingDate).trim() === '')
+      ) {
+        throw new BadRequestException(
+          this.l10n.translate(
+            'ecommerce.sending_date_required_when_time_selected',
+          ),
+        );
+      }
+    }
+
     // 2) Build variation context and validate groups
     const variationPriceStock = await this.calcVariationPriceStock(
       stocks,

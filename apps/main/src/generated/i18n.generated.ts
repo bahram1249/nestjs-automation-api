@@ -71,6 +71,8 @@ export type I18nTranslations = {
         "logistic_order_id_not_set_on_payment": string;
         "cannot_find_stocks": string;
         "invalid_groups_unknown_stock_id": string;
+        "invalid_groups_no_stocks": string;
+        "sending_date_required_when_time_selected": string;
         "payment_method_not_defined": string;
         "invalid_data_source": string;
         "main_wallet_not_found": string;

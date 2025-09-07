@@ -35,6 +35,8 @@
   "logistic_order_id_not_set_on_payment": "شناسه سفارش لجستیک روی پرداخت تنظیم نشده است",
   "cannot_find_stocks": "هیچ موجودی معتبری یافت نشد",
   "invalid_groups_unknown_stock_id": "گروه‌ها نامعتبر است: شناسه موجودی ناشناخته",
+  "invalid_groups_no_stocks": "گروه‌ها نامعتبر است: هیچ موجودی انتخاب نشده است",
+  "sending_date_required_when_time_selected": "در صورت انتخاب بازه زمانی، تاریخ ارسال الزامی است",
   "payment_method_not_defined": "روش پرداخت تعریف نشده است",
   "invalid_data_source": "منبع داده نامعتبر: {serviceName}",
   "main_wallet_not_found": "کیف پول اصلی یافت نشد",

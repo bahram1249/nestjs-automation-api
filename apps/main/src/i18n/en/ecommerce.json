@@ -35,6 +35,8 @@
   "logistic_order_id_not_set_on_payment": "logisticOrderId not set on payment",
   "cannot_find_stocks": "cannot find stocks",
   "invalid_groups_unknown_stock_id": "invalid groups: unknown stockId",
+  "invalid_groups_no_stocks": "invalid groups: no stocks provided",
+  "sending_date_required_when_time_selected": "sending date is required when a time period is selected",
   "payment_method_not_defined": "the payment method is not defined",
   "invalid_data_source": "Invalid data source: {serviceName}",
   "main_wallet_not_found": "the main wallet isn't found",
