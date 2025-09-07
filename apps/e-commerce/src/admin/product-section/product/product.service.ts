@@ -1072,7 +1072,7 @@ export class ProductService {
     for (const pid of impactedProductIds) {
       await this.productInventoryQueue.add(
         Constants.productInventoryStatusJob(pid.toString()),
-        { productId: BigInt(pid) },
+        { productId: pid.toString() },
         { removeOnComplete: keepJobs },
       );
     }
