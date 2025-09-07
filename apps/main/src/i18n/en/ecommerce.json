@@ -49,6 +49,8 @@
   "invalidExcelSheet": "Excel sheet not found",
   "invalidExcelHeaders": "Invalid Excel headers",
   "vendorAddressNotFound": "Vendor address not found",
+  "qty_cannot_decrease": "the quantity cannot be decreased",
+  "not_permitted": "you don't have permission to perform this operation",
   "shipment": {
     "delivery": "Courier Delivery",
     "post": "Postal Delivery",

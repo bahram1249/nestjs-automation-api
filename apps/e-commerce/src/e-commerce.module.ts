@@ -126,6 +126,7 @@ import { LogisticPendingOrderModule } from './admin/logistic-order-section/pendi
 import { LogisticPostageOrderModule } from './admin/logistic-order-section/postageOrder/logistic-postage-order.module';
 import { LogisticDeliveryOrderModule } from './admin/logistic-order-section/deliveryOrder/logistic-delivery-order.module';
 import { LogisticCancellOrderModule } from './admin/logistic-order-section/cancell-order/logistic-cancell-order.module';
+import { LogisticTotalOrderModule } from './admin/logistic-order-section/totalOrders/logistic-total-order.module';
 import { ClientOrderModule } from './client/order/client-order.module';
 
 @Module({
@@ -254,6 +255,7 @@ import { ClientOrderModule } from './client/order/client-order.module';
     LogisticCourierOrderModule,
     LogisticDeliveryOrderModule,
     LogisticCancellOrderModule,
+    LogisticTotalOrderModule,
     ClientOrderModule,
   ],
   providers: [

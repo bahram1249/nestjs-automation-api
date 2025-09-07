@@ -149,8 +149,63 @@ export class LogisticSnapPayService implements LogisticPayInterface {
   }
 
   async eligbleToRevert(paymentId: bigint): Promise<boolean> {
-    // Keep same semantics as legacy services; rely on FinalizedPaymentService if needed
-    // Here we simply allow revert and delegate actual revert flows to job processors
+    const gateway = await this.findGateway('SnapPayService');
+
+    // find payment that is still waiting
+    let payment = await this.paymentRepo.findOne(
+      new QueryOptionsBuilder()
+        .filter({ id: paymentId })
+        .filter({ paymentGatewayId: gateway.id })
+        .filter({ paymentStatusId: PaymentStatusEnum.WaitingForPayment })
+        .build(),
+    );
+    if (!payment) {
+      throw new BadRequestException(this.l10n.translate('ecommerce.invalid_payment'));
+    }
+
+    const token = await this.generateToken(gateway);
+
+    // 1) check status; if api fails, allow revert
+    try {
+      const statusRequest = await axios.get(
+        `${this.baseUrl}/api/online/payment/v1/status?paymentToken=${payment.paymentToken}`,
+        { headers: { Authorization: 'Bearer ' + token }, timeout: 60000 },
+      );
+      if (statusRequest.data?.successful === false) {
+        return true;
+      }
+    } catch {
+      return true;
+    }
+
+    // 2) verify; if fails or transaction mismatch, allow revert
+    try {
+      const result = await axios.post(
+        this.baseUrl + '/api/online/payment/v1/verify',
+        { paymentToken: payment.paymentToken },
+        { headers: { Authorization: 'Bearer ' + token }, timeout: 60000 },
+      );
+      if (result.data?.successful !== true) {
+        return true;
+      }
+      if (result.data.response.transactionId != payment.transactionId?.toString()) {
+        return true;
+      }
+    } catch {
+      return true;
+    }
+
+    // 3) settle; if settles successfully we finalize and return false (not eligible for revert)
+    const finalRequest = await axios.post(
+      this.baseUrl + '/api/online/payment/v1/settle',
+      { paymentToken: payment.paymentToken },
+      { headers: { Authorization: 'Bearer ' + token }, timeout: 60000 },
+    );
+    if (finalRequest.data?.successful === true) {
+      // mark success via finalized payment service
+      await this.finalizedPaymentService.successfulSnapPay(payment.id);
+      return false;
+    }
     return true;
   }
 
@@ -260,6 +315,116 @@ export class LogisticSnapPayService implements LogisticPayInterface {
         this.l10n.translate('ecommerce.invalid_token_body'),
       );
     return token;
+  }
+
+  async update(
+    totalPrice: number,
+    discountAmount: number,
+    shipmentAmount: number,
+    phoneNumber: string,
+    transaction?: Transaction,
+    logisticOrderId?: bigint,
+    groupedDetails?: ECLogisticOrderGroupedDetail[],
+  ) {
+    const gateway = await this.findGateway('SnapPayService');
+    let payment = await this.paymentRepo.findOne(
+      new QueryOptionsBuilder()
+        .filter({ logisticOrderId: logisticOrderId })
+        .filter({ paymentGatewayId: gateway.id })
+        .build(),
+    );
+    if (!payment) {
+      throw new BadRequestException(this.l10n.translate('ecommerce.invalid_payment'));
+    }
+
+    let phone = phoneNumber;
+    if (phone?.startsWith('0')) {
+      phone = '+98' + phone.substring(1);
+    }
+
+    const token = await this.generateToken(gateway);
+
+    const cartItems = (groupedDetails ?? []).map((d) => ({
+      id: d.id,
+      amount: Number(d.productPrice || 0) * 10,
+      count: Number(d.qty || 0),
+      name: (d as any)?.product?.title || `Item-${d.id}`,
+      category: (d as any)?.product?.entityType?.name || 'Logistic',
+      commissionType: 100,
+    }));
+    const totalItemsAmount = cartItems
+      .map((i) => i.amount * i.count)
+      .reduce((a, b) => a + b, 0);
+
+    const finalRequetData = {
+      amount: totalPrice * 10,
+      cartList: [
+        {
+          cartId: logisticOrderId,
+          cartItems,
+          isShipmentIncluded: true,
+          shippingAmount: shipmentAmount * 10,
+          isTaxIncluded: true,
+          taxAmount: 0,
+          totalAmount: totalItemsAmount + shipmentAmount * 10,
+        },
+      ],
+      discountAmount: discountAmount * 10,
+      mobile: phone,
+      paymentMethodTypeDto: 'INSTALLMENT',
+      externalSourceAmount: 0,
+      transactionId: payment.transactionId,
+      paymentToken: payment.paymentToken,
+    } as any;
+
+    const finalRequest = await axios.post(
+      this.baseUrl + '/api/online/payment/v1/update',
+      finalRequetData,
+      { headers: { Authorization: 'Bearer ' + token } },
+    );
+    if (finalRequest.data?.successful !== true) {
+      throw new InternalServerErrorException(
+        this.l10n.translate('ecommerce.invalid_payment_request'),
+      );
+    }
+
+    await this.paymentRepo.update(
+      { totalprice: totalPrice * 10 },
+      { where: { id: payment.id }, transaction },
+    );
+    return { result: payment };
+  }
+
+  async cancel(logisticOrderId: bigint, transaction?: Transaction) {
+    const gateway = await this.findGateway('SnapPayService');
+
+    const payment = await this.paymentRepo.findOne(
+      new QueryOptionsBuilder()
+        .filter({ logisticOrderId })
+        .filter({ paymentGatewayId: gateway.id })
+        .filter({ paymentStatusId: PaymentStatusEnum.SuccessPayment })
+        .build(),
+    );
+    if (!payment) {
+      throw new BadRequestException(this.l10n.translate('ecommerce.invalid_payment'));
+    }
+    const token = await this.generateToken(gateway);
+    const finalRequest = await axios.post(
+      this.baseUrl + '/api/online/payment/v1/cancel',
+      { paymentToken: payment.paymentToken },
+      { headers: { Authorization: 'Bearer ' + token } },
+    );
+    if (finalRequest.data?.successful !== true) {
+      throw new InternalServerErrorException(
+        this.l10n.translate('ecommerce.invalid_payment_request'),
+      );
+    }
+
+    await this.paymentRepo.update(
+      { paymentStatusId: PaymentStatusEnum.Refund },
+      { where: { id: payment.id }, transaction },
+    );
+    return payment;
   }
 
   private async generateUniqueTransactionId(): Promise<string> {

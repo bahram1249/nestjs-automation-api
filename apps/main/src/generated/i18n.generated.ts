@@ -85,6 +85,8 @@ export type I18nTranslations = {
         "invalidExcelSheet": string;
         "invalidExcelHeaders": string;
         "vendorAddressNotFound": string;
+        "qty_cannot_decrease": string;
+        "not_permitted": string;
         "shipment": {
             "delivery": string;
             "post": string;

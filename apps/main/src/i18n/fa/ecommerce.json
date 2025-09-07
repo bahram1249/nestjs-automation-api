@@ -49,6 +49,8 @@
   "invalidExcelSheet": "شیت اکسل یافت نشد",
   "invalidExcelHeaders": "هدرهای الزامی اکسل نامعتبر است",
   "vendorAddressNotFound": "آدرس فروشنده یافت نشد",
+  "qty_cannot_decrease": "تعداد کالا قابل کاهش نیست",
+  "not_permitted": "شما مجوز انجام این عملیات را ندارید",
   "shipment": {
     "delivery": "ارسال با پیک",
     "post": "ارسال با پست",
