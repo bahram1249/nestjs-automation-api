@@ -112,7 +112,7 @@ export class LogisticOrderQueryBuilder {
 
   includePayment() {
     this.builder = this.builder.thenInclude({
-      attributes: ['id', 'paymentGatewayId', 'refCode', 'amount'],
+      attributes: ['id', 'paymentGatewayId', 'amount'],
       model: ECPayment,
       as: 'payment',
     });
@@ -219,7 +219,7 @@ export class LogisticOrderQueryBuilder {
           required: false,
           include: [
             {
-              attributes: ['id', 'name'],
+              attributes: ['id', 'title'],
               model: ECScheduleSendingType,
               as: 'scheduleSendingType',
               required: false,
