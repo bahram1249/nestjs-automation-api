@@ -53,6 +53,7 @@ export class LogisticPendingOrderService {
     let qb = this.builder;
     qb = qb
       .nonDeletedOrder()
+      .addNegativeOrderStatus(OrderStatusEnum.WaitingForPayment)
       .search(filter.search);
 
     // Filter orders that have at least one pending detail for this vendor in any group
