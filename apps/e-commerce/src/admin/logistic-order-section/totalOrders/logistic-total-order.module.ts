@@ -38,6 +38,7 @@ import { LogisticSnappayModule } from '../../../client/shopping-section/based-lo
     LogisticFinalizedPaymentModule,
     LogisticSnappayModule,
     LocalizationModule,
+    SequelizeModule,
   ],
   controllers: [LogisticTotalOrderController],
   providers: [LogisticTotalOrderService],

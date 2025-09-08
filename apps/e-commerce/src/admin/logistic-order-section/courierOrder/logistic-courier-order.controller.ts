@@ -25,7 +25,7 @@ import { ListFilter } from '@rahino/query-filter';
 import { CourierProcessDto } from 'apps/e-commerce/src/admin/order-section/courierOrder/dto';
 import { LogisticCourierOrderService } from './logistic-courier-order.service';
 
-@ApiTags('Courier-Orders')
+@ApiTags('Logistic-Courier-Orders')
 @UseGuards(JwtGuard, PermissionGuard)
 @ApiBearerAuth()
 @UseInterceptors(JsonResponseTransformInterceptor)

@@ -13,6 +13,7 @@ import { LocalizationModule } from 'apps/main/src/common/localization';
 @Module({
   imports: [
     SequelizeModule.forFeature([User, Permission, ECLogisticOrder, ECLogisticOrderGrouped]),
+    SequelizeModule,
     LogisticUtilOrderModule,
     LogisticEcommerceSmsModule,
     LogisticUserRoleHandlerModule,

@@ -23,7 +23,7 @@ import { CheckPermission } from '@rahino/permission-checker/decorator';
 import { ListFilter } from '@rahino/query-filter';
 import { LogisticDeliveryOrderService } from './logistic-delivery-order.service';
 
-@ApiTags('Delivery-Orders')
+@ApiTags('Logistic-Delivery-Orders')
 @UseGuards(JwtGuard, PermissionGuard)
 @ApiBearerAuth()
 @UseInterceptors(JsonResponseTransformInterceptor)

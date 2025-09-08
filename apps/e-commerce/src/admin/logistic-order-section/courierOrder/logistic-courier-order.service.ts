@@ -1,5 +1,5 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { InjectModel } from '@nestjs/sequelize';
+import { InjectModel, InjectConnection } from '@nestjs/sequelize';
 import { User } from '@rahino/database';
 import { ECLogisticOrder, ECCourier, ECLogisticOrderGrouped } from '@rahino/localdatabase/models';
 import { LogisticOrderQueryBuilder } from '../../../client/order-section/utilLogisticOrder/logistic-order-query-builder.service';
@@ -22,6 +22,8 @@ export class LogisticCourierOrderService {
     private readonly groupedRepository: typeof ECLogisticOrderGrouped,
     @InjectModel(ECCourier)
     private readonly courierRepository: typeof ECCourier,
+    @InjectConnection()
+    private readonly sequelize: Sequelize,
     private readonly builder: LogisticOrderQueryBuilder,
     private readonly utilService: LogisticOrderUtilService,
     private readonly smsService: LogisticEcommerceSmsService,
@@ -109,68 +111,80 @@ export class LogisticCourierOrderService {
 
   // Here id is treated as groupId in logistic flow
   async processCourier(groupId: bigint, user: User, dto: CourierProcessDto) {
-    // find group eligible for courier
-    let group = await this.groupedRepository.findOne(
-      new QueryOptionsBuilder()
-        .filter({ id: groupId })
-        .filter({ orderStatusId: OrderStatusEnum.OrderHasBeenProcessed })
-        .filter(
-          Sequelize.literal(
-            `EXISTS (SELECT 1 FROM ECLogisticShipmentWays LSW WHERE LSW.id = ECLogisticOrderGrouped.logisticShipmentWayId AND LSW.orderShipmentWayId = ${OrderShipmentwayEnum.delivery})`,
-          ),
-        )
-        .filter(
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('ECLogisticOrderGrouped.isDeleted'), 0),
-            { [Op.eq]: 0 },
-          ),
-        )
-        .build(),
-    );
-    if (!group) {
-      throw new NotFoundException(
-        this.localizationService.translate('ecommerce.logistic_group_not_found'),
+    const transaction = await this.sequelize.transaction();
+    try {
+      // find group eligible for courier
+      let group = await this.groupedRepository.findOne(
+        new QueryOptionsBuilder()
+          .filter({ id: groupId })
+          .filter({ orderStatusId: OrderStatusEnum.OrderHasBeenProcessed })
+          .filter(
+            Sequelize.literal(
+              `EXISTS (SELECT 1 FROM ECLogisticShipmentWays LSW WHERE LSW.id = ECLogisticOrderGrouped.logisticShipmentWayId AND LSW.orderShipmentWayId = ${OrderShipmentwayEnum.delivery})`,
+            ),
+          )
+          .filter(
+            Sequelize.where(
+              Sequelize.fn('isnull', Sequelize.col('ECLogisticOrderGrouped.isDeleted'), 0),
+              { [Op.eq]: 0 },
+            ),
+          )
+          .transaction(transaction)
+          .build(),
       );
-    }
+      if (!group) {
+        throw new NotFoundException(
+          this.localizationService.translate('ecommerce.logistic_group_not_found'),
+        );
+      }
 
-    // access check to logistic
-    await this.logisticAccess.checkAccessToLogistic({ user, logisticId: group.logisticId });
+      // access check to logistic
+      await this.logisticAccess.checkAccessToLogistic({ user, logisticId: group.logisticId });
 
-    // validate courier user exists
-    const courier = await this.courierRepository.findOne(
-      new QueryOptionsBuilder()
-        .filter({ userId: dto.userId })
-        .filter(
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('ECCourier.isDeleted'), 0),
-            { [Op.eq]: 0 },
-          ),
-        )
-        .build(),
-    );
-    if (!courier) {
-      throw new NotFoundException(this.localizationService.translate('ecommerce.courier_not_found'));
-    }
-
-    // update group status
-    group.orderStatusId = OrderStatusEnum.SendByCourier;
-    group = await group.save();
-
-    // SMS (no storage for courierUserId at group-level in current model)
-    // To send SMS we need order's user phone; fetch parent order with user
-    const order = await this.repository.findOne(
-      new QueryOptionsBuilder()
-        .filter({ id: group.logisticOrderId })
-        .include([{ model: User, as: 'user' }])
-        .build(),
-    );
-    if (order && (order as any).user) {
-      await this.smsService.sendByCourier(
-        `${(order as any).user.firstname};${(order as any).user.lastname};${courier.userId};${groupId}`,
-        (order as any).user.phoneNumber,
+      // validate courier user exists
+      const courier = await this.courierRepository.findOne(
+        new QueryOptionsBuilder()
+          .filter({ userId: dto.userId })
+          .filter(
+            Sequelize.where(
+              Sequelize.fn('isnull', Sequelize.col('ECCourier.isDeleted'), 0),
+              { [Op.eq]: 0 },
+            ),
+          )
+          .transaction(transaction)
+          .build(),
       );
-    }
+      if (!courier) {
+        throw new NotFoundException(this.localizationService.translate('ecommerce.courier_not_found'));
+      }
 
-    return { result: group };
+      // update group status
+      group.orderStatusId = OrderStatusEnum.SendByCourier;
+      group = await group.save({ transaction });
+      // roll-up parent ECLogisticOrder status after group status change
+      await this.utilService.syncParentOrderStatus(group.logisticOrderId as any, transaction as any);
+
+      await transaction.commit();
+
+      // SMS (no storage for courierUserId at group-level in current model)
+      // To send SMS we need order's user phone; fetch parent order with user
+      const order = await this.repository.findOne(
+        new QueryOptionsBuilder()
+          .filter({ id: group.logisticOrderId })
+          .include([{ model: User, as: 'user' }])
+          .build(),
+      );
+      if (order && (order as any).user) {
+        await this.smsService.sendByCourier(
+          `${(order as any).user.firstname};${(order as any).user.lastname};${courier.userId};${groupId}`,
+          (order as any).user.phoneNumber,
+        );
+      }
+
+      return { result: group };
+    } catch (err) {
+      await transaction.rollback();
+      throw err;
+    }
   }
 }

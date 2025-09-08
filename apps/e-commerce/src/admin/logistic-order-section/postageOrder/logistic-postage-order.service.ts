@@ -1,5 +1,5 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { InjectModel } from '@nestjs/sequelize';
+import { InjectModel, InjectConnection } from '@nestjs/sequelize';
 import { User } from '@rahino/database';
 import { ECLogisticOrder, ECLogisticOrderGrouped } from '@rahino/localdatabase/models';
 import { LogisticOrderQueryBuilder } from '../../../client/order-section/utilLogisticOrder/logistic-order-query-builder.service';
@@ -20,6 +20,8 @@ export class LogisticPostageOrderService {
     private readonly repository: typeof ECLogisticOrder,
     @InjectModel(ECLogisticOrderGrouped)
     private readonly groupedRepository: typeof ECLogisticOrderGrouped,
+    @InjectConnection()
+    private readonly sequelize: Sequelize,
     private readonly builder: LogisticOrderQueryBuilder,
     private readonly utilService: LogisticOrderUtilService,
     private readonly smsService: LogisticEcommerceSmsService,
@@ -105,47 +107,58 @@ export class LogisticPostageOrderService {
   }
 
   async processPost(groupId: bigint, user: User, dto: PostProcessDto) {
-    let group = await this.groupedRepository.findOne(
-      new QueryOptionsBuilder()
-        .filter({ id: groupId })
-        .filter({ orderStatusId: OrderStatusEnum.OrderHasBeenProcessed })
-        .filter(
-          Sequelize.literal(
-            `EXISTS (SELECT 1 FROM ECLogisticShipmentWays LSW WHERE LSW.id = ECLogisticOrderGrouped.logisticShipmentWayId AND LSW.orderShipmentWayId = ${OrderShipmentwayEnum.post})`,
-          ),
-        )
-        .filter(
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('ECLogisticOrderGrouped.isDeleted'), 0),
-            { [Op.eq]: 0 },
-          ),
-        )
-        .build(),
-    );
-    if (!group) {
-      throw new NotFoundException(
-        this.localizationService.translate('ecommerce.logistic_group_not_found'),
+    const transaction = await this.sequelize.transaction();
+    try {
+      let group = await this.groupedRepository.findOne(
+        new QueryOptionsBuilder()
+          .filter({ id: groupId })
+          .filter({ orderStatusId: OrderStatusEnum.OrderHasBeenProcessed })
+          .filter(
+            Sequelize.literal(
+              `EXISTS (SELECT 1 FROM ECLogisticShipmentWays LSW WHERE LSW.id = ECLogisticOrderGrouped.logisticShipmentWayId AND LSW.orderShipmentWayId = ${OrderShipmentwayEnum.post})`,
+            ),
+          )
+          .filter(
+            Sequelize.where(
+              Sequelize.fn('isnull', Sequelize.col('ECLogisticOrderGrouped.isDeleted'), 0),
+              { [Op.eq]: 0 },
+            ),
+          )
+          .transaction(transaction)
+          .build(),
       );
-    }
+      if (!group) {
+        throw new NotFoundException(
+          this.localizationService.translate('ecommerce.logistic_group_not_found'),
+        );
+      }
 
-    await this.logisticAccess.checkAccessToLogistic({ user, logisticId: group.logisticId });
+      await this.logisticAccess.checkAccessToLogistic({ user, logisticId: group.logisticId });
 
-    group.orderStatusId = OrderStatusEnum.SendByPost;
-    group = await group.save();
+      group.orderStatusId = OrderStatusEnum.SendByPost;
+      group = await group.save({ transaction });
+      // roll-up parent ECLogisticOrder status after group status change
+      await this.utilService.syncParentOrderStatus(group.logisticOrderId as any, transaction as any);
 
-    const order = await this.repository.findOne(
-      new QueryOptionsBuilder()
-        .filter({ id: group.logisticOrderId })
-        .include([{ model: User, as: 'user' }])
-        .build(),
-    );
-    if (order && (order as any).user) {
-      await this.smsService.sendByPost(
-        `${(order as any).user.firstname};${(order as any).user.lastname};اداره پست;${dto.postReceipt}`,
-        (order as any).user.phoneNumber,
+      await transaction.commit();
+
+      const order = await this.repository.findOne(
+        new QueryOptionsBuilder()
+          .filter({ id: group.logisticOrderId })
+          .include([{ model: User, as: 'user' }])
+          .build(),
       );
-    }
+      if (order && (order as any).user) {
+        await this.smsService.sendByPost(
+          `${(order as any).user.firstname};${(order as any).user.lastname};اداره پست;${dto.postReceipt}`,
+          (order as any).user.phoneNumber,
+        );
+      }
 
-    return { result: group };
+      return { result: group };
+    } catch (err) {
+      await transaction.rollback();
+      throw err;
+    }
   }
 }

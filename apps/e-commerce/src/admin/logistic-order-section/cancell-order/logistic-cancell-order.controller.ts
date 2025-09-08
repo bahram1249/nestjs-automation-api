@@ -22,7 +22,7 @@ import { CheckPermission } from '@rahino/permission-checker/decorator';
 import { GetTotalOrderFilterDto } from 'apps/e-commerce/src/admin/order-section/cancell-order/dto/get-total-order.dto';
 import { LogisticCancellOrderService } from './logistic-cancell-order.service';
 
-@ApiTags('Cancell-Orders')
+@ApiTags('Logistic-Cancell-Orders')
 @UseGuards(JwtGuard, PermissionGuard)
 @ApiBearerAuth()
 @UseInterceptors(JsonResponseTransformInterceptor)

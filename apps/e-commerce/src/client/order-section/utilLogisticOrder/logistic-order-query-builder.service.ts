@@ -198,7 +198,7 @@ export class LogisticOrderQueryBuilder {
           required: false,
           include: [
             {
-              attributes: ['id', 'name'],
+              attributes: ['id', 'name', 'icon'],
               model: ECOrderShipmentWay,
               as: 'orderShipmentWay',
               required: false,
@@ -219,7 +219,7 @@ export class LogisticOrderQueryBuilder {
           required: false,
           include: [
             {
-              attributes: ['id', 'title'],
+              attributes: ['id', 'title', 'icon'],
               model: ECScheduleSendingType,
               as: 'scheduleSendingType',
               required: false,

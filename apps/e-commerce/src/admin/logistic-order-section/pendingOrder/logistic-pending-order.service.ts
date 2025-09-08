@@ -3,7 +3,7 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { InjectModel } from '@nestjs/sequelize';
+import { InjectModel, InjectConnection } from '@nestjs/sequelize';
 import { User } from '@rahino/database';
 import {
   ECLogisticOrder,
@@ -31,6 +31,8 @@ export class LogisticPendingOrderService {
     private readonly groupedRepository: typeof ECLogisticOrderGrouped,
     @InjectModel(ECLogisticOrderGroupedDetail)
     private readonly detailRepository: typeof ECLogisticOrderGroupedDetail,
+    @InjectConnection()
+    private readonly sequelize: Sequelize,
     private readonly builder: LogisticOrderQueryBuilder,
     private readonly utilService: LogisticOrderUtilService,
     private readonly userVendorService: UserVendorService,
@@ -155,34 +157,45 @@ export class LogisticPendingOrderService {
       );
     }
 
-    // mark processed
-    detail.orderDetailStatusId = OrderDetailStatusEnum.Processed;
-    await detail.save();
+    const transaction = await this.sequelize.transaction();
+    try {
+      // mark processed
+      detail.orderDetailStatusId = OrderDetailStatusEnum.Processed;
+      await detail.save({ transaction });
 
-    // check other pending in same group
-    const another = await this.detailRepository.findOne(
-      new QueryOptionsBuilder()
-        .filter({ groupedId: detail.groupedId })
-        .filter({ orderDetailStatusId: { [Op.ne]: OrderDetailStatusEnum.Processed } })
-        .filter(
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('ECLogisticOrderGroupedDetail.isDeleted'), 0),
-            { [Op.eq]: 0 },
-          ),
-        )
-        .build(),
-    );
-
-    if (!another) {
-      // move group to processed
-      let group = await this.groupedRepository.findOne(
-        new QueryOptionsBuilder().filter({ id: detail.groupedId }).build(),
+      // check other pending in same group
+      const another = await this.detailRepository.findOne(
+        new QueryOptionsBuilder()
+          .filter({ groupedId: detail.groupedId })
+          .filter({ orderDetailStatusId: { [Op.ne]: OrderDetailStatusEnum.Processed } })
+          .filter(
+            Sequelize.where(
+              Sequelize.fn('isnull', Sequelize.col('ECLogisticOrderGroupedDetail.isDeleted'), 0),
+              { [Op.eq]: 0 },
+            ),
+          )
+          .transaction(transaction)
+          .build(),
       );
-      if (group) {
-        group.orderStatusId = OrderStatusEnum.OrderHasBeenProcessed;
-        await group.save();
+
+      if (!another) {
+        // move group to processed
+        let group = await this.groupedRepository.findOne(
+          new QueryOptionsBuilder().filter({ id: detail.groupedId }).transaction(transaction).build(),
+        );
+        if (group) {
+          group.orderStatusId = OrderStatusEnum.OrderHasBeenProcessed;
+          await group.save({ transaction });
+          // roll-up parent ECLogisticOrder status after group status change
+          await this.utilService.syncParentOrderStatus(group.logisticOrderId as any, transaction as any);
+        }
+        // TODO: optional SMS when group processed
       }
-      // TODO: optional SMS when group processed
+
+      await transaction.commit();
+    } catch (err) {
+      await transaction.rollback();
+      throw err;
     }
 
     return { result: detail };

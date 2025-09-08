@@ -25,7 +25,7 @@ import { ListFilter } from '@rahino/query-filter';
 import { PostProcessDto } from 'apps/e-commerce/src/admin/order-section/postageOrder/dto';
 import { LogisticPostageOrderService } from './logistic-postage-order.service';
 
-@ApiTags('Postage-Orders')
+@ApiTags('Logistic-Postage-Orders')
 @UseGuards(JwtGuard, PermissionGuard)
 @ApiBearerAuth()
 @UseInterceptors(JsonResponseTransformInterceptor)

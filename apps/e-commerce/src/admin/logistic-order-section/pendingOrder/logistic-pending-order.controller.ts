@@ -23,7 +23,7 @@ import { CheckPermission } from '@rahino/permission-checker/decorator';
 import { GetOrderDto } from 'apps/e-commerce/src/admin/order-section/pendingOrder/dto';
 import { LogisticPendingOrderService } from './logistic-pending-order.service';
 
-@ApiTags('Admin-Orders')
+@ApiTags('Logistic-Pending-Orders')
 @UseGuards(JwtGuard, PermissionGuard)
 @ApiBearerAuth()
 @UseInterceptors(JsonResponseTransformInterceptor)
