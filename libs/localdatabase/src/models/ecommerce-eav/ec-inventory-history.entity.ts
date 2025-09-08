@@ -10,6 +10,7 @@ import { ECInventory } from './ec-inventory.entity';
 import { ECProduct } from './ec-product.entity';
 import { ECInventoryTrackChangeStatus } from './ec-inventory-track-change-status.entity';
 import { ECOrder } from './ec-order.entity';
+import { ECLogisticOrder } from './ec-logistic-order.entity';
 
 @Table({ tableName: 'ECInventoryHistories' })
 export class ECInventoryHistory extends Model {
@@ -63,4 +64,14 @@ export class ECInventoryHistory extends Model {
 
   @BelongsTo(() => ECOrder, { as: 'order', foreignKey: 'orderId' })
   order?: ECOrder;
+
+  @Column({
+    type: DataType.BIGINT,
+    allowNull: true,
+  })
+  @ForeignKey(() => ECLogisticOrder)
+  logisticOrderId?: bigint;
+
+  @BelongsTo(() => ECLogisticOrder, { as: 'logisticOrder', foreignKey: 'logisticOrderId' })
+  logisticOrder?: ECLogisticOrder;
 }

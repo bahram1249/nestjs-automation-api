@@ -39,7 +39,7 @@ export class VerifyPaymentService {
     // Find the payment by Authority/paymentToken to determine version
     const payment = await this.paymentRepo.findOne(
       new QueryOptionsBuilder()
-        .filter({ paymentToken: (query as any).Authority })
+        .filter({ paymentToken: query.Authority })
         .filter({ paymentStatusId: PaymentStatusEnum.WaitingForPayment })
         .build(),
     );

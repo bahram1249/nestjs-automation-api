@@ -8,7 +8,7 @@ import {
   ECLogisticOrderGrouped,
   ECLogisticOrderGroupedDetail,
 } from '@rahino/localdatabase/models';
-import { InventoryTrackChangeModule } from '@rahino/ecommerce/shared/inventory-track-change/inventory-track-change.module';
+import { LogisticInventoryTrackChangeModule } from '@rahino/ecommerce/shared/inventory-track-change/logistic-inventory-track-change.module';
 import { LogisticRevertInventoryQtyService } from './services/logistic-revert-inventory-qty.service';
 import { inventoryStatusService } from '@rahino/ecommerce/shared/inventory/services/inventory-status.service';
 import { LocalizationModule } from 'apps/main/src/common/localization';
@@ -23,7 +23,7 @@ import { LocalizationModule } from 'apps/main/src/common/localization';
       ECLogisticOrderGrouped,
       ECLogisticOrderGroupedDetail,
     ]),
-    InventoryTrackChangeModule,
+    LogisticInventoryTrackChangeModule,
     LocalizationModule,
   ],
   providers: [LogisticRevertInventoryQtyService, inventoryStatusService],

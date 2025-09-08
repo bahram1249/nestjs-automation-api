@@ -3726,4 +3726,23 @@ END
 
 GO
 
+-- ecommerce-inventory-history-logisticOrderId-v1
+IF NOT EXISTS (
+    SELECT 1 FROM Migrations WHERE version = 'ecommerce-inventory-history-logisticOrderId-v1'
+  )
+  AND EXISTS (
+    SELECT 1 FROM Settings 
+    WHERE ([key] = 'SITE_NAME' AND [value] IN ('ecommerce'))
+  )
+BEGIN
 
+  ALTER TABLE ECInventoryHistories
+    ADD logisticOrderId bigint NULL
+      CONSTRAINT FK_ECInventoryHistories_LogisticOrderId
+        FOREIGN KEY REFERENCES ECLogisticOrders(id);
+
+  INSERT INTO Migrations(version, createdAt, updatedAt)
+  SELECT 'ecommerce-inventory-history-logisticOrderId-v1', GETDATE(), GETDATE()
+END
+
+GO

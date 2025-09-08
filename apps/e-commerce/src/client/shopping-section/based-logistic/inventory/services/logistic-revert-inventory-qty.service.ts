@@ -9,7 +9,7 @@ import {
 } from '@rahino/localdatabase/models';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import { Op, Sequelize, Transaction } from 'sequelize';
-import { InventoryTrackChangeService } from '@rahino/ecommerce/shared/inventory-track-change/inventory-track-change.service';
+import { LogisticInventoryTrackChangeService } from '@rahino/ecommerce/shared/inventory-track-change/logistic-inventory-track-change.service';
 import { inventoryStatusService } from '@rahino/ecommerce/shared/inventory/services/inventory-status.service';
 import { InventoryTrackChangeStatusEnum, PaymentTypeEnum } from '@rahino/ecommerce/shared/enum';
 import { LocalizationService } from 'apps/main/src/common/localization/localization.service';
@@ -27,7 +27,7 @@ export class LogisticRevertInventoryQtyService {
     private readonly groupedRepository: typeof ECLogisticOrderGrouped,
     @InjectModel(ECLogisticOrderGroupedDetail)
     private readonly groupedDetailRepository: typeof ECLogisticOrderGroupedDetail,
-    private readonly inventoryTrackChangeService: InventoryTrackChangeService,
+    private readonly inventoryTrackChangeService: LogisticInventoryTrackChangeService,
     private readonly inventoryStatusService: inventoryStatusService,
     private readonly l10n: LocalizationService,
   ) {}
@@ -97,6 +97,7 @@ export class LogisticRevertInventoryQtyService {
         InventoryTrackChangeStatusEnum.IncreaseQtyForOrderUnpaidOrder,
         inventory.qty,
         payment.logisticOrderId as any,
+        transaction,
       );
       // Update product inventory status
       await this.inventoryStatusService.productInventoryStatusUpdate(
