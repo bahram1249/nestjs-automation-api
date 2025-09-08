@@ -306,6 +306,162 @@ export class LogisticOrderQueryBuilder {
     return this;
   }
 
+  // Include groups and details but restrict groups to specific logistics (by IDs)
+  includeGroupsAndDetailsRestricted(logisticIds: number[]) {
+    const ids = (logisticIds && logisticIds.length ? logisticIds : [-1]) as any[];
+
+    // groups
+    let groupsInclude = new IncludeOptionsBuilder({
+      model: ECLogisticOrderGrouped,
+      as: 'groups',
+      required: false,
+      attributes: [
+        'id',
+        'logisticId',
+        'logisticShipmentWayId',
+        'logisticSendingPeriodId',
+        'logisticWeeklyPeriodId',
+        'logisticWeeklyPeriodTimeId',
+        'sendingGregorianDate',
+        'orderStatusId',
+        'totalProductPrice',
+        'totalDiscountFee',
+        'shipmentPrice',
+        'realShipmentPrice',
+        'totalPrice',
+      ],
+      where: {
+        logisticId: { [Op.in]: ids },
+      },
+      include: [
+        {
+          attributes: ['id', 'name'],
+          model: ECOrderStatus,
+          as: 'orderStatus',
+          required: false,
+        },
+        // logistic
+        {
+          attributes: ['id', 'title'],
+          model: ECLogistic,
+          as: 'logistic',
+          required: false,
+        },
+        // logistic shipment way and its lookups
+        {
+          attributes: ['id', 'logisticId', 'orderShipmentWayId', 'provinceId'],
+          model: ECLogisticShipmentWay,
+          as: 'logisticShipmentWay',
+          required: false,
+          include: [
+            {
+              attributes: ['id', 'name', 'icon'],
+              model: ECOrderShipmentWay,
+              as: 'orderShipmentWay',
+              required: false,
+            },
+            {
+              attributes: ['id', 'name'],
+              model: ECProvince,
+              as: 'province',
+              required: false,
+            },
+          ],
+        },
+        // logistic sending period and its lookups
+        {
+          attributes: ['id', 'logisticShipmentWayId', 'scheduleSendingTypeId', 'startDate', 'endDate'],
+          model: ECLogisticSendingPeriod,
+          as: 'logisticSendingPeriod',
+          required: false,
+          include: [
+            {
+              attributes: ['id', 'title', 'icon'],
+              model: ECScheduleSendingType,
+              as: 'scheduleSendingType',
+              required: false,
+            },
+          ],
+        },
+        // weekly period
+        {
+          attributes: ['id', 'logisticSendingPeriodId', 'weekNumber'],
+          model: ECLogisticWeeklyPeriod,
+          as: 'logisticWeeklyPeriod',
+          required: false,
+        },
+        // weekly period time
+        {
+          attributes: ['id', 'logisticWeeklyPeriodId', 'startTime', 'endTime'],
+          model: ECLogisticWeeklyPeriodTime,
+          as: 'logisticWeeklyPeriodTime',
+          required: false,
+        },
+      ],
+    });
+
+    // details under groups
+    const detailsInclude = new IncludeOptionsBuilder({
+      model: ECLogisticOrderGroupedDetail,
+      as: 'details',
+      required: false,
+      attributes: [
+        'id',
+        'groupedId',
+        'orderDetailStatusId',
+        'vendorId',
+        'productId',
+        'inventoryId',
+        'qty',
+        'productPrice',
+        'discountFee',
+        'discountFeePerItem',
+        'discountId',
+        'totalPrice',
+        'userId',
+        'createdAt',
+        'updatedAt',
+      ],
+      include: [
+        { attributes: ['id', 'name', 'slug'], model: ECVendor, as: 'vendor', required: false },
+        {
+          attributes: ['id', 'title', 'slug', 'sku'],
+          model: ECProduct,
+          as: 'product',
+          required: false,
+          include: [
+            {
+              attributes: ['id', 'colorId', 'guaranteeId', 'guaranteeMonthId'],
+              model: ECInventory,
+              as: 'inventories',
+              required: false,
+              where: Sequelize.where(Sequelize.col('groups.details.inventoryId'), {
+                [Op.eq]: Sequelize.col('groups.details.product.inventories.id'),
+              }),
+              include: [
+                { attributes: ['id', 'name', 'hexCode'], model: ECColor, as: 'color', required: false },
+                { attributes: ['id', 'name', 'slug'], model: ECGuarantee, as: 'guarantee', required: false },
+                { attributes: ['id', 'name'], model: ECGuaranteeMonth, as: 'guaranteeMonth', required: false },
+              ],
+            },
+            {
+              attributes: ['id', 'fileName'],
+              through: { attributes: [] },
+              model: Attachment,
+              as: 'attachments',
+              required: false,
+            },
+          ],
+        },
+        { attributes: ['id', 'name'], model: ECDiscount, as: 'discount', required: false },
+      ],
+    });
+
+    groupsInclude = groupsInclude.thenInclude(detailsInclude.build());
+    this.builder = this.builder.thenInclude(groupsInclude.build());
+    return this;
+  }
+
   filter(condition: any) {
     this.builder = this.builder.filter(condition);
     return this;

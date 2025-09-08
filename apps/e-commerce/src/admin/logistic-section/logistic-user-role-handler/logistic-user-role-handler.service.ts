@@ -252,4 +252,21 @@ export class LogisticUserRoleHandlerService {
         ),
       );
   }
+
+  // List logistic IDs that the given user has access to (non-deleted mappings)
+  async listAccessibleLogisticIds(user: User): Promise<number[]> {
+    const rows = await this.logisticUserRepository.findAll(
+      new QueryOptionsBuilder()
+        .attributes(['logisticId'])
+        .filter(
+          Sequelize.where(
+            Sequelize.fn('isnull', Sequelize.col('ECLogisticUser.isDeleted'), 0),
+            { [Op.eq]: 0 },
+          ),
+        )
+        .filter({ userId: user.id })
+        .build(),
+    );
+    return (rows || []).map((r: any) => Number(r.logisticId));
+  }
 }

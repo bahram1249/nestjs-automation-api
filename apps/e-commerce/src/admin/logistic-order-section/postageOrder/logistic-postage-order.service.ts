@@ -55,9 +55,12 @@ export class LogisticPostageOrderService {
 
     const count = await this.repository.count(qb.build());
 
+    // compute accessible logistic ids and restrict included groups
+    const accessibleLogisticIds = await this.logisticAccess.listAccessibleLogisticIds(user);
+
     qb = qb
       .subQuery(true)
-      .includeGroupsAndDetails()
+      .includeGroupsAndDetailsRestricted(accessibleLogisticIds)
       .includeAddress()
       .includeUser()
       .limit(filter.limit)
@@ -92,7 +95,8 @@ export class LogisticPostageOrderService {
           )`.replace(/\s\s+/g, ' '),
         ),
       )
-      .includeGroupsAndDetails()
+      // restrict included groups to the ones the user can access
+      .includeGroupsAndDetailsRestricted(await this.logisticAccess.listAccessibleLogisticIds(user))
       .includeAddress()
       .includeUser();
 
