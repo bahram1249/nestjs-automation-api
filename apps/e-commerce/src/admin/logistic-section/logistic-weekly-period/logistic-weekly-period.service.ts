@@ -189,7 +189,7 @@ export class LogisticWeeklyPeriodService {
 
       if (oldLogisticWeeklyPeriodMustDeleted.length > 0) {
         await this.logisticWeeklyPeriodRepository.update(
-          { isDeleted: 1 },
+          { isDeleted: true },
 
           {
             where: {
@@ -225,21 +225,21 @@ export class LogisticWeeklyPeriodService {
   }
 
   async createOrUpdateLogisticWeeklyPeriod(
-    logisticWeeklyPeriodId: number,
+    logisticSendingPeriodId: number,
     dto: LogisticWeeklyPeriodDetailDto,
     transaction?: Transaction,
   ) {
     if (isNotNull(dto.id)) {
       return await this.updateLogisticWeeklyPeriod(
         dto,
-        logisticWeeklyPeriodId,
+        logisticSendingPeriodId,
         transaction,
       );
 
       // create or update logisticWeeklyPeriodTimes
     }
     return await this.createLogisticWeeklyPeriod(
-      logisticWeeklyPeriodId,
+      logisticSendingPeriodId,
       dto,
       transaction,
     );
@@ -268,16 +268,28 @@ export class LogisticWeeklyPeriodService {
       (item) => item.id,
     );
 
+    const filteredLogisticWeeklyPeriodTimeIds = logisticWeeklyPeriodTimeIds
+      ?.filter((id) => isNotNull(id));
+
+    const queryBuilderForTimes = new QueryOptionsBuilder()
+      .filter({
+        logisticWeeklyPeriodId: dto.id,
+      });
+
+    if (
+      filteredLogisticWeeklyPeriodTimeIds &&
+      filteredLogisticWeeklyPeriodTimeIds.length > 0
+    ) {
+      queryBuilderForTimes.filter({
+        id: {
+          [Op.notIn]: filteredLogisticWeeklyPeriodTimeIds,
+        },
+      });
+    }
+
     const oldLogisticWeeklyPeriodTimesMustDeleted =
       await this.logisticWeeklyPeriodTimeRepository.findAll(
-        new QueryOptionsBuilder()
-          .filter({
-            id: {
-              [Op.notIn]: logisticWeeklyPeriodTimeIds,
-            },
-          })
-          .transaction(transaction)
-          .build(),
+        queryBuilderForTimes.transaction(transaction).build(),
       );
 
     if (oldLogisticWeeklyPeriodTimesMustDeleted.length > 0) {
@@ -299,7 +311,7 @@ export class LogisticWeeklyPeriodService {
     await Promise.all(
       dto.logisticWeeklyPeriodTimes?.map(async (item) => {
         await this.createOrUpdateLogisticWeeklyPeriodTimes(
-          updateItem.id,
+          (dto.id as any),
           item,
           transaction,
         );
@@ -369,7 +381,6 @@ export class LogisticWeeklyPeriodService {
     );
 
     const insertedItem = _.omit(mappedItem.toJSON(), ['id']);
-    console.log(insertedItem);
     insertedItem.logisticWeeklyPeriodId = logisticWeeklyPeriodId;
 
     await this.logisticWeeklyPeriodTimeRepository.create(insertedItem, {
