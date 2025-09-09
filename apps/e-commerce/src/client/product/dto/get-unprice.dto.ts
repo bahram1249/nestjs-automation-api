@@ -9,6 +9,7 @@ import { InventoryFilterDto } from './inventory-filter.dto';
 import { InventoryStatusDto } from './inventory-status.dto';
 import { DiscountTypeDto } from './discount-type.dto';
 import { SelectedProductDto } from './selected-product.dto';
+import { ProductInventoryPairsFilterDto } from './product-inventory-pairs-filter.dto';
 import { VendorsFilterDto } from './vendors-filter.dto';
 
 export class GetUnPriceDto extends IntersectionType(
@@ -23,4 +24,5 @@ export class GetUnPriceDto extends IntersectionType(
   InventoryStatusDto,
   DiscountTypeDto,
   SelectedProductDto,
+  ProductInventoryPairsFilterDto,
 ) {}

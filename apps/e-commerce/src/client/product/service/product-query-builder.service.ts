@@ -302,6 +302,57 @@ export class ProductQueryBuilderService {
       inventoryIncludeBuilder.filter({ id: filter.inventoryId });
     }
 
+    // Batch filter by specific combinations of productId and inventoryId
+    if (
+      (filter as any).productInventoryPairs &&
+      (filter as any).productInventoryPairs.length > 0
+    ) {
+      const pairs = (filter as any).productInventoryPairs as Array<{
+        productId: number | string | bigint;
+        inventoryId: number | string | bigint;
+      }>;
+      const inventoryIds = pairs
+        .map((p) => Number(p.inventoryId))
+        .filter((v) => !Number.isNaN(v));
+      const productIds = pairs
+        .map((p) => Number(p.productId))
+        .filter((v) => !Number.isNaN(v));
+
+      if (inventoryIds.length > 0 && productIds.length > 0) {
+        // Restrict parents to productIds
+        queryBuilder = queryBuilder.filter({
+          id: {
+            [Op.in]: productIds,
+          },
+        });
+        queryResultBuilder = queryResultBuilder.filter({
+          id: {
+            [Op.in]: productIds,
+          },
+        });
+
+        // Restrict included inventories to the provided inventory ids
+        inventoryIncludeBuilder = inventoryIncludeBuilder.filter({
+          id: {
+            [Op.in]: inventoryIds,
+          },
+        });
+
+        // Ensure a product is returned only if it has at least one of the requested inventories
+        const existsRequestedInventory = Sequelize.literal(
+          `EXISTS (
+            SELECT 1
+            FROM ECInventories AS ECI
+            WHERE [ECProduct].id = [ECI].productId
+              AND ISNULL([ECI].isDeleted, 0) = 0
+              AND [ECI].id IN (${inventoryIds.join(',')})
+          )`.replaceAll(/\s\s+/g, ' '),
+        );
+        queryBuilder = queryBuilder.filter(existsRequestedInventory);
+        queryResultBuilder = queryResultBuilder.filter(existsRequestedInventory);
+      }
+    }
+
     if (filter.vendorIds != null && filter.vendorIds.length > 0) {
       const vendorFiltered = Sequelize.literal(
         `EXISTS (

@@ -99,19 +99,52 @@ export class StockService {
         .build(),
     );
     stocks = JSON.parse(JSON.stringify(stocks));
+
+    // Build unique list of productId + inventoryId pairs for batch query
+    const uniqueKey = (p: { productId: any; inventoryId: any }) =>
+      `${p.productId}_${p.inventoryId}`;
+    const pairMap: Record<string, { productId: number; inventoryId: number }> = {};
+    for (const s of stocks) {
+      const key = uniqueKey({ productId: s.productId, inventoryId: s.inventoryId });
+      if (!pairMap[key]) {
+        pairMap[key] = { productId: Number(s.productId), inventoryId: Number(s.inventoryId) };
+      }
+    }
+    const productInventoryPairs = Object.values(pairMap);
+
+    // Query all products in one shot with their requested inventories
+    const filter = _.extend(_.cloneDeep(this.emptyListFilter), {
+      productInventoryPairs,
+      limit: productInventoryPairs.length,
+      offset: 0,
+    });
+    const productsQuery = await this.productRepositoryService.findAll(filter as any);
+    const products = productsQuery.result;
+
+    // Index products by id for quick lookup
+    const productById = new Map<number, any>();
+    for (const p of products) {
+      productById.set(Number(p.id), p);
+    }
+
+    // Attach product with only the specific inventory to each stock
     for (let index = 0; index < stocks.length; index++) {
       const stock = stocks[index];
-      const queryItem = await this.productRepositoryService.findById(
-        _.extend(this.emptyListFilter, { inventoryId: stock.inventoryId }),
-        stock.productId,
-        false,
-      );
-      stock.product = queryItem.result;
+      const product = productById.get(Number(stock.productId));
+      if (product) {
+        // Clone to avoid mutating shared sequelize instance across stocks
+        const productPlain = JSON.parse(JSON.stringify(product));
+        const matchedInventory = (productPlain.inventories || []).find(
+          (inv) => Number(inv.id) === Number(stock.inventoryId),
+        );
+        productPlain.inventories = matchedInventory ? [matchedInventory] : [];
+        stock.product = productPlain;
+      }
 
       stocks[index] = stock;
       if (
-        stock.product.inventoryStatusId == InventoryStatusEnum.unavailable ||
-        stock.product.inventories[0].qty < stock.qty
+        stock?.product?.inventoryStatusId == InventoryStatusEnum.unavailable ||
+        (stock?.product?.inventories?.[0]?.qty ?? 0) < stock.qty
       ) {
         await this.stockInventoryRemoveQueue.add(STOCK_INVENTORY_REMOVE_JOB, {
           stockId: stock.id,
@@ -156,7 +189,7 @@ export class StockService {
   }
 
   async price(session: ECUserSession, query: StockPriceDto, user?: User) {
-    const stockResult = (await this.findAll(session)).result;
+    const { result: stockResult } = await this.findAll(session);
     // available items
     let stocks = stockResult.filter(
       (stock) =>
