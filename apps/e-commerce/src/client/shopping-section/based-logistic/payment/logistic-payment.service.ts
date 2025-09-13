@@ -416,6 +416,7 @@ export class LogisticPaymentService {
           logisticOrderId: orderId,
           logisticId: g.logisticId as any,
           logisticShipmentWayId: g.shipmentWayId as any,
+          orderShipmentWayId: g.shipmentWayType as any,
           logisticSendingPeriodId: (g.sendingPeriodId as any) ?? null,
           logisticWeeklyPeriodId: (g.weeklyPeriodId as any) ?? null,
           logisticWeeklyPeriodTimeId: (g.weeklyPeriodTimeId as any) ?? null,

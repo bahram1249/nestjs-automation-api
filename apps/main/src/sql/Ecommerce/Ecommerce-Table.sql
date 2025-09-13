@@ -3610,6 +3610,80 @@ GO
 
 
 
+-- ec-logistic-order-groupeds-shipping-tracking-v1
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ec-logistic-order-groupeds-shipping-tracking-v1'
+)
+    AND EXISTS (
+        SELECT 1 FROM Settings
+        WHERE ([key] = 'SITE_NAME' AND [value] IN ('ecommerce'))
+    )
+    BEGIN
+
+        ALTER TABLE ECLogisticOrderGroupeds
+            ADD courierUserId bigint NULL
+                CONSTRAINT FK_ECLogisticOrderGroupeds_CourierUserId
+                    FOREIGN KEY REFERENCES Users(id),
+                postReceipt nvarchar(256) NULL,
+                deliveryDate datetime NULL,
+                sendToCustomerDate datetime NULL,
+                sendToCustomerBy bigint NULL;
+
+        INSERT INTO Migrations(version, createdAt, updatedAt)
+        SELECT 'ec-logistic-order-groupeds-shipping-tracking-v1', GETDATE(), GETDATE()
+    END
+
+GO
+
+
+-- ec-logistic-order-grouped-details
+-- ec-logistic-order-groupeds-orderShipmentWayId-v1
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ec-logistic-order-groupeds-orderShipmentWayId-v1'
+)
+    AND EXISTS (
+        SELECT 1 FROM Settings
+        WHERE ([key] = 'SITE_NAME' AND [value] IN ('ecommerce'))
+    )
+    BEGIN
+
+        ALTER TABLE ECLogisticOrderGroupeds
+            ADD orderShipmentWayId int NULL
+                CONSTRAINT FK_ECLogisticOrderGroupeds_OrderShipmentWayId
+                    FOREIGN KEY REFERENCES ECOrderShipmentWays(id);
+
+      
+
+        INSERT INTO Migrations(version, createdAt, updatedAt)
+        SELECT 'ec-logistic-order-groupeds-orderShipmentWayId-v1', GETDATE(), GETDATE()
+    END
+
+GO
+
+
+-- ec-logistic-order-grouped-details
+-- ec-logistic-order-groupeds-orderShipmentWayId-v2
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ec-logistic-order-groupeds-orderShipmentWayId-v2'
+)
+    AND EXISTS (
+        SELECT 1 FROM Settings
+        WHERE ([key] = 'SITE_NAME' AND [value] IN ('ecommerce'))
+    )
+    BEGIN
+
+          -- backfill from ECLogisticShipmentWays
+        UPDATE LG
+           SET orderShipmentWayId = LSW.orderShipmentWayId
+          FROM ECLogisticOrderGroupeds LG
+          JOIN ECLogisticShipmentWays LSW ON LSW.id = LG.logisticShipmentWayId
+         WHERE LG.orderShipmentWayId IS NULL;
+
+        INSERT INTO Migrations(version, createdAt, updatedAt)
+        SELECT 'ec-logistic-order-groupeds-orderShipmentWayId-v2', GETDATE(), GETDATE()
+    END
+
+GO
+
+
+
 -- ec-logistic-order-grouped-details
 -- ec-logistic-order-groupeds-logisticSendingPeriodId-nullable-v1
 IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ec-logistic-order-groupeds-logisticSendingPeriodId-nullable-v1'

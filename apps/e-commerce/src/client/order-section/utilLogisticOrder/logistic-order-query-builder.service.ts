@@ -165,6 +165,7 @@ export class LogisticOrderQueryBuilder {
         'id',
         'logisticId',
         'logisticShipmentWayId',
+        'orderShipmentWayId',
         'logisticSendingPeriodId',
         'logisticWeeklyPeriodId',
         'logisticWeeklyPeriodTimeId',
@@ -175,6 +176,12 @@ export class LogisticOrderQueryBuilder {
         'shipmentPrice',
         'realShipmentPrice',
         'totalPrice',
+        // new tracking fields
+        'courierUserId',
+        'postReceipt',
+        'deliveryDate',
+        'sendToCustomerDate',
+        'sendToCustomerBy',
       ],
       include: [
         {
@@ -319,6 +326,7 @@ export class LogisticOrderQueryBuilder {
         'id',
         'logisticId',
         'logisticShipmentWayId',
+        'orderShipmentWayId',
         'logisticSendingPeriodId',
         'logisticWeeklyPeriodId',
         'logisticWeeklyPeriodTimeId',
@@ -329,6 +337,12 @@ export class LogisticOrderQueryBuilder {
         'shipmentPrice',
         'realShipmentPrice',
         'totalPrice',
+        // new tracking fields
+        'courierUserId',
+        'postReceipt',
+        'deliveryDate',
+        'sendToCustomerDate',
+        'sendToCustomerBy',
       ],
       where: {
         logisticId: { [Op.in]: ids },

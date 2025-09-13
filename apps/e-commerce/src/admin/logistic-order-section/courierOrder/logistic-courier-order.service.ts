@@ -42,10 +42,10 @@ export class LogisticCourierOrderService {
           `EXISTS (
             SELECT 1
               FROM ECLogisticOrderGroupeds LG
-              JOIN ECLogisticShipmentWays LSW ON LSW.id = LG.logisticShipmentWayId AND LSW.orderShipmentWayId = ${OrderShipmentwayEnum.delivery}
              WHERE LG.logisticOrderId = ECLogisticOrder.id
                AND ISNULL(LG.isDeleted,0)=0
                AND LG.orderStatusId = ${OrderStatusEnum.OrderHasBeenProcessed}
+               AND LG.orderShipmentWayId = ${OrderShipmentwayEnum.delivery}
                AND EXISTS (
                  SELECT 1 FROM ECLogisticUsers LU
                   WHERE LU.userId = ${user.id}
@@ -85,10 +85,10 @@ export class LogisticCourierOrderService {
           `EXISTS (
             SELECT 1
               FROM ECLogisticOrderGroupeds LG
-              JOIN ECLogisticShipmentWays LSW ON LSW.id = LG.logisticShipmentWayId AND LSW.orderShipmentWayId = ${OrderShipmentwayEnum.delivery}
              WHERE LG.logisticOrderId = ECLogisticOrder.id
                AND ISNULL(LG.isDeleted,0)=0
                AND LG.orderStatusId = ${OrderStatusEnum.OrderHasBeenProcessed}
+               AND LG.orderShipmentWayId = ${OrderShipmentwayEnum.delivery}
                AND EXISTS (
                  SELECT 1 FROM ECLogisticUsers LU
                   WHERE LU.userId = ${user.id}
@@ -122,11 +122,7 @@ export class LogisticCourierOrderService {
         new QueryOptionsBuilder()
           .filter({ id: groupId })
           .filter({ orderStatusId: OrderStatusEnum.OrderHasBeenProcessed })
-          .filter(
-            Sequelize.literal(
-              `EXISTS (SELECT 1 FROM ECLogisticShipmentWays LSW WHERE LSW.id = ECLogisticOrderGrouped.logisticShipmentWayId AND LSW.orderShipmentWayId = ${OrderShipmentwayEnum.delivery})`,
-            ),
-          )
+          .filter({ orderShipmentWayId: OrderShipmentwayEnum.delivery as any })
           .filter(
             Sequelize.where(
               Sequelize.fn('isnull', Sequelize.col('ECLogisticOrderGrouped.isDeleted'), 0),
@@ -155,6 +151,7 @@ export class LogisticCourierOrderService {
               { [Op.eq]: 0 },
             ),
           )
+          .include([{ model: User, as: 'user' }])
           .transaction(transaction)
           .build(),
       );
@@ -162,8 +159,10 @@ export class LogisticCourierOrderService {
         throw new NotFoundException(this.localizationService.translate('ecommerce.courier_not_found'));
       }
 
-      // update group status
+      // update group status and courier tracking data at group-level
       group.orderStatusId = OrderStatusEnum.SendByCourier;
+      group.deliveryDate = new Date();
+      group.courierUserId = dto.userId as any;
       group = await group.save({ transaction });
       // roll-up parent ECLogisticOrder status after group status change
       await this.utilService.syncParentOrderStatus(group.logisticOrderId as any, transaction as any);
@@ -180,7 +179,7 @@ export class LogisticCourierOrderService {
       );
       if (order && (order as any).user) {
         await this.smsService.sendByCourier(
-          `${(order as any).user.firstname};${(order as any).user.lastname};${courier.userId};${groupId}`,
+          `${(order as any).user.firstname};${(order as any).user.lastname};${(courier as any)?.user?.phoneNumber || ''};${groupId}`,
           (order as any).user.phoneNumber,
         );
       }

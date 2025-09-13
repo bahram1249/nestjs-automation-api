@@ -58,17 +58,17 @@ export class LogisticPostageOrderController {
     return await this.service.findById(entityId, user);
   }
 
-  @ApiOperation({ description: 'change order to post' })
+  @ApiOperation({ description: 'change group to post (id is ECLogisticOrderGrouped.id)' })
   @CheckPermission({
     permissionSymbol: 'ecommerce.admin.postageorders.processpost',
   })
   @Patch('/processPost/:id')
   @HttpCode(HttpStatus.OK)
   async processPost(
-    @Param('id') orderId: bigint,
+    @Param('id') groupId: bigint,
     @GetUser() user: User,
     @Body() dto: PostProcessDto,
   ) {
-    return await this.service.processPost(orderId, user, dto);
+    return await this.service.processPost(groupId, user, dto);
   }
 }

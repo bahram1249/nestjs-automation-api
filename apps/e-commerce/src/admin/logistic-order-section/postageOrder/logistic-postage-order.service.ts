@@ -39,10 +39,10 @@ export class LogisticPostageOrderService {
           `EXISTS (
             SELECT 1
               FROM ECLogisticOrderGroupeds LG
-              JOIN ECLogisticShipmentWays LSW ON LSW.id = LG.logisticShipmentWayId AND LSW.orderShipmentWayId = ${OrderShipmentwayEnum.post}
              WHERE LG.logisticOrderId = ECLogisticOrder.id
                AND ISNULL(LG.isDeleted,0)=0
                AND LG.orderStatusId = ${OrderStatusEnum.OrderHasBeenProcessed}
+               AND LG.orderShipmentWayId = ${OrderShipmentwayEnum.post}
                AND EXISTS (
                  SELECT 1 FROM ECLogisticUsers LU
                   WHERE LU.userId = ${user.id}
@@ -82,10 +82,10 @@ export class LogisticPostageOrderService {
           `EXISTS (
             SELECT 1
               FROM ECLogisticOrderGroupeds LG
-              JOIN ECLogisticShipmentWays LSW ON LSW.id = LG.logisticShipmentWayId AND LSW.orderShipmentWayId = ${OrderShipmentwayEnum.post}
              WHERE LG.logisticOrderId = ECLogisticOrder.id
                AND ISNULL(LG.isDeleted,0)=0
                AND LG.orderStatusId = ${OrderStatusEnum.OrderHasBeenProcessed}
+               AND LG.orderShipmentWayId = ${OrderShipmentwayEnum.post}
                AND EXISTS (
                  SELECT 1 FROM ECLogisticUsers LU
                   WHERE LU.userId = ${user.id}
@@ -117,11 +117,7 @@ export class LogisticPostageOrderService {
         new QueryOptionsBuilder()
           .filter({ id: groupId })
           .filter({ orderStatusId: OrderStatusEnum.OrderHasBeenProcessed })
-          .filter(
-            Sequelize.literal(
-              `EXISTS (SELECT 1 FROM ECLogisticShipmentWays LSW WHERE LSW.id = ECLogisticOrderGrouped.logisticShipmentWayId AND LSW.orderShipmentWayId = ${OrderShipmentwayEnum.post})`,
-            ),
-          )
+          .filter({ orderShipmentWayId: OrderShipmentwayEnum.post as any })
           .filter(
             Sequelize.where(
               Sequelize.fn('isnull', Sequelize.col('ECLogisticOrderGrouped.isDeleted'), 0),
@@ -140,6 +136,9 @@ export class LogisticPostageOrderService {
       await this.logisticAccess.checkAccessToLogistic({ user, logisticId: group.logisticId });
 
       group.orderStatusId = OrderStatusEnum.SendByPost;
+      // set new group-level fields
+      group.postReceipt = dto.postReceipt as any;
+      group.deliveryDate = new Date();
       group = await group.save({ transaction });
       // roll-up parent ECLogisticOrder status after group status change
       await this.utilService.syncParentOrderStatus(group.logisticOrderId as any, transaction as any);

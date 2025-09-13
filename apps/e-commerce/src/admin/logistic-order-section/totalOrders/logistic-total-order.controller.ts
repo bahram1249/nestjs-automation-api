@@ -106,7 +106,7 @@ export class LogisticTotalOrderController {
     return await this.service.changeOrderStatus(id, dto);
   }
 
-  @ApiOperation({ description: 'edit receipt post (logistic) - id is ECLogisticOrder.id' })
+  @ApiOperation({ description: 'edit receipt post (logistic, by group) - id is ECLogisticOrderGrouped.id' })
   @CheckPermission({ permissionSymbol: 'ecommerce.admin.totalorders.editreceiptpost' })
   @Patch('/editReceiptPost/:id')
   @HttpCode(HttpStatus.OK)

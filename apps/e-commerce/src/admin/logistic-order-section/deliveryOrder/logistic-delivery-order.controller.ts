@@ -60,13 +60,13 @@ export class LogisticDeliveryOrderController {
     return await this.service.findById(entityId, user);
   }
 
-  @ApiOperation({ description: 'change order to customer' })
+  @ApiOperation({ description: 'change group to customer (id is ECLogisticOrderGrouped.id)' })
   @CheckPermission({
     permissionSymbol: 'ecommerce.admin.deliveryorders.processdeliver',
   })
   @Patch('/processDelivery/:id')
   @HttpCode(HttpStatus.OK)
-  async processPost(@Param('id') orderId: bigint, @GetUser() user: User) {
-    return await this.service.processDelivery(orderId, user);
+  async processPost(@Param('id') groupId: bigint, @GetUser() user: User) {
+    return await this.service.processDelivery(groupId, user);
   }
 }

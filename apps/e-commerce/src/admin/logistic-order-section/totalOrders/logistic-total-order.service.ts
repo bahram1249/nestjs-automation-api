@@ -362,30 +362,33 @@ export class LogisticTotalOrderService {
     }
 
     group.logisticShipmentWayId = dto.shipmentWayId as any;
+    // also update cached order-shipment-way (delivery/post/etc.) to simplify downstream filters
+    group.orderShipmentWayId = (shipmentWay as any).orderShipmentWayId as any;
     group = await group.save();
     return { result: group };
   }
 
+  // In logistic flow id is groupId
   async editReceiptPost(id: bigint, dto: EditReceiptPostDto) {
-    let order = await this.repository.findOne(
+    let group = await this.groupedRepository.findOne(
       new QueryOptionsBuilder()
         .filter({ id })
         .filter(
           Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('ECLogisticOrder.isDeleted'), 0),
+            Sequelize.fn('isnull', Sequelize.col('ECLogisticOrderGrouped.isDeleted'), 0),
             { [Op.eq]: 0 },
           ),
         )
         .build(),
     );
-    if (!order) {
+    if (!group) {
       throw new NotFoundException(
-        this.localizationService.translate('ecommerce.logistic_order_not_found'),
+        this.localizationService.translate('ecommerce.logistic_group_not_found'),
       );
     }
-    order.postReceipt = (dto as any).receipt;
-    order = await order.save();
-    return { result: order };
+    group.postReceipt = (dto as any).receipt;
+    group = await group.save();
+    return { result: group };
   }
 
   private async recalculateAndUpdateOrderTotals(groupId: bigint, transaction?: Transaction) {

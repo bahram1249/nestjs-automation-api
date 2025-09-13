@@ -62,17 +62,17 @@ export class LogisticCourierOrderController {
     return await this.service.findById(entityId, user);
   }
 
-  @ApiOperation({ description: 'change order to courier' })
+  @ApiOperation({ description: 'change group to courier (id is ECLogisticOrderGrouped.id)' })
   @CheckPermission({
     permissionSymbol: 'ecommerce.admin.courierorders.processcourier',
   })
   @Patch('/processCourier/:id')
   @HttpCode(HttpStatus.OK)
   async processCourier(
-    @Param('id') orderId: bigint,
+    @Param('id') groupId: bigint,
     @GetUser() user: User,
     @Body() dto: CourierProcessDto,
   ) {
-    return await this.service.processCourier(orderId, user, dto);
+    return await this.service.processCourier(groupId, user, dto);
   }
 }

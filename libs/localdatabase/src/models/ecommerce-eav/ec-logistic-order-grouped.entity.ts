@@ -14,7 +14,9 @@ import { ECLogisticSendingPeriod } from './ec-logistic-sending-period.entity';
 import { ECLogisticWeeklyPeriod } from './ec-logistic-weekly-period.entity';
 import { ECLogisticWeeklyPeriodTime } from './ec-logistic-weekly-period-time.entity';
 import { ECOrderStatus } from './ec-order-status.entity';
+import { ECOrderShipmentWay } from './ec-order-shipmentway.entity';
 import { ECLogisticOrderGroupedDetail } from './ec-logistic-order-grouped-detail.entity';
+import { User } from '@rahino/database';
 
 @Table({ tableName: 'ECLogisticOrderGroupeds' })
 export class ECLogisticOrderGrouped extends Model {
@@ -47,6 +49,17 @@ export class ECLogisticOrderGrouped extends Model {
     foreignKey: 'logisticShipmentWayId',
   })
   logisticShipmentWay?: ECLogisticShipmentWay;
+
+  // Direct cache of shipment way type for simpler filters (post/delivery/etc.)
+  @Column({ type: DataType.INTEGER, allowNull: true })
+  @ForeignKey(() => ECOrderShipmentWay)
+  orderShipmentWayId?: number;
+
+  @BelongsTo(() => ECOrderShipmentWay, {
+    as: 'orderShipmentWay',
+    foreignKey: 'orderShipmentWayId',
+  })
+  orderShipmentWay?: ECOrderShipmentWay;
 
   @Column({ type: DataType.BIGINT, allowNull: true })
   @ForeignKey(() => ECLogisticSendingPeriod)
@@ -106,6 +119,26 @@ export class ECLogisticOrderGrouped extends Model {
   // Selected sending date (Gregorian). Optional; validated at payment time
   @Column({ type: DataType.DATE, allowNull: true })
   sendingGregorianDate?: Date;
+
+  // Courier/post and delivery tracking fields (group-level)
+  @Column({ type: DataType.BIGINT, allowNull: true })
+  @ForeignKey(() => User)
+  courierUserId?: bigint;
+
+  @BelongsTo(() => User, { as: 'courierUser', foreignKey: 'courierUserId' })
+  courierUser?: User;
+
+  @Column({ type: DataType.STRING, allowNull: true })
+  postReceipt?: string;
+
+  @Column({ type: DataType.DATE, allowNull: true })
+  deliveryDate?: Date;
+
+  @Column({ type: DataType.DATE, allowNull: true })
+  sendToCustomerDate?: Date;
+
+  @Column({ type: DataType.BIGINT, allowNull: true })
+  sendToCustomerBy?: bigint;
 
   @Column({ type: DataType.BOOLEAN, allowNull: true })
   isDeleted?: boolean;
