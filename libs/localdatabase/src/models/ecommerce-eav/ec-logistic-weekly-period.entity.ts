@@ -6,10 +6,12 @@ import {
   ForeignKey,
   BelongsTo,
   HasMany,
+  AfterFind,
 } from 'sequelize-typescript';
 import { AutoMap } from 'automapper-classes';
 import { ECLogisticSendingPeriod } from './ec-logistic-sending-period.entity';
 import { ECLogisticWeeklyPeriodTime } from './ec-logistic-weekly-period-time.entity';
+import { isNotNull } from '@rahino/commontools';
 
 @Table({ tableName: 'ECLogisticWeeklyPeriods' })
 export class ECLogisticWeeklyPeriod extends Model {
@@ -50,4 +52,48 @@ export class ECLogisticWeeklyPeriod extends Model {
     foreignKey: 'logisticWeeklyPeriodId',
   })
   weeklyPeriodTimes?: ECLogisticWeeklyPeriodTime[];
+
+  @AfterFind
+  static async formatWeeklyPeriodTimes(
+    instanceOrInstances: ECLogisticWeeklyPeriod | ECLogisticWeeklyPeriod[],
+  ) {
+    if (Array.isArray(instanceOrInstances)) {
+      for (const instance of instanceOrInstances) {
+        ECLogisticWeeklyPeriod.formatSingleInstance(instance);
+      }
+    } else {
+      ECLogisticWeeklyPeriod.formatSingleInstance(instanceOrInstances);
+    }
+  }
+
+  private static formatSingleInstance(instance: ECLogisticWeeklyPeriod) {
+    if (
+      isNotNull(instance) &&
+      isNotNull(instance.weeklyPeriodTimes) &&
+      instance.weeklyPeriodTimes.length > 0
+    ) {
+      for (const timeItem of instance.weeklyPeriodTimes) {
+        if (isNotNull(timeItem.startTime)) {
+          timeItem.startTime = new Date(timeItem.startTime).toLocaleTimeString(
+            'en-US',
+            {
+              hour: '2-digit',
+              minute: '2-digit',
+              hour12: false,
+            },
+          );
+        }
+        if (isNotNull(timeItem.endTime)) {
+          timeItem.endTime = new Date(timeItem.endTime).toLocaleTimeString(
+            'en-US',
+            {
+              hour: '2-digit',
+              minute: '2-digit',
+              hour12: false,
+            },
+          );
+        }
+      }
+    }
+  }
 }
