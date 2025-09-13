@@ -262,12 +262,13 @@ BEGIN
 	);
 
 
-
 	INSERT INTO Migrations(version, createdAt, updatedAt)
 	SELECT 'ecommerce-schedule-sending-types-v1', GETDATE(), GETDATE()
 END
 
 GO
+
+	
 
 IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ecommerce-schedule-sending-types-v2' 
 			)
@@ -277,13 +278,9 @@ IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ecommerce-schedule-send
 		)
 BEGIN
 
+
 	ALTER TABLE ECScheduleSendingTypes
 		ADD offsetDay int null;
-
-
-	INSERT INTO ECScheduleSendingTypes(id, title, icon, offsetDay,createdAt, updatedAt)
-	VALUES (1, N'ارسال معمولی', 'normalSending.png', 2, GETDATE(), GETDATE())
-		,(2, N'ارسال اکسپرس', 'expressSending.png', 0, GETDATE(), GETDATE())
 
 
 	INSERT INTO Migrations(version, createdAt, updatedAt)
@@ -292,7 +289,29 @@ END
 
 GO
 
-IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ecommerce-schedule-sending-types-v2' 
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ecommerce-schedule-sending-types-v3' 
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'SITE_NAME' AND [value] IN ('ecommerce'))
+		)
+BEGIN
+
+
+
+
+	INSERT INTO ECScheduleSendingTypes(id, title, icon, offsetDay,createdAt, updatedAt)
+	VALUES (1, N'ارسال معمولی', 'normalSending.png', 2, GETDATE(), GETDATE())
+		,(2, N'ارسال اکسپرس', 'expressSending.png', 0, GETDATE(), GETDATE())
+
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'ecommerce-schedule-sending-types-v3', GETDATE(), GETDATE()
+END
+
+GO
+
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ecommerce-schedule-sending-types-v4' 
 			)
 	AND EXISTS (
 		SELECT 1 FROM Settings 
@@ -309,7 +328,7 @@ BEGIN
 
 
 	INSERT INTO Migrations(version, createdAt, updatedAt)
-	SELECT 'ecommerce-schedule-sending-types-v2', GETDATE(), GETDATE()
+	SELECT 'ecommerce-schedule-sending-types-v4', GETDATE(), GETDATE()
 END
 
 GO
