@@ -298,8 +298,6 @@ IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ecommerce-schedule-send
 BEGIN
 
 
-
-
 	INSERT INTO ECScheduleSendingTypes(id, title, icon, offsetDay,createdAt, updatedAt)
 	VALUES (1, N'ارسال معمولی', 'normalSending.png', 2, GETDATE(), GETDATE())
 		,(2, N'ارسال اکسپرس', 'expressSending.png', 0, GETDATE(), GETDATE())
@@ -323,8 +321,6 @@ BEGIN
 		ADD parentId int null
 			CONSTRAINT FK_ECScheduleSendingTypes_ParentId
 				FOREIGN KEY REFERENCES ECScheduleSendingTypes(id);
-
-	
 
 
 	INSERT INTO Migrations(version, createdAt, updatedAt)

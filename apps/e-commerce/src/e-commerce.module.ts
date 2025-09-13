@@ -60,7 +60,11 @@ import { PersianDateMonthModule } from './client/persiandate/bymonth/persian-dat
 import { VendorSaleModule } from './report/vendor-sale/vendor-sale.module';
 import { AdminCourierReportModule } from './report/admin-courier/admin-courier.module';
 import { AdminPostReportModule } from './report/admin-post/admin-post.module';
+import { LogisticOrderReportModule } from './report/based-logistic/logistic-order/logistic-order.module';
 import { CourierReportModule } from './report/courier/courier-report.module';
+import { BasedAdminCourierReportModule } from './report/based-logistic/admin-courier/admin-courier.module';
+import { BasedAdminPostReportModule } from './report/based-logistic/admin-post/admin-post.module';
+import { BasedCourierReportModule } from './report/based-logistic/courier/courier-report.module';
 import { PaymentTransactionReportModule } from './report/payment-transaction/payment-transaction.module';
 import { PaymentGatewayModule } from './admin/order-section/payment-gateway/payment-gateway.module';
 import { InventoryReportModule } from './report/inventory/inventory-report.module';
@@ -191,6 +195,10 @@ import { ClientOrderModule } from './client/order/client-order.module';
     AdminCourierReportModule,
     AdminPostReportModule,
     CourierReportModule,
+    LogisticOrderReportModule,
+    BasedAdminCourierReportModule,
+    BasedAdminPostReportModule,
+    BasedCourierReportModule,
     PersianDateMonthModule,
     PaymentTransactionReportModule,
     PaymentGatewayModule,
