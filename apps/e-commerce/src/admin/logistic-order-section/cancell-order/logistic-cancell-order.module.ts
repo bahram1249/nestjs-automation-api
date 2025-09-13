@@ -8,6 +8,7 @@ import {
   ECPayment,
   ECPaymentGateway,
   ECOrderStatus,
+  ECOrderShipmentWay,
 } from '@rahino/localdatabase/models';
 import { LogisticUtilOrderModule } from '../utilLogisticOrder/logistic-util-order.module';
 import { SnappayModule } from '@rahino/ecommerce/user/shopping/payment/provider/snappay.module';
@@ -16,6 +17,7 @@ import { UserVendorModule } from '@rahino/ecommerce/user/user-vendor/user-vendor
 import { FinalizedPaymentModule } from '@rahino/ecommerce/user/shopping/payment/util/finalized-payment/finalized-payment.module';
 import { LogisticCancellOrderController } from './logistic-cancell-order.controller';
 import { LogisticCancellOrderService } from './logistic-cancell-order.service';
+import { LogisticUserRoleHandlerModule } from 'apps/e-commerce/src/admin/logistic-section/logistic-user-role-handler/logistic-user-role-handler.module';
 
 // Logistic equivalent of CancellOrderModule for logistic-based orders
 @Module({
@@ -29,6 +31,7 @@ import { LogisticCancellOrderService } from './logistic-cancell-order.service';
       ECPayment,
       ECPaymentGateway,
       ECOrderStatus,
+      ECOrderShipmentWay,
     ]),
     SequelizeModule,
     LogisticUtilOrderModule,
@@ -36,6 +39,7 @@ import { LogisticCancellOrderService } from './logistic-cancell-order.service';
     RoleUtilModule,
     UserVendorModule,
     FinalizedPaymentModule,
+    LogisticUserRoleHandlerModule,
   ],
   controllers: [LogisticCancellOrderController],
   providers: [LogisticCancellOrderService],
