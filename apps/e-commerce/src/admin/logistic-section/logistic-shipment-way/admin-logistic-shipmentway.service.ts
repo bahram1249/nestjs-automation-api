@@ -157,6 +157,9 @@ export class AdminLogisticShipmentWayService {
             .filter({
               orderShipmentWayId: shipmentWayDetail.orderShipmentWayId,
             })
+            .filter(Sequelize.where(Sequelize.fn("isnull", Sequelize.col("ECLogisticShipmentWay.isDeleted"), 0), {
+              [Op.eq]: 0
+            }))
             .transaction(transaction)
             .build(),
         );
