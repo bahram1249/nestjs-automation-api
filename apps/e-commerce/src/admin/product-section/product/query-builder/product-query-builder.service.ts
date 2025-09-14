@@ -24,6 +24,7 @@ import {
   ECNeighborhood,
   ECProvince,
   ECPublishStatus,
+  ECScheduleSendingType,
   ECVariationPrice,
   ECVendor,
   ECVendorAddress,
@@ -89,6 +90,8 @@ export class ProductQueryBuilderService {
         'inventoryStatusId',
         'description',
         'inventoryDescriptor',
+        'scheduleSendingTypeId',
+        'offsetDay'
       ],
       model: ECInventory,
       as: 'inventories',
@@ -143,6 +146,12 @@ export class ProductQueryBuilderService {
           attributes: ['id', 'name'],
           model: ECProvince,
           as: 'onlyProvince',
+          required: false,
+        },
+        {
+          attributes: ['id', 'title', 'icon'],
+          model: ECScheduleSendingType,
+          as: "scheduleSendingType",
           required: false,
         },
         {
