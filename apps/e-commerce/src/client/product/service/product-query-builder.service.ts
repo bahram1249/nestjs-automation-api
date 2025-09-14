@@ -13,6 +13,7 @@ import {
   ECInventoryStatus,
   ECProvince,
   ECPublishStatus,
+  ECScheduleSendingType,
   ECVariationPrice,
   ECVendor,
 } from '@rahino/localdatabase/models';
@@ -200,6 +201,8 @@ export class ProductQueryBuilderService {
               'discountStartDate',
               'discountEndDate',
               'inventoryDescriptor',
+              'offsetDay',
+              'scheduleSendingTypeId'
             ],
       )
       .include([
@@ -242,7 +245,12 @@ export class ProductQueryBuilderService {
         as: 'onlyProvince',
         required: false,
       })
-
+      .thenInclude({
+        attributes: priceRangeQuery? []: ['id', 'title', 'icon'],
+        model: ECScheduleSendingType,
+        as: "scheduleSendingType",
+        required: false,
+      })
       .thenInclude({
         attributes: priceRangeQuery ? [] : ['id', 'price'],
         model: ECInventoryPrice,
