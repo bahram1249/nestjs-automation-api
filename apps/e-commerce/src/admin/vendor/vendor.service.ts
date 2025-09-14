@@ -140,6 +140,7 @@ export class VendorService {
               ),
             ],
           },
+          required: false,
         },
         {
           attributes: [
@@ -169,6 +170,7 @@ export class VendorService {
               as: 'commissionType',
             },
           ],
+          required: false,
         },
         {
           attributes: ['id', 'vendorId', 'logisticId', 'isDefault'],
