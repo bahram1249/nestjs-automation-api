@@ -31,6 +31,7 @@ import { ECVariationPrice } from '@rahino/localdatabase/models';
 import { ECVendorCommissionType } from '@rahino/localdatabase/models';
 import { LocalizationService } from 'apps/main/src/common/localization';
 import { isNotNull } from '@rahino/commontools';
+import { ECRoleEnum } from '@rahino/ecommerce/shared/enum';
 
 @Injectable()
 export class VendorService {
@@ -166,6 +167,21 @@ export class VendorService {
             },
           ],
         },
+        {
+          attributes: ['id', 'vendorId', 'logisticId', 'isDefault'],
+          model: ECVendorLogistic,
+          as: 'vendorLogistic',
+          required: false,
+          where: {
+            [Op.and]: [
+              { isDefault: true },
+              Sequelize.where(
+                Sequelize.fn('isnull', Sequelize.col('vendorLogistic.isDeleted'), 0),
+                { [Op.eq]: 0 },
+              ),
+            ],
+          },
+        },
       ])
       .limit(filter.limit)
       .offset(filter.offset)
@@ -280,6 +296,21 @@ export class VendorService {
             },
           ],
         },
+        {
+          attributes: ['id', 'vendorId', 'logisticId', 'isDefault'],
+          model: ECVendorLogistic,
+          as: 'vendorLogistic',
+          required: false,
+          where: {
+            [Op.and]: [
+              { isDefault: true },
+              Sequelize.where(
+                Sequelize.fn('isnull', Sequelize.col('vendorLogistic.isDeleted'), 0),
+                { [Op.eq]: 0 },
+              ),
+            ],
+          },
+        },
       ])
       .limit(filter.limit)
       .offset(filter.offset)
@@ -376,6 +407,21 @@ export class VendorService {
               },
             ],
           },
+          {
+            attributes: ['id', 'vendorId', 'logisticId', 'isDefault'],
+            model: ECVendorLogistic,
+            as: 'vendorLogistic',
+            required: false,
+            where: {
+              [Op.and]: [
+                { isDefault: true },
+                Sequelize.where(
+                  Sequelize.fn('isnull', Sequelize.col('vendorLogistic.isDeleted'), 0),
+                  { [Op.eq]: 0 },
+                ),
+              ],
+            },
+          },
         ])
         .filter({ id: entityId })
         .filter(
@@ -389,7 +435,9 @@ export class VendorService {
         .build(),
     );
     if (!vendor) {
-      throw new NotFoundException('the item with this given id not founded!');
+      throw new NotFoundException(
+        this.localizationService.translate('ecommerce.vendor_not_found'),
+      );
     }
     return {
       result: vendor,

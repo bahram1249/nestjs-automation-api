@@ -53,6 +53,9 @@
   "vendorAddressNotFound": "Vendor address not found",
   "qty_cannot_decrease": "the quantity cannot be decreased",
   "not_permitted": "you don't have permission to perform this operation",
+  "vendor_not_found": "vendor not found",
+  "default_vendor_user_not_found": "default user of this vendor not found",
+  "required_commission_types_not_sent": "required commission types not sent",
   "shipment": {
     "delivery": "Courier Delivery",
     "post": "Postal Delivery",

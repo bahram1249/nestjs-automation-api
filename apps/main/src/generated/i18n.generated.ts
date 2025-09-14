@@ -89,6 +89,9 @@ export type I18nTranslations = {
         "vendorAddressNotFound": string;
         "qty_cannot_decrease": string;
         "not_permitted": string;
+        "vendor_not_found": string;
+        "default_vendor_user_not_found": string;
+        "required_commission_types_not_sent": string;
         "shipment": {
             "delivery": string;
             "post": string;

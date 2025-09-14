@@ -53,6 +53,9 @@
   "vendorAddressNotFound": "آدرس فروشنده یافت نشد",
   "qty_cannot_decrease": "تعداد کالا قابل کاهش نیست",
   "not_permitted": "شما مجوز انجام این عملیات را ندارید",
+  "vendor_not_found": "فروشنده یافت نشد",
+  "default_vendor_user_not_found": "کاربر پیش‌فرض این فروشنده یافت نشد",
+  "required_commission_types_not_sent": "انواع کارمزد الزامی ارسال نشده‌اند",
   "shipment": {
     "delivery": "ارسال با پیک",
     "post": "ارسال با پست",
