@@ -36,7 +36,7 @@ import { ECRoleEnum } from '@rahino/ecommerce/shared/enum';
 @Injectable()
 export class VendorService {
   private readonly vendorAttachmentType = 11;
-  private readonly vendorRoleStatic = 2;
+  private readonly vendorRoleStatic = ECRoleEnum.Vendor;
   constructor(
     @InjectModel(ECVendor)
     private readonly repository: typeof ECVendor,
@@ -72,11 +72,14 @@ export class VendorService {
 
   async findAll(filter: GetVendorDto) {
     let queryBuilder = new QueryOptionsBuilder()
-      .filter({
-        name: {
-          [Op.like]: filter.search,
+      .filterIf(
+        isNotNull(filter.search),
+        {
+          name: {
+            [Op.like]: filter.search,
+          },
         },
-      })
+      )
       .filter(
         Sequelize.where(
           Sequelize.fn('isnull', Sequelize.col('ECVendor.isDeleted'), 0),
@@ -196,11 +199,14 @@ export class VendorService {
 
   async findAllV2(filter: GetVendorDto) {
     let queryBuilder = new QueryOptionsBuilder()
-      .filter({
-        name: {
-          [Op.like]: filter.search,
+      .filterIf(
+        isNotNull(filter.search),
+        {
+          name: {
+            [Op.like]: filter.search,
+          },
         },
-      })
+      )
       .filter(
         Sequelize.where(
           Sequelize.fn('isnull', Sequelize.col('ECVendor.isDeleted'), 0),
@@ -533,6 +539,21 @@ export class VendorService {
               },
             ],
           },
+          {
+            attributes: ['id', 'vendorId', 'logisticId', 'isDefault'],
+            model: ECVendorLogistic,
+            as: 'vendorLogistic',
+            required: false,
+            where: {
+              [Op.and]: [
+                { isDefault: true },
+                Sequelize.where(
+                  Sequelize.fn('isnull', Sequelize.col('vendorLogistic.isDeleted'), 0),
+                  { [Op.eq]: 0 },
+                ),
+              ],
+            },
+          },
         ])
         .filter({ id: entityId })
         .filter(
@@ -546,7 +567,9 @@ export class VendorService {
         .build(),
     );
     if (!vendor) {
-      throw new NotFoundException('the item with this given id not founded!');
+      throw new NotFoundException(
+        this.localizationService.translate('ecommerce.vendor_not_found'),
+      );
     }
     return {
       result: vendor,
@@ -570,17 +593,18 @@ export class VendorService {
     );
     if (searchSlug) {
       throw new BadRequestException(
-        'the item with this given slug is exists before!',
+        this.localizationService.translate('core.the_given_slug_is_exists_before'),
       );
     }
 
     // find vendor role
-    const vendorRoleStatic = 2;
     const vendorRole = await this.roleRepository.findOne(
-      new QueryOptionsBuilder().filter({ static_id: vendorRoleStatic }).build(),
+      new QueryOptionsBuilder().filter({ static_id: ECRoleEnum.Vendor }).build(),
     );
     if (!vendorRole) {
-      throw new ForbiddenException('the vendor role not founded!');
+      throw new ForbiddenException(
+        this.localizationService.translate('core.not_found_role'),
+      );
     }
 
     // find user if exists before
@@ -658,7 +682,7 @@ export class VendorService {
         );
         if (requiedItems.length != variationPrices.length) {
           throw new BadRequestException(
-            'the required commission types not send!',
+            this.localizationService.translate('ecommerce.required_commission_types_not_sent'),
           );
         }
       }
@@ -899,7 +923,7 @@ export class VendorService {
         );
         if (requiedItems.length != variationPrices.length) {
           throw new BadRequestException(
-            'the required commission types not send!',
+            this.localizationService.translate('ecommerce.required_commission_types_not_sent'),
           );
         }
       }
@@ -1033,7 +1057,9 @@ export class VendorService {
         .build(),
     );
     if (!item) {
-      throw new NotFoundException('the item with this given id not founded!');
+      throw new NotFoundException(
+        this.localizationService.translate('ecommerce.vendor_not_found'),
+      );
     }
 
     // check for if slug exists before
@@ -1057,17 +1083,18 @@ export class VendorService {
     );
     if (searchSlug) {
       throw new BadRequestException(
-        'the item with this given slug is exists before!',
+        this.localizationService.translate('core.the_given_slug_is_exists_before'),
       );
     }
 
     // find vendor role
-    const vendorRoleStatic = 2;
     const vendorRole = await this.roleRepository.findOne(
-      new QueryOptionsBuilder().filter({ static_id: vendorRoleStatic }).build(),
+      new QueryOptionsBuilder().filter({ static_id: ECRoleEnum.Vendor }).build(),
     );
     if (!vendorRole) {
-      throw new ForbiddenException('the vendor role not founded!');
+      throw new ForbiddenException(
+        this.localizationService.translate('core.not_found_role'),
+      );
     }
 
     // find default user of this vendor
@@ -1097,7 +1124,7 @@ export class VendorService {
     );
     if (!defaultVendorUser) {
       throw new ForbiddenException(
-        'default user of this vendor is not founded!',
+        this.localizationService.translate('ecommerce.default_vendor_user_not_found'),
       );
     }
 
@@ -1350,7 +1377,9 @@ export class VendorService {
         .build(),
     );
     if (!item) {
-      throw new NotFoundException('the item with this given id not founded!');
+      throw new NotFoundException(
+        this.localizationService.translate('ecommerce.vendor_not_found'),
+      );
     }
 
     // check for if slug exists before
@@ -1374,7 +1403,7 @@ export class VendorService {
     );
     if (searchSlug) {
       throw new BadRequestException(
-        'the item with this given slug is exists before!',
+        this.localizationService.translate('core.the_given_slug_is_exists_before'),
       );
     }
 
@@ -1399,12 +1428,15 @@ export class VendorService {
     }
 
     // find vendor role
-    const vendorRoleStatic = 2;
     const vendorRole = await this.roleRepository.findOne(
-      new QueryOptionsBuilder().filter({ static_id: vendorRoleStatic }).build(),
+      new QueryOptionsBuilder()
+        .filter({ static_id: this.vendorRoleStatic })
+        .build(),
     );
     if (!vendorRole) {
-      throw new ForbiddenException('the vendor role not founded!');
+      throw new ForbiddenException(
+        this.localizationService.translate('core.not_found_role'),
+      );
     }
 
     // find default user of this vendor
@@ -1434,7 +1466,7 @@ export class VendorService {
     );
     if (!defaultVendorUser) {
       throw new ForbiddenException(
-        'default user of this vendor is not founded!',
+        this.localizationService.translate('ecommerce.default_vendor_user_not_found'),
       );
     }
 
@@ -1690,7 +1722,9 @@ export class VendorService {
         .build(),
     );
     if (!item) {
-      throw new NotFoundException('the item with this given id not founded!');
+      throw new NotFoundException(
+        this.localizationService.translate('ecommerce.vendor_not_found'),
+      );
     }
     item.isDeleted = true;
     await item.save();
@@ -1728,6 +1762,21 @@ export class VendorService {
             as: 'attachment',
             required: false,
           },
+          {
+            attributes: ['id', 'vendorId', 'logisticId', 'isDefault'],
+            model: ECVendorLogistic,
+            as: 'vendorLogistic',
+            required: false,
+            where: {
+              [Op.and]: [
+                { isDefault: true },
+                Sequelize.where(
+                  Sequelize.fn('isnull', Sequelize.col('vendorLogistic.isDeleted'), 0),
+                  { [Op.eq]: 0 },
+                ),
+              ],
+            },
+          },
         ])
         .filter({ slug })
         .filter(
@@ -1741,7 +1790,9 @@ export class VendorService {
         .build(),
     );
     if (!vendor) {
-      throw new NotFoundException('the item with this given id not founded!');
+      throw new NotFoundException(
+        this.localizationService.translate('ecommerce.vendor_not_found'),
+      );
     }
     return {
       result: vendor,
@@ -1764,7 +1815,9 @@ export class VendorService {
         .build(),
     );
     if (!item) {
-      throw new NotFoundException('the item with this given id not founded!');
+      throw new NotFoundException(
+        this.localizationService.translate('ecommerce.vendor_not_found'),
+      );
     }
 
     // upload to s3 cloud
