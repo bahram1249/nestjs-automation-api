@@ -21,12 +21,12 @@ import { ListFilter } from '@rahino/query-filter';
 import { JsonResponseTransformInterceptor } from '@rahino/response/interceptor';
 import { ClientOrderService } from './client-order.service';
 
-@ApiTags('User-Orders')
+@ApiTags('Logistic-User-Orders')
 @UseGuards(JwtGuard)
 @ApiBearerAuth()
 @UseInterceptors(JsonResponseTransformInterceptor)
 @Controller({
-  path: '/api/ecommerce/user/orders',
+  path: '/api/ecommerce/client/basedLogistic/orders',
   version: ['1'],
 })
 export class ClientOrderController {

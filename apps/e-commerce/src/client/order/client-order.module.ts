@@ -22,4 +22,4 @@ import { LogisticUtilOrderModule } from '@rahino/ecommerce/client/order-section/
   providers: [ClientOrderService],
   exports: [ClientOrderService],
 })
-export class ClientOrderModule {}
+export class LogisticClientOrderModule {}
