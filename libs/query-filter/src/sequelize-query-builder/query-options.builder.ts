@@ -7,6 +7,7 @@ import {
   LOCK,
   Op,
   OrderItem,
+  literal,
   Transaction,
   WhereOptions,
 } from 'sequelize';
@@ -37,7 +38,13 @@ export class QueryOptionsBuilder {
     const orders = this.options.order as OrderItem[];
     if (isOrderCol(orderArg)) {
       const orderCol = orderArg as OrderCol;
-      orders.push([orderCol.orderBy, orderCol.sortOrder]);
+      const ob = orderCol.orderBy as any;
+      if (typeof ob === 'string' && ob.includes('.')) {
+        // Handle dotted paths like "ECLogisticOrder.id" reliably across dialects
+        orders.push([literal(ob), orderCol.sortOrder]);
+      } else {
+        orders.push([orderCol.orderBy, orderCol.sortOrder]);
+      }
     } else {
       orders.push(orderArg as OrderItem);
     }

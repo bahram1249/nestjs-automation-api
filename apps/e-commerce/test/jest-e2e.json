@@ -5,5 +5,30 @@
   "testRegex": ".e2e-spec.ts$",
   "transform": {
     "^.+\\.(t|j)s$": "ts-jest"
+  },
+  "testTimeout": 30000,
+  "forceExit": true,
+  "moduleNameMapper": {
+    "^@rahino/ecommerce(|/.*)$": "<rootDir>/../src/$1",
+    "^@rahino/response(|/.*)$": "<rootDir>/../../../libs/response/src/$1",
+    "^@rahino/query-filter(|/.*)$": "<rootDir>/../../../libs/query-filter/src/$1",
+    "^@rahino/file(|/.*)$": "<rootDir>/../../../libs/file/src/$1",
+    "^@rahino/http-exception-filter(|/.*)$": "<rootDir>/../../../libs/http-exception-filter/src/$1",
+    "^@rahino/logger(|/.*)$": "<rootDir>/../../../libs/logger/src/$1",
+    "^@rahino/permission-checker(|/.*)$": "<rootDir>/../../../libs/permission-checker/src/$1",
+    "^@rahino/pay(|/.*)$": "<rootDir>/../../../libs/pay/src/$1",
+    "^@rahino/redis-client(|/.*)$": "<rootDir>/../../../libs/redis-client/src/$1",
+    "^@rahino/commontools(|/.*)$": "<rootDir>/../../../libs/commontools/src/$1",
+    "^@rahino/minio-client(|/.*)$": "<rootDir>/../../../libs/minio-client/src/$1",
+    "^@rahino/sms(|/.*)$": "<rootDir>/../../../libs/sms/src/$1",
+    "^@rahino/localdatabase(|/.*)$": "<rootDir>/../../../libs/localdatabase/src/$1",
+    "^@rahino/core(|/.*)$": "<rootDir>/../../core/src/$1",
+    "^@rahino/coreDashboard(|/.*)$": "<rootDir>/../../core-dashboard/src/$1",
+    "^@rahino/discountCoffe(|/.*)$": "<rootDir>/../../discount-coffe/src/$1",
+    "^@rahino/pcm(|/.*)$": "<rootDir>/../../pcm/src/$1",
+    "^@rahino/eav(|/.*)$": "<rootDir>/../../eav/src/$1",
+    "^@rahino/bpmn(|/.*)$": "<rootDir>/../../bpmn/src/$1",
+    "^@rahino/guarantee(|/.*)$": "<rootDir>/../../guarantee/src/$1",
+    "^@rahino/thumbnail(|/.*)$": "<rootDir>/../../../libs/thumbnail/src/$1"
   }
 }
