@@ -66,11 +66,14 @@ export class LogisticCancellOrderService {
       )
       .includeUser();
 
-    if (filter.phoneNumber) {
+    // Apply phone number filter ONLY when it is actually provided by the client.
+    // DTO defaults it to '%%' when not provided, which should be ignored here.
+    const hasPhoneFilter = !!filter.phoneNumber && filter.phoneNumber !== '%%';
+    if (hasPhoneFilter) {
       qb = qb.filter(
         Sequelize.where(
           Sequelize.col('user.phoneNumber'),
-          { [Op.like]: `%${filter.phoneNumber}%` },
+          { [Op.like]: filter.phoneNumber },
         ),
       );
     }
