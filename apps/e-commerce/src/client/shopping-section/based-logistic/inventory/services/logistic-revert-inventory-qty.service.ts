@@ -58,7 +58,7 @@ export class LogisticRevertInventoryQtyService {
         .filter({ logisticOrderId: payment.logisticOrderId })
         .filter(
           Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('ECLogisticOrderGroupeds.isDeleted'), 0),
+            Sequelize.fn('isnull', Sequelize.col('ECLogisticOrderGrouped.isDeleted'), 0),
             { [Op.eq]: 0 },
           ),
         )
