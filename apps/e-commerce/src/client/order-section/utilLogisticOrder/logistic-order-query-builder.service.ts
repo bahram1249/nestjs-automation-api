@@ -429,12 +429,9 @@ export class LogisticOrderQueryBuilder {
       ],
     });
 
-    detailsInclude = detailsInclude.filter(
-      Sequelize.where(
-        Sequelize.fn('isnull', Sequelize.col('groups.details.isDeleted'), 0),
-        { [Op.eq]: 0 },
-      ),
-    );
+    detailsInclude = detailsInclude.filter({
+      [Op.or]: [{ isDeleted: null }, { isDeleted: false as any }, { isDeleted: 0 as any }],
+    });
     detailsInclude = detailsInclude.filter({ vendorId: { [Op.in]: vIds } });
     detailsInclude = detailsInclude.filter({ orderDetailStatusId: { [Op.in]: sIds } });
 
@@ -606,12 +603,9 @@ export class LogisticOrderQueryBuilder {
       ],
     });
 
-    detailsInclude = detailsInclude.filter(
-      Sequelize.where(
-        Sequelize.fn('isnull', Sequelize.col('groups.details.isDeleted'), 0),
-        { [Op.eq]: 0 },
-      ),
-    );
+    detailsInclude = detailsInclude.filter({
+      [Op.or]: [{ isDeleted: null }, { isDeleted: false as any }, { isDeleted: 0 as any }],
+    });
     detailsInclude = detailsInclude.filter({
       vendorId: { [Op.in]: ids },
     });
@@ -779,12 +773,9 @@ export class LogisticOrderQueryBuilder {
       ],
     });
 
-    detailsInclude = detailsInclude.filter(
-      Sequelize.where(
-        Sequelize.fn('isnull', Sequelize.col('groups.details.isDeleted'), 0),
-        { [Op.eq]: 0 },
-      ),
-    );
+    detailsInclude = detailsInclude.filter({
+      [Op.or]: [{ isDeleted: null }, { isDeleted: false as any }, { isDeleted: 0 as any }],
+    });
 
     groupsInclude = groupsInclude
       .filter(
@@ -924,12 +915,9 @@ export class LogisticOrderQueryBuilder {
       ],
     });
 
-    detailsInclude = detailsInclude.filter(
-      Sequelize.where(
-        Sequelize.fn('isnull', Sequelize.col('groups.details.isDeleted'), 0),
-        { [Op.eq]: 0 },
-      ),
-    );
+    detailsInclude = detailsInclude.filter({
+      [Op.or]: [{ isDeleted: null }, { isDeleted: false as any }, { isDeleted: 0 as any }],
+    });
 
     groupsInclude = groupsInclude
       .filter(
