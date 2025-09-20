@@ -75,7 +75,7 @@ export class LogisticOrderUtilService {
 
     // Determine roll-up status as min across groups
     const minStatus = groups
-      .map((g) => Number((g as any).orderStatusId || OrderStatusEnum.WaitingForPayment))
+      .map((g) => Number((g as any).orderStatusId || OrderStatusEnum.Paid))
       .reduce((a, b) => (a < b ? a : b), OrderStatusEnum.DeliveredToTheCustomer);
 
     await this.orderRepository.update(
