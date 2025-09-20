@@ -106,9 +106,11 @@ export class LogisticTotalOrderService {
 
     const count = await this.repository.count(qb.build());
 
+    qb = qb.subQuery(true);
+    qb = !isSuperAdmin
+      ? qb.includeGroupsAndDetailsVendorRestricted(vendorIds as any)
+      : qb.includeGroupsAndDetails();
     qb = qb
-      .subQuery(true)
-      .includeGroupsAndDetails()
       .includeAddress()
       .includeUser()
       .limit(filter.limit)
@@ -151,7 +153,9 @@ export class LogisticTotalOrderService {
       );
     }
 
-    qb = qb.includeGroupsAndDetails();
+    qb = !isSuperAdmin
+      ? qb.includeGroupsAndDetailsVendorRestricted(vendorIds as any)
+      : qb.includeGroupsAndDetails();
 
     let result = await this.repository.findOne(qb.build());
     if (!result) {

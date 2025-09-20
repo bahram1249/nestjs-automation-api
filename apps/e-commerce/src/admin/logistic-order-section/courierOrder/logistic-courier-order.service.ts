@@ -58,12 +58,16 @@ export class LogisticCourierOrderService {
 
     const count = await this.repository.count(qb.build());
 
-    // compute accessible logistic ids and restrict included groups
+    // compute accessible logistic ids and restrict included groups with the same conditions
     const accessibleLogisticIds = await this.logisticAccess.listAccessibleLogisticIds(user);
 
     qb = qb
       .subQuery(true)
-      .includeGroupsAndDetailsRestricted(accessibleLogisticIds)
+      .includeGroupsAndDetailsGroupFiltered({
+        logisticIds: accessibleLogisticIds as any,
+        orderStatusIds: [OrderStatusEnum.OrderHasBeenProcessed] as any,
+        orderShipmentWayId: OrderShipmentwayEnum.delivery as any,
+      })
       .includeAddress()
       .includeUser()
       .limit(filter.limit)
@@ -98,8 +102,12 @@ export class LogisticCourierOrderService {
           )`.replace(/\s\s+/g, ' '),
         ),
       )
-      // restrict included groups to the ones the user can access
-      .includeGroupsAndDetailsRestricted(await this.logisticAccess.listAccessibleLogisticIds(user))
+      // restrict included groups to the ones the user can access and match group conditions
+      .includeGroupsAndDetailsGroupFiltered({
+        logisticIds: (await this.logisticAccess.listAccessibleLogisticIds(user)) as any,
+        orderStatusIds: [OrderStatusEnum.OrderHasBeenProcessed] as any,
+        orderShipmentWayId: OrderShipmentwayEnum.delivery as any,
+      })
       .includeAddress()
       .includeUser();
 

@@ -51,7 +51,11 @@ export class LogisticDeliveryOrderService {
 
     qb = qb
       .subQuery(true)
-      .includeGroupsAndDetails()
+      .includeGroupsAndDetailsGroupFiltered({
+        orderStatusIds: [OrderStatusEnum.SendByCourier] as any,
+        orderShipmentWayId: OrderShipmentwayEnum.delivery as any,
+        ...(isSuperAdmin ? {} : { courierUserId: user.id as any }),
+      })
       .includeAddress()
       .includeUser()
       .limit(filter.limit)
@@ -83,7 +87,11 @@ export class LogisticDeliveryOrderService {
           )`.replace(/\s\s+/g, ' '),
         ),
       )
-      .includeGroupsAndDetails()
+      .includeGroupsAndDetailsGroupFiltered({
+        orderStatusIds: [OrderStatusEnum.SendByCourier] as any,
+        orderShipmentWayId: OrderShipmentwayEnum.delivery as any,
+        ...(isSuperAdmin ? {} : { courierUserId: user.id as any }),
+      })
       .includeAddress()
       .includeUser();
 

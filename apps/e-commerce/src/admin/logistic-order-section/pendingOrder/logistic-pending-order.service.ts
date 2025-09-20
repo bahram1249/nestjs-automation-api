@@ -74,7 +74,10 @@ export class LogisticPendingOrderService {
 
     qb = qb
       .subQuery(true)
-      .includeGroupsAndDetails()
+      .includeGroupsAndDetailsVendorAndStatusRestricted(
+        [filter.vendorId],
+        [OrderDetailStatusEnum.WaitingForProcess],
+      )
       .includeAddress()
       .includeUser()
       .limit(filter.limit)
@@ -113,7 +116,10 @@ export class LogisticPendingOrderService {
               AND LGD.orderDetailStatusId = ${OrderDetailStatusEnum.WaitingForProcess})`,
         ),
       )
-      .includeGroupsAndDetails()
+      .includeGroupsAndDetailsVendorAndStatusRestricted(
+        [filter.vendorId],
+        [OrderDetailStatusEnum.WaitingForProcess],
+      )
       .includeAddress()
       .includeUser();
 
