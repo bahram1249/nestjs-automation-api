@@ -56,7 +56,7 @@ export class IncludeOptionsBuilder {
   }
   thenInclude(include: Includeable): IncludeOptionsBuilder {
     let included = this.options.include as Includeable[];
-    if(isNotNull(included)) included = [];
+    if(!isNotNull(included)) included = [];
     included.push(include);
     return this;
   }
