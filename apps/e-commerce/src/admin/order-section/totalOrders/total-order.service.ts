@@ -630,7 +630,7 @@ export class TotalOrderService {
 
   async changeShipmentWay(id: bigint, dto: ChangeShipmentWayDto) {
     const shipmentway = await this.orderShipmentWayRepository.findOne(
-      new QueryOptionsBuilder().filter({ id: dto.shipmentWayId }).build(),
+      new QueryOptionsBuilder().filter({ id: dto.orderShipmentWayId }).build(),
     );
     if (!shipmentway) {
       throw new ForbiddenException(
@@ -653,7 +653,7 @@ export class TotalOrderService {
     if (!order) {
       throw new NotFoundException('the order with this given id not founded!');
     }
-    order.orderShipmentWayId = dto.shipmentWayId;
+    order.orderShipmentWayId = dto.orderShipmentWayId;
     order = await order.save();
     return {
       result: order,

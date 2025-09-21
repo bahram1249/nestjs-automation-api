@@ -136,7 +136,9 @@ export class LogisticTotalOrderService {
     if (!isSuperAdmin) {
       if (!vendorIds || vendorIds.length === 0) {
         throw new NotFoundException(
-          this.localizationService.translate('ecommerce.logistic_order_not_found'),
+          this.localizationService.translate(
+            'ecommerce.logistic_order_not_found',
+          ),
         );
       }
       const vendorList = vendorIds.join(',');
@@ -160,7 +162,9 @@ export class LogisticTotalOrderService {
     let result = await this.repository.findOne(qb.build());
     if (!result) {
       throw new NotFoundException(
-        this.localizationService.translate('ecommerce.logistic_order_not_found'),
+        this.localizationService.translate(
+          'ecommerce.logistic_order_not_found',
+        ),
       );
     }
     result = await this.utilService.recalculateOrderPrices(result);
@@ -173,10 +177,16 @@ export class LogisticTotalOrderService {
       const item = await this.repository.findOne(
         new QueryOptionsBuilder()
           .filter({ id })
-          .filter({ orderStatusId: { [Op.ne]: OrderStatusEnum.WaitingForPayment } })
+          .filter({
+            orderStatusId: { [Op.ne]: OrderStatusEnum.WaitingForPayment },
+          })
           .filter(
             Sequelize.where(
-              Sequelize.fn('isnull', Sequelize.col('ECLogisticOrder.isDeleted'), 0),
+              Sequelize.fn(
+                'isnull',
+                Sequelize.col('ECLogisticOrder.isDeleted'),
+                0,
+              ),
               { [Op.eq]: 0 },
             ),
           )
@@ -185,7 +195,9 @@ export class LogisticTotalOrderService {
       );
       if (!item) {
         throw new NotFoundException(
-          this.localizationService.translate('ecommerce.logistic_order_not_found'),
+          this.localizationService.translate(
+            'ecommerce.logistic_order_not_found',
+          ),
         );
       }
 
@@ -210,7 +222,9 @@ export class LogisticTotalOrderService {
   }
 
   async removeDetail(detailId: bigint, user: User) {
-    const transaction = await this.sequelize.transaction({ isolationLevel: Transaction.ISOLATION_LEVELS.READ_COMMITTED });
+    const transaction = await this.sequelize.transaction({
+      isolationLevel: Transaction.ISOLATION_LEVELS.READ_COMMITTED,
+    });
     try {
       const detail = await this.detailRepository.findOne(
         new QueryOptionsBuilder()
@@ -230,7 +244,9 @@ export class LogisticTotalOrderService {
       );
       if (!detail) {
         throw new NotFoundException(
-          this.localizationService.translate('ecommerce.logistic_detail_not_found'),
+          this.localizationService.translate(
+            'ecommerce.logistic_detail_not_found',
+          ),
         );
       }
 
@@ -254,7 +270,9 @@ export class LogisticTotalOrderService {
   }
 
   async decreaseDetail(detailId: bigint, user: User) {
-    const transaction = await this.sequelize.transaction({ isolationLevel: Transaction.ISOLATION_LEVELS.READ_COMMITTED });
+    const transaction = await this.sequelize.transaction({
+      isolationLevel: Transaction.ISOLATION_LEVELS.READ_COMMITTED,
+    });
     try {
       const detail = await this.detailRepository.findOne(
         new QueryOptionsBuilder()
@@ -274,7 +292,9 @@ export class LogisticTotalOrderService {
       );
       if (!detail) {
         throw new NotFoundException(
-          this.localizationService.translate('ecommerce.logistic_detail_not_found'),
+          this.localizationService.translate(
+            'ecommerce.logistic_detail_not_found',
+          ),
         );
       }
       if (Number(detail.qty) <= 1) {
@@ -288,7 +308,9 @@ export class LogisticTotalOrderService {
         {
           qty: newQty,
           discountFee: Number(detail.discountFeePerItem || 0) * newQty,
-          totalPrice: Number(detail.productPrice || 0) * newQty - Number(detail.discountFeePerItem || 0) * newQty,
+          totalPrice:
+            Number(detail.productPrice || 0) * newQty -
+            Number(detail.discountFeePerItem || 0) * newQty,
         },
         { where: { id: detailId }, transaction },
       );
@@ -321,7 +343,11 @@ export class LogisticTotalOrderService {
         .filter({ id })
         .filter(
           Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('ECLogisticOrder.isDeleted'), 0),
+            Sequelize.fn(
+              'isnull',
+              Sequelize.col('ECLogisticOrder.isDeleted'),
+              0,
+            ),
             { [Op.eq]: 0 },
           ),
         )
@@ -329,7 +355,9 @@ export class LogisticTotalOrderService {
     );
     if (!order) {
       throw new NotFoundException(
-        this.localizationService.translate('ecommerce.logistic_order_not_found'),
+        this.localizationService.translate(
+          'ecommerce.logistic_order_not_found',
+        ),
       );
     }
     order.orderStatusId = dto.orderStatusId as any;
@@ -340,7 +368,7 @@ export class LogisticTotalOrderService {
   // In logistic flow, id is the groupId
   async changeShipmentWay(groupId: bigint, dto: ChangeShipmentWayDto) {
     const shipmentWay = await this.logisticShipmentWayRepository.findOne(
-      new QueryOptionsBuilder().filter({ id: dto.shipmentWayId }).build(),
+      new QueryOptionsBuilder().filter({ id: dto.orderShipmentWayId }).build(),
     );
     if (!shipmentWay) {
       throw new ForbiddenException(
@@ -353,7 +381,11 @@ export class LogisticTotalOrderService {
         .filter({ id: groupId })
         .filter(
           Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('ECLogisticOrderGrouped.isDeleted'), 0),
+            Sequelize.fn(
+              'isnull',
+              Sequelize.col('ECLogisticOrderGrouped.isDeleted'),
+              0,
+            ),
             { [Op.eq]: 0 },
           ),
         )
@@ -361,11 +393,13 @@ export class LogisticTotalOrderService {
     );
     if (!group) {
       throw new NotFoundException(
-        this.localizationService.translate('ecommerce.logistic_group_not_found'),
+        this.localizationService.translate(
+          'ecommerce.logistic_group_not_found',
+        ),
       );
     }
 
-    group.logisticShipmentWayId = dto.shipmentWayId as any;
+    group.logisticShipmentWayId = dto.orderShipmentWayId as any;
     // also update cached order-shipment-way (delivery/post/etc.) to simplify downstream filters
     group.orderShipmentWayId = (shipmentWay as any).orderShipmentWayId as any;
     group = await group.save();
@@ -379,7 +413,11 @@ export class LogisticTotalOrderService {
         .filter({ id })
         .filter(
           Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('ECLogisticOrderGrouped.isDeleted'), 0),
+            Sequelize.fn(
+              'isnull',
+              Sequelize.col('ECLogisticOrderGrouped.isDeleted'),
+              0,
+            ),
             { [Op.eq]: 0 },
           ),
         )
@@ -387,7 +425,9 @@ export class LogisticTotalOrderService {
     );
     if (!group) {
       throw new NotFoundException(
-        this.localizationService.translate('ecommerce.logistic_group_not_found'),
+        this.localizationService.translate(
+          'ecommerce.logistic_group_not_found',
+        ),
       );
     }
     group.postReceipt = (dto as any).receipt;
@@ -395,9 +435,15 @@ export class LogisticTotalOrderService {
     return { result: group };
   }
 
-  private async recalculateAndUpdateOrderTotals(groupId: bigint, transaction?: Transaction) {
+  private async recalculateAndUpdateOrderTotals(
+    groupId: bigint,
+    transaction?: Transaction,
+  ) {
     const group = await this.groupedRepository.findOne(
-      new QueryOptionsBuilder().filter({ id: groupId }).transaction(transaction).build(),
+      new QueryOptionsBuilder()
+        .filter({ id: groupId })
+        .transaction(transaction)
+        .build(),
     );
     if (!group) return;
     const orderId = group.logisticOrderId;
@@ -410,7 +456,9 @@ export class LogisticTotalOrderService {
             'isnull',
             Sequelize.fn(
               'sum',
-              Sequelize.literal('ECLogisticOrderGroupedDetail.productPrice * ECLogisticOrderGroupedDetail.qty'),
+              Sequelize.literal(
+                'ECLogisticOrderGroupedDetail.productPrice * ECLogisticOrderGroupedDetail.qty',
+              ),
             ),
             0,
           ),
@@ -421,7 +469,9 @@ export class LogisticTotalOrderService {
             'isnull',
             Sequelize.fn(
               'sum',
-              Sequelize.literal('ECLogisticOrderGroupedDetail.discountFeePerItem * ECLogisticOrderGroupedDetail.qty'),
+              Sequelize.literal(
+                'ECLogisticOrderGroupedDetail.discountFeePerItem * ECLogisticOrderGroupedDetail.qty',
+              ),
             ),
             0,
           ),
@@ -435,7 +485,11 @@ export class LogisticTotalOrderService {
       )
       .filter(
         Sequelize.where(
-          Sequelize.fn('isnull', Sequelize.col('ECLogisticOrderGroupedDetail.isDeleted'), 0),
+          Sequelize.fn(
+            'isnull',
+            Sequelize.col('ECLogisticOrderGroupedDetail.isDeleted'),
+            0,
+          ),
           { [Op.eq]: 0 },
         ),
       )
@@ -452,11 +506,24 @@ export class LogisticTotalOrderService {
 
     // sum shipments (groups)
     let qbShipment = new QueryOptionsBuilder()
-      .attributes([[Sequelize.fn('isnull', Sequelize.fn('sum', Sequelize.col('shipmentPrice')), 0), 'shipmentPrice']])
+      .attributes([
+        [
+          Sequelize.fn(
+            'isnull',
+            Sequelize.fn('sum', Sequelize.col('shipmentPrice')),
+            0,
+          ),
+          'shipmentPrice',
+        ],
+      ])
       .filter({ logisticOrderId: orderId })
       .filter(
         Sequelize.where(
-          Sequelize.fn('isnull', Sequelize.col('ECLogisticOrderGrouped.isDeleted'), 0),
+          Sequelize.fn(
+            'isnull',
+            Sequelize.col('ECLogisticOrderGrouped.isDeleted'),
+            0,
+          ),
           { [Op.eq]: 0 },
         ),
       )
@@ -469,7 +536,8 @@ export class LogisticTotalOrderService {
     shipmentQuery.order = null as any;
     shipmentQuery.subQuery = false as any;
 
-    const shipmentTotals: any = await this.groupedRepository.findOne(shipmentQuery);
+    const shipmentTotals: any =
+      await this.groupedRepository.findOne(shipmentQuery);
 
     const totalProductPrice = Number(totals?.productPrice || 0);
     const totalDiscountFee = Number(totals?.discountFee || 0);
@@ -480,7 +548,9 @@ export class LogisticTotalOrderService {
         totalProductPrice: totalProductPrice as any,
         totalDiscountFee: totalDiscountFee as any,
         totalShipmentPrice: totalShipmentPrice as any,
-        totalPrice: (totalProductPrice - totalDiscountFee + totalShipmentPrice) as any,
+        totalPrice: (totalProductPrice -
+          totalDiscountFee +
+          totalShipmentPrice) as any,
       },
       { where: { id: orderId }, transaction },
     );
@@ -493,7 +563,9 @@ export class LogisticTotalOrderService {
             'isnull',
             Sequelize.fn(
               'sum',
-              Sequelize.literal('ECLogisticOrderGroupedDetail.productPrice * ECLogisticOrderGroupedDetail.qty'),
+              Sequelize.literal(
+                'ECLogisticOrderGroupedDetail.productPrice * ECLogisticOrderGroupedDetail.qty',
+              ),
             ),
             0,
           ),
@@ -504,7 +576,9 @@ export class LogisticTotalOrderService {
             'isnull',
             Sequelize.fn(
               'sum',
-              Sequelize.literal('ECLogisticOrderGroupedDetail.discountFeePerItem * ECLogisticOrderGroupedDetail.qty'),
+              Sequelize.literal(
+                'ECLogisticOrderGroupedDetail.discountFeePerItem * ECLogisticOrderGroupedDetail.qty',
+              ),
             ),
             0,
           ),
@@ -514,7 +588,11 @@ export class LogisticTotalOrderService {
       .filter({ groupedId: groupId })
       .filter(
         Sequelize.where(
-          Sequelize.fn('isnull', Sequelize.col('ECLogisticOrderGroupedDetail.isDeleted'), 0),
+          Sequelize.fn(
+            'isnull',
+            Sequelize.col('ECLogisticOrderGroupedDetail.isDeleted'),
+            0,
+          ),
           { [Op.eq]: 0 },
         ),
       )
@@ -542,10 +620,16 @@ export class LogisticTotalOrderService {
     );
 
     // Apply payment gateway commission after totals update
-    await this.finalizedPaymentService.applyPaymentGatewayCommisssion(orderId as any, transaction);
+    await this.finalizedPaymentService.applyPaymentGatewayCommisssion(
+      orderId as any,
+      transaction,
+    );
   }
 
-  private async updateSnapPayIfApplicable(groupId: bigint, transaction?: Transaction) {
+  private async updateSnapPayIfApplicable(
+    groupId: bigint,
+    transaction?: Transaction,
+  ) {
     // find parent order, its user, and active details to build cart
     const group = await this.groupedRepository.findOne(
       new QueryOptionsBuilder().filter({ id: groupId }).build(),
@@ -556,7 +640,7 @@ export class LogisticTotalOrderService {
       .filter({ id: group.logisticOrderId })
       .include([
         { model: ECLogisticOrderGrouped as any, as: 'groups', required: false },
-        { model: (User as any), as: 'user', required: false },
+        { model: User as any, as: 'user', required: false },
       ]);
     let order = await this.repository.findOne(qb.build());
     if (!order) return;
@@ -575,7 +659,9 @@ export class LogisticTotalOrderService {
     );
     if (!payment) return; // nothing to update/cancel
     const gateway = await this.paymentGatewayRepository.findOne(
-      new QueryOptionsBuilder().filter({ id: payment.paymentGatewayId }).build(),
+      new QueryOptionsBuilder()
+        .filter({ id: payment.paymentGatewayId })
+        .build(),
     );
     if (!gateway || gateway.serviceName !== 'SnapPayService') return;
 
@@ -589,7 +675,11 @@ export class LogisticTotalOrderService {
         )
         .filter(
           Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('ECLogisticOrderGroupedDetail.isDeleted'), 0),
+            Sequelize.fn(
+              'isnull',
+              Sequelize.col('ECLogisticOrderGroupedDetail.isDeleted'),
+              0,
+            ),
             { [Op.eq]: 0 },
           ),
         )
