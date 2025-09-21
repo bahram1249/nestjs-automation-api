@@ -1,3 +1,4 @@
+import { isNotNull } from '@rahino/commontools';
 import {
   FindAttributeOptions,
   IncludeOptions,
@@ -54,7 +55,8 @@ export class IncludeOptionsBuilder {
     return this;
   }
   thenInclude(include: Includeable): IncludeOptionsBuilder {
-    const included = this.options.include as Includeable[];
+    let included = this.options.include as Includeable[];
+    if(isNotNull(included)) included = [];
     included.push(include);
     return this;
   }
