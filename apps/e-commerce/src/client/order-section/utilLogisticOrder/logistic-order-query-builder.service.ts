@@ -87,6 +87,11 @@ export class LogisticOrderQueryBuilder {
   order(params: { orderBy?: string; sortOrder?: SortOrder | string }) {
     const orderBy = params?.orderBy;
     const sortOrder = (params?.sortOrder as string) ?? undefined;
+    // If no orderBy is provided, skip applying ordering to avoid underlying
+    // query builder attempts to push into an undefined order array.
+    if (!orderBy) {
+      return this;
+    }
     this.builder = this.builder.order({ orderBy, sortOrder });
     return this;
   }
