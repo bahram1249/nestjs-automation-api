@@ -801,20 +801,6 @@ export class LogisticOrderQueryBuilder {
     orderShipmentWayId?: number;
     courierUserId?: number | bigint;
   }) {
-    const where: any = {};
-    if (params?.logisticIds && params.logisticIds.length) {
-      where.logisticId = { [Op.in]: params.logisticIds as any[] };
-    }
-    if (params?.orderStatusIds && params.orderStatusIds.length) {
-      where.orderStatusId = { [Op.in]: params.orderStatusIds as any[] };
-    }
-    if (params?.orderShipmentWayId !== undefined) {
-      where.orderShipmentWayId = params.orderShipmentWayId as any;
-    }
-    if (params?.courierUserId !== undefined) {
-      where.courierUserId = params.courierUserId as any;
-    }
-
     // groups
     let groupsInclude = new IncludeOptionsBuilder({
       model: ECLogisticOrderGrouped,
@@ -841,7 +827,6 @@ export class LogisticOrderQueryBuilder {
         'sendToCustomerDate',
         'sendToCustomerBy',
       ],
-      where,
       include: [
         { attributes: ['id', 'name'], model: ECOrderStatus, as: 'orderStatus', required: false },
         { attributes: ['id', 'title'], model: ECLogistic, as: 'logistic', required: false },
@@ -868,6 +853,20 @@ export class LogisticOrderQueryBuilder {
         { attributes: ['id', 'logisticWeeklyPeriodId', 'startTime', 'endTime'], model: ECLogisticWeeklyPeriodTime, as: 'logisticWeeklyPeriodTime', required: false },
       ],
     });
+    // apply group-level filters using IncludeOptionsBuilder's [Op.and] pipeline
+    groupsInclude = groupsInclude
+      .filterIf(!!(params?.logisticIds && params.logisticIds.length), {
+        logisticId: { [Op.in]: (params?.logisticIds || []) as any[] },
+      })
+      .filterIf(!!(params?.orderStatusIds && params.orderStatusIds.length), {
+        orderStatusId: { [Op.in]: (params?.orderStatusIds || []) as any[] },
+      })
+      .filterIf(params?.orderShipmentWayId !== undefined, {
+        orderShipmentWayId: params?.orderShipmentWayId as any,
+      })
+      .filterIf(params?.courierUserId !== undefined, {
+        courierUserId: params?.courierUserId as any,
+      });
 
     // details under groups; exclude deleted
     let detailsInclude = new IncludeOptionsBuilder({
