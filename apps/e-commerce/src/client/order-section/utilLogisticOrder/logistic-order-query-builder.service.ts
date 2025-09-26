@@ -154,7 +154,11 @@ export class LogisticOrderQueryBuilder {
       include: [
         { attributes: ['id', 'name'], model: ECProvince, as: 'province' },
         { attributes: ['id', 'name'], model: ECCity, as: 'city' },
-        { attributes: ['id', 'name'], model: ECNeighborhood, as: 'neighborhood' },
+        {
+          attributes: ['id', 'name'],
+          model: ECNeighborhood,
+          as: 'neighborhood',
+        },
       ],
     });
     return this;
@@ -225,7 +229,13 @@ export class LogisticOrderQueryBuilder {
         },
         // logistic sending period and its lookups
         {
-          attributes: ['id', 'logisticShipmentWayId', 'scheduleSendingTypeId', 'startDate', 'endDate'],
+          attributes: [
+            'id',
+            'logisticShipmentWayId',
+            'scheduleSendingTypeId',
+            'startDate',
+            'endDate',
+          ],
           model: ECLogisticSendingPeriod,
           as: 'logisticSendingPeriod',
           required: false,
@@ -278,7 +288,12 @@ export class LogisticOrderQueryBuilder {
         'updatedAt',
       ],
       include: [
-        { attributes: ['id', 'name', 'slug'], model: ECVendor, as: 'vendor', required: false },
+        {
+          attributes: ['id', 'name', 'slug'],
+          model: ECVendor,
+          as: 'vendor',
+          required: false,
+        },
         {
           attributes: ['id', 'title', 'slug', 'sku'],
           model: ECProduct,
@@ -290,13 +305,33 @@ export class LogisticOrderQueryBuilder {
               model: ECInventory,
               as: 'inventories',
               required: false,
-              where: Sequelize.where(Sequelize.col('groups.details.inventoryId'), {
-                [Op.eq]: Sequelize.col('groups.details.product.inventories.id'),
-              }),
+              where: Sequelize.where(
+                Sequelize.col('groups.details.inventoryId'),
+                {
+                  [Op.eq]: Sequelize.col(
+                    'groups.details.product.inventories.id',
+                  ),
+                },
+              ),
               include: [
-                { attributes: ['id', 'name', 'hexCode'], model: ECColor, as: 'color', required: false },
-                { attributes: ['id', 'name', 'slug'], model: ECGuarantee, as: 'guarantee', required: false },
-                { attributes: ['id', 'name'], model: ECGuaranteeMonth, as: 'guaranteeMonth', required: false },
+                {
+                  attributes: ['id', 'name', 'hexCode'],
+                  model: ECColor,
+                  as: 'color',
+                  required: false,
+                },
+                {
+                  attributes: ['id', 'name', 'slug'],
+                  model: ECGuarantee,
+                  as: 'guarantee',
+                  required: false,
+                },
+                {
+                  attributes: ['id', 'name'],
+                  model: ECGuaranteeMonth,
+                  as: 'guaranteeMonth',
+                  required: false,
+                },
               ],
             },
             {
@@ -308,7 +343,12 @@ export class LogisticOrderQueryBuilder {
             },
           ],
         },
-        { attributes: ['id', 'name'], model: ECDiscount, as: 'discount', required: false },
+        {
+          attributes: ['id', 'name'],
+          model: ECDiscount,
+          as: 'discount',
+          required: false,
+        },
       ],
     });
 
@@ -326,9 +366,12 @@ export class LogisticOrderQueryBuilder {
   }
 
   // Include groups and details but restrict details to specific vendor IDs and statuses
-  includeGroupsAndDetailsVendorAndStatusRestricted(vendorIds: number[], statuses: number[]) {
-    const vIds = (vendorIds && vendorIds.length ? vendorIds : [-1]) as any[];
-    const sIds = (statuses && statuses.length ? statuses : [-1]) as any[];
+  includeGroupsAndDetailsVendorAndStatusRestricted(
+    vendorIds: number[],
+    statuses?: number[],
+  ) {
+    const vIds = vendorIds && vendorIds.length ? vendorIds : [-1];
+    const sIds = statuses && statuses.length ? statuses : [];
 
     // groups
     let groupsInclude = new IncludeOptionsBuilder({
@@ -357,29 +400,70 @@ export class LogisticOrderQueryBuilder {
         'sendToCustomerBy',
       ],
       include: [
-        { attributes: ['id', 'name'], model: ECOrderStatus, as: 'orderStatus', required: false },
-        { attributes: ['id', 'title'], model: ECLogistic, as: 'logistic', required: false },
+        {
+          attributes: ['id', 'name'],
+          model: ECOrderStatus,
+          as: 'orderStatus',
+          required: false,
+        },
+        {
+          attributes: ['id', 'title'],
+          model: ECLogistic,
+          as: 'logistic',
+          required: false,
+        },
         {
           attributes: ['id', 'logisticId', 'orderShipmentWayId', 'provinceId'],
           model: ECLogisticShipmentWay,
           as: 'logisticShipmentWay',
           required: false,
           include: [
-            { attributes: ['id', 'name', 'icon'], model: ECOrderShipmentWay, as: 'orderShipmentWay', required: false },
-            { attributes: ['id', 'name'], model: ECProvince, as: 'province', required: false },
+            {
+              attributes: ['id', 'name', 'icon'],
+              model: ECOrderShipmentWay,
+              as: 'orderShipmentWay',
+              required: false,
+            },
+            {
+              attributes: ['id', 'name'],
+              model: ECProvince,
+              as: 'province',
+              required: false,
+            },
           ],
         },
         {
-          attributes: ['id', 'logisticShipmentWayId', 'scheduleSendingTypeId', 'startDate', 'endDate'],
+          attributes: [
+            'id',
+            'logisticShipmentWayId',
+            'scheduleSendingTypeId',
+            'startDate',
+            'endDate',
+          ],
           model: ECLogisticSendingPeriod,
           as: 'logisticSendingPeriod',
           required: false,
           include: [
-            { attributes: ['id', 'title', 'icon'], model: ECScheduleSendingType, as: 'scheduleSendingType', required: false },
+            {
+              attributes: ['id', 'title', 'icon'],
+              model: ECScheduleSendingType,
+              as: 'scheduleSendingType',
+              required: false,
+            },
           ],
         },
-        { attributes: ['id', 'logisticSendingPeriodId', 'weekNumber'], model: ECLogisticWeeklyPeriod, as: 'logisticWeeklyPeriod', required: false },
-        { attributes: ['id', 'logisticWeeklyPeriodId', 'startTime', 'endTime'], model: ECLogisticWeeklyPeriodTime, as: 'logisticWeeklyPeriodTime', required: false },
+        {
+          attributes: ['id', 'logisticSendingPeriodId', 'weekNumber'],
+          model: ECLogisticWeeklyPeriod,
+          as: 'logisticWeeklyPeriod',
+          required: false,
+        },
+        {
+          attributes: ['id', 'logisticWeeklyPeriodId', 'startTime', 'endTime'],
+          model: ECLogisticWeeklyPeriodTime,
+          as: 'logisticWeeklyPeriodTime',
+          required: false,
+        },
       ],
     });
 
@@ -406,7 +490,12 @@ export class LogisticOrderQueryBuilder {
         'updatedAt',
       ],
       include: [
-        { attributes: ['id', 'name', 'slug'], model: ECVendor, as: 'vendor', required: false },
+        {
+          attributes: ['id', 'name', 'slug'],
+          model: ECVendor,
+          as: 'vendor',
+          required: false,
+        },
         {
           attributes: ['id', 'title', 'slug', 'sku'],
           model: ECProduct,
@@ -418,27 +507,60 @@ export class LogisticOrderQueryBuilder {
               model: ECInventory,
               as: 'inventories',
               required: false,
-              where: Sequelize.where(Sequelize.col('groups.details.inventoryId'), {
-                [Op.eq]: Sequelize.col('groups.details.product.inventories.id'),
-              }),
+              where: Sequelize.where(
+                Sequelize.col('groups.details.inventoryId'),
+                {
+                  [Op.eq]: Sequelize.col(
+                    'groups.details.product.inventories.id',
+                  ),
+                },
+              ),
               include: [
-                { attributes: ['id', 'name', 'hexCode'], model: ECColor, as: 'color', required: false },
-                { attributes: ['id', 'name', 'slug'], model: ECGuarantee, as: 'guarantee', required: false },
-                { attributes: ['id', 'name'], model: ECGuaranteeMonth, as: 'guaranteeMonth', required: false },
+                {
+                  attributes: ['id', 'name', 'hexCode'],
+                  model: ECColor,
+                  as: 'color',
+                  required: false,
+                },
+                {
+                  attributes: ['id', 'name', 'slug'],
+                  model: ECGuarantee,
+                  as: 'guarantee',
+                  required: false,
+                },
+                {
+                  attributes: ['id', 'name'],
+                  model: ECGuaranteeMonth,
+                  as: 'guaranteeMonth',
+                  required: false,
+                },
               ],
             },
-            { attributes: ['id', 'fileName'], through: { attributes: [] }, model: Attachment, as: 'attachments', required: false },
+            {
+              attributes: ['id', 'fileName'],
+              through: { attributes: [] },
+              model: Attachment,
+              as: 'attachments',
+              required: false,
+            },
           ],
         },
-        { attributes: ['id', 'name'], model: ECDiscount, as: 'discount', required: false },
+        {
+          attributes: ['id', 'name'],
+          model: ECDiscount,
+          as: 'discount',
+          required: false,
+        },
       ],
     });
 
     detailsInclude = detailsInclude.filter({
-      [Op.or]: [{ isDeleted: null }, { isDeleted: false as any }, { isDeleted: 0 as any }],
+      [Op.or]: [{ isDeleted: null }, { isDeleted: false }, { isDeleted: 0 }],
     });
     detailsInclude = detailsInclude.filter({ vendorId: { [Op.in]: vIds } });
-    detailsInclude = detailsInclude.filter({ orderDetailStatusId: { [Op.in]: sIds } });
+    detailsInclude = detailsInclude.filterIf(sIds.length > 0, {
+      orderDetailStatusId: { [Op.in]: sIds },
+    });
 
     groupsInclude = groupsInclude
       .filter(
@@ -455,7 +577,7 @@ export class LogisticOrderQueryBuilder {
 
   // Include groups and details but restrict details to specific vendor IDs
   includeGroupsAndDetailsVendorRestricted(vendorIds: number[]) {
-    const ids = (vendorIds && vendorIds.length ? vendorIds : [-1]) as any[];
+    const ids = vendorIds && vendorIds.length ? vendorIds : [-1];
 
     // groups
     let groupsInclude = new IncludeOptionsBuilder({
@@ -521,7 +643,13 @@ export class LogisticOrderQueryBuilder {
         },
         // logistic sending period and its lookups
         {
-          attributes: ['id', 'logisticShipmentWayId', 'scheduleSendingTypeId', 'startDate', 'endDate'],
+          attributes: [
+            'id',
+            'logisticShipmentWayId',
+            'scheduleSendingTypeId',
+            'startDate',
+            'endDate',
+          ],
           model: ECLogisticSendingPeriod,
           as: 'logisticSendingPeriod',
           required: false,
@@ -574,7 +702,12 @@ export class LogisticOrderQueryBuilder {
         'updatedAt',
       ],
       include: [
-        { attributes: ['id', 'name', 'slug'], model: ECVendor, as: 'vendor', required: false },
+        {
+          attributes: ['id', 'name', 'slug'],
+          model: ECVendor,
+          as: 'vendor',
+          required: false,
+        },
         {
           attributes: ['id', 'title', 'slug', 'sku'],
           model: ECProduct,
@@ -586,13 +719,33 @@ export class LogisticOrderQueryBuilder {
               model: ECInventory,
               as: 'inventories',
               required: false,
-              where: Sequelize.where(Sequelize.col('groups.details.inventoryId'), {
-                [Op.eq]: Sequelize.col('groups.details.product.inventories.id'),
-              }),
+              where: Sequelize.where(
+                Sequelize.col('groups.details.inventoryId'),
+                {
+                  [Op.eq]: Sequelize.col(
+                    'groups.details.product.inventories.id',
+                  ),
+                },
+              ),
               include: [
-                { attributes: ['id', 'name', 'hexCode'], model: ECColor, as: 'color', required: false },
-                { attributes: ['id', 'name', 'slug'], model: ECGuarantee, as: 'guarantee', required: false },
-                { attributes: ['id', 'name'], model: ECGuaranteeMonth, as: 'guaranteeMonth', required: false },
+                {
+                  attributes: ['id', 'name', 'hexCode'],
+                  model: ECColor,
+                  as: 'color',
+                  required: false,
+                },
+                {
+                  attributes: ['id', 'name', 'slug'],
+                  model: ECGuarantee,
+                  as: 'guarantee',
+                  required: false,
+                },
+                {
+                  attributes: ['id', 'name'],
+                  model: ECGuaranteeMonth,
+                  as: 'guaranteeMonth',
+                  required: false,
+                },
               ],
             },
             {
@@ -604,12 +757,21 @@ export class LogisticOrderQueryBuilder {
             },
           ],
         },
-        { attributes: ['id', 'name'], model: ECDiscount, as: 'discount', required: false },
+        {
+          attributes: ['id', 'name'],
+          model: ECDiscount,
+          as: 'discount',
+          required: false,
+        },
       ],
     });
 
     detailsInclude = detailsInclude.filter({
-      [Op.or]: [{ isDeleted: null }, { isDeleted: false as any }, { isDeleted: 0 as any }],
+      [Op.or]: [
+        { isDeleted: null },
+        { isDeleted: false as any },
+        { isDeleted: 0 as any },
+      ],
     });
     detailsInclude = detailsInclude.filter({
       vendorId: { [Op.in]: ids },
@@ -622,7 +784,9 @@ export class LogisticOrderQueryBuilder {
 
   // Include groups and details but restrict groups to specific logistics (by IDs)
   includeGroupsAndDetailsRestricted(logisticIds: number[]) {
-    const ids = (logisticIds && logisticIds.length ? logisticIds : [-1]) as any[];
+    const ids = (
+      logisticIds && logisticIds.length ? logisticIds : [-1]
+    ) as any[];
 
     // groups
     let groupsInclude = new IncludeOptionsBuilder({
@@ -691,7 +855,13 @@ export class LogisticOrderQueryBuilder {
         },
         // logistic sending period and its lookups
         {
-          attributes: ['id', 'logisticShipmentWayId', 'scheduleSendingTypeId', 'startDate', 'endDate'],
+          attributes: [
+            'id',
+            'logisticShipmentWayId',
+            'scheduleSendingTypeId',
+            'startDate',
+            'endDate',
+          ],
           model: ECLogisticSendingPeriod,
           as: 'logisticSendingPeriod',
           required: false,
@@ -744,7 +914,12 @@ export class LogisticOrderQueryBuilder {
         'updatedAt',
       ],
       include: [
-        { attributes: ['id', 'name', 'slug'], model: ECVendor, as: 'vendor', required: false },
+        {
+          attributes: ['id', 'name', 'slug'],
+          model: ECVendor,
+          as: 'vendor',
+          required: false,
+        },
         {
           attributes: ['id', 'title', 'slug', 'sku'],
           model: ECProduct,
@@ -756,13 +931,33 @@ export class LogisticOrderQueryBuilder {
               model: ECInventory,
               as: 'inventories',
               required: false,
-              where: Sequelize.where(Sequelize.col('groups.details.inventoryId'), {
-                [Op.eq]: Sequelize.col('groups.details.product.inventories.id'),
-              }),
+              where: Sequelize.where(
+                Sequelize.col('groups.details.inventoryId'),
+                {
+                  [Op.eq]: Sequelize.col(
+                    'groups.details.product.inventories.id',
+                  ),
+                },
+              ),
               include: [
-                { attributes: ['id', 'name', 'hexCode'], model: ECColor, as: 'color', required: false },
-                { attributes: ['id', 'name', 'slug'], model: ECGuarantee, as: 'guarantee', required: false },
-                { attributes: ['id', 'name'], model: ECGuaranteeMonth, as: 'guaranteeMonth', required: false },
+                {
+                  attributes: ['id', 'name', 'hexCode'],
+                  model: ECColor,
+                  as: 'color',
+                  required: false,
+                },
+                {
+                  attributes: ['id', 'name', 'slug'],
+                  model: ECGuarantee,
+                  as: 'guarantee',
+                  required: false,
+                },
+                {
+                  attributes: ['id', 'name'],
+                  model: ECGuaranteeMonth,
+                  as: 'guaranteeMonth',
+                  required: false,
+                },
               ],
             },
             {
@@ -774,12 +969,21 @@ export class LogisticOrderQueryBuilder {
             },
           ],
         },
-        { attributes: ['id', 'name'], model: ECDiscount, as: 'discount', required: false },
+        {
+          attributes: ['id', 'name'],
+          model: ECDiscount,
+          as: 'discount',
+          required: false,
+        },
       ],
     });
 
     detailsInclude = detailsInclude.filter({
-      [Op.or]: [{ isDeleted: null }, { isDeleted: false as any }, { isDeleted: 0 as any }],
+      [Op.or]: [
+        { isDeleted: null },
+        { isDeleted: false as any },
+        { isDeleted: 0 as any },
+      ],
     });
 
     groupsInclude = groupsInclude
@@ -828,29 +1032,70 @@ export class LogisticOrderQueryBuilder {
         'sendToCustomerBy',
       ],
       include: [
-        { attributes: ['id', 'name'], model: ECOrderStatus, as: 'orderStatus', required: false },
-        { attributes: ['id', 'title'], model: ECLogistic, as: 'logistic', required: false },
+        {
+          attributes: ['id', 'name'],
+          model: ECOrderStatus,
+          as: 'orderStatus',
+          required: false,
+        },
+        {
+          attributes: ['id', 'title'],
+          model: ECLogistic,
+          as: 'logistic',
+          required: false,
+        },
         {
           attributes: ['id', 'logisticId', 'orderShipmentWayId', 'provinceId'],
           model: ECLogisticShipmentWay,
           as: 'logisticShipmentWay',
           required: false,
           include: [
-            { attributes: ['id', 'name', 'icon'], model: ECOrderShipmentWay, as: 'orderShipmentWay', required: false },
-            { attributes: ['id', 'name'], model: ECProvince, as: 'province', required: false },
+            {
+              attributes: ['id', 'name', 'icon'],
+              model: ECOrderShipmentWay,
+              as: 'orderShipmentWay',
+              required: false,
+            },
+            {
+              attributes: ['id', 'name'],
+              model: ECProvince,
+              as: 'province',
+              required: false,
+            },
           ],
         },
         {
-          attributes: ['id', 'logisticShipmentWayId', 'scheduleSendingTypeId', 'startDate', 'endDate'],
+          attributes: [
+            'id',
+            'logisticShipmentWayId',
+            'scheduleSendingTypeId',
+            'startDate',
+            'endDate',
+          ],
           model: ECLogisticSendingPeriod,
           as: 'logisticSendingPeriod',
           required: false,
           include: [
-            { attributes: ['id', 'title', 'icon'], model: ECScheduleSendingType, as: 'scheduleSendingType', required: false },
+            {
+              attributes: ['id', 'title', 'icon'],
+              model: ECScheduleSendingType,
+              as: 'scheduleSendingType',
+              required: false,
+            },
           ],
         },
-        { attributes: ['id', 'logisticSendingPeriodId', 'weekNumber'], model: ECLogisticWeeklyPeriod, as: 'logisticWeeklyPeriod', required: false },
-        { attributes: ['id', 'logisticWeeklyPeriodId', 'startTime', 'endTime'], model: ECLogisticWeeklyPeriodTime, as: 'logisticWeeklyPeriodTime', required: false },
+        {
+          attributes: ['id', 'logisticSendingPeriodId', 'weekNumber'],
+          model: ECLogisticWeeklyPeriod,
+          as: 'logisticWeeklyPeriod',
+          required: false,
+        },
+        {
+          attributes: ['id', 'logisticWeeklyPeriodId', 'startTime', 'endTime'],
+          model: ECLogisticWeeklyPeriodTime,
+          as: 'logisticWeeklyPeriodTime',
+          required: false,
+        },
       ],
     });
     // apply group-level filters using IncludeOptionsBuilder's [Op.and] pipeline
@@ -891,7 +1136,12 @@ export class LogisticOrderQueryBuilder {
         'updatedAt',
       ],
       include: [
-        { attributes: ['id', 'name', 'slug'], model: ECVendor, as: 'vendor', required: false },
+        {
+          attributes: ['id', 'name', 'slug'],
+          model: ECVendor,
+          as: 'vendor',
+          required: false,
+        },
         {
           attributes: ['id', 'title', 'slug', 'sku'],
           model: ECProduct,
@@ -903,24 +1153,59 @@ export class LogisticOrderQueryBuilder {
               model: ECInventory,
               as: 'inventories',
               required: false,
-              where: Sequelize.where(Sequelize.col('groups.details.inventoryId'), {
-                [Op.eq]: Sequelize.col('groups.details.product.inventories.id'),
-              }),
+              where: Sequelize.where(
+                Sequelize.col('groups.details.inventoryId'),
+                {
+                  [Op.eq]: Sequelize.col(
+                    'groups.details.product.inventories.id',
+                  ),
+                },
+              ),
               include: [
-                { attributes: ['id', 'name', 'hexCode'], model: ECColor, as: 'color', required: false },
-                { attributes: ['id', 'name', 'slug'], model: ECGuarantee, as: 'guarantee', required: false },
-                { attributes: ['id', 'name'], model: ECGuaranteeMonth, as: 'guaranteeMonth', required: false },
+                {
+                  attributes: ['id', 'name', 'hexCode'],
+                  model: ECColor,
+                  as: 'color',
+                  required: false,
+                },
+                {
+                  attributes: ['id', 'name', 'slug'],
+                  model: ECGuarantee,
+                  as: 'guarantee',
+                  required: false,
+                },
+                {
+                  attributes: ['id', 'name'],
+                  model: ECGuaranteeMonth,
+                  as: 'guaranteeMonth',
+                  required: false,
+                },
               ],
             },
-            { attributes: ['id', 'fileName'], through: { attributes: [] }, model: Attachment, as: 'attachments', required: false },
+            {
+              attributes: ['id', 'fileName'],
+              through: { attributes: [] },
+              model: Attachment,
+              as: 'attachments',
+              required: false,
+            },
           ],
         },
-        { attributes: ['id', 'name'], model: ECDiscount, as: 'discount', required: false },
+        {
+          attributes: ['id', 'name'],
+          model: ECDiscount,
+          as: 'discount',
+          required: false,
+        },
       ],
     });
 
     detailsInclude = detailsInclude.filter({
-      [Op.or]: [{ isDeleted: null }, { isDeleted: false as any }, { isDeleted: 0 as any }],
+      [Op.or]: [
+        { isDeleted: null },
+        { isDeleted: false as any },
+        { isDeleted: 0 as any },
+      ],
     });
 
     groupsInclude = groupsInclude
