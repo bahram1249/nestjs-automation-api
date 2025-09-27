@@ -9,6 +9,7 @@ import { BPMNRequestModule } from './modules/request/request.module';
 import { TestModule } from './test/test.module';
 import { DynamicConditionModule } from './dynamic-condition';
 import { DynamicActionModule } from './dynamic-action';
+import { AdminBpmnModule } from './api-module/admin-bpmn.module';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { DynamicActionModule } from './dynamic-action';
     TestModule,
     DynamicConditionModule,
     DynamicActionModule,
+    AdminBpmnModule,
   ], //[RequestModule],
   exports: [BPMNRequestModule],
 })
