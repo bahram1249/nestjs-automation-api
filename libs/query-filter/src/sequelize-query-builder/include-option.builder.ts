@@ -19,7 +19,14 @@ export class IncludeOptionsBuilder {
     // }
   ) {
     this.options = includeOptionsBuilderInit;
-    if (this.options.where == null) this.options.where = { [Op.and]: [] };
+    // ensure where exists and has an Op.and array to safely push filters later
+    if (this.options.where == null) {
+      this.options.where = { [Op.and]: [] } as any;
+    } else {
+      // if a plain where object was provided without [Op.and], initialize it
+      const w = this.options.where as any;
+      if (!w[Op.and]) w[Op.and] = [];
+    }
     // this.options = {
     //   model: includeOptionsBuilderInit.model,
     //   as: includeOptionsBuilderInit.as,
@@ -35,7 +42,10 @@ export class IncludeOptionsBuilder {
     return this;
   }
   filter(condition: WhereOptions<any>): IncludeOptionsBuilder {
-    this.options.where[Op.and].push(condition);
+    // guard against undefined where/and for robustness
+    const w = (this.options.where as any) || (this.options.where = { [Op.and]: [] } as any);
+    if (!w[Op.and]) w[Op.and] = [];
+    w[Op.and].push(condition);
     return this;
   }
 
@@ -43,7 +53,11 @@ export class IncludeOptionsBuilder {
     condition: boolean,
     queryCondition: WhereOptions<any>,
   ): IncludeOptionsBuilder {
-    if (condition) this.options.where[Op.and].push(queryCondition);
+    if (condition) {
+      const w = (this.options.where as any) || (this.options.where = { [Op.and]: [] } as any);
+      if (!w[Op.and]) w[Op.and] = [];
+      w[Op.and].push(queryCondition);
+    }
     return this;
   }
   attributes(attributes: FindAttributeOptions): IncludeOptionsBuilder {
@@ -56,8 +70,9 @@ export class IncludeOptionsBuilder {
   }
   thenInclude(include: Includeable): IncludeOptionsBuilder {
     let included = this.options.include as Includeable[];
-    if(!isNotNull(included)) included = [];
+    if (!isNotNull(included)) included = [];
     included.push(include);
+    this.options.include = included;
     return this;
   }
   build(): IncludeOptions {

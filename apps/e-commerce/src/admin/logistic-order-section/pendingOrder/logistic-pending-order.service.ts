@@ -46,7 +46,9 @@ export class LogisticPendingOrderService {
     );
     if (!isAccess) {
       throw new ForbiddenException(
-        this.localizationService.translate('ecommerce.dont_access_to_this_vendor'),
+        this.localizationService.translate(
+          'ecommerce.dont_access_to_this_vendor',
+        ),
       );
     }
 
@@ -76,7 +78,7 @@ export class LogisticPendingOrderService {
       .subQuery(true)
       .includeGroupsAndDetailsVendorAndStatusRestricted(
         [filter.vendorId],
-        [OrderDetailStatusEnum.WaitingForProcess],
+        //[OrderDetailStatusEnum.WaitingForProcess],
       )
       .includeAddress()
       .includeUser()
@@ -96,7 +98,9 @@ export class LogisticPendingOrderService {
     );
     if (!isAccess) {
       throw new ForbiddenException(
-        this.localizationService.translate('ecommerce.dont_access_to_this_vendor'),
+        this.localizationService.translate(
+          'ecommerce.dont_access_to_this_vendor',
+        ),
       );
     }
 
@@ -126,7 +130,9 @@ export class LogisticPendingOrderService {
     let result = await this.repository.findOne(qb.build());
     if (!result) {
       throw new NotFoundException(
-        this.localizationService.translate('ecommerce.logistic_order_not_found'),
+        this.localizationService.translate(
+          'ecommerce.logistic_order_not_found',
+        ),
       );
     }
     result = await this.utilService.recalculateOrderPrices(result);
@@ -138,10 +144,16 @@ export class LogisticPendingOrderService {
     const detail = await this.detailRepository.findOne(
       new QueryOptionsBuilder()
         .filter({ id: detailId })
-        .filter({ orderDetailStatusId: OrderDetailStatusEnum.WaitingForProcess })
+        .filter({
+          orderDetailStatusId: OrderDetailStatusEnum.WaitingForProcess,
+        })
         .filter(
           Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('ECLogisticOrderGroupedDetail.isDeleted'), 0),
+            Sequelize.fn(
+              'isnull',
+              Sequelize.col('ECLogisticOrderGroupedDetail.isDeleted'),
+              0,
+            ),
             { [Op.eq]: 0 },
           ),
         )
@@ -149,7 +161,9 @@ export class LogisticPendingOrderService {
     );
     if (!detail) {
       throw new NotFoundException(
-        this.localizationService.translate('ecommerce.logistic_detail_not_found'),
+        this.localizationService.translate(
+          'ecommerce.logistic_detail_not_found',
+        ),
       );
     }
 
@@ -160,7 +174,9 @@ export class LogisticPendingOrderService {
     );
     if (!isAccess) {
       throw new ForbiddenException(
-        this.localizationService.translate('ecommerce.dont_access_to_this_vendor'),
+        this.localizationService.translate(
+          'ecommerce.dont_access_to_this_vendor',
+        ),
       );
     }
 
@@ -174,10 +190,16 @@ export class LogisticPendingOrderService {
       const another = await this.detailRepository.findOne(
         new QueryOptionsBuilder()
           .filter({ groupedId: detail.groupedId })
-          .filter({ orderDetailStatusId: { [Op.ne]: OrderDetailStatusEnum.Processed } })
+          .filter({
+            orderDetailStatusId: { [Op.ne]: OrderDetailStatusEnum.Processed },
+          })
           .filter(
             Sequelize.where(
-              Sequelize.fn('isnull', Sequelize.col('ECLogisticOrderGroupedDetail.isDeleted'), 0),
+              Sequelize.fn(
+                'isnull',
+                Sequelize.col('ECLogisticOrderGroupedDetail.isDeleted'),
+                0,
+              ),
               { [Op.eq]: 0 },
             ),
           )
@@ -188,13 +210,19 @@ export class LogisticPendingOrderService {
       if (!another) {
         // move group to processed
         let group = await this.groupedRepository.findOne(
-          new QueryOptionsBuilder().filter({ id: detail.groupedId }).transaction(transaction).build(),
+          new QueryOptionsBuilder()
+            .filter({ id: detail.groupedId })
+            .transaction(transaction)
+            .build(),
         );
         if (group) {
           group.orderStatusId = OrderStatusEnum.OrderHasBeenProcessed;
           await group.save({ transaction });
           // roll-up parent ECLogisticOrder status after group status change
-          await this.utilService.syncParentOrderStatus(group.logisticOrderId as any, transaction as any);
+          await this.utilService.syncParentOrderStatus(
+            group.logisticOrderId as any,
+            transaction as any,
+          );
         }
         // TODO: optional SMS when group processed
       }
