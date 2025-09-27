@@ -12,6 +12,7 @@ import { LogisticInventoryTrackChangeModule } from '@rahino/ecommerce/shared/inv
 import { LogisticRevertInventoryQtyService } from './services/logistic-revert-inventory-qty.service';
 import { inventoryStatusService } from '@rahino/ecommerce/shared/inventory/services/inventory-status.service';
 import { LocalizationModule } from 'apps/main/src/common/localization';
+import { LogisticDecreaseInventoryQtyService } from './services/logistic-decrease-inventory-qty.service';
 
 @Module({
   imports: [
@@ -26,7 +27,11 @@ import { LocalizationModule } from 'apps/main/src/common/localization';
     LogisticInventoryTrackChangeModule,
     LocalizationModule,
   ],
-  providers: [LogisticRevertInventoryQtyService, inventoryStatusService],
-  exports: [LogisticRevertInventoryQtyService],
+  providers: [
+    LogisticRevertInventoryQtyService,
+    LogisticDecreaseInventoryQtyService,
+    inventoryStatusService,
+  ],
+  exports: [LogisticRevertInventoryQtyService, LogisticDecreaseInventoryQtyService],
 })
 export class LogisticRevertInventoryModule {}

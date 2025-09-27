@@ -52,6 +52,7 @@ import {
 import * as moment from 'moment-jalaali';
 import { LocalizationService } from 'apps/main/src/common/localization/localization.service';
 import { LogisticPeriodService } from '../logistic-period/logistic-period.service';
+import { LogisticDecreaseInventoryQtyService } from '../inventory/services/logistic-decrease-inventory-qty.service';
 
 @Injectable()
 export class LogisticPaymentService {
@@ -86,6 +87,7 @@ export class LogisticPaymentService {
     private readonly revertPaymentQueue: Queue,
     private readonly l10n: LocalizationService,
     private readonly logisticPeriodService: LogisticPeriodService,
+    private readonly logisticDecreaseInventoryQtyService: LogisticDecreaseInventoryQtyService,
   ) {}
 
   async stock(
@@ -209,6 +211,10 @@ export class LogisticPaymentService {
         allGroupedDetails,
       );
       await this.purchaseStocks(variationPriceStock.stocks, transaction);
+      await this.logisticDecreaseInventoryQtyService.decreaseByPayment(
+        pay.paymentId,
+        transaction,
+      );
       await this.enqueueRevertIfUnpaid(pay.paymentId);
 
       await transaction.commit();
