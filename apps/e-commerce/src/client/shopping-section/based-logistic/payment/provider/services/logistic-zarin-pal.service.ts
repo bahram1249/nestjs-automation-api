@@ -72,6 +72,8 @@ export class LogisticZarinPalService implements LogisticPayInterface {
 
     try {
       const reqTx = await axios.post(this.baseUrl + '/pg/v4/payment/request.json', data);
+      
+      console.log(reqTx)
       if (reqTx.status < 200 || reqTx.status > 299) {
         throw new BadRequestException(this.l10n.translate('ecommerce.invalid_payment'));
       }
