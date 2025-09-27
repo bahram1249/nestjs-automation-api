@@ -18,6 +18,7 @@ import * as _ from 'lodash';
 import { User } from '@rahino/database';
 import { PermissionService } from '@rahino/core/user/permission/permission.service';
 import { LocalizationService } from 'apps/main/src/common/localization';
+import { isNotNull } from '@rahino/commontools';
 
 @Injectable()
 export class LogisticSendingPeriodService {
@@ -30,7 +31,8 @@ export class LogisticSendingPeriodService {
   ) {}
 
   async findAll(user: User, filter: GetLogisticSendingPeriodDto) {
-    const queryBuilder = new QueryOptionsBuilder();
+    const queryBuilder = new QueryOptionsBuilder()
+    .filterIf(isNotNull(filter.logisticShipmentWayId),{ logisticShipmentWayId: filter.logisticShipmentWayId });
     const count = await this.repository.count(queryBuilder.build());
     const queryOptions = queryBuilder
       .attributes([
@@ -62,7 +64,7 @@ export class LogisticSendingPeriodService {
           },
         ),
       )
-      .filter({ logisticShipmentWayId: filter.logisticShipmentWayId })
+      
       .limit(filter.limit)
       .offset(filter.offset)
       .order({ orderBy: filter.orderBy, sortOrder: filter.sortOrder })

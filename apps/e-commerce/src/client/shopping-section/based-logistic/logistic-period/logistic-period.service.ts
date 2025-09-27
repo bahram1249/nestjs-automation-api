@@ -46,7 +46,7 @@ export class LogisticPeriodService {
     session: ECUserSession,
     dto: ClientLogisticPeriodDto,
   ) {
-    console.log(user);
+    
     const { userAddress, stocks } = await this.loadUserAddressAndStocks(
       user,
       session,
