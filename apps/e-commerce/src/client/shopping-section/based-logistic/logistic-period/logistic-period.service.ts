@@ -116,11 +116,21 @@ export class LogisticPeriodService {
             freeShipment: false,
             totalPrice: 0,
           }));
-          const shipmentPricePromise = this.clientShipmentPriceService.cal(
-            shipmentStocks,
-            dto.addressId,
-            Number(shipmentWay.orderShipmentWay.id) as OrderShipmentwayEnum,
-          );
+          // Prefer calSelections to consider schedule sending type (normal/express) via sendingPeriodId
+          const inferredSendingPeriodId = ((shipmentWay?.sendingPeriods || [])
+            .find((sp: any) => Number(sp.scheduleSendingTypeId) === Number(typeId))?.id) ?? null;
+
+          const groupsInput = [
+            {
+              logisticId: Number(logisticId) as any,
+              shipmentWayId: Number(shipmentWay.id) as any,
+              shipmentWayType: Number(shipmentWay.orderShipmentWay.id) as OrderShipmentwayEnum,
+              sendingPeriodId: inferredSendingPeriodId,
+              weeklyPeriodId: null,
+              weeklyPeriodTimeId: null,
+              stocks: shipmentStocks,
+            },
+          ];
 
           const priceData = {
             shipmentWayId: Number(shipmentWay.id),
@@ -129,11 +139,17 @@ export class LogisticPeriodService {
             shipmentWayIcon: shipmentWay.orderShipmentWay.icon,
             possibleDates,
           } as any;
-          return shipmentPricePromise.then((sp) => ({
-            ...priceData,
-            price: sp.price,
-            realShipmentPrice: sp.realShipmentPrice,
-          }));
+
+          return this.clientShipmentPriceService
+            .calSelections(groupsInput as any, dto.addressId as any)
+            .then((sp) => {
+              const g0 = (sp?.groups || [])[0] as any;
+              return {
+                ...priceData,
+                price: Number(g0?.price || 0),
+                realShipmentPrice: Number(g0?.realShipmentPrice || 0),
+              };
+            });
         });
 
         let bestSelection = null;
