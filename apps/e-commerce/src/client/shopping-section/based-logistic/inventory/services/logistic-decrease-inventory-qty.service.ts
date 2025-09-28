@@ -130,6 +130,7 @@ export class LogisticDecreaseInventoryQtyService {
 
       await this.inventoryStatusService.productInventoryStatusUpdate(
         detail.productId,
+        transaction
       );
     }
   }

@@ -198,7 +198,7 @@ export class LogisticPaymentService {
         transaction,
       );
       await this.updateGroupedTotals(groupMap, groupTotals, transaction);
-
+     
       // 7) Request payment and finalize async revert
       const pay = await this.paymentProviderService.requestPayment(
         totalPayable,
