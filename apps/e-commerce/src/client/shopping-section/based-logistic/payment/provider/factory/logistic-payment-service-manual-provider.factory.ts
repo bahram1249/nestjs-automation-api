@@ -1,4 +1,8 @@
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { ModuleRef } from '@nestjs/core';
 import { InjectModel } from '@nestjs/sequelize';
 import { ECPaymentGateway } from '@rahino/localdatabase/models';
@@ -16,6 +20,7 @@ export class LogisticPaymentServiceManualProviderFactory {
     private readonly paymentRepository: typeof ECPaymentGateway,
     private snapPayService: LogisticSnapPayService,
     private zarinPalService: LogisticZarinPalService,
+    private readonly logisticWalletService: LogisticWalletService,
     private moduleRef: ModuleRef,
     private readonly l10n: LocalizationService,
   ) {}
@@ -26,14 +31,20 @@ export class LogisticPaymentServiceManualProviderFactory {
         .filter({ id: paymentServiceId })
         .filter(
           Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('ECPaymentGateway.isDeleted'), 0),
+            Sequelize.fn(
+              'isnull',
+              Sequelize.col('ECPaymentGateway.isDeleted'),
+              0,
+            ),
             { [Op.eq]: 0 },
           ),
         )
         .build(),
     );
     if (!payment) {
-      throw new BadRequestException(this.l10n.translate('ecommerce.payment_method_not_defined'));
+      throw new BadRequestException(
+        this.l10n.translate('ecommerce.payment_method_not_defined'),
+      );
     }
 
     switch (payment.serviceName) {
@@ -42,11 +53,14 @@ export class LogisticPaymentServiceManualProviderFactory {
       case 'ZarinPalService':
         return this.zarinPalService;
       case 'WalletService':
-        // Lazily resolve to avoid circular dependency
-        return this.moduleRef.get(LogisticWalletService, { strict: false });
+      // Lazily resolve to avoid circular dependency
+      case 'LogisticWalletService':
+        return this.logisticWalletService;
       default:
         throw new NotFoundException(
-          this.l10n.translate('ecommerce.invalid_data_source', { serviceName: payment.serviceName }),
+          this.l10n.translate('ecommerce.invalid_data_source', {
+            serviceName: payment.serviceName,
+          }),
         );
     }
   }
