@@ -6,16 +6,13 @@ import { LogisticPaymentServiceProviderFactory } from './factory/logistic-paymen
 import { LogisticPaymentServiceManualProviderFactory } from './factory/logistic-payment-service-manual-provider.factory';
 import { LogisticZarinPalModule } from './zarinpal.module';
 import { LogisticSnappayModule } from './snappay.module';
-// Avoid importing LogisticWalletModule here to prevent circular dependency
 import { LocalizationModule } from 'apps/main/src/common/localization';
-import { LogisticWalletModule } from './wallet.module';
 
 @Module({
   imports: [
     SequelizeModule.forFeature([ECPaymentGateway]),
     LogisticZarinPalModule,
     LogisticSnappayModule,
-    LogisticWalletModule,
     LocalizationModule,
   ],
   providers: [

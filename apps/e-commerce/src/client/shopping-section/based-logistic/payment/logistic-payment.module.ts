@@ -36,6 +36,7 @@ import { LogisticRevertPaymentProcessor } from './revert-payment/revert-payment.
 import { LogisticRevertInventoryModule } from '../inventory/logistic-revert-inventory.module';
 import { LogisticRevertPaymentQtyService } from '../inventory/services/logistic-revert-payment-qty.service';
 import { LogisticPaymentGatewaysService } from './logistic-payment-gateways.service';
+import { LogisticWalletModule } from './provider/wallet.module';
 
 @Module({
   imports: [
@@ -48,6 +49,7 @@ import { LogisticPaymentGatewaysService } from './logistic-payment-gateways.serv
     ApplyDiscountModule,
     LogisticPaymentRuleModule,
     LogisticPaymentProviderModule,
+    LogisticWalletModule,
     ClientShipmentPriceModule,
     ClientLogisticPeriodModule,
     StockModule,

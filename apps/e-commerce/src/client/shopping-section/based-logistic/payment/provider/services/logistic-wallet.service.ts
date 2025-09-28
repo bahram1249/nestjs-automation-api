@@ -1,5 +1,4 @@
 import { BadRequestException, ForbiddenException, Injectable, Scope } from '@nestjs/common';
-import { ModuleRef } from '@nestjs/core';
 import { InjectModel } from '@nestjs/sequelize';
 import { Sequelize, Transaction } from 'sequelize';
 import { Op } from 'sequelize';
@@ -10,7 +9,7 @@ import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builde
 import { LogisticFinalizedPaymentService } from '../../util/finalized-payment/logistic-finalized-payment.service';
 import { ConfigService } from '@nestjs/config';
 import { LogisticPayInterface } from '../interface/logistic-pay.interface';
-import { LogisticPaymentServiceManualProviderFactory } from '../factory/logistic-payment-service-manual-provider.factory';
+import { LogisticPaymentServiceManualWalletPurposeProviderFactory } from '../factory/logistic-payment-service-manual-wallet-purpose-provider.factory';
 import { LocalizationService } from 'apps/main/src/common/localization/localization.service';
 
 @Injectable({ scope: Scope.REQUEST })
@@ -23,7 +22,7 @@ export class LogisticWalletService implements LogisticPayInterface {
     @InjectModel(ECPayment)
     private readonly paymentRepo: typeof ECPayment,
     private readonly finalizedPaymentService: LogisticFinalizedPaymentService,
-    private readonly moduleRef: ModuleRef,
+    private readonly walletPurposeProviderFactory: LogisticPaymentServiceManualWalletPurposeProviderFactory,
     private readonly config: ConfigService,
     private readonly l10n: LocalizationService,
   ) {}
@@ -103,9 +102,8 @@ export class LogisticWalletService implements LogisticPayInterface {
 
     const mustBePaid = totalPrice - Number(wallet.currentAmount);
 
-    // pick a provider by charger gateway id
-    const providerFactory = this.moduleRef.get(LogisticPaymentServiceManualProviderFactory, { strict: false });
-    const chargeProvider = (await providerFactory.create(chargerGateway.id)) as LogisticPayInterface;
+    // pick a provider by charger gateway id using wallet-purpose factory (avoids circular deps)
+    const chargeProvider = (await this.walletPurposeProviderFactory.create(chargerGateway.id)) as LogisticPayInterface;
     const paymentResult = await chargeProvider.requestPayment(
       mustBePaid,
       0,

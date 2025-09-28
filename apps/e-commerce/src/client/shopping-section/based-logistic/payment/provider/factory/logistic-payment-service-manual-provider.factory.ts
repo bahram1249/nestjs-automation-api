@@ -10,7 +10,6 @@ import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builde
 import { Op, Sequelize } from 'sequelize';
 import { LogisticSnapPayService } from '../services/logistic-snap-pay.service';
 import { LogisticZarinPalService } from '../services/logistic-zarin-pal.service';
-import { LogisticWalletService } from '../services/logistic-wallet.service';
 import { LocalizationService } from 'apps/main/src/common/localization/localization.service';
 
 @Injectable()
@@ -20,7 +19,6 @@ export class LogisticPaymentServiceManualProviderFactory {
     private readonly paymentRepository: typeof ECPaymentGateway,
     private snapPayService: LogisticSnapPayService,
     private zarinPalService: LogisticZarinPalService,
-    private readonly logisticWalletService: LogisticWalletService,
     private moduleRef: ModuleRef,
     private readonly l10n: LocalizationService,
   ) {}
@@ -54,8 +52,11 @@ export class LogisticPaymentServiceManualProviderFactory {
         return this.zarinPalService;
       case 'WalletService':
       // Lazily resolve to avoid circular dependency
-      case 'LogisticWalletService':
-        return this.logisticWalletService;
+        return this.moduleRef.get<any>(
+          // import type only to avoid hard DI link
+          require('../services/logistic-wallet.service').LogisticWalletService,
+          { strict: false },
+        );
       default:
         throw new NotFoundException(
           this.l10n.translate('ecommerce.invalid_data_source', {
