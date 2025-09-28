@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { OrderShipmentwayEnum } from '@rahino/ecommerce/shared/enum';
+import { OrderShipmentwayEnum, ScheduleSendingTypeEnum } from '@rahino/ecommerce/shared/enum';
 import { DeliveryShipmentPriceService } from './delivery-shipment-price.service';
 import { PostShipmentPriceService } from './post-shipment-price.service';
 import {
@@ -10,13 +10,19 @@ import {
   ShipmentStockInput,
 } from './dto/shipment-price.dto';
 import { LocalizationService } from 'apps/main/src/common/localization';
+import { InjectModel } from '@nestjs/sequelize';
+import { ECLogisticSendingPeriod } from '@rahino/localdatabase/models';
+import { ExpressDeliveryShipmentPriceService } from './express-delivery-shipment-price.service';
 
 @Injectable()
 export class ClientShipmentPriceService {
   constructor(
     private readonly deliveryService: DeliveryShipmentPriceService,
+    private readonly expressDeliveryService: ExpressDeliveryShipmentPriceService,
     private readonly postService: PostShipmentPriceService,
     private readonly localizationService: LocalizationService,
+    @InjectModel(ECLogisticSendingPeriod)
+    private readonly sendingPeriodRepo: typeof ECLogisticSendingPeriod,
   ) {}
 
   async cal(
@@ -63,17 +69,48 @@ export class ClientShipmentPriceService {
       let price = 0;
       let realShipmentPrice = 0;
 
+      // Determine schedule sending type (default to normal if not provided or not found)
+      let scheduleType: ScheduleSendingTypeEnum = ScheduleSendingTypeEnum.normalSending;
+      if (g.sendingPeriodId) {
+        const period = await this.sendingPeriodRepo.findOne({
+          where: { id: g.sendingPeriodId as any },
+        });
+        if (period?.scheduleSendingTypeId) {
+          scheduleType = Number(period.scheduleSendingTypeId) as ScheduleSendingTypeEnum;
+        }
+      }
+
       switch (g.shipmentWayType) {
         case OrderShipmentwayEnum.delivery: {
-          const r = await this.deliveryService.cal(g.stocks, addressId);
-          price = Number(r.price || 0);
-          realShipmentPrice = Number(r.realShipmentPrice || 0);
+          // For now both normal/express use the same delivery service; branching retained for future customization
+          switch (scheduleType) {
+            case ScheduleSendingTypeEnum.expressSending:
+              const r = await this.expressDeliveryService.cal(g.stocks, addressId);
+              price = Number(r.price || 0);
+              realShipmentPrice = Number(r.realShipmentPrice || 0);
+              break;
+            case ScheduleSendingTypeEnum.normalSending:
+            default: {
+              const r = await this.deliveryService.cal(g.stocks, addressId);
+              price = Number(r.price || 0);
+              realShipmentPrice = Number(r.realShipmentPrice || 0);
+              break;
+            }
+          }
           break;
         }
         case OrderShipmentwayEnum.post: {
-          const r = await this.postService.cal(g.stocks);
-          price = Number(r.price || 0);
-          realShipmentPrice = Number(r.realShipmentPrice || 0);
+          // For now both normal/express use the same post service; branching retained for future customization
+          switch (scheduleType) {
+            case ScheduleSendingTypeEnum.expressSending:
+            case ScheduleSendingTypeEnum.normalSending:
+            default: {
+              const r = await this.postService.cal(g.stocks);
+              price = Number(r.price || 0);
+              realShipmentPrice = Number(r.realShipmentPrice || 0);
+              break;
+            }
+          }
           break;
         }
         default: {

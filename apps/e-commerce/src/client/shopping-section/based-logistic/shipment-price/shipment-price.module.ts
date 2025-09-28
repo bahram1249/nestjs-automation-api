@@ -14,6 +14,8 @@ import { LocalizationModule } from 'apps/main/src/common/localization';
 import { ClientShipmentPriceController } from './shipment-price.controller';
 import { ClientValidateAddressModule } from '@rahino/ecommerce/client/shopping-section/based-logistic/validate-address/client-validate-address.module';
 import { SessionModule } from '@rahino/ecommerce/user/session/session.module';
+import { ECLogisticSendingPeriod } from '@rahino/localdatabase/models';
+import { ExpressDeliveryShipmentPriceService } from './express-delivery-shipment-price.service';
 
 @Module({
   imports: [
@@ -23,6 +25,7 @@ import { SessionModule } from '@rahino/ecommerce/user/session/session.module';
       Setting,
       ECDiscount,
       ECDiscountType,
+      ECLogisticSendingPeriod,
     ]),
     LocalizationModule,
     SessionModule,
@@ -31,6 +34,7 @@ import { SessionModule } from '@rahino/ecommerce/user/session/session.module';
   providers: [
     DeliveryShipmentPriceService,
     PostShipmentPriceService,
+    ExpressDeliveryShipmentPriceService,
     ClientShipmentPriceService,
   ],
   exports: [
