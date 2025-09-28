@@ -99,7 +99,12 @@ export class StockService {
         .build(),
     );
     stocks = JSON.parse(JSON.stringify(stocks));
-
+    if (!stocks || stocks.length === 0) {
+      return {
+        result: [],
+      };
+    }
+    
     // Build unique list of productId + inventoryId pairs for batch query
     const uniqueKey = (p: { productId: any; inventoryId: any }) =>
       `${p.productId}_${p.inventoryId}`;
