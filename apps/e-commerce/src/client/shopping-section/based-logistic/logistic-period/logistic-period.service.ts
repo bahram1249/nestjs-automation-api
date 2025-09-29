@@ -23,7 +23,10 @@ import { ClientLogisticPeriodDto } from './dto';
 import { AddressService } from '@rahino/ecommerce/user/address/address.service';
 import { ClientValidateAddressService } from '../validate-address/client-validate-address.service';
 import { ClientShipmentPriceService } from '../shipment-price/shipment-price.service';
-import { OrderShipmentwayEnum } from '@rahino/ecommerce/shared/enum';
+import {
+  OrderShipmentwayEnum,
+  ScheduleSendingTypeEnum,
+} from '@rahino/ecommerce/shared/enum';
 
 @Injectable()
 export class LogisticPeriodService {
@@ -76,11 +79,13 @@ export class LogisticPeriodService {
         uniqueTypeIdsMap[Number(logisticId)] as Set<number>,
       ) as number[];
       const typeInfo = typeInfoMap[Number(logisticId)];
-      const relevantShipmentWays = shipmentWays.filter(
-        (sw) => Number(sw.logisticId) == Number(logisticId),
-      );
+
       for (const typeId of uniqueTypeIds) {
         const info = typeInfo[typeId as number];
+
+        const relevantShipmentWays = shipmentWays.filter(
+          (sw) => Number(sw.logisticId) == Number(logisticId),
+        );
         // Compute extra inventory-level offset for stocks that support this type (either direct or via parent)
         const supportedStocksForType = groupStocks.filter(
           (stock) =>
@@ -95,59 +100,70 @@ export class LogisticPeriodService {
             )
           : 0;
         const offsetDay = extraInventoryOffset || info.offsetDay || 0;
-        const shipmentWaysOutput = relevantShipmentWays.map((shipmentWay) => {
-          const possibleDates = this.buildPossibleDates(
-            shipmentWay,
-            typeId,
-            persianDates,
-            currentDate,
-            offsetDay,
-          );
-          const shipmentStocks = groupStocks.map((s) => ({
-            weight: Number(s.product?.weight || 0),
-            qty: Number(s.qty || 0),
-            freeShipment: false,
-            totalPrice: 0,
-          }));
-          // Prefer calSelections to consider schedule sending type (normal/express) via sendingPeriodId
-          const inferredSendingPeriodId =
-            (shipmentWay?.sendingPeriods || []).find(
-              (sp: any) => Number(sp.scheduleSendingTypeId) === Number(typeId),
-            )?.id ?? null;
+        const shipmentWaysOutput = relevantShipmentWays
+          .filter(
+            (z) =>
+              (z.sendingPeriods.length == 0 &&
+                typeId == ScheduleSendingTypeEnum.normalSending) ||
+              (z.sendingPeriods.length == 0 &&
+                z.sendingPeriods.findIndex(
+                  (s) => s.scheduleSendingTypeId == typeId,
+                ) != -1),
+          )
+          .map((shipmentWay) => {
+            const possibleDates = this.buildPossibleDates(
+              shipmentWay,
+              typeId,
+              persianDates,
+              currentDate,
+              offsetDay,
+            );
+            const shipmentStocks = groupStocks.map((s) => ({
+              weight: Number(s.product?.weight || 0),
+              qty: Number(s.qty || 0),
+              freeShipment: false,
+              totalPrice: 0,
+            }));
+            // Prefer calSelections to consider schedule sending type (normal/express) via sendingPeriodId
+            const inferredSendingPeriodId =
+              (shipmentWay?.sendingPeriods || []).find(
+                (sp: any) =>
+                  Number(sp.scheduleSendingTypeId) === Number(typeId),
+              )?.id ?? null;
 
-          const groupsInput = [
-            {
-              logisticId: Number(logisticId) as any,
-              shipmentWayId: Number(shipmentWay.id) as any,
-              shipmentWayType: Number(
-                shipmentWay.orderShipmentWay.id,
-              ) as OrderShipmentwayEnum,
-              sendingPeriodId: inferredSendingPeriodId,
-              weeklyPeriodId: null,
-              weeklyPeriodTimeId: null,
-              stocks: shipmentStocks,
-            },
-          ];
+            const groupsInput = [
+              {
+                logisticId: Number(logisticId) as any,
+                shipmentWayId: Number(shipmentWay.id) as any,
+                shipmentWayType: Number(
+                  shipmentWay.orderShipmentWay.id,
+                ) as OrderShipmentwayEnum,
+                sendingPeriodId: inferredSendingPeriodId,
+                weeklyPeriodId: null,
+                weeklyPeriodTimeId: null,
+                stocks: shipmentStocks,
+              },
+            ];
 
-          const priceData = {
-            shipmentWayId: Number(shipmentWay.id),
-            orderShipmentwayId: Number(shipmentWay.orderShipmentWayId),
-            shipmentWayName: shipmentWay.orderShipmentWay.name,
-            shipmentWayIcon: shipmentWay.orderShipmentWay.icon,
-            possibleDates,
-          } as any;
+            const priceData = {
+              shipmentWayId: Number(shipmentWay.id),
+              orderShipmentwayId: Number(shipmentWay.orderShipmentWayId),
+              shipmentWayName: shipmentWay.orderShipmentWay.name,
+              shipmentWayIcon: shipmentWay.orderShipmentWay.icon,
+              possibleDates,
+            } as any;
 
-          return this.clientShipmentPriceService
-            .calSelections(groupsInput as any, dto.addressId as any)
-            .then((sp) => {
-              const g0 = (sp?.groups || [])[0] as any;
-              return {
-                ...priceData,
-                price: Number(g0?.price || 0),
-                realShipmentPrice: Number(g0?.realShipmentPrice || 0),
-              };
-            });
-        });
+            return this.clientShipmentPriceService
+              .calSelections(groupsInput as any, dto.addressId as any)
+              .then((sp) => {
+                const g0 = (sp?.groups || [])[0] as any;
+                return {
+                  ...priceData,
+                  price: Number(g0?.price || 0),
+                  realShipmentPrice: Number(g0?.realShipmentPrice || 0),
+                };
+              });
+          });
 
         let bestSelection = null;
         let earliestDate = null;
@@ -379,7 +395,13 @@ export class LogisticPeriodService {
                 ),
                 { [Op.eq]: 0 },
               ),
-            ] as any,
+              Sequelize.where(Sequelize.fn('getdate'), {
+                [Op.between]: [
+                  Sequelize.col('sendingPeriods.startDate'),
+                  Sequelize.col('sendingPeriods.endDate'),
+                ],
+              }),
+            ],
           },
         ])
         .build(),
