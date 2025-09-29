@@ -46,7 +46,6 @@ export class LogisticPeriodService {
     session: ECUserSession,
     dto: ClientLogisticPeriodDto,
   ) {
-    
     const { userAddress, stocks } = await this.loadUserAddressAndStocks(
       user,
       session,
@@ -63,17 +62,11 @@ export class LogisticPeriodService {
       logisticIds,
     );
 
-    const {
-      currentDate,
-      startOfWindow,
-      endDate,
-      endOfWindow,
-      persianDates,
-    } = await this.getDateWindowAndPersianDates();
+    const { currentDate, startOfWindow, endDate, endOfWindow, persianDates } =
+      await this.getDateWindowAndPersianDates();
 
-    const { groups, typeInfoMap, uniqueTypeIdsMap } = this.computeGroupsMeta(
-      stocks,
-    );
+    const { groups, typeInfoMap, uniqueTypeIdsMap } =
+      this.computeGroupsMeta(stocks);
 
     // Populate sendingOptions for each group
     for (const logisticId in groups) {
@@ -96,12 +89,12 @@ export class LogisticPeriodService {
         );
         const extraInventoryOffset = supportedStocksForType.length
           ? Math.max(
-              ...supportedStocksForType.map(
-                (s) => Number(s.inventory.offsetDay || 0),
+              ...supportedStocksForType.map((s) =>
+                Number(s.inventory.offsetDay || info.offsetDay),
               ),
             )
           : 0;
-        const offsetDay = (info.offsetDay || 0) + extraInventoryOffset;
+        const offsetDay = extraInventoryOffset || info.offsetDay || 0;
         const shipmentWaysOutput = relevantShipmentWays.map((shipmentWay) => {
           const possibleDates = this.buildPossibleDates(
             shipmentWay,
@@ -117,14 +110,18 @@ export class LogisticPeriodService {
             totalPrice: 0,
           }));
           // Prefer calSelections to consider schedule sending type (normal/express) via sendingPeriodId
-          const inferredSendingPeriodId = ((shipmentWay?.sendingPeriods || [])
-            .find((sp: any) => Number(sp.scheduleSendingTypeId) === Number(typeId))?.id) ?? null;
+          const inferredSendingPeriodId =
+            (shipmentWay?.sendingPeriods || []).find(
+              (sp: any) => Number(sp.scheduleSendingTypeId) === Number(typeId),
+            )?.id ?? null;
 
           const groupsInput = [
             {
               logisticId: Number(logisticId) as any,
               shipmentWayId: Number(shipmentWay.id) as any,
-              shipmentWayType: Number(shipmentWay.orderShipmentWay.id) as OrderShipmentwayEnum,
+              shipmentWayType: Number(
+                shipmentWay.orderShipmentWay.id,
+              ) as OrderShipmentwayEnum,
               sendingPeriodId: inferredSendingPeriodId,
               weeklyPeriodId: null,
               weeklyPeriodTimeId: null,
@@ -200,8 +197,15 @@ export class LogisticPeriodService {
   }
 
   // region helpers
-  private async loadUserAddressAndStocks(user: User, session: ECUserSession, addressId: bigint) {
-    const { result: userAddress } = await this.addressService.findById(user, addressId);
+  private async loadUserAddressAndStocks(
+    user: User,
+    session: ECUserSession,
+    addressId: bigint,
+  ) {
+    const { result: userAddress } = await this.addressService.findById(
+      user,
+      addressId,
+    );
 
     const stocks = await this.stockRepository.findAll(
       new QueryOptionsBuilder()
@@ -221,18 +225,32 @@ export class LogisticPeriodService {
           ),
         )
         .include([
-          { model: ECProduct, as: 'product', attributes: ['id', 'title', 'slug', 'entityTypeId', 'weight'] },
+          {
+            model: ECProduct,
+            as: 'product',
+            attributes: ['id', 'title', 'slug', 'entityTypeId', 'weight'],
+          },
           {
             model: ECInventory,
             as: 'inventory',
-            attributes: ['id', 'vendorId', 'scheduleSendingTypeId', 'onlyProvinceId', 'offsetDay'],
+            attributes: [
+              'id',
+              'vendorId',
+              'scheduleSendingTypeId',
+              'onlyProvinceId',
+              'offsetDay',
+            ],
             include: [
               {
                 model: ECScheduleSendingType,
                 as: 'scheduleSendingType',
                 attributes: ['id', 'parentId', 'title', 'icon', 'offsetDay'],
                 include: [
-                  { model: ECScheduleSendingType, as: 'parent', attributes: ['id', 'title', 'icon', 'offsetDay'] },
+                  {
+                    model: ECScheduleSendingType,
+                    as: 'parent',
+                    attributes: ['id', 'title', 'icon', 'offsetDay'],
+                  },
                 ],
               },
               {
@@ -248,13 +266,25 @@ export class LogisticPeriodService {
                       isDefault: true,
                       [Op.and]: [
                         Sequelize.where(
-                          Sequelize.fn('isnull', Sequelize.col('inventory.vendor.vendorLogistic.isDeleted'), 0),
+                          Sequelize.fn(
+                            'isnull',
+                            Sequelize.col(
+                              'inventory.vendor.vendorLogistic.isDeleted',
+                            ),
+                            0,
+                          ),
                           { [Op.eq]: 0 },
                         ),
                       ],
                     },
                     required: true,
-                    include: [{ model: ECLogistic, as: 'logistic', attributes: ['id', 'title'] }],
+                    include: [
+                      {
+                        model: ECLogistic,
+                        as: 'logistic',
+                        attributes: ['id', 'title'],
+                      },
+                    ],
                   },
                 ],
               },
@@ -264,24 +294,41 @@ export class LogisticPeriodService {
         .build(),
     );
 
-    await this.clientValidateAddressService.validateAddress({ address: userAddress, stocks });
+    await this.clientValidateAddressService.validateAddress({
+      address: userAddress,
+      stocks,
+    });
 
     return { userAddress, stocks };
   }
 
-  private async loadShipmentWaysForAddress(userAddress: any, logisticIds: any[]) {
+  private async loadShipmentWaysForAddress(
+    userAddress: any,
+    logisticIds: any[],
+  ) {
     return this.logisticShipmentWayRepository.findAll(
       new QueryOptionsBuilder()
         .filter({
           [Op.and]: [
-            Sequelize.where(Sequelize.fn('isnull', Sequelize.col('ECLogisticShipmentWay.isDeleted'), 0), { [Op.eq]: 0 }),
+            Sequelize.where(
+              Sequelize.fn(
+                'isnull',
+                Sequelize.col('ECLogisticShipmentWay.isDeleted'),
+                0,
+              ),
+              { [Op.eq]: 0 },
+            ),
             { provinceId: userAddress.provinceId },
             { logisticId: { [Op.in]: logisticIds } },
           ],
         })
         .attributes(['id', 'orderShipmentWayId', 'logisticId'])
         .include([
-          { model: ECOrderShipmentWay, as: 'orderShipmentWay', attributes: ['id', 'name', 'icon'] },
+          {
+            model: ECOrderShipmentWay,
+            as: 'orderShipmentWay',
+            attributes: ['id', 'name', 'icon'],
+          },
           {
             model: ECLogisticSendingPeriod,
             as: 'sendingPeriods',
@@ -293,7 +340,11 @@ export class LogisticPeriodService {
                 as: 'weeklyPeriods',
                 where: [
                   Sequelize.where(
-                    Sequelize.fn('isnull', Sequelize.col('sendingPeriods.weeklyPeriods.isDeleted'), 0),
+                    Sequelize.fn(
+                      'isnull',
+                      Sequelize.col('sendingPeriods.weeklyPeriods.isDeleted'),
+                      0,
+                    ),
                     { [Op.eq]: 0 },
                   ),
                 ] as any,
@@ -306,7 +357,9 @@ export class LogisticPeriodService {
                       Sequelize.where(
                         Sequelize.fn(
                           'isnull',
-                          Sequelize.col('sendingPeriods.weeklyPeriods.weeklyPeriodTimes.isDeleted'),
+                          Sequelize.col(
+                            'sendingPeriods.weeklyPeriods.weeklyPeriodTimes.isDeleted',
+                          ),
                           0,
                         ),
                         { [Op.eq]: 0 },
@@ -318,7 +371,14 @@ export class LogisticPeriodService {
               },
             ],
             where: [
-              Sequelize.where(Sequelize.fn('isnull', Sequelize.col('sendingPeriods.isDeleted'), 0), { [Op.eq]: 0 }),
+              Sequelize.where(
+                Sequelize.fn(
+                  'isnull',
+                  Sequelize.col('sendingPeriods.isDeleted'),
+                  0,
+                ),
+                { [Op.eq]: 0 },
+              ),
             ] as any,
           },
         ])
@@ -336,7 +396,12 @@ export class LogisticPeriodService {
     const persianDates = await this.persianDateRepository.findAll(
       new QueryOptionsBuilder()
         .filter({ GregorianDate: { [Op.gte]: currentDate, [Op.lte]: endDate } })
-        .attributes(['GregorianDate', 'YearMonthDay', 'WeekDayName', 'WeekDayNumber'])
+        .attributes([
+          'GregorianDate',
+          'YearMonthDay',
+          'WeekDayName',
+          'WeekDayNumber',
+        ])
         .order({ orderBy: 'GregorianDate', sortOrder: 'ASC' })
         .build(),
     );
@@ -353,9 +418,11 @@ export class LogisticPeriodService {
       const vendorId = stock.inventory.vendorId;
       const vendorName = stock.inventory.vendor.name;
       const originalScheduleTypeId = stock.inventory.scheduleSendingTypeId;
-      const originalScheduleTypeName = stock.inventory.scheduleSendingType.title;
+      const originalScheduleTypeName =
+        stock.inventory.scheduleSendingType.title;
       const originalScheduleTypeIcon = stock.inventory.scheduleSendingType.icon;
-      const originalScheduleTypeOffsetDay = stock.inventory.scheduleSendingType.offsetDay;
+      const originalScheduleTypeOffsetDay =
+        stock.inventory.scheduleSendingType.offsetDay;
       const parentScheduleTypeId = stock.inventory.scheduleSendingType.parentId;
       const parentScheduleTypeName = stock.inventory.scheduleSendingType.parent
         ? stock.inventory.scheduleSendingType.parent.title
@@ -363,7 +430,8 @@ export class LogisticPeriodService {
       const parentScheduleTypeIcon = stock.inventory.scheduleSendingType.parent
         ? stock.inventory.scheduleSendingType.parent.icon
         : null;
-      const parentScheduleTypeOffsetDay = stock.inventory.scheduleSendingType.parent
+      const parentScheduleTypeOffsetDay = stock.inventory.scheduleSendingType
+        .parent
         ? stock.inventory.scheduleSendingType.parent.offsetDay
         : null;
 
@@ -423,16 +491,23 @@ export class LogisticPeriodService {
       const weekNumber = persianDate.WeekDayNumber;
       const times: any[] = [];
       for (const sendingPeriod of relevantPeriods) {
-        if (sendingPeriod.startDate && gregorianDate < sendingPeriod.startDate) continue;
-        if (sendingPeriod.endDate && gregorianDate > sendingPeriod.endDate) continue;
+        if (sendingPeriod.startDate && gregorianDate < sendingPeriod.startDate)
+          continue;
+        if (sendingPeriod.endDate && gregorianDate > sendingPeriod.endDate)
+          continue;
         for (const weeklyPeriod of sendingPeriod.weeklyPeriods) {
           if (weeklyPeriod.weekNumber === weekNumber) {
             for (const time of weeklyPeriod.weeklyPeriodTimes) {
               const fullStartTime = new Date(gregorianDate);
-              const [startHour, startMinute, startSecond] = time.startTime.split(':').map(Number);
+              const [startHour, startMinute, startSecond] = time.startTime
+                .split(':')
+                .map(Number);
               fullStartTime.setHours(startHour, startMinute, startSecond, 0);
-              const threeHoursLater = new Date(currentDate.getTime() + 3 * 60 * 60 * 1000);
-              const isToday = gregorianDate.toDateString() === currentDate.toDateString();
+              const threeHoursLater = new Date(
+                currentDate.getTime() + 3 * 60 * 60 * 1000,
+              );
+              const isToday =
+                gregorianDate.toDateString() === currentDate.toDateString();
               if (isToday && fullStartTime <= threeHoursLater) continue;
               times.push({
                 weeklyPeriodTimeId: time.id,
@@ -458,7 +533,11 @@ export class LogisticPeriodService {
     return possibleDates;
   }
 
-  private async capacityFilterShipmentWays(ways: any[], startOfWindow: Date, endOfWindow: Date) {
+  private async capacityFilterShipmentWays(
+    ways: any[],
+    startOfWindow: Date,
+    endOfWindow: Date,
+  ) {
     const localTimeIdSet = new Set<number>();
     for (const way of ways) {
       for (const pd of way.possibleDates || []) {
@@ -479,7 +558,9 @@ export class LogisticPeriodService {
         AND sendingGregorianDate <= :endDate
       GROUP BY logisticWeeklyPeriodTimeId, CONVERT(varchar(10), sendingGregorianDate, 23)
     `;
-    const raw = await (this.logisticOrderGroupedRepository.sequelize as any).query(sql, {
+    const raw = await (
+      this.logisticOrderGroupedRepository.sequelize as any
+    ).query(sql, {
       type: QueryTypes.SELECT,
       replacements: { startDate: startOfWindow, endDate: endOfWindow },
     });
@@ -492,20 +573,27 @@ export class LogisticPeriodService {
       for (const pd of way.possibleDates) {
         const d = new Date(pd.gregorianDate);
         d.setHours(0, 0, 0, 0);
-        const dateKey = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+        const dateKey = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(
+          2,
+          '0',
+        )}-${String(d.getDate()).padStart(2, '0')}`;
         pd.times = (pd.times || []).filter((t: any) => {
           const used = countMap.get(`${t.weeklyPeriodTimeId}:${dateKey}`) || 0;
           const cap = Number(t.capacity || 0);
           return used < cap;
         });
       }
-      way.possibleDates = way.possibleDates.filter((pd: any) => (pd.times || []).length > 0);
+      way.possibleDates = way.possibleDates.filter(
+        (pd: any) => (pd.times || []).length > 0,
+      );
     }
   }
 
   private pickBestSelectionFromWays(shipmentWaysResolved: any[]) {
     const relevantPeriods = shipmentWaysResolved.flatMap((way) =>
-      (way.possibleDates || []).flatMap((pd: any) => (pd.times || []).map((t: any) => ({ way, pd, t }))),
+      (way.possibleDates || []).flatMap((pd: any) =>
+        (pd.times || []).map((t: any) => ({ way, pd, t })),
+      ),
     );
     if (relevantPeriods.length === 0) return null;
     let bestSelection = null;
@@ -514,7 +602,12 @@ export class LogisticPeriodService {
     relevantPeriods.forEach(({ way, pd, t }) => {
       const thisDate = new Date(pd.gregorianDate);
       const thisStart = t.startTime;
-      if (!earliestDate || thisDate < earliestDate || (thisDate.getTime() === earliestDate.getTime() && thisStart < (earliestStartTime as string))) {
+      if (
+        !earliestDate ||
+        thisDate < earliestDate ||
+        (thisDate.getTime() === earliestDate.getTime() &&
+          thisStart < (earliestStartTime as string))
+      ) {
         earliestDate = thisDate;
         earliestStartTime = thisStart;
         bestSelection = {
