@@ -105,7 +105,7 @@ export class LogisticPeriodService {
             (z) =>
               (z.sendingPeriods.length == 0 &&
                 typeId == ScheduleSendingTypeEnum.normalSending) ||
-              (z.sendingPeriods.length == 0 &&
+              (z.sendingPeriods.length > 0 &&
                 z.sendingPeriods.findIndex(
                   (s) => s.scheduleSendingTypeId == typeId,
                 ) != -1),
@@ -272,7 +272,7 @@ export class LogisticPeriodService {
               {
                 model: ECVendor,
                 as: 'vendor',
-                attributes: ['id', 'name'],
+                attributes: ['id', 'name', 'slug'],
                 include: [
                   {
                     model: ECVendorLogistic,
