@@ -63,6 +63,28 @@ export class ProcessController {
   @UseGuards(JwtGuard, PermissionGuard)
   @UseInterceptors(JsonResponseTransformInterceptor)
   @ApiBearerAuth()
+  @ApiOperation({ description: 'Get process activity graph' })
+  @Get('/:id/graph')
+  @HttpCode(HttpStatus.OK)
+  async graph(
+    @Param('id') id: number,
+    @Query('inbound') inbound?: string,
+    @Query('outbound') outbound?: string,
+    @Query('nodeConditions') nodeConditions?: string,
+    @Query('nodeCommands') nodeCommands?: string,
+  ) {
+    const toBool = (v?: string) => v === '1' || v === 'true' || v === 'on';
+    return this.service.graph(Number(id), {
+      inbound: toBool(inbound),
+      outbound: toBool(outbound),
+      nodeConditions: toBool(nodeConditions),
+      nodeCommands: toBool(nodeCommands),
+    });
+  }
+
+  @UseGuards(JwtGuard, PermissionGuard)
+  @UseInterceptors(JsonResponseTransformInterceptor)
+  @ApiBearerAuth()
   @ApiOperation({ description: 'Create process' })
   //@CheckPermission({ permissionSymbol: 'bpmn.processes.create' })
   @Post('/')
