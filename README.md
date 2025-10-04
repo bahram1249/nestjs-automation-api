@@ -146,5 +146,8 @@ $ npm run test:cov
 Open the api doc url:
 
 ```bash
-http://yourhost:port/api
+http://yourhost:port/api/core
+http://yourhost:port/api/ecommerce
+http://yourhost:port/api/eav
+http://yourhost:port/api/bpmn
 ```
