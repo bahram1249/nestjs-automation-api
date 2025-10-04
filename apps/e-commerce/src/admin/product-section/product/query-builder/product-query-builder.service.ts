@@ -91,7 +91,7 @@ export class ProductQueryBuilderService {
         'description',
         'inventoryDescriptor',
         'scheduleSendingTypeId',
-        'offsetDay'
+        'offsetDay',
       ],
       model: ECInventory,
       as: 'inventories',
@@ -151,7 +151,7 @@ export class ProductQueryBuilderService {
         {
           attributes: ['id', 'title', 'icon'],
           model: ECScheduleSendingType,
-          as: "scheduleSendingType",
+          as: 'scheduleSendingType',
           required: false,
         },
         {
@@ -346,6 +346,17 @@ export class ProductQueryBuilderService {
         ],
         required: false,
       })
+      .filterIf(
+        isNotNull(filter.inventoryStatusId),
+        Sequelize.literal(`EXISTS (
+        SELECT 1
+        FROM ECInventory AS inventory
+        WHERE inventory.productId = ECProduct.id
+          AND inventory.inventoryStatusId = ${filter.inventoryStatusId}
+          AND isnull(inventory.isDeleted, 0) = 0
+          AND inventory.vendorId IN (${vendorIds.join(',')})  
+      )`),
+      )
       .thenInclude(inventoryQueryBuilder.build())
       .limit(filter.limit)
       .offset(filter.offset)
