@@ -33,7 +33,17 @@ export class ReferralTypeService {
   }
 
   async lookup(filter: ListFilter) {
-    let qb = new QueryOptionsBuilder()
+    // Count with filters (no pagination)
+    const qbBase = new QueryOptionsBuilder().filterIf(
+      !!filter.search && filter.search !== '%%',
+      {
+        name: { [Op.like]: filter.search },
+      },
+    );
+    const total = await this.repository.count(qbBase.build());
+
+    // List with attributes and pagination
+    const qbList = new QueryOptionsBuilder()
       .attributes(['id', 'name'])
       .filterIf(!!filter.search && filter.search !== '%%', {
         name: { [Op.like]: filter.search },
@@ -42,7 +52,7 @@ export class ReferralTypeService {
       .offset(filter.offset ?? 0)
       .order({ orderBy: filter.orderBy, sortOrder: filter.sortOrder });
 
-    const result = await this.repository.findAll(qb.build());
-    return { result };
+    const result = await this.repository.findAll(qbList.build());
+    return { result, total };
   }
 }

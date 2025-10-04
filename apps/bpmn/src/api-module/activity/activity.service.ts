@@ -67,7 +67,8 @@ export class ActivityService {
   }
 
   async lookup(filter: GetActivityDto) {
-    let qb = new QueryOptionsBuilder()
+    // Base filters (no pagination) for counting
+    const qbBase = new QueryOptionsBuilder()
       .filter(
         Sequelize.where(
           Sequelize.fn('isnull', Sequelize.col('BPMNActivity.isDeleted'), 0),
@@ -76,11 +77,28 @@ export class ActivityService {
           },
         ),
       )
-      .attributes(['id', 'name', 'processId'])
+      .filterIf(!!filter.search && filter.search !== '%%', {
+        name: { [Op.like]: filter.search },
+      })
+      .filterIf(!!filter.processId, { processId: filter.processId });
+
+    const total = await this.repository.count(qbBase.build());
+
+    // List query with attributes, includes and pagination (explicitly rebuild to avoid relying on clone)
+    const qbList = new QueryOptionsBuilder()
+      .filter(
+        Sequelize.where(
+          Sequelize.fn('isnull', Sequelize.col('BPMNActivity.isDeleted'), 0),
+          {
+            [Op.eq]: 0,
+          },
+        ),
+      )
       .filterIf(!!filter.search && filter.search !== '%%', {
         name: { [Op.like]: filter.search },
       })
       .filterIf(!!filter.processId, { processId: filter.processId })
+      .attributes(['id', 'name', 'processId'])
       .include([
         {
           model: BPMNPROCESS,
@@ -93,8 +111,8 @@ export class ActivityService {
       .offset(filter.offset ?? 0)
       .order({ orderBy: filter.orderBy, sortOrder: filter.sortOrder });
 
-    const result = await this.repository.findAll(qb.build());
-    return { result };
+    const result = await this.repository.findAll(qbList.build());
+    return { result, total };
   }
 
   async findById(id: number) {

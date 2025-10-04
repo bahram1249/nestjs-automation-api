@@ -82,7 +82,17 @@ export class RequestCrudService {
   }
 
   async lookup(filter: GetRequestDto) {
-    let qb = new QueryOptionsBuilder()
+    // Count with base filters (no pagination)
+    const qbBase = new QueryOptionsBuilder()
+      .filterIf(!!filter.userId, { userId: filter.userId })
+      .filterIf(!!filter.processId, { processId: filter.processId })
+      .filterIf(!!filter.organizationId, {
+        organizationId: filter.organizationId,
+      });
+    const total = await this.repository.count(qbBase.build());
+
+    // List with attributes, includes and pagination
+    const qbList = new QueryOptionsBuilder()
       .attributes(['id', 'userId', 'processId', 'organizationId'])
       .filterIf(!!filter.userId, { userId: filter.userId })
       .filterIf(!!filter.processId, { processId: filter.processId })
@@ -113,8 +123,8 @@ export class RequestCrudService {
       .offset(filter.offset ?? 0)
       .order({ orderBy: filter.orderBy, sortOrder: filter.sortOrder });
 
-    const result = await this.repository.findAll(qb.build());
-    return { result };
+    const result = await this.repository.findAll(qbList.build());
+    return { result, total };
   }
 
   async update(

@@ -43,7 +43,23 @@ export class ProcessService {
   }
 
   async lookup(filter: GetProcessDto) {
-    let qb = new QueryOptionsBuilder()
+    // Count with base filters (no pagination)
+    const qbBase = new QueryOptionsBuilder()
+      .filter(
+        Sequelize.where(
+          Sequelize.fn('isnull', Sequelize.col('BPMNPROCESS.isDeleted'), 0),
+          {
+            [Op.eq]: 0,
+          },
+        ),
+      )
+      .filterIf(!!filter.search && filter.search !== '%%', {
+        name: { [Op.like]: filter.search as any },
+      });
+    const total = await this.repository.count(qbBase.build());
+
+    // List with attributes and pagination
+    const qbList = new QueryOptionsBuilder()
       .filter(
         Sequelize.where(
           Sequelize.fn('isnull', Sequelize.col('BPMNPROCESS.isDeleted'), 0),
@@ -60,8 +76,8 @@ export class ProcessService {
       .offset(filter.offset ?? 0)
       .order({ orderBy: filter.orderBy, sortOrder: filter.sortOrder });
 
-    const result = await this.repository.findAll(qb.build());
-    return { result };
+    const result = await this.repository.findAll(qbList.build());
+    return { result, total };
   }
 
   async findById(id: number) {
