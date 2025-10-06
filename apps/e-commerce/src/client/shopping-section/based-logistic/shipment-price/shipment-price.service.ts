@@ -1,5 +1,8 @@
 import { Injectable } from '@nestjs/common';
-import { OrderShipmentwayEnum, ScheduleSendingTypeEnum } from '@rahino/ecommerce/shared/enum';
+import {
+  OrderShipmentwayEnum,
+  ScheduleSendingTypeEnum,
+} from '@rahino/ecommerce/shared/enum';
 import { DeliveryShipmentPriceService } from './delivery-shipment-price.service';
 import { PostShipmentPriceService } from './post-shipment-price.service';
 import {
@@ -47,12 +50,16 @@ export class ClientShipmentPriceService {
 
     // Derive a reasonable typeName via localization (keeps previous API contract)
     let typeNameKey: any = 'ecommerce.shipment.unknown';
-    if (forcedType === OrderShipmentwayEnum.delivery) typeNameKey = 'ecommerce.shipment.delivery';
-    else if (forcedType === OrderShipmentwayEnum.post) typeNameKey = 'ecommerce.shipment.post';
+    if (forcedType === OrderShipmentwayEnum.delivery)
+      typeNameKey = 'ecommerce.shipment.delivery';
+    else if (forcedType === OrderShipmentwayEnum.post)
+      typeNameKey = 'ecommerce.shipment.post';
 
     return {
       type: forcedType,
-      typeName: this.localizationService.translate(typeNameKey) as unknown as string,
+      typeName: this.localizationService.translate(
+        typeNameKey,
+      ) as unknown as string,
       price: Number(r.totalPrice || 0),
       realShipmentPrice: Number(r.totalRealShipmentPrice || 0),
     };
@@ -70,13 +77,16 @@ export class ClientShipmentPriceService {
       let realShipmentPrice = 0;
 
       // Determine schedule sending type (default to normal if not provided or not found)
-      let scheduleType: ScheduleSendingTypeEnum = ScheduleSendingTypeEnum.normalSending;
+      let scheduleType: ScheduleSendingTypeEnum =
+        ScheduleSendingTypeEnum.normalSending;
       if (g.sendingPeriodId) {
         const period = await this.sendingPeriodRepo.findOne({
-          where: { id: g.sendingPeriodId as any },
+          where: { id: g.sendingPeriodId },
         });
         if (period?.scheduleSendingTypeId) {
-          scheduleType = Number(period.scheduleSendingTypeId) as ScheduleSendingTypeEnum;
+          scheduleType = Number(
+            period.scheduleSendingTypeId,
+          ) as ScheduleSendingTypeEnum;
         }
       }
 
@@ -85,9 +95,9 @@ export class ClientShipmentPriceService {
           // For now both normal/express use the same delivery service; branching retained for future customization
           switch (scheduleType) {
             case ScheduleSendingTypeEnum.expressSending:
-              const r = await this.expressDeliveryService.cal(g.stocks, addressId);
-              price = Number(r.price || 0);
-              realShipmentPrice = Number(r.realShipmentPrice || 0);
+              //const r = await this.expressDeliveryService.cal(g.stocks, addressId);
+              price = 0; //Number(r.price || 0);
+              realShipmentPrice = 0; //Number(r.realShipmentPrice || 0);
               break;
             case ScheduleSendingTypeEnum.normalSending:
             default: {
@@ -133,7 +143,10 @@ export class ClientShipmentPriceService {
     }
 
     const totalPrice = results.reduce((s, r) => s + Number(r.price || 0), 0);
-    const totalRealShipmentPrice = results.reduce((s, r) => s + Number(r.realShipmentPrice || 0), 0);
+    const totalRealShipmentPrice = results.reduce(
+      (s, r) => s + Number(r.realShipmentPrice || 0),
+      0,
+    );
 
     return {
       groups: results,
