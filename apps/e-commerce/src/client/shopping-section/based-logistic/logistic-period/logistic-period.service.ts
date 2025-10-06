@@ -87,17 +87,6 @@ export class LogisticPeriodService {
           (sw) => Number(sw.logisticId) == Number(logisticId),
         );
 
-        if (
-          relevantShipmentWays.every(
-            (shipment) =>
-              !shipment.sendingPeriods.some(
-                (period) => period.scheduleSendingTypeId === typeId,
-              ),
-          )
-        ) {
-          // Code here executes when NO shipment has any sendingPeriods with the given typeId
-          continue;
-        }
         // Compute extra inventory-level offset for stocks that support this type (either direct or via parent)
         const supportedStocksForType = groupStocks.filter(
           (stock) =>
@@ -205,6 +194,16 @@ export class LogisticPeriodService {
         const supportedStockIds = supportedStocks.map((stock) =>
           Number(stock.id),
         );
+
+        const hasTypeId = relevantShipmentWays.some((shipment) =>
+          shipment.sendingPeriods.some(
+            (period) => period.scheduleSendingTypeId === typeId,
+          ),
+        );
+
+        if (!hasTypeId) {
+          continue;
+        }
 
         group.sendingOptions.push({
           typeId,
