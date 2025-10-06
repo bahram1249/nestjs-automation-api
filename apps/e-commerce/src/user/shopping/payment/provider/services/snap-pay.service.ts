@@ -230,7 +230,6 @@ export class SnapPayService implements PayInterface {
         },
       );
       if (eligeble.data.response.eligible != true) {
-        console.log(eligeble.data.response);
         return {
           eligibleCheck: false,
           titleMessage: eligeble.data.response.title_message,

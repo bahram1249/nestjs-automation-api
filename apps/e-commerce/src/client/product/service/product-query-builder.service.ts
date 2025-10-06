@@ -173,8 +173,7 @@ export class ProductQueryBuilderService {
         attributes: priceRangeQuery ? [] : ['id', 'name', 'slug'],
         model: EAVEntityType,
         as: 'entityType',
-      })
-      ;
+      });
 
     let inventoryIncludeBuilder = new IncludeOptionsBuilder({
       model: ECInventory,
@@ -202,7 +201,7 @@ export class ProductQueryBuilderService {
               'discountEndDate',
               'inventoryDescriptor',
               'offsetDay',
-              'scheduleSendingTypeId'
+              'scheduleSendingTypeId',
             ],
       )
       .include([
@@ -246,9 +245,9 @@ export class ProductQueryBuilderService {
         required: false,
       })
       .thenInclude({
-        attributes: priceRangeQuery? []: ['id', 'title', 'icon'],
+        attributes: priceRangeQuery ? [] : ['id', 'title', 'icon'],
         model: ECScheduleSendingType,
-        as: "scheduleSendingType",
+        as: 'scheduleSendingType',
         required: false,
       })
       .thenInclude({
@@ -357,7 +356,9 @@ export class ProductQueryBuilderService {
           )`.replaceAll(/\s\s+/g, ' '),
         );
         queryBuilder = queryBuilder.filter(existsRequestedInventory);
-        queryResultBuilder = queryResultBuilder.filter(existsRequestedInventory);
+        queryResultBuilder = queryResultBuilder.filter(
+          existsRequestedInventory,
+        );
       }
     }
 
@@ -522,9 +523,7 @@ export class ProductQueryBuilderService {
       inventoryIncludeBuilder.build(),
     );
 
-    console.log(includeAttributes)
     if (includeAttributes) {
-      console.log(includeAttributes)
       let attributeIncludeBuilder = new IncludeOptionsBuilder({
         model: EAVEntityAttributeValue,
         as: 'productAttributeValues',
@@ -583,24 +582,25 @@ export class ProductQueryBuilderService {
       }
     }
 
-    queryResultBuilder = queryResultBuilder.thenInclude({
-      attributes: priceRangeQuery ? [] : ['id', 'fileName'],
-      through: {
-        attributes: [],
-      },
-      model: Attachment,
-      as: 'attachments',
-      required: false,
-    })
-    .thenInclude({
-      attributes: priceRangeQuery ? [] : ['id', 'fileName'],
-      through: {
-        attributes: [],
-      },
-      model: Attachment,
-      as: 'videoAttachments',
-      required: false,
-    });
+    queryResultBuilder = queryResultBuilder
+      .thenInclude({
+        attributes: priceRangeQuery ? [] : ['id', 'fileName'],
+        through: {
+          attributes: [],
+        },
+        model: Attachment,
+        as: 'attachments',
+        required: false,
+      })
+      .thenInclude({
+        attributes: priceRangeQuery ? [] : ['id', 'fileName'],
+        through: {
+          attributes: [],
+        },
+        model: Attachment,
+        as: 'videoAttachments',
+        required: false,
+      });
 
     const resultQueryAttributes = priceRangeQuery
       ? []

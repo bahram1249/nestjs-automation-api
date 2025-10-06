@@ -377,7 +377,7 @@ export class LogisticPeriodService {
                     ),
                     { [Op.eq]: 0 },
                   ),
-                ] as any,
+                ],
                 attributes: ['id', 'weekNumber'],
                 include: [
                   {
@@ -394,10 +394,12 @@ export class LogisticPeriodService {
                         ),
                         { [Op.eq]: 0 },
                       ),
-                    ] as any,
+                    ],
+                    required: false,
                     attributes: ['id', 'startTime', 'endTime', 'capacity'],
                   },
                 ],
+                required: false,
               },
             ],
             where: [
