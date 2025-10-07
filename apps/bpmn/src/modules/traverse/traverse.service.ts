@@ -7,6 +7,7 @@ import {
   BPMNNodeCommandType,
   BPMNOrganizationUser,
   BPMNPROCESS,
+  BPMNRequestHistory,
   BPMNRequestState,
 } from '@rahino/localdatabase/models';
 import { UserRole } from '@rahino/database';
@@ -34,6 +35,8 @@ import { RequestStateService } from '../request-state';
 import { ActivityTypeEnum } from '../activity-type';
 import { v4 as uuidv4 } from 'uuid';
 import { HistoryService } from '../history';
+import { ReverseDto } from './dto/reverse.dto';
+import { NodeService } from '../node';
 
 @Injectable()
 export class TraverseService {
@@ -46,10 +49,13 @@ export class TraverseService {
     private readonly requestStateRepository: typeof BPMNRequestState,
     @InjectModel(BPMNOrganizationUser)
     private readonly organizationUserRepository: typeof BPMNOrganizationUser,
+    @InjectModel(BPMNRequestHistory)
+    private readonly requestHistoryRepository: typeof BPMNRequestHistory,
     private readonly requestStateService: RequestStateService,
     private readonly conditionService: ConditionService,
     private readonly actionService: ActionService,
     private readonly historyService: HistoryService,
+    private readonly nodeService: NodeService,
     private readonly i18n: I18nService<I18nTranslations>,
   ) {}
 
@@ -631,5 +637,75 @@ export class TraverseService {
       userExecuterId,
       executeBundle,
     });
+  }
+
+  public async reverse(dto: ReverseDto) {
+    // remove current state
+    await this.requestStateRepository.destroy({
+      where: {
+        requestId: dto.request.id,
+      },
+      transaction: dto.transaction,
+    });
+
+    if (dto.executeBundle == null) {
+      dto.executeBundle = uuidv4();
+    }
+
+    const findHistoryFromWhichActivity =
+      await this.requestHistoryRepository.findOne(
+        new QueryOptionsBuilder()
+          .filter({ executeBundle: dto.historyBundle })
+          .filter({ requestId: dto.request.id })
+          .order({ orderBy: 'id', sortOrder: 'asc' })
+          .transaction(dto.transaction)
+          .build(),
+      );
+
+    // init current state
+
+    const newRequestState = await this.requestStateRepository.create(
+      {
+        requestId: dto.request.id,
+        activityId: findHistoryFromWhichActivity.fromActivityId,
+        userId: findHistoryFromWhichActivity.fromUserId,
+        roleId: findHistoryFromWhichActivity.fromRoleId,
+        organizationId: findHistoryFromWhichActivity.fromOrganizationId,
+      },
+      { transaction: dto.transaction },
+    );
+
+    const nodeExecutedFromHistories =
+      await this.requestHistoryRepository.findAll(
+        new QueryOptionsBuilder()
+          .filter({ executeBundle: dto.historyBundle })
+          .filter({ requestId: dto.request.id })
+          .filter({
+            fromActivityId: findHistoryFromWhichActivity.fromActivityId,
+          })
+          .order({ orderBy: 'id', sortOrder: 'asc' })
+          .transaction(dto.transaction)
+          .build(),
+      );
+
+    for (const nodeExecuted of nodeExecutedFromHistories) {
+      const node = await this.nodeService.filterNode({
+        id: nodeExecuted.nodeId,
+        nodeCommandId: nodeExecuted.nodeCommandId,
+      });
+
+      await this.traverse({
+        node: node,
+        nodeCommand: node.nodeCommands[0],
+        request: dto.request,
+        executeBundle: dto.executeBundle,
+        userExecuterId: dto.userExecuterId,
+        users: nodeExecuted.toUserId
+          ? [{ userId: nodeExecuted.toUserId }]
+          : null,
+        requestState: newRequestState,
+        transaction: dto.transaction,
+      });
+    }
   }
 }
