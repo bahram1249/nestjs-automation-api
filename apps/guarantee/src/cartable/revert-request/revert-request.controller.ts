@@ -13,6 +13,7 @@ import { GetUser, JwtGuard } from '@rahino/auth';
 import { RevertRequestDto } from './dto';
 import { User } from '@rahino/database';
 import { RevertRequestService } from './revert-request.service';
+import { RevertRequestByHistoryDto } from './dto/revert-request-by-history.dto';
 
 @ApiBearerAuth()
 @UseGuards(JwtGuard)
@@ -25,10 +26,20 @@ import { RevertRequestService } from './revert-request.service';
 export class RevertRequestController {
   constructor(private service: RevertRequestService) {}
 
+  @ApiOperation({ description: 'revert request by history' })
+  @Post('/')
+  @HttpCode(HttpStatus.OK)
+  async revertByHistory(
+    @GetUser() user: User,
+    @Body() dto: RevertRequestByHistoryDto,
+  ) {
+    return await this.service.revertByHistory(user, dto);
+  }
+
   @ApiOperation({ description: 'revert request' })
   @Post('/')
   @HttpCode(HttpStatus.OK)
-  async traverse(@GetUser() user: User, @Body() dto: RevertRequestDto) {
-    return await this.service.traverse(user, dto);
+  async revertToInit(@GetUser() user: User, @Body() dto: RevertRequestDto) {
+    return await this.service.revertToInit(user, dto);
   }
 }

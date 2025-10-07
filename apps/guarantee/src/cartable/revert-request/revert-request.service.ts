@@ -1,4 +1,8 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { User } from '@rahino/database';
 import { RevertRequestDto } from './dto';
 import { InjectConnection, InjectModel } from '@nestjs/sequelize';
@@ -9,6 +13,7 @@ import { LocalizationService } from 'apps/main/src/common/localization';
 import { BPMNRequest } from '@rahino/localdatabase/models';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import { BPMNRequestService } from '@rahino/bpmn/modules/request/request.service';
+import { RevertRequestByHistoryDto } from './dto/revert-request-by-history.dto';
 
 @Injectable()
 export class RevertRequestService {
@@ -23,7 +28,7 @@ export class RevertRequestService {
     private readonly requestService: BPMNRequestService,
   ) {}
 
-  async traverse(user: User, dto: RevertRequestDto) {
+  async revertToInit(user: User, dto: RevertRequestDto) {
     const request = await this.requestRepository.findOne(
       new QueryOptionsBuilder().filter({ id: dto.requestId }).build(),
     );
@@ -37,6 +42,41 @@ export class RevertRequestService {
         request,
         transaction,
       ); // apply changes
+      await transaction.commit();
+    } catch (error) {
+      await transaction.rollback();
+      throw new BadRequestException(error.message);
+    }
+    return {
+      result: {
+        message: this.localizationService.translate('core.success'),
+      },
+    };
+  }
+
+  async revertByHistory(user: User, dto: RevertRequestByHistoryDto) {
+    const request = await this.requestRepository.findOne(
+      new QueryOptionsBuilder().filter({ id: dto.requestId }).build(),
+    );
+
+    if (!request) {
+      throw new NotFoundException(
+        this.localizationService.translate(
+          'guarantee.guarantee_request_item_not_founded',
+        ),
+      );
+    }
+
+    const transaction = await this.sequelize.transaction({
+      isolationLevel: Transaction.ISOLATION_LEVELS.READ_COMMITTED,
+    });
+    try {
+      await this.traverseService.reverse({
+        historyBundle: dto.executeBundle,
+        request: request,
+        transaction: transaction,
+        userExecuterId: user.id,
+      });
       await transaction.commit();
     } catch (error) {
       await transaction.rollback();
