@@ -884,6 +884,7 @@ export class ProductService {
               new QueryOptionsBuilder()
                 .attributes(['id', 'title', 'slug'])
                 .filter({ id: productId })
+                .transaction(transaction)
                 .build(),
             );
             if (product) {
@@ -903,6 +904,7 @@ export class ProductService {
                       ),
                     )
                     .filter({ id: { [Op.ne]: productId } })
+                    .transaction(transaction)
                     .build(),
                 );
                 if (duplicate) {
@@ -920,6 +922,7 @@ export class ProductService {
                     .filter({ entityId: product.id })
                     .filter({ slugVersionTypeId: SlugVersionTypeEnum.Product })
                     .filter({ slug: (product as any).slug })
+                    .transaction(transaction)
                     .build(),
                 );
                 if (!findSlug) {
@@ -1004,7 +1007,7 @@ export class ProductService {
         // UPDATE
         if (inventoryId != null && (increaseQty !== 0 || decreaseQty !== 0 || firstPrice != null)) {
           const inv = await this.inventoryRepository.findOne(
-            new QueryOptionsBuilder().filter({ id: inventoryId }).build(),
+            new QueryOptionsBuilder().filter({ id: inventoryId }).transaction(transaction).build(),
           );
           if (!inv) continue;
           // compute new qty by applying increase/decrease deltas
@@ -1035,6 +1038,7 @@ export class ProductService {
                     { [Op.eq]: 0 },
                   ),
                 )
+                .transaction(transaction)
                 .build(),
             );
             const changed = !current || String(current.price) !== String(firstPrice);
