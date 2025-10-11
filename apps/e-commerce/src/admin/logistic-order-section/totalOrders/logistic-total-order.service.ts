@@ -25,13 +25,12 @@ import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builde
 import { GetTotalOrderFilterDto } from 'apps/e-commerce/src/admin/order-section/totalOrders/dto/get-total-order.dto';
 import {
   ChangeOrderStatusDto,
-  ChangeShipmentWayDto,
   EditReceiptPostDto,
 } from 'apps/e-commerce/src/admin/order-section/totalOrders/dto';
 import { LocalizationService } from 'apps/main/src/common/localization/localization.service';
 import { LogisticFinalizedPaymentService } from '../../../client/shopping-section/based-logistic/payment/util/finalized-payment/logistic-finalized-payment.service';
 import { LogisticSnapPayService } from '../../../client/shopping-section/based-logistic/payment/provider/services/logistic-snap-pay.service';
-
+import { ChangeShipmentWayDto } from './dto';
 @Injectable()
 export class LogisticTotalOrderService {
   constructor(

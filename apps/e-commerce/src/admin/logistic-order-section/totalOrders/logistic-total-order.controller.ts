@@ -23,8 +23,9 @@ import { User } from '@rahino/database';
 import { PermissionGuard } from '@rahino/permission-checker/guard';
 import { CheckPermission } from '@rahino/permission-checker/decorator';
 import { GetTotalOrderFilterDto } from 'apps/e-commerce/src/admin/order-section/totalOrders/dto/get-total-order.dto';
-import { ChangeOrderStatusDto, ChangeShipmentWayDto, EditReceiptPostDto } from 'apps/e-commerce/src/admin/order-section/totalOrders/dto';
+import { ChangeOrderStatusDto, EditReceiptPostDto } from 'apps/e-commerce/src/admin/order-section/totalOrders/dto';
 import { LogisticTotalOrderService } from './logistic-total-order.service';
+import { ChangeShipmentWayDto } from './dto';
 
 @ApiTags('Logistic-Total-Orders')
 @UseGuards(JwtGuard, PermissionGuard)
