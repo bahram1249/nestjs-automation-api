@@ -320,6 +320,10 @@ export class LogisticPaymentService {
           stockId: s.stockId,
           qty: s.qty,
           totalPrice: s.totalPrice,
+          // Ensure weight is provided for shipment pricing (e.g., post service)
+          weight: s.weight,
+          // Preserve free-shipment flags for discount rules in pricing services
+          freeShipment: s.freeShipment,
         } as any;
       });
       return { ...g, stocks } as any;
