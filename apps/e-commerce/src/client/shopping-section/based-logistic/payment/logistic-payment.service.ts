@@ -221,6 +221,7 @@ export class LogisticPaymentService {
       return { redirectUrl: pay.redirectUrl };
     } catch (e) {
       await transaction.rollback();
+      console.log(e)
       throw new InternalServerErrorException(
         this.l10n.translate('ecommerce.payment_request_failed', {
           message: e.message,
