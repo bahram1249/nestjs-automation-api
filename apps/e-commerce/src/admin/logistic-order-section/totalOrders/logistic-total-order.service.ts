@@ -366,14 +366,7 @@ export class LogisticTotalOrderService {
 
   // In logistic flow, id is the groupId
   async changeShipmentWay(groupId: bigint, dto: ChangeShipmentWayDto) {
-    const shipmentWay = await this.logisticShipmentWayRepository.findOne(
-      new QueryOptionsBuilder().filter({ id: dto.orderShipmentWayId }).build(),
-    );
-    if (!shipmentWay) {
-      throw new ForbiddenException(
-        this.localizationService.translate('ecommerce.not_permitted'),
-      );
-    }
+    
 
     let group = await this.groupedRepository.findOne(
       new QueryOptionsBuilder()
@@ -398,9 +391,8 @@ export class LogisticTotalOrderService {
       );
     }
 
-    group.logisticShipmentWayId = dto.orderShipmentWayId as any;
     // also update cached order-shipment-way (delivery/post/etc.) to simplify downstream filters
-    group.orderShipmentWayId = (shipmentWay as any).orderShipmentWayId as any;
+    group.orderShipmentWayId = dto.orderShipmentWayId;
     group = await group.save();
     return { result: group };
   }
