@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { User } from '@rahino/database';
-import { ECPayment, ECPaymentGatewayCommission, ECWallet } from '@rahino/localdatabase/models';
+import { ECLogisticOrderGrouped, ECPayment, ECPaymentGatewayCommission, ECWallet } from '@rahino/localdatabase/models';
 import { ECLogisticOrder } from '@rahino/localdatabase/models';
 import { LogisticEcommerceSmsService } from '../../../sms/logistic-ecommerce-sms.service';
 import {
@@ -23,6 +23,8 @@ export class LogisticFinalizedPaymentService {
     private readonly paymentRepository: typeof ECPayment,
     @InjectModel(ECLogisticOrder)
     private readonly orderRepository: typeof ECLogisticOrder,
+    @InjectModel(ECLogisticOrderGrouped)
+    private readonly orderGroupedRepository: typeof ECLogisticOrderGrouped,
     @InjectModel(User)
     private readonly userRepository: typeof User,
     @InjectModel(ECWallet)
@@ -172,6 +174,15 @@ export class LogisticFinalizedPaymentService {
       },
       { where: { id: payment.logisticOrderId }, transaction },
     );
+
+    await this.orderGroupedRepository.update({
+      orderStatusId: OrderStatusEnum.Paid
+    }, {
+      where: {
+        logisticOrderId: payment.logisticOrderId
+      }, 
+      transaction: transaction
+    })
   }
 
   async sendSuccessfulPaymentSms(payment: ECPayment) {

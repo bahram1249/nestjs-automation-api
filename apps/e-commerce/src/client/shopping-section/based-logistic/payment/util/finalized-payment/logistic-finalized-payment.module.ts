@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { SequelizeModule } from '@nestjs/sequelize';
-import { ECPayment, ECPaymentGatewayCommission, ECWallet } from '@rahino/localdatabase/models';
+import { ECLogisticOrderGrouped, ECPayment, ECPaymentGatewayCommission, ECWallet } from '@rahino/localdatabase/models';
 import { ECLogisticOrder } from '@rahino/localdatabase/models';
 import { LogisticEcommerceSmsModule } from '../../../sms/logistic-ecommerce-sms.module';
 import { User } from '@rahino/database';
@@ -12,6 +12,7 @@ import { LocalizationModule } from 'apps/main/src/common/localization';
     SequelizeModule.forFeature([
       ECPayment,
       ECLogisticOrder,
+      ECLogisticOrderGrouped,
       User,
       ECPaymentGatewayCommission,
       ECWallet,

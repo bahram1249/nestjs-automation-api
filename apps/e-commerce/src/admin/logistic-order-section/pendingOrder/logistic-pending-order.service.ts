@@ -68,6 +68,7 @@ export class LogisticPendingOrderService {
             AND ISNULL(LG.isDeleted,0)=0
             AND ISNULL(LGD.isDeleted,0)=0
             AND LGD.vendorId = ${filter.vendorId}
+            AND LG.orderStatusId = ${OrderStatusEnum.Paid}
             AND LGD.orderDetailStatusId = ${OrderDetailStatusEnum.WaitingForProcess})`,
       ),
     );
