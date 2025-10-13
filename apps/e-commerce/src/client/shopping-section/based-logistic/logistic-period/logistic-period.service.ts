@@ -68,20 +68,23 @@ export class LogisticPeriodService {
     const { currentDate, startOfWindow, endDate, endOfWindow, persianDates } =
       await this.getDateWindowAndPersianDates();
 
-    const { groups, typeInfoMap, uniqueTypeIdsMap } =
-      this.computeGroupsMeta(stocks);
+    const {
+      groups,
+      typeInfoMap,
+      uniqueTypeIdsMap: uniqueScheduleSendingTypeIdsMap,
+    } = this.computeGroupsMeta(stocks);
 
     // Populate sendingOptions for each group
     for (const logisticId in groups) {
       const group = groups[logisticId];
       const groupStocks = group.stocks;
-      const uniqueTypeIds = Array.from(
-        uniqueTypeIdsMap[Number(logisticId)] as Set<number>,
+      const uniqueScheduleSendingTypeIds = Array.from(
+        uniqueScheduleSendingTypeIdsMap[Number(logisticId)] as Set<number>,
       ) as number[];
       const typeInfo = typeInfoMap[Number(logisticId)];
 
-      for (const typeId of uniqueTypeIds) {
-        const info = typeInfo[typeId as number];
+      for (const scheduleSendingTypeId of uniqueScheduleSendingTypeIds) {
+        const info = typeInfo[scheduleSendingTypeId as number];
 
         const relevantShipmentWays = shipmentWays.filter(
           (sw) => Number(sw.logisticId) == Number(logisticId),
@@ -90,8 +93,9 @@ export class LogisticPeriodService {
         // Compute extra inventory-level offset for stocks that support this type (either direct or via parent)
         const supportedStocksForType = groupStocks.filter(
           (stock) =>
-            stock.inventory.scheduleSendingTypeId === typeId ||
-            stock.inventory.scheduleSendingType.parentId === typeId,
+            stock.inventory.scheduleSendingTypeId === scheduleSendingTypeId ||
+            stock.inventory.scheduleSendingType.parentId ===
+              scheduleSendingTypeId,
         );
         const extraInventoryOffset = supportedStocksForType.length
           ? Math.max(
@@ -105,16 +109,17 @@ export class LogisticPeriodService {
           .filter(
             (z) =>
               (z.sendingPeriods.length == 0 &&
-                typeId == ScheduleSendingTypeEnum.normalSending) ||
+                scheduleSendingTypeId ==
+                  ScheduleSendingTypeEnum.normalSending) ||
               (z.sendingPeriods.length > 0 &&
                 z.sendingPeriods.findIndex(
-                  (s) => s.scheduleSendingTypeId == typeId,
+                  (s) => s.scheduleSendingTypeId == scheduleSendingTypeId,
                 ) != -1),
           )
           .map((shipmentWay) => {
             const possibleDates = this.buildPossibleDates(
               shipmentWay,
-              typeId,
+              scheduleSendingTypeId,
               persianDates,
               startOfWindow,
               offsetDay,
@@ -129,7 +134,8 @@ export class LogisticPeriodService {
             const inferredSendingPeriodId =
               (shipmentWay?.sendingPeriods || []).find(
                 (sp: any) =>
-                  Number(sp.scheduleSendingTypeId) === Number(typeId),
+                  Number(sp.scheduleSendingTypeId) ===
+                  Number(scheduleSendingTypeId),
               )?.id ?? null;
 
             const groupsInput = [
@@ -187,8 +193,9 @@ export class LogisticPeriodService {
 
         const supportedStocks = groupStocks.filter(
           (stock) =>
-            stock.inventory.scheduleSendingTypeId === typeId ||
-            stock.inventory.scheduleSendingType.parentId === typeId,
+            stock.inventory.scheduleSendingTypeId === scheduleSendingTypeId ||
+            stock.inventory.scheduleSendingType.parentId ===
+              scheduleSendingTypeId,
         );
 
         const supportedStockIds = supportedStocks.map((stock) =>
@@ -197,7 +204,7 @@ export class LogisticPeriodService {
 
         const hasTypeId = relevantShipmentWays.some((shipment) =>
           shipment.sendingPeriods.some(
-            (period) => period.scheduleSendingTypeId === typeId,
+            (period) => period.scheduleSendingTypeId === scheduleSendingTypeId,
           ),
         );
 
@@ -206,9 +213,9 @@ export class LogisticPeriodService {
         }
 
         group.sendingOptions.push({
-          typeId,
+          typeId: scheduleSendingTypeId,
           typeName:
-            typeId == ScheduleSendingTypeEnum.expressSending
+            scheduleSendingTypeId == ScheduleSendingTypeEnum.expressSending
               ? 'ارسال اکسپرس(پس کرایه)'
               : info.name,
           typeIcon: info.icon,
