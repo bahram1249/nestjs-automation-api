@@ -433,7 +433,9 @@ export class LogisticPeriodService {
     endOfWindow.setHours(23, 59, 59, 999);
     const persianDates = await this.persianDateRepository.findAll(
       new QueryOptionsBuilder()
-        .filter({ GregorianDate: { [Op.gte]: currentDate, [Op.lte]: endDate } })
+        .filter({
+          GregorianDate: { [Op.gte]: startOfWindow, [Op.lte]: endOfWindow },
+        })
         .attributes([
           'GregorianDate',
           'YearMonthDay',
