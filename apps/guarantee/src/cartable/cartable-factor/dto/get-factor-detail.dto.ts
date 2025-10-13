@@ -25,6 +25,16 @@ export class GetFactorDetailDto {
   })
   factorId?: bigint;
 
+  @IsInt()
+  @Type(() => Number)
+  @IsOptional()
+  @ApiProperty({
+    required: false,
+    type: IsNumber,
+    description: 'requestId',
+  })
+  requestId?: bigint;
+
   @IsString()
   @IsOptional()
   @ApiProperty({

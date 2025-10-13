@@ -138,6 +138,19 @@ export class FactorService {
             ' ',
           ),
         ),
+      )
+      .filterIf(
+        filter.requestId != null,
+        Sequelize.literal(
+          `EXISTS (
+            SELECT 1
+            FROM GSRequests AS Req
+            WHERE Req.id = GSFactor.requestId
+              AND Req.id = ${filter.requestId}) `.replaceAll(
+            /\s\s+/g,
+            ' ',
+          ),
+        ),
       );
     const count = await this.repository.count(query.build());
 
