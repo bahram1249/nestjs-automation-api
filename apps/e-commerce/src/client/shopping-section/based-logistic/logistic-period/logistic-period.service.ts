@@ -116,7 +116,7 @@ export class LogisticPeriodService {
               shipmentWay,
               typeId,
               persianDates,
-              currentDate,
+              startOfWindow,
               offsetDay,
             );
             const shipmentStocks = groupStocks.map((s) => ({
@@ -521,8 +521,12 @@ export class LogisticPeriodService {
     const relevantPeriods = shipmentWay.sendingPeriods.filter(
       (sp: any) => sp.scheduleSendingTypeId === typeId,
     );
+
+    const calculatedOffset =
+      typeId == ScheduleSendingTypeEnum.expressSending ? 0 : offsetDay;
+
     const offsetStartDate = new Date(
-      currentDate.getTime() + offsetDay * 24 * 60 * 60 * 1000,
+      currentDate.getTime() + calculatedOffset * 24 * 60 * 60 * 1000,
     );
     const possibleDates: any[] = [];
     for (const persianDate of persianDates) {
