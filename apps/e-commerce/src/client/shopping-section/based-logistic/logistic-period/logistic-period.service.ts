@@ -25,6 +25,7 @@ import { ClientValidateAddressService } from '../validate-address/client-validat
 import { ClientShipmentPriceService } from '../shipment-price/shipment-price.service';
 import {
   OrderShipmentwayEnum,
+  OrderStatusEnum,
   ScheduleSendingTypeEnum,
 } from '@rahino/ecommerce/shared/enum';
 
@@ -604,7 +605,8 @@ export class LogisticPeriodService {
              CONVERT(varchar(10), sendingGregorianDate, 23) AS dateKey,
              COUNT(1) AS cnt
       FROM ECLogisticOrderGroupeds
-      WHERE logisticWeeklyPeriodTimeId IN (${timeIdList})
+      WHERE orderStatusId != ${OrderStatusEnum.WaitingForPayment}
+        AND logisticWeeklyPeriodTimeId IN (${timeIdList})
         AND sendingGregorianDate >= :startDate
         AND sendingGregorianDate <= :endDate
       GROUP BY logisticWeeklyPeriodTimeId, CONVERT(varchar(10), sendingGregorianDate, 23)
