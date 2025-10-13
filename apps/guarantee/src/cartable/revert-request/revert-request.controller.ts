@@ -27,7 +27,7 @@ export class RevertRequestController {
   constructor(private service: RevertRequestService) {}
 
   @ApiOperation({ description: 'revert request by history' })
-  @Post('/')
+  @Post('/byHistory')
   @HttpCode(HttpStatus.OK)
   async revertByHistory(
     @GetUser() user: User,
