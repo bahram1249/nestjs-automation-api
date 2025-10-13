@@ -9,6 +9,7 @@ import { LocalizationService } from 'apps/main/src/common/localization';
 import { OrganizationStuffService } from '@rahino/guarantee/shared/organization-stuff';
 import { RoleService } from '@rahino/core/user/role/role.service';
 import { GuaranteeStaticRoleEnum } from '@rahino/guarantee/shared/static-role/enum';
+import { Sequelize } from 'sequelize';
 
 @Injectable()
 export class FactorService {
@@ -51,6 +52,93 @@ export class FactorService {
       .filterFactorId(filter.factorId)
       .dateGreaterThan(filter.greaterThan)
       .dateLessThan(filter.lessThan);
+      
+    // Apply additional filters using filterIf pattern with EXISTS syntax
+    query = query
+      .filterIf(
+        filter.nationalCode != null,
+        Sequelize.literal(
+          `EXISTS (
+            SELECT 1
+            FROM GSRequests AS Req
+            JOIN Users U ON Req.userId = U.id
+            WHERE Req.id = GSFactor.requestId
+              AND U.nationalCode = '${filter.nationalCode}') `.replaceAll(
+            /\s\s+/g,
+            ' ',
+          ),
+        ),
+      )
+      .filterIf(
+        filter.phoneNumber != null,
+        Sequelize.literal(
+          `EXISTS (
+            SELECT 1
+            FROM GSRequests AS Req
+            JOIN Users U ON Req.userId = U.id
+            WHERE Req.id = GSFactor.requestId
+              AND U.phoneNumber = '${filter.phoneNumber}') `.replaceAll(
+            /\s\s+/g,
+            ' ',
+          ),
+        ),
+      )
+      .filterIf(
+        filter.firstname != null,
+        Sequelize.literal(
+          `EXISTS (
+            SELECT 1
+            FROM GSRequests AS Req
+            JOIN Users U ON Req.userId = U.id
+            WHERE Req.id = GSFactor.requestId
+              AND U.firstname LIKE N'%${filter.firstname}%') `.replaceAll(
+            /\s\s+/g,
+            ' ',
+          ),
+        ),
+      )
+      .filterIf(
+        filter.lastname != null,
+        Sequelize.literal(
+          `EXISTS (
+            SELECT 1
+            FROM GSRequests AS Req
+            JOIN Users U ON Req.userId = U.id
+            WHERE Req.id = GSFactor.requestId
+              AND U.lastname LIKE N'%${filter.lastname}%') `.replaceAll(
+            /\s\s+/g,
+            ' ',
+          ),
+        ),
+      )
+      .filterIf(
+        filter.requestTypeId != null,
+        Sequelize.literal(
+          `EXISTS (
+            SELECT 1
+            FROM GSRequests AS Req
+            WHERE Req.id = GSFactor.requestId
+              AND Req.requestTypeId = ${filter.requestTypeId}) `.replaceAll(
+            /\s\s+/g,
+            ' ',
+          ),
+        ),
+      )
+      .filterIf(
+        filter.serialNumber != null,
+        Sequelize.literal(
+          `EXISTS (
+            SELECT 1
+            FROM GSRequests AS Req
+            LEFT JOIN GSGuarantees G
+            ON Req.guaranteeId = G.id
+            WHERE Req.id = GSFactor.requestId
+              AND G.serialNumber LIKE N'%${filter.serialNumber}%') `.replaceAll(
+            /\s\s+/g,
+            ' ',
+          ),
+        ),
+      );
     const count = await this.repository.count(query.build());
 
     query = query

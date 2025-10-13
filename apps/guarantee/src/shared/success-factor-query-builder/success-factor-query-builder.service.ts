@@ -277,6 +277,11 @@ export class GSSuccessFactorQueryBuilderService {
     return this;
   }
 
+  filterIf(condition: boolean, filter: any) {
+    this.builder = this.builder.filterIf(condition, filter);
+    return this;
+  }
+
   limit(count?: number) {
     this.builder = this.builder.limit(count);
     return this;
