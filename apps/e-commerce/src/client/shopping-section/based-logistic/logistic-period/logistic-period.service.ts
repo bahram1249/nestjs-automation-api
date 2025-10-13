@@ -555,7 +555,7 @@ export class LogisticPeriodService {
                 .map(Number);
               fullStartTime.setHours(startHour, startMinute, startSecond, 0);
               const threeHoursLater = new Date(
-                currentDate.getTime() + 3 * 60 * 60 * 1000,
+                new Date().getTime() + 3 * 60 * 60 * 1000,
               );
               const isToday =
                 gregorianDate.toDateString() === currentDate.toDateString();
