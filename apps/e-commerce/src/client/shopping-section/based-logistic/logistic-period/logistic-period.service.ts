@@ -47,6 +47,7 @@ export class LogisticPeriodService {
 
   private readonly locale = 'fa-IR';
   private readonly timeZone = 'Asia/Tehran';
+  private readonly tzOffsetMinutes = 210; // Tehran is UTC+03:30 (no DST)
 
   async getDeliveryOptions(
     user: User,
@@ -238,28 +239,17 @@ export class LogisticPeriodService {
   }
 
   // region helpers
-  // Centralized date/time config and helpers
+  // Centralized date/time config and helpers (without Intl timezone dependencies)
   private getZonedParts(date: Date) {
-    const dtf = new Intl.DateTimeFormat('en-CA', {
-      timeZone: this.timeZone,
-      hour12: false,
-      year: 'numeric',
-      month: '2-digit',
-      day: '2-digit',
-      hour: '2-digit',
-      minute: '2-digit',
-      second: '2-digit',
-    });
-    const parts = dtf.formatToParts(date);
-    const map: Record<string, string> = {};
-    for (const p of parts) map[p.type] = p.value as string;
+    const localMs = date.getTime() + this.tzOffsetMinutes * 60 * 1000;
+    const d = new Date(localMs);
     return {
-      year: Number(map.year),
-      month: Number(map.month),
-      day: Number(map.day),
-      hour: Number(map.hour),
-      minute: Number(map.minute),
-      second: Number(map.second),
+      year: d.getUTCFullYear(),
+      month: d.getUTCMonth() + 1,
+      day: d.getUTCDate(),
+      hour: d.getUTCHours(),
+      minute: d.getUTCMinutes(),
+      second: d.getUTCSeconds(),
     };
   }
 
@@ -272,28 +262,11 @@ export class LogisticPeriodService {
     second = 0,
     millisecond = 0,
   ) {
-    // Initial guess: treat local parts as if they were UTC
-    let guess = new Date(Date.UTC(year, month - 1, day, hour, minute, second, millisecond));
-    // Compute offset at guess
-    const p1 = this.getZonedParts(guess);
-    const offset1 =
-      Date.UTC(p1.year, p1.month - 1, p1.day, p1.hour, p1.minute, p1.second) -
-      guess.getTime();
-    let corrected = new Date(
-      Date.UTC(year, month - 1, day, hour, minute, second, millisecond) - offset1,
+    // Convert Tehran local components directly to an exact instant using fixed offset
+    return new Date(
+      Date.UTC(year, month - 1, day, hour, minute, second, millisecond) -
+        this.tzOffsetMinutes * 60 * 1000,
     );
-    // Refine once in case DST boundary shifts the offset
-    const p2 = this.getZonedParts(corrected);
-    const offset2 =
-      Date.UTC(p2.year, p2.month - 1, p2.day, p2.hour, p2.minute, p2.second) -
-      corrected.getTime();
-    if (offset2 !== offset1) {
-      corrected = new Date(
-        Date.UTC(year, month - 1, day, hour, minute, second, millisecond) -
-          offset2,
-      );
-    }
-    return corrected;
   }
 
   private startOfDayTZ(date: Date) {
@@ -320,8 +293,8 @@ export class LogisticPeriodService {
   }
 
   private nowTZ() {
-    const { year, month, day, hour, minute, second } = this.getZonedParts(new Date());
-    return this.zonedToInstant(year, month, day, hour, minute, second, 0);
+    // Current instant; zoned helpers will interpret it in Tehran time
+    return new Date();
   }
 
   private addHoursTZ(date: Date, hours: number) {
@@ -543,7 +516,7 @@ export class LogisticPeriodService {
     const startOfWindow = this.startOfDayTZ(currentDate);
     const endDate = this.addDaysTZ(currentDate, 7);
     const endOfWindow = this.endOfDayTZ(endDate);
-    const persianDates = await this.persianDateRepository.findAll(
+    let persianDates = await this.persianDateRepository.findAll(
       new QueryOptionsBuilder()
         .filter({
           GregorianDate: { [Op.gte]: startOfWindow, [Op.lte]: endOfWindow },
@@ -557,6 +530,7 @@ export class LogisticPeriodService {
         .order({ orderBy: 'GregorianDate', sortOrder: 'ASC' })
         .build(),
     );
+    
     return { currentDate, startOfWindow, endDate, endOfWindow, persianDates };
   }
 
