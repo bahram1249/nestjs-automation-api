@@ -45,6 +45,9 @@ export class LogisticPeriodService {
     private readonly clientShipmentPriceService: ClientShipmentPriceService,
   ) {}
 
+  private readonly locale = 'fa-IR';
+  private readonly timeZone = 'Asia/Tehran';
+
   async getDeliveryOptions(
     user: User,
     session: ECUserSession,
@@ -235,6 +238,69 @@ export class LogisticPeriodService {
   }
 
   // region helpers
+  // Centralized date/time config and helpers
+  private getZonedParts(date: Date) {
+    const dtf = new Intl.DateTimeFormat('en-CA', {
+      timeZone: this.timeZone,
+      hour12: false,
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+    });
+    const parts = dtf.formatToParts(date);
+    const map: Record<string, string> = {};
+    for (const p of parts) map[p.type] = p.value as string;
+    return {
+      year: Number(map.year),
+      month: Number(map.month),
+      day: Number(map.day),
+      hour: Number(map.hour),
+      minute: Number(map.minute),
+      second: Number(map.second),
+    };
+  }
+
+  private startOfDayTZ(date: Date) {
+    const { year, month, day } = this.getZonedParts(date);
+    return new Date(Date.UTC(year, month - 1, day, 0, 0, 0, 0));
+  }
+
+  private endOfDayTZ(date: Date) {
+    const { year, month, day } = this.getZonedParts(date);
+    return new Date(Date.UTC(year, month - 1, day, 23, 59, 59, 999));
+  }
+
+  private dateAtTimeTZ(date: Date, timeStr: string) {
+    const { year, month, day } = this.getZonedParts(date);
+    const parts = timeStr.split(':').map(Number);
+    const [h, m, s] = [parts[0] || 0, parts[1] || 0, parts[2] || 0];
+    return new Date(Date.UTC(year, month - 1, day, h, m, s, 0));
+  }
+
+  private addDaysTZ(date: Date, days: number) {
+    const { year, month, day } = this.getZonedParts(date);
+    return new Date(Date.UTC(year, month - 1, day + days, 0, 0, 0, 0));
+  }
+
+  private addHours(date: Date, hours: number) {
+    return new Date(date.getTime() + hours * 60 * 60 * 1000);
+  }
+
+  private isSameZonedDay(a: Date, b: Date) {
+    const A = this.getZonedParts(a);
+    const B = this.getZonedParts(b);
+    return A.year === B.year && A.month === B.month && A.day === B.day;
+  }
+
+  private formatFa(date: Date, options?: Intl.DateTimeFormatOptions) {
+    return new Intl.DateTimeFormat(this.locale, {
+      timeZone: this.timeZone,
+      ...options,
+    }).format(date);
+  }
   private async loadUserAddressAndStocks(
     user: User,
     session: ECUserSession,
@@ -434,11 +500,9 @@ export class LogisticPeriodService {
 
   private async getDateWindowAndPersianDates() {
     const currentDate = new Date();
-    const startOfWindow = new Date(currentDate);
-    startOfWindow.setHours(0, 0, 0, 0);
-    const endDate = new Date(currentDate.getTime() + 7 * 24 * 60 * 60 * 1000);
-    const endOfWindow = new Date(endDate);
-    endOfWindow.setHours(23, 59, 59, 999);
+    const startOfWindow = this.startOfDayTZ(currentDate);
+    const endDate = this.addDaysTZ(currentDate, 7);
+    const endOfWindow = this.endOfDayTZ(endDate);
     const persianDates = await this.persianDateRepository.findAll(
       new QueryOptionsBuilder()
         .filter({
@@ -533,33 +597,30 @@ export class LogisticPeriodService {
     const calculatedOffset =
       typeId == ScheduleSendingTypeEnum.expressSending ? 0 : offsetDay;
 
-    const offsetStartDate = new Date(
-      currentDate.getTime() + calculatedOffset * 24 * 60 * 60 * 1000,
-    );
+    const offsetStartDate = this.addDaysTZ(currentDate, calculatedOffset);
+    const offsetStartOfDay = this.startOfDayTZ(offsetStartDate);
     const possibleDates: any[] = [];
     for (const persianDate of persianDates) {
       const gregorianDate = new Date(persianDate.GregorianDate);
-      if (gregorianDate < offsetStartDate) continue;
+      const gregorianStartOfDay = this.startOfDayTZ(gregorianDate);
+      if (gregorianStartOfDay < offsetStartOfDay) continue;
       const weekNumber = persianDate.WeekDayNumber;
+      const threeHoursLater = this.addHours(new Date(), 3);
       const times: any[] = [];
       for (const sendingPeriod of relevantPeriods) {
-        if (sendingPeriod.startDate && gregorianDate < sendingPeriod.startDate)
-          continue;
-        if (sendingPeriod.endDate && gregorianDate > sendingPeriod.endDate)
-          continue;
+        const spStartOfDay = sendingPeriod.startDate
+          ? this.startOfDayTZ(new Date(sendingPeriod.startDate))
+          : null;
+        const spEndOfDay = sendingPeriod.endDate
+          ? this.endOfDayTZ(new Date(sendingPeriod.endDate))
+          : null;
+        if (spStartOfDay && gregorianStartOfDay < spStartOfDay) continue;
+        if (spEndOfDay && gregorianStartOfDay > spEndOfDay) continue;
         for (const weeklyPeriod of sendingPeriod.weeklyPeriods) {
           if (weeklyPeriod.weekNumber === weekNumber) {
             for (const time of weeklyPeriod.weeklyPeriodTimes) {
-              const fullStartTime = new Date(gregorianDate);
-              const [startHour, startMinute, startSecond] = time.startTime
-                .split(':')
-                .map(Number);
-              fullStartTime.setHours(startHour, startMinute, startSecond, 0);
-              const threeHoursLater = new Date(
-                new Date().getTime() + 3 * 60 * 60 * 1000,
-              );
-              const isToday =
-                gregorianDate.toDateString() === currentDate.toDateString();
+              const fullStartTime = this.dateAtTimeTZ(gregorianDate, time.startTime);
+              const isToday = this.isSameZonedDay(gregorianDate, currentDate);
               if (isToday && fullStartTime <= threeHoursLater) continue;
               times.push({
                 weeklyPeriodTimeId: time.id,
@@ -624,12 +685,11 @@ export class LogisticPeriodService {
     for (const way of ways) {
       if (!way.possibleDates) continue;
       for (const pd of way.possibleDates) {
-        const d = new Date(pd.gregorianDate);
-        d.setHours(0, 0, 0, 0);
-        const dateKey = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(
+        const zoned = this.getZonedParts(new Date(pd.gregorianDate));
+        const dateKey = `${zoned.year}-${String(zoned.month).padStart(
           2,
           '0',
-        )}-${String(d.getDate()).padStart(2, '0')}`;
+        )}-${String(zoned.day).padStart(2, '0')}`;
         pd.times = (pd.times || []).filter((t: any) => {
           const used = countMap.get(`${t.weeklyPeriodTimeId}:${dateKey}`) || 0;
           const cap = Number(t.capacity || 0);
