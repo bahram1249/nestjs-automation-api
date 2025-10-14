@@ -6,6 +6,7 @@ import {
   ForeignKey,
   BelongsTo,
   HasMany,
+  AfterFind,
 } from 'sequelize-typescript';
 import { ECLogisticOrder } from './ec-logistic-order.entity';
 import { ECLogistic } from './ec-logistic.entity';
@@ -17,6 +18,7 @@ import { ECOrderStatus } from './ec-order-status.entity';
 import { ECOrderShipmentWay } from './ec-order-shipmentway.entity';
 import { ECLogisticOrderGroupedDetail } from './ec-logistic-order-grouped-detail.entity';
 import { User } from '@rahino/database';
+import { isNotNull } from '@rahino/commontools';
 
 @Table({ tableName: 'ECLogisticOrderGroupeds' })
 export class ECLogisticOrderGrouped extends Model {
@@ -148,4 +150,37 @@ export class ECLogisticOrderGrouped extends Model {
     foreignKey: 'groupedId',
   })
   details?: ECLogisticOrderGroupedDetail[];
+
+  @AfterFind
+  static async formatAssociatedWeeklyPeriodTimes(
+    instanceOrInstances: ECLogisticOrderGrouped | ECLogisticOrderGrouped[],
+  ) {
+    if (Array.isArray(instanceOrInstances)) {
+      for (const instance of instanceOrInstances) {
+        ECLogisticOrderGrouped.formatSingleInstance(instance);
+      }
+    } else {
+      ECLogisticOrderGrouped.formatSingleInstance(instanceOrInstances);
+    }
+  }
+
+  private static formatSingleInstance(instance: ECLogisticOrderGrouped) {
+    if (isNotNull(instance) && isNotNull(instance.logisticWeeklyPeriodTime)) {
+      const timeItem = instance.logisticWeeklyPeriodTime;
+      if (timeItem.startTime) {
+        timeItem.startTime = new Date(timeItem.startTime).toLocaleTimeString('en-US', {
+          hour: '2-digit',
+          minute: '2-digit',
+          hour12: false,
+        });
+      }
+      if (timeItem.endTime) {
+        timeItem.endTime = new Date(timeItem.endTime).toLocaleTimeString('en-US', {
+          hour: '2-digit',
+          minute: '2-digit',
+          hour12: false,
+        });
+      }
+    }
+  }
 }
