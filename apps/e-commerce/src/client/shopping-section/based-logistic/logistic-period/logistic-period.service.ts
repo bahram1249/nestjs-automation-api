@@ -263,30 +263,69 @@ export class LogisticPeriodService {
     };
   }
 
+  private zonedToInstant(
+    year: number,
+    month: number,
+    day: number,
+    hour = 0,
+    minute = 0,
+    second = 0,
+    millisecond = 0,
+  ) {
+    // Initial guess: treat local parts as if they were UTC
+    let guess = new Date(Date.UTC(year, month - 1, day, hour, minute, second, millisecond));
+    // Compute offset at guess
+    const p1 = this.getZonedParts(guess);
+    const offset1 =
+      Date.UTC(p1.year, p1.month - 1, p1.day, p1.hour, p1.minute, p1.second) -
+      guess.getTime();
+    let corrected = new Date(
+      Date.UTC(year, month - 1, day, hour, minute, second, millisecond) - offset1,
+    );
+    // Refine once in case DST boundary shifts the offset
+    const p2 = this.getZonedParts(corrected);
+    const offset2 =
+      Date.UTC(p2.year, p2.month - 1, p2.day, p2.hour, p2.minute, p2.second) -
+      corrected.getTime();
+    if (offset2 !== offset1) {
+      corrected = new Date(
+        Date.UTC(year, month - 1, day, hour, minute, second, millisecond) -
+          offset2,
+      );
+    }
+    return corrected;
+  }
+
   private startOfDayTZ(date: Date) {
     const { year, month, day } = this.getZonedParts(date);
-    return new Date(Date.UTC(year, month - 1, day, 0, 0, 0, 0));
+    return this.zonedToInstant(year, month, day, 0, 0, 0, 0);
   }
 
   private endOfDayTZ(date: Date) {
     const { year, month, day } = this.getZonedParts(date);
-    return new Date(Date.UTC(year, month - 1, day, 23, 59, 59, 999));
+    return this.zonedToInstant(year, month, day, 23, 59, 59, 999);
   }
 
   private dateAtTimeTZ(date: Date, timeStr: string) {
     const { year, month, day } = this.getZonedParts(date);
     const parts = timeStr.split(':').map(Number);
     const [h, m, s] = [parts[0] || 0, parts[1] || 0, parts[2] || 0];
-    return new Date(Date.UTC(year, month - 1, day, h, m, s, 0));
+    return this.zonedToInstant(year, month, day, h, m, s, 0);
   }
 
   private addDaysTZ(date: Date, days: number) {
     const { year, month, day } = this.getZonedParts(date);
-    return new Date(Date.UTC(year, month - 1, day + days, 0, 0, 0, 0));
+    // Let Date handle overflow in day arithmetic by passing day+days
+    return this.zonedToInstant(year, month, day + days, 0, 0, 0, 0);
   }
 
   private addHours(date: Date, hours: number) {
     return new Date(date.getTime() + hours * 60 * 60 * 1000);
+  }
+
+  private addHoursTZ(date: Date, hours: number) {
+    const { year, month, day, hour, minute, second } = this.getZonedParts(date);
+    return this.zonedToInstant(year, month, day, hour + hours, minute, second, 0);
   }
 
   private isSameZonedDay(a: Date, b: Date) {
@@ -605,7 +644,7 @@ export class LogisticPeriodService {
       const gregorianStartOfDay = this.startOfDayTZ(gregorianDate);
       if (gregorianStartOfDay < offsetStartOfDay) continue;
       const weekNumber = persianDate.WeekDayNumber;
-      const threeHoursLater = this.addHours(new Date(), 3);
+      const threeHoursLater = this.addHoursTZ(new Date(), 3);
       const times: any[] = [];
       for (const sendingPeriod of relevantPeriods) {
         const spStartOfDay = sendingPeriod.startDate
