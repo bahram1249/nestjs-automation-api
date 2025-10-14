@@ -539,7 +539,7 @@ export class LogisticPeriodService {
   }
 
   private async getDateWindowAndPersianDates() {
-    const currentDate = new Date();
+    const currentDate = this.nowTZ();
     const startOfWindow = this.startOfDayTZ(currentDate);
     const endDate = this.addDaysTZ(currentDate, 7);
     const endOfWindow = this.endOfDayTZ(endDate);
