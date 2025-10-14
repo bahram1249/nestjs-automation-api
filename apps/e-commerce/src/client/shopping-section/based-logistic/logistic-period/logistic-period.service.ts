@@ -319,8 +319,9 @@ export class LogisticPeriodService {
     return this.zonedToInstant(year, month, day + days, 0, 0, 0, 0);
   }
 
-  private addHours(date: Date, hours: number) {
-    return new Date(date.getTime() + hours * 60 * 60 * 1000);
+  private nowTZ() {
+    const { year, month, day, hour, minute, second } = this.getZonedParts(new Date());
+    return this.zonedToInstant(year, month, day, hour, minute, second, 0);
   }
 
   private addHoursTZ(date: Date, hours: number) {
@@ -644,7 +645,8 @@ export class LogisticPeriodService {
       const gregorianStartOfDay = this.startOfDayTZ(gregorianDate);
       if (gregorianStartOfDay < offsetStartOfDay) continue;
       const weekNumber = persianDate.WeekDayNumber;
-      const threeHoursLater = this.addHoursTZ(new Date(), 3);
+      const nowTehran = this.nowTZ();
+      const threeHoursLater = this.addHoursTZ(nowTehran, 3);
       const times: any[] = [];
       for (const sendingPeriod of relevantPeriods) {
         const spStartOfDay = sendingPeriod.startDate
@@ -659,8 +661,8 @@ export class LogisticPeriodService {
           if (weeklyPeriod.weekNumber === weekNumber) {
             for (const time of weeklyPeriod.weeklyPeriodTimes) {
               const fullStartTime = this.dateAtTimeTZ(gregorianDate, time.startTime);
-              const isToday = this.isSameZonedDay(gregorianDate, currentDate);
-              if (isToday && fullStartTime <= threeHoursLater) continue;
+              const isToday = this.isSameZonedDay(gregorianDate, nowTehran);
+              if (isToday && fullStartTime < threeHoursLater) continue;
               times.push({
                 weeklyPeriodTimeId: time.id,
                 startTime: time.startTime,
