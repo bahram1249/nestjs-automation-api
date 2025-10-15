@@ -95,7 +95,7 @@ export class LogisticTotalOrderController {
     return await this.service.changeShipmentWay(id, dto);
   }
 
-  @ApiOperation({ description: 'change order status (logistic) - id is ECLogisticOrder.id' })
+  @ApiOperation({ description: 'change order status by grouped (logistic) - id is ECLogisticOrderGrouped.id' })
   @CheckPermission({ permissionSymbol: 'ecommerce.admin.totalorders.changeorderstatus' })
   @Patch('/changeOrderStatus/:id')
   @HttpCode(HttpStatus.OK)

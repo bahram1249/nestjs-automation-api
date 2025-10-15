@@ -449,7 +449,7 @@ export class LogisticPeriodService {
         logisticId: Number(logisticId),
         orderShipmentWay: {
           id: OrderShipmentwayEnum.post,
-          name: 'post',
+          name: 'پست',
           icon: 'post.png',
         },
         sendingPeriods: [
