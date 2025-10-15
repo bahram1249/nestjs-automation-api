@@ -337,14 +337,14 @@ export class LogisticTotalOrderService {
         this.localizationService.translate('ecommerce.not_permitted'),
       );
     }
-    let order = await this.repository.findOne(
+    let order = await this.groupedRepository.findOne(
       new QueryOptionsBuilder()
         .filter({ id })
         .filter(
           Sequelize.where(
             Sequelize.fn(
               'isnull',
-              Sequelize.col('ECLogisticOrder.isDeleted'),
+              Sequelize.col('ECLogisticOrderGrouped.isDeleted'),
               0,
             ),
             { [Op.eq]: 0 },
@@ -359,15 +359,13 @@ export class LogisticTotalOrderService {
         ),
       );
     }
-    order.orderStatusId = dto.orderStatusId as any;
+    order.orderStatusId = dto.orderStatusId;
     order = await order.save();
     return { result: order };
   }
 
   // In logistic flow, id is the groupId
   async changeShipmentWay(groupId: bigint, dto: ChangeShipmentWayDto) {
-    
-
     let group = await this.groupedRepository.findOne(
       new QueryOptionsBuilder()
         .filter({ id: groupId })
