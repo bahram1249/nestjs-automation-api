@@ -16,6 +16,7 @@ import {
   ECUserSession,
   ECVendor,
   ECVendorLogistic,
+  ECAddress,
 } from '@rahino/localdatabase/models';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import { Op, Sequelize, QueryTypes } from 'sequelize';
@@ -27,7 +28,9 @@ import {
   OrderShipmentwayEnum,
   OrderStatusEnum,
   ScheduleSendingTypeEnum,
+  ProvinceEnum,
 } from '@rahino/ecommerce/shared/enum';
+import { CityEnum } from '@rahino/ecommerce/shared/enum/city.enum';
 
 @Injectable()
 export class LogisticPeriodService {
@@ -299,7 +302,15 @@ export class LogisticPeriodService {
 
   private addHoursTZ(date: Date, hours: number) {
     const { year, month, day, hour, minute, second } = this.getZonedParts(date);
-    return this.zonedToInstant(year, month, day, hour + hours, minute, second, 0);
+    return this.zonedToInstant(
+      year,
+      month,
+      day,
+      hour + hours,
+      minute,
+      second,
+      0,
+    );
   }
 
   private isSameZonedDay(a: Date, b: Date) {
@@ -420,9 +431,41 @@ export class LogisticPeriodService {
   }
 
   private async loadShipmentWaysForAddress(
-    userAddress: any,
+    userAddress: ECAddress,
     logisticIds: any[],
   ) {
+    // Exception: For Tehran province and Tehran city, return mock shipment ways
+    if (
+      userAddress?.provinceId == ProvinceEnum.Tehran &&
+      userAddress?.cityId !== CityEnum.Tehran
+    ) {
+      const now = this.nowTZ();
+      const oneYearLater = new Date(now);
+      oneYearLater.setFullYear(oneYearLater.getFullYear() + 1);
+
+      const mockWays = logisticIds.map((logisticId) => ({
+        id: -1,
+        orderShipmentWayId: OrderShipmentwayEnum.post,
+        logisticId: Number(logisticId),
+        orderShipmentWay: {
+          id: OrderShipmentwayEnum.post,
+          name: 'post',
+          icon: 'post.png',
+        },
+        sendingPeriods: [
+          {
+            id: -1,
+            startDate: now,
+            endDate: oneYearLater,
+            scheduleSendingTypeId: ScheduleSendingTypeEnum.normalSending,
+            weeklyPeriods: [],
+          },
+        ],
+      }));
+
+      return mockWays as any;
+    }
+
     return this.logisticShipmentWayRepository.findAll(
       new QueryOptionsBuilder()
         .filter({
@@ -530,7 +573,7 @@ export class LogisticPeriodService {
         .order({ orderBy: 'GregorianDate', sortOrder: 'ASC' })
         .build(),
     );
-    
+
     return { currentDate, startOfWindow, endDate, endOfWindow, persianDates };
   }
 
@@ -634,7 +677,10 @@ export class LogisticPeriodService {
         for (const weeklyPeriod of sendingPeriod.weeklyPeriods) {
           if (weeklyPeriod.weekNumber === weekNumber) {
             for (const time of weeklyPeriod.weeklyPeriodTimes) {
-              const fullStartTime = this.dateAtTimeTZ(gregorianDate, time.startTime);
+              const fullStartTime = this.dateAtTimeTZ(
+                gregorianDate,
+                time.startTime,
+              );
               const isToday = this.isSameZonedDay(gregorianDate, nowTehran);
               if (isToday && fullStartTime < threeHoursLater) continue;
               times.push({

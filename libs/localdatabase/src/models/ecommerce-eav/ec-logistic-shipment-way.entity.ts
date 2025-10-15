@@ -26,9 +26,10 @@ export class ECLogisticShipmentWay extends Model {
   @AutoMap()
   @Column({
     type: DataType.BIGINT,
+    allowNull: true
   })
   @ForeignKey(() => ECLogistic)
-  logisticId: bigint;
+  logisticId?: bigint;
 
   @BelongsTo(() => ECLogistic, { as: 'logistic', foreignKey: 'logisticId' })
   logistic?: ECLogistic;

@@ -3300,6 +3300,26 @@ END
 
 GO
 
+
+-- ec-logisticshipmentways-v3
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ec-logisticshipmentways-v3' 
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'SITE_NAME' AND [value] IN ('ecommerce'))
+		)
+BEGIN
+
+	ALTER TABLE ECLogisticShipmentWays
+	ALTER COLUMN logisticId BIGINT NULL;
+		
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'ec-logisticshipmentways-v3', GETDATE(), GETDATE()
+END
+
+GO
+
 -- ec-logisticsusers-v1
 IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ec-logisticusers-v1' 
 			)
