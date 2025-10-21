@@ -262,28 +262,73 @@ export class SingleVendorShoppingCartService {
   private async mapShoppingCartProducts(
     products: ECShoppingCartProduct[],
   ): Promise<ShoppingCartProductDto[]> {
-    return Promise.all(
-      products.map(async (product) => {
-        const productFromRepo = await this.productRepositoryService.findById(
-          _.extend(this.emptyListFilter, { inventoryId: product.inventoryId }),
-          product.productId,
-          false,
-        );
-
-        if (this.isProductUnavailable(productFromRepo.result, product.qty)) {
-          await this.scheduleProductRemoval(product);
-        }
-
-        return {
-          id: product.id,
-          shoppingCartId: product.shoppingCartId,
-          productId: product.productId,
-          qty: product.qty,
-          inventoryId: product.inventoryId,
-          product: productFromRepo.result,
+    // Build unique product-inventory pairs for bulk fetching
+    const uniqueKey = (p: { productId: any; inventoryId: any }) =>
+      `${p.productId}_${p.inventoryId}`;
+    const pairMap: Record<string, { productId: number; inventoryId: number }> = {};
+    for (const sp of products) {
+      const key = uniqueKey({ productId: sp.productId, inventoryId: sp.inventoryId });
+      if (!pairMap[key]) {
+        pairMap[key] = {
+          productId: Number(sp.productId),
+          inventoryId: Number(sp.inventoryId),
         };
-      }),
-    );
+      }
+    }
+    const productInventoryPairs = Object.values(pairMap);
+
+    if (productInventoryPairs.length === 0) return [];
+
+    // Query all products in one shot with their requested inventories
+    const filter = _.extend(_.cloneDeep(this.emptyListFilter), {
+      productInventoryPairs,
+      limit: productInventoryPairs.length,
+      offset: 0,
+    });
+    const productsQuery = await this.productRepositoryService.findAll(filter as any);
+    const repoProducts = productsQuery.result || [];
+
+    // Index by productId
+    const productById = new Map<number, any>();
+    for (const p of repoProducts) {
+      productById.set(Number(p.id), p);
+    }
+
+    // Map back to shopping cart products
+    const result: ShoppingCartProductDto[] = [];
+    for (const sp of products) {
+      const repoProduct = productById.get(Number(sp.productId));
+      let productObj: any;
+      if (repoProduct) {
+        // Clone to avoid shared mutation and keep only the specific inventory
+        const productPlain = JSON.parse(JSON.stringify(repoProduct));
+        const matchedInventory = (productPlain.inventories || []).find(
+          (inv: any) => Number(inv.id) === Number(sp.inventoryId),
+        );
+        productPlain.inventories = matchedInventory ? [matchedInventory] : [];
+        productObj = productPlain;
+      } else {
+        // Fallback object to ensure downstream checks work and trigger cleanup
+        productObj = {
+          inventoryStatusId: InventoryStatusEnum.unavailable,
+          inventories: [{ qty: 0 }],
+        };
+      }
+
+      if (this.isProductUnavailable(productObj, sp.qty)) {
+        await this.scheduleProductRemoval(sp);
+      }
+
+      result.push({
+        id: sp.id,
+        shoppingCartId: sp.shoppingCartId,
+        productId: sp.productId,
+        qty: sp.qty,
+        inventoryId: sp.inventoryId,
+        product: productObj,
+      });
+    }
+    return result;
   }
 
   private isProductUnavailable(product: any, quantity: number): boolean {
