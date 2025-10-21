@@ -1,4 +1,4 @@
-name: deploy-jahizan2
+name: deploy-hojresaz-service1
 on:
   push:
     branches: [main]
@@ -13,8 +13,8 @@ jobs:
           node-version: '20'
       - name: update-chabokan
         env:
-          CHABOKAN_TOKEN: ${{ secrets.CHABOKAN_TOKEN }}
+          CHABOKAN_TOKEN: ${{ secrets.HOJRESAZ_CHABOKAN_TOKEN }}
         run: |
           npm install -g @chabokan.net/cli
           chabok login -t $CHABOKAN_TOKEN
-          chabok deploy -s nest-jahizan2
+          chabok deploy -s hojre1-service

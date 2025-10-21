@@ -1,4 +1,4 @@
-name: deploy-hojresaz
+name: deploy-hojresaz-service2
 on:
   push:
     branches: [main]
@@ -17,4 +17,4 @@ jobs:
         run: |
           npm install -g @chabokan.net/cli
           chabok login -t $CHABOKAN_TOKEN
-          chabok deploy -s nest-hojre-big
+          chabok deploy -s hojre2-service
