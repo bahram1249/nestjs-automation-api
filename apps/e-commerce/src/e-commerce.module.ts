@@ -56,8 +56,10 @@ import { ProductDiscountJobRunnerService } from './job/product-discount/product-
 import { VariationPriceModule } from './admin/product-section/variation-price/variation-price.module';
 import { TorobProductModule } from './anonymous/torob-product/torob-product.module';
 import { AdminSaleModule } from './report/admin-sale/admin-sale.module';
+import { BasedAdminSaleReportModule } from './report/based-logistic/admin-sale/admin-sale.module';
 import { PersianDateMonthModule } from './client/persiandate/bymonth/persian-date-month.module';
 import { VendorSaleModule } from './report/vendor-sale/vendor-sale.module';
+import { BasedVendorSaleReportModule } from './report/based-logistic/vendor-sale/vendor-sale.module';
 import { AdminCourierReportModule } from './report/admin-courier/admin-courier.module';
 import { AdminPostReportModule } from './report/admin-post/admin-post.module';
 import { CourierReportModule } from './report/courier/courier-report.module';
@@ -190,7 +192,9 @@ import { LogisticClientOrderModule } from './client/order/client-order.module';
     VariationPriceModule,
     TorobProductModule,
     AdminSaleModule,
+    BasedAdminSaleReportModule,
     VendorSaleModule,
+    BasedVendorSaleReportModule,
     AdminCourierReportModule,
     AdminPostReportModule,
     CourierReportModule,

@@ -686,15 +686,29 @@ export class ProductService {
     };
   }
 
-  async exportInventoriesExcel(user: User, filter: GetProductDto): Promise<Buffer> {
+  async exportInventoriesExcel(
+    user: User,
+    filter: GetProductDto,
+  ): Promise<Buffer> {
     // vendors accessible by user
-    const vendorResult = await this.userVendorService.findAll(user, this.listFilter);
+    const vendorResult = await this.userVendorService.findAll(
+      user,
+      this.listFilter,
+    );
     const vendors = vendorResult.result as Array<{ id: number; name: string }>;
     const vendorIds = vendors.map((v) => v.id);
 
     // fetch all products without paging
-    const exportFilter = { ...filter, offset: 0, limit: 2147483647 } as GetProductDto;
-    const { resultQuery } = await this.productQueryBuilderService.findAllAndCount(vendorIds, exportFilter);
+    const exportFilter = {
+      ...filter,
+      offset: 0,
+      limit: 2147483647,
+    } as GetProductDto;
+    const { resultQuery } =
+      await this.productQueryBuilderService.findAllAndCount(
+        vendorIds,
+        exportFilter,
+      );
     const products = await this.repository.findAll(resultQuery);
 
     const workbook = new ExcelJS.Workbook();
@@ -717,7 +731,9 @@ export class ProductService {
       const entityTypeName = p.entityType?.name ?? '';
       const invs = (p.inventories || []) as any[];
       for (const v of vendors) {
-        const invsForVendor = invs.filter((i) => Number(i.vendorId) === Number(v.id));
+        const invsForVendor = invs.filter(
+          (i) => Number(i.vendorId) === Number(v.id),
+        );
         if (invsForVendor.length) {
           for (const inv of invsForVendor) {
             sheet.addRow({
@@ -764,7 +780,10 @@ export class ProductService {
       );
 
     // vendors accessible by user
-    const vendorResult = await this.userVendorService.findAll(user, this.listFilter);
+    const vendorResult = await this.userVendorService.findAll(
+      user,
+      this.listFilter,
+    );
     const vendors = vendorResult.result as Array<{ id: number; name: string }>;
     const vendorIds = new Set(vendors.map((v) => Number(v.id)));
 
@@ -820,7 +839,8 @@ export class ProductService {
       if (val === undefined || val === null || val === '') return null;
       if (typeof val === 'string') return BigInt(val);
       if (typeof val === 'number') return BigInt(Math.trunc(val));
-      const t = (val as any).text ?? (val as any).result ?? (val as any).toString?.();
+      const t =
+        (val as any).text ?? (val as any).result ?? (val as any).toString?.();
       if (t) return BigInt(String(t));
       return null;
     };
@@ -833,11 +853,14 @@ export class ProductService {
     const toStringVal = (val: any): string | null => {
       if (val === undefined || val === null) return null;
       if (typeof val === 'string') return val.trim();
-      const t = (val as any).text ?? (val as any).result ?? (val as any).toString?.();
+      const t =
+        (val as any).text ?? (val as any).result ?? (val as any).toString?.();
       return t ? String(t).trim() : null;
     };
 
-    const transaction = await this.sequelize.transaction({ isolationLevel: Transaction.ISOLATION_LEVELS.READ_COMMITTED });
+    const transaction = await this.sequelize.transaction({
+      isolationLevel: Transaction.ISOLATION_LEVELS.READ_COMMITTED,
+    });
     let created = 0;
     let updated = 0;
     const impactedProductIds = new Set<string>();
@@ -875,10 +898,11 @@ export class ProductService {
 
         // Optional: update product title and slug (respect super-edit permission and slug uniqueness)
         if ((newTitle || newSlug) && productId != null) {
-          const { result: superEditAccess } = await this.permissionService.isAccess(
-            user,
-            'ecommerce.admin.products.superedit',
-          );
+          const { result: superEditAccess } =
+            await this.permissionService.isAccess(
+              user,
+              'ecommerce.admin.products.superedit',
+            );
           if (superEditAccess) {
             const product = await this.repository.findOne(
               new QueryOptionsBuilder()
@@ -889,7 +913,11 @@ export class ProductService {
             );
             if (product) {
               let needSave = false;
-              if (newTitle && newTitle.length > 0 && newTitle !== product.title) {
+              if (
+                newTitle &&
+                newTitle.length > 0 &&
+                newTitle !== product.title
+              ) {
                 (product as any).title = newTitle;
                 needSave = true;
               }
@@ -899,7 +927,11 @@ export class ProductService {
                     .filter({ slug: newSlug })
                     .filter(
                       Sequelize.where(
-                        Sequelize.fn('isnull', Sequelize.col('ECProduct.isDeleted'), 0),
+                        Sequelize.fn(
+                          'isnull',
+                          Sequelize.col('ECProduct.isDeleted'),
+                          0,
+                        ),
                         { [Op.eq]: 0 },
                       ),
                     )
@@ -909,7 +941,9 @@ export class ProductService {
                 );
                 if (duplicate) {
                   throw new BadRequestException(
-                    this.localizationService.translate('core.the_given_slug_is_exists_before'),
+                    this.localizationService.translate(
+                      'core.the_given_slug_is_exists_before',
+                    ),
                   );
                 }
                 (product as any).slug = newSlug;
@@ -966,7 +1000,9 @@ export class ProductService {
           );
           if (!vAddr) {
             throw new BadRequestException(
-              this.localizationService.translate('ecommerce.vendorAddressNotFound'),
+              this.localizationService.translate(
+                'ecommerce.vendorAddressNotFound',
+              ),
             );
           }
 
@@ -1005,9 +1041,15 @@ export class ProductService {
         }
 
         // UPDATE
-        if (inventoryId != null && (increaseQty !== 0 || decreaseQty !== 0 || firstPrice != null)) {
+        if (
+          inventoryId != null &&
+          (increaseQty !== 0 || decreaseQty !== 0 || firstPrice != null)
+        ) {
           const inv = await this.inventoryRepository.findOne(
-            new QueryOptionsBuilder().filter({ id: inventoryId }).transaction(transaction).build(),
+            new QueryOptionsBuilder()
+              .filter({ id: inventoryId })
+              .transaction(transaction)
+              .build(),
           );
           if (!inv) continue;
           // compute new qty by applying increase/decrease deltas
@@ -1016,7 +1058,9 @@ export class ProductService {
           inv.set('qty', newQty as any);
           inv.set(
             'inventoryStatusId',
-            newQty > 0 ? InventoryStatusEnum.available : InventoryStatusEnum.unavailable,
+            newQty > 0
+              ? InventoryStatusEnum.available
+              : InventoryStatusEnum.unavailable,
           );
           await inv.save({ transaction });
 
@@ -1031,22 +1075,36 @@ export class ProductService {
             // find current first price
             const current = await this.inventoryPriceRepository.findOne(
               new QueryOptionsBuilder()
-                .filter({ inventoryId: inventoryId, variationPriceId: VariationPriceIdEnum.firstPrice })
+                .filter({
+                  inventoryId: inventoryId,
+                  variationPriceId: VariationPriceIdEnum.firstPrice,
+                })
                 .filter(
                   Sequelize.where(
-                    Sequelize.fn('isnull', Sequelize.col('ECInventoryPrice.isDeleted'), 0),
+                    Sequelize.fn(
+                      'isnull',
+                      Sequelize.col('ECInventoryPrice.isDeleted'),
+                      0,
+                    ),
                     { [Op.eq]: 0 },
                   ),
                 )
                 .transaction(transaction)
                 .build(),
             );
-            const changed = !current || String(current.price) !== String(firstPrice);
+            const changed =
+              !current || String(current.price) !== String(firstPrice);
             if (changed) {
               // soft-delete old first prices
               await this.inventoryPriceRepository.update(
                 { isDeleted: true, deletedBy: user.id },
-                { where: { inventoryId: inventoryId, variationPriceId: VariationPriceIdEnum.firstPrice }, transaction },
+                {
+                  where: {
+                    inventoryId: inventoryId,
+                    variationPriceId: VariationPriceIdEnum.firstPrice,
+                  },
+                  transaction,
+                },
               );
               // create new
               await this.inventoryPriceRepository.create(
@@ -1072,7 +1130,9 @@ export class ProductService {
     }
 
     // enqueue product inventory status jobs for impacted products
-    const keepJobs = this.config.get<number>('PRODUCT_INVENTORY_STATUS_KEEPJOBS');
+    const keepJobs = this.config.get<number>(
+      'PRODUCT_INVENTORY_STATUS_KEEPJOBS',
+    );
     for (const pid of impactedProductIds) {
       await this.productInventoryQueue.add(
         Constants.productInventoryStatusJob(pid.toString()),
