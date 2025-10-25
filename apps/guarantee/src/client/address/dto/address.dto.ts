@@ -36,9 +36,10 @@ export class AddressDto {
   @IsNumber()
   provinceId: number;
 
-  // @AutoMap()
-  // @IsNumber()
-  // cityId: number;
+  @AutoMap()
+  @IsNumber()
+  @IsOptional()
+  cityId?: number;
 
   // @AutoMap()
   // @IsNumber()

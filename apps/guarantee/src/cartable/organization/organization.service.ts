@@ -4,6 +4,7 @@ import { InjectModel } from '@nestjs/sequelize';
 import {
   BPMNOrganization,
   GSAddress,
+  GSCity,
   GSGuaranteeOrganization,
   GSProvince,
   GSRequest,
@@ -64,6 +65,11 @@ export class CartableOrganizationService {
               model: GSProvince,
               as: 'province',
               required: true,
+            },
+            {
+              model: GSCity,
+              as: 'city',
+              required: false,
             },
           ],
         },

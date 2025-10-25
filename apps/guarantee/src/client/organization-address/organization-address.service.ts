@@ -100,6 +100,7 @@ export class OrganizationAddressService {
             attributes: ['id', 'name'],
             model: GSCity,
             as: 'city',
+            required: false,
           },
           {
             attributes: ['id', 'name'],
