@@ -7,6 +7,7 @@ import { Op, Sequelize } from 'sequelize';
 import { LocalizationService } from 'apps/main/src/common/localization';
 import { GSFactorTypeEnum } from '@rahino/guarantee/shared/factor-type';
 import { GSFactorStatusEnum } from '@rahino/guarantee/shared/factor-status';
+import * as ExcelJS from 'exceljs';
 
 @Injectable()
 export class IncomeReportService {
@@ -16,7 +17,12 @@ export class IncomeReportService {
     private readonly localizationService: LocalizationService,
   ) {}
 
-  async findAll(filter: GetIncomeReportDto) {
+  private buildBaseQuery(
+    filter: GetIncomeReportDto,
+    options?: { includeAttributesEmpty?: boolean },
+  ) {
+    const includeAttributesEmpty = options?.includeAttributesEmpty ?? false;
+
     let queryBuilder = new QueryOptionsBuilder();
 
     queryBuilder
@@ -25,6 +31,7 @@ export class IncomeReportService {
           model: GSRequest,
           as: 'guaranteeRequest',
           required: true,
+          ...(includeAttributesEmpty ? { attributes: [] } : {}),
         },
       ])
       .filter(
@@ -52,6 +59,12 @@ export class IncomeReportService {
         '$guaranteeRequest.organizationId$': filter.organizationId,
       });
     }
+
+    return queryBuilder;
+  }
+
+  async findAll(filter: GetIncomeReportDto) {
+    let queryBuilder = this.buildBaseQuery(filter);
 
     const count = await this.factorRepository.count(queryBuilder.build());
 
@@ -73,7 +86,6 @@ export class IncomeReportService {
         'settlementDate',
         [Sequelize.col('guaranteeRequest.id'), 'requestId'],
       ])
-
       .offset(filter.offset)
       .limit(filter.limit);
 
@@ -84,44 +96,9 @@ export class IncomeReportService {
   }
 
   async total(filter: GetIncomeReportDto) {
-    let queryBuilder = new QueryOptionsBuilder();
-
-    queryBuilder
-      .include([
-        {
-          model: GSRequest,
-          as: 'guaranteeRequest',
-          attributes: [],
-          required: true,
-        },
-      ])
-      .filter(
-        Sequelize.where(
-          Sequelize.fn('isnull', Sequelize.col('GSFactor.isDeleted'), 0),
-          {
-            [Op.eq]: 0,
-          },
-        ),
-      )
-      .filter({
-        factorTypeId: GSFactorTypeEnum.PayRequestFactor,
-      })
-      .filter({
-        factorStatusId: GSFactorStatusEnum.Paid,
-      })
-      .filter({
-        settlementDate: {
-          [Op.between]: [filter.beginDate, filter.endDate],
-        },
-      });
-
-    if (filter.organizationId) {
-      queryBuilder = queryBuilder.filter({
-        '$guaranteeRequest.organizationId$': filter.organizationId,
-      });
-    }
-
-    queryBuilder = queryBuilder
+    let queryBuilder = this.buildBaseQuery(filter, { includeAttributesEmpty: true })
+      
+      queryBuilder = queryBuilder
       .attributes([
         [
           Sequelize.fn(
@@ -236,5 +213,96 @@ export class IncomeReportService {
     return {
       result: await this.factorRepository.findOne(findOptions),
     };
+  }
+
+  async exportExcel(filter: GetIncomeReportDto): Promise<Buffer> {
+    // Build query using the same filters as findAll, but without pagination
+    let queryBuilder = this.buildBaseQuery(filter).attributes([
+      'id',
+      'representativeSharePercent',
+      'sumOfSolutionIncludeWarranty',
+      'sumOfSolutionOutOfWarranty',
+      'sumOfPartIncludeWarranty',
+      'sumOfPartOutOfWarranty',
+      'atLeastPayFromCustomerForOutOfWarranty',
+      'givenCashPayment',
+      'extraCashPaymentForUnavailableVip',
+      'organizationToCompany',
+      'companyToOrganization',
+      'sumOfOrganizationToCompany',
+      'sumOfCompanyToOrganization',
+      'settlementDate',
+      [Sequelize.col('guaranteeRequest.id'), 'requestId'],
+    ]);
+
+    const findOptions = queryBuilder.build();
+    // Ensure no paging is applied
+    findOptions.offset = null;
+    findOptions.limit = null;
+
+    const rows = (await this.factorRepository.findAll(findOptions)) as any[];
+
+    const workbook = new ExcelJS.Workbook();
+    const sheet = workbook.addWorksheet('IncomeReports');
+    sheet.columns = [
+      { header: 'شناسه فاکتور', key: 'id', width: 14 },
+      { header: 'شناسه درخواست', key: 'requestId', width: 16 },
+      { header: 'درصد سهم نماینده', key: 'representativeSharePercent', width: 18 },
+      { header: 'جمع اجرت داخل گارانتی', key: 'sumOfSolutionIncludeWarranty', width: 22 },
+      { header: 'جمع اجرت خارج از گارانتی', key: 'sumOfSolutionOutOfWarranty', width: 22 },
+      { header: 'جمع قطعه داخل گارانتی', key: 'sumOfPartIncludeWarranty', width: 22 },
+      { header: 'جمع قطعه خارج از گارانتی', key: 'sumOfPartOutOfWarranty', width: 22 },
+      {
+        header: 'حداقل پرداخت مشتری (خارج از گارانتی)',
+        key: 'atLeastPayFromCustomerForOutOfWarranty',
+        width: 30,
+      },
+      { header: 'پرداخت نقدی', key: 'givenCashPayment', width: 16 },
+      {
+        header: 'پرداخت نقدی اضافه برای VIP ناموجود',
+        key: 'extraCashPaymentForUnavailableVip',
+        width: 30,
+      },
+      { header: 'سازمان به شرکت', key: 'organizationToCompany', width: 18 },
+      { header: 'شرکت به سازمان', key: 'companyToOrganization', width: 18 },
+      { header: 'جمع سازمان به شرکت', key: 'sumOfOrganizationToCompany', width: 22 },
+      { header: 'جمع شرکت به سازمان', key: 'sumOfCompanyToOrganization', width: 22 },
+      { header: 'تاریخ تسویه', key: 'settlementDate', width: 16 },
+    ];
+
+    const toPlain = (v: any) => {
+      if (v === null || v === undefined) return '';
+      if (typeof v === 'bigint') return v.toString();
+      if (v instanceof Date) return v.toISOString().slice(0, 10);
+      if (typeof v === 'object' && 'toString' in v) return (v as any).toString();
+      return v;
+    };
+
+    for (const r of rows) {
+      sheet.addRow({
+        id: toPlain(r.id),
+        requestId: toPlain((r as any).get?.('requestId') ?? (r as any).requestId),
+        representativeSharePercent: toPlain(r.representativeSharePercent),
+        sumOfSolutionIncludeWarranty: toPlain(r.sumOfSolutionIncludeWarranty),
+        sumOfSolutionOutOfWarranty: toPlain(r.sumOfSolutionOutOfWarranty),
+        sumOfPartIncludeWarranty: toPlain(r.sumOfPartIncludeWarranty),
+        sumOfPartOutOfWarranty: toPlain(r.sumOfPartOutOfWarranty),
+        atLeastPayFromCustomerForOutOfWarranty: toPlain(
+          r.atLeastPayFromCustomerForOutOfWarranty,
+        ),
+        givenCashPayment: toPlain(r.givenCashPayment),
+        extraCashPaymentForUnavailableVip: toPlain(
+          r.extraCashPaymentForUnavailableVip,
+        ),
+        organizationToCompany: toPlain(r.organizationToCompany),
+        companyToOrganization: toPlain(r.companyToOrganization),
+        sumOfOrganizationToCompany: toPlain(r.sumOfOrganizationToCompany),
+        sumOfCompanyToOrganization: toPlain(r.sumOfCompanyToOrganization),
+        settlementDate: toPlain(r.settlementDate),
+      });
+    }
+
+    const buffer = await workbook.xlsx.writeBuffer();
+    return buffer as Buffer;
   }
 }

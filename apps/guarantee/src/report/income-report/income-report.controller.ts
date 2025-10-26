@@ -4,6 +4,7 @@ import {
   HttpCode,
   HttpStatus,
   Query,
+  Res,
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
@@ -16,6 +17,7 @@ import {
   ApiQuery,
   ApiTags,
 } from '@nestjs/swagger';
+import { Response } from 'express';
 
 import { JwtGuard } from '@rahino/auth';
 import { IncomeReportService } from './income-report.service';
@@ -62,5 +64,33 @@ export class IncomeReportController {
   @HttpCode(HttpStatus.OK)
   async total(@Query() filter: GetIncomeReportDto) {
     return await this.service.total(filter);
+  }
+
+  @ApiOperation({ description: 'export income reports to Excel' })
+  @CheckPermission({
+    permissionSymbol: 'gs.report.incomereports.getall',
+  })
+  @Get('/export')
+  @ApiQuery({
+    name: 'filter',
+    type: GetIncomeReportDto,
+    style: 'deepObject',
+    explode: true,
+  })
+  @HttpCode(HttpStatus.OK)
+  async export(
+    @Query() filter: GetIncomeReportDto,
+    @Res() res: Response,
+  ) {
+    const buffer = await this.service.exportExcel(filter);
+    res.setHeader(
+      'Content-Type',
+      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    );
+    res.setHeader(
+      'Content-Disposition',
+      'attachment; filename="income-reports.xlsx"',
+    );
+    res.send(buffer);
   }
 }
