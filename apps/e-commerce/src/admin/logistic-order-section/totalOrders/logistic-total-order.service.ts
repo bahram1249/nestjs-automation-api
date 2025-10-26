@@ -206,11 +206,8 @@ export class LogisticTotalOrderService {
       );
 
       // If payment was with SnapPay and is successful, cancel it
-      try {
-        await this.snapPayService.cancel(id as any, transaction);
-      } catch {
-        // ignore snap pay cancel errors to not block admin operations
-      }
+
+      await this.cancelSnapPayIfApplicable(id, transaction);
 
       await transaction.commit();
     } catch (e) {
@@ -695,5 +692,34 @@ export class LogisticTotalOrderService {
       order.id as any,
       groupedDetails,
     );
+  }
+
+  private async cancelSnapPayIfApplicable(
+    orderId: bigint,
+    transaction?: Transaction,
+  ) {
+    const payment = await this.paymentRepository.findOne(
+      new QueryOptionsBuilder()
+        .filter({ logisticOrderId: orderId })
+        .filter(
+          Sequelize.where(
+            Sequelize.fn('isnull', Sequelize.col('ECPayment.isDeleted'), 0),
+            { [Op.eq]: 0 },
+          ),
+        )
+        .transaction(transaction)
+        .build(),
+    );
+    if (!payment) return;
+
+    const gateway = await this.paymentGatewayRepository.findOne(
+      new QueryOptionsBuilder()
+        .filter({ id: payment.paymentGatewayId })
+        .transaction(transaction)
+        .build(),
+    );
+    if (!gateway || gateway.serviceName !== 'SnapPayService') return;
+
+    await this.snapPayService.cancel(orderId, transaction);
   }
 }
