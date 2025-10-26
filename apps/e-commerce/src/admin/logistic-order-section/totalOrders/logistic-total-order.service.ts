@@ -682,26 +682,18 @@ export class LogisticTotalOrderService {
 
     // if there is no detail anymore, cancel the payment
     if (!groupedDetails || groupedDetails.length === 0) {
-      try {
-        await this.snapPayService.cancel(order.id as any, transaction);
-      } catch {
-        // ignore snap pay cancel errors to not block admin operations
-      }
+      await this.snapPayService.cancel(order.id as any, transaction);
       return;
     }
 
-    try {
-      await this.snapPayService.update(
-        totalPrice,
-        discountAmount,
-        shipmentAmount,
-        phone,
-        transaction,
-        order.id as any,
-        groupedDetails,
-      );
-    } catch {
-      // ignore snap pay update errors to not block admin operations
-    }
+    await this.snapPayService.update(
+      totalPrice,
+      discountAmount,
+      shipmentAmount,
+      phone,
+      transaction,
+      order.id as any,
+      groupedDetails,
+    );
   }
 }
