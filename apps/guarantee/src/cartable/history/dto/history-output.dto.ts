@@ -5,6 +5,7 @@ export class HistoryOutputDto {
   public to: string;
   public description?: string;
   public nodeCommand?: string;
+  public executeBundle?: string;
   public createdAt: Date;
   public updatedAt: Date;
 }

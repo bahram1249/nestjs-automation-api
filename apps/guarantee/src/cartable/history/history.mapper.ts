@@ -23,6 +23,7 @@ export class HistoryMapper {
     output.to = this.toFieldMap(item);
     output.nodeCommand = item.nodeCommand.name;
     output.description = item.description;
+    output.executeBundle = item.executeBundle;
     return output;
   }
 
