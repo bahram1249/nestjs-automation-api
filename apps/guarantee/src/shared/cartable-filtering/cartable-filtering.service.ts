@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { OrganizationUserService } from '@rahino/bpmn/modules/organization-user/organization-user.service';
 
-import { Role, User, UserRole } from '@rahino/database';
+import { Role, User, UserRole, UserType } from '@rahino/database';
 import {
   BPMNActivity,
   BPMNNode,
@@ -293,10 +293,12 @@ export class SharedCartableFilteringService {
               'lastname',
               'nationalCode',
               'phoneNumber',
+              'userTypeId',
             ],
             model: User,
             as: 'user',
             required: true,
+            include: [{ model: UserType, as: 'userType', required: false }],
           },
           {
             attributes: ['id', 'title'],

@@ -21,7 +21,7 @@ import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builde
 import { GSFactorStatusEnum } from '../factor-status';
 import { GSFactorTypeEnum } from '../factor-type';
 import { Op, Sequelize } from 'sequelize';
-import { User } from '@rahino/database';
+import { User, UserType } from '@rahino/database';
 import { GSTransactionStatusEnum } from '../transaction-status';
 import { Order } from '@rahino/query-filter';
 
@@ -55,8 +55,10 @@ export class GSSuccessFactorQueryBuilderService {
         'lastname',
         'phoneNumber',
         'nationalCode',
+        'userTypeId',
       ],
       required: true,
+      include: [{ model: UserType, as: 'userType', required: false }],
     });
 
     return this;
