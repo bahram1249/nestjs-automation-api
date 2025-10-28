@@ -89,6 +89,7 @@ export class LoginService {
         firstname: dto.firstname,
         lastname: dto.lastname,
         nationalCode: dto.nationalCode,
+        userTypeId: dto.userTypeId,
       });
     }
     const signToken = await this.authService.signToken(user);

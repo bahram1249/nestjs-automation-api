@@ -1,5 +1,11 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsOptional, IsString, Matches } from 'class-validator';
+import {
+  IsNotEmpty,
+  IsNumber,
+  IsOptional,
+  IsString,
+  Matches,
+} from 'class-validator';
 
 export class VerifyDto {
   @IsString()
@@ -58,4 +64,14 @@ export class VerifyDto {
     description: 'code',
   })
   code: string;
+
+  @IsNumber()
+  @IsOptional()
+  @ApiProperty({
+    required: false,
+    type: IsNumber,
+    default: '1',
+    description: 'userTypeId',
+  })
+  userTypeId?: number;
 }

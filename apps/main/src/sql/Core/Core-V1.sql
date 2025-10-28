@@ -82,6 +82,33 @@ END
 
 GO
 
+IF NOT EXISTS ((SELECT 1 FROM Migrations WHERE version = 'CORE-UserTypes-v1' 
+					
+			))
+	AND EXISTS (
+		SELECT 1 FROM Settings WHERE 1=1
+		OR ([key] = 'SITE_NAME' AND [value] IN ('SITE_NAME'))
+	)
+BEGIN
+
+	CREATE TABLE UserTypes
+	(
+		id							int									PRIMARY KEY,
+		title						nvarchar(256)						NOT NULL,
+		[createdAt]					datetimeoffset						NOT NULL,
+		[updatedAt]					datetimeoffset						NOT NULL
+	)
+
+	INSERT INTO UserTypes(id, title, createdAt, updatedAt)
+	VALUES (1, N'حقیقی', getdate(), getdate())
+		,(2, N'حقوقی', getdate(), getdate())
+
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'CORE-UserTypes-v1', GETDATE(), GETDATE()
+END
+
+GO
 
 
 IF NOT EXISTS ((SELECT 1 FROM Migrations WHERE version = 'CORE-Users-v1' 
@@ -162,6 +189,29 @@ BEGIN
 END
 
 GO
+
+
+
+IF NOT EXISTS ((SELECT 1 FROM Migrations WHERE version = 'CORE-Users-v4'
+
+			))
+	AND EXISTS (
+		SELECT 1 FROM Settings WHERE 1=1
+		OR ([key] = 'SITE_NAME' AND [value] IN ('SITE_NAME'))
+	)
+BEGIN
+
+	ALTER TABLE Users
+		ADD userTypeId	int NULL default 1
+			CONSTRAINT FK_Users_UserTypeId  FOREIGN KEY REFERENCES UserTypes(id);
+
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'CORE-Users-v4', GETDATE(), GETDATE()
+END
+
+GO
+
 
 
 IF NOT EXISTS ((SELECT 1 FROM Migrations WHERE version = 'CORE-AttachmentTypes-v1' 
