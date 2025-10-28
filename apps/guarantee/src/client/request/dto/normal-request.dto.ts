@@ -1,6 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { I18nTranslations } from 'apps/main/src/generated/i18n.generated';
 import { AutoMap } from 'automapper-classes';
+import { Type } from 'class-transformer';
 import {
   IsArray,
   IsNotEmpty,
@@ -8,11 +9,11 @@ import {
   IsOptional,
   IsString,
   Matches,
-  MaxLength,
-  MinLength,
+  ValidateNested,
 } from 'class-validator';
 import { i18nValidationMessage } from 'nestjs-i18n';
 import { AttachmentDto } from './attachment.dto';
+import { RequestItemDto } from './request-item.dto';
 
 export class NormalRequestDto {
   @IsOptional()
@@ -48,4 +49,11 @@ export class NormalRequestDto {
 
   @IsArray()
   attachments: AttachmentDto[] = [];
+
+  @IsOptional()
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => RequestItemDto)
+  @ApiProperty({ required: false, type: [RequestItemDto] })
+  items?: RequestItemDto[];
 }

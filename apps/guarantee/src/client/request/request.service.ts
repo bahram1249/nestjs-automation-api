@@ -18,6 +18,7 @@ import {
   GSRequest,
   GSRequestAttachment,
   GSRequestCategory,
+  GSRequestItem,
   GSRequestType,
   GSVariant,
 } from '@rahino/localdatabase/models';
@@ -27,6 +28,7 @@ import {
   GetRequestFilterDto,
   NormalRequestDto,
   OutOfWarrantyRequestDto,
+  RequestItemDto,
   VipRequestDto,
 } from './dto';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
@@ -43,6 +45,7 @@ import { MinioClientService } from '@rahino/minio-client';
 import { ThumbnailService } from '@rahino/thumbnail';
 import * as fs from 'fs';
 import { GSRequestAttachmentTypeEnum } from '@rahino/guarantee/shared/request-attachment-type';
+import { RequestItemTypeEnum } from '@rahino/guarantee/shared/request-item-type';
 
 @Injectable()
 export class RequestService {
@@ -68,9 +71,35 @@ export class RequestService {
     private readonly attachmentRepository: typeof Attachment,
     @InjectModel(GSRequestAttachment)
     private readonly requestAttachmentRepository: typeof GSRequestAttachment,
+    @InjectModel(GSRequestItem)
+    private readonly requestItemRepository: typeof GSRequestItem,
 
     private readonly thumbnailService: ThumbnailService,
   ) {}
+
+  private async createRequestItems(
+    user: User,
+    requestId: bigint,
+    items: RequestItemDto[] | undefined,
+    transaction: Transaction,
+  ) {
+    if (!items?.length) {
+      return;
+    }
+
+    for (const item of items) {
+      await this.requestItemRepository.create(
+        {
+          requestId,
+          title: item.title,
+          barcode: item.barcode,
+          userId: user.id,
+          requestItemTypeId: RequestItemTypeEnum.SubmitByRequestOwner,
+        },
+        { transaction },
+      );
+    }
+  }
 
   async createNormalGuaranteeRequest(user: User, dto: NormalRequestDto) {
     if (dto.attachments.length == 0) {
@@ -223,6 +252,8 @@ export class RequestService {
         );
       }
 
+      await this.createRequestItems(user, requestId, dto.items, transaction);
+
       await transaction.commit();
       await this.normalGuaranteeRequestSmsSenderQueue.add(
         'normal_guarantee_request_sms_sender',
@@ -346,6 +377,8 @@ export class RequestService {
           { transaction: transaction },
         );
       }
+
+      await this.createRequestItems(user, requestId, dto.items, transaction);
 
       await transaction.commit();
       await this.normalGuaranteeRequestSmsSenderQueue.add(
@@ -522,6 +555,8 @@ export class RequestService {
           { transaction: transaction },
         );
       }
+
+      await this.createRequestItems(user, requestId, dto.items, transaction);
 
       await transaction.commit();
       await this.normalGuaranteeRequestSmsSenderQueue.add(
