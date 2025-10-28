@@ -52,3 +52,4 @@ export * from './gs-points.entity';
 export * from './gs-user-point.entity';
 export * from './gs-subscription.entity';
 export * from './gs-faq.entity';
+export * from './gs-request-item-type.entity';

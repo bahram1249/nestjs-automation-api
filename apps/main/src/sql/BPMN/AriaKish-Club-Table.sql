@@ -2284,3 +2284,59 @@ END
 
 GO
 
+
+-- gs-request-item-types-v1
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'gs-request-item-types-v1'
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings
+		WHERE ([key] = 'CUSTOMER_NAME' AND [value] IN ('AriaKish'))
+		)
+BEGIN
+
+	CREATE TABLE GSRequestItemTypes(
+		id 							int							PRIMARY KEY,
+		title						nvarchar(50)				NOT NULL,	
+		[createdAt]					datetimeoffset				NOT NULL,
+		[updatedAt]					datetimeoffset				NOT NULL
+	)
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'gs-request-item-types-v1', GETDATE(), GETDATE()
+END
+
+GO
+
+
+-- gs-request-items-v1
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'gs-request-items-v1'
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings
+		WHERE ([key] = 'CUSTOMER_NAME' AND [value] IN ('AriaKish'))
+		)
+BEGIN
+
+	CREATE TABLE GSRequestItems(
+		id 							bigint identity(1,1)		PRIMARY KEY,
+		requestId					bigint						NOT NULL
+			CONSTRAINT FK_GSRequestItems_RequestId
+				FOREIGN KEY REFERENCES GSRequests(id),
+		userId						bigint						NOT NULL
+			CONSTRAINT FK_GSRequestItems_UserId
+				FOREIGN KEY REFERENCES Users(id),
+		requestItemTypeId			int							NOT NULL
+			CONSTRAINT FK_GSRequestItems_RequestItemTypeId
+				FOREIGN KEY REFERENCES GSRequestItemTypes(id),
+		title						nvarchar(256)				NOT NULL,
+		barcode						nvarchar(256)				NULL,
+		isDeleted					bit							NULL,	
+		[createdAt]					datetimeoffset				NOT NULL,
+		[updatedAt]					datetimeoffset				NOT NULL
+	)
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'gs-request-items-v1', GETDATE(), GETDATE()
+END
+
+GO

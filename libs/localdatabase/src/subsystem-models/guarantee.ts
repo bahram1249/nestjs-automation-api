@@ -52,7 +52,9 @@ import {
   GSUserPoint,
   GSSubscription,
   GSFaq,
+  GSRequestItemType,
 } from '../models';
+import { GSRequestItem } from '../models/guarantee/gs-request-item.entity';
 
 export const guaranteeModels = [
   GSProvider,
@@ -108,4 +110,6 @@ export const guaranteeModels = [
   GSUserPoint,
   GSSubscription,
   GSFaq,
+  GSRequestItemType,
+  GSRequestItem,
 ];
