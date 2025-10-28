@@ -109,6 +109,7 @@ import { AnonymousPublicReportModule } from './anonymous/public-report';
 import { GSFaqModule } from './admin/faq';
 import { GSAnonymousFaqModule } from './anonymous/faq';
 import { GSClientProfileModule } from './client/profile/gsprofile.module';
+import { ClientSubmitCardSmsSenderModule } from './job/client-submit-card-sms-sender';
 
 @Module({
   imports: [
@@ -183,6 +184,7 @@ import { GSClientProfileModule } from './client/profile/gsprofile.module';
     PreRegistrationInitSmsSenderModule,
     PreRegistrationSucessSmsSenderModule,
     PreRegistrationRejectDescriptionSmsSenderModule,
+    ClientSubmitCardSmsSenderModule,
 
     // test
     CartableAutoTraverseModule,

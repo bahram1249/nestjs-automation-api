@@ -5,11 +5,7 @@ import {
 } from '@nestjs/common';
 import {
   GSAssignedGuarantee,
-  GSBrand,
   GSGuarantee,
-  GSGuaranteePeriod,
-  GSProductType,
-  GSVariant,
   GSVipBundleType,
 } from '@rahino/localdatabase/models';
 import { User } from '@rahino/database';
@@ -24,6 +20,9 @@ import { I18nTranslations } from 'apps/main/src/generated/i18n.generated';
 import { I18nContext, I18nService } from 'nestjs-i18n';
 import * as _ from 'lodash';
 import { GSGuaranteeConfirmStatus } from '@rahino/guarantee/shared/guarantee-confirm-status';
+import { CLIENT_SUBMIT_CARD_SMS_SENDER_QUEUE } from '@rahino/guarantee/job/client-submit-card-sms-sender/constants';
+import { Queue } from 'bullmq';
+import { InjectQueue } from '@nestjs/bullmq';
 
 @Injectable()
 export class VipGuaranteeService {
@@ -33,6 +32,8 @@ export class VipGuaranteeService {
     @InjectModel(GSGuarantee)
     private readonly guaranteeRepository: typeof GSGuarantee,
     private readonly i18n: I18nService<I18nTranslations>,
+    @InjectQueue(CLIENT_SUBMIT_CARD_SMS_SENDER_QUEUE)
+    private readonly clientSubmitCardSmsSenderQueue: Queue,
   ) {}
 
   async findAll(user: User, filter: ListFilter) {
@@ -173,6 +174,17 @@ export class VipGuaranteeService {
       guaranteeId: guarantee.id,
       userId: user.id,
     });
+
+    await this.clientSubmitCardSmsSenderQueue.add(
+      'send-client-submit-card-sms',
+      {
+        id: user.id,
+        firstname: user.firstname,
+        lastname: user.lastname,
+        phoneNumber: user.phoneNumber,
+        serialNumber: guarantee.serialNumber,
+      },
+    );
 
     return {
       result: guarantee,
