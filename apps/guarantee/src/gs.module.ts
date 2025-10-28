@@ -110,6 +110,7 @@ import { GSFaqModule } from './admin/faq';
 import { GSAnonymousFaqModule } from './anonymous/faq';
 import { GSClientProfileModule } from './client/profile/gsprofile.module';
 import { ClientSubmitCardSmsSenderModule } from './job/client-submit-card-sms-sender';
+import { GSAnonymousCheckModule } from './anonymous/guarantee-check';
 
 @Module({
   imports: [
@@ -255,6 +256,7 @@ import { ClientSubmitCardSmsSenderModule } from './job/client-submit-card-sms-se
     GSAnonymousFaqModule,
 
     GSClientProfileModule,
+    GSAnonymousCheckModule,
 
     // BullBoardModule.forRoot({
     //   route: '/queues',

@@ -217,16 +217,15 @@ export class AppModule implements NestModule {
 
     if (cluster.isPrimary) {
       for (let i = 0; i < numCpu; i++) {
+        console.log(i);
         cluster.fork();
       }
       cluster.on('exit', (worker, code, signal) => {
         this.logger.warn(`worker exit ${worker.process.pid} !`);
         cluster.fork();
       });
-    } else {
-      //app.get(UIModule).setApp(app);
-      const projectName = this.config.get<string>('PROJECT_NAME');
 
+      const projectName = this.config.get<string>('PROJECT_NAME');
       const serviceInstance: ModuleInitializerServiceInterface =
         await this.moduleRef.get<ModuleInitializerServiceInterface>(
           projectName + 'InitializerService',
@@ -242,7 +241,7 @@ export class AppModule implements NestModule {
       }
 
       await serviceInstance.init(app);
-
+    } else {
       const port = this.config.get('HOST_PORT');
       const host = this.config.get('HOST_NAME');
 
