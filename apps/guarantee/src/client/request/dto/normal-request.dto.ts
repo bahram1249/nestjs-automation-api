@@ -52,8 +52,5 @@ export class NormalRequestDto {
 
   @IsOptional()
   @IsArray()
-  @ValidateNested({ each: true })
-  @Type(() => RequestItemDto)
-  @ApiProperty({ required: false, type: [RequestItemDto] })
   items?: RequestItemDto[];
 }

@@ -20,8 +20,5 @@ export class PickShipmentWayDetailDto {
 
   @IsOptional()
   @IsArray()
-  @ValidateNested({ each: true })
-  @Type(() => RequestItemDto)
-  @ApiProperty({ required: false, type: [RequestItemDto] })
   items?: RequestItemDto[];
 }
