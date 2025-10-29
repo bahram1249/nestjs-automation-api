@@ -32,11 +32,7 @@ export class ActivityController {
   //@CheckPermission({ permissionSymbol: 'bpmn.activities.getall' })
   @Get('/')
   @HttpCode(HttpStatus.OK)
-  async findAll(
-    @Query() flat: GetActivityDto,
-    @Query('filter') nested?: GetActivityDto,
-  ) {
-    const filter: GetActivityDto = nested ?? flat;
+  async findAll(@Query() filter: GetActivityDto) {
     return this.service.findAll(filter);
   }
 
