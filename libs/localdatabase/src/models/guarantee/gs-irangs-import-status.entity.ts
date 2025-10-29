@@ -5,12 +5,11 @@ export class GSIrangsImportStatus extends Model {
   @Column({
     type: DataType.INTEGER,
     primaryKey: true,
-    autoIncrement: true,
   })
   id: number;
 
   @Column({
     type: DataType.STRING,
   })
-  name: string;
+  title: string;
 }

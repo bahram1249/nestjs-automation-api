@@ -253,29 +253,13 @@ IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'gs-irangs-import-status
 BEGIN
     CREATE TABLE GSIrangsImportStatuses (
         id INT PRIMARY KEY,
-        name NVARCHAR(255) NOT NULL,
+        title NVARCHAR(255) NOT NULL,
         createdAt DATETIMEOFFSET NOT NULL,
         updatedAt DATETIMEOFFSET NOT NULL
     );
 
     INSERT INTO Migrations(version, createdAt, updatedAt)
     SELECT 'gs-irangs-import-statuses-v1', GETDATE(), GETDATE();
-END;
-GO
-
-IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'gs-irangs-import-statuses-data-v1')
-BEGIN
-    SET IDENTITY_INSERT GSIrangsImportStatuses ON;
-    INSERT INTO GSIrangsImportStatuses (id, name, createdAt, updatedAt)
-    VALUES
-        (1, 'Pending', GETDATE(), GETDATE()),
-        (2, 'Processing', GETDATE(), GETDATE()),
-        (3, 'Completed', GETDATE(), GETDATE()),
-        (4, 'Failed', GETDATE(), GETDATE());
-    SET IDENTITY_INSERT GSIrangsImportStatuses OFF;
-
-    INSERT INTO Migrations(version, createdAt, updatedAt)
-    SELECT 'gs-irangs-import-statuses-data-v1', GETDATE(), GETDATE();
 END;
 GO
 

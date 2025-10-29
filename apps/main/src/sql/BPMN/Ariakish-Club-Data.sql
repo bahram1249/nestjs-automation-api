@@ -151,6 +151,28 @@ END
 
 GO
 
+-- irangs import statuses
+IF NOT EXISTS ( SELECT 1 FROM Migrations WHERE version = 'gs-irangs-import-statuses-Data-v1'
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings
+		WHERE ([key] = 'CUSTOMER_NAME' AND [value] IN ('AriaKish'))
+		)
+
+BEGIN
+
+	INSERT INTO GSIrangsImportStatuses(id, title, createdAt, updatedAt)
+	VALUES (1, N'Pending', GETDATE(), GETDATE())
+			,(2, N'Processing', GETDATE(), GETDATE())
+			,(3, N'Completed', GETDATE(), GETDATE())
+			,(4, N'Failed', GETDATE(), GETDATE())
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'gs-irangs-import-statuses-Data-v1', GETDATE(), GETDATE()
+END
+
+GO
+
 
 
 IF NOT EXISTS ( SELECT 1 FROM Migrations WHERE version = 'gs-product-type-offset-settings-Data-v1' 
