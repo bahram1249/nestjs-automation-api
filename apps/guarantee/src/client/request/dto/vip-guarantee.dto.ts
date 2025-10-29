@@ -56,5 +56,5 @@ export class VipRequestDto {
 
   @IsOptional()
   @IsArray()
-  items?: RequestItemDto[];
+  items?: RequestItemDto[] = [];
 }

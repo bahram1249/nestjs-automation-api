@@ -60,5 +60,5 @@ export class OutOfWarrantyRequestDto {
 
   @IsOptional()
   @IsArray()
-  items?: RequestItemDto[];
+  items?: RequestItemDto[] = [];
 }

@@ -52,5 +52,5 @@ export class NormalRequestDto {
 
   @IsOptional()
   @IsArray()
-  items?: RequestItemDto[];
+  items?: RequestItemDto[] = [];
 }
