@@ -111,9 +111,11 @@ import { GSAnonymousFaqModule } from './anonymous/faq';
 import { GSClientProfileModule } from './client/profile/gsprofile.module';
 import { ClientSubmitCardSmsSenderModule } from './job/client-submit-card-sms-sender';
 import { GSAnonymousCheckModule } from './anonymous/guarantee-check';
+import { IrangsImportDataModule } from './admin/irangs-import-data';
 
 @Module({
   imports: [
+    IrangsImportDataModule,
     LoginModule,
     ProductTypeModule,
     BrandModule,

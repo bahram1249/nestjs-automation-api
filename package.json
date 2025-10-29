@@ -93,7 +93,8 @@
     "short-unique-id": "^5.2.2",
     "soap": "^1.0.3",
     "swagger-ui-express": "^5.0.0",
-    "uuidv4": "^6.2.13"
+    "uuidv4": "^6.2.13",
+    "xlsx": "^0.18.5"
   },
   "devDependencies": {
     "@nestjs/cli": "^10.0.0",
