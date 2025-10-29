@@ -10,7 +10,7 @@ import { GSRequest } from './gs-request.entity';
 import { User } from '@rahino/database';
 import { GSRequestItemType } from './gs-request-item-type.entity';
 
-@Table({ tableName: 'GSRequestItems', timestamps: false })
+@Table({ tableName: 'GSRequestItems' })
 export class GSRequestItem extends Model {
   @Column({
     type: DataType.BIGINT,
