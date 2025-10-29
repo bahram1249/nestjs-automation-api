@@ -91,6 +91,11 @@ export class IrangsImportDataProcessor extends WorkerHost {
     const existingSerials = await this.getExistingSerials(
       cleanedData.map((row) => row['شناسه رهگیری']),
     );
+    const guaranteePeriods = await this.guaranteePeriodRepository.findAll();
+    const guaranteePeriodMap = new Map<string, number>();
+    guaranteePeriods.forEach((period) => {
+      guaranteePeriodMap.set(period.providerText, period.id);
+    });
 
     const guaranteesToCreate = [];
     for (const row of cleanedData) {
@@ -108,13 +113,14 @@ export class IrangsImportDataProcessor extends WorkerHost {
       const totalMonths =
         (endDate.getFullYear() - startDate.getFullYear()) * 12 +
         (endDate.getMonth() - startDate.getMonth());
-      const guaranteePeriod = await this.getGuaranteePeriod(totalMonths);
+      const guaranteePeriodId =
+        guaranteePeriodMap.get(`${totalMonths}MONTHS_PERIOD`) || 1;
 
       guaranteesToCreate.push({
         providerId: 3,
         brandId: brandMap.get(row['برند']),
         guaranteeTypeId: 1,
-        guaranteePeriodId: guaranteePeriod?.id || 1,
+        guaranteePeriodId: guaranteePeriodId,
         guaranteeConfirmStatusId: 2,
         serialNumber: row['شناسه رهگیری'],
         startDate: startDate,
@@ -194,7 +200,15 @@ export class IrangsImportDataProcessor extends WorkerHost {
     }
     try {
       if (typeof dateString === 'number') {
-        return new Date(1900, 0, dateString - 1);
+        // MS-DOS uses 1980-01-01 as its epoch.
+        // Lotus 1-2-3 uses 1900-01-01 as its epoch.
+        // Excel for Windows uses 1900-01-01 as its epoch and erroneously treats 1900 as a leap year.
+        // Excel for Macintosh uses 1904-01-01 as its epoch.
+        const excelEpoch = new Date(1899, 11, 30);
+        const excelDate = new Date(
+          excelEpoch.getTime() + dateString * 24 * 60 * 60 * 1000,
+        );
+        return excelDate;
       }
       const normalizedDate = this.normalizeDigits(dateString.toString());
       return new persianDate(normalizedDate.split('/').map(Number)).toDate();
@@ -213,15 +227,6 @@ export class IrangsImportDataProcessor extends WorkerHost {
       ...Object.fromEntries(arabic.split('').map((a, i) => [a, i.toString()])),
     };
     return s.replace(/[۰-۹٠-٩]/g, (match) => trans[match]);
-  }
-
-  private async getGuaranteePeriod(
-    months: number,
-  ): Promise<GSGuaranteePeriod | null> {
-    const label = `${months}MONTHS_PERIOD`;
-    return this.guaranteePeriodRepository.findOne({
-      where: { providerText: label },
-    });
   }
 
   private async updateImportStatus(
