@@ -17,7 +17,6 @@ export class GSSuccessFactorQueryBuilderMapper {
   constructor() {}
 
   mapItems(items: GSFactor[]): GSFactorOutputDto[] {
-    console.log(items);
     return items.map((item) => this.mapItem(item));
   }
 
@@ -50,6 +49,8 @@ export class GSSuccessFactorQueryBuilderMapper {
       transactions: transactions,
       fullName: item.user.firstname + ' ' + item.user.lastname,
       nationalCode: item.user.nationalCode,
+      userTypeId: item.user.userTypeId,
+      userTypeTitle: item.user.userType?.title,
     };
   }
 

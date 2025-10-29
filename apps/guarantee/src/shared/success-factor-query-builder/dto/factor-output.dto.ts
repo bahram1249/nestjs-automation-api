@@ -1,3 +1,4 @@
+import { UserType } from '@rahino/database';
 import { GSFactorItemOutputDto } from './factor-item.output';
 import { GSFactorTransactionOutputDto } from './factor-transactions.output';
 
@@ -16,4 +17,6 @@ export class GSFactorOutputDto {
   public transactions: GSFactorTransactionOutputDto[];
   public fullName: string;
   public nationalCode: string;
+  public userTypeId: number;
+  public userTypeTitle: string;
 }
