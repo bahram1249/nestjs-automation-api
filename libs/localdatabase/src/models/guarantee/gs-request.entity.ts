@@ -6,6 +6,7 @@ import {
   ForeignKey,
   BelongsTo,
   AllowNull,
+  HasMany,
 } from 'sequelize-typescript';
 import { GSRequestType } from './gs-request-type.entity';
 import { GSRequestCategory } from './gs-request-category.entity';
@@ -19,6 +20,7 @@ import { User } from '@rahino/database';
 import { GSAddress } from './gs-address.entity';
 import { AutoMap } from 'automapper-classes';
 import { GSShippingWay } from './gs-shipping-way.entity';
+import { GSRequestItem } from './gs-request-item.entity';
 
 @Table({ tableName: 'GSRequests' })
 export class GSRequest extends Model {
@@ -221,4 +223,11 @@ export class GSRequest extends Model {
 
   @Column({ type: DataType.BOOLEAN, allowNull: true })
   isCash?: boolean;
+
+  @HasMany(() => GSRequestItem, {
+    as: 'requestItems',
+    foreignKey: 'requestId',
+    sourceKey: 'id',
+  })
+  requestItems: GSRequestItem[];
 }

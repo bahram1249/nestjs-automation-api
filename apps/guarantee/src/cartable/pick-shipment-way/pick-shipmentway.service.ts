@@ -5,8 +5,10 @@ import { InjectConnection, InjectModel } from '@nestjs/sequelize';
 import { Sequelize, Transaction } from 'sequelize';
 import { TraverseService } from '@rahino/bpmn/modules/traverse/traverse.service';
 import { LocalizationService } from 'apps/main/src/common/localization';
-import { GSRequest } from '@rahino/localdatabase/models';
+import { GSRequest, GSRequestItem } from '@rahino/localdatabase/models';
 import { GuaranteeTraverseService } from '@rahino/guarantee/cartable/guarantee-traverse/guarantee-traverse.service';
+import { RequestItemDto } from './dto/request-item.dto';
+import { RequestItemTypeEnum } from '@rahino/guarantee/shared/request-item-type';
 
 @Injectable()
 export class PickShipmentWayService {
@@ -18,6 +20,8 @@ export class PickShipmentWayService {
     private readonly localizationService: LocalizationService,
     @InjectModel(GSRequest)
     private readonly requestRepository: typeof GSRequest,
+    @InjectModel(GSRequestItem)
+    private readonly requestItemRepository: typeof GSRequestItem,
   ) {}
 
   async traverse(user: User, dto: PickShipmentWayDto) {
@@ -44,6 +48,13 @@ export class PickShipmentWayService {
           transaction: transaction,
         },
       );
+
+      await this.createRequestItems(
+        user,
+        cartableItem.request.id,
+        dto.items,
+        transaction,
+      );
       // lets traverse request
       await this.traverseService.traverse({
         request: cartableItem.request,
@@ -66,5 +77,29 @@ export class PickShipmentWayService {
         message: this.localizationService.translate('core.success'),
       },
     };
+  }
+
+  private async createRequestItems(
+    user: User,
+    requestId: bigint,
+    items: RequestItemDto[] | undefined,
+    transaction: Transaction,
+  ) {
+    if (!items?.length) {
+      return;
+    }
+
+    for (const item of items) {
+      await this.requestItemRepository.create(
+        {
+          requestId,
+          title: item.title,
+          barcode: item.barcode,
+          userId: user.id,
+          requestItemTypeId: RequestItemTypeEnum.SubmitByOrganization,
+        },
+        { transaction },
+      );
+    }
   }
 }
