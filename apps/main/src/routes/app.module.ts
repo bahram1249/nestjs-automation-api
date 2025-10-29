@@ -224,7 +224,7 @@ export class AppModule implements NestModule {
         this.logger.warn(`worker exit ${worker.process.pid} !`);
         cluster.fork();
       });
-
+    } else {
       const projectName = this.config.get<string>('PROJECT_NAME');
       const serviceInstance: ModuleInitializerServiceInterface =
         await this.moduleRef.get<ModuleInitializerServiceInterface>(
@@ -241,7 +241,7 @@ export class AppModule implements NestModule {
       }
 
       await serviceInstance.init(app);
-    } else {
+
       const port = this.config.get('HOST_PORT');
       const host = this.config.get('HOST_NAME');
 
