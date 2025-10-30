@@ -4,7 +4,7 @@ import { Queue } from 'bullmq';
 import { IRANGS_IMPORT_QUEUE } from './constants';
 import { InjectModel } from '@nestjs/sequelize';
 import { GSIrangsImportData } from '@rahino/localdatabase/models/guarantee/gs-irangs-import-data.entity';
-import { User } from '@rahino/database/models/core/user.entity';
+import { User } from '@rahino/database';
 import { IrangsImportDataGetDto } from './dto';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import { GSIrangsImportStatus } from '@rahino/localdatabase/models/guarantee/gs-irangs-import-status.entity';
@@ -48,24 +48,23 @@ export class IrangsImportDataService {
   }
 
   async findAll(dto: IrangsImportDataGetDto) {
-    const queryBuilder = new QueryOptionsBuilder()
-      .include([
-        {
-          model: User,
-          as: 'user',
-        },
-        {
-          model: GSIrangsImportStatus,
-          as: 'status',
-        },
-      ])
-      .limit(dto.limit)
-      .offset(dto.offset);
+    const queryBuilder = new QueryOptionsBuilder().include([
+      {
+        model: User,
+        as: 'user',
+      },
+      {
+        model: GSIrangsImportStatus,
+        as: 'status',
+      },
+    ]);
     const count = await this.irangsImportDataRepository.count(
       queryBuilder.build(),
     );
     const queryOptions = queryBuilder
-      .order([['createdAt', 'DESC']])
+      .limit(dto.limit)
+      .offset(dto.offset)
+      .order(['createdAt', 'DESC'])
       .build();
 
     const result = await this.irangsImportDataRepository.findAll(queryOptions);
@@ -82,19 +81,17 @@ export class IrangsImportDataService {
       throw new NotFoundException('Import data not found');
     }
 
-    const guarantees = await this.irangsImportDataGuaranteesRepository.findAll(
-      {
-        where: {
-          irangsImportDataId: id,
-        },
-        include: [
-          {
-            model: GSGuarantee,
-            as: 'guarantee',
-          },
-        ],
+    const guarantees = await this.irangsImportDataGuaranteesRepository.findAll({
+      where: {
+        irangsImportDataId: id,
       },
-    );
+      include: [
+        {
+          model: GSGuarantee,
+          as: 'guarantee',
+        },
+      ],
+    });
 
     const data = guarantees.map((g) => {
       return {

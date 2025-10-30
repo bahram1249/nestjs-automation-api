@@ -26,7 +26,7 @@ import { GetUser, JwtGuard } from '@rahino/auth';
 import { PermissionGuard } from '@rahino/permission-checker/guard';
 import { JsonResponseTransformInterceptor } from '@rahino/response/interceptor';
 import { CheckPermission } from '@rahino/permission-checker/decorator';
-import { User } from '@rahino/database/models/core/user.entity';
+import { User } from '@rahino/database';
 import { IrangsImportDataGetDto } from './dto';
 import { Response } from 'express';
 

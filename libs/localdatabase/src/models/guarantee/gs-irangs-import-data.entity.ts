@@ -7,7 +7,7 @@ import {
   BelongsTo,
   BelongsToMany,
 } from 'sequelize-typescript';
-import { User } from '@rahino/database/models/core/user.entity';
+import { User } from '@rahino/database';
 import { GSIrangsImportStatus } from './gs-irangs-import-status.entity';
 import { GSGuarantee } from './gs-guarantee.entity';
 import { GSIrangsImportDataGuarantees } from './gs-irangs-import-data-guarantees.entity';

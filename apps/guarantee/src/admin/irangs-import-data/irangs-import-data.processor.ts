@@ -14,6 +14,9 @@ import { IRANGS_IMPORT_QUEUE } from './constants';
 import * as fs from 'fs';
 import { GSIrangsImportDataGuarantees } from '@rahino/localdatabase/models/guarantee/gs-irangs-import-data-guarantees.entity';
 import { IrangsImportStatusEnum } from './enum';
+import { GSGuaranteeTypeEnum } from '@rahino/guarantee/shared/gurantee-type';
+import { GSProviderEnum } from '@rahino/guarantee/shared/provider';
+import { GSGuaranteeConfirmStatus } from '@rahino/guarantee/shared/guarantee-confirm-status';
 
 @Processor(IRANGS_IMPORT_QUEUE)
 export class IrangsImportDataProcessor extends WorkerHost {
@@ -67,7 +70,7 @@ export class IrangsImportDataProcessor extends WorkerHost {
         irangsImportDataId,
         IrangsImportStatusEnum.FAILED,
         null,
-        error.message,
+        'خطا در پردازش فایل: ' + error.message,
       );
     } finally {
       fs.unlinkSync(filePath);
@@ -117,11 +120,11 @@ export class IrangsImportDataProcessor extends WorkerHost {
         guaranteePeriodMap.get(`${totalMonths}MONTHS_PERIOD`) || 1;
 
       guaranteesToCreate.push({
-        providerId: 3,
+        providerId: GSProviderEnum.IRANGS,
         brandId: brandMap.get(row['برند']),
-        guaranteeTypeId: 1,
+        guaranteeTypeId: GSGuaranteeTypeEnum.Normal,
         guaranteePeriodId: guaranteePeriodId,
-        guaranteeConfirmStatusId: 2,
+        guaranteeConfirmStatusId: GSGuaranteeConfirmStatus.Confirm,
         serialNumber: row['شناسه رهگیری'],
         startDate: startDate,
         endDate: endDate,
@@ -130,12 +133,13 @@ export class IrangsImportDataProcessor extends WorkerHost {
         productTypeId: productTypeMap.get(row['محصول']),
       });
     }
-
+    console.log(guaranteesToCreate.length);
     if (guaranteesToCreate.length > 0) {
       const newGuarantees = await this.guaranteeRepository.bulkCreate(
         guaranteesToCreate,
         { returning: true },
       );
+
       const linkingData = newGuarantees.map((guarantee) => ({
         irangsImportDataId: irangsImportDataId,
         guaranteeId: guarantee.id,
@@ -221,9 +225,7 @@ export class IrangsImportDataProcessor extends WorkerHost {
     const persian = '۰۱۲۳۴۵۶۷۸۹';
     const arabic = '٠١٢٣٤٥٦٧٨٩';
     const trans = {
-      ...Object.fromEntries(
-        persian.split('').map((p, i) => [p, i.toString()]),
-      ),
+      ...Object.fromEntries(persian.split('').map((p, i) => [p, i.toString()])),
       ...Object.fromEntries(arabic.split('').map((a, i) => [a, i.toString()])),
     };
     return s.replace(/[۰-۹٠-٩]/g, (match) => trans[match]);
