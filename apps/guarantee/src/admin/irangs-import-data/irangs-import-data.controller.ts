@@ -106,4 +106,19 @@ export class IrangsImportDataController {
     res.setHeader('Content-Disposition', `attachment; filename=${fileName}`);
     res.send(buffer);
   }
+
+  @ApiOperation({ description: 'download sample excel file' })
+  @CheckPermission({
+    permissionSymbol: 'guarantee.admin.irangs-import-data.create',
+  })
+  @Get('/sample')
+  async getSampleExcel(@Res() res: Response) {
+    const { buffer, fileName } = await this.service.getSampleExcel();
+    res.setHeader(
+      'Content-Type',
+      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    );
+    res.setHeader('Content-Disposition', `attachment; filename=${fileName}`);
+    res.send(buffer);
+  }
 }
