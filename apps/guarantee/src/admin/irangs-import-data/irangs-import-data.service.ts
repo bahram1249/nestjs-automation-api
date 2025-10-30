@@ -113,4 +113,24 @@ export class IrangsImportDataService {
       fileName,
     };
   }
+
+  async getSampleExcel() {
+    const headers = [
+      'برند',
+      'محصول',
+      'مدل',
+      'شناسه رهگیری',
+      'تاریخ شروع',
+      'تاریخ انقضا',
+    ];
+    const data = [headers];
+    const worksheet = XLSX.utils.aoa_to_sheet(data);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Sample');
+    const buffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'buffer' });
+    return {
+      buffer,
+      fileName: 'sample.xlsx',
+    };
+  }
 }
