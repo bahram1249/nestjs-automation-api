@@ -4,6 +4,7 @@ import {
   HttpCode,
   HttpStatus,
   Query,
+  Res,
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
@@ -16,6 +17,7 @@ import {
   ApiQuery,
   ApiTags,
 } from '@nestjs/swagger';
+import { Response } from 'express';
 
 import { JwtGuard } from '@rahino/auth';
 import { UserActionReportService } from './user-action-report.service';
@@ -46,5 +48,33 @@ export class UserActionReportController {
   @HttpCode(HttpStatus.OK)
   async findAll(@Query() filter: GetUserActionReportDto) {
     return await this.service.findAll(filter);
+  }
+
+  @ApiOperation({ description: 'export user action reports to Excel' })
+  @CheckPermission({
+    permissionSymbol: 'gs.report.useractionreports.getall',
+  })
+  @Get('/export')
+  @ApiQuery({
+    name: 'filter',
+    type: GetUserActionReportDto,
+    style: 'deepObject',
+    explode: true,
+  })
+  @HttpCode(HttpStatus.OK)
+  async export(
+    @Query() filter: GetUserActionReportDto,
+    @Res() res: Response,
+  ) {
+    const buffer = await this.service.exportExcel(filter);
+    res.setHeader(
+      'Content-Type',
+      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    );
+    res.setHeader(
+      'Content-Disposition',
+      'attachment; filename="user-action-reports.xlsx"',
+    );
+    res.send(buffer);
   }
 }
