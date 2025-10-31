@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { SequelizeModule } from '@nestjs/sequelize';
-import { PersianDate } from '@rahino/database';
-import { ECLogisticOrderGrouped, User } from '@rahino/localdatabase/models';
+import { Permission, PersianDate, User } from '@rahino/database';
+import { ECLogisticOrderGrouped } from '@rahino/localdatabase/models';
 import { BasedCourierReportController } from './courier-report.controller';
 import { BasedCourierReportService } from './courier-report.service';
 import { LogisticOrderQueryBuilderModule } from '../order-query-builder/logistic-order-query-builder.module';
@@ -9,7 +9,12 @@ import { LogisticOrderQueryBuilderModule } from '../order-query-builder/logistic
 @Module({
   imports: [
     LogisticOrderQueryBuilderModule,
-    SequelizeModule.forFeature([PersianDate, ECLogisticOrderGrouped, User]),
+    SequelizeModule.forFeature([
+      PersianDate,
+      ECLogisticOrderGrouped,
+      User,
+      Permission,
+    ]),
   ],
   controllers: [BasedCourierReportController],
   providers: [BasedCourierReportService],

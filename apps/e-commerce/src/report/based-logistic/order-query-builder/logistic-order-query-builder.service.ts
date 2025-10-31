@@ -1,13 +1,13 @@
 import { Injectable, Scope } from '@nestjs/common';
 import { User } from '@rahino/database';
+import { ECLogisticOrder, ECOrderStatus } from '@rahino/localdatabase/models';
 import {
-  ECLogisticOrder,
-  ECLogisticOrderGrouped,
-  ECOrderStatus,
-} from '@rahino/localdatabase/models';
-import { OrderShipmentwayEnum, OrderStatusEnum } from '@rahino/ecommerce/shared/enum';
+  OrderShipmentwayEnum,
+  OrderStatusEnum,
+} from '@rahino/ecommerce/shared/enum';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
-import { FindAttributeOptions, Op, Order, Sequelize } from 'sequelize';
+import { FindAttributeOptions, Op, Sequelize } from 'sequelize';
+import { Order } from '@rahino/query-filter';
 
 @Injectable({ scope: Scope.REQUEST })
 export class LogisticOrderQueryBuilderService {
@@ -35,7 +35,11 @@ export class LogisticOrderQueryBuilderService {
   nonDeletedGroup() {
     this.builder = this.builder.filter(
       Sequelize.where(
-        Sequelize.fn('isnull', Sequelize.col('ECLogisticOrderGrouped.isDeleted'), 0),
+        Sequelize.fn(
+          'isnull',
+          Sequelize.col('ECLogisticOrderGrouped.isDeleted'),
+          0,
+        ),
         { [Op.eq]: 0 },
       ),
     );
