@@ -76,7 +76,11 @@ export class LogisticSaleQueryBuilderService {
   nonDeletedOrder() {
     this.builder = this.builder.filter(
       Sequelize.where(
-        Sequelize.fn('isnull', Sequelize.col('grouped.logisticOrder.isDeleted'), 0),
+        Sequelize.fn(
+          'isnull',
+          Sequelize.col('grouped.logisticOrder.isDeleted'),
+          0,
+        ),
         { [Op.eq]: 0 },
       ),
     );
@@ -85,11 +89,17 @@ export class LogisticSaleQueryBuilderService {
 
   // Only orders not waiting for payment (paid or beyond)
   onlyPaid() {
-    this.builder = this.builder.filter(
-      Sequelize.where(Sequelize.col('grouped.logisticOrder.orderStatusId'), {
-        [Op.ne]: OrderStatusEnum.WaitingForPayment,
-      }),
-    );
+    this.builder = this.builder
+      .filter(
+        Sequelize.where(Sequelize.col('grouped.logisticOrder.orderStatusId'), {
+          [Op.ne]: OrderStatusEnum.WaitingForPayment,
+        }),
+      )
+      .filter(
+        Sequelize.where(Sequelize.col('grouped.orderStatusId'), {
+          [Op.ne]: OrderStatusEnum.WaitingForPayment,
+        }),
+      );
     return this;
   }
 
@@ -213,7 +223,9 @@ export class LogisticSaleQueryBuilderService {
 
   includeInventoryPrice() {
     this.builder = this.builder.thenInclude({
-      attributes: this.groupByQuery ? [] : ['id', 'buyPrice', 'variationPriceId'],
+      attributes: this.groupByQuery
+        ? []
+        : ['id', 'buyPrice', 'variationPriceId'],
       model: ECInventoryPrice,
       as: 'inventoryPrice',
       required: true,

@@ -22,7 +22,6 @@ export class BasedAdminSaleService {
 
   async findAll(filter: GetAdminSaleDto) {
     await this.validateDates(filter.beginDate, filter.endDate);
-
     let qb = this.saleQueryBuilder
       .init(false)
       .nonDeleted()
@@ -34,7 +33,8 @@ export class BasedAdminSaleService {
       .addEndDate(filter.endDate);
 
     if (filter.vendorId) qb = qb.onlyVendor(filter.vendorId);
-    if (filter.variationPriceId) qb = qb.addVariationPriceId(filter.variationPriceId);
+    if (filter.variationPriceId)
+      qb = qb.addVariationPriceId(filter.variationPriceId);
 
     const count = await this.groupedDetailRepository.count(qb.build());
 
@@ -47,8 +47,18 @@ export class BasedAdminSaleService {
         'productId',
         'inventoryId',
         'qty',
-        [Sequelize.fn('isnull', Sequelize.col('inventoryPrice.buyPrice'), 0), 'buyPrice'],
-        [Sequelize.fn('isnull', Sequelize.col('ECLogisticOrderGroupedDetail.productPrice'), 0), 'unitPrice'],
+        [
+          Sequelize.fn('isnull', Sequelize.col('inventoryPrice.buyPrice'), 0),
+          'buyPrice',
+        ],
+        [
+          Sequelize.fn(
+            'isnull',
+            Sequelize.col('ECLogisticOrderGroupedDetail.productPrice'),
+            0,
+          ),
+          'unitPrice',
+        ],
         [
           Sequelize.literal(
             'isnull(ECLogisticOrderGroupedDetail.productPrice, 0) * qty',
@@ -95,19 +105,33 @@ export class BasedAdminSaleService {
       .addEndDate(filter.endDate);
 
     if (filter.vendorId) qb = qb.onlyVendor(filter.vendorId);
-    if (filter.variationPriceId) qb = qb.addVariationPriceId(filter.variationPriceId);
+    if (filter.variationPriceId)
+      qb = qb.addVariationPriceId(filter.variationPriceId);
 
     qb = qb
       .attributes([
-        [Sequelize.literal('count(distinct grouped.logisticOrderId)'), 'cntOrder'],
         [
-          Sequelize.fn('isnull', Sequelize.fn('sum', Sequelize.col('ECLogisticOrderGroupedDetail.qty')), 0),
+          Sequelize.literal('count(distinct grouped.logisticOrderId)'),
+          'cntOrder',
+        ],
+        [
+          Sequelize.fn(
+            'isnull',
+            Sequelize.fn(
+              'sum',
+              Sequelize.col('ECLogisticOrderGroupedDetail.qty'),
+            ),
+            0,
+          ),
           'qty',
         ],
         [
           Sequelize.fn(
             'isnull',
-            Sequelize.fn('sum', Sequelize.literal('isnull(inventoryPrice.buyPrice, 0) * qty')),
+            Sequelize.fn(
+              'sum',
+              Sequelize.literal('isnull(inventoryPrice.buyPrice, 0) * qty'),
+            ),
             0,
           ),
           'buyPrice',
@@ -115,21 +139,47 @@ export class BasedAdminSaleService {
         [
           Sequelize.fn(
             'isnull',
-            Sequelize.fn('sum', Sequelize.literal('isnull(ECLogisticOrderGroupedDetail.productPrice, 0) * qty')),
+            Sequelize.fn(
+              'sum',
+              Sequelize.literal(
+                'isnull(ECLogisticOrderGroupedDetail.productPrice, 0) * qty',
+              ),
+            ),
             0,
           ),
           'productPrice',
         ],
         [
-          Sequelize.fn('isnull', Sequelize.fn('sum', Sequelize.col('ECLogisticOrderGroupedDetail.discountFee')), 0),
+          Sequelize.fn(
+            'isnull',
+            Sequelize.fn(
+              'sum',
+              Sequelize.col('ECLogisticOrderGroupedDetail.discountFee'),
+            ),
+            0,
+          ),
           'discountFee',
         ],
         [
-          Sequelize.fn('isnull', Sequelize.fn('sum', Sequelize.col('ECLogisticOrderGroupedDetail.totalPrice')), 0),
+          Sequelize.fn(
+            'isnull',
+            Sequelize.fn(
+              'sum',
+              Sequelize.col('ECLogisticOrderGroupedDetail.totalPrice'),
+            ),
+            0,
+          ),
           'totalPrice',
         ],
         [
-          Sequelize.fn('isnull', Sequelize.fn('sum', Sequelize.col('ECLogisticOrderGroupedDetail.commissionAmount')), 0),
+          Sequelize.fn(
+            'isnull',
+            Sequelize.fn(
+              'sum',
+              Sequelize.col('ECLogisticOrderGroupedDetail.commissionAmount'),
+            ),
+            0,
+          ),
           'commissionAmount',
         ],
         [
@@ -168,13 +218,17 @@ export class BasedAdminSaleService {
     const isValidBeginDate = await this.isValidDate(beginDate);
     if (!isValidBeginDate) {
       throw new BadRequestException(
-        this.i18n.t('ecommerce.date_is_invalid', { lang: I18nContext.current().lang }),
+        this.i18n.t('ecommerce.date_is_invalid', {
+          lang: I18nContext.current().lang,
+        }),
       );
     }
     const isValidEndDate = await this.isValidDate(endDate);
     if (!isValidEndDate) {
       throw new BadRequestException(
-        this.i18n.t('ecommerce.date_is_invalid', { lang: I18nContext.current().lang }),
+        this.i18n.t('ecommerce.date_is_invalid', {
+          lang: I18nContext.current().lang,
+        }),
       );
     }
   }
