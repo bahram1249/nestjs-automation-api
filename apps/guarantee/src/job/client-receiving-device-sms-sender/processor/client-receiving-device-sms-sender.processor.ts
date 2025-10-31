@@ -11,7 +11,7 @@ export class ClientReceivingDeviceSmsSenderProcessor extends WorkerHost {
 
   async process(job: Job<any, any, any>, token?: string): Promise<any> {
     try {
-      const template = `${job.data.firstname} ${job.data.lastname} عزیز، دستگاه شما در تاریخ ${job.data.currentDate} تحویل داده شد.`;
+      const template = `${job.data.firstname} ${job.data.lastname} عزیز، دستگاه شما در تاریخ ${job.data.currentDate} در نمایندگی تحویل شد.`;
       await this.smsSenderService.sendSms({
         phoneNumber: job.data.phoneNumber,
         message: template,
