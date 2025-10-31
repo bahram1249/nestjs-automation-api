@@ -10,6 +10,7 @@ import { User } from '@rahino/database';
 import { GetUserActionReportDto } from './dto/user-action-report.dto';
 import { Op, Sequelize } from 'sequelize';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
+import { ActivityTypeEnum } from '@rahino/bpmn/modules/activity-type';
 
 @Injectable()
 export class UserActionReportService {
@@ -25,20 +26,27 @@ export class UserActionReportService {
           [Op.between]: [dto.startDate, dto.endDate],
         },
       })
+      .filter({
+        '$fromActivity.activityTypeId$': {
+          [Op.ne]: ActivityTypeEnum.ClientState,
+        },
+      })
       .filterIf(dto.organizationId != null, {
         '$request.organizationId$': dto.organizationId,
       })
       .include([
         {
+          attributes: [],
           model: BPMNRequest,
           as: 'request',
           required: true,
         },
         {
+          attributes: [],
           model: BPMNNode,
           as: 'node',
           where: {
-            autoExecute: false,
+            autoIterate: false,
           },
           required: true,
         },
@@ -59,24 +67,30 @@ export class UserActionReportService {
         },
       ])
       .attributes([
-        'fromUserId',
-        'fromActivityId',
-        'toActivityId',
-        'nodeId',
-        [Sequelize.fn('COUNT', Sequelize.col('BPMNRequestHistory.id')), 'count'],
+        'BPMNRequestHistory.fromUserId',
+        'BPMNRequestHistory.fromActivityId',
+        'BPMNRequestHistory.toActivityId',
+        'BPMNRequestHistory.nodeId',
+        [
+          Sequelize.fn('COUNT', Sequelize.col('BPMNRequestHistory.id')),
+          'count',
+        ],
       ])
       .group([
-        'fromUserId',
-        'fromActivityId',
-        'toActivityId',
-        'nodeId',
+        'BPMNRequestHistory.fromUserId',
+        'BPMNRequestHistory.fromActivityId',
+        'BPMNRequestHistory.toActivityId',
+        'BPMNRequestHistory.nodeId',
+        'fromUser.id',
         'fromUser.firstname',
         'fromUser.lastname',
+        'fromActivity.id',
         'fromActivity.name',
+        'toActivity.id',
         'toActivity.name',
-      ])
-      .offset(dto.offset)
-      .limit(dto.limit);
+      ]);
+    //.offset(dto.offset)
+    //.limit(dto.limit);
 
     return await this.requestHistoryRepository.findAll(queryBuilder.build());
   }
