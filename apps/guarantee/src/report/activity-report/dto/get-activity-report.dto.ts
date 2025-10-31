@@ -1,7 +1,6 @@
 import { IntersectionType } from '@nestjs/swagger';
 import { Transform } from 'class-transformer';
 import { IsDate, IsOptional, IsInt } from 'class-validator';
-import { PaginationDto } from '@rahino/query-filter/dto/pagination.dto';
 
 export class ActivityReportFilterDto {
   @Transform(({ value }) => new Date(value))
@@ -20,5 +19,4 @@ export class ActivityReportFilterDto {
 
 export class GetActivityReportDto extends IntersectionType(
   ActivityReportFilterDto,
-  PaginationDto,
 ) {}
