@@ -89,6 +89,7 @@ import { AnonymousOrganizationModule } from './anonymous/organization';
 import { AdminPreRegistrationOrganizationModule } from './admin/pre-registration-organization';
 import { IncomeReportModule } from './report/income-report/income-report.module';
 import { UserActionReportModule } from './report/user-action-report/user-action-report.module';
+import { ActivityReportModule } from './report/activity-report/activity-report.module';
 import { ClientSupplierStateRequestSmsSenderModule } from './job/client-supplier-state-request-sms-sender';
 import { ClientTechnicalStateRequestSmsSenderModule } from './job/client-technical-state-request-sms-sender';
 import { UserPointModule } from './client/user-point';
@@ -234,6 +235,7 @@ import { IrangsImportDataModule } from './admin/irangs-import-data/irangs-import
     AdminPreRegistrationOrganizationModule,
     IncomeReportModule,
     UserActionReportModule,
+    ActivityReportModule,
 
     UserPointModule,
     RevertRequestModule,
