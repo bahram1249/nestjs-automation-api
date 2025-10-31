@@ -114,6 +114,7 @@ import { GSClientProfileModule } from './client/profile/gsprofile.module';
 import { ClientSubmitCardSmsSenderModule } from './job/client-submit-card-sms-sender';
 import { GSAnonymousCheckModule } from './anonymous/guarantee-check';
 import { IrangsImportDataModule } from './admin/irangs-import-data/irangs-import-data.module';
+import { ClientReceivingDeviceSmsSenderModule } from './job/client-receiving-device-sms-sender';
 
 @Module({
   imports: [
@@ -184,6 +185,7 @@ import { IrangsImportDataModule } from './admin/irangs-import-data/irangs-import
     ClientTechnicalStateRequestSmsSenderModule,
     ClientOnlinePaymentRequestSmsSenderModule,
     ClientSurveyRequestSmsSenderModule,
+    ClientReceivingDeviceSmsSenderModule,
     SubscriptionSmsSenderModule,
     PreRegistrationInitSmsSenderModule,
     PreRegistrationSucessSmsSenderModule,
