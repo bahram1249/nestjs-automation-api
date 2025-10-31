@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
+import * as ExcelJS from 'exceljs';
 import {
   BPMNRequest,
   BPMNRequestHistory,
@@ -19,7 +20,7 @@ export class UserActionReportService {
     private readonly requestHistoryRepository: typeof BPMNRequestHistory,
   ) {}
 
-  async findAll(dto: GetUserActionReportDto) {
+  private _buildQuery(dto: GetUserActionReportDto) {
     const queryBuilder = new QueryOptionsBuilder()
       .filter({
         createdAt: {
@@ -89,9 +90,39 @@ export class UserActionReportService {
         'toActivity.id',
         'toActivity.name',
       ]);
-    //.offset(dto.offset)
-    //.limit(dto.limit);
 
+    return queryBuilder;
+  }
+
+  async findAll(dto: GetUserActionReportDto) {
+    const queryBuilder = this._buildQuery(dto);
     return await this.requestHistoryRepository.findAll(queryBuilder.build());
+  }
+
+  async exportExcel(dto: GetUserActionReportDto): Promise<Buffer> {
+    const queryBuilder = this._buildQuery(dto);
+    const rows = await this.requestHistoryRepository.findAll(
+      queryBuilder.build(),
+    );
+    const workbook = new ExcelJS.Workbook();
+    const sheet = workbook.addWorksheet('UserActionReports');
+    sheet.columns = [
+      { header: 'کاربر', key: 'user', width: 25 },
+      { header: 'از فعالیت', key: 'fromActivity', width: 25 },
+      { header: 'به فعالیت', key: 'toActivity', width: 25 },
+      { header: 'تعداد', key: 'count', width: 10 },
+    ];
+
+    for (const row of rows) {
+      sheet.addRow({
+        user: row.fromUser.firstname + ' ' + row.fromUser.lastname,
+        fromActivity: row.fromActivity.name,
+        toActivity: row.toActivity.name,
+        count: (row as any).get('count'),
+      });
+    }
+
+    const buffer = await workbook.xlsx.writeBuffer();
+    return buffer as Buffer;
   }
 }
