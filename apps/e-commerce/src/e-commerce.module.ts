@@ -133,9 +133,13 @@ import { LogisticDeliveryOrderModule } from './admin/logistic-order-section/deli
 import { LogisticCancellOrderModule } from './admin/logistic-order-section/cancell-order/logistic-cancell-order.module';
 import { LogisticTotalOrderModule } from './admin/logistic-order-section/totalOrders/logistic-total-order.module';
 import { LogisticClientOrderModule } from './client/order/client-order.module';
+import { BasedProductSaleModule } from './report/based-logistic/product-sale/product-sale.module';
+import { BasedPaymentTransactionModule } from './report/based-logistic/payment-transaction/payment-transaction.module';
 
 @Module({
   imports: [
+    BasedProductSaleModule,
+    BasedPaymentTransactionModule,
     LoggingModule,
     BullModule.registerQueueAsync({
       name: REQUEST_LOGGING_QUEUE,
