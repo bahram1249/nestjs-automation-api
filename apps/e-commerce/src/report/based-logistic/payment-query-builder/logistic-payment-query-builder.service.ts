@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import { ECLogisticOrder, ECUser, ECPayment, ECPaymentGateway } from '@rahino/database/models';
+import { ECUser } from '@rahino/database/models';
+import { ECLogisticOrder, ECPayment, ECPaymentGateway } from '@rahino/localdatabase/models';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import { Sequelize, Op } from 'sequelize';
 

@@ -5,8 +5,8 @@ import {
   Injectable,
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
-import { ECLogisticOrderGroupedDetail, User } from '@rahino/database/models';
-import { PersianDate } from '@rahino/database/models';
+import { User, PersianDate } from '@rahino/database';
+import { ECLogisticOrderGroupedDetail } from '@rahino/localdatabase/models';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import { I18nContext, I18nService } from 'nestjs-i18n';
 import { I18nTranslations } from 'apps/main/src/generated/i18n.generated';
@@ -94,7 +94,7 @@ export class BasedProductSaleService {
     const isValidEndDate = await this.isValidDate(endDate);
     if (!isValidEndDate) {
       throw new BadRequestException(
-        this.i1ba.t('ecommerce.date_is_invalid', {
+        this.i18n.t('ecommerce.date_is_invalid', {
           lang: I18nContext.current().lang,
         }),
       );
