@@ -39,7 +39,7 @@ export class BasedProductSaleService {
       );
     }
     await this.validateDates(filter.beginDate, filter.endDate);
-    let qb = this.saleQueryBduiler
+    let qb = this.saleQueryBuilder
       .init(false)
       .nonDeleted()
       .nonDeletedGroup()

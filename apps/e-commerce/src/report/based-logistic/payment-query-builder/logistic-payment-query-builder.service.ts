@@ -1,7 +1,8 @@
 import { Injectable } from '@nestjs/common';
-import { ECUser, ECLogisticOrder, ECPayment, ECPaymentGateway } from '@rahino/localdatabase/models';
+import { User } from '@rahino/database';
+import { ECLogisticOrder, ECPayment, ECPaymentGateway } from '@rahino/localdatabase/models';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
-import { Sequelize, Op } from 'sequelize';
+import { Sequelize, Op, FindAttributeOptions } from 'sequelize';
 import { Order } from '@rahino/query-filter';
 
 @Injectable()
@@ -16,7 +17,7 @@ export class LogisticPaymentQueryBuilderService {
     if (rawQuery == false) {
       this.builder.include([
         {
-          model: ECUser,
+          model: User,
           as: 'user',
         },
       ]);
@@ -93,8 +94,8 @@ export class LogisticPaymentQueryBuilderService {
     return this;
   }
 
-  attributes(arg0: (string | (string | Sequelize.fn | Sequelize.col)[])[]) {
-    this.builder.attributes(arg0);
+  attributes(attributes: FindAttributeOptions) {
+    this.builder.attributes(attributes);
     return this;
   }
   offset(offset?: number) {
