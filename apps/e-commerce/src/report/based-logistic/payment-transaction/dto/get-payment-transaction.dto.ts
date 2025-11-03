@@ -1,10 +1,8 @@
 import { IntersectionType } from '@nestjs/swagger';
-import { ListFilter } from '@rahino/query-filter/types/list-filter';
-import { DateFilter } from '@rahino/query-filter/types/date-filter';
-import { NumberFilter } from '@rahino/query-filter/types/number-filter';
+import { ListFilter } from '@rahino/query-filter';
+import { PaymentTransactionFilterDto } from './payment-transaction-filter.dto';
 
 export class GetPaymentTransactionDto extends IntersectionType(
+  PaymentTransactionFilterDto,
   ListFilter,
-  DateFilter,
-  NumberFilter,
 ) {}
