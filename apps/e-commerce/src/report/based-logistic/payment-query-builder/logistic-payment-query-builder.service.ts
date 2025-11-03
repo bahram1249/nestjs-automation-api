@@ -1,20 +1,14 @@
 import { Injectable } from '@nestjs/common';
-import { ECUser } from '@rahino/database/models';
-import { ECLogisticOrder, ECPayment, ECPaymentGateway } from '@rahino/localdatabase/models';
+import { ECUser, ECLogisticOrder, ECPayment, ECPaymentGateway } from '@rahino/localdatabase/models';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import { Sequelize, Op } from 'sequelize';
+import { Order } from '@rahino/query-filter';
 
 @Injectable()
 export class LogisticPaymentQueryBuilderService {
   private builder: QueryOptionsBuilder;
   constructor() {
     this.builder = new QueryOptionsBuilder();
-    this.builder.include([
-      {
-        model: ECUser,
-        as: 'user',
-      },
-    ]);
   }
 
   init(rawQuery: boolean) {
@@ -111,8 +105,13 @@ export class LogisticPaymentQueryBuilderService {
     this.builder.limit(limit);
     return this;
   }
-  order(order: string, sort: 'asc' | 'desc') {
-    this.builder.order(order, sort);
+  order(orderArg: Order) {
+    this.builder.order(orderArg);
+    return this;
+  }
+
+  rawQuery(flag: boolean) {
+    this.builder.raw(flag);
     return this;
   }
 

@@ -84,7 +84,8 @@ export class BasedPaymentTransactionService {
         'createdAt',
       ])
       .offset(filter.offset)
-      .limit(filter.limit);
+      .limit(filter.limit)
+      .order({ orderBy: filter.orderBy, sortOrder: filter.sortOrder });
 
     return {
       result: await this.orderRepository.findAll(qb.build()),
@@ -158,6 +159,7 @@ export class BasedPaymentTransactionService {
           'receivedAmount',
         ],
       ])
+      .rawQuery(true);
 
     const findOptions = qb.build();
     findOptions.order = null;

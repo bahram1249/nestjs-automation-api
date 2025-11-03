@@ -39,7 +39,7 @@ export class BasedProductSaleService {
       );
     }
     await this.validateDates(filter.beginDate, filter.endDate);
-    let qb = this.saleQueryBuilder
+    let qb = this.saleQueryBduiler
       .init(false)
       .nonDeleted()
       .nonDeletedGroup()
@@ -53,7 +53,7 @@ export class BasedProductSaleService {
       qb = qb.addVariationPriceId(filter.variationPriceId);
 
     const countQb = qb.clone().attributes(['ECLogisticOrderGroupedDetail.productId']).group(['ECLogisticOrderGroupedDetail.productId', 'vendor.id', 'vendor.name', 'vendor.slug', 'product.title', 'product.slug', 'product.sku'])
-    const count = await this.groupedDetailRepository.count(countQb.build());
+    const count = (await this.groupedDetailRepository.count(countQb.build())).length;
 
     qb = qb
       .attributes([
@@ -76,7 +76,8 @@ export class BasedProductSaleService {
       .includeProduct()
       .group(['ECLogisticOrderGroupedDetail.productId', 'vendor.id', 'vendor.name', 'vendor.slug', 'product.title', 'product.slug', 'product.sku'])
       .offset(filter.offset)
-      .limit(filter.limit);
+      .limit(filter.limit)
+      .order({ orderBy: filter.orderBy, sortOrder: filter.sortOrder });
 
     const result = await this.groupedDetailRepository.findAll(qb.build());
     return { result, total: count };
