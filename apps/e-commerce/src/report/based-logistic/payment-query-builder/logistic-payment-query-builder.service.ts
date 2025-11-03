@@ -1,6 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { User } from '@rahino/database';
-import { ECLogisticOrder, ECPayment, ECPaymentGateway } from '@rahino/localdatabase/models';
+import {
+  ECLogisticOrder,
+  ECPayment,
+  ECPaymentGateway,
+} from '@rahino/localdatabase/models';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import { Sequelize, Op, FindAttributeOptions } from 'sequelize';
 import { Order } from '@rahino/query-filter';
@@ -37,7 +41,11 @@ export class LogisticPaymentQueryBuilderService {
   addBeginDate(beginDate: string) {
     this.builder.filter(
       Sequelize.where(
-        Sequelize.fn('cast', Sequelize.col('ECLogisticOrder.createdAt'), 'date'),
+        Sequelize.fn(
+          'cast',
+          Sequelize.col('ECLogisticOrder.createdAt'),
+          'date',
+        ),
         '>=',
         beginDate,
       ),
@@ -48,7 +56,11 @@ export class LogisticPaymentQueryBuilderService {
   addEndDate(endDate: string) {
     this.builder.filter(
       Sequelize.where(
-        Sequelize.fn('cast', Sequelize.col('ECLogisticOrder.createdAt'), 'date'),
+        Sequelize.fn(
+          'cast',
+          Sequelize.col('ECLogisticOrder.createdAt'),
+          'date',
+        ),
         '<=',
         endDate,
       ),
@@ -61,18 +73,14 @@ export class LogisticPaymentQueryBuilderService {
     return this;
   }
 
-  addOrderId(orderId: bigint) {
+  addOrderId(orderId: number) {
     this.builder.filter({ id: orderId });
     return this;
   }
 
   onlyPaid() {
     this.builder.filter(
-      Sequelize.where(
-        Sequelize.col('ECLogisticOrder.paymentId'),
-        Op.not,
-        null,
-      ),
+      Sequelize.where(Sequelize.col('ECLogisticOrder.paymentId'), Op.not, null),
     );
     return this;
   }
