@@ -52,8 +52,8 @@ export class BasedProductSaleService {
     if (filter.variationPriceId)
       qb = qb.addVariationPriceId(filter.variationPriceId);
 
-    let countQb = this.saleQueryBuilder
-      .init(false)
+    const countQb = new LogisticSaleQueryBuilderService()
+      .init(true)
       .nonDeleted()
       .nonDeletedGroup()
       .nonDeletedOrder()
@@ -61,11 +61,25 @@ export class BasedProductSaleService {
       .addBeginDate(filter.beginDate)
       .addEndDate(filter.endDate);
 
-    if (filter.vendorId) countQb = countQb.onlyVendor(filter.vendorId);
+    if (filter.vendorId) countQb.onlyVendor(filter.vendorId);
     if (filter.variationPriceId)
-      countQb = countQb.addVariationPriceId(filter.variationPriceId);
+      countQb.addVariationPriceId(filter.variationPriceId);
 
-    const count = (await this.groupedDetailRepository.count(countQb.attributes(['ECLogisticOrderGroupedDetail.productId']).group(['ECLogisticOrderGroupedDetail.productId', 'vendor.id', 'vendor.name', 'vendor.slug', 'product.title', 'product.slug', 'product.sku']).build())).length;
+    const countResult = await this.groupedDetailRepository.findOne(
+      countQb
+        .attributes([
+          [
+            Sequelize.fn(
+              'COUNT',
+              Sequelize.literal('DISTINCT ECLogisticOrderGroupedDetail.productId'),
+            ),
+            'total',
+          ],
+        ])
+        .build(),
+    );
+    const count = countResult.get('total');
+
 
     qb = qb
       .attributes([

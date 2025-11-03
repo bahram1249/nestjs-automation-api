@@ -37,5 +37,5 @@ export class PaymentTransactionFilterDto {
   @IsNumber()
   @Type(() => Number)
   @IsOptional()
-  orderId?: bigint;
+  orderId?: number;
 }
