@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
-import { IsInt, IsOptional, IsString, IsBigInt } from 'class-validator';
+import { IsInt, IsOptional, IsString, IsNumber } from 'class-validator';
 
 export class PaymentTransactionFilterDto {
   @ApiProperty({
@@ -31,11 +31,11 @@ export class PaymentTransactionFilterDto {
 
   @ApiProperty({
     required: false,
-    type: BigInt,
+    type: Number,
     description: 'orderId',
   })
-  @IsBigInt()
-  @Type(() => BigInt)
+  @IsNumber()
+  @Type(() => Number)
   @IsOptional()
   orderId?: bigint;
 }

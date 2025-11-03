@@ -52,8 +52,20 @@ export class BasedProductSaleService {
     if (filter.variationPriceId)
       qb = qb.addVariationPriceId(filter.variationPriceId);
 
-    const countQb = qb.clone().attributes(['ECLogisticOrderGroupedDetail.productId']).group(['ECLogisticOrderGroupedDetail.productId', 'vendor.id', 'vendor.name', 'vendor.slug', 'product.title', 'product.slug', 'product.sku'])
-    const count = (await this.groupedDetailRepository.count(countQb.build())).length;
+    let countQb = this.saleQueryBuilder
+      .init(false)
+      .nonDeleted()
+      .nonDeletedGroup()
+      .nonDeletedOrder()
+      .onlyPaid()
+      .addBeginDate(filter.beginDate)
+      .addEndDate(filter.endDate);
+
+    if (filter.vendorId) countQb = countQb.onlyVendor(filter.vendorId);
+    if (filter.variationPriceId)
+      countQb = countQb.addVariationPriceId(filter.variationPriceId);
+
+    const count = (await this.groupedDetailRepository.count(countQb.attributes(['ECLogisticOrderGroupedDetail.productId']).group(['ECLogisticOrderGroupedDetail.productId', 'vendor.id', 'vendor.name', 'vendor.slug', 'product.title', 'product.slug', 'product.sku']).build())).length;
 
     qb = qb
       .attributes([
