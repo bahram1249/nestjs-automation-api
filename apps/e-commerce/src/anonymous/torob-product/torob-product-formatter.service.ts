@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { ECProduct } from '@rahino/localdatabase/models';
 import { InventoryStatusEnum } from '@rahino/ecommerce/shared/inventory/enum';
+import { title } from 'process';
 
 @Injectable()
 export class TorobProductFormatterService {
@@ -33,6 +34,7 @@ export class TorobProductFormatterService {
         : 0;
 
     return {
+      title: product.title,
       product_id: Number(product.id),
       page_url: `${frontUrl}/product/${product.sku}/${product.slug}`,
       price: Number(price),
