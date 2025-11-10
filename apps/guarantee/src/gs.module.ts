@@ -296,7 +296,5 @@ export class GSModule implements NestModule {
     );
 
     SwaggerModule.setup('api/guarantee', this.app, guaranteeDocument);
-
-    await app.get(SellerSyncService).sync();
   }
 }

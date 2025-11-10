@@ -1,4 +1,4 @@
-import { Processor, WorkerHost } from '@nestjs/bullmq';
+import { OnWorkerEvent, Processor, WorkerHost } from '@nestjs/bullmq';
 import { Job } from 'bullmq';
 import {
   SELLER_GUARANTEE_OFFSET,
@@ -19,6 +19,7 @@ import { GSProviderEnum } from '@rahino/guarantee/shared/provider';
 import { Op } from 'sequelize';
 import { GSGuaranteeTypeEnum } from '@rahino/guarantee/shared/gurantee-type';
 import { GSGuaranteeConfirmStatus } from '@rahino/guarantee/shared/guarantee-confirm-status';
+import { DBLogger } from '@rahino/logger';
 
 @Processor(SYNC_SELLER_WARRANTY_QUEUE)
 export class SellerWarrantyProcessor extends WorkerHost {
@@ -35,6 +36,7 @@ export class SellerWarrantyProcessor extends WorkerHost {
     @InjectModel(GSGuaranteePeriod)
     private readonly guaranteePeriodRepository: typeof GSGuaranteePeriod,
     private readonly sellerWarrantyService: SellerWarrantyService,
+    private readonly logger: DBLogger,
   ) {
     super();
   }
@@ -163,6 +165,15 @@ export class SellerWarrantyProcessor extends WorkerHost {
       new QueryOptionsBuilder()
         .filter({ providerText: warrantyPeriod })
         .build(),
+    );
+  }
+
+  @OnWorkerEvent('completed')
+  onCompleted(job: Job) {
+    const { id, name, queueName, finishedOn, returnvalue } = job;
+    const completionTime = finishedOn ? new Date(finishedOn).toISOString() : '';
+    this.logger.warn(
+      `Job id: ${id}, name: ${name} completed in queue ${queueName} on ${completionTime}. Result: ${returnvalue}`,
     );
   }
 }

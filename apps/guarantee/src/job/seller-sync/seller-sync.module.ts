@@ -1,7 +1,14 @@
 import { BullModule } from '@nestjs/bullmq';
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { SYNC_SELLER_FLOW_PRODUCER, SYNC_SELLER_QUEUE } from './constants';
+import {
+  SYNC_SELLER_BRAND_QUEUE,
+  SYNC_SELLER_FLOW_PRODUCER,
+  SYNC_SELLER_PRODUCT_TYPE_QUEUE,
+  SYNC_SELLER_QUEUE,
+  SYNC_SELLER_VARIANT_QUEUE,
+  SYNC_SELLER_WARRANTY_QUEUE,
+} from './constants';
 import {
   SellerBrandProcessor,
   SellerProductTypeProcessor,
@@ -49,6 +56,18 @@ import { DBLoggerModule } from '@rahino/logger';
     }),
     BullModule.registerQueueAsync({
       name: SYNC_SELLER_QUEUE,
+    }),
+    BullModule.registerQueueAsync({
+      name: SYNC_SELLER_BRAND_QUEUE,
+    }),
+    BullModule.registerQueueAsync({
+      name: SYNC_SELLER_PRODUCT_TYPE_QUEUE,
+    }),
+    BullModule.registerQueueAsync({
+      name: SYNC_SELLER_VARIANT_QUEUE,
+    }),
+    BullModule.registerQueueAsync({
+      name: SYNC_SELLER_WARRANTY_QUEUE,
     }),
     SequelizeModule.forFeature([
       Setting,
