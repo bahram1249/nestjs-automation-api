@@ -27,68 +27,8 @@ export class SellerSyncService {
   async sync() {
     console.log('sync called');
 
-    // await this.syncSellerBrandQueue.add(
-    //   'sync-seller-brand',
-    //   {},
-    //   {
-    //     repeat: {
-    //       pattern: '*/5 * * * *',
-    //       count: 1,
-    //       limit: 1,
-    //     },
-    //     attempts: 1,
-    //     jobId: 'sync-seller-brand',
-    //   },
-    // );
-
-    // console.log('sync called brand');
-
-    // await this.syncSellerProductTypeQueue.add(
-    //   'sync-seller-product-type',
-    //   {},
-    //   {
-    //     repeat: {
-    //       pattern: '*/5 * * * *',
-    //       count: 1,
-    //       limit: 1,
-    //     },
-    //     attempts: 1,
-    //     jobId: 'sync-seller-product-type',
-    //   },
-    // );
-
-    // await this.syncSellerVariantQueue.add(
-    //   'sync-seller-variant',
-    //   {},
-    //   {
-    //     repeat: {
-    //       pattern: '*/5 * * * *',
-    //       count: 1,
-    //       limit: 1,
-    //     },
-    //     attempts: 1,
-    //     jobId: 'sync-seller-variant',
-    //   },
-    // );
-
-    console.log('sync called warranty');
-
-    // await this.syncSellerWarrantyQueue.add(
-    //   'sync-seller-warranty',
-    //   {},
-    //   {
-    //     repeat: {
-    //       pattern: '*/5 * * * *',
-    //       //count: 1,
-    //       //limit: 1,
-    //     },
-    //     attempts: 1,
-    //     jobId: 'sync-seller-warranty',
-    //   },
-    // );
-
-    await this.syncSellerQueue.add(
-      'sync-seller',
+    await this.syncSellerBrandQueue.add(
+      'sync-seller-brand',
       {},
       {
         repeat: {
@@ -97,8 +37,68 @@ export class SellerSyncService {
           // limit: 1,
         },
         attempts: 1,
-        jobId: 'sync-seller',
+        jobId: 'sync-seller-brand',
       },
     );
+
+    // console.log('sync called brand');
+
+    await this.syncSellerProductTypeQueue.add(
+      'sync-seller-product-type',
+      {},
+      {
+        repeat: {
+          pattern: '*/5 * * * *',
+          // count: 1,
+          // limit: 1,
+        },
+        attempts: 1,
+        jobId: 'sync-seller-product-type',
+      },
+    );
+
+    await this.syncSellerVariantQueue.add(
+      'sync-seller-variant',
+      {},
+      {
+        repeat: {
+          pattern: '*/5 * * * *',
+          // count: 1,
+          // limit: 1,
+        },
+        attempts: 1,
+        jobId: 'sync-seller-variant',
+      },
+    );
+
+    console.log('sync called warranty');
+
+    await this.syncSellerWarrantyQueue.add(
+      'sync-seller-warranty',
+      {},
+      {
+        repeat: {
+          pattern: '*/5 * * * *',
+          //count: 1,
+          //limit: 1,
+        },
+        attempts: 1,
+        jobId: 'sync-seller-warranty',
+      },
+    );
+
+    // await this.syncSellerQueue.add(
+    //   'sync-seller',
+    //   {},
+    //   {
+    //     repeat: {
+    //       pattern: '*/5 * * * *',
+    //       // count: 1,
+    //       // limit: 1,
+    //     },
+    //     attempts: 1,
+    //     jobId: 'sync-seller',
+    //   },
+    // );
   }
 }
