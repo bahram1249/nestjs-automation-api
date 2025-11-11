@@ -350,7 +350,7 @@ export class ProductQueryBuilderService {
         isNotNull(filter.inventoryStatusId),
         Sequelize.literal(`EXISTS (
         SELECT 1
-        FROM ECInventory AS inventory
+        FROM ECInventories AS inventory
         WHERE inventory.productId = ECProduct.id
           AND inventory.inventoryStatusId = ${filter.inventoryStatusId}
           AND isnull(inventory.isDeleted, 0) = 0
