@@ -1,10 +1,10 @@
-import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
+import { IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator';
 
 export class PickShipmentWayDetailDto {
   @IsNumber()
   clientShipmentWayId: number;
 
-  @IsNotEmpty()
+  @IsOptional()
   @IsString()
-  clientShipmentWayTrackingCode: string;
+  clientShipmentWayTrackingCode?: string;
 }
