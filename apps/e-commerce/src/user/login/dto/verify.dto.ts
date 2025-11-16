@@ -36,6 +36,15 @@ export class VerifyDto {
   lastname?: string;
 
   @IsString()
+  @IsOptional()
+  @ApiProperty({
+    required: false,
+    type: IsString,
+    description: 'nationalCode',
+  })
+  nationalCode?: string;
+
+  @IsString()
   @IsNotEmpty()
   @Matches(new RegExp('^([0-9]){5,6}$'))
   @ApiProperty({

@@ -250,7 +250,6 @@ END
 GO
 
 
-
 -- gs-vip-generator-v1
 IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'gs-vip-generator-v1'
 			)
@@ -2340,3 +2339,56 @@ BEGIN
 END
 
 GO
+
+
+
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'gs-irangs-import-statuses-v1')
+BEGIN
+    CREATE TABLE GSIrangsImportStatuses (
+        id INT PRIMARY KEY,
+        title NVARCHAR(255) NOT NULL,
+        createdAt DATETIMEOFFSET NOT NULL,
+        updatedAt DATETIMEOFFSET NOT NULL
+    );
+
+    INSERT INTO Migrations(version, createdAt, updatedAt)
+    SELECT 'gs-irangs-import-statuses-v1', GETDATE(), GETDATE();
+END;
+GO
+
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'gs-irangs-import-data-v1')
+BEGIN
+    CREATE TABLE GSIrangsImportData (
+        id BIGINT PRIMARY KEY IDENTITY(1,1),
+        fileName NVARCHAR(255),
+        statusId INT,
+        totalRows INT DEFAULT 0,
+        processedRows INT DEFAULT 0,
+        error NVARCHAR(MAX),
+        userId BIGINT,
+        createdAt DATETIMEOFFSET NOT NULL,
+        updatedAt DATETIMEOFFSET NOT NULL,
+        FOREIGN KEY (userId) REFERENCES Users(id),
+        FOREIGN KEY (statusId) REFERENCES GSIrangsImportStatuses(id)
+    );
+
+    INSERT INTO Migrations(version, createdAt, updatedAt)
+    SELECT 'gs-irangs-import-data-v1', GETDATE(), GETDATE();
+END;
+GO
+
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'gs-irangs-import-data-guarantees-v1')
+BEGIN
+    CREATE TABLE GSIrangsImportDataGuarantees (
+        irangsImportDataId BIGINT,
+        guaranteeId BIGINT,
+        PRIMARY KEY (irangsImportDataId, guaranteeId),
+        FOREIGN KEY (irangsImportDataId) REFERENCES GSIrangsImportData(id),
+        FOREIGN KEY (guaranteeId) REFERENCES GSGuarantees(id)
+    );
+
+    INSERT INTO Migrations(version, createdAt, updatedAt)
+    SELECT 'gs-irangs-import-data-guarantees-v1', GETDATE(), GETDATE();
+END;
+GO
+

@@ -66,6 +66,7 @@ export class LoginService {
         username: dto.phoneNumber,
         firstname: dto.firstname,
         lastname: dto.lastname,
+        nationalCode: dto.nationalCode,
       });
 
       const wallet = await this.walletRepository.create({
@@ -87,6 +88,7 @@ export class LoginService {
         'lastname',
         'username',
         'phoneNumber',
+        'nationalCode',
         'birthDate',
       ]),
     };

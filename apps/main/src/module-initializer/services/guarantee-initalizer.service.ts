@@ -5,6 +5,7 @@ import { BPMNModule } from '@rahino/bpmn';
 import { GSModule } from '@rahino/guarantee';
 import { CoreModule } from '@rahino/core';
 import { ScriptRunnerService } from '../../script-runner';
+import { SellerSyncService } from '@rahino/guarantee/job/seller-sync';
 
 @Injectable()
 export class GuaranteeInitializerService
@@ -12,9 +13,9 @@ export class GuaranteeInitializerService
 {
   constructor(private readonly scriptRunnerService: ScriptRunnerService) {}
   async init(app: NestExpressApplication) {
-    app.get(CoreModule).setApp(app);
     app.get(BPMNModule).setApp(app);
     await app.get(GSModule).setApp(app);
+    await app.get(SellerSyncService).sync();
     await this.runScripts();
   }
 

@@ -14,6 +14,7 @@ import { NotificationSenderForClientOnlinePaymentRequestActionModule } from './n
 import { NotificationSenderForClientSurveyRequestActionModule } from './notification-sender-for-client-survey-request-action';
 import { NotificationSenderForClientTechnicalStateRequestActionModule } from './notification-sender-for-client-technical-state-request-action';
 import { NotificationSenderForClientSupplierStateRequestActionModule } from './notification-sender-for-client-supplier-state-request-action';
+import { NotificationSenderForClientReceivingDeviceActionModule } from './notification-sender-for-client-receiving-device-action';
 
 @Module({
   imports: [
@@ -32,6 +33,7 @@ import { NotificationSenderForClientSupplierStateRequestActionModule } from './n
     NotificationSenderForClientSurveyRequestActionModule,
     NotificationSenderForClientTechnicalStateRequestActionModule,
     NotificationSenderForClientSupplierStateRequestActionModule,
+    NotificationSenderForClientReceivingDeviceActionModule,
   ],
   exports: [
     SampleActionModule,
@@ -49,6 +51,7 @@ import { NotificationSenderForClientSupplierStateRequestActionModule } from './n
     NotificationSenderForClientSurveyRequestActionModule,
     NotificationSenderForClientTechnicalStateRequestActionModule,
     NotificationSenderForClientSupplierStateRequestActionModule,
+    NotificationSenderForClientReceivingDeviceActionModule,
   ],
 })
 export class DynamicGuaranteeActionModule {}

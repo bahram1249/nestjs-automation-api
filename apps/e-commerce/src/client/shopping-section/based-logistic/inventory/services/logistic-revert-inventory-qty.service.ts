@@ -11,8 +11,12 @@ import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builde
 import { Op, Sequelize, Transaction } from 'sequelize';
 import { LogisticInventoryTrackChangeService } from '@rahino/ecommerce/shared/inventory-track-change/logistic-inventory-track-change.service';
 import { inventoryStatusService } from '@rahino/ecommerce/shared/inventory/services/inventory-status.service';
-import { InventoryTrackChangeStatusEnum, PaymentTypeEnum } from '@rahino/ecommerce/shared/enum';
+import {
+  InventoryTrackChangeStatusEnum,
+  PaymentTypeEnum,
+} from '@rahino/ecommerce/shared/enum';
 import { LocalizationService } from 'apps/main/src/common/localization/localization.service';
+import { InventoryStatusEnum } from '@rahino/ecommerce/shared/inventory/enum';
 
 @Injectable()
 export class LogisticRevertInventoryQtyService {
@@ -47,7 +51,9 @@ export class LogisticRevertInventoryQtyService {
         .build(),
     );
     if (!payment)
-      throw new InternalServerErrorException(this.l10n.translate('ecommerce.payment_not_found'));
+      throw new InternalServerErrorException(
+        this.l10n.translate('ecommerce.payment_not_found'),
+      );
     if (!payment.logisticOrderId)
       throw new InternalServerErrorException(
         this.l10n.translate('ecommerce.logistic_order_id_not_set_on_payment'),
@@ -58,7 +64,11 @@ export class LogisticRevertInventoryQtyService {
         .filter({ logisticOrderId: payment.logisticOrderId })
         .filter(
           Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('ECLogisticOrderGrouped.isDeleted'), 0),
+            Sequelize.fn(
+              'isnull',
+              Sequelize.col('ECLogisticOrderGrouped.isDeleted'),
+              0,
+            ),
             { [Op.eq]: 0 },
           ),
         )
@@ -88,6 +98,7 @@ export class LogisticRevertInventoryQtyService {
 
       inventory.qty = Number(inventory.qty) + Number(detail.qty);
       if (Number(inventory.qty) > 0) {
+        inventory.inventoryStatusId = InventoryStatusEnum.available;
         // do not touch status here; logistic flow uses async status updates
       }
       inventory = await inventory.save({ transaction });

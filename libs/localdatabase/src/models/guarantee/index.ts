@@ -54,3 +54,6 @@ export * from './gs-subscription.entity';
 export * from './gs-faq.entity';
 export * from './gs-request-item-type.entity';
 export * from './gs-request-item.entity';
+export * from './gs-irangs-import-data.entity';
+export * from './gs-irangs-import-status.entity';
+export * from './gs-irangs-import-data-guarantees.entity';

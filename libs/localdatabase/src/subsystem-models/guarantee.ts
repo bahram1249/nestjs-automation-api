@@ -53,6 +53,9 @@ import {
   GSSubscription,
   GSFaq,
   GSRequestItemType,
+  GSIrangsImportData,
+  GSIrangsImportStatus,
+  GSIrangsImportDataGuarantees,
 } from '../models';
 import { GSRequestItem } from '../models/guarantee/gs-request-item.entity';
 
@@ -112,4 +115,7 @@ export const guaranteeModels = [
   GSFaq,
   GSRequestItemType,
   GSRequestItem,
+  GSIrangsImportData,
+  GSIrangsImportStatus,
+  GSIrangsImportDataGuarantees,
 ];

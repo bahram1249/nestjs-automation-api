@@ -618,12 +618,16 @@ export class LogisticTotalOrderService {
   ) {
     // find parent order, its user, and active details to build cart
     const group = await this.groupedRepository.findOne(
-      new QueryOptionsBuilder().filter({ id: groupId }).build(),
+      new QueryOptionsBuilder()
+        .filter({ id: groupId })
+        .transaction(transaction)
+        .build(),
     );
     if (!group) return;
 
     let qb = new QueryOptionsBuilder()
       .filter({ id: group.logisticOrderId })
+      .transaction(transaction)
       .include([
         { model: ECLogisticOrderGrouped as any, as: 'groups', required: false },
         { model: User as any, as: 'user', required: false },
@@ -634,6 +638,7 @@ export class LogisticTotalOrderService {
     // check gateway is SnapPay
     const payment = await this.paymentRepository.findOne(
       new QueryOptionsBuilder()
+        .transaction(transaction)
         .filter({ logisticOrderId: order.id })
         .filter(
           Sequelize.where(
@@ -646,6 +651,7 @@ export class LogisticTotalOrderService {
     if (!payment) return; // nothing to update/cancel
     const gateway = await this.paymentGatewayRepository.findOne(
       new QueryOptionsBuilder()
+        .transaction(transaction)
         .filter({ id: payment.paymentGatewayId })
         .build(),
     );
@@ -669,6 +675,7 @@ export class LogisticTotalOrderService {
             { [Op.eq]: 0 },
           ),
         )
+        .transaction(transaction)
         .build(),
     );
 
