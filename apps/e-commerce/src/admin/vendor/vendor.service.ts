@@ -32,12 +32,16 @@ import { ECVendorCommissionType } from '@rahino/localdatabase/models';
 import { LocalizationService } from 'apps/main/src/common/localization';
 import { isNotNull } from '@rahino/commontools';
 import { ECRoleEnum } from '@rahino/ecommerce/shared/enum';
+import { Job, Queue } from 'bull';
+import { InjectQueue } from '@nestjs/bull';
 
 @Injectable()
 export class VendorService {
   private readonly vendorAttachmentType = 11;
   private readonly vendorRoleStatic = ECRoleEnum.Vendor;
   constructor(
+    @InjectQueue('vendor')
+    private readonly vendorQueue: Queue,
     @InjectModel(ECVendor)
     private readonly repository: typeof ECVendor,
     @InjectModel(Role)
@@ -714,6 +718,22 @@ export class VendorService {
             transaction: transaction,
           },
         );
+      }
+
+      if (
+        isNotNull(dto.isActive) &&
+        item.isActive !== dto.isActive &&
+        (item.isActive == false || item.isActive == null) &&
+        dto.isActive == true
+      ) {
+        await this.toggleInventories(item.id, true);
+      } else if (
+        isNotNull(dto.isActive) &&
+        item.isActive !== dto.isActive &&
+        item.isActive == true &&
+        dto.isActive == false
+      ) {
+        await this.toggleInventories(item.id, false);
       }
 
       await transaction.commit();
@@ -1743,6 +1763,18 @@ export class VendorService {
         'metaDescription',
       ]),
     };
+  }
+
+  private async toggleInventories(vendorId: number, activate: boolean) {
+    if (activate) {
+      await this.vendorQueue.add('active', {
+        vendorId: vendorId,
+      });
+    } else {
+      await this.vendorQueue.add('deactive', {
+        vendorId: vendorId,
+      });
+    }
   }
 
   async findBySlug(slug: string) {

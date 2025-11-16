@@ -218,7 +218,13 @@ export class ProductQueryBuilderService {
           : ['id', 'name', 'slug', 'priorityOrder'],
         model: ECVendor,
         as: 'vendor',
-        required: false,
+        required: true,
+        where: Sequelize.where(
+          Sequelize.fn('isnull', Sequelize.col('inventories.vendor.isActive'), 1),
+          {
+            [Op.eq]: 1,
+          },
+        ),
       })
       .thenInclude({
         attributes: priceRangeQuery ? [] : ['id', 'name', 'hexCode'],

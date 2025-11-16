@@ -28,9 +28,13 @@ import { SessionModule } from '../../user/session/session.module';
 import { ECVariationPrice } from '@rahino/localdatabase/models';
 import { ECVendorCommission } from '@rahino/localdatabase/models';
 import { LocalizationModule } from 'apps/main/src/common/localization';
+import { BullModule } from '@nestjs/bull';
 
 @Module({
   imports: [
+    BullModule.registerQueue({
+      name: 'vendor',
+    }),
     SessionModule,
     UserRoleModule,
     MinioClientModule,
