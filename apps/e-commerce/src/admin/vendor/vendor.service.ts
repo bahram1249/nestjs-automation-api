@@ -32,15 +32,16 @@ import { ECVendorCommissionType } from '@rahino/localdatabase/models';
 import { LocalizationService } from 'apps/main/src/common/localization';
 import { isNotNull } from '@rahino/commontools';
 import { ECRoleEnum } from '@rahino/ecommerce/shared/enum';
-import { Job, Queue } from 'bull';
-import { InjectQueue } from '@nestjs/bull';
+import { Queue } from 'bullmq';
+import { InjectQueue } from '@nestjs/bullmq';
+import { VENDOR_QUEUE } from '../../job/vendor-inventory/constants';
 
 @Injectable()
 export class VendorService {
   private readonly vendorAttachmentType = 11;
   private readonly vendorRoleStatic = ECRoleEnum.Vendor;
   constructor(
-    @InjectQueue('vendor')
+    @InjectQueue(VENDOR_QUEUE)
     private readonly vendorQueue: Queue,
     @InjectModel(ECVendor)
     private readonly repository: typeof ECVendor,
@@ -103,6 +104,7 @@ export class VendorService {
         'metaTitle',
         'metaKeywords',
         'metaDescription',
+        'isActive',
       ])
       .include([
         {
@@ -237,6 +239,7 @@ export class VendorService {
         'coordinates',
         'latitude',
         'longitude',
+        'isActive',
       ])
       .include([
         {
@@ -348,6 +351,7 @@ export class VendorService {
           'metaTitle',
           'metaKeywords',
           'metaDescription',
+          'isActive',
         ])
         .include([
           {
@@ -474,6 +478,7 @@ export class VendorService {
           'coordinates',
           'latitude',
           'longitude',
+          'isActive',
         ])
         .include([
           {
@@ -719,21 +724,10 @@ export class VendorService {
           },
         );
       }
-
-      if (
-        isNotNull(dto.isActive) &&
-        item.isActive !== dto.isActive &&
-        (item.isActive == false || item.isActive == null) &&
-        dto.isActive == true
-      ) {
-        await this.toggleInventories(item.id, true);
-      } else if (
-        isNotNull(dto.isActive) &&
-        item.isActive !== dto.isActive &&
-        item.isActive == true &&
-        dto.isActive == false
-      ) {
-        await this.toggleInventories(item.id, false);
+      if (dto.isActive == true) {
+        await this.toggleInventories(vendor.id, true);
+      } else {
+        await this.toggleInventories(vendor.id, false);
       }
 
       await transaction.commit();
@@ -754,6 +748,7 @@ export class VendorService {
           'metaTitle',
           'metaKeywords',
           'metaDescription',
+          'isActive',
         ])
         .filter({ id: vendor.id })
         .include([
@@ -977,6 +972,12 @@ export class VendorService {
         );
       }
 
+      if (dto.isActive == true) {
+        await this.toggleInventories(vendor.id, true);
+      } else {
+        await this.toggleInventories(vendor.id, false);
+      }
+
       await transaction.commit();
     } catch (error) {
       await transaction.rollback();
@@ -995,6 +996,7 @@ export class VendorService {
           'metaTitle',
           'metaKeywords',
           'metaDescription',
+          'isActive',
         ])
         .filter({ id: vendor.id })
         .include([
@@ -1296,6 +1298,21 @@ export class VendorService {
           },
         );
       }
+      if (
+        isNotNull(dto.isActive) &&
+        item.isActive !== dto.isActive &&
+        (item.isActive == false || item.isActive == null) &&
+        dto.isActive == true
+      ) {
+        await this.toggleInventories(item.id, true);
+      } else if (
+        isNotNull(dto.isActive) &&
+        item.isActive !== dto.isActive &&
+        item.isActive == true &&
+        dto.isActive == false
+      ) {
+        await this.toggleInventories(item.id, false);
+      }
 
       await transaction.commit();
     } catch (error) {
@@ -1315,6 +1332,7 @@ export class VendorService {
           'metaTitle',
           'metaKeywords',
           'metaDescription',
+          'isActive',
         ])
         .filter({ id: vendor.id })
         .include([
@@ -1643,6 +1661,22 @@ export class VendorService {
         );
       }
 
+      if (
+        isNotNull(dto.isActive) &&
+        item.isActive !== dto.isActive &&
+        (item.isActive == false || item.isActive == null) &&
+        dto.isActive == true
+      ) {
+        await this.toggleInventories(item.id, true);
+      } else if (
+        isNotNull(dto.isActive) &&
+        item.isActive !== dto.isActive &&
+        item.isActive == true &&
+        dto.isActive == false
+      ) {
+        await this.toggleInventories(item.id, false);
+      }
+
       await transaction.commit();
     } catch (error) {
       await transaction.rollback();
@@ -1661,6 +1695,7 @@ export class VendorService {
           'metaTitle',
           'metaKeywords',
           'metaDescription',
+          'isActive',
         ])
         .filter({ id: vendor.id })
         .include([
@@ -1761,6 +1796,7 @@ export class VendorService {
         'metaTitle',
         'metaKeywords',
         'metaDescription',
+        'isActive',
       ]),
     };
   }
@@ -1788,6 +1824,7 @@ export class VendorService {
           'metaTitle',
           'metaKeywords',
           'metaDescription',
+          'isActive',
         ])
         .include([
           {

@@ -28,12 +28,13 @@ import { SessionModule } from '../../user/session/session.module';
 import { ECVariationPrice } from '@rahino/localdatabase/models';
 import { ECVendorCommission } from '@rahino/localdatabase/models';
 import { LocalizationModule } from 'apps/main/src/common/localization';
-import { BullModule } from '@nestjs/bull';
+import { BullModule } from '@nestjs/bullmq';
+import { VENDOR_QUEUE } from '../../job/vendor-inventory/constants';
 
 @Module({
   imports: [
     BullModule.registerQueue({
-      name: 'vendor',
+      name: VENDOR_QUEUE,
     }),
     SessionModule,
     UserRoleModule,
