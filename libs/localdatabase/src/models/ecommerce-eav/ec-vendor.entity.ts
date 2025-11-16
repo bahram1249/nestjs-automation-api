@@ -168,4 +168,11 @@ export class ECVendor extends Model {
     foreignKey: 'vendorId',
   })
   vendorLogistic?: ECVendorLogistic;
+
+  @AutoMap()
+  @Column({
+    type: DataType.BOOLEAN,
+    allowNull: true,
+  })
+  isActive?: boolean;
 }

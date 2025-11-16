@@ -109,4 +109,13 @@ export class VendorV2Dto {
   @AutoMap()
   @IsNumber()
   cityId: number;
+
+  @AutoMap()
+  @IsOptional()
+  @ApiProperty({
+    required: false,
+    type: Boolean,
+    description: 'isActive',
+  })
+  isActive?: boolean;
 }

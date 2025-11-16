@@ -24,7 +24,6 @@ END
 GO
 
 
-
 IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ecommerce-cities-v1' 
 			)
 	AND EXISTS (
@@ -3852,6 +3851,26 @@ BEGIN
 
   INSERT INTO Migrations(version, createdAt, updatedAt)
   SELECT 'ecommerce-inventory-history-logisticOrderId-v1', GETDATE(), GETDATE()
+END
+
+GO
+
+
+-- ecommerce-vendors-isActive-v1
+IF NOT EXISTS (
+    SELECT 1 FROM Migrations WHERE version = 'ecommerce-vendors-isActive-v1'
+  )
+  AND EXISTS (
+    SELECT 1 FROM Settings
+    WHERE ([key] = 'SITE_NAME' AND [value] IN ('ecommerce'))
+  )
+BEGIN
+
+  ALTER TABLE ECVendors
+    ADD isActive bit NULL;
+
+  INSERT INTO Migrations(version, createdAt, updatedAt)
+  SELECT 'ecommerce-vendors-isActive-v1', GETDATE(), GETDATE()
 END
 
 GO

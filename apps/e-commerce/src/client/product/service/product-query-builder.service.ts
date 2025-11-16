@@ -218,7 +218,13 @@ export class ProductQueryBuilderService {
           : ['id', 'name', 'slug', 'priorityOrder'],
         model: ECVendor,
         as: 'vendor',
-        required: false,
+        required: true,
+        where: Sequelize.where(
+          Sequelize.fn('isnull', Sequelize.col('inventories.vendor.isActive'), 1),
+          {
+            [Op.eq]: 1,
+          },
+        ),
       })
       .thenInclude({
         attributes: priceRangeQuery ? [] : ['id', 'name', 'hexCode'],
@@ -367,8 +373,10 @@ export class ProductQueryBuilderService {
         `EXISTS (
             SELECT 1
             FROM ECInventories AS ECI
+            LEFT JOIN ECVendors V ON ECI.vendorId = V.id
             WHERE [ECProduct].id = [ECI].productId
               AND ISNULL([ECI].isDeleted, 0) = 0
+              AND ISNULL(V.isActive, 1) = 1
               AND [ECI].vendorId IN(
                 ${filter.vendorIds.join(',')})
               )`.replaceAll(/\s\s+/g, ' '),
@@ -388,8 +396,10 @@ export class ProductQueryBuilderService {
         `EXISTS (
             SELECT 1
             FROM ECInventories AS ECI
+            LEFT JOIN ECVendors V ON ECI.vendorId = V.id
             WHERE [ECProduct].id = [ECI].productId
               AND ISNULL([ECI].isDeleted, 0) = 0
+              AND ISNULL(V.isActive, 1) = 1
               AND [ECI].colorId IN(
                 ${filter.colors.join(',')})
               )`.replaceAll(/\s\s+/g, ' '),
@@ -409,9 +419,12 @@ export class ProductQueryBuilderService {
             SELECT 1
             FROM ECInventories AS ECI
             LEFT JOIN ECInventoryPrices ECIP
-            ON ECI.id = ECIP.inventoryId
+              ON ECI.id = ECIP.inventoryId
+            LEFT JOIN ECVendors V
+              ON ECI.vendorId = V.id
             WHERE [ECProduct].id = [ECI].productId
               AND ISNULL([ECI].isDeleted, 0) = 0
+              AND ISNULL(V.isActive, 1) = 1
               AND ISNULL([ECIP].isDeleted, 0) = 0
               AND ECIP.variationPriceId = 1
               AND ECIP.price >= ${filter.minPrice}
@@ -432,9 +445,12 @@ export class ProductQueryBuilderService {
             SELECT 1
             FROM ECInventories AS ECI
             LEFT JOIN ECInventoryPrices ECIP
-            ON ECI.id = ECIP.inventoryId
+              ON ECI.id = ECIP.inventoryId
+            LEFT JOIN ECVendors V
+              ON ECI.vendorId = V.id
             WHERE [ECProduct].id = [ECI].productId
               AND ISNULL([ECI].isDeleted, 0) = 0
+              AND ISNULL(V.isActive, 1) = 1
               AND ISNULL([ECIP].isDeleted, 0) = 0
               AND ECIP.variationPriceId = 1
               AND ECIP.price <= ${filter.maxPrice}
@@ -454,8 +470,11 @@ export class ProductQueryBuilderService {
         `EXISTS (
             SELECT 1
             FROM ECInventories AS ECI
+            LEFT JOIN ECVendors V
+              ON ECI.vendorId = V.id
             WHERE [ECProduct].id = [ECI].productId
               AND ISNULL([ECI].isDeleted, 0) = 0
+              AND ISNULL(V.isActive, 1) = 1
               AND ECI.inventoryStatusId = ${InventoryStatusEnum.available}
               AND ECI.discountTypeId = ${filter.discountTypeId}
               AND getdate() between isnull(ECI.discountStartDate, getdate())
@@ -490,8 +509,10 @@ export class ProductQueryBuilderService {
         `EXISTS (
             SELECT 1
             FROM ECInventories AS ECI
+            LEFT JOIN ECVendors V ON ECI.vendorId = V.id
             WHERE [ECProduct].id = [ECI].productId
               AND ISNULL([ECI].isDeleted, 0) = 0
+              AND ISNULL(V.isActive, 1) = 1
               AND [ECI].vendorId = ${filter.vendorId}
           )`.replaceAll(/\s\s+/g, ' '),
       );

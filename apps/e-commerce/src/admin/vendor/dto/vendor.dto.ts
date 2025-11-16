@@ -93,4 +93,13 @@ export class VendorDto {
     description: 'logisticId',
   })
   public logisticId?: bigint;
+
+  @AutoMap()
+  @IsOptional()
+  @ApiProperty({
+    required: false,
+    type: Boolean,
+    description: 'isActive',
+  })
+  isActive?: boolean;
 }
