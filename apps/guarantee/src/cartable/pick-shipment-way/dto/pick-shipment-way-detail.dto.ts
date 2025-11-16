@@ -14,9 +14,9 @@ export class PickShipmentWayDetailDto {
   @IsNumber()
   cartableShipmentWayId: number;
 
-  @IsNotEmpty()
+  @IsOptional()
   @IsString()
-  cartableShipmentWayTrackingCode: string;
+  cartableShipmentWayTrackingCode?: string;
 
   @IsOptional()
   @IsArray()
