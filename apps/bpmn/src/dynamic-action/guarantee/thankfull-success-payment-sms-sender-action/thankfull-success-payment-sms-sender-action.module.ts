@@ -1,8 +1,8 @@
 import { Module } from '@nestjs/common';
-import { ThankfullSuccessPaymentSmsSenderService } from 'apps/main/src/bpmn/services/thankfull-success-payment-sms-sender.service';
 import { BullModule } from '@nestjs/bullmq';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { THANKFULL_SUCCESS_PAYMENT_SMS_SENDER_QUEUE } from '@rahino/guarantee/job/thankfull-success-payment-sms-sender/constants';
+import { NotificationSenderForThankfullSuccessPaymentActionService } from './notification-sender-for-thankfull-success-payment-action.service';
 
 @Module({
   imports: [
@@ -18,7 +18,7 @@ import { THANKFULL_SUCCESS_PAYMENT_SMS_SENDER_QUEUE } from '@rahino/guarantee/jo
       }),
     }),
   ],
-  providers: [ThankfullSuccessPaymentSmsSenderService],
-  exports: [ThankfullSuccessPaymentSmsSenderService],
+  providers: [NotificationSenderForThankfullSuccessPaymentActionService],
+  exports: [NotificationSenderForThankfullSuccessPaymentActionService],
 })
 export class ThankfullSuccessPaymentSmsSenderActionModule {}
