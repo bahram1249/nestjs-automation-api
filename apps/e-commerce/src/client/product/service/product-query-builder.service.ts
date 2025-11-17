@@ -220,10 +220,7 @@ export class ProductQueryBuilderService {
         as: 'vendor',
         required: true,
         where: {
-          [Op.or]: [
-            { isActive: 1 },
-            { isActive: null }, // isnull(...,1)
-          ],
+          [Op.or]: [{ isActive: 1 }, { isActive: null }],
         },
       })
       .thenInclude({
