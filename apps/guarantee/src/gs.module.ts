@@ -115,6 +115,7 @@ import { ClientSubmitCardSmsSenderModule } from './job/client-submit-card-sms-se
 import { GSAnonymousCheckModule } from './anonymous/guarantee-check';
 import { IrangsImportDataModule } from './admin/irangs-import-data/irangs-import-data.module';
 import { ClientReceivingDeviceSmsSenderModule } from './job/client-receiving-device-sms-sender';
+import { ConfirmReceiveDeviceInOrganizationModule } from './cartable/confirm-receive-device-in-organization';
 
 @Module({
   imports: [
@@ -163,6 +164,7 @@ import { ClientReceivingDeviceSmsSenderModule } from './job/client-receiving-dev
     GSCartableFactorDetailAndRemainingAmountModule,
     SubmitFactorInRequestLocationModule,
     SubmitFactorModule,
+    ConfirmReceiveDeviceInOrganizationModule,
 
     // client
     ClientOrganizationAddressModule,
