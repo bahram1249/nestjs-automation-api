@@ -2660,3 +2660,9 @@ END
 GO
 
 
+
+IF NOT EXISTS (SELECT 1 FROM BPMNActions WHERE [name] = 'ThankfullSuccessPaymentSmsSender')
+BEGIN
+    INSERT INTO BPMNActions (id, actionTypeId, name, actionSource, createdAt, updatedAt)
+    VALUES (1, 2, 'ThankfullSuccessPaymentSmsSender', 'ThankfullSuccessPaymentSmsSenderService', GETDATE(), GETDATE());
+END
