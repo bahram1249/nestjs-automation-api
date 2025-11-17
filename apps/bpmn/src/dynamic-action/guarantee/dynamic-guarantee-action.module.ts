@@ -15,6 +15,7 @@ import { NotificationSenderForClientSurveyRequestActionModule } from './notifica
 import { NotificationSenderForClientTechnicalStateRequestActionModule } from './notification-sender-for-client-technical-state-request-action';
 import { NotificationSenderForClientSupplierStateRequestActionModule } from './notification-sender-for-client-supplier-state-request-action';
 import { NotificationSenderForClientReceivingDeviceActionModule } from './notification-sender-for-client-receiving-device-action';
+import { RemoveCashTransactionActionModule } from './remove-cash-transaction-action';
 
 @Module({
   imports: [
@@ -34,6 +35,7 @@ import { NotificationSenderForClientReceivingDeviceActionModule } from './notifi
     NotificationSenderForClientTechnicalStateRequestActionModule,
     NotificationSenderForClientSupplierStateRequestActionModule,
     NotificationSenderForClientReceivingDeviceActionModule,
+    RemoveCashTransactionActionModule,
   ],
   exports: [
     SampleActionModule,
@@ -52,6 +54,7 @@ import { NotificationSenderForClientReceivingDeviceActionModule } from './notifi
     NotificationSenderForClientTechnicalStateRequestActionModule,
     NotificationSenderForClientSupplierStateRequestActionModule,
     NotificationSenderForClientReceivingDeviceActionModule,
+    RemoveCashTransactionActionModule,
   ],
 })
 export class DynamicGuaranteeActionModule {}
