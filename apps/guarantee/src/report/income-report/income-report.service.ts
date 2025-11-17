@@ -8,6 +8,7 @@ import { LocalizationService } from 'apps/main/src/common/localization';
 import { GSFactorTypeEnum } from '@rahino/guarantee/shared/factor-type';
 import { GSFactorStatusEnum } from '@rahino/guarantee/shared/factor-status';
 import * as ExcelJS from 'exceljs';
+import { Buffer as NodeBuffer } from 'buffer';
 
 @Injectable()
 export class IncomeReportService {
@@ -303,6 +304,6 @@ export class IncomeReportService {
     }
 
     const buffer = await workbook.xlsx.writeBuffer();
-    return buffer as Buffer;
+    return NodeBuffer.from(buffer);
   }
 }

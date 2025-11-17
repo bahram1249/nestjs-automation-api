@@ -2,7 +2,7 @@ import { OnWorkerEvent, Processor, WorkerHost } from '@nestjs/bullmq';
 import { Job } from 'bullmq';
 import { VENDOR_QUEUE } from './constants';
 import { DBLogger } from '@rahino/logger';
-import { ECInventory } from '@rahino/localdaldatabase/models';
+import { ECInventory } from '@rahino/localdatabase/models';
 import { InjectConnection, InjectModel } from '@nestjs/sequelize';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import { InventoryStatusEnum } from '@rahino/ecommerce/shared/inventory/enum';

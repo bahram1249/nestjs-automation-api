@@ -280,7 +280,7 @@ export class RetrievePricePersianApiService {
         }
         await this.inventoryRepository.update(
           {
-            inventoryStatusId: InventoryStatusEnum.suspend,
+            inventoryStatusId: InventoryStatusEnum.suspended,
           },
           {
             where: {

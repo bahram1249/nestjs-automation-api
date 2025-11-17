@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import * as ExcelJS from 'exceljs';
+import { Buffer as NodeBuffer } from 'buffer';
 import {
   BPMNRequest,
   BPMNRequestHistory,
@@ -98,6 +99,6 @@ export class ActivityReportService {
     }
 
     const buffer = await workbook.xlsx.writeBuffer();
-    return buffer as Buffer;
+    return NodeBuffer.from(buffer);
   }
 }

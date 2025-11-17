@@ -21,6 +21,7 @@ import {
 } from '@rahino/localdatabase/models';
 import { Express } from 'express';
 import * as ExcelJS from 'exceljs';
+import { Buffer as NodeBuffer } from 'buffer';
 import { User } from '@rahino/database';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import * as _ from 'lodash';
@@ -770,7 +771,7 @@ export class ProductService {
     }
 
     const buffer = await workbook.xlsx.writeBuffer();
-    return buffer as Buffer;
+    return NodeBuffer.from(buffer);
   }
 
   async importInventoriesExcel(user: User, file: Express.Multer.File) {
@@ -789,7 +790,14 @@ export class ProductService {
 
     const workbook = new ExcelJS.Workbook();
     if (file.buffer) {
-      await workbook.xlsx.load(file.buffer);
+      const excelBuffer =
+        file.buffer instanceof Uint8Array
+          ? file.buffer.buffer.slice(
+              file.buffer.byteOffset,
+              file.buffer.byteOffset + file.buffer.byteLength,
+            )
+          : file.buffer;
+      await workbook.xlsx.load(excelBuffer as ArrayBuffer);
     } else if ((file as any).path) {
       await workbook.xlsx.readFile((file as any).path);
     } else {
