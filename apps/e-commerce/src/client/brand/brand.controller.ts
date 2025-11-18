@@ -2,7 +2,7 @@ import {
   Body,
   Controller,
   Delete,
-  FileTypeValidator,
+  UnprocessableEntityException,
   Get,
   HttpCode,
   HttpStatus,
@@ -138,16 +138,19 @@ export class BrandController {
     @GetUser() user: User,
     @UploadedFile(
       new ParseFilePipe({
-        validators: [
-          new FileTypeValidator({ fileType: /(jpg|png|jpeg)/ }),
-          new MaxFileSizeValidator({ maxSize: 2097152 }),
-        ],
+        validators: [new MaxFileSizeValidator({ maxSize: 2097152 })],
         fileIsRequired: false,
         errorHttpStatusCode: HttpStatus.UNPROCESSABLE_ENTITY,
       }),
     )
     file?: Express.Multer.File,
   ) {
+    if (file && !['image/jpeg', 'image/png'].includes(file.mimetype)) {
+      throw new UnprocessableEntityException(
+        `Validation failed (current file type is ${file.mimetype}, expected type is /(jpg|png|jpeg)/)`,
+      );
+    }
+
     return await this.service.uploadImage(id, user, file);
   }
 
