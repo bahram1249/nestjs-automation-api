@@ -6,8 +6,8 @@ import { NotificationSenderForThankfullSuccessPaymentActionService } from './not
 
 @Module({
   imports: [
-    BullModule.registerQueueAsync({
-      name: THANKFULL_SUCCESS_PAYMENT_SMS_SENDER_QUEUE,
+    BullModule.forRootAsync({
+      imports: [ConfigModule],
       inject: [ConfigService],
       useFactory: (config: ConfigService) => ({
         connection: {
@@ -17,8 +17,15 @@ import { NotificationSenderForThankfullSuccessPaymentActionService } from './not
         },
       }),
     }),
+    BullModule.registerQueueAsync({
+      name: THANKFULL_SUCCESS_PAYMENT_SMS_SENDER_QUEUE,
+    }),
   ],
-  providers: [NotificationSenderForThankfullSuccessPaymentActionService],
-  exports: [NotificationSenderForThankfullSuccessPaymentActionService],
+  providers: [
+    {
+      provide: 'NotificationSenderForThankfullSuccessPaymentActionService',
+      useClass: NotificationSenderForThankfullSuccessPaymentActionService,
+    },
+  ],
 })
 export class ThankfullSuccessPaymentSmsSenderActionModule {}
