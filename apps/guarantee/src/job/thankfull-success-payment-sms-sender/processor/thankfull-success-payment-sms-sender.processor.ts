@@ -1,7 +1,7 @@
 import { Processor, WorkerHost } from '@nestjs/bullmq';
 import { Job } from 'bullmq';
-import { THANKFULL_SUCCESS_PAYMENT_SMS_SENDER_QUEUE } from '../constants';
 import { SmsSenderService } from '@rahino/guarantee/shared/sms-sender';
+import { THANKFULL_SUCCESS_PAYMENT_SMS_SENDER_QUEUE } from '../constants';
 
 @Processor(THANKFULL_SUCCESS_PAYMENT_SMS_SENDER_QUEUE)
 export class ThankfullSuccessPaymentSmsSenderProcessor extends WorkerHost {

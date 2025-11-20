@@ -16,11 +16,11 @@ import { NotificationSenderForClientTechnicalStateRequestActionModule } from './
 import { NotificationSenderForClientSupplierStateRequestActionModule } from './notification-sender-for-client-supplier-state-request-action';
 import { NotificationSenderForClientReceivingDeviceActionModule } from './notification-sender-for-client-receiving-device-action';
 import { RemoveCashTransactionActionModule } from './remove-cash-transaction-action';
-import { ThankfullSuccessPaymentSmsSenderActionModule } from './thankfull-success-payment-sms-sender-action';
+import { NotificationSenderForThankfullSuccessPaymentActionModule } from './thankfull-success-payment-sms-sender-action';
 
 @Module({
   imports: [
-    ThankfullSuccessPaymentSmsSenderActionModule,
+    NotificationSenderForThankfullSuccessPaymentActionModule,
     SampleActionModule,
     NotificationSenderForNewIncomingCartableRequestActionModule,
     NotificationSenderForTechnicalUserCartableRquestActionModule,
@@ -40,7 +40,6 @@ import { ThankfullSuccessPaymentSmsSenderActionModule } from './thankfull-succes
     RemoveCashTransactionActionModule,
   ],
   exports: [
-    ThankfullSuccessPaymentSmsSenderActionModule,
     SampleActionModule,
     NotificationSenderForNewIncomingCartableRequestActionModule,
     NotificationSenderForTechnicalUserCartableRquestActionModule,
@@ -57,6 +56,7 @@ import { ThankfullSuccessPaymentSmsSenderActionModule } from './thankfull-succes
     NotificationSenderForClientTechnicalStateRequestActionModule,
     NotificationSenderForClientSupplierStateRequestActionModule,
     NotificationSenderForClientReceivingDeviceActionModule,
+    NotificationSenderForThankfullSuccessPaymentActionModule,
     RemoveCashTransactionActionModule,
   ],
 })

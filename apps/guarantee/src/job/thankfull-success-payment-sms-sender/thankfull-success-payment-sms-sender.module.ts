@@ -1,8 +1,8 @@
 import { BullModule } from '@nestjs/bullmq';
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { ThankfullSuccessPaymentSmsSenderProcessor } from './processor';
 import { SmsSenderModule } from '@rahino/guarantee/shared/sms-sender';
+import { ThankfullSuccessPaymentSmsSenderProcessor } from './processor';
 import { THANKFULL_SUCCESS_PAYMENT_SMS_SENDER_QUEUE } from './constants';
 
 @Module({

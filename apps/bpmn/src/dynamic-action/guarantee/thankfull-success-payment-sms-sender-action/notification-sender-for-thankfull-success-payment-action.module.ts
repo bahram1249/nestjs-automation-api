@@ -3,11 +3,13 @@ import { BullModule } from '@nestjs/bullmq';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { THANKFULL_SUCCESS_PAYMENT_SMS_SENDER_QUEUE } from '@rahino/guarantee/job/thankfull-success-payment-sms-sender/constants';
 import { NotificationSenderForThankfullSuccessPaymentActionService } from './notification-sender-for-thankfull-success-payment-action.service';
+import { SequelizeModule } from '@nestjs/sequelize';
+import { GSRequest } from '@rahino/localdatabase/models';
 
 @Module({
   imports: [
     BullModule.forRootAsync({
-      imports: [ConfigModule],
+      imports: [ConfigModule, SequelizeModule.forFeature([GSRequest])],
       inject: [ConfigService],
       useFactory: (config: ConfigService) => ({
         connection: {
@@ -28,4 +30,4 @@ import { NotificationSenderForThankfullSuccessPaymentActionService } from './not
     },
   ],
 })
-export class ThankfullSuccessPaymentSmsSenderActionModule {}
+export class NotificationSenderForThankfullSuccessPaymentActionModule {}
