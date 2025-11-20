@@ -1,6 +1,5 @@
 import {
   Controller,
-  FileTypeValidator,
   Get,
   HttpCode,
   HttpStatus,
@@ -13,6 +12,7 @@ import {
   UploadedFile,
   UseGuards,
   UseInterceptors,
+  UnprocessableEntityException,
 } from '@nestjs/common';
 import { JsonResponseTransformInterceptor } from '@rahino/response/interceptor';
 import {
@@ -76,16 +76,19 @@ export class RequestAttachmentController {
     @GetUser() user: User,
     @UploadedFile(
       new ParseFilePipe({
-        validators: [
-          new FileTypeValidator({ fileType: /(jpg|png|jpeg)/ }),
-          new MaxFileSizeValidator({ maxSize: 10097152 }),
-        ],
+        validators: [new MaxFileSizeValidator({ maxSize: 10097152 })],
         fileIsRequired: true,
         errorHttpStatusCode: HttpStatus.UNPROCESSABLE_ENTITY,
       }),
     )
     file?: Express.Multer.File,
   ) {
+    if (file && !['image/jpeg', 'image/png'].includes(file.mimetype)) {
+      throw new UnprocessableEntityException(
+        `Validation failed (current file type is ${file.mimetype}, expected type is /(jpg|png|jpeg)/)`,
+      );
+    }
+
     return await this.service.uploadImage(user, file);
   }
 

@@ -1,7 +1,6 @@
 import {
   Body,
   Controller,
-  FileTypeValidator,
   Get,
   HttpCode,
   HttpStatus,
@@ -12,6 +11,7 @@ import {
   Res,
   UploadedFile,
   UseInterceptors,
+  UnprocessableEntityException,
 } from '@nestjs/common';
 import { JsonResponseTransformInterceptor } from '@rahino/response/interceptor';
 import { ApiBody, ApiConsumes, ApiOperation, ApiTags } from '@nestjs/swagger';
@@ -46,16 +46,19 @@ export class AttachmentController {
   async uploadImage(
     @UploadedFile(
       new ParseFilePipe({
-        validators: [
-          new FileTypeValidator({ fileType: /(jpg|png|jpeg)/ }),
-          new MaxFileSizeValidator({ maxSize: 10097152 }),
-        ],
+        validators: [new MaxFileSizeValidator({ maxSize: 10097152 })],
         fileIsRequired: true,
         errorHttpStatusCode: HttpStatus.UNPROCESSABLE_ENTITY,
       }),
     )
     file?: Express.Multer.File,
   ) {
+    if (file && !['image/jpeg', 'image/png'].includes(file.mimetype)) {
+      throw new UnprocessableEntityException(
+        `Validation failed (current file type is ${file.mimetype}, expected type is /(jpg|png|jpeg)/)`,
+      );
+    }
+
     return await this.service.uploadImage(file);
   }
 

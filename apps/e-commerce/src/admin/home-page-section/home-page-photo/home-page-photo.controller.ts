@@ -1,6 +1,5 @@
 import {
   Controller,
-  FileTypeValidator,
   Get,
   HttpCode,
   HttpStatus,
@@ -12,6 +11,7 @@ import {
   UploadedFile,
   UseGuards,
   UseInterceptors,
+  UnprocessableEntityException,
 } from '@nestjs/common';
 import { CheckPermission } from '@rahino/permission-checker/decorator';
 import { PermissionGuard } from '@rahino/permission-checker/guard';
@@ -62,16 +62,19 @@ export class HomePagePhotoController {
     @GetUser() user: User,
     @UploadedFile(
       new ParseFilePipe({
-        validators: [
-          new FileTypeValidator({ fileType: /(jpg|png|jpeg)/ }),
-          new MaxFileSizeValidator({ maxSize: 2097152 }),
-        ],
+        validators: [new MaxFileSizeValidator({ maxSize: 2097152 })],
         fileIsRequired: false,
         errorHttpStatusCode: HttpStatus.UNPROCESSABLE_ENTITY,
       }),
     )
     file?: Express.Multer.File,
   ) {
+    if (file && !['image/jpeg', 'image/png'].includes(file.mimetype)) {
+      throw new UnprocessableEntityException(
+        `Validation failed (current file type is ${file.mimetype}, expected type is /(jpg|png|jpeg)/)`,
+      );
+    }
+
     return await this.service.uploadImage(user, file);
   }
 

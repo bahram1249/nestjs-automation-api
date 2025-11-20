@@ -218,11 +218,9 @@ export class ProductQueryBuilderService {
           : ['id', 'name', 'slug', 'priorityOrder'],
         model: ECVendor,
         as: 'vendor',
-        required: true,
-        where: {
-          [Op.or]: [{ isActive: 1 }, { isActive: null }],
-        },
+        required: false,
       })
+
       .thenInclude({
         attributes: priceRangeQuery ? [] : ['id', 'name', 'hexCode'],
         model: ECColor,
@@ -286,7 +284,17 @@ export class ProductQueryBuilderService {
       )
       .filter({
         inventoryStatusId: InventoryStatusEnum.available,
-      });
+      })
+      .filter(
+        Sequelize.literal(`
+        EXISTS (
+          SELECT 1
+          FROM ECVendors v
+          WHERE v.id = inventories.vendorId
+          AND ISNULL(v.isActive, 1) = 1
+        )
+      `),
+      );
 
     // conditions
     let firstPriceIncludeBuilder = new IncludeOptionsBuilder({
