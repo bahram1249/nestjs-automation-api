@@ -8,8 +8,9 @@ import { GSRequest } from '@rahino/localdatabase/models';
 
 @Module({
   imports: [
+    SequelizeModule.forFeature([GSRequest]),
     BullModule.forRootAsync({
-      imports: [ConfigModule, SequelizeModule.forFeature([GSRequest])],
+      imports: [ConfigModule],
       inject: [ConfigService],
       useFactory: (config: ConfigService) => ({
         connection: {
