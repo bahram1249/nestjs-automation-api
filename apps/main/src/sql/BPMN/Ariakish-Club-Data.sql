@@ -2660,9 +2660,11 @@ END
 GO
 
 
-
 IF NOT EXISTS (SELECT 1 FROM BPMNActions WHERE [name] = 'NotificationSenderForThankfullSuccessPaymentActionService')
 BEGIN
     INSERT INTO BPMNActions (actionTypeId, name, actionSource, createdAt, updatedAt)
     VALUES (2, 'NotificationSenderForThankfullSuccessPaymentActionService', 'NotificationSenderForThankfullSuccessPaymentActionService', GETDATE(), GETDATE());
 END
+
+GO
+
