@@ -545,8 +545,8 @@ export class LogisticPeriodService {
                 [Op.between]: [
                   Sequelize.fn(
                     'dateadd',
-                    'day',
-                    '-7',
+                    Sequelize.literal('day'),
+                    -7,
                     Sequelize.col('sendingPeriods.startDate'),
                   ),
                   Sequelize.col('sendingPeriods.endDate'),
