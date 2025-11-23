@@ -1,13 +1,14 @@
 import {
   Controller,
-  FileTypeValidator,
   Get,
+  HttpStatus,
   MaxFileSizeValidator,
   Param,
   ParseFilePipe,
   Post,
   Query,
   Res,
+  UnprocessableEntityException,
   UploadedFile,
   UseGuards,
   UseInterceptors,
@@ -77,18 +78,22 @@ export class IrangsImportDataController {
   async uploadFile(
     @UploadedFile(
       new ParseFilePipe({
-        validators: [
-          new MaxFileSizeValidator({ maxSize: 20971520 }),
-          new FileTypeValidator({
-            fileType:
-              'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-          }),
-        ],
+        validators: [new MaxFileSizeValidator({ maxSize: 20971520 })],
+        fileIsRequired: true,
+        errorHttpStatusCode: HttpStatus.UNPROCESSABLE_ENTITY,
       }),
     )
     file: Express.Multer.File,
     @GetUser() user: User,
   ) {
+    const expectedMimeType =
+      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
+    if (file && file.mimetype !== expectedMimeType) {
+      throw new UnprocessableEntityException(
+        `Validation failed (current file type is ${file.mimetype}, expected type is ${expectedMimeType})`,
+      );
+    }
+
     return this.service.upload(file, user);
   }
 
