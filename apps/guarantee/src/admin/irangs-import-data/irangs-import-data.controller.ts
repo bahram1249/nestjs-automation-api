@@ -38,10 +38,9 @@ import { Response } from 'express';
   path: '/api/guarantee/admin/irangs-import-data',
   version: ['1'],
 })
-@UseInterceptors(JsonResponseTransformInterceptor)
 export class IrangsImportDataController {
   constructor(private service: IrangsImportDataService) {}
-
+  @UseInterceptors(JsonResponseTransformInterceptor)
   @ApiOperation({ description: 'get all irangs import data' })
   @CheckPermission({
     permissionSymbol: 'guarantee.admin.irangs-import-data.getall',
