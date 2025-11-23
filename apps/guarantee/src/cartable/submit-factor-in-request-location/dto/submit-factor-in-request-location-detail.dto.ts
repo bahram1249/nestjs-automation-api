@@ -10,6 +10,7 @@ export class SubmitFactorInRequestLocationDetailDto {
   @IsBoolean()
   isOnline?: boolean;
 
+  @IsOptional()
   @IsArray()
   attachments?: AttachmentDto[];
 }

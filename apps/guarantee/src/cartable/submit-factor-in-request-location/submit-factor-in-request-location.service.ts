@@ -28,13 +28,13 @@ export class SubmitFactorInRequestLocationService {
   ) {}
 
   async traverse(user: User, dto: SubmitFactorInRequestLocationDto) {
-    if (dto.attachments.length == 0) {
-      throw new BadRequestException(
-        this.localizationService.translate(
-          'guarantee.you_have_to_upload_a_image_at_least_one',
-        ),
-      );
-    }
+    // if (dto.attachments.length == 0) {
+    //   throw new BadRequestException(
+    //     this.localizationService.translate(
+    //       'guarantee.you_have_to_upload_a_image_at_least_one',
+    //     ),
+    //   );
+    // }
 
     const cartableItem =
       await this.guaranteeTraverseService.validateAndReturnCartableItem(
@@ -65,46 +65,49 @@ export class SubmitFactorInRequestLocationService {
           transaction: transaction,
         },
       );
-
-      for (let attachmentDto of dto.attachments) {
-        let findAttachment = await this.attachmentRepository.findOne(
-          new QueryOptionsBuilder()
-            .filter({ id: attachmentDto.attachmentId })
-            .filter({ attachmentTypeId: this.photoTempAttachmentType })
-            .filter(
-              Sequelize.where(
-                Sequelize.fn(
-                  'isnull',
-                  Sequelize.col('Attachment.isDeleted'),
-                  0,
+      if (dto.attachments.length > 0) {
+        for (let attachmentDto of dto.attachments) {
+          let findAttachment = await this.attachmentRepository.findOne(
+            new QueryOptionsBuilder()
+              .filter({ id: attachmentDto.attachmentId })
+              .filter({ attachmentTypeId: this.photoTempAttachmentType })
+              .filter(
+                Sequelize.where(
+                  Sequelize.fn(
+                    'isnull',
+                    Sequelize.col('Attachment.isDeleted'),
+                    0,
+                  ),
+                  {
+                    [Op.eq]: 0,
+                  },
                 ),
-                {
-                  [Op.eq]: 0,
-                },
+              )
+              .transaction(transaction)
+              .build(),
+          );
+          if (!findAttachment) {
+            throw new BadRequestException(
+              this.localizationService.translate(
+                'core.dont_access_to_this_file',
               ),
-            )
-            .transaction(transaction)
-            .build(),
-        );
-        if (!findAttachment) {
-          throw new BadRequestException(
-            this.localizationService.translate('core.dont_access_to_this_file'),
+            );
+          }
+
+          findAttachment.attachmentTypeId = this.photoAttachmentType;
+          await findAttachment.save({ transaction: transaction });
+
+          await this.requestAttachmentRepository.create(
+            {
+              requestId: cartableItem.request.id,
+              attachmentId: findAttachment.id,
+              requestAttachmentTypeId:
+                GSRequestAttachmentTypeEnum.SubmitByOrganizationOnRequestEnd,
+              userId: user.id,
+            },
+            { transaction: transaction },
           );
         }
-
-        findAttachment.attachmentTypeId = this.photoAttachmentType;
-        await findAttachment.save({ transaction: transaction });
-
-        await this.requestAttachmentRepository.create(
-          {
-            requestId: cartableItem.request.id,
-            attachmentId: findAttachment.id,
-            requestAttachmentTypeId:
-              GSRequestAttachmentTypeEnum.SubmitByOrganizationOnRequestEnd,
-            userId: user.id,
-          },
-          { transaction: transaction },
-        );
       }
 
       // lets traverse request
