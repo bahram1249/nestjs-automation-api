@@ -11,7 +11,7 @@ export class LogisticPaymentServiceProviderFactory {
   ) {}
 
   async create() {
-    if(!this.request?.body?.paymentId) return null;
+    if (!this.request?.body?.paymentId) return null;
     const paymentId = Number(this.request?.body?.paymentId);
     return await this.provider.create(paymentId);
   }

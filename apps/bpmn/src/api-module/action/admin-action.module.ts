@@ -6,7 +6,9 @@ import { ActionService } from './action.service';
 import { Permission, User } from '@rahino/database';
 
 @Module({
-  imports: [SequelizeModule.forFeature([User, Permission, BPMNAction, BPMNActionType])],
+  imports: [
+    SequelizeModule.forFeature([User, Permission, BPMNAction, BPMNActionType]),
+  ],
   controllers: [ActionController],
   providers: [ActionService],
 })

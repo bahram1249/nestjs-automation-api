@@ -1,6 +1,6 @@
-import { Table, Column, Model, DataType } from "sequelize-typescript";
+import { Table, Column, Model, DataType } from 'sequelize-typescript';
 
-@Table({ tableName: "BPMNReferralTypes" })
+@Table({ tableName: 'BPMNReferralTypes' })
 export class BPMNReferralType extends Model {
   @Column({
     type: DataType.INTEGER,

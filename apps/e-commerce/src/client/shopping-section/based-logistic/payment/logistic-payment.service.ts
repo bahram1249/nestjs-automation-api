@@ -101,7 +101,11 @@ export class LogisticPaymentService {
     stocks = await this.applyCouponIfAny(stocks, body.couponCode);
 
     // 1.1) Validate groups and stockIds presence
-    if (!body.groups || !Array.isArray(body.groups) || body.groups.length === 0) {
+    if (
+      !body.groups ||
+      !Array.isArray(body.groups) ||
+      body.groups.length === 0
+    ) {
       throw new BadRequestException(
         this.l10n.translate('ecommerce.invalid_groups_no_stocks'),
       );
@@ -198,7 +202,7 @@ export class LogisticPaymentService {
         transaction,
       );
       await this.updateGroupedTotals(groupMap, groupTotals, transaction);
-     
+
       // 7) Request payment and finalize async revert
       const pay = await this.paymentProviderService.requestPayment(
         totalPayable,
@@ -221,7 +225,7 @@ export class LogisticPaymentService {
       return { redirectUrl: pay.redirectUrl };
     } catch (e) {
       await transaction.rollback();
-      console.log(e)
+      console.log(e);
       throw new InternalServerErrorException(
         this.l10n.translate('ecommerce.payment_request_failed', {
           message: e.message,

@@ -57,7 +57,7 @@ export class PublicPhotoService {
 
   async getPhoto(res: Response, fileName: string) {
     const photoTypes = [this.publicPhotoAttachmentType];
-    let attachment = await this.attachmentRepository.findOne(
+    const attachment = await this.attachmentRepository.findOne(
       new QueryOptionsBuilder()
         .filter({ fileName: fileName })
         .filter(

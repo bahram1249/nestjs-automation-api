@@ -55,7 +55,7 @@ export class LogisticRevertPaymentQtyService {
         parentPaymentId: childPayment.id,
       });
 
-      let wallet = await this.walletRepository.findOne(
+      const wallet = await this.walletRepository.findOne(
         new QueryOptionsBuilder()
           .filter({ userId: payment.userId })
           .filter(
@@ -68,7 +68,9 @@ export class LogisticRevertPaymentQtyService {
       );
 
       wallet.currentAmount = BigInt(Number(wallet.currentAmount) + refundPrice);
-      wallet.suspendedAmount = BigInt(Number(wallet.suspendedAmount) - refundPrice);
+      wallet.suspendedAmount = BigInt(
+        Number(wallet.suspendedAmount) - refundPrice,
+      );
       await wallet.save();
     }
   }

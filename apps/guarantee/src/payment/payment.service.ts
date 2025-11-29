@@ -23,7 +23,7 @@ export class GSPaymentService {
   ) {}
 
   async sadadVerfiy(dto: SadadVerifyDto, res: Response) {
-    let transactionItem = await this.transactionRepository.findOne(
+    const transactionItem = await this.transactionRepository.findOne(
       new QueryOptionsBuilder()
         .filter({ id: dto.OrderId })
         .filter({ token: dto.token })
@@ -63,7 +63,7 @@ export class GSPaymentService {
       );
     }
 
-    let factorId = transactionItem.factorId;
+    const factorId = transactionItem.factorId;
     transactionItem.transactionStatusId = GSTransactionStatusEnum.Paid;
     await transactionItem.save();
 

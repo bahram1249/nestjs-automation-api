@@ -265,9 +265,13 @@ export class SingleVendorShoppingCartService {
     // Build unique product-inventory pairs for bulk fetching
     const uniqueKey = (p: { productId: any; inventoryId: any }) =>
       `${p.productId}_${p.inventoryId}`;
-    const pairMap: Record<string, { productId: number; inventoryId: number }> = {};
+    const pairMap: Record<string, { productId: number; inventoryId: number }> =
+      {};
     for (const sp of products) {
-      const key = uniqueKey({ productId: sp.productId, inventoryId: sp.inventoryId });
+      const key = uniqueKey({
+        productId: sp.productId,
+        inventoryId: sp.inventoryId,
+      });
       if (!pairMap[key]) {
         pairMap[key] = {
           productId: Number(sp.productId),
@@ -285,7 +289,9 @@ export class SingleVendorShoppingCartService {
       limit: productInventoryPairs.length,
       offset: 0,
     });
-    const productsQuery = await this.productRepositoryService.findAll(filter as any);
+    const productsQuery = await this.productRepositoryService.findAll(
+      filter as any,
+    );
     const repoProducts = productsQuery.result || [];
 
     // Index by productId

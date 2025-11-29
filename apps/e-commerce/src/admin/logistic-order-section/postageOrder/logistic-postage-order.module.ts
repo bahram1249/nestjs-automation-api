@@ -1,7 +1,10 @@
 import { Module } from '@nestjs/common';
 import { SequelizeModule } from '@nestjs/sequelize';
 import { User, Permission } from '@rahino/database';
-import { ECLogisticOrder, ECLogisticOrderGrouped } from '@rahino/localdatabase/models';
+import {
+  ECLogisticOrder,
+  ECLogisticOrderGrouped,
+} from '@rahino/localdatabase/models';
 import { LogisticUtilOrderModule } from '../utilLogisticOrder/logistic-util-order.module';
 import { LogisticEcommerceSmsModule } from '../../../client/shopping-section/based-logistic/sms/logistic-ecommerce-sms.module';
 import { LogisticPostageOrderController } from './logistic-postage-order.controller';
@@ -12,7 +15,12 @@ import { LocalizationModule } from 'apps/main/src/common/localization';
 // Logistic equivalent of PostageOrderModule for logistic-based orders
 @Module({
   imports: [
-    SequelizeModule.forFeature([User, Permission, ECLogisticOrder, ECLogisticOrderGrouped]),
+    SequelizeModule.forFeature([
+      User,
+      Permission,
+      ECLogisticOrder,
+      ECLogisticOrderGrouped,
+    ]),
     SequelizeModule,
     LogisticUtilOrderModule,
     LogisticEcommerceSmsModule,

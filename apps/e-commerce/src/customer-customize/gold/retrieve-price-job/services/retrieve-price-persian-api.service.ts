@@ -251,13 +251,13 @@ export class RetrievePricePersianApiService {
     const listFilter = await this.listFilterFactory.create();
     listFilter.limit = 10;
     listFilter.offset = 0;
-    let more = true;
+    const more = true;
     let page = 1;
 
     // set all inventories to suspend
     if (enable == true && problem == true) {
       while (more) {
-        let inventories = await this.inventoryRepository.findAll(
+        const inventories = await this.inventoryRepository.findAll(
           queryBuilder
             .limit(listFilter.limit)
             .offset((page - 1) * listFilter.limit)
@@ -297,7 +297,7 @@ export class RetrievePricePersianApiService {
         { model: ECProduct, as: 'product' },
       ]);
       while (more) {
-        let inventories = await this.inventoryRepository.findAll(
+        const inventories = await this.inventoryRepository.findAll(
           queryBuilder
             .filter(
               Sequelize.where(
@@ -324,7 +324,7 @@ export class RetrievePricePersianApiService {
               ? InventoryStatusEnum.available
               : InventoryStatusEnum.unavailable;
 
-          let oldInventoryPrice = await this.inventoryPriceRepository.findOne(
+          const oldInventoryPrice = await this.inventoryPriceRepository.findOne(
             new QueryOptionsBuilder()
               .filter(
                 Sequelize.where(
@@ -348,7 +348,7 @@ export class RetrievePricePersianApiService {
           let inventoryPrice = new InventoryPriceDto();
           inventoryPrice.variationPriceId = VariationPriceEnum.firstPrice;
           inventoryPrice.price = BigInt(0);
-          let newPrice = await this.calPriceService.getPrice(
+          const newPrice = await this.calPriceService.getPrice(
             inventories[index].product,
             inventoryPrice,
             null,

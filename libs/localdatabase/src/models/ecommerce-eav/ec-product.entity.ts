@@ -112,11 +112,13 @@ export class ECProduct extends Model {
   })
   description?: string;
 
+  @AutoMap()
   @Column({
     type: DataType.BIGINT,
-    allowNull: true,
+    allowNull: false,
+    defaultValue: 0,
   })
-  viewCount?: bigint;
+  viewCount: bigint;
 
   @Column({
     type: DataType.BIGINT,

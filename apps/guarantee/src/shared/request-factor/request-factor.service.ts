@@ -391,7 +391,7 @@ export class RequestFactorService {
     );
 
     // is rial
-    let availableCredit = Number(guarantee.availableCredit);
+    const availableCredit = Number(guarantee.availableCredit);
 
     // skip
     if (availableCredit == 0) return;

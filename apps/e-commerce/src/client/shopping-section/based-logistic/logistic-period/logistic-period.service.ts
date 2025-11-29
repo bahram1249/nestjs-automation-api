@@ -181,8 +181,8 @@ export class LogisticPeriodService {
           });
 
         let bestSelection = null;
-        let earliestDate = null;
-        let earliestStartTime = null;
+        const earliestDate = null;
+        const earliestStartTime = null;
 
         const shipmentWaysResolved = await Promise.all(shipmentWaysOutput);
         await this.capacityFilterShipmentWays(
@@ -564,7 +564,7 @@ export class LogisticPeriodService {
     const startOfWindow = this.startOfDayTZ(currentDate);
     const endDate = this.addDaysTZ(currentDate, 7);
     const endOfWindow = this.endOfDayTZ(endDate);
-    let persianDates = await this.persianDateRepository.findAll(
+    const persianDates = await this.persianDateRepository.findAll(
       new QueryOptionsBuilder()
         .filter({
           GregorianDate: { [Op.gte]: startOfWindow, [Op.lte]: endOfWindow },

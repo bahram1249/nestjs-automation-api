@@ -1,6 +1,6 @@
-import { Table, Column, Model, DataType } from "sequelize-typescript";
+import { Table, Column, Model, DataType } from 'sequelize-typescript';
 
-@Table({ tableName: "GsProviders" })
+@Table({ tableName: 'GsProviders' })
 export class GSProvider extends Model {
   @Column({
     type: DataType.INTEGER,

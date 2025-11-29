@@ -6,8 +6,8 @@ import { ConditionServiceImp } from '@rahino/bpmn/modules/condition/interface';
 export class SampleConditionService implements ConditionServiceImp {
   constructor() {}
   async check(dto: CheckConditionsDto): Promise<boolean> {
-    let a = 1;
-    let b = 1;
+    const a = 1;
+    const b = 1;
     return a == b;
   }
 }

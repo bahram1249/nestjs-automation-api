@@ -26,7 +26,7 @@ export class ProductFavoriteService {
     });
     const count = await this.repository.count(queryBuilder.build());
 
-    let favorites = await this.repository.findAll(queryBuilder.build());
+    const favorites = await this.repository.findAll(queryBuilder.build());
     for (let index = 0; index < favorites.length; index++) {
       const favorite = favorites[index];
       favorite.set(

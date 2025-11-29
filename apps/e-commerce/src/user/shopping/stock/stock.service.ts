@@ -104,15 +104,22 @@ export class StockService {
         result: [],
       };
     }
-    
+
     // Build unique list of productId + inventoryId pairs for batch query
     const uniqueKey = (p: { productId: any; inventoryId: any }) =>
       `${p.productId}_${p.inventoryId}`;
-    const pairMap: Record<string, { productId: number; inventoryId: number }> = {};
+    const pairMap: Record<string, { productId: number; inventoryId: number }> =
+      {};
     for (const s of stocks) {
-      const key = uniqueKey({ productId: s.productId, inventoryId: s.inventoryId });
+      const key = uniqueKey({
+        productId: s.productId,
+        inventoryId: s.inventoryId,
+      });
       if (!pairMap[key]) {
-        pairMap[key] = { productId: Number(s.productId), inventoryId: Number(s.inventoryId) };
+        pairMap[key] = {
+          productId: Number(s.productId),
+          inventoryId: Number(s.inventoryId),
+        };
       }
     }
     const productInventoryPairs = Object.values(pairMap);
@@ -123,7 +130,9 @@ export class StockService {
       limit: productInventoryPairs.length,
       offset: 0,
     });
-    const productsQuery = await this.productRepositoryService.findAll(filter as any);
+    const productsQuery = await this.productRepositoryService.findAll(
+      filter as any,
+    );
     const products = productsQuery.result;
 
     // Index products by id for quick lookup
@@ -395,7 +404,7 @@ export class StockService {
   }
 
   async deleteById(session: ECUserSession, entityId: bigint) {
-    let item = await this.repository.findOne(
+    const item = await this.repository.findOne(
       new QueryOptionsBuilder()
         .filter({ id: entityId })
         .filter({ sessionId: session.id })

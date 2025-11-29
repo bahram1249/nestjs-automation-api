@@ -1,6 +1,6 @@
-import { Table, Column, Model, DataType } from "sequelize-typescript";
+import { Table, Column, Model, DataType } from 'sequelize-typescript';
 
-@Table({ tableName: "BPMNOccurredEvents" })
+@Table({ tableName: 'BPMNOccurredEvents' })
 export class BPMNOccurredEvent extends Model {
   @Column({
     type: DataType.INTEGER,

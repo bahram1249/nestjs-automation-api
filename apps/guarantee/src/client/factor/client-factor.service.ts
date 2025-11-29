@@ -41,7 +41,7 @@ export class FactorService {
   }
 
   async findById(user: User, entityId: bigint) {
-    let query = this.factorQueryBuilder
+    const query = this.factorQueryBuilder
       .init(false)
       .factorOwner(user.id)
       .filterFactorId(entityId)

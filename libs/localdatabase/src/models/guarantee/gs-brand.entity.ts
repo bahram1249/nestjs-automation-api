@@ -1,4 +1,4 @@
-import { AutoMap } from "automapper-classes";
+import { AutoMap } from 'automapper-classes';
 import {
   Table,
   Column,
@@ -6,10 +6,10 @@ import {
   DataType,
   ForeignKey,
   BelongsTo,
-} from "sequelize-typescript";
-import { GSProvider } from "./gs-provider.entity";
+} from 'sequelize-typescript';
+import { GSProvider } from './gs-provider.entity';
 
-@Table({ tableName: "GSBrands" })
+@Table({ tableName: 'GSBrands' })
 export class GSBrand extends Model {
   @Column({
     type: DataType.INTEGER,
@@ -32,7 +32,7 @@ export class GSBrand extends Model {
   @ForeignKey(() => GSProvider)
   providerId?: number;
 
-  @BelongsTo(() => GSProvider, { as: "provider", foreignKey: "providerId" })
+  @BelongsTo(() => GSProvider, { as: 'provider', foreignKey: 'providerId' })
   provider?: GSProvider;
 
   @AutoMap()

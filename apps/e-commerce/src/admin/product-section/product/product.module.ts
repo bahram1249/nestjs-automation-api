@@ -2,7 +2,12 @@ import { Module } from '@nestjs/common';
 import { ProductService } from './product.service';
 import { ProductController } from './product.controller';
 import { SequelizeModule } from '@nestjs/sequelize';
-import { ECInventory, ECInventoryPrice, ECProduct, ECVendorAddress } from '@rahino/localdatabase/models';
+import {
+  ECInventory,
+  ECInventoryPrice,
+  ECProduct,
+  ECVendorAddress,
+} from '@rahino/localdatabase/models';
 import { User } from '@rahino/database';
 import { Permission } from '@rahino/database';
 import { ProductProfile } from './mapper';

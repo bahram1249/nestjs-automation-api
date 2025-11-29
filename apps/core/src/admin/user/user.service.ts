@@ -116,7 +116,7 @@ export class UserService {
     if (dto.roles && (dto.ignoreRole == null || dto.ignoreRole == false)) {
       for (let index = 0; index < dto.roles.length; index++) {
         const roleId = dto.roles[index];
-        let role = await this.roleRepository.findOne({
+        const role = await this.roleRepository.findOne({
           where: {
             id: roleId,
           },
@@ -190,7 +190,7 @@ export class UserService {
     if (dto.roles && (dto.ignoreRole == null || dto.ignoreRole == false)) {
       for (let index = 0; index < dto.roles.length; index++) {
         const roleId = dto.roles[index];
-        let role = await this.roleRepository.findOne({
+        const role = await this.roleRepository.findOne({
           where: {
             id: roleId,
           },

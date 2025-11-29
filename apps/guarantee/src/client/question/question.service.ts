@@ -10,7 +10,7 @@ export class QuestionService {
   constructor(@InjectModel(GSQuestion) private repository: typeof GSQuestion) {}
 
   async findAll() {
-    let queryBuilder = new QueryOptionsBuilder().filter(
+    const queryBuilder = new QueryOptionsBuilder().filter(
       Sequelize.where(
         Sequelize.fn('isnull', Sequelize.col('GSQuestion.isDeleted'), 0),
         {

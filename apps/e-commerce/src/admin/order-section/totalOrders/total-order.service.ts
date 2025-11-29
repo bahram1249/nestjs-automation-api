@@ -145,7 +145,7 @@ export class TotalOrderService {
       isolationLevel: Transaction.ISOLATION_LEVELS.READ_COMMITTED,
     });
     try {
-      let item = await this.repository.findOne(
+      const item = await this.repository.findOne(
         new QueryOptionsBuilder()
           .filter({ id: id })
           .filter({
@@ -213,7 +213,7 @@ export class TotalOrderService {
       isolationLevel: Transaction.ISOLATION_LEVELS.READ_COMMITTED,
     });
     try {
-      let detail = await this.orderDetailRepository.findOne(
+      const detail = await this.orderDetailRepository.findOne(
         new QueryOptionsBuilder()
           .filter({ id: detailId })
           .filter(
@@ -243,7 +243,7 @@ export class TotalOrderService {
           transaction: transaction,
         },
       );
-      let queryBulder = new QueryOptionsBuilder()
+      const queryBulder = new QueryOptionsBuilder()
         .attributes([
           [
             Sequelize.fn(
@@ -283,13 +283,13 @@ export class TotalOrderService {
         )
         .raw(true)
         .transaction(transaction);
-      let resultQuery = queryBulder.build();
+      const resultQuery = queryBulder.build();
       resultQuery.limit = null;
       resultQuery.offset = null;
       resultQuery.order = null;
       resultQuery.subQuery = false;
       const totalPrice = await this.orderDetailRepository.findOne(resultQuery);
-      let order = await this.repository.findOne(
+      const order = await this.repository.findOne(
         new QueryOptionsBuilder()
           .filter({ id: detail.orderId })
           .transaction(transaction)
@@ -406,7 +406,7 @@ export class TotalOrderService {
       isolationLevel: Transaction.ISOLATION_LEVELS.READ_COMMITTED,
     });
     try {
-      let detail = await this.orderDetailRepository.findOne(
+      const detail = await this.orderDetailRepository.findOne(
         new QueryOptionsBuilder()
           .filter({ id: detailId })
           .filter(
@@ -447,7 +447,7 @@ export class TotalOrderService {
         },
       );
       // there is a problem
-      let queryBulder = new QueryOptionsBuilder()
+      const queryBulder = new QueryOptionsBuilder()
         .attributes([
           [
             Sequelize.fn(
@@ -487,13 +487,13 @@ export class TotalOrderService {
         )
         .raw(true)
         .transaction(transaction);
-      let resultQuery = queryBulder.build();
+      const resultQuery = queryBulder.build();
       resultQuery.limit = null;
       resultQuery.offset = null;
       resultQuery.order = null;
       resultQuery.subQuery = false;
       const totalPrice = await this.orderDetailRepository.findOne(resultQuery);
-      let order = await this.repository.findOne(
+      const order = await this.repository.findOne(
         new QueryOptionsBuilder().filter({ id: detail.orderId }).build(),
       );
       await this.repository.update(

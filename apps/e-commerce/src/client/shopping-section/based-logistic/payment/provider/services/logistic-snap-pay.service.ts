@@ -1,9 +1,21 @@
-import { Injectable, Scope, BadRequestException, InternalServerErrorException } from '@nestjs/common';
+import {
+  Injectable,
+  Scope,
+  BadRequestException,
+  InternalServerErrorException,
+} from '@nestjs/common';
 import { Sequelize, Transaction, Op } from 'sequelize';
 import { InjectModel } from '@nestjs/sequelize';
-import { ECPaymentGateway, ECPayment, ECLogisticOrderGroupedDetail } from '@rahino/localdatabase/models';
+import {
+  ECPaymentGateway,
+  ECPayment,
+  ECLogisticOrderGroupedDetail,
+} from '@rahino/localdatabase/models';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
-import { PaymentStatusEnum, PaymentTypeEnum } from '@rahino/ecommerce/shared/enum';
+import {
+  PaymentStatusEnum,
+  PaymentTypeEnum,
+} from '@rahino/ecommerce/shared/enum';
 import { User } from '@rahino/database';
 import axios from 'axios';
 import { ConfigService } from '@nestjs/config';
@@ -45,8 +57,13 @@ export class LogisticSnapPayService implements LogisticPayInterface {
       `${this.baseUrl}/api/online/offer/v1/eligible?amount=${totalPrice * 10}`,
       { headers: { Authorization: 'Bearer ' + token } },
     );
-    if (elig.data?.successful !== true && elig.data?.response?.eligible !== true) {
-      throw new BadRequestException(this.l10n.translate('ecommerce.invalid_payment'));
+    if (
+      elig.data?.successful !== true &&
+      elig.data?.response?.eligible !== true
+    ) {
+      throw new BadRequestException(
+        this.l10n.translate('ecommerce.invalid_payment'),
+      );
     }
 
     const transactionId = await this.generateUniqueTransactionId();
@@ -137,7 +154,9 @@ export class LogisticSnapPayService implements LogisticPayInterface {
         `${this.baseUrl}/api/online/offer/v1/eligible?amount=${totalPrice * 10}`,
         { headers: { Authorization: 'Bearer ' + token } },
       );
-      const ok = elig.data?.response?.eligible === true || elig.data?.successful === true;
+      const ok =
+        elig.data?.response?.eligible === true ||
+        elig.data?.successful === true;
       return {
         eligibleCheck: !!ok,
         titleMessage: elig.data?.response?.title_message,
@@ -152,7 +171,7 @@ export class LogisticSnapPayService implements LogisticPayInterface {
     const gateway = await this.findGateway('SnapPayService');
 
     // find payment that is still waiting
-    let payment = await this.paymentRepo.findOne(
+    const payment = await this.paymentRepo.findOne(
       new QueryOptionsBuilder()
         .filter({ id: paymentId })
         .filter({ paymentGatewayId: gateway.id })
@@ -160,7 +179,9 @@ export class LogisticSnapPayService implements LogisticPayInterface {
         .build(),
     );
     if (!payment) {
-      throw new BadRequestException(this.l10n.translate('ecommerce.invalid_payment'));
+      throw new BadRequestException(
+        this.l10n.translate('ecommerce.invalid_payment'),
+      );
     }
 
     const token = await this.generateToken(gateway);
@@ -188,7 +209,9 @@ export class LogisticSnapPayService implements LogisticPayInterface {
       if (result.data?.successful !== true) {
         return true;
       }
-      if (result.data.response.transactionId != payment.transactionId?.toString()) {
+      if (
+        result.data.response.transactionId != payment.transactionId?.toString()
+      ) {
         return true;
       }
     } catch {
@@ -209,18 +232,27 @@ export class LogisticSnapPayService implements LogisticPayInterface {
     return true;
   }
 
-  async verify(res: any, query: { transactionId: string; state: string; amount: string }) {
+  async verify(
+    res: any,
+    query: { transactionId: string; state: string; amount: string },
+  ) {
     const gateway = await this.findGateway('SnapPayService');
-    if (!gateway) throw new BadRequestException(this.l10n.translate('ecommerce.invalid_payment'));
+    if (!gateway)
+      throw new BadRequestException(
+        this.l10n.translate('ecommerce.invalid_payment'),
+      );
 
-    let payment = await this.paymentRepo.findOne(
+    const payment = await this.paymentRepo.findOne(
       new QueryOptionsBuilder()
         .filter({ transactionId: query.transactionId })
         .filter({ paymentGatewayId: gateway.id })
         .filter({ paymentStatusId: PaymentStatusEnum.WaitingForPayment })
         .build(),
     );
-    if (!payment) throw new BadRequestException(this.l10n.translate('ecommerce.invalid_payment'));
+    if (!payment)
+      throw new BadRequestException(
+        this.l10n.translate('ecommerce.invalid_payment'),
+      );
 
     if (query.state === 'FAILED') {
       await this.revertInventoryQtyService.revertPaymentAndQty(payment.id);
@@ -234,11 +266,17 @@ export class LogisticSnapPayService implements LogisticPayInterface {
         );
         if (result.data?.successful !== true) {
           await this.revertInventoryQtyService.revertPaymentAndQty(payment.id);
-          throw new BadRequestException(this.l10n.translate('ecommerce.invalid_payment'));
+          throw new BadRequestException(
+            this.l10n.translate('ecommerce.invalid_payment'),
+          );
         }
-        if (result.data.response.transactionId != payment.transactionId.toString()) {
+        if (
+          result.data.response.transactionId != payment.transactionId.toString()
+        ) {
           await this.revertInventoryQtyService.revertPaymentAndQty(payment.id);
-          throw new BadRequestException(this.l10n.translate('ecommerce.invalid_payment'));
+          throw new BadRequestException(
+            this.l10n.translate('ecommerce.invalid_payment'),
+          );
         }
         const finalRequest = await axios.post(
           this.baseUrl + '/api/online/payment/v1/settle',
@@ -251,17 +289,28 @@ export class LogisticSnapPayService implements LogisticPayInterface {
       }
     }
     const frontUrl = this.config.get('BASE_FRONT_URL');
-    return res.redirect(301, frontUrl + `/payment/transaction?transactionId=${payment.id}`);
+    return res.redirect(
+      301,
+      frontUrl + `/payment/transaction?transactionId=${payment.id}`,
+    );
   }
 
   private async findGateway(serviceName: string) {
     const gateway = await this.paymentGatewayRepo.findOne(
       new QueryOptionsBuilder()
         .filter({ serviceName })
-        .filter(Sequelize.where(Sequelize.fn('isnull', Sequelize.col('isDeleted'), 0), { [Op.eq]: 0 }))
+        .filter(
+          Sequelize.where(
+            Sequelize.fn('isnull', Sequelize.col('isDeleted'), 0),
+            { [Op.eq]: 0 },
+          ),
+        )
         .build(),
     );
-    if (!gateway) throw new BadRequestException(this.l10n.translate('ecommerce.invalid_payment'));
+    if (!gateway)
+      throw new BadRequestException(
+        this.l10n.translate('ecommerce.invalid_payment'),
+      );
     return gateway;
   }
 
@@ -289,7 +338,8 @@ export class LogisticSnapPayService implements LogisticPayInterface {
       );
 
     const base64 = new Base64();
-    const authorization = 'Basic ' + base64.encode(`${clientId}:${clientSecret}`);
+    const authorization =
+      'Basic ' + base64.encode(`${clientId}:${clientSecret}`);
 
     const tokenResponse = await axios.post(
       this.baseUrl + '/api/online/v1/oauth/token',
@@ -307,7 +357,9 @@ export class LogisticSnapPayService implements LogisticPayInterface {
       },
     );
     if (tokenResponse.status < 200 || tokenResponse.status > 299) {
-      throw new InternalServerErrorException(this.l10n.translate('ecommerce.invalid_token'));
+      throw new InternalServerErrorException(
+        this.l10n.translate('ecommerce.invalid_token'),
+      );
     }
     const token = tokenResponse.data?.access_token;
     if (!token)
@@ -327,14 +379,16 @@ export class LogisticSnapPayService implements LogisticPayInterface {
     groupedDetails?: ECLogisticOrderGroupedDetail[],
   ) {
     const gateway = await this.findGateway('SnapPayService');
-    let payment = await this.paymentRepo.findOne(
+    const payment = await this.paymentRepo.findOne(
       new QueryOptionsBuilder()
         .filter({ logisticOrderId: logisticOrderId })
         .filter({ paymentGatewayId: gateway.id })
         .build(),
     );
     if (!payment) {
-      throw new BadRequestException(this.l10n.translate('ecommerce.invalid_payment'));
+      throw new BadRequestException(
+        this.l10n.translate('ecommerce.invalid_payment'),
+      );
     }
 
     let phone = phoneNumber;
@@ -406,7 +460,9 @@ export class LogisticSnapPayService implements LogisticPayInterface {
         .build(),
     );
     if (!payment) {
-      throw new BadRequestException(this.l10n.translate('ecommerce.invalid_payment'));
+      throw new BadRequestException(
+        this.l10n.translate('ecommerce.invalid_payment'),
+      );
     }
     const token = await this.generateToken(gateway);
     const finalRequest = await axios.post(

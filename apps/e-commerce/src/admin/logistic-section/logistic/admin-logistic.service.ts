@@ -323,7 +323,7 @@ export class LogisticService {
       await item.save({ transaction });
 
       // find default user of this logistic
-      let defaultLogisticUser = await this.logisticUserRepository.findOne(
+      const defaultLogisticUser = await this.logisticUserRepository.findOne(
         new QueryOptionsBuilder()
           .include([
             {

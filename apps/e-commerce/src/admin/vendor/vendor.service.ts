@@ -77,14 +77,11 @@ export class VendorService {
 
   async findAll(filter: GetVendorDto) {
     let queryBuilder = new QueryOptionsBuilder()
-      .filterIf(
-        isNotNull(filter.search),
-        {
-          name: {
-            [Op.like]: filter.search,
-          },
+      .filterIf(isNotNull(filter.search), {
+        name: {
+          [Op.like]: filter.search,
         },
-      )
+      })
       .filter(
         Sequelize.where(
           Sequelize.fn('isnull', Sequelize.col('ECVendor.isDeleted'), 0),
@@ -187,7 +184,11 @@ export class VendorService {
             [Op.and]: [
               { isDefault: true },
               Sequelize.where(
-                Sequelize.fn('isnull', Sequelize.col('vendorLogistic.isDeleted'), 0),
+                Sequelize.fn(
+                  'isnull',
+                  Sequelize.col('vendorLogistic.isDeleted'),
+                  0,
+                ),
                 { [Op.eq]: 0 },
               ),
             ],
@@ -207,14 +208,11 @@ export class VendorService {
 
   async findAllV2(filter: GetVendorDto) {
     let queryBuilder = new QueryOptionsBuilder()
-      .filterIf(
-        isNotNull(filter.search),
-        {
-          name: {
-            [Op.like]: filter.search,
-          },
+      .filterIf(isNotNull(filter.search), {
+        name: {
+          [Op.like]: filter.search,
         },
-      )
+      })
       .filter(
         Sequelize.where(
           Sequelize.fn('isnull', Sequelize.col('ECVendor.isDeleted'), 0),
@@ -320,7 +318,11 @@ export class VendorService {
             [Op.and]: [
               { isDefault: true },
               Sequelize.where(
-                Sequelize.fn('isnull', Sequelize.col('vendorLogistic.isDeleted'), 0),
+                Sequelize.fn(
+                  'isnull',
+                  Sequelize.col('vendorLogistic.isDeleted'),
+                  0,
+                ),
                 { [Op.eq]: 0 },
               ),
             ],
@@ -432,7 +434,11 @@ export class VendorService {
               [Op.and]: [
                 { isDefault: true },
                 Sequelize.where(
-                  Sequelize.fn('isnull', Sequelize.col('vendorLogistic.isDeleted'), 0),
+                  Sequelize.fn(
+                    'isnull',
+                    Sequelize.col('vendorLogistic.isDeleted'),
+                    0,
+                  ),
                   { [Op.eq]: 0 },
                 ),
               ],
@@ -559,7 +565,11 @@ export class VendorService {
               [Op.and]: [
                 { isDefault: true },
                 Sequelize.where(
-                  Sequelize.fn('isnull', Sequelize.col('vendorLogistic.isDeleted'), 0),
+                  Sequelize.fn(
+                    'isnull',
+                    Sequelize.col('vendorLogistic.isDeleted'),
+                    0,
+                  ),
                   { [Op.eq]: 0 },
                 ),
               ],
@@ -604,13 +614,17 @@ export class VendorService {
     );
     if (searchSlug) {
       throw new BadRequestException(
-        this.localizationService.translate('core.the_given_slug_is_exists_before'),
+        this.localizationService.translate(
+          'core.the_given_slug_is_exists_before',
+        ),
       );
     }
 
     // find vendor role
     const vendorRole = await this.roleRepository.findOne(
-      new QueryOptionsBuilder().filter({ static_id: ECRoleEnum.Vendor }).build(),
+      new QueryOptionsBuilder()
+        .filter({ static_id: ECRoleEnum.Vendor })
+        .build(),
     );
     if (!vendorRole) {
       throw new ForbiddenException(
@@ -693,7 +707,9 @@ export class VendorService {
         );
         if (requiedItems.length != variationPrices.length) {
           throw new BadRequestException(
-            this.localizationService.translate('ecommerce.required_commission_types_not_sent'),
+            this.localizationService.translate(
+              'ecommerce.required_commission_types_not_sent',
+            ),
           );
         }
       }
@@ -940,7 +956,9 @@ export class VendorService {
         );
         if (requiedItems.length != variationPrices.length) {
           throw new BadRequestException(
-            this.localizationService.translate('ecommerce.required_commission_types_not_sent'),
+            this.localizationService.translate(
+              'ecommerce.required_commission_types_not_sent',
+            ),
           );
         }
       }
@@ -1107,13 +1125,17 @@ export class VendorService {
     );
     if (searchSlug) {
       throw new BadRequestException(
-        this.localizationService.translate('core.the_given_slug_is_exists_before'),
+        this.localizationService.translate(
+          'core.the_given_slug_is_exists_before',
+        ),
       );
     }
 
     // find vendor role
     const vendorRole = await this.roleRepository.findOne(
-      new QueryOptionsBuilder().filter({ static_id: ECRoleEnum.Vendor }).build(),
+      new QueryOptionsBuilder()
+        .filter({ static_id: ECRoleEnum.Vendor })
+        .build(),
     );
     if (!vendorRole) {
       throw new ForbiddenException(
@@ -1148,7 +1170,9 @@ export class VendorService {
     );
     if (!defaultVendorUser) {
       throw new ForbiddenException(
-        this.localizationService.translate('ecommerce.default_vendor_user_not_found'),
+        this.localizationService.translate(
+          'ecommerce.default_vendor_user_not_found',
+        ),
       );
     }
 
@@ -1443,7 +1467,9 @@ export class VendorService {
     );
     if (searchSlug) {
       throw new BadRequestException(
-        this.localizationService.translate('core.the_given_slug_is_exists_before'),
+        this.localizationService.translate(
+          'core.the_given_slug_is_exists_before',
+        ),
       );
     }
 
@@ -1506,7 +1532,9 @@ export class VendorService {
     );
     if (!defaultVendorUser) {
       throw new ForbiddenException(
-        this.localizationService.translate('ecommerce.default_vendor_user_not_found'),
+        this.localizationService.translate(
+          'ecommerce.default_vendor_user_not_found',
+        ),
       );
     }
 
@@ -1842,7 +1870,11 @@ export class VendorService {
               [Op.and]: [
                 { isDefault: true },
                 Sequelize.where(
-                  Sequelize.fn('isnull', Sequelize.col('vendorLogistic.isDeleted'), 0),
+                  Sequelize.fn(
+                    'isnull',
+                    Sequelize.col('vendorLogistic.isDeleted'),
+                    0,
+                  ),
                   { [Op.eq]: 0 },
                 ),
               ],

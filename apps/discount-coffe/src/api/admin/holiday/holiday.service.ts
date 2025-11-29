@@ -134,7 +134,7 @@ export class HolidayService {
       throw new BadRequestException('buffet not founded');
     }
 
-    let ignoreReserve = await this.repository.findOne(
+    const ignoreReserve = await this.repository.findOne(
       new QueryOptionsBuilder()
         .filter({ buffetId: buffet.id })
         .filter({ id: entityId })

@@ -110,7 +110,7 @@ export class OrganizationUserService {
   async removeUserOrganizationRole(
     removeUserOrganizationRole: RemoveUserOrganizationRoleDto,
   ) {
-    let find = await this.repository.findOne(
+    const find = await this.repository.findOne(
       new QueryOptionsBuilder()
         .filter({
           userId: removeUserOrganizationRole.userId,

@@ -5,11 +5,11 @@ import {
   DataType,
   ForeignKey,
   BelongsTo,
-} from "sequelize-typescript";
-import { BPMNNode } from "./bpmn-node.entity";
-import { BPMNCondition } from "./bpmn-condition.entity";
+} from 'sequelize-typescript';
+import { BPMNNode } from './bpmn-node.entity';
+import { BPMNCondition } from './bpmn-condition.entity';
 
-@Table({ tableName: "BPMNNodeConditions" })
+@Table({ tableName: 'BPMNNodeConditions' })
 export class BPMNNodeCondition extends Model {
   @Column({
     type: DataType.INTEGER,
@@ -18,7 +18,7 @@ export class BPMNNodeCondition extends Model {
   @ForeignKey(() => BPMNNode)
   nodeId: number;
 
-  @BelongsTo(() => BPMNNode, { as: "node", foreignKey: "nodeId" })
+  @BelongsTo(() => BPMNNode, { as: 'node', foreignKey: 'nodeId' })
   node?: BPMNNode;
 
   @Column({
@@ -29,8 +29,8 @@ export class BPMNNodeCondition extends Model {
   conditionId: number;
 
   @BelongsTo(() => BPMNCondition, {
-    as: "condition",
-    foreignKey: "conditionId",
+    as: 'condition',
+    foreignKey: 'conditionId',
   })
   condition?: BPMNCondition;
 

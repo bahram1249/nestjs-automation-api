@@ -268,13 +268,12 @@ export class LogisticWeeklyPeriodService {
       (item) => item.id,
     );
 
-    const filteredLogisticWeeklyPeriodTimeIds = logisticWeeklyPeriodTimeIds
-      ?.filter((id) => isNotNull(id));
+    const filteredLogisticWeeklyPeriodTimeIds =
+      logisticWeeklyPeriodTimeIds?.filter((id) => isNotNull(id));
 
-    const queryBuilderForTimes = new QueryOptionsBuilder()
-      .filter({
-        logisticWeeklyPeriodId: dto.id,
-      });
+    const queryBuilderForTimes = new QueryOptionsBuilder().filter({
+      logisticWeeklyPeriodId: dto.id,
+    });
 
     if (
       filteredLogisticWeeklyPeriodTimeIds &&
@@ -311,7 +310,7 @@ export class LogisticWeeklyPeriodService {
     await Promise.all(
       dto.logisticWeeklyPeriodTimes?.map(async (item) => {
         await this.createOrUpdateLogisticWeeklyPeriodTimes(
-          (dto.id as any),
+          dto.id as any,
           item,
           transaction,
         );

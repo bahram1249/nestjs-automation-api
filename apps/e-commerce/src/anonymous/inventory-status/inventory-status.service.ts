@@ -11,7 +11,7 @@ export class InventoryStatusService {
     private readonly repository: typeof ECInventoryStatus,
   ) {}
   async findAll(filter: ListFilter) {
-    let queryBuilder = new QueryOptionsBuilder();
+    const queryBuilder = new QueryOptionsBuilder();
     return {
       result: await this.repository.findAll(queryBuilder.build()),
       total: await this.repository.count(queryBuilder.build()),
@@ -19,7 +19,7 @@ export class InventoryStatusService {
   }
 
   async findById(entityId: number) {
-    let queryBuilder = new QueryOptionsBuilder().filter({ id: entityId });
+    const queryBuilder = new QueryOptionsBuilder().filter({ id: entityId });
     return {
       result: await this.repository.findAll(queryBuilder.build()),
     };

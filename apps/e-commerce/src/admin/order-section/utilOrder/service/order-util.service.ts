@@ -6,7 +6,7 @@ export class OrderUtilService {
   async recalculateOrdersPrices(orders: ECOrder[]) {
     const promises = [];
     for (let index = 0; index < orders.length; index++) {
-      let order = orders[index];
+      const order = orders[index];
       promises.push(this.recalculateOrderPrices(order));
     }
     return await Promise.all(promises);

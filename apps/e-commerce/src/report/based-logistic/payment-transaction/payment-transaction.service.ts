@@ -68,11 +68,7 @@ export class BasedPaymentTransactionService {
           'totalPrice',
         ],
         [
-          Sequelize.fn(
-            'isnull',
-            Sequelize.col('payment.commissionAmount'),
-            0,
-          ),
+          Sequelize.fn('isnull', Sequelize.col('payment.commissionAmount'), 0),
           'paymentCommissionAmount',
         ],
         [
@@ -113,7 +109,10 @@ export class BasedPaymentTransactionService {
 
     qb = qb
       .attributes([
-        [Sequelize.fn('count', Sequelize.col('ECLogisticOrder.id')), 'cntOrder'],
+        [
+          Sequelize.fn('count', Sequelize.col('ECLogisticOrder.id')),
+          'cntOrder',
+        ],
         [
           Sequelize.fn(
             'isnull',
@@ -141,9 +140,7 @@ export class BasedPaymentTransactionService {
         [
           Sequelize.fn(
             'isnull',
-            Sequelize.literal(
-              'sum(isnull(payment.commissionAmount, 0))',
-            ),
+            Sequelize.literal('sum(isnull(payment.commissionAmount, 0))'),
             0,
           ),
           'paymentCommissionAmount',

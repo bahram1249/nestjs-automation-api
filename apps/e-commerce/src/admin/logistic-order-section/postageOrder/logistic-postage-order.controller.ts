@@ -58,7 +58,9 @@ export class LogisticPostageOrderController {
     return await this.service.findById(entityId, user);
   }
 
-  @ApiOperation({ description: 'change group to post (id is ECLogisticOrderGrouped.id)' })
+  @ApiOperation({
+    description: 'change group to post (id is ECLogisticOrderGrouped.id)',
+  })
   @CheckPermission({
     permissionSymbol: 'ecommerce.admin.postageorders.processpost',
   })

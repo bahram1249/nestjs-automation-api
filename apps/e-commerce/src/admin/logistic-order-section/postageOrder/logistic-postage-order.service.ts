@@ -1,7 +1,10 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel, InjectConnection } from '@nestjs/sequelize';
 import { User } from '@rahino/database';
-import { ECLogisticOrder, ECLogisticOrderGrouped } from '@rahino/localdatabase/models';
+import {
+  ECLogisticOrder,
+  ECLogisticOrderGrouped,
+} from '@rahino/localdatabase/models';
 import { LogisticOrderQueryBuilder } from '../../../client/order-section/utilLogisticOrder/logistic-order-query-builder.service';
 import { LogisticOrderUtilService } from '../../../client/order-section/utilLogisticOrder/logistic-order-util.service';
 import { ListFilter } from '@rahino/query-filter';
@@ -11,7 +14,10 @@ import { LocalizationService } from 'apps/main/src/common/localization/localizat
 import { LogisticUserRoleHandlerService } from 'apps/e-commerce/src/admin/logistic-section/logistic-user-role-handler/logistic-user-role-handler.service';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import { Sequelize, Op } from 'sequelize';
-import { OrderShipmentwayEnum, OrderStatusEnum } from '@rahino/ecommerce/shared/enum';
+import {
+  OrderShipmentwayEnum,
+  OrderStatusEnum,
+} from '@rahino/ecommerce/shared/enum';
 
 @Injectable()
 export class LogisticPostageOrderService {
@@ -56,7 +62,8 @@ export class LogisticPostageOrderService {
     const count = await this.repository.count(qb.build());
 
     // compute accessible logistic ids and restrict included groups with the same conditions
-    const accessibleLogisticIds = await this.logisticAccess.listAccessibleLogisticIds(user);
+    const accessibleLogisticIds =
+      await this.logisticAccess.listAccessibleLogisticIds(user);
 
     qb = qb
       .subQuery(true)
@@ -101,7 +108,9 @@ export class LogisticPostageOrderService {
       )
       // restrict included groups to the ones the user can access and match group conditions
       .includeGroupsAndDetailsGroupFiltered({
-        logisticIds: (await this.logisticAccess.listAccessibleLogisticIds(user)) as any,
+        logisticIds: (await this.logisticAccess.listAccessibleLogisticIds(
+          user,
+        )) as any,
         orderStatusIds: [OrderStatusEnum.OrderHasBeenProcessed] as any,
         orderShipmentWayId: OrderShipmentwayEnum.post as any,
       })
@@ -111,7 +120,9 @@ export class LogisticPostageOrderService {
     let result = await this.repository.findOne(qb.build());
     if (!result) {
       throw new NotFoundException(
-        this.localizationService.translate('ecommerce.logistic_order_not_found'),
+        this.localizationService.translate(
+          'ecommerce.logistic_order_not_found',
+        ),
       );
     }
     result = await this.utilService.recalculateOrderPrices(result);
@@ -128,7 +139,11 @@ export class LogisticPostageOrderService {
           .filter({ orderShipmentWayId: OrderShipmentwayEnum.post as any })
           .filter(
             Sequelize.where(
-              Sequelize.fn('isnull', Sequelize.col('ECLogisticOrderGrouped.isDeleted'), 0),
+              Sequelize.fn(
+                'isnull',
+                Sequelize.col('ECLogisticOrderGrouped.isDeleted'),
+                0,
+              ),
               { [Op.eq]: 0 },
             ),
           )
@@ -137,11 +152,16 @@ export class LogisticPostageOrderService {
       );
       if (!group) {
         throw new NotFoundException(
-          this.localizationService.translate('ecommerce.logistic_group_not_found'),
+          this.localizationService.translate(
+            'ecommerce.logistic_group_not_found',
+          ),
         );
       }
 
-      await this.logisticAccess.checkAccessToLogistic({ user, logisticId: group.logisticId });
+      await this.logisticAccess.checkAccessToLogistic({
+        user,
+        logisticId: group.logisticId,
+      });
 
       group.orderStatusId = OrderStatusEnum.SendByPost;
       // set new group-level fields
@@ -149,7 +169,10 @@ export class LogisticPostageOrderService {
       group.deliveryDate = new Date();
       group = await group.save({ transaction });
       // roll-up parent ECLogisticOrder status after group status change
-      await this.utilService.syncParentOrderStatus(group.logisticOrderId as any, transaction as any);
+      await this.utilService.syncParentOrderStatus(
+        group.logisticOrderId as any,
+        transaction as any,
+      );
 
       await transaction.commit();
 

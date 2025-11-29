@@ -85,7 +85,7 @@ export class SubmitSurveyService {
         { transaction: transaction },
       );
       // insert survey
-      for (let answer of dto.repsponses) {
+      for (const answer of dto.repsponses) {
         const question = questions.find(
           (question) => Number(question.id) == answer.questionId,
         );

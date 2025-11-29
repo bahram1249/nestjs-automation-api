@@ -210,7 +210,7 @@ export class LogisticPendingOrderService {
 
       if (!another) {
         // move group to processed
-        let group = await this.groupedRepository.findOne(
+        const group = await this.groupedRepository.findOne(
           new QueryOptionsBuilder()
             .filter({ id: detail.groupedId })
             .transaction(transaction)

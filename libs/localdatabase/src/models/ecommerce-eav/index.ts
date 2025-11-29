@@ -73,3 +73,4 @@ export * from './ec-vendor-logistic.entity';
 export * from './ec-logistic-order.entity';
 export * from './ec-logistic-order-grouped.entity';
 export * from './ec-logistic-order-grouped-detail.entity';
+export * from './ec-product-view.model';

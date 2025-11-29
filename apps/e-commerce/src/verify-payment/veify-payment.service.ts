@@ -1,6 +1,9 @@
 import { Injectable, BadRequestException } from '@nestjs/common';
 import { SnapPayDto, ZarinPalDto } from './dto';
-import { SnapPayService, ZarinPalService } from '../user/shopping/payment/provider/services';
+import {
+  SnapPayService,
+  ZarinPalService,
+} from '../user/shopping/payment/provider/services';
 import { Response } from 'express';
 import { InjectModel } from '@nestjs/sequelize';
 import { ECPayment } from '@rahino/localdatabase/models';

@@ -168,18 +168,24 @@ export class ECLogisticOrderGrouped extends Model {
     if (isNotNull(instance) && isNotNull(instance.logisticWeeklyPeriodTime)) {
       const timeItem = instance.logisticWeeklyPeriodTime;
       if (timeItem.startTime) {
-        timeItem.startTime = new Date(timeItem.startTime).toLocaleTimeString('en-US', {
-          hour: '2-digit',
-          minute: '2-digit',
-          hour12: false,
-        });
+        timeItem.startTime = new Date(timeItem.startTime).toLocaleTimeString(
+          'en-US',
+          {
+            hour: '2-digit',
+            minute: '2-digit',
+            hour12: false,
+          },
+        );
       }
       if (timeItem.endTime) {
-        timeItem.endTime = new Date(timeItem.endTime).toLocaleTimeString('en-US', {
-          hour: '2-digit',
-          minute: '2-digit',
-          hour12: false,
-        });
+        timeItem.endTime = new Date(timeItem.endTime).toLocaleTimeString(
+          'en-US',
+          {
+            hour: '2-digit',
+            minute: '2-digit',
+            hour12: false,
+          },
+        );
       }
     }
   }

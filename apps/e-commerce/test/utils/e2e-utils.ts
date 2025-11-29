@@ -1,8 +1,17 @@
-import { INestApplication, CanActivate, ExecutionContext } from '@nestjs/common';
+import {
+  INestApplication,
+  CanActivate,
+  ExecutionContext,
+} from '@nestjs/common';
 import { Test, TestingModuleBuilder } from '@nestjs/testing';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { DatabaseModule } from '@rahino/database';
-import { I18nModule, QueryResolver, AcceptLanguageResolver, I18nValidationPipe } from 'nestjs-i18n';
+import {
+  I18nModule,
+  QueryResolver,
+  AcceptLanguageResolver,
+  I18nValidationPipe,
+} from 'nestjs-i18n';
 import * as path from 'path';
 import { JwtGuard } from '@rahino/auth';
 import { coreModels } from '@rahino/database';
@@ -20,7 +29,9 @@ export class TestingJwtGuard implements CanActivate {
   canActivate(context: ExecutionContext): boolean {
     const req = context.switchToHttp().getRequest();
     const auth: string | undefined = req.headers['authorization'];
-    const token = auth?.startsWith('Bearer ') ? auth.slice('Bearer '.length) : undefined;
+    const token = auth?.startsWith('Bearer ')
+      ? auth.slice('Bearer '.length)
+      : undefined;
     if (!token) return false;
     req.user = {
       id: 1,
@@ -48,7 +59,7 @@ export async function createEcommerceE2EApp(options?: {
         inject: [ConfigService],
         useFactory: (configService: ConfigService) => ({
           name: 'sequelize_default',
-          dialect: (configService.get<string>('DB_DIALECT') as any) as any,
+          dialect: configService.get<string>('DB_DIALECT') as any as any,
           host: configService.get<string>('DB_HOST'),
           port: configService.get<number>('DB_PORT'),
           username: configService.get<string>('DB_USER'),
@@ -59,7 +70,8 @@ export async function createEcommerceE2EApp(options?: {
           autoLoadModels: configService.get('DB_AUTO_LOAD_MODELS') === 'true',
           logging: (configService.get('DB_LOG') as any) === 'true',
           synchronize: configService.get('DB_SYNCHRONIZE') === 'true',
-          timezone: (configService.get<string>('DB_TIMEZONE') as string) || 'fa-IR',
+          timezone:
+            (configService.get<string>('DB_TIMEZONE') as string) || 'fa-IR',
           models: [
             ...coreModels,
             ...eavEntities,

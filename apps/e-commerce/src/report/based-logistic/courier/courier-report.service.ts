@@ -7,7 +7,10 @@ import { I18nContext, I18nService } from 'nestjs-i18n';
 import { I18nTranslations } from 'apps/main/src/generated/i18n.generated';
 import { LogisticOrderQueryBuilderService } from '../order-query-builder/logistic-order-query-builder.service';
 import { GetCourierReportDto } from '../../courier/dto';
-import { OrderShipmentwayEnum, OrderStatusEnum } from '@rahino/ecommerce/shared/enum';
+import {
+  OrderShipmentwayEnum,
+  OrderStatusEnum,
+} from '@rahino/ecommerce/shared/enum';
 import { Sequelize } from 'sequelize';
 import { User } from '@rahino/database';
 
@@ -100,7 +103,10 @@ export class BasedCourierReportService {
 
     qb = qb
       .attributes([
-        [Sequelize.fn('count', Sequelize.col('ECLogisticOrderGrouped.id')), 'cntOrder'],
+        [
+          Sequelize.fn('count', Sequelize.col('ECLogisticOrderGrouped.id')),
+          'cntOrder',
+        ],
         [
           Sequelize.fn(
             'isnull',
@@ -115,7 +121,10 @@ export class BasedCourierReportService {
         [
           Sequelize.fn(
             'isnull',
-            Sequelize.fn('sum', Sequelize.col('ECLogisticOrderGrouped.shipmentPrice')),
+            Sequelize.fn(
+              'sum',
+              Sequelize.col('ECLogisticOrderGrouped.shipmentPrice'),
+            ),
             0,
           ),
           'totalShipmentPrice',

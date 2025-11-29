@@ -62,10 +62,7 @@ export class UserActionReportController {
     explode: true,
   })
   @HttpCode(HttpStatus.OK)
-  async export(
-    @Query() filter: GetUserActionReportDto,
-    @Res() res: Response,
-  ) {
+  async export(@Query() filter: GetUserActionReportDto, @Res() res: Response) {
     const buffer = await this.service.exportExcel(filter);
     res.setHeader(
       'Content-Type',

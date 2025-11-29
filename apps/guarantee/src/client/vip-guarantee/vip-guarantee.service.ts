@@ -101,7 +101,7 @@ export class VipGuaranteeService {
   }
 
   async findById(user: User, entityId: bigint) {
-    let query = new QueryOptionsBuilder()
+    const query = new QueryOptionsBuilder()
       .include([
         {
           model: GSGuarantee,
@@ -245,7 +245,7 @@ export class VipGuaranteeService {
       );
     }
 
-    let query = new QueryOptionsBuilder()
+    const query = new QueryOptionsBuilder()
       .include([
         {
           model: GSGuarantee,

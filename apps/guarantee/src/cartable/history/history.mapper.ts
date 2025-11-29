@@ -28,15 +28,15 @@ export class HistoryMapper {
   }
 
   fromFieldMap(item: BPMNRequestHistory) {
-    let fromState = item.fromActivity.name;
-    let fromUser =
+    const fromState = item.fromActivity.name;
+    const fromUser =
       item.fromUser != null
         ? item.fromUser?.firstname + ' ' + item.fromUser?.lastname
         : null;
-    let fromOrganization =
+    const fromOrganization =
       item.fromOrganization != null ? item.fromOrganization?.name : null;
 
-    let fromRole = item.fromRole != null ? item.fromRole?.roleName : null;
+    const fromRole = item.fromRole != null ? item.fromRole?.roleName : null;
     const symbolArray: string[] = [];
     if (fromUser != null) symbolArray.push(fromUser);
     if (fromRole != null) symbolArray.push(fromRole);
@@ -46,15 +46,15 @@ export class HistoryMapper {
   }
 
   toFieldMap(item: BPMNRequestHistory) {
-    let toState = item.toActivity.name;
-    let toUser =
+    const toState = item.toActivity.name;
+    const toUser =
       item.toUser != null
         ? item.toUser?.firstname + ' ' + item.toUser?.lastname
         : null;
-    let toOrganization =
+    const toOrganization =
       item.toOrganization != null ? item.toOrganization?.name : null;
 
-    let toRole = item.toRole != null ? item.toRole?.roleName : null;
+    const toRole = item.toRole != null ? item.toRole?.roleName : null;
     const symbolArray: string[] = [];
     if (toUser != null) symbolArray.push(toUser);
     if (toRole != null) symbolArray.push(toRole);

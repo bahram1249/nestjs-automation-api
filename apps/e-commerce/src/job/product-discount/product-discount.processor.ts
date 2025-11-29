@@ -18,8 +18,8 @@ export class ProductDiscountProcessor extends WorkerHost {
   }
 
   async process(job: Job<any, any, string>, token?: string): Promise<any> {
-    let environment = this.config.get('NODE_ENV');
-    let isDevelopment = environment === 'development';
+    const environment = this.config.get('NODE_ENV');
+    const isDevelopment = environment === 'development';
     if (!isDevelopment) {
       const listFilter = await this.listFilterFactory.create();
       listFilter.limit = 10;

@@ -20,7 +20,7 @@ import {
   BPMNRequestHistory,
   BPMNRequestOccurredEvent,
   BPMNRequestState,
-} from "../models";
+} from '../models';
 
 export const bpmnModels = [
   BPMNActionType,

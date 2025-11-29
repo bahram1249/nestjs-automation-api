@@ -26,7 +26,7 @@ export class EntityTypeFactorService {
   ) {}
 
   async findAll(user: User, filter: GetEntityTypeFactorDto) {
-    let queryBuilder = new QueryOptionsBuilder()
+    const queryBuilder = new QueryOptionsBuilder()
       .filter({ entityTypeId: filter.entityTypeId })
       .filter(
         Sequelize.where(
@@ -49,7 +49,7 @@ export class EntityTypeFactorService {
   }
 
   async findById(entityId: number, user: User) {
-    let queryBuilder = new QueryOptionsBuilder()
+    const queryBuilder = new QueryOptionsBuilder()
       .filter({ id: entityId })
       .filter(
         Sequelize.where(

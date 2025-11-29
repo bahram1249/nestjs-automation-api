@@ -33,9 +33,7 @@ export class ProcessController {
   //@CheckPermission({ permissionSymbol: 'bpmn.processes.getall' })
   @Get('/')
   @HttpCode(HttpStatus.OK)
-  async findAll(
-    @Query() query: GetProcessDto
-  ) {
+  async findAll(@Query() query: GetProcessDto) {
     return this.service.findAll(query);
   }
 

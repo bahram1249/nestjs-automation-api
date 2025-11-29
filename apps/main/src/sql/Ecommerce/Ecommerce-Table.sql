@@ -3874,3 +3874,59 @@ BEGIN
 END
 
 GO
+
+-- ec-products-v11
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ec-products-v11' 
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'SITE_NAME' AND [value] IN ('ecommerce'))
+		)
+BEGIN
+
+	ALTER TABLE ECProducts
+		ALTER COLUMN viewCount bigint NOT NULL;
+
+	ALTER TABLE ECProducts
+		ADD CONSTRAINT DF_ECProducts_viewCount DEFAULT 0 FOR viewCount;
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'ec-products-v11', GETDATE(), GETDATE()
+END
+GO
+
+
+-- ec-product-views-v1
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ec-product-views-v1' 
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'SITE_NAME' AND [value] IN ('ecommerce'))
+		)
+BEGIN
+
+	CREATE TABLE ECProductViews (
+		id							bigint identity(1,1)		NOT NULL,
+		productId					bigint						NOT NULL
+			CONSTRAINT FK_ECProductViews_ProductId
+				FOREIGN KEY REFERENCES ECProducts(id),
+		sessionId					nvarchar(256)				NULL,
+		userId						bigint						NULL
+			CONSTRAINT FK_ECProductViews_UserId
+				FOREIGN KEY REFERENCES Users(id),
+		[createdAt]					datetimeoffset				NOT NULL,
+		[updatedAt]					datetimeoffset				NOT NULL,
+		PRIMARY KEY CLUSTERED (id, productId)
+	);
+
+	CREATE NONCLUSTERED INDEX NIX_ECProductViews_SessionId ON ECProductViews(sessionId)
+	INCLUDE (id, productId, userId);
+
+	CREATE NONCLUSTERED INDEX NIX_ECProductViews_UserId ON ECProductViews(userId)
+	INCLUDE (id, productId, sessionId);
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'ec-product-views-v1', GETDATE(), GETDATE()
+END
+GO
+

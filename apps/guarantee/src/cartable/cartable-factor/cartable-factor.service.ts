@@ -52,7 +52,7 @@ export class FactorService {
       .filterFactorId(filter.factorId)
       .dateGreaterThan(filter.greaterThan)
       .dateLessThan(filter.lessThan);
-      
+
     // Apply additional filters using filterIf pattern with EXISTS syntax
     query = query
       .filterIf(
@@ -146,10 +146,7 @@ export class FactorService {
             SELECT 1
             FROM GSRequests AS Req
             WHERE Req.id = GSFactor.requestId
-              AND Req.id = ${filter.requestId}) `.replaceAll(
-            /\s\s+/g,
-            ' ',
-          ),
+              AND Req.id = ${filter.requestId}) `.replaceAll(/\s\s+/g, ' '),
         ),
       );
     const count = await this.repository.count(query.build());
@@ -187,7 +184,7 @@ export class FactorService {
         user.id,
       );
 
-    let query = this.factorQueryBuilder
+    const query = this.factorQueryBuilder
       .init()
       .cartableFilter({
         userId: user.id,

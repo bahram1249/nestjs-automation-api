@@ -37,9 +37,7 @@ export class RequestController {
   //@CheckPermission({ permissionSymbol: 'bpmn.requests.getall' })
   @Get('/')
   @HttpCode(HttpStatus.OK)
-  async findAll(
-    @Query() query: GetRequestDto
-  ) {
+  async findAll(@Query() query: GetRequestDto) {
     return this.crudService.findAll(query);
   }
 
@@ -71,7 +69,10 @@ export class RequestController {
   //@CheckPermission({ permissionSymbol: 'bpmn.requests.update' })
   @Put('/:id')
   @HttpCode(HttpStatus.OK)
-  async update(@Param('id') id: number, @Body() dto: Partial<CreateRequestDto>) {
+  async update(
+    @Param('id') id: number,
+    @Body() dto: Partial<CreateRequestDto>,
+  ) {
     return this.crudService.update(id, dto);
   }
 

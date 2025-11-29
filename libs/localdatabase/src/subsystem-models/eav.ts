@@ -11,7 +11,7 @@ import {
   EAVEntityPhoto,
   EAVEntityType,
   EAVEntityVideo,
-} from "../models/eav"; // Import everything from the barrel file
+} from '../models/eav'; // Import everything from the barrel file
 
 export const eavEntities = [
   EAVAttribute,

@@ -1,7 +1,12 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { User } from '@rahino/database';
-import { ECLogisticOrderGrouped, ECPayment, ECPaymentGatewayCommission, ECWallet } from '@rahino/localdatabase/models';
+import {
+  ECLogisticOrderGrouped,
+  ECPayment,
+  ECPaymentGatewayCommission,
+  ECWallet,
+} from '@rahino/localdatabase/models';
 import { ECLogisticOrder } from '@rahino/localdatabase/models';
 import { LogisticEcommerceSmsService } from '../../../sms/logistic-ecommerce-sms.service';
 import {
@@ -73,7 +78,10 @@ export class LogisticFinalizedPaymentService {
       await this.successfulOrderStatus(payment, transaction);
       await this.sendSuccessfulPaymentSms(payment);
       await this.sendSuccessfulPaymentSmsToVendor(payment, transaction);
-      await this.applyPaymentGatewayCommisssion(payment.logisticOrderId, transaction);
+      await this.applyPaymentGatewayCommisssion(
+        payment.logisticOrderId,
+        transaction,
+      );
     } else if (payment.paymentTypeId == PaymentTypeEnum.TopUpWallet) {
       let wallet = await this.walletRepository.findOne(
         new QueryOptionsBuilder()
@@ -109,14 +117,19 @@ export class LogisticFinalizedPaymentService {
     );
 
     if (!payment) {
-      throw new NotFoundException(this.l10n.translate('ecommerce.payment_not_found'));
+      throw new NotFoundException(
+        this.l10n.translate('ecommerce.payment_not_found'),
+      );
     }
 
     if (payment.paymentTypeId == PaymentTypeEnum.ForOrder) {
       await this.successfulOrderStatus(payment, transaction);
       await this.sendSuccessfulPaymentSms(payment);
       await this.sendSuccessfulPaymentSmsToVendor(payment, transaction);
-      await this.applyPaymentGatewayCommisssion(payment.logisticOrderId, transaction);
+      await this.applyPaymentGatewayCommisssion(
+        payment.logisticOrderId,
+        transaction,
+      );
     }
   }
 
@@ -124,11 +137,17 @@ export class LogisticFinalizedPaymentService {
     orderId: bigint,
     transaction?: Transaction,
   ) {
-    let order = await this.orderRepository.findOne(
-      new QueryOptionsBuilder().filter({ id: orderId }).transaction(transaction).build(),
+    const order = await this.orderRepository.findOne(
+      new QueryOptionsBuilder()
+        .filter({ id: orderId })
+        .transaction(transaction)
+        .build(),
     );
     const payment = await this.paymentRepository.findOne(
-      new QueryOptionsBuilder().filter({ id: order.paymentId }).transaction(transaction).build(),
+      new QueryOptionsBuilder()
+        .filter({ id: order.paymentId })
+        .transaction(transaction)
+        .build(),
     );
     let amount = 0;
     const commisssion = await this.paymentGatewayCommissionRepository.findOne(
@@ -150,7 +169,8 @@ export class LogisticFinalizedPaymentService {
 
     if (
       commisssion &&
-      commisssion.commissionTypeId == PaymentGatewayCommissionTypeEnum.byPercentage
+      commisssion.commissionTypeId ==
+        PaymentGatewayCommissionTypeEnum.byPercentage
     ) {
       amount = (Number(order.totalPrice) * Number(commisssion.amount)) / 100;
     } else if (
@@ -175,14 +195,17 @@ export class LogisticFinalizedPaymentService {
       { where: { id: payment.logisticOrderId }, transaction },
     );
 
-    await this.orderGroupedRepository.update({
-      orderStatusId: OrderStatusEnum.Paid
-    }, {
-      where: {
-        logisticOrderId: payment.logisticOrderId
-      }, 
-      transaction: transaction
-    })
+    await this.orderGroupedRepository.update(
+      {
+        orderStatusId: OrderStatusEnum.Paid,
+      },
+      {
+        where: {
+          logisticOrderId: payment.logisticOrderId,
+        },
+        transaction: transaction,
+      },
+    );
   }
 
   async sendSuccessfulPaymentSms(payment: ECPayment) {

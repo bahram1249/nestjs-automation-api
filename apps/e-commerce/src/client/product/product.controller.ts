@@ -5,6 +5,7 @@ import {
   HttpStatus,
   Param,
   Query,
+  Scope,
   UseGuards,
   UseInterceptors,
   ValidationPipe,
@@ -22,6 +23,7 @@ import { OptionalSessionGuard } from '../../user/session/guard';
 @Controller({
   path: '/api/ecommerce/products',
   version: ['1'],
+  scope: Scope.REQUEST,
 })
 export class ProductController {
   constructor(private service: ProductService) {}

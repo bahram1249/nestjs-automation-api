@@ -6,7 +6,14 @@ import { ConditionService } from './condition.service';
 import { Permission, User } from '@rahino/database';
 
 @Module({
-  imports: [SequelizeModule.forFeature([User, Permission, BPMNCondition, BPMNConditionType])],
+  imports: [
+    SequelizeModule.forFeature([
+      User,
+      Permission,
+      BPMNCondition,
+      BPMNConditionType,
+    ]),
+  ],
   controllers: [ConditionController],
   providers: [ConditionService],
 })

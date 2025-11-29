@@ -105,7 +105,7 @@ export class NormalGuaranteeService {
   }
 
   async findById(user: User, entityId: bigint) {
-    let query = new QueryOptionsBuilder()
+    const query = new QueryOptionsBuilder()
       .include([
         {
           model: GSGuarantee,
@@ -249,7 +249,7 @@ export class NormalGuaranteeService {
       );
     }
 
-    let query = new QueryOptionsBuilder()
+    const query = new QueryOptionsBuilder()
       .include([
         {
           model: GSGuarantee,

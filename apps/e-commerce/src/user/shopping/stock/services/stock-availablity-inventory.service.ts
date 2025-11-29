@@ -198,7 +198,7 @@ export class StockAvailabilityInventoryService {
   }
 
   async remove(stockId: bigint) {
-    let item = await this.repository.findOne(
+    const item = await this.repository.findOne(
       new QueryOptionsBuilder()
         .filter({ id: stockId })
         .filter(

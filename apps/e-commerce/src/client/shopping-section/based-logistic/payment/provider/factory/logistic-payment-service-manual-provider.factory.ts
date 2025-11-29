@@ -51,7 +51,7 @@ export class LogisticPaymentServiceManualProviderFactory {
       case 'ZarinPalService':
         return this.zarinPalService;
       case 'WalletService':
-      // Lazily resolve to avoid circular dependency
+        // Lazily resolve to avoid circular dependency
         return this.moduleRef.get<any>(
           // import type only to avoid hard DI link
           require('../services/logistic-wallet.service').LogisticWalletService,

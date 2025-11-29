@@ -1,1 +1,1 @@
-export * from './app-guard.provider'
+export * from './app-guard.provider';

@@ -74,7 +74,7 @@ export class ProductQueryBuilderService {
 
     const countQuery = countQueryBuilder.build();
 
-    let inventoryQueryBuilder = new IncludeOptionsBuilder({
+    const inventoryQueryBuilder = new IncludeOptionsBuilder({
       attributes: [
         'id',
         'productId',

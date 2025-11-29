@@ -23,4 +23,7 @@ class RequestFilterDto {
   organizationId?: number;
 }
 
-export class GetRequestDto extends IntersectionType(ListFilter, RequestFilterDto) {}
+export class GetRequestDto extends IntersectionType(
+  ListFilter,
+  RequestFilterDto,
+) {}

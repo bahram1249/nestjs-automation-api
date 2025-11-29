@@ -5,10 +5,10 @@ import {
   DataType,
   ForeignKey,
   BelongsTo,
-} from "sequelize-typescript";
-import { GSCity } from "./gs-city.entity";
+} from 'sequelize-typescript';
+import { GSCity } from './gs-city.entity';
 
-@Table({ tableName: "GSNeighborhoods" })
+@Table({ tableName: 'GSNeighborhoods' })
 export class GSNeighborhood extends Model {
   @Column({
     type: DataType.INTEGER,
@@ -35,7 +35,7 @@ export class GSNeighborhood extends Model {
   @ForeignKey(() => GSCity)
   cityId: number;
 
-  @BelongsTo(() => GSCity, { foreignKey: "cityId", as: "city" })
+  @BelongsTo(() => GSCity, { foreignKey: 'cityId', as: 'city' })
   city?: GSCity;
 
   @Column({

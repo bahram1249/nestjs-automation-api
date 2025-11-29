@@ -178,8 +178,8 @@ export class ReserveService {
         const menu = menus[index];
         const item = dto.items.find((item) => item.id == menu.id);
 
-        var count = parseInt(item.count.toString());
-        var itemTotalPrice = Number(menu.price) * count;
+        const count = parseInt(item.count.toString());
+        const itemTotalPrice = Number(menu.price) * count;
         await this.buffetReserveDetailRepository.create({
           reserveId: dto.reserveId,
           menuId: menu.id,

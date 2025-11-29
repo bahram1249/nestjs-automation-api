@@ -83,7 +83,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
       const errors = formatI18nErrors(exception.errors ?? [], i18n.service, {
         lang: i18n.lang,
       });
-      let normalizedErrors = this.normalizeValidationErrors(errors);
+      const normalizedErrors = this.normalizeValidationErrors(errors);
       responseBody = this.buildResponseBody(host, exception, normalizedErrors);
     }
 
@@ -103,8 +103,8 @@ export class HttpExceptionFilter implements ExceptionFilter {
           status == HttpStatus.BAD_REQUEST
             ? exception.getResponse().valueOf()['message']
             : status != HttpStatus.INTERNAL_SERVER_ERROR
-            ? [exception.message]
-            : [],
+              ? [exception.message]
+              : [],
         timestamp: new Date().toISOString(),
         path: request.url,
       });

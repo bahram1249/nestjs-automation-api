@@ -140,8 +140,8 @@ export class PostShipmentPriceService implements ShipmentInteface {
         calFreetotalWeight == 0
           ? 0
           : freeShipment
-          ? 0
-          : Number(calFreePostageFee.allProvincePrice),
+            ? 0
+            : Number(calFreePostageFee.allProvincePrice),
       realShipmentPrice: Number(postageFee.allProvincePrice),
     };
   }

@@ -162,7 +162,7 @@ export class GuaranteeOrganizationService {
   }
 
   async findById(entityId: number) {
-    let query = new QueryOptionsBuilder()
+    const query = new QueryOptionsBuilder()
       .attributes([
         'id',
         'addressId',
@@ -347,7 +347,7 @@ export class GuaranteeOrganizationService {
   }
 
   async updateById(id: number, dto: GuaranteeOrganizationDto) {
-    let guaranteeOrganization = await this.repository.findOne(
+    const guaranteeOrganization = await this.repository.findOne(
       new QueryOptionsBuilder()
         .filter(
           Sequelize.where(
@@ -528,7 +528,7 @@ export class GuaranteeOrganizationService {
         'phoneNumber',
         'nationalCode',
       ]);
-      let insertItem = mappedItem as any;
+      const insertItem = mappedItem as any;
       insertItem.username = dto.phoneNumber;
       user = await this.userRepository.create(insertItem, {
         transaction: transaction,

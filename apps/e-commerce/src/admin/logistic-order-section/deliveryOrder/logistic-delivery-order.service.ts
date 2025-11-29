@@ -1,13 +1,20 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectConnection, InjectModel } from '@nestjs/sequelize';
 import { User } from '@rahino/database';
-import { ECLogisticOrder, ECCourier, ECLogisticOrderGrouped } from '@rahino/localdatabase/models';
+import {
+  ECLogisticOrder,
+  ECCourier,
+  ECLogisticOrderGrouped,
+} from '@rahino/localdatabase/models';
 import { LogisticOrderQueryBuilder } from '../../../client/order-section/utilLogisticOrder/logistic-order-query-builder.service';
 import { LogisticOrderUtilService } from '../../../client/order-section/utilLogisticOrder/logistic-order-util.service';
 import { ListFilter } from '@rahino/query-filter';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import { Sequelize, Op } from 'sequelize';
-import { OrderShipmentwayEnum, OrderStatusEnum } from '@rahino/ecommerce/shared/enum';
+import {
+  OrderShipmentwayEnum,
+  OrderStatusEnum,
+} from '@rahino/ecommerce/shared/enum';
 import { RoleUtilService } from '@rahino/core/user/role-util/role-util.service';
 
 @Injectable()
@@ -115,7 +122,11 @@ export class LogisticDeliveryOrderService {
           .filter({ orderShipmentWayId: OrderShipmentwayEnum.delivery as any })
           .filter(
             Sequelize.where(
-              Sequelize.fn('isnull', Sequelize.col('ECLogisticOrderGrouped.isDeleted'), 0),
+              Sequelize.fn(
+                'isnull',
+                Sequelize.col('ECLogisticOrderGrouped.isDeleted'),
+                0,
+              ),
               { [Op.eq]: 0 },
             ),
           )
@@ -126,7 +137,10 @@ export class LogisticDeliveryOrderService {
         throw new NotFoundException('logistic group not found');
       }
 
-      if (!isSuperAdmin && Number(group.courierUserId || 0) !== Number(user.id)) {
+      if (
+        !isSuperAdmin &&
+        Number(group.courierUserId || 0) !== Number(user.id)
+      ) {
         throw new NotFoundException('logistic group not found');
       }
 
@@ -137,7 +151,10 @@ export class LogisticDeliveryOrderService {
       // roll-up parent order status
       // Delivered group may finalize order delivered status
       // However, sync method will compute proper parent status
-      await this.utilService.syncParentOrderStatus(group.logisticOrderId as any, transaction as any);
+      await this.utilService.syncParentOrderStatus(
+        group.logisticOrderId as any,
+        transaction as any,
+      );
 
       await transaction.commit();
       return { result: group };

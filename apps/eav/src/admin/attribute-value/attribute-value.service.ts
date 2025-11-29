@@ -68,7 +68,7 @@ export class AttributeValueService {
   }
 
   async findById(id: bigint) {
-    let builder = new QueryOptionsBuilder();
+    const builder = new QueryOptionsBuilder();
     const options = builder
       .include([
         {

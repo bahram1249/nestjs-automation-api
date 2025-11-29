@@ -5,7 +5,7 @@ import {
   PCMPeriod,
   PCMPeriodType,
   PCMPublish,
-} from "../models/pcm"; // Import everything from the barrel file
+} from '../models/pcm'; // Import everything from the barrel file
 
 export const pcmEntities = [
   PCMAge,

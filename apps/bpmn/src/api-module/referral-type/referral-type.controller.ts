@@ -47,7 +47,10 @@ export class ReferralTypeController {
   @Get('/:id')
   @HttpCode(HttpStatus.OK)
   async findById(@Param('id') id: number) {
-    const { result } = await this.service.lookup({ limit: 1, offset: 0 } as any);
+    const { result } = await this.service.lookup({
+      limit: 1,
+      offset: 0,
+    } as any);
     return { result: result.find((x: any) => x.id === Number(id)) };
   }
 }

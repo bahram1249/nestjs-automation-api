@@ -5,10 +5,10 @@ import {
   DataType,
   ForeignKey,
   BelongsTo,
-} from "sequelize-typescript";
-import { BPMNActionType } from "./bpmn-action-type.entity";
+} from 'sequelize-typescript';
+import { BPMNActionType } from './bpmn-action-type.entity';
 
-@Table({ tableName: "BPMNActions" })
+@Table({ tableName: 'BPMNActions' })
 export class BPMNAction extends Model {
   @Column({
     type: DataType.INTEGER,
@@ -27,8 +27,8 @@ export class BPMNAction extends Model {
   actionTypeId: number;
 
   @BelongsTo(() => BPMNActionType, {
-    as: "actionType",
-    foreignKey: "actionTypeId",
+    as: 'actionType',
+    foreignKey: 'actionTypeId',
   })
   actionType?: BPMNActionType;
 

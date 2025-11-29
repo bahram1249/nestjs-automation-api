@@ -1,6 +1,6 @@
-import { Table, Column, Model, DataType } from "sequelize-typescript";
+import { Table, Column, Model, DataType } from 'sequelize-typescript';
 
-@Table({ tableName: "BPMNConditionTypes" })
+@Table({ tableName: 'BPMNConditionTypes' })
 export class BPMNConditionType extends Model {
   @Column({
     type: DataType.INTEGER,

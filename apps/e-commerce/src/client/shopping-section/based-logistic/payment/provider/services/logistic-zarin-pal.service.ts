@@ -1,10 +1,18 @@
-import { Injectable, Scope, BadRequestException, InternalServerErrorException } from '@nestjs/common';
+import {
+  Injectable,
+  Scope,
+  BadRequestException,
+  InternalServerErrorException,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { ECPaymentGateway, ECPayment } from '@rahino/localdatabase/models';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import { Op, Sequelize, Transaction } from 'sequelize';
 import { User } from '@rahino/database';
-import { PaymentStatusEnum, PaymentTypeEnum } from '@rahino/ecommerce/shared/enum';
+import {
+  PaymentStatusEnum,
+  PaymentTypeEnum,
+} from '@rahino/ecommerce/shared/enum';
 import { ConfigService } from '@nestjs/config';
 import axios from 'axios';
 import { LogisticPayInterface } from '../interface/logistic-pay.interface';
@@ -42,10 +50,18 @@ export class LogisticZarinPalService implements LogisticPayInterface {
     const gateway = await this.paymentGatewayRepo.findOne(
       new QueryOptionsBuilder()
         .filter({ serviceName: 'ZarinPalService' })
-        .filter(Sequelize.where(Sequelize.fn('isnull', Sequelize.col('isDeleted'), 0), { [Op.eq]: 0 }))
+        .filter(
+          Sequelize.where(
+            Sequelize.fn('isnull', Sequelize.col('isDeleted'), 0),
+            { [Op.eq]: 0 },
+          ),
+        )
         .build(),
     );
-    if (!gateway) throw new BadRequestException(this.l10n.translate('ecommerce.invalid_payment'));
+    if (!gateway)
+      throw new BadRequestException(
+        this.l10n.translate('ecommerce.invalid_payment'),
+      );
 
     let payment = await this.paymentRepo.create(
       {
@@ -71,11 +87,16 @@ export class LogisticZarinPalService implements LogisticPayInterface {
     };
 
     try {
-      const reqTx = await axios.post(this.baseUrl + '/pg/v4/payment/request.json', data);
-      
-      console.log(reqTx)
+      const reqTx = await axios.post(
+        this.baseUrl + '/pg/v4/payment/request.json',
+        data,
+      );
+
+      console.log(reqTx);
       if (reqTx.status < 200 || reqTx.status > 299) {
-        throw new BadRequestException(this.l10n.translate('ecommerce.invalid_payment'));
+        throw new BadRequestException(
+          this.l10n.translate('ecommerce.invalid_payment'),
+        );
       }
 
       payment = (
@@ -86,12 +107,17 @@ export class LogisticZarinPalService implements LogisticPayInterface {
       )[1][0];
 
       return {
-        redirectUrl: 'https://www.zarinpal.com' + '/pg/StartPay/' + reqTx.data.data.authority,
+        redirectUrl:
+          'https://www.zarinpal.com' +
+          '/pg/StartPay/' +
+          reqTx.data.data.authority,
         paymentId: payment.id,
       };
     } catch (error) {
       throw new InternalServerErrorException(
-        this.l10n.translate('ecommerce.payment_request_failed', { message: error.message }),
+        this.l10n.translate('ecommerce.payment_request_failed', {
+          message: error.message,
+        }),
       );
     }
   }
@@ -109,17 +135,22 @@ export class LogisticZarinPalService implements LogisticPayInterface {
       new QueryOptionsBuilder()
         .filter({ serviceName: 'ZarinPalService' })
         .filter(
-          Sequelize.where(Sequelize.fn('isnull', Sequelize.col('isDeleted'), 0), {
-            [Op.eq]: 0,
-          }),
+          Sequelize.where(
+            Sequelize.fn('isnull', Sequelize.col('isDeleted'), 0),
+            {
+              [Op.eq]: 0,
+            },
+          ),
         )
         .build(),
     );
     if (!paymentGateway) {
-      throw new BadRequestException(this.l10n.translate('ecommerce.invalid_payment'));
+      throw new BadRequestException(
+        this.l10n.translate('ecommerce.invalid_payment'),
+      );
     }
 
-    let payment = await this.paymentRepo.findOne(
+    const payment = await this.paymentRepo.findOne(
       new QueryOptionsBuilder()
         .filter({ paymentToken: query.Authority })
         .filter({ paymentGatewayId: paymentGateway.id })
@@ -127,7 +158,9 @@ export class LogisticZarinPalService implements LogisticPayInterface {
         .build(),
     );
     if (!payment) {
-      throw new BadRequestException(this.l10n.translate('ecommerce.invalid_payment'));
+      throw new BadRequestException(
+        this.l10n.translate('ecommerce.invalid_payment'),
+      );
     }
 
     if (query.Status != 'OK') {
@@ -135,11 +168,14 @@ export class LogisticZarinPalService implements LogisticPayInterface {
         await this.revertInventoryQtyService.revertPaymentAndQty(payment.id);
       }
     } else {
-      const verifyRequest = await axios.post(this.baseUrl + '/pg/v4/payment/verify.json', {
-        authority: query.Authority,
-        amount: payment.totalprice,
-        merchant_id: paymentGateway.username,
-      });
+      const verifyRequest = await axios.post(
+        this.baseUrl + '/pg/v4/payment/verify.json',
+        {
+          authority: query.Authority,
+          amount: payment.totalprice,
+          merchant_id: paymentGateway.username,
+        },
+      );
       if (verifyRequest.data.data.code == 100) {
         await this.finalizedPaymentService.successfulZarinPal(
           payment.id,
@@ -151,10 +187,15 @@ export class LogisticZarinPalService implements LogisticPayInterface {
         if (payment.paymentTypeId == PaymentTypeEnum.ForOrder) {
           await this.revertInventoryQtyService.revertPaymentAndQty(payment.id);
         }
-        throw new BadRequestException(this.l10n.translate('ecommerce.invalid_payment'));
+        throw new BadRequestException(
+          this.l10n.translate('ecommerce.invalid_payment'),
+        );
       }
     }
     const frontUrl = this.config.get('BASE_FRONT_URL');
-    return res.redirect(301, frontUrl + `/payment/transaction?transactionId=${payment.id}`);
+    return res.redirect(
+      301,
+      frontUrl + `/payment/transaction?transactionId=${payment.id}`,
+    );
   }
 }

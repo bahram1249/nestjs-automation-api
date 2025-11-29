@@ -35,7 +35,7 @@ export class ApplyDiscountService {
   async applyProducts(products: ECProduct[]) {
     const promises = [];
     for (let index = 0; index < products.length; index++) {
-      let product = products[index];
+      const product = products[index];
       promises.push(this.applyProduct(product));
     }
     return await Promise.all(promises);
@@ -44,7 +44,7 @@ export class ApplyDiscountService {
   async applyProduct(product: ECProduct) {
     const promises = [];
     for (let index = 0; index < product.inventories.length; index++) {
-      let inventory = product.inventories[index];
+      const inventory = product.inventories[index];
       promises.push(this.applyInventory(product, inventory));
     }
     product.inventories = await Promise.all(promises);
@@ -133,7 +133,7 @@ export class ApplyDiscountService {
 
     // distincts these discounts
     const discounts = new Set<ECDiscount>(results);
-    let finalDiscountList: ECDiscount[] = Array.from(discounts).sort(
+    const finalDiscountList: ECDiscount[] = Array.from(discounts).sort(
       (item) => item.priority,
     );
 
@@ -208,8 +208,8 @@ export class ApplyDiscountService {
     }
     // if we get elapsed time discounts, only cache !!! not apllied to price
     // but nodejs instance date current time with sql server, They are almost a second apart
-    let now = new Date();
-    let elapsed = 1;
+    const now = new Date();
+    const elapsed = 1;
     now.setSeconds(now.getSeconds() + elapsed);
     if (discountApplied.startDate > now || discountApplied.endDate < now) {
       inventoryPrice.set('appliedDiscount', null);
@@ -589,7 +589,7 @@ export class ApplyDiscountService {
     }
     const promises = [];
     for (let index = 0; index < stocks.length; index++) {
-      let stock = stocks[index];
+      const stock = stocks[index];
       promises.push(this._applyStockCoponDiscount(stock, discount));
     }
     const results = await Promise.all(promises);
@@ -613,7 +613,7 @@ export class ApplyDiscountService {
   private async _applyStockCoponDiscount(stock: ECStock, discount: ECDiscount) {
     // quantity of applied
     let countApllied = 0;
-    let { inventory, applied } = await this._applyCopunCodeToInventory(
+    const { inventory, applied } = await this._applyCopunCodeToInventory(
       stock.product,
       stock.product.inventories[0],
       discount,

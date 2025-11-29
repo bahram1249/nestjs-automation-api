@@ -62,10 +62,7 @@ export class SupplierReportController {
     explode: true,
   })
   @HttpCode(HttpStatus.OK)
-  async export(
-    @Query() filter: GetSupplierReportDto,
-    @Res() res: Response,
-  ) {
+  async export(@Query() filter: GetSupplierReportDto, @Res() res: Response) {
     const buffer = await this.service.exportExcel(filter);
     res.setHeader(
       'Content-Type',

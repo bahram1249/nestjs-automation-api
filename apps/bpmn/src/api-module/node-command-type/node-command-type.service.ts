@@ -56,7 +56,10 @@ export class NodeCommandTypeService {
 
   async findById(id: number) {
     const item = await this.repository.findOne(
-      new QueryOptionsBuilder().attributes(['id', 'name', 'commandColor']).filter({ id }).build(),
+      new QueryOptionsBuilder()
+        .attributes(['id', 'name', 'commandColor'])
+        .filter({ id })
+        .build(),
     );
     return { result: item };
   }

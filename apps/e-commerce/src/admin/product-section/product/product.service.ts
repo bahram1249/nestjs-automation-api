@@ -125,7 +125,7 @@ export class ProductService {
 
     const vendorIds = vendorResult.result.map((vendor) => vendor.id);
 
-    let filter = await this.emptyFilter.create();
+    const filter = await this.emptyFilter.create();
     const productFilter = filter as GetProductDto;
     productFilter.includeAttribute = true;
 

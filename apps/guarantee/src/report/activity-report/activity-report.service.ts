@@ -69,7 +69,11 @@ export class ActivityReportService {
           'count',
         ],
       ])
-      .group(['BPMNRequestHistory.toActivityId', 'toActivity.id', 'toActivity.name']);
+      .group([
+        'BPMNRequestHistory.toActivityId',
+        'toActivity.id',
+        'toActivity.name',
+      ]);
     return queryBuilder;
   }
 

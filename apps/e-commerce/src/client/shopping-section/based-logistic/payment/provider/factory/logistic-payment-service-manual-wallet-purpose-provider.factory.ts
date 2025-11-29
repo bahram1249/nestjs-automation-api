@@ -1,4 +1,8 @@
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { ECPaymentGateway } from '@rahino/localdatabase/models';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
@@ -23,7 +27,11 @@ export class LogisticPaymentServiceManualWalletPurposeProviderFactory {
         .filter({ id: paymentServiceId })
         .filter(
           Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('ECPaymentGateway.isDeleted'), 0),
+            Sequelize.fn(
+              'isnull',
+              Sequelize.col('ECPaymentGateway.isDeleted'),
+              0,
+            ),
             { [Op.eq]: 0 },
           ),
         )
@@ -31,7 +39,9 @@ export class LogisticPaymentServiceManualWalletPurposeProviderFactory {
     );
 
     if (!payment) {
-      throw new BadRequestException(this.l10n.translate('ecommerce.payment_method_not_defined'));
+      throw new BadRequestException(
+        this.l10n.translate('ecommerce.payment_method_not_defined'),
+      );
     }
 
     switch (payment.serviceName) {
@@ -41,7 +51,9 @@ export class LogisticPaymentServiceManualWalletPurposeProviderFactory {
         return this.snapPayService;
       default:
         throw new NotFoundException(
-          this.l10n.translate('ecommerce.invalid_data_source', { serviceName: payment.serviceName }),
+          this.l10n.translate('ecommerce.invalid_data_source', {
+            serviceName: payment.serviceName,
+          }),
         );
     }
   }

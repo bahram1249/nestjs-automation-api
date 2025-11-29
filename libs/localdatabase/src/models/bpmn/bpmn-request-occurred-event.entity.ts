@@ -5,11 +5,11 @@ import {
   DataType,
   ForeignKey,
   BelongsTo,
-} from "sequelize-typescript";
-import { BPMNRequest } from "./bpmn-request.entity";
-import { BPMNOccurredEvent } from "./bpmn-occurred-event.entity";
+} from 'sequelize-typescript';
+import { BPMNRequest } from './bpmn-request.entity';
+import { BPMNOccurredEvent } from './bpmn-occurred-event.entity';
 
-@Table({ tableName: "BPMNRequestOccurredEvents" })
+@Table({ tableName: 'BPMNRequestOccurredEvents' })
 export class BPMNRequestOccurredEvent extends Model {
   @Column({
     type: DataType.BIGINT,
@@ -18,7 +18,7 @@ export class BPMNRequestOccurredEvent extends Model {
   @ForeignKey(() => BPMNRequest)
   requestId: bigint;
 
-  @BelongsTo(() => BPMNRequest, { as: "request", foreignKey: "requestId" })
+  @BelongsTo(() => BPMNRequest, { as: 'request', foreignKey: 'requestId' })
   request?: BPMNRequest;
 
   @Column({
@@ -29,8 +29,8 @@ export class BPMNRequestOccurredEvent extends Model {
   occurredEventId: number;
 
   @BelongsTo(() => BPMNOccurredEvent, {
-    as: "occurredEvent",
-    foreignKey: "occurredEventId",
+    as: 'occurredEvent',
+    foreignKey: 'occurredEventId',
   })
   occurredEvent?: BPMNOccurredEvent;
 

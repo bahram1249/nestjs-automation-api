@@ -43,7 +43,9 @@ export class IncludeOptionsBuilder {
   }
   filter(condition: WhereOptions<any>): IncludeOptionsBuilder {
     // guard against undefined where/and for robustness
-    const w = (this.options.where as any) || (this.options.where = { [Op.and]: [] } as any);
+    const w =
+      (this.options.where as any) ||
+      (this.options.where = { [Op.and]: [] } as any);
     if (!w[Op.and]) w[Op.and] = [];
     w[Op.and].push(condition);
     return this;
@@ -54,7 +56,9 @@ export class IncludeOptionsBuilder {
     queryCondition: WhereOptions<any>,
   ): IncludeOptionsBuilder {
     if (condition) {
-      const w = (this.options.where as any) || (this.options.where = { [Op.and]: [] } as any);
+      const w =
+        (this.options.where as any) ||
+        (this.options.where = { [Op.and]: [] } as any);
       if (!w[Op.and]) w[Op.and] = [];
       w[Op.and].push(queryCondition);
     }

@@ -261,7 +261,7 @@ export class BuffetService {
       });
       attachmentId = attachment.id;
     }
-    let owner = await this.userRepository.findOne({
+    const owner = await this.userRepository.findOne({
       where: {
         id: buffet.ownerId,
       },

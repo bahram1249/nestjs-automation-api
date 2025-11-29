@@ -1,4 +1,13 @@
-import { Controller, Get, HttpCode, HttpStatus, Param, Query, UseGuards, UseInterceptors } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  HttpCode,
+  HttpStatus,
+  Param,
+  Query,
+  UseGuards,
+  UseInterceptors,
+} from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { JwtGuard } from '@rahino/auth';
 import { PermissionGuard } from '@rahino/permission-checker/guard';
@@ -38,7 +47,10 @@ export class OrganizationApiController {
   @Get('/:id')
   @HttpCode(HttpStatus.OK)
   async findById(@Param('id') id: number) {
-    const { result } = await this.service.lookup({ limit: 1, offset: 0 } as any);
+    const { result } = await this.service.lookup({
+      limit: 1,
+      offset: 0,
+    } as any);
     return { result: result.find((x: any) => x.id === Number(id)) };
   }
 }

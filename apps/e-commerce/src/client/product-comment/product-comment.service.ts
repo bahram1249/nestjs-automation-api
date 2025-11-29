@@ -63,7 +63,7 @@ export class ProductCommentService {
       );
     }
 
-    let queryOptions = new QueryOptionsBuilder()
+    const queryOptions = new QueryOptionsBuilder()
       .filter({ entityTypeId: product.entityTypeId })
       .filter(
         Sequelize.where(

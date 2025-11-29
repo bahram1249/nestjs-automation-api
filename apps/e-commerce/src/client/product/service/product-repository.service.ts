@@ -1,4 +1,12 @@
-import { GoneException, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  GoneException,
+  Inject,
+  Injectable,
+  NotFoundException,
+  Scope,
+} from '@nestjs/common';
+import { REQUEST } from '@nestjs/core';
+import { User } from '@rahino/database';
 import { GetProductDto, GetProductLatLonDto, GetUnPriceDto } from '../dto';
 import { InjectModel } from '@nestjs/sequelize';
 import { ECProduct, ECVendor } from '@rahino/localdatabase/models';
@@ -15,10 +23,15 @@ import { RedirectException } from '@rahino/ecommerce/shared/exception';
 import { SlugVersionTypeEnum } from '@rahino/ecommerce/shared/enum';
 import { ListFilterV2Factory } from '@rahino/query-filter/provider/list-filter-v2.factory';
 import { LocalizationService } from 'apps/main/src/common/localization';
+import { InjectQueue } from '@nestjs/bullmq';
+import { PRODUCT_VIEW_JOB, PRODUCT_VIEW_QUEUE } from '../constants';
+import { Queue } from 'bullmq';
 
-@Injectable()
+@Injectable({ scope: Scope.REQUEST })
 export class ProductRepositoryService {
   constructor(
+    @Inject(REQUEST)
+    private readonly request: { user?: User; ecsession?: { id: string } },
     @InjectModel(ECProduct)
     private readonly repository: typeof ECProduct,
     @InjectModel(ECSlugVersion)
@@ -26,6 +39,8 @@ export class ProductRepositoryService {
 
     @InjectModel(ECVendor)
     private readonly vendorRepository: typeof ECVendor,
+    @InjectQueue(PRODUCT_VIEW_QUEUE)
+    private readonly productViewQueue: Queue,
 
     private readonly productQueryBuilderService: ProductQueryBuilderService,
     private readonly applyDiscountService: ApplyDiscountService,
@@ -85,6 +100,18 @@ export class ProductRepositoryService {
         this.localizationService.translate('core.not_found_slug'),
       );
     }
+
+    this.productViewQueue.add(
+      PRODUCT_VIEW_JOB,
+      {
+        productId: product.id,
+        sessionId: this.request.ecsession.id,
+        userId: this.request.user ? this.request.user.id : null,
+      },
+      {
+        removeOnComplete: 500,
+      },
+    );
 
     product = await this.removeEmptyPriceService.applyProduct(product);
     product = await this.applyInventoryStatus.applyProduct(product);
@@ -206,7 +233,7 @@ export class ProductRepositoryService {
       ],
     ];
     resultQuery.raw = true;
-    let results = await this.repository.findOne(resultQuery);
+    const results = await this.repository.findOne(resultQuery);
     return {
       result: results,
     };
@@ -218,7 +245,7 @@ export class ProductRepositoryService {
       latitude: Number(filter.latitude),
     };
 
-    let queryBuilder = new QueryOptionsBuilder()
+    const queryBuilder = new QueryOptionsBuilder()
       .attributes(['id'])
       .filter({
         coordinates: {

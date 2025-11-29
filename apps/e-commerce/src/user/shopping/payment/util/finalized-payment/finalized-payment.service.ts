@@ -138,7 +138,7 @@ export class FinalizedPaymentService {
     orderId: bigint,
     transaction?: Transaction,
   ) {
-    let order = await this.orderRepository.findOne(
+    const order = await this.orderRepository.findOne(
       new QueryOptionsBuilder()
         .filter({ id: orderId })
         .transaction(transaction)

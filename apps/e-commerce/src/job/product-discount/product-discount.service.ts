@@ -25,7 +25,7 @@ export class ProductDiscountService {
             inventoryStatusId: InventoryStatusEnum.available,
           }),
         );
-      let results = await this.repository.findAll(resultQuery);
+      const results = await this.repository.findAll(resultQuery);
       const total = await this.repository.count(countQuery);
       await this.productDiscountSetterService.applyProducts(results);
       if (filter.limit + filter.offset >= total) {

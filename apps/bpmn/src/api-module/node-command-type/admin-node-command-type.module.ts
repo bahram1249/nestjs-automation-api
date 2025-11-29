@@ -6,7 +6,9 @@ import { NodeCommandTypeService } from './node-command-type.service';
 import { Permission, User } from '@rahino/database';
 
 @Module({
-  imports: [SequelizeModule.forFeature([User, Permission, BPMNNodeCommandType])],
+  imports: [
+    SequelizeModule.forFeature([User, Permission, BPMNNodeCommandType]),
+  ],
   controllers: [NodeCommandTypeController],
   providers: [NodeCommandTypeService],
 })
