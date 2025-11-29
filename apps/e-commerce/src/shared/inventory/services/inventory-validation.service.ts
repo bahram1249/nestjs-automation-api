@@ -110,14 +110,14 @@ export class InventoryValidationService {
         secondaryPriceRequired = true;
       }
     }
-    for (const inventory of dto) {
-      if (inventory.firstPrice == null && firstPriceRequired == true) {
-        throw new BadRequestException('the first price is required !');
-      }
-      if (inventory.secondaryPrice == null && secondaryPriceRequired == true) {
-        throw new BadRequestException('secondary price is required !');
-      }
-    }
+    // for (const inventory of dto) {
+    //   if (inventory.firstPrice == null && firstPriceRequired == true) {
+    //     throw new BadRequestException('the first price is required !');
+    //   }
+    //   if (inventory.secondaryPrice == null && secondaryPriceRequired == true) {
+    //     throw new BadRequestException('secondary price is required !');
+    //   }
+    // }
   }
 
   // check if the product is color based, colorId in inventory record must be send it.
