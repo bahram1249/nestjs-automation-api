@@ -90,6 +90,8 @@ import { AdminPreRegistrationOrganizationModule } from './admin/pre-registration
 import { IncomeReportModule } from './report/income-report/income-report.module';
 import { UserActionReportModule } from './report/user-action-report/user-action-report.module';
 import { ActivityReportModule } from './report/activity-report/activity-report.module';
+import { TechnicalPersonReportModule } from './report/technical-person-report/technical-person-report.module';
+import { SupplierReportModule } from './report/supplier-report/supplier-report.module';
 import { ClientSupplierStateRequestSmsSenderModule } from './job/client-supplier-state-request-sms-sender';
 import { ClientTechnicalStateRequestSmsSenderModule } from './job/client-technical-state-request-sms-sender';
 import { UserPointModule } from './client/user-point';
@@ -242,6 +244,8 @@ import { ThankfullSuccessPaymentSmsSenderModule } from './job/thankfull-success-
     IncomeReportModule,
     UserActionReportModule,
     ActivityReportModule,
+    TechnicalPersonReportModule,
+    SupplierReportModule,
 
     UserPointModule,
     RevertRequestModule,
