@@ -15,7 +15,6 @@ export class ValidateSessionService {
 
   async validate(request: any, session: string) {
     // find user session
-    const userId = request.user ? request.user.id : 0;
     const item = await this.redisRepository.isExists(`user:session`, session);
     if (item.exists) {
       request['ecsession'] = JSON.parse(item.result);

@@ -4,7 +4,7 @@ import * as ExcelJS from 'exceljs';
 import { Buffer as NodeBuffer } from 'buffer';
 import { User } from '@rahino/database';
 import { GetSupplierReportDto } from './dto';
-import { Op, Sequelize } from 'sequelize';
+import { Op } from 'sequelize';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import {
   GSSupplierPerson,
@@ -41,7 +41,6 @@ export class SupplierReportService {
           ],
         },
       ])
-      
       .filterIf(dto.organizationId != null, {
         '$organization.organization.id$': dto.organizationId,
       });

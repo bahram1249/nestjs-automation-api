@@ -129,7 +129,7 @@ export class ProductService {
     const productFilter = filter as GetProductDto;
     productFilter.includeAttribute = true;
 
-    const { countQuery, resultQuery } =
+    const { resultQuery: resultQuery } =
       await this.productQueryBuilderService.findAllAndCount(
         vendorIds,
         productFilter,

@@ -41,7 +41,7 @@ export class InventoryValidationService {
     dto: InventoryDto[],
   ) {
     await this.isExistsInventory(dto);
-    await this.requiredPriceValidation(dto);
+    //await this.requiredPriceValidation();
     await this.colorBasedValidation(requiredDto, dto);
     await this.vendorValidation(user, dto);
     await this.guaranteeValidation(dto);
@@ -82,43 +82,43 @@ export class InventoryValidationService {
   // this function is a sample only
   // but required to change
   // for using in first project
-  async requiredPriceValidation(dto: InventoryDto[]) {
-    const requiredPrices = await this.variationPriceRepository.findAll(
-      new QueryOptionsBuilder()
-        .filter(
-          Sequelize.where(
-            Sequelize.fn(
-              'isnull',
-              Sequelize.col('ECVariationPrice.required'),
-              0,
-            ),
-            {
-              [Op.eq]: 1,
-            },
-          ),
-        )
-        .build(),
-    );
-    const firstPriceId = 1;
-    const secondaryPriceId = 2;
-    let firstPriceRequired = false;
-    let secondaryPriceRequired = false;
-    for (const requiredPrice of requiredPrices) {
-      if (requiredPrice.id == firstPriceId) {
-        firstPriceRequired = true;
-      } else if (requiredPrice.id == secondaryPriceId) {
-        secondaryPriceRequired = true;
-      }
-    }
-    // for (const inventory of dto) {
-    //   if (inventory.firstPrice == null && firstPriceRequired == true) {
-    //     throw new BadRequestException('the first price is required !');
-    //   }
-    //   if (inventory.secondaryPrice == null && secondaryPriceRequired == true) {
-    //     throw new BadRequestException('secondary price is required !');
-    //   }
-    // }
-  }
+  // async requiredPriceValidation() {
+  //   const requiredPrices = await this.variationPriceRepository.findAll(
+  //     new QueryOptionsBuilder()
+  //       .filter(
+  //         Sequelize.where(
+  //           Sequelize.fn(
+  //             'isnull',
+  //             Sequelize.col('ECVariationPrice.required'),
+  //             0,
+  //           ),
+  //           {
+  //             [Op.eq]: 1,
+  //           },
+  //         ),
+  //       )
+  //       .build(),
+  //   );
+  //   const firstPriceId = 1;
+  //   const secondaryPriceId = 2;
+  //   let firstPriceRequired = false;
+  //   let secondaryPriceRequired = false;
+  //   for (const requiredPrice of requiredPrices) {
+  //     if (requiredPrice.id == firstPriceId) {
+  //       firstPriceRequired = true;
+  //     } else if (requiredPrice.id == secondaryPriceId) {
+  //       secondaryPriceRequired = true;
+  //     }
+  //   }
+  //   // for (const inventory of dto) {
+  //   //   if (inventory.firstPrice == null && firstPriceRequired == true) {
+  //   //     throw new BadRequestException('the first price is required !');
+  //   //   }
+  //   //   if (inventory.secondaryPrice == null && secondaryPriceRequired == true) {
+  //   //     throw new BadRequestException('secondary price is required !');
+  //   //   }
+  //   // }
+  // }
 
   // check if the product is color based, colorId in inventory record must be send it.
   async colorBasedValidation(

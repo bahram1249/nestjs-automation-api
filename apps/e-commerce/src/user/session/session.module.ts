@@ -5,7 +5,6 @@ import { SequelizeModule } from '@nestjs/sequelize';
 import { ECUserSession } from '@rahino/localdatabase/models';
 import { SessionGuard } from './guard/session.guard';
 import { RedisClientModule } from '@rahino/redis-client';
-import { APP_GUARD } from '@nestjs/core';
 import { ValidateSessionService } from './guard/validate-session.service';
 import { OptionalSessionGuard, SessionIgnoreUserGuard } from './guard';
 

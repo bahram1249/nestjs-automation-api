@@ -52,7 +52,6 @@ import { CourierPriceModule } from './admin/order-section/courier-price/courier-
 import { CourierOrderModule } from './admin/order-section/courierOrder/courier-order.module';
 import { DeliveryOrderModule } from './admin/order-section/deliveryOrder/delivery-order.module';
 import { ProductDiscountModule } from './job/product-discount/product-discount.module';
-import { ProductDiscountJobRunnerService } from './job/product-discount/product-discount-job-runner.service';
 import { VariationPriceModule } from './admin/product-section/variation-price/variation-price.module';
 import { TorobProductModule } from './anonymous/torob-product/torob-product.module';
 import { AdminSaleModule } from './report/admin-sale/admin-sale.module';
@@ -284,6 +283,7 @@ import { VendorInventoryModule } from './job/vendor-inventory/vendor-inventory.m
 export class ECommerceModule implements NestModule {
   constructor() {}
   private app: INestApplication;
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   configure(consumer: MiddlewareConsumer) {}
   async setApp(app: INestApplication<any>) {
     this.app = app;
