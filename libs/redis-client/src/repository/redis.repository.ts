@@ -64,7 +64,7 @@ export class RedisRepository
   async removeKeysByPattern(pattern: string) {
     // maybe block
     const keys = await this.redisClient.keys(pattern);
-    var pipeline = this.redisClient.pipeline();
+    const pipeline = this.redisClient.pipeline();
     keys.forEach(function (key) {
       pipeline.del(key);
     });

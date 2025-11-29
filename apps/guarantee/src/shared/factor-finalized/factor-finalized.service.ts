@@ -56,7 +56,7 @@ export class FactorFinalizedService {
   ) {}
 
   async finalized(user: User, factorId: bigint) {
-    let factor = await this.factorRepository.findOne(
+    const factor = await this.factorRepository.findOne(
       new QueryOptionsBuilder().filter({ id: factorId }).build(),
     );
 
@@ -175,7 +175,7 @@ export class FactorFinalizedService {
   }
 
   private async traverse(user: User, factor: GSFactor) {
-    let dto = new GuaranteeTraverseDto();
+    const dto = new GuaranteeTraverseDto();
     dto.isClientSideCartable = true;
     dto.nodeCommandId = factor.traverseNodeCommandId;
     dto.requestId = factor.traverseRequestId;

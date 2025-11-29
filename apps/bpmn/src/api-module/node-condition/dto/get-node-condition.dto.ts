@@ -17,4 +17,7 @@ class NodeConditionFilterDto {
   conditionId?: number;
 }
 
-export class GetNodeConditionDto extends IntersectionType(ListFilter, NodeConditionFilterDto) {}
+export class GetNodeConditionDto extends IntersectionType(
+  ListFilter,
+  NodeConditionFilterDto,
+) {}

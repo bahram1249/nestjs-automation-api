@@ -68,7 +68,7 @@ export class ProductPhotoService {
       this.photoTempAttachmentType,
       this.productAttachmentType,
     ];
-    let attachment = await this.attachmentRepository.findOne(
+    const attachment = await this.attachmentRepository.findOne(
       new QueryOptionsBuilder()
         .filter({ fileName: fileName })
         .filter(

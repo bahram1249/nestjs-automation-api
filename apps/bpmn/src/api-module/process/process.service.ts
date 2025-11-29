@@ -4,7 +4,18 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
-import { BPMNPROCESS, BPMNActivity, BPMNNode, BPMNInboundAction, BPMNOutboundAction, BPMNNodeCondition, BPMNNodeCommand, BPMNAction, BPMNCondition, BPMNNodeCommandType } from '@rahino/localdatabase/models';
+import {
+  BPMNPROCESS,
+  BPMNActivity,
+  BPMNNode,
+  BPMNInboundAction,
+  BPMNOutboundAction,
+  BPMNNodeCondition,
+  BPMNNodeCommand,
+  BPMNAction,
+  BPMNCondition,
+  BPMNNodeCommandType,
+} from '@rahino/localdatabase/models';
 import { GetProcessDto, CreateProcessDto, UpdateProcessDto } from './dto';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import { Op, Sequelize } from 'sequelize';
@@ -146,7 +157,15 @@ export class ProcessService {
     return { ok: true };
   }
 
-  async graph(processId: number, opts?: { inbound?: boolean; outbound?: boolean; nodeConditions?: boolean; nodeCommands?: boolean }) {
+  async graph(
+    processId: number,
+    opts?: {
+      inbound?: boolean;
+      outbound?: boolean;
+      nodeConditions?: boolean;
+      nodeCommands?: boolean;
+    },
+  ) {
     // verify process exists
     const proc = await this.repository.findByPk(processId);
     if (!proc || (proc as any).isDeleted === true) {
@@ -171,7 +190,16 @@ export class ProcessService {
     const activityIds = activities.map((a) => a.id);
 
     if (activityIds.length === 0) {
-      return { result: { activities: [], edges: [], inbound: [], outbound: [], nodeConditions: [], nodeCommands: [] } };
+      return {
+        result: {
+          activities: [],
+          edges: [],
+          inbound: [],
+          outbound: [],
+          nodeConditions: [],
+          nodeCommands: [],
+        },
+      };
     }
 
     // fetch edges (nodes) connecting activities within this process
@@ -205,15 +233,32 @@ export class ProcessService {
           .filter({ activityId: { [Op.in]: activityIds } as any })
           .filter(
             Sequelize.where(
-              Sequelize.fn('isnull', Sequelize.col('BPMNInboundAction.isDeleted'), 0),
+              Sequelize.fn(
+                'isnull',
+                Sequelize.col('BPMNInboundAction.isDeleted'),
+                0,
+              ),
               { [Op.eq]: 0 },
             ),
           )
-          .include([{ model: this.actionRepo, as: 'action', attributes: ['id', 'name'], required: false }])
+          .include([
+            {
+              model: this.actionRepo,
+              as: 'action',
+              attributes: ['id', 'name'],
+              required: false,
+            },
+          ])
           .order({ orderBy: 'id', sortOrder: 'ASC' })
           .build(),
       );
-      inbound = inbound.map((ia: any) => ({ id: ia.id, activityId: ia.activityId, priority: ia.priority ?? null, actionId: ia.actionId, actionName: ia.action?.name }));
+      inbound = inbound.map((ia: any) => ({
+        id: ia.id,
+        activityId: ia.activityId,
+        priority: ia.priority ?? null,
+        actionId: ia.actionId,
+        actionName: ia.action?.name,
+      }));
     }
 
     if (opts?.outbound) {
@@ -223,15 +268,32 @@ export class ProcessService {
           .filter({ activityId: { [Op.in]: activityIds } as any })
           .filter(
             Sequelize.where(
-              Sequelize.fn('isnull', Sequelize.col('BPMNOutboundAction.isDeleted'), 0),
+              Sequelize.fn(
+                'isnull',
+                Sequelize.col('BPMNOutboundAction.isDeleted'),
+                0,
+              ),
               { [Op.eq]: 0 },
             ),
           )
-          .include([{ model: this.actionRepo, as: 'action', attributes: ['id', 'name'], required: false }])
+          .include([
+            {
+              model: this.actionRepo,
+              as: 'action',
+              attributes: ['id', 'name'],
+              required: false,
+            },
+          ])
           .order({ orderBy: 'id', sortOrder: 'ASC' })
           .build(),
       );
-      outbound = outbound.map((oa: any) => ({ id: oa.id, activityId: oa.activityId, priority: oa.priority ?? null, actionId: oa.actionId, actionName: oa.action?.name }));
+      outbound = outbound.map((oa: any) => ({
+        id: oa.id,
+        activityId: oa.activityId,
+        priority: oa.priority ?? null,
+        actionId: oa.actionId,
+        actionName: oa.action?.name,
+      }));
     }
 
     if (opts?.nodeConditions && nodeIds.length > 0) {
@@ -239,11 +301,23 @@ export class ProcessService {
         new QueryOptionsBuilder()
           .attributes(['nodeId', 'conditionId', 'priority'])
           .filter({ nodeId: { [Op.in]: nodeIds } as any })
-          .include([{ model: this.conditionRepo, as: 'condition', attributes: ['id', 'name'], required: false }])
+          .include([
+            {
+              model: this.conditionRepo,
+              as: 'condition',
+              attributes: ['id', 'name'],
+              required: false,
+            },
+          ])
           .order({ orderBy: 'priority', sortOrder: 'ASC' })
           .build(),
       );
-      nodeConditions = nodeConditions.map((nc: any) => ({ nodeId: nc.nodeId, conditionId: nc.conditionId, priority: nc.priority ?? null, conditionName: nc.condition?.name }));
+      nodeConditions = nodeConditions.map((nc: any) => ({
+        nodeId: nc.nodeId,
+        conditionId: nc.conditionId,
+        priority: nc.priority ?? null,
+        conditionName: nc.condition?.name,
+      }));
     }
 
     if (opts?.nodeCommands && nodeIds.length > 0) {
@@ -251,11 +325,26 @@ export class ProcessService {
         new QueryOptionsBuilder()
           .attributes(['id', 'nodeId', 'name', 'route', 'nodeCommandTypeId'])
           .filter({ nodeId: { [Op.in]: nodeIds } as any })
-          .include([{ model: BPMNNodeCommandType, as: 'nodeCommandType', attributes: ['id', 'name', 'commandColor'], required: false }])
+          .include([
+            {
+              model: BPMNNodeCommandType,
+              as: 'nodeCommandType',
+              attributes: ['id', 'name', 'commandColor'],
+              required: false,
+            },
+          ])
           .order({ orderBy: 'id', sortOrder: 'ASC' })
           .build(),
       );
-      nodeCommands = nodeCommands.map((nc: any) => ({ id: nc.id, nodeId: nc.nodeId, name: nc.name, route: nc.route ?? null, nodeCommandTypeId: nc.nodeCommandTypeId, nodeCommandTypeName: nc.nodeCommandType?.name, nodeCommandTypeColor: nc.nodeCommandType?.commandColor }));
+      nodeCommands = nodeCommands.map((nc: any) => ({
+        id: nc.id,
+        nodeId: nc.nodeId,
+        name: nc.name,
+        route: nc.route ?? null,
+        nodeCommandTypeId: nc.nodeCommandTypeId,
+        nodeCommandTypeName: nc.nodeCommandType?.name,
+        nodeCommandTypeColor: nc.nodeCommandType?.commandColor,
+      }));
     }
 
     return {

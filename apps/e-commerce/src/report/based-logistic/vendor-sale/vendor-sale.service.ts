@@ -1,4 +1,8 @@
-import { BadRequestException, ForbiddenException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  ForbiddenException,
+  Injectable,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { PersianDate } from '@rahino/database';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
@@ -24,10 +28,15 @@ export class BasedVendorSaleService {
   ) {}
 
   async findAll(user: User, filter: GetVendorSaleDto) {
-    const isAccessToVendor = await this.userVendorService.isAccessToVendor(user, filter.vendorId);
+    const isAccessToVendor = await this.userVendorService.isAccessToVendor(
+      user,
+      filter.vendorId,
+    );
     if (!isAccessToVendor) {
       throw new ForbiddenException(
-        this.i18n.t('ecommerce.dont_access_to_this_vendor', { lang: I18nContext.current().lang }),
+        this.i18n.t('ecommerce.dont_access_to_this_vendor', {
+          lang: I18nContext.current().lang,
+        }),
       );
     }
 
@@ -43,7 +52,8 @@ export class BasedVendorSaleService {
       .addBeginDate(filter.beginDate)
       .addEndDate(filter.endDate);
 
-    if (filter.variationPriceId) qb = qb.addVariationPriceId(filter.variationPriceId);
+    if (filter.variationPriceId)
+      qb = qb.addVariationPriceId(filter.variationPriceId);
     if (filter.vendorId) qb = qb.onlyVendor(filter.vendorId);
 
     const count = await this.groupedDetailRepository.count(qb.build());
@@ -57,8 +67,18 @@ export class BasedVendorSaleService {
         'productId',
         'inventoryId',
         'qty',
-        [Sequelize.fn('isnull', Sequelize.col('inventoryPrice.buyPrice'), 0), 'buyPrice'],
-        [Sequelize.fn('isnull', Sequelize.col('ECLogisticOrderGroupedDetail.productPrice'), 0), 'unitPrice'],
+        [
+          Sequelize.fn('isnull', Sequelize.col('inventoryPrice.buyPrice'), 0),
+          'buyPrice',
+        ],
+        [
+          Sequelize.fn(
+            'isnull',
+            Sequelize.col('ECLogisticOrderGroupedDetail.productPrice'),
+            0,
+          ),
+          'unitPrice',
+        ],
         [
           Sequelize.literal(
             'isnull(ECLogisticOrderGroupedDetail.productPrice, 0) * qty',
@@ -92,10 +112,15 @@ export class BasedVendorSaleService {
   }
 
   async total(user: User, filter: GetVendorSaleDto) {
-    const isAccessToVendor = await this.userVendorService.isAccessToVendor(user, filter.vendorId);
+    const isAccessToVendor = await this.userVendorService.isAccessToVendor(
+      user,
+      filter.vendorId,
+    );
     if (!isAccessToVendor) {
       throw new ForbiddenException(
-        this.i18n.t('ecommerce.dont_access_to_this_vendor', { lang: I18nContext.current().lang }),
+        this.i18n.t('ecommerce.dont_access_to_this_vendor', {
+          lang: I18nContext.current().lang,
+        }),
       );
     }
 
@@ -112,19 +137,33 @@ export class BasedVendorSaleService {
       .addEndDate(filter.endDate);
 
     if (filter.vendorId) qb = qb.onlyVendor(filter.vendorId);
-    if (filter.variationPriceId) qb = qb.addVariationPriceId(filter.variationPriceId);
+    if (filter.variationPriceId)
+      qb = qb.addVariationPriceId(filter.variationPriceId);
 
     qb = qb
       .attributes([
-        [Sequelize.literal('count(distinct grouped.logisticOrderId)'), 'cntOrder'],
         [
-          Sequelize.fn('isnull', Sequelize.fn('sum', Sequelize.col('ECLogisticOrderGroupedDetail.qty')), 0),
+          Sequelize.literal('count(distinct grouped.logisticOrderId)'),
+          'cntOrder',
+        ],
+        [
+          Sequelize.fn(
+            'isnull',
+            Sequelize.fn(
+              'sum',
+              Sequelize.col('ECLogisticOrderGroupedDetail.qty'),
+            ),
+            0,
+          ),
           'qty',
         ],
         [
           Sequelize.fn(
             'isnull',
-            Sequelize.fn('sum', Sequelize.literal('isnull(inventoryPrice.buyPrice, 0) * qty')),
+            Sequelize.fn(
+              'sum',
+              Sequelize.literal('isnull(inventoryPrice.buyPrice, 0) * qty'),
+            ),
             0,
           ),
           'buyPrice',
@@ -132,21 +171,47 @@ export class BasedVendorSaleService {
         [
           Sequelize.fn(
             'isnull',
-            Sequelize.fn('sum', Sequelize.literal('isnull(ECLogisticOrderGroupedDetail.productPrice, 0) * qty')),
+            Sequelize.fn(
+              'sum',
+              Sequelize.literal(
+                'isnull(ECLogisticOrderGroupedDetail.productPrice, 0) * qty',
+              ),
+            ),
             0,
           ),
           'productPrice',
         ],
         [
-          Sequelize.fn('isnull', Sequelize.fn('sum', Sequelize.col('ECLogisticOrderGroupedDetail.discountFee')), 0),
+          Sequelize.fn(
+            'isnull',
+            Sequelize.fn(
+              'sum',
+              Sequelize.col('ECLogisticOrderGroupedDetail.discountFee'),
+            ),
+            0,
+          ),
           'discountFee',
         ],
         [
-          Sequelize.fn('isnull', Sequelize.fn('sum', Sequelize.col('ECLogisticOrderGroupedDetail.totalPrice')), 0),
+          Sequelize.fn(
+            'isnull',
+            Sequelize.fn(
+              'sum',
+              Sequelize.col('ECLogisticOrderGroupedDetail.totalPrice'),
+            ),
+            0,
+          ),
           'totalPrice',
         ],
         [
-          Sequelize.fn('isnull', Sequelize.fn('sum', Sequelize.col('ECLogisticOrderGroupedDetail.commissionAmount')), 0),
+          Sequelize.fn(
+            'isnull',
+            Sequelize.fn(
+              'sum',
+              Sequelize.col('ECLogisticOrderGroupedDetail.commissionAmount'),
+            ),
+            0,
+          ),
           'commissionAmount',
         ],
         [
@@ -185,13 +250,17 @@ export class BasedVendorSaleService {
     const isValidBeginDate = await this.isValidDate(beginDate);
     if (!isValidBeginDate) {
       throw new BadRequestException(
-        this.i18n.t('ecommerce.date_is_invalid', { lang: I18nContext.current().lang }),
+        this.i18n.t('ecommerce.date_is_invalid', {
+          lang: I18nContext.current().lang,
+        }),
       );
     }
     const isValidEndDate = await this.isValidDate(endDate);
     if (!isValidEndDate) {
       throw new BadRequestException(
-        this.i18n.t('ecommerce.date_is_invalid', { lang: I18nContext.current().lang }),
+        this.i18n.t('ecommerce.date_is_invalid', {
+          lang: I18nContext.current().lang,
+        }),
       );
     }
   }

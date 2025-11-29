@@ -1,7 +1,7 @@
 export class SepDto {
   MID: bigint;
   State: string;
-  Status: Number;
+  Status: number;
   RRN: string;
   RefNum: string;
   ResNum: string;

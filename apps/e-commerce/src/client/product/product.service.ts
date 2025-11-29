@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Scope } from '@nestjs/common';
 import { GetProductDto, GetProductLatLonDto, GetUnPriceDto } from './dto';
 import * as _ from 'lodash';
 import { ProductRepositoryService } from './service/product-repository.service';
@@ -10,7 +10,7 @@ import {
 import { InjectQueue } from '@nestjs/bullmq';
 import { Queue } from 'bullmq';
 
-@Injectable()
+@Injectable({ scope: Scope.REQUEST })
 export class ProductService {
   constructor(
     private readonly productRepositoryService: ProductRepositoryService,

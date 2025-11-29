@@ -165,7 +165,7 @@ export class ZarinPalService implements PayInterface {
       throw new BadRequestException('invalid payment');
     }
 
-    let payment = await this.paymentRepository.findOne(
+    const payment = await this.paymentRepository.findOne(
       new QueryOptionsBuilder()
         .filter({ paymentToken: query.Authority })
         .filter({ paymentGatewayId: paymentGateway.id })

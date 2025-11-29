@@ -1,11 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { AutoMap } from 'automapper-classes';
-import {
-  IsNotEmpty,
-  IsOptional,
-  IsString,
-  MaxLength,
-} from 'class-validator';
+import { IsNotEmpty, IsOptional, IsString, MaxLength } from 'class-validator';
 
 export class RequestItemDto {
   @IsString()

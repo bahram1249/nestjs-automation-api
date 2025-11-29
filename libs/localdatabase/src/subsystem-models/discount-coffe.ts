@@ -14,7 +14,7 @@ import {
   BuffetType,
   CoffeOption,
   VW_BuffetReservers,
-} from "../models/discount-coffe"; // Import everything from the barrel file
+} from '../models/discount-coffe'; // Import everything from the barrel file
 
 export const discountCoffeEntities = [
   Buffet,

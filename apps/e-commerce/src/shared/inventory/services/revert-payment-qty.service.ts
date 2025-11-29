@@ -56,7 +56,7 @@ export class RevertPaymentQtyService {
         parentPaymentId: childPayment.id,
       });
 
-      let wallet = await this.walletRepository.findOne(
+      const wallet = await this.walletRepository.findOne(
         new QueryOptionsBuilder()
           .filter({ userId: payment.userId })
           .filter(

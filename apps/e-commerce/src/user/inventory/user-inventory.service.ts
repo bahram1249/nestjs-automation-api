@@ -57,7 +57,7 @@ export class UserInventoryService {
     );
     const vendorIds = vendorAccess.map((item) => item.vendorId);
 
-    let queryBuilder = new QueryOptionsBuilder()
+    const queryBuilder = new QueryOptionsBuilder()
       .include([
         {
           attributes: ['id', 'title'],
@@ -281,7 +281,7 @@ export class UserInventoryService {
     );
     const vendorIds = vendorAccess.map((item) => item.vendorId);
 
-    let queryBuilder = new QueryOptionsBuilder()
+    const queryBuilder = new QueryOptionsBuilder()
       .include([
         {
           attributes: ['id', 'title'],
@@ -487,7 +487,7 @@ export class UserInventoryService {
     );
     const vendorIds = vendorAccess.map((item) => item.vendorId);
 
-    let queryBuilder = new QueryOptionsBuilder()
+    const queryBuilder = new QueryOptionsBuilder()
       .include([
         {
           attributes: ['id', 'title'],

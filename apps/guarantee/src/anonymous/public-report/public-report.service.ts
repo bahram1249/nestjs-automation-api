@@ -25,7 +25,7 @@ export class AnonymousPublicReportService {
   ) {}
 
   async findAll() {
-    let activeOrganizationQuery = new QueryOptionsBuilder()
+    const activeOrganizationQuery = new QueryOptionsBuilder()
       .filter(
         Sequelize.where(
           Sequelize.fn(

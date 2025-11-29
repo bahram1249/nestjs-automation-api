@@ -399,7 +399,7 @@ export class SelectedProductService {
   }
 
   async getPhoto(res: Response, fileName: string) {
-    let attachment = await this.attachmentRepository.findOne(
+    const attachment = await this.attachmentRepository.findOne(
       new QueryOptionsBuilder()
         .filter({ fileName: fileName })
         .filter(

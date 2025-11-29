@@ -93,7 +93,7 @@ export class QueryOptionsBuilder {
     return this;
   }
 
-  thenIncludeIf(condition: Boolean, include: Includeable) {
+  thenIncludeIf(condition: boolean, include: Includeable) {
     if (condition) {
       const included = this.options.include as Includeable[];
       included.push(include);

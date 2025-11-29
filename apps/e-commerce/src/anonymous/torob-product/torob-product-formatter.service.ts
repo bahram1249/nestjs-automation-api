@@ -11,7 +11,7 @@ export class TorobProductFormatterService {
   async listFormatter(products: ECProduct[]) {
     const promises = [];
     for (let index = 0; index < products.length; index++) {
-      let product = products[index];
+      const product = products[index];
       promises.push(this.singleFormatter(product));
     }
     return await Promise.all(promises);

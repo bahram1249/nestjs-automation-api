@@ -42,7 +42,6 @@ import { Response } from 'express';
   path: '/api/ecommerce/admin/products',
   version: ['1'],
 })
-
 export class ProductController {
   constructor(private service: ProductService) {}
 
@@ -80,10 +79,18 @@ export class ProductController {
     return await this.service.create(user, dto);
   }
 
-  @ApiOperation({ description: 'Export products and accessible inventories to Excel (includes empty rows for accessible vendors without inventory)' })
+  @ApiOperation({
+    description:
+      'Export products and accessible inventories to Excel (includes empty rows for accessible vendors without inventory)',
+  })
   @CheckPermission({ permissionSymbol: 'ecommerce.admin.products.getall' })
   @Get('/inventories/export')
-  @ApiQuery({ name: 'filter', type: GetProductDto, style: 'deepObject', explode: true })
+  @ApiQuery({
+    name: 'filter',
+    type: GetProductDto,
+    style: 'deepObject',
+    explode: true,
+  })
   @HttpCode(HttpStatus.OK)
   async exportInventories(
     @GetUser() user: User,
@@ -91,13 +98,22 @@ export class ProductController {
     @Res() res: Response,
   ) {
     const buffer = await this.service.exportInventoriesExcel(user, filter);
-    res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-    res.setHeader('Content-Disposition', `attachment; filename="products-inventories.xlsx"`);
+    res.setHeader(
+      'Content-Type',
+      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    );
+    res.setHeader(
+      'Content-Disposition',
+      `attachment; filename="products-inventories.xlsx"`,
+    );
     res.send(buffer);
   }
 
   @UseInterceptors(JsonResponseTransformInterceptor)
-  @ApiOperation({ description: 'Import products inventories from Excel (insert/update accessible inventories only)' })
+  @ApiOperation({
+    description:
+      'Import products inventories from Excel (insert/update accessible inventories only)',
+  })
   @CheckPermission({ permissionSymbol: 'ecommerce.admin.products.create' })
   @Post('/inventories/import')
   @ApiConsumes('multipart/form-data')

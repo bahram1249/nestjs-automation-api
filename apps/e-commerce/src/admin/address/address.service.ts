@@ -31,7 +31,7 @@ export class AdminAddressService {
   ) {}
 
   async findAll(userId: bigint, user: User, filter: GetAddressDto) {
-    let queryBuilder = new QueryOptionsBuilder()
+    const queryBuilder = new QueryOptionsBuilder()
       .include([
         {
           attributes: [

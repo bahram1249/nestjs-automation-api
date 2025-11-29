@@ -13,7 +13,7 @@ export class ScheduleSendingTypeService {
   ) {}
 
   async findAll(filter: GetScheduleSendingTypeDto) {
-    let queryBuilder = new QueryOptionsBuilder();
+    const queryBuilder = new QueryOptionsBuilder();
     //.order({ orderBy: filter.orderBy, sortOrder: filter.sortOrder });
 
     const count = await this.scheduleSendingTypeRepository.count(

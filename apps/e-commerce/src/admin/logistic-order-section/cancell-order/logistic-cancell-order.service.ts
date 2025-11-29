@@ -38,7 +38,8 @@ export class LogisticCancellOrderService {
 
   async findAll(user: User, filter: GetTotalOrderFilterDto) {
     // restrict by accessible logistics for this user
-    const accessibleLogisticIds = await this.logisticAccess.listAccessibleLogisticIds(user);
+    const accessibleLogisticIds =
+      await this.logisticAccess.listAccessibleLogisticIds(user);
 
     let qb = this.builder;
     qb = qb
@@ -71,10 +72,9 @@ export class LogisticCancellOrderService {
     const hasPhoneFilter = !!filter.phoneNumber && filter.phoneNumber !== '%%';
     if (hasPhoneFilter) {
       qb = qb.filter(
-        Sequelize.where(
-          Sequelize.col('user.phoneNumber'),
-          { [Op.like]: filter.phoneNumber },
-        ),
+        Sequelize.where(Sequelize.col('user.phoneNumber'), {
+          [Op.like]: filter.phoneNumber,
+        }),
       );
     }
 
@@ -100,7 +100,8 @@ export class LogisticCancellOrderService {
   }
 
   async findById(id: bigint, user: User) {
-    const accessibleLogisticIds = await this.logisticAccess.listAccessibleLogisticIds(user);
+    const accessibleLogisticIds =
+      await this.logisticAccess.listAccessibleLogisticIds(user);
 
     let qb = this.builder;
     qb = qb

@@ -710,10 +710,10 @@ export class EntityTypeService {
       );
     }
     const mappedItem = this.mapper.map(dto, EntityTypeDto, EAVEntityType);
-    let entityType = await this.repository.create(
+    const entityType = await this.repository.create(
       _.omit(mappedItem.toJSON(), ['id']),
     );
-    let builder = new QueryOptionsBuilder();
+    const builder = new QueryOptionsBuilder();
     const options = builder
       .attributes([
         'id',
@@ -812,10 +812,10 @@ export class EntityTypeService {
     }
 
     const mappedItem = this.mapper.map(dto, EntityTypeV2Dto, EAVEntityType);
-    let entityType = await this.repository.create(
+    const entityType = await this.repository.create(
       _.omit(mappedItem.toJSON(), ['id']),
     );
-    let builder = new QueryOptionsBuilder();
+    const builder = new QueryOptionsBuilder();
     const options = builder
       .attributes([
         'id',
@@ -869,7 +869,7 @@ export class EntityTypeService {
   }
 
   async update(id: number, dto: EntityTypeDto) {
-    let item = await this.repository.findOne(
+    const item = await this.repository.findOne(
       new QueryOptionsBuilder()
         .filter({ id })
         .filter(
@@ -938,14 +938,14 @@ export class EntityTypeService {
     }
 
     const mappedItem = this.mapper.map(dto, EntityTypeDto, EAVEntityType);
-    let entityType = await this.repository.update(
+    const entityType = await this.repository.update(
       _.omit(mappedItem.toJSON(), ['id']),
       {
         where: { id },
         returning: true,
       },
     );
-    let builder = new QueryOptionsBuilder();
+    const builder = new QueryOptionsBuilder();
     const options = builder
       .filter({ id: entityType[1][0].id })
       .include([
@@ -982,7 +982,7 @@ export class EntityTypeService {
   }
 
   async updateV2(id: number, dto: EntityTypeV2Dto) {
-    let item = await this.repository.findOne(
+    const item = await this.repository.findOne(
       new QueryOptionsBuilder()
         .filter({ id })
         .filter(
@@ -1059,14 +1059,14 @@ export class EntityTypeService {
     }
 
     const mappedItem = this.mapper.map(dto, EntityTypeV2Dto, EAVEntityType);
-    let entityType = await this.repository.update(
+    const entityType = await this.repository.update(
       _.omit(mappedItem.toJSON(), ['id']),
       {
         where: { id },
         returning: true,
       },
     );
-    let builder = new QueryOptionsBuilder();
+    const builder = new QueryOptionsBuilder();
     const options = builder
       .filter({ id: entityType[1][0].id })
       .include([
@@ -1221,7 +1221,7 @@ export class EntityTypeService {
   }
 
   async getPhoto(res: Response, fileName: string) {
-    let attachment = await this.attachmentRepository.findOne(
+    const attachment = await this.attachmentRepository.findOne(
       new QueryOptionsBuilder()
         .filter({ fileName: fileName })
         .filter(

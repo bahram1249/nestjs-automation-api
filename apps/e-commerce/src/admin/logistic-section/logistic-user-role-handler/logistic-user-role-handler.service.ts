@@ -260,7 +260,11 @@ export class LogisticUserRoleHandlerService {
         .attributes(['logisticId'])
         .filter(
           Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('ECLogisticUser.isDeleted'), 0),
+            Sequelize.fn(
+              'isnull',
+              Sequelize.col('ECLogisticUser.isDeleted'),
+              0,
+            ),
             { [Op.eq]: 0 },
           ),
         )

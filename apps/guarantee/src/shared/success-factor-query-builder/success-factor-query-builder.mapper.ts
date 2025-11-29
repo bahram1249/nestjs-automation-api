@@ -33,7 +33,7 @@ export class GSSuccessFactorQueryBuilderMapper {
         factorItems = this.mapFactorVipBundles(item.factorVipBundles);
         break;
     }
-    let transactions = this.mapTransactions(item.transactions);
+    const transactions = this.mapTransactions(item.transactions);
     return {
       id: item.id,
       createdAt: item.createdAt,

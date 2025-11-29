@@ -3,9 +3,9 @@ export class TransactionDetail {
   RefNum: string;
   MaskedPan: string;
   HashedPan: string;
-  TerminalNumber: Number;
+  TerminalNumber: number;
   OrginalAmount: bigint;
-  AffectiveAmount: Number;
+  AffectiveAmount: number;
   StraceDate: string;
   StraceNo: string;
 }

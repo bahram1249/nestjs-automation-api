@@ -76,7 +76,12 @@ export class ActionService {
       })
       .filterIf(!!filter.actionTypeId, { actionTypeId: filter.actionTypeId })
       .include([
-        { model: BPMNActionType, as: 'actionType', attributes: ['id', 'name'], required: false },
+        {
+          model: BPMNActionType,
+          as: 'actionType',
+          attributes: ['id', 'name'],
+          required: false,
+        },
       ])
       .limit(filter.limit ?? 20)
       .offset(filter.offset ?? 0)
@@ -89,7 +94,13 @@ export class ActionService {
   async findById(id: number) {
     const item = await this.repository.findOne(
       new QueryOptionsBuilder()
-        .attributes(['id', 'name', 'actionTypeId', 'actionSource', 'actionText'])
+        .attributes([
+          'id',
+          'name',
+          'actionTypeId',
+          'actionSource',
+          'actionText',
+        ])
         .filter({ id })
         .filter(
           Sequelize.where(
@@ -98,7 +109,11 @@ export class ActionService {
           ),
         )
         .include([
-          { model: BPMNActionType, as: 'actionType', attributes: ['id', 'name'] },
+          {
+            model: BPMNActionType,
+            as: 'actionType',
+            attributes: ['id', 'name'],
+          },
         ])
         .build(),
     );

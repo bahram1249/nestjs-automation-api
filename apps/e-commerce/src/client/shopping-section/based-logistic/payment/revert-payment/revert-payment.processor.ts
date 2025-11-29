@@ -39,7 +39,9 @@ export class LogisticRevertPaymentProcessor extends WorkerHost {
           .build(),
       );
       if (payment) {
-        await this.revertPaymentQtyService.revertPaymentAndQty(payment.id as any);
+        await this.revertPaymentQtyService.revertPaymentAndQty(
+          payment.id as any,
+        );
       }
     } catch (error) {
       return Promise.reject(paymentId);

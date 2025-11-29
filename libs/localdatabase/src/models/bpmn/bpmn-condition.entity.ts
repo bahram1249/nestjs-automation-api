@@ -5,10 +5,10 @@ import {
   DataType,
   ForeignKey,
   BelongsTo,
-} from "sequelize-typescript";
-import { BPMNConditionType } from "./bpmn-condition-type.entity";
+} from 'sequelize-typescript';
+import { BPMNConditionType } from './bpmn-condition-type.entity';
 
-@Table({ tableName: "BPMNConditions" })
+@Table({ tableName: 'BPMNConditions' })
 export class BPMNCondition extends Model {
   @Column({
     type: DataType.INTEGER,
@@ -27,8 +27,8 @@ export class BPMNCondition extends Model {
   conditionTypeId: number;
 
   @BelongsTo(() => BPMNConditionType, {
-    as: "conditionType",
-    foreignKey: "conditionTypeId",
+    as: 'conditionType',
+    foreignKey: 'conditionTypeId',
   })
   conditionType?: BPMNConditionType;
 

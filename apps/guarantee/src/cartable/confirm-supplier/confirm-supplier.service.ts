@@ -37,8 +37,8 @@ export class ConfirmSupplierService {
       isolationLevel: Transaction.ISOLATION_LEVELS.READ_COMMITTED,
     });
     try {
-      for (let attachmentDto of dto.attachments) {
-        let findAttachment = await this.attachmentRepository.findOne(
+      for (const attachmentDto of dto.attachments) {
+        const findAttachment = await this.attachmentRepository.findOne(
           new QueryOptionsBuilder()
             .filter({ id: attachmentDto.attachmentId })
             .filter({ attachmentTypeId: this.photoTempAttachmentType })

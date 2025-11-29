@@ -140,7 +140,7 @@ export class CourierService {
   }
 
   async findById(entityId: number, user: User) {
-    let queryBuilder = new QueryOptionsBuilder()
+    const queryBuilder = new QueryOptionsBuilder()
       .attributes(['id', 'userId', 'createdAt', 'updatedAt'])
       .include([
         {
@@ -187,7 +187,7 @@ export class CourierService {
   }
 
   async findByIdV2(entityId: number, user: User) {
-    let queryBuilder = new QueryOptionsBuilder()
+    const queryBuilder = new QueryOptionsBuilder()
       .attributes(['id', 'userId', 'vendorId', 'createdAt', 'updatedAt'])
       .include([
         {
@@ -367,7 +367,7 @@ export class CourierService {
   }
 
   async deleteById(entityId: number) {
-    let queryBuilder = new QueryOptionsBuilder()
+    const queryBuilder = new QueryOptionsBuilder()
       .include([{ model: User, as: 'user' }])
       .filter(
         Sequelize.where(

@@ -25,12 +25,20 @@ export class ConditionService {
       .filterIf(!!filter.search && filter.search !== '%%', {
         name: { [Op.like]: filter.search as any },
       })
-      .filterIf(!!filter.conditionTypeId, { conditionTypeId: filter.conditionTypeId });
+      .filterIf(!!filter.conditionTypeId, {
+        conditionTypeId: filter.conditionTypeId,
+      });
 
     const total = await this.repository.count(qb.build());
 
     qb = qb
-      .attributes(['id', 'name', 'conditionTypeId', 'conditionSource', 'conditionText'])
+      .attributes([
+        'id',
+        'name',
+        'conditionTypeId',
+        'conditionSource',
+        'conditionText',
+      ])
       .include([
         {
           model: BPMNConditionType,
@@ -59,7 +67,9 @@ export class ConditionService {
       .filterIf(!!filter.search && filter.search !== '%%', {
         name: { [Op.like]: filter.search as any },
       })
-      .filterIf(!!filter.conditionTypeId, { conditionTypeId: filter.conditionTypeId });
+      .filterIf(!!filter.conditionTypeId, {
+        conditionTypeId: filter.conditionTypeId,
+      });
 
     const total = await this.repository.count(qbBase.build());
 
@@ -74,9 +84,16 @@ export class ConditionService {
       .filterIf(!!filter.search && filter.search !== '%%', {
         name: { [Op.like]: filter.search as any },
       })
-      .filterIf(!!filter.conditionTypeId, { conditionTypeId: filter.conditionTypeId })
+      .filterIf(!!filter.conditionTypeId, {
+        conditionTypeId: filter.conditionTypeId,
+      })
       .include([
-        { model: BPMNConditionType, as: 'conditionType', attributes: ['id', 'name'], required: false },
+        {
+          model: BPMNConditionType,
+          as: 'conditionType',
+          attributes: ['id', 'name'],
+          required: false,
+        },
       ])
       .limit(filter.limit ?? 20)
       .offset(filter.offset ?? 0)
@@ -89,7 +106,13 @@ export class ConditionService {
   async findById(id: number) {
     const item = await this.repository.findOne(
       new QueryOptionsBuilder()
-        .attributes(['id', 'name', 'conditionTypeId', 'conditionSource', 'conditionText'])
+        .attributes([
+          'id',
+          'name',
+          'conditionTypeId',
+          'conditionSource',
+          'conditionText',
+        ])
         .filter({ id })
         .filter(
           Sequelize.where(
@@ -98,7 +121,11 @@ export class ConditionService {
           ),
         )
         .include([
-          { model: BPMNConditionType, as: 'conditionType', attributes: ['id', 'name'] },
+          {
+            model: BPMNConditionType,
+            as: 'conditionType',
+            attributes: ['id', 'name'],
+          },
         ])
         .build(),
     );

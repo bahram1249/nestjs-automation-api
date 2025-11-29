@@ -169,9 +169,9 @@ export class SharedCartableFilteringService {
         .build(),
     );
 
-    let states = currentStates.map(
+    const states = currentStates.map(
       async (currentState): Promise<RequestCurrentStateOutputDto> => {
-        let users: RequestCurrentStateUserOutputDto[] = [];
+        const users: RequestCurrentStateUserOutputDto[] = [];
         if (currentState.userId != null) {
           users.push({
             id: currentState.user.id,

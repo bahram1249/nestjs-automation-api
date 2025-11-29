@@ -51,8 +51,8 @@ export class UserService {
   }
 
   async changePassword(title: string, user: User, menus: Menu[], req: Request) {
-    let error: string = null;
-    let success: string = null;
+    const error: string = null;
+    const success: string = null;
     return {
       title,
       user: user.toJSON(),

@@ -5,11 +5,11 @@ import {
   DataType,
   ForeignKey,
   BelongsTo,
-} from "sequelize-typescript";
-import { BPMNActivity } from "./bpmn-activity.entity";
-import { BPMNAction } from "./bpmn-action.entity";
+} from 'sequelize-typescript';
+import { BPMNActivity } from './bpmn-activity.entity';
+import { BPMNAction } from './bpmn-action.entity';
 
-@Table({ tableName: "BPMNOutboundActions" })
+@Table({ tableName: 'BPMNOutboundActions' })
 export class BPMNOutboundAction extends Model {
   @Column({
     type: DataType.INTEGER,
@@ -23,7 +23,7 @@ export class BPMNOutboundAction extends Model {
   @ForeignKey(() => BPMNActivity)
   activityId: number;
 
-  @BelongsTo(() => BPMNActivity, { as: "activity", foreignKey: "activityId" })
+  @BelongsTo(() => BPMNActivity, { as: 'activity', foreignKey: 'activityId' })
   activity?: BPMNActivity;
 
   @Column({
@@ -32,7 +32,7 @@ export class BPMNOutboundAction extends Model {
   @ForeignKey(() => BPMNAction)
   actionId: number;
 
-  @BelongsTo(() => BPMNAction, { as: "action", foreignKey: "actionId" })
+  @BelongsTo(() => BPMNAction, { as: 'action', foreignKey: 'actionId' })
   action?: BPMNAction;
 
   @Column({

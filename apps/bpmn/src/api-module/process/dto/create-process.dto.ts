@@ -11,7 +11,9 @@ export class CreateProcessDto {
   @IsBoolean()
   isSubProcess?: boolean;
 
-  @ApiPropertyOptional({ description: 'Static identifier to map well-known processes' })
+  @ApiPropertyOptional({
+    description: 'Static identifier to map well-known processes',
+  })
   @IsOptional()
   @IsInt()
   staticId?: number;

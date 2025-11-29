@@ -39,7 +39,7 @@ export class CustomI18nValidationExceptionFilter implements ExceptionFilter {
       lang: i18n.lang,
     });
 
-    let normalizedErrors = this.normalizeValidationErrors(errors);
+    const normalizedErrors = this.normalizeValidationErrors(errors);
 
     switch (host.getType() as string) {
       case 'http':

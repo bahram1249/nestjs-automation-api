@@ -66,8 +66,8 @@ export class SubmitFactorInRequestLocationService {
         },
       );
       if (dto.attachments.length > 0) {
-        for (let attachmentDto of dto.attachments) {
-          let findAttachment = await this.attachmentRepository.findOne(
+        for (const attachmentDto of dto.attachments) {
+          const findAttachment = await this.attachmentRepository.findOne(
             new QueryOptionsBuilder()
               .filter({ id: attachmentDto.attachmentId })
               .filter({ attachmentTypeId: this.photoTempAttachmentType })

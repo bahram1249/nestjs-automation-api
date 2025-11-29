@@ -76,7 +76,7 @@ export class GuaranteeOrganizationContractService {
   }
 
   async findById(entityId: bigint) {
-    let query = new QueryOptionsBuilder()
+    const query = new QueryOptionsBuilder()
       .attributes([
         'id',
         'organizationId',
@@ -237,7 +237,7 @@ export class GuaranteeOrganizationContractService {
   }
 
   async deleteById(entityId: bigint) {
-    let item = await this.repository.findOne(
+    const item = await this.repository.findOne(
       new QueryOptionsBuilder()
         .filter({ id: entityId })
         .filter(

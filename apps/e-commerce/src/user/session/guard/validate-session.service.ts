@@ -95,7 +95,7 @@ export class ValidateSessionService {
     }
 
     // basic query for non deleted and non expired session
-    let queryBuilder = new QueryOptionsBuilder()
+    const queryBuilder = new QueryOptionsBuilder()
       .filter({ id: session })
       .filter(
         Sequelize.where(
@@ -112,7 +112,7 @@ export class ValidateSessionService {
       );
 
     // find the valid session
-    let findSession = await this.userSessionRepository.findOne(
+    const findSession = await this.userSessionRepository.findOne(
       queryBuilder.build(),
     );
     // if the session is not valid

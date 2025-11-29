@@ -105,7 +105,7 @@ export class ProductCommentService {
   }
 
   async findById(id: bigint, user: User) {
-    let builder = new QueryOptionsBuilder()
+    const builder = new QueryOptionsBuilder()
       .filter(
         Sequelize.where(
           Sequelize.fn(

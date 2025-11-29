@@ -1,10 +1,22 @@
-import { BadRequestException, ForbiddenException, Injectable, Scope } from '@nestjs/common';
+import {
+  BadRequestException,
+  ForbiddenException,
+  Injectable,
+  Scope,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { Sequelize, Transaction } from 'sequelize';
 import { Op } from 'sequelize';
 import { User } from '@rahino/database';
-import { PaymentStatusEnum, PaymentTypeEnum } from '@rahino/ecommerce/shared/enum';
-import { ECWallet, ECPaymentGateway, ECPayment } from '@rahino/localdatabase/models';
+import {
+  PaymentStatusEnum,
+  PaymentTypeEnum,
+} from '@rahino/ecommerce/shared/enum';
+import {
+  ECWallet,
+  ECPaymentGateway,
+  ECPayment,
+} from '@rahino/localdatabase/models';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import { LogisticFinalizedPaymentService } from '../../util/finalized-payment/logistic-finalized-payment.service';
 import { ConfigService } from '@nestjs/config';
@@ -43,19 +55,35 @@ export class LogisticWalletService implements LogisticPayInterface {
     const wallet = await this.walletRepo.findOne(
       new QueryOptionsBuilder()
         .filter({ userId: user.id })
-        .filter(Sequelize.where(Sequelize.fn('isnull', Sequelize.col('isDeleted'), 0), { [Op.eq]: 0 }))
+        .filter(
+          Sequelize.where(
+            Sequelize.fn('isnull', Sequelize.col('isDeleted'), 0),
+            { [Op.eq]: 0 },
+          ),
+        )
         .transaction(transaction)
         .build(),
     );
-    if (!wallet) throw new BadRequestException(this.l10n.translate('ecommerce.main_wallet_not_found'));
+    if (!wallet)
+      throw new BadRequestException(
+        this.l10n.translate('ecommerce.main_wallet_not_found'),
+      );
 
     const gateway = await this.gatewayRepo.findOne(
       new QueryOptionsBuilder()
         .filter({ serviceName: 'WalletService' })
-        .filter(Sequelize.where(Sequelize.fn('isnull', Sequelize.col('isDeleted'), 0), { [Op.eq]: 0 }))
+        .filter(
+          Sequelize.where(
+            Sequelize.fn('isnull', Sequelize.col('isDeleted'), 0),
+            { [Op.eq]: 0 },
+          ),
+        )
         .build(),
     );
-    if (!gateway) throw new BadRequestException(this.l10n.translate('ecommerce.invalid_payment'));
+    if (!gateway)
+      throw new BadRequestException(
+        this.l10n.translate('ecommerce.invalid_payment'),
+      );
 
     // amounts are in toman; ECPayment.totalprice stored in rial (x10)
     if (Number(wallet.currentAmount) >= totalPrice) {
@@ -78,10 +106,16 @@ export class LogisticWalletService implements LogisticPayInterface {
         { transaction },
       );
 
-      await this.finalizedPaymentService.successfulWallet(payment.id, transaction);
+      await this.finalizedPaymentService.successfulWallet(
+        payment.id,
+        transaction,
+      );
 
       const frontUrl = this.config.get('BASE_FRONT_URL');
-      return { paymentId: payment.id, redirectUrl: `${frontUrl}/user/orders/${payment.logisticOrderId}` };
+      return {
+        paymentId: payment.id,
+        redirectUrl: `${frontUrl}/user/orders/${payment.logisticOrderId}`,
+      };
     }
 
     // not enough: charge the difference using another gateway eligible for wallet charging
@@ -90,20 +124,28 @@ export class LogisticWalletService implements LogisticPayInterface {
         .filter({ eligibleChargeWallet: true })
         .filter(
           Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('ECPaymentGateway.isDeleted'), 0),
+            Sequelize.fn(
+              'isnull',
+              Sequelize.col('ECPaymentGateway.isDeleted'),
+              0,
+            ),
             { [Op.eq]: 0 },
           ),
         )
         .build(),
     );
     if (!chargerGateway) {
-      throw new ForbiddenException(this.l10n.translate('ecommerce.payment_for_charging_not_found'));
+      throw new ForbiddenException(
+        this.l10n.translate('ecommerce.payment_for_charging_not_found'),
+      );
     }
 
     const mustBePaid = totalPrice - Number(wallet.currentAmount);
 
     // pick a provider by charger gateway id using wallet-purpose factory (avoids circular deps)
-    const chargeProvider = (await this.walletPurposeProviderFactory.create(chargerGateway.id)) as LogisticPayInterface;
+    const chargeProvider = (await this.walletPurposeProviderFactory.create(
+      chargerGateway.id,
+    )) as LogisticPayInterface;
     const paymentResult = await chargeProvider.requestPayment(
       mustBePaid,
       0,
@@ -132,27 +174,43 @@ export class LogisticWalletService implements LogisticPayInterface {
       // move wallet currentAmount to suspendedAmount until charge payment completes
       await this.walletRepo.update(
         {
-          suspendedAmount: Number(wallet.suspendedAmount) + Number(wallet.currentAmount),
+          suspendedAmount:
+            Number(wallet.suspendedAmount) + Number(wallet.currentAmount),
           currentAmount: 0,
         },
         { where: { id: wallet.id }, transaction },
       );
     }
 
-    return { paymentId: paymentResult.paymentId, redirectUrl: paymentResult.redirectUrl };
+    return {
+      paymentId: paymentResult.paymentId,
+      redirectUrl: paymentResult.redirectUrl,
+    };
   }
 
   async eligbleRequest(totalPrice: number, user?: User) {
     if (!user) {
-      return { eligibleCheck: false, titleMessage: 'پرداخت با کیف پول', description: '' };
+      return {
+        eligibleCheck: false,
+        titleMessage: 'پرداخت با کیف پول',
+        description: '',
+      };
     }
     const wallet = await this.walletRepo.findOne(
       new QueryOptionsBuilder()
         .filter({ userId: user.id })
-        .filter(Sequelize.where(Sequelize.fn('isnull', Sequelize.col('isDeleted'), 0), { [Op.eq]: 0 }))
+        .filter(
+          Sequelize.where(
+            Sequelize.fn('isnull', Sequelize.col('isDeleted'), 0),
+            { [Op.eq]: 0 },
+          ),
+        )
         .build(),
     );
-    if (!wallet) throw new BadRequestException(this.l10n.translate('ecommerce.main_wallet_not_found'));
+    if (!wallet)
+      throw new BadRequestException(
+        this.l10n.translate('ecommerce.main_wallet_not_found'),
+      );
 
     return {
       eligibleCheck: true,

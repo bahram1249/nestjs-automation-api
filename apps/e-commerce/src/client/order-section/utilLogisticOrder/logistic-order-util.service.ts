@@ -2,7 +2,10 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { Sequelize, Transaction, Op } from 'sequelize';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
-import { ECLogisticOrder, ECLogisticOrderGrouped } from '@rahino/localdatabase/models';
+import {
+  ECLogisticOrder,
+  ECLogisticOrderGrouped,
+} from '@rahino/localdatabase/models';
 import { OrderStatusEnum } from '@rahino/ecommerce/shared/enum';
 
 @Injectable()
@@ -40,7 +43,8 @@ export class LogisticOrderUtilService {
       .map((g) => Number(g.shipmentPrice || 0))
       .reduce((p, c) => p + c, 0);
 
-    const totalPrice = totalProductPrice - totalDiscountFee + totalShipmentPrice;
+    const totalPrice =
+      totalProductPrice - totalDiscountFee + totalShipmentPrice;
 
     order.set('totalProductPrice', totalProductPrice as any);
     order.set('totalDiscountFee', totalDiscountFee as any);
@@ -57,14 +61,21 @@ export class LogisticOrderUtilService {
    * all groups are SendByCourier will parent advance to SendByCourier, etc.).
    * Deleted (canceled) groups are ignored in this roll-up.
    */
-  async syncParentOrderStatus(logisticOrderId: bigint, transaction?: Transaction) {
+  async syncParentOrderStatus(
+    logisticOrderId: bigint,
+    transaction?: Transaction,
+  ) {
     const groups = await this.groupRepository.findAll(
       new QueryOptionsBuilder()
         .attributes(['orderStatusId'])
         .filter({ logisticOrderId })
         .filter(
           Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('ECLogisticOrderGrouped.isDeleted'), 0),
+            Sequelize.fn(
+              'isnull',
+              Sequelize.col('ECLogisticOrderGrouped.isDeleted'),
+              0,
+            ),
             { [Op.eq]: 0 },
           ),
         )
@@ -76,7 +87,10 @@ export class LogisticOrderUtilService {
     // Determine roll-up status as min across groups
     const minStatusRaw = groups
       .map((g) => Number((g as any).orderStatusId ?? OrderStatusEnum.Paid))
-      .reduce((a, b) => (a < b ? a : b), OrderStatusEnum.DeliveredToTheCustomer);
+      .reduce(
+        (a, b) => (a < b ? a : b),
+        OrderStatusEnum.DeliveredToTheCustomer,
+      );
 
     // Never regress parent order to WaitingForPayment; clamp to at least Paid
     const minStatus = Math.max(minStatusRaw, OrderStatusEnum.Paid);

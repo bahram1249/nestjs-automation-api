@@ -28,7 +28,7 @@ export class GoldonGalleryCalPriceService implements ICalPrice {
     inventoryWeight?: number,
   ): Promise<InventoryPriceIncludeBuyPriceDto> {
     if (dto.productFormulaId == 1) {
-      let { price, buyPrice: newBuyPrice } =
+      const { price, buyPrice: newBuyPrice } =
         await this.getPriceByWeightFirstFormula(
           inventoryWeight,
           dto.wages,
@@ -37,7 +37,7 @@ export class GoldonGalleryCalPriceService implements ICalPrice {
       inventoryPriceDto.price = price;
       buyPrice = newBuyPrice;
     } else {
-      let { price, buyPrice: newBuyPrice } =
+      const { price, buyPrice: newBuyPrice } =
         await this.getPriceByWeightSecondFormula(
           inventoryWeight,
           dto.wages,

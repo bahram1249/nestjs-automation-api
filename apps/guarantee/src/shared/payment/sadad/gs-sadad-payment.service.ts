@@ -86,7 +86,7 @@ export class GSSadadPaymentService implements GSPaymentInterface {
     );
 
     // rial
-    let paidUntilNow = transactionTotalPrices.reduce(
+    const paidUntilNow = transactionTotalPrices.reduce(
       (prev, current) => prev + current,
       0,
     );

@@ -17,4 +17,7 @@ class NodeCommandFilterDto {
   nodeCommandTypeId?: number;
 }
 
-export class GetNodeCommandDto extends IntersectionType(ListFilter, NodeCommandFilterDto) {}
+export class GetNodeCommandDto extends IntersectionType(
+  ListFilter,
+  NodeCommandFilterDto,
+) {}

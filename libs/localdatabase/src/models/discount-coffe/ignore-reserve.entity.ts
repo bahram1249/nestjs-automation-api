@@ -1,4 +1,11 @@
-import { Table, Column, Model, DataType, ForeignKey, BelongsTo } from 'sequelize-typescript';
+import {
+  Table,
+  Column,
+  Model,
+  DataType,
+  ForeignKey,
+  BelongsTo,
+} from 'sequelize-typescript';
 import { Buffet } from './buffet.entity';
 
 @Table({ tableName: 'DiscountCoffeIgnoreReserves' })
@@ -12,10 +19,10 @@ export class BuffetIgnoreReserve extends Model {
   @Column({
     type: DataType.BIGINT,
   })
-  @ForeignKey(()=> Buffet)
+  @ForeignKey(() => Buffet)
   buffetId: bigint;
 
-  @BelongsTo(()=> Buffet, {as:"buffet", foreignKey: "buffetId"})
+  @BelongsTo(() => Buffet, { as: 'buffet', foreignKey: 'buffetId' })
   buffet?: Buffet;
 
   @Column({

@@ -41,7 +41,7 @@ export class CartableTechnicalUserService {
       );
     }
 
-    let query = new QueryOptionsBuilder()
+    const query = new QueryOptionsBuilder()
       .include([
         {
           model: User,

@@ -57,7 +57,7 @@ export class LoginService {
       to: dto.phoneNumber,
       bodyId: '203509',
     });
-    var queryString =
+    const queryString =
       redirectUrl.length > 0 ? '?redirectUrl=' + redirectUrl : '';
     return res.redirect(302, '/login/code' + queryString);
   }

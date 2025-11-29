@@ -59,7 +59,7 @@ export class CalculateCommentScoreService {
   }
 
   async calcualteProductCommentScore(productId: bigint) {
-    let product = await this.productRepository.findOne(
+    const product = await this.productRepository.findOne(
       new QueryOptionsBuilder().filter({ id: productId }).build(),
     );
     if (!product) {

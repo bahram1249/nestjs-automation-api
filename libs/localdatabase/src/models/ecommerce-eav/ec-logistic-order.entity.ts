@@ -111,23 +111,32 @@ export class ECLogisticOrder extends Model {
   }
 
   private static formatSingleInstance(instance: ECLogisticOrder) {
-    if (isNotNull(instance) && isNotNull(instance.groups) && instance.groups.length > 0) {
+    if (
+      isNotNull(instance) &&
+      isNotNull(instance.groups) &&
+      instance.groups.length > 0
+    ) {
       for (const group of instance.groups) {
         const timeItem = group?.logisticWeeklyPeriodTime;
         if (isNotNull(timeItem)) {
           if (timeItem.startTime) {
-            timeItem.startTime = new Date(timeItem.startTime).toLocaleTimeString('en-US', {
+            timeItem.startTime = new Date(
+              timeItem.startTime,
+            ).toLocaleTimeString('en-US', {
               hour: '2-digit',
               minute: '2-digit',
               hour12: false,
             });
           }
           if (timeItem.endTime) {
-            timeItem.endTime = new Date(timeItem.endTime).toLocaleTimeString('en-US', {
-              hour: '2-digit',
-              minute: '2-digit',
-              hour12: false,
-            });
+            timeItem.endTime = new Date(timeItem.endTime).toLocaleTimeString(
+              'en-US',
+              {
+                hour: '2-digit',
+                minute: '2-digit',
+                hour12: false,
+              },
+            );
           }
         }
       }

@@ -11,7 +11,7 @@ export class RemoveEmptyPriceService {
   async applyProducts(products: ECProduct[]) {
     const promises = [];
     for (let index = 0; index < products.length; index++) {
-      let product = products[index];
+      const product = products[index];
       promises.push(this.applyProduct(product));
     }
     return await Promise.all(promises);

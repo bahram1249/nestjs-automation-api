@@ -30,7 +30,7 @@ export class SellerVariantProcessor extends WorkerHost {
   }
 
   async fetchDataAndSync() {
-    let setting = await this.settingRepository.findOne(
+    const setting = await this.settingRepository.findOne(
       new QueryOptionsBuilder().filter({ key: SELLER_VARIANT_OFFSET }).build(),
     );
     const fromId = Number(setting.value);
@@ -46,7 +46,7 @@ export class SellerVariantProcessor extends WorkerHost {
 
       if (result.data.length == 0) break;
 
-      let sellerItemIds = result.data.map((item) => item.id);
+      const sellerItemIds = result.data.map((item) => item.id);
       const localVariants = await this.variantRepository.findAll(
         new QueryOptionsBuilder()
           .filter({
@@ -74,7 +74,7 @@ export class SellerVariantProcessor extends WorkerHost {
         }
       }
 
-      let lastItem = sellerSourceItems[sellerSourceItems.length - 1];
+      const lastItem = sellerSourceItems[sellerSourceItems.length - 1];
       lastItemId = lastItem.id;
 
       if (result.last_page != page) {

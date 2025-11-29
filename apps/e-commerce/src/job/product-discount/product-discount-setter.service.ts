@@ -21,7 +21,7 @@ export class ProductDiscountSetterService {
   async applyProducts(products: ECProduct[]) {
     const promises = [];
     for (let index = 0; index < products.length; index++) {
-      let product = products[index];
+      const product = products[index];
       promises.push(this.applyProduct(product));
     }
     return await Promise.all(promises);
@@ -29,7 +29,7 @@ export class ProductDiscountSetterService {
   async applyProduct(product: ECProduct): Promise<ECProduct> {
     const promises = [];
     for (let index = 0; index < product.inventories.length; index++) {
-      let inventory = product.inventories[index];
+      const inventory = product.inventories[index];
       promises.push(this.applyInventory(product, inventory));
     }
     await Promise.all(promises);
@@ -50,7 +50,7 @@ export class ProductDiscountSetterService {
 
     // distincts these discounts
     const discounts = new Set<ECDiscount>(results);
-    let finalDiscountList: ECDiscount[] = Array.from(discounts).sort(
+    const finalDiscountList: ECDiscount[] = Array.from(discounts).sort(
       (item) => item.priority,
     );
 

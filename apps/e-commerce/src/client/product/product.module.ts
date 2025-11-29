@@ -2,7 +2,11 @@ import { Module } from '@nestjs/common';
 import { ProductService } from './product.service';
 import { ProductController } from './product.controller';
 import { SequelizeModule } from '@nestjs/sequelize';
-import { ECProduct, ECVendor } from '@rahino/localdatabase/models';
+import {
+  ECProduct,
+  ECVendor,
+  ECProductView,
+} from '@rahino/localdatabase/models';
 import { ProductQueryBuilderService, RemoveEmptyPriceService } from './service';
 import { RedisClientModule } from '@rahino/redis-client';
 import { ECDiscount } from '@rahino/localdatabase/models';
@@ -11,10 +15,12 @@ import { ProductRepositoryService } from './service/product-repository.service';
 import { BullModule } from '@nestjs/bullmq';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import {
+  PRODUCT_VIEW_QUEUE,
   QUERY_NEXT_PAGE_PRODUCT_QUEUE,
   QUERY_NEXT_PAGE_PRODUCT_WITH_LAT_LON_QUEUE,
 } from './constants';
 import {
+  ProductViewProcessor,
   QueryNextPageProductProcessor,
   QueryNextPageProductWithLatLonProcessor,
 } from './processor';
@@ -48,6 +54,9 @@ import { ApplyDiscountModule } from '../../shared/apply-discount';
     BullModule.registerQueueAsync({
       name: QUERY_NEXT_PAGE_PRODUCT_WITH_LAT_LON_QUEUE,
     }),
+    BullModule.registerQueueAsync({
+      name: PRODUCT_VIEW_QUEUE,
+    }),
     SequelizeModule.forFeature([
       ECProduct,
       ECDiscount,
@@ -55,6 +64,7 @@ import { ApplyDiscountModule } from '../../shared/apply-discount';
       EAVEntityType,
       ECSlugVersion,
       ECVendor,
+      ECProductView,
     ]),
     SequelizeModule,
     QueryFilterModule,
@@ -71,6 +81,7 @@ import { ApplyDiscountModule } from '../../shared/apply-discount';
     ProductRepositoryService,
     QueryNextPageProductProcessor,
     QueryNextPageProductWithLatLonProcessor,
+    ProductViewProcessor,
   ],
   exports: [ProductRepositoryService, ProductQueryBuilderService],
 })

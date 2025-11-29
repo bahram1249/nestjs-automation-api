@@ -84,7 +84,7 @@ export class SnapPayService implements PayInterface {
       let finded = true;
       let randomTransactionId: string = '';
       while (finded) {
-        let date = new Date();
+        const date = new Date();
         randomTransactionId = Math.floor(date.getTime() / 1000).toString();
         const isExists = await this.paymentRepository.findOne(
           new QueryOptionsBuilder()
@@ -265,7 +265,7 @@ export class SnapPayService implements PayInterface {
       throw new BadRequestException('invalid payment');
     }
 
-    let payment = await this.paymentRepository.findOne(
+    const payment = await this.paymentRepository.findOne(
       new QueryOptionsBuilder()
         .filter({ transactionId: query.transactionId })
         .filter({ paymentGatewayId: paymentGateway.id })

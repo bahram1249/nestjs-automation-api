@@ -5,11 +5,11 @@ import {
   DataType,
   ForeignKey,
   BelongsTo,
-} from "sequelize-typescript";
-import { BPMNActivityType } from "./bpmn-activity-type.entity";
-import { BPMNPROCESS } from "./bpmn-process.entity";
+} from 'sequelize-typescript';
+import { BPMNActivityType } from './bpmn-activity-type.entity';
+import { BPMNPROCESS } from './bpmn-process.entity';
 
-@Table({ tableName: "BPMNActivities" })
+@Table({ tableName: 'BPMNActivities' })
 export class BPMNActivity extends Model {
   @Column({
     type: DataType.INTEGER,
@@ -36,8 +36,8 @@ export class BPMNActivity extends Model {
   activityTypeId: number;
 
   @BelongsTo(() => BPMNActivityType, {
-    as: "activityType",
-    foreignKey: "activityTypeId",
+    as: 'activityType',
+    foreignKey: 'activityTypeId',
   })
   activityType?: BPMNActivityType;
 
@@ -47,7 +47,7 @@ export class BPMNActivity extends Model {
   @ForeignKey(() => BPMNPROCESS)
   processId: number;
 
-  @BelongsTo(() => BPMNPROCESS, { as: "process", foreignKey: "processId" })
+  @BelongsTo(() => BPMNPROCESS, { as: 'process', foreignKey: 'processId' })
   process?: BPMNPROCESS;
 
   @Column({
@@ -62,8 +62,8 @@ export class BPMNActivity extends Model {
   insideProcessRunnerId?: number;
 
   @BelongsTo(() => BPMNPROCESS, {
-    as: "insideProcessRunner",
-    foreignKey: "insideProcessRunnerId",
+    as: 'insideProcessRunner',
+    foreignKey: 'insideProcessRunnerId',
   })
   insideProcessRunner?: BPMNPROCESS;
 

@@ -14,7 +14,7 @@ export class PaymentGatewayService {
     private readonly repository: typeof ECPaymentGateway,
   ) {}
   async findAll(user: User, filter: ListFilter) {
-    let queryBuilder = new QueryOptionsBuilder().filter(
+    const queryBuilder = new QueryOptionsBuilder().filter(
       Sequelize.where(
         Sequelize.fn('isnull', Sequelize.col('ECPaymentGateway.isDeleted'), 0),
         {
@@ -28,7 +28,7 @@ export class PaymentGatewayService {
     };
   }
   async findById(user: User, entityId: number) {
-    let queryBuilder = new QueryOptionsBuilder()
+    const queryBuilder = new QueryOptionsBuilder()
       .filter({ id: entityId })
       .filter(
         Sequelize.where(

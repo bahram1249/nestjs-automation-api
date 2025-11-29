@@ -13,7 +13,7 @@ export class ShippingWayService {
   ) {}
 
   async findAll(requestId: bigint, dto: ListFilter) {
-    let queryBuilder = new QueryOptionsBuilder()
+    const queryBuilder = new QueryOptionsBuilder()
       .filter(
         Sequelize.where(
           Sequelize.fn('isnull', Sequelize.col('GSShippingWay.isDeleted'), 0),

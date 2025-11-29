@@ -1,4 +1,3 @@
-
 import {
   BadRequestException,
   ForbiddenException,
@@ -71,7 +70,9 @@ export class BasedProductSaleService {
           [
             Sequelize.fn(
               'COUNT',
-              Sequelize.literal('DISTINCT ECLogisticOrderGroupedDetail.productId'),
+              Sequelize.literal(
+                'DISTINCT ECLogisticOrderGroupedDetail.productId',
+              ),
             ),
             'total',
           ],
@@ -79,7 +80,6 @@ export class BasedProductSaleService {
         .build(),
     );
     const count = countResult.get('total');
-
 
     qb = qb
       .attributes([
@@ -100,7 +100,15 @@ export class BasedProductSaleService {
       ])
       .includeVendor()
       .includeProduct()
-      .group(['ECLogisticOrderGroupedDetail.productId', 'vendor.id', 'vendor.name', 'vendor.slug', 'product.title', 'product.slug', 'product.sku'])
+      .group([
+        'ECLogisticOrderGroupedDetail.productId',
+        'vendor.id',
+        'vendor.name',
+        'vendor.slug',
+        'product.title',
+        'product.slug',
+        'product.sku',
+      ])
       .offset(filter.offset)
       .limit(filter.limit)
       .order({ orderBy: filter.orderBy, sortOrder: filter.sortOrder });

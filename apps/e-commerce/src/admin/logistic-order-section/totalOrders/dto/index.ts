@@ -1,1 +1,1 @@
-export * from "./change-shipmentway.dto"
+export * from './change-shipmentway.dto';

@@ -56,7 +56,7 @@ export class HomePagePhotoService {
 
   async getPhoto(id: bigint, res: Response): Promise<StreamableFile> {
     const photoTypes = [this.homePageAttachmentType];
-    let attachment = await this.attachmentRepository.findOne(
+    const attachment = await this.attachmentRepository.findOne(
       new QueryOptionsBuilder()
         .filter({ id: id })
         .filter(

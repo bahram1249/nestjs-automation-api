@@ -41,14 +41,7 @@ export class SupplierReportService {
           ],
         },
       ])
-      .filter(
-        Sequelize.where(
-          Sequelize.fn('isnull', Sequelize.col('GSSupplierPerson.isDeleted'), 0),
-          {
-            [Op.eq]: 0,
-          },
-        ),
-      )
+      
       .filterIf(dto.organizationId != null, {
         '$organization.organization.id$': dto.organizationId,
       });

@@ -97,9 +97,11 @@ export class IncomeReportService {
   }
 
   async total(filter: GetIncomeReportDto) {
-    let queryBuilder = this.buildBaseQuery(filter, { includeAttributesEmpty: true })
-      
-      queryBuilder = queryBuilder
+    let queryBuilder = this.buildBaseQuery(filter, {
+      includeAttributesEmpty: true,
+    });
+
+    queryBuilder = queryBuilder
       .attributes([
         [
           Sequelize.fn(
@@ -218,7 +220,7 @@ export class IncomeReportService {
 
   async exportExcel(filter: GetIncomeReportDto): Promise<Buffer> {
     // Build query using the same filters as findAll, but without pagination
-    let queryBuilder = this.buildBaseQuery(filter).attributes([
+    const queryBuilder = this.buildBaseQuery(filter).attributes([
       'id',
       'representativeSharePercent',
       'sumOfSolutionIncludeWarranty',
@@ -248,11 +250,31 @@ export class IncomeReportService {
     sheet.columns = [
       { header: 'شناسه فاکتور', key: 'id', width: 14 },
       { header: 'شناسه درخواست', key: 'requestId', width: 16 },
-      { header: 'درصد سهم نماینده', key: 'representativeSharePercent', width: 18 },
-      { header: 'جمع اجرت داخل گارانتی', key: 'sumOfSolutionIncludeWarranty', width: 22 },
-      { header: 'جمع اجرت خارج از گارانتی', key: 'sumOfSolutionOutOfWarranty', width: 22 },
-      { header: 'جمع قطعه داخل گارانتی', key: 'sumOfPartIncludeWarranty', width: 22 },
-      { header: 'جمع قطعه خارج از گارانتی', key: 'sumOfPartOutOfWarranty', width: 22 },
+      {
+        header: 'درصد سهم نماینده',
+        key: 'representativeSharePercent',
+        width: 18,
+      },
+      {
+        header: 'جمع اجرت داخل گارانتی',
+        key: 'sumOfSolutionIncludeWarranty',
+        width: 22,
+      },
+      {
+        header: 'جمع اجرت خارج از گارانتی',
+        key: 'sumOfSolutionOutOfWarranty',
+        width: 22,
+      },
+      {
+        header: 'جمع قطعه داخل گارانتی',
+        key: 'sumOfPartIncludeWarranty',
+        width: 22,
+      },
+      {
+        header: 'جمع قطعه خارج از گارانتی',
+        key: 'sumOfPartOutOfWarranty',
+        width: 22,
+      },
       {
         header: 'حداقل پرداخت مشتری (خارج از گارانتی)',
         key: 'atLeastPayFromCustomerForOutOfWarranty',
@@ -266,8 +288,16 @@ export class IncomeReportService {
       },
       { header: 'سازمان به شرکت', key: 'organizationToCompany', width: 18 },
       { header: 'شرکت به سازمان', key: 'companyToOrganization', width: 18 },
-      { header: 'جمع سازمان به شرکت', key: 'sumOfOrganizationToCompany', width: 22 },
-      { header: 'جمع شرکت به سازمان', key: 'sumOfCompanyToOrganization', width: 22 },
+      {
+        header: 'جمع سازمان به شرکت',
+        key: 'sumOfOrganizationToCompany',
+        width: 22,
+      },
+      {
+        header: 'جمع شرکت به سازمان',
+        key: 'sumOfCompanyToOrganization',
+        width: 22,
+      },
       { header: 'تاریخ تسویه', key: 'settlementDate', width: 16 },
     ];
 
@@ -275,14 +305,17 @@ export class IncomeReportService {
       if (v === null || v === undefined) return '';
       if (typeof v === 'bigint') return v.toString();
       if (v instanceof Date) return v.toISOString().slice(0, 10);
-      if (typeof v === 'object' && 'toString' in v) return (v as any).toString();
+      if (typeof v === 'object' && 'toString' in v)
+        return (v as any).toString();
       return v;
     };
 
     for (const r of rows) {
       sheet.addRow({
         id: toPlain(r.id),
-        requestId: toPlain((r as any).get?.('requestId') ?? (r as any).requestId),
+        requestId: toPlain(
+          (r as any).get?.('requestId') ?? (r as any).requestId,
+        ),
         representativeSharePercent: toPlain(r.representativeSharePercent),
         sumOfSolutionIncludeWarranty: toPlain(r.sumOfSolutionIncludeWarranty),
         sumOfSolutionOutOfWarranty: toPlain(r.sumOfSolutionOutOfWarranty),

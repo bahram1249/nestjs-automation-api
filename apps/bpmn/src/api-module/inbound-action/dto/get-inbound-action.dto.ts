@@ -17,4 +17,7 @@ class InboundActionFilterDto {
   actionId?: number;
 }
 
-export class GetInboundActionDto extends IntersectionType(ListFilter, InboundActionFilterDto) {}
+export class GetInboundActionDto extends IntersectionType(
+  ListFilter,
+  InboundActionFilterDto,
+) {}

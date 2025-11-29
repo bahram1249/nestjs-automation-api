@@ -289,7 +289,7 @@ export class BuffetService {
       reserveTypeId: dto.reserveType,
     };
 
-    let buffetReserve = await this.buffetReserveRepository.create(data);
+    const buffetReserve = await this.buffetReserveRepository.create(data);
     if (dto.items.length > 0) {
       const menusIds = dto.items.map((item) => item.id);
       const menus = await this.buffetMenuRepository.findAll({
@@ -315,8 +315,8 @@ export class BuffetService {
         const menu = menus[index];
         const item = dto.items.find((item) => item.id == menu.id);
 
-        var count = parseInt(item.count.toString());
-        var itemTotalPrice = Number(menu.price) * count;
+        const count = parseInt(item.count.toString());
+        const itemTotalPrice = Number(menu.price) * count;
         totalPrice += itemTotalPrice;
         await this.buffetReserveDetailRepository.create({
           reserveId: buffetReserve.id,

@@ -1,6 +1,10 @@
 import { Module } from '@nestjs/common';
 import { SequelizeModule } from '@nestjs/sequelize';
-import { ECWallet, ECPaymentGateway, ECPayment } from '@rahino/localdatabase/models';
+import {
+  ECWallet,
+  ECPaymentGateway,
+  ECPayment,
+} from '@rahino/localdatabase/models';
 import { LogisticFinalizedPaymentModule } from '../util/finalized-payment/logistic-finalized-payment.module';
 import { LogisticWalletService } from './services/logistic-wallet.service';
 import { LocalizationModule } from 'apps/main/src/common/localization';
@@ -17,7 +21,10 @@ import { LogisticPaymentServiceManualWalletPurposeProviderFactory } from './fact
     LogisticSnappayModule,
     LocalizationModule,
   ],
-  providers: [LogisticWalletService, LogisticPaymentServiceManualWalletPurposeProviderFactory],
+  providers: [
+    LogisticWalletService,
+    LogisticPaymentServiceManualWalletPurposeProviderFactory,
+  ],
   exports: [LogisticWalletService],
 })
 export class LogisticWalletModule {}

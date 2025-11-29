@@ -73,7 +73,7 @@ export class DiscountConditionService {
       .limit(filter.limit)
       .offset(filter.offset)
       .order({ orderBy: filter.orderBy, sortOrder: filter.sortOrder });
-    let conditions = await this.repository.findAll(queryBuilder.build());
+    const conditions = await this.repository.findAll(queryBuilder.build());
 
     for (let index = 0; index < conditions.length; index++) {
       const condition = conditions[index];
@@ -128,7 +128,7 @@ export class DiscountConditionService {
   async findById(user: User, entityId: bigint) {
     const vendorIdsStringify =
       await this.userVendorService.findVendorIdsAsString(user);
-    let queryBuilder = new QueryOptionsBuilder()
+    const queryBuilder = new QueryOptionsBuilder()
       .include([
         {
           attributes: ['id', 'name'],
@@ -281,7 +281,7 @@ export class DiscountConditionService {
   async deleteById(user: User, entityId: bigint) {
     const vendorIdsStringify =
       await this.userVendorService.findVendorIdsAsString(user);
-    let queryBuilder = new QueryOptionsBuilder()
+    const queryBuilder = new QueryOptionsBuilder()
       .filter({ id: entityId })
       .filter(
         Sequelize.where(

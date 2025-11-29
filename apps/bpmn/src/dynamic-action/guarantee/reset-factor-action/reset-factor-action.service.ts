@@ -31,7 +31,7 @@ export class ResetFactorActionService implements ActionServiceImp {
     private readonly guaranteeRepository: typeof GSGuarantee,
   ) {}
   async executeAction(dto: ExecuteActionDto) {
-    let factor = await this.factorRepository.findOne(
+    const factor = await this.factorRepository.findOne(
       new QueryOptionsBuilder()
         .filter({ requestId: dto.request.id })
         .filter({ factorTypeId: GSFactorTypeEnum.PayRequestFactor })

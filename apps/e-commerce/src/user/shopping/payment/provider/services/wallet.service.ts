@@ -94,7 +94,7 @@ export class WalletService implements PayInterface {
           transaction: transaction,
         },
       );
-      let payment = await this.paymentRepository.create(
+      const payment = await this.paymentRepository.create(
         {
           paymentGatewayId: paymentGateway.id,
           paymentTypeId: paymentType,

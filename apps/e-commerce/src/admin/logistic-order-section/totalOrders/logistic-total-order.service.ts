@@ -435,7 +435,7 @@ export class LogisticTotalOrderService {
     const orderId = group.logisticOrderId;
 
     // sum details
-    let qbDetails = new QueryOptionsBuilder()
+    const qbDetails = new QueryOptionsBuilder()
       .attributes([
         [
           Sequelize.fn(
@@ -482,7 +482,7 @@ export class LogisticTotalOrderService {
       .raw(true)
       .transaction(transaction);
 
-    let detailsQuery = qbDetails.build();
+    const detailsQuery = qbDetails.build();
     detailsQuery.limit = null as any;
     detailsQuery.offset = null as any;
     detailsQuery.order = null as any;
@@ -491,7 +491,7 @@ export class LogisticTotalOrderService {
     const totals: any = await this.detailRepository.findOne(detailsQuery);
 
     // sum shipments (groups)
-    let qbShipment = new QueryOptionsBuilder()
+    const qbShipment = new QueryOptionsBuilder()
       .attributes([
         [
           Sequelize.fn(
@@ -516,7 +516,7 @@ export class LogisticTotalOrderService {
       .raw(true)
       .transaction(transaction);
 
-    let shipmentQuery = qbShipment.build();
+    const shipmentQuery = qbShipment.build();
     shipmentQuery.limit = null as any;
     shipmentQuery.offset = null as any;
     shipmentQuery.order = null as any;
@@ -542,7 +542,7 @@ export class LogisticTotalOrderService {
     );
 
     // Recalculate group totals for the affected group
-    let qbGroupDetails = new QueryOptionsBuilder()
+    const qbGroupDetails = new QueryOptionsBuilder()
       .attributes([
         [
           Sequelize.fn(
@@ -585,7 +585,7 @@ export class LogisticTotalOrderService {
       .raw(true)
       .transaction(transaction);
 
-    let groupQuery = qbGroupDetails.build();
+    const groupQuery = qbGroupDetails.build();
     groupQuery.limit = null as any;
     groupQuery.offset = null as any;
     groupQuery.order = null as any;
@@ -625,14 +625,14 @@ export class LogisticTotalOrderService {
     );
     if (!group) return;
 
-    let qb = new QueryOptionsBuilder()
+    const qb = new QueryOptionsBuilder()
       .filter({ id: group.logisticOrderId })
       .transaction(transaction)
       .include([
         { model: ECLogisticOrderGrouped as any, as: 'groups', required: false },
         { model: User as any, as: 'user', required: false },
       ]);
-    let order = await this.repository.findOne(qb.build());
+    const order = await this.repository.findOne(qb.build());
     if (!order) return;
 
     // check gateway is SnapPay

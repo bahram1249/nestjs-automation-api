@@ -72,6 +72,9 @@ export class ECInventoryHistory extends Model {
   @ForeignKey(() => ECLogisticOrder)
   logisticOrderId?: bigint;
 
-  @BelongsTo(() => ECLogisticOrder, { as: 'logisticOrder', foreignKey: 'logisticOrderId' })
+  @BelongsTo(() => ECLogisticOrder, {
+    as: 'logisticOrder',
+    foreignKey: 'logisticOrderId',
+  })
   logisticOrder?: ECLogisticOrder;
 }

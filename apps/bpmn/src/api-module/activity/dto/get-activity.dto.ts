@@ -11,4 +11,7 @@ class ActivityFilterDto {
   processId?: number;
 }
 
-export class GetActivityDto extends IntersectionType(ListFilter, ActivityFilterDto) {}
+export class GetActivityDto extends IntersectionType(
+  ListFilter,
+  ActivityFilterDto,
+) {}

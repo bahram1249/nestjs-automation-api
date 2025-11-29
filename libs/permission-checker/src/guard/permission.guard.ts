@@ -45,7 +45,7 @@ export class PermissionGuard implements CanActivate {
     userId: bigint,
   ) {
     let access = true;
-    let defined = await this.cacheManager.get(
+    const defined = await this.cacheManager.get(
       `userid:${userId}->permission:${permission.permissionSymbol}`,
     );
     if (defined == false) {

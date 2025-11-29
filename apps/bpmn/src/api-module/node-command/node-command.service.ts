@@ -1,10 +1,13 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
-import { BPMNNodeCommand, BPMNNode, BPMNNodeCommandType } from '@rahino/localdatabase/models';
+import {
+  BPMNNodeCommand,
+  BPMNNode,
+  BPMNNodeCommandType,
+} from '@rahino/localdatabase/models';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import { Op, Sequelize } from 'sequelize';
 import { GetNodeCommandDto } from './dto/get-node-command.dto';
-
 
 @Injectable()
 export class NodeCommandService {
@@ -25,15 +28,27 @@ export class NodeCommandService {
         name: { [Op.like]: filter.search as any },
       })
       .filterIf(!!filter.nodeId, { nodeId: filter.nodeId })
-      .filterIf(!!filter.nodeCommandTypeId, { nodeCommandTypeId: filter.nodeCommandTypeId });
+      .filterIf(!!filter.nodeCommandTypeId, {
+        nodeCommandTypeId: filter.nodeCommandTypeId,
+      });
 
     const total = await this.repository.count(qb.build());
 
     qb = qb
       .attributes(['id', 'nodeId', 'name', 'nodeCommandTypeId', 'route'])
       .include([
-        { model: BPMNNode, as: 'node', attributes: ['id', 'name'], required: false },
-        { model: BPMNNodeCommandType, as: 'nodeCommandType', attributes: ['id', 'name'], required: false },
+        {
+          model: BPMNNode,
+          as: 'node',
+          attributes: ['id', 'name'],
+          required: false,
+        },
+        {
+          model: BPMNNodeCommandType,
+          as: 'nodeCommandType',
+          attributes: ['id', 'name'],
+          required: false,
+        },
       ])
       .limit(filter.limit)
       .offset(filter.offset)
@@ -55,7 +70,9 @@ export class NodeCommandService {
         name: { [Op.like]: filter.search as any },
       })
       .filterIf(!!filter.nodeId, { nodeId: filter.nodeId })
-      .filterIf(!!filter.nodeCommandTypeId, { nodeCommandTypeId: filter.nodeCommandTypeId });
+      .filterIf(!!filter.nodeCommandTypeId, {
+        nodeCommandTypeId: filter.nodeCommandTypeId,
+      });
 
     const total = await this.repository.count(qbBase.build());
 
@@ -71,10 +88,22 @@ export class NodeCommandService {
         name: { [Op.like]: filter.search as any },
       })
       .filterIf(!!filter.nodeId, { nodeId: filter.nodeId })
-      .filterIf(!!filter.nodeCommandTypeId, { nodeCommandTypeId: filter.nodeCommandTypeId })
+      .filterIf(!!filter.nodeCommandTypeId, {
+        nodeCommandTypeId: filter.nodeCommandTypeId,
+      })
       .include([
-        { model: BPMNNode, as: 'node', attributes: ['id', 'name'], required: false },
-        { model: BPMNNodeCommandType, as: 'nodeCommandType', attributes: ['id', 'name'], required: false },
+        {
+          model: BPMNNode,
+          as: 'node',
+          attributes: ['id', 'name'],
+          required: false,
+        },
+        {
+          model: BPMNNodeCommandType,
+          as: 'nodeCommandType',
+          attributes: ['id', 'name'],
+          required: false,
+        },
       ])
       .limit(filter.limit ?? 20)
       .offset(filter.offset ?? 0)
@@ -91,13 +120,21 @@ export class NodeCommandService {
         .filter({ id })
         .filter(
           Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('BPMNNodeCommand.isDeleted'), 0),
+            Sequelize.fn(
+              'isnull',
+              Sequelize.col('BPMNNodeCommand.isDeleted'),
+              0,
+            ),
             { [Op.eq]: 0 },
           ),
         )
         .include([
           { model: BPMNNode, as: 'node', attributes: ['id', 'name'] },
-          { model: BPMNNodeCommandType, as: 'nodeCommandType', attributes: ['id', 'name'] },
+          {
+            model: BPMNNodeCommandType,
+            as: 'nodeCommandType',
+            attributes: ['id', 'name'],
+          },
         ])
         .build(),
     );
@@ -106,19 +143,25 @@ export class NodeCommandService {
   }
 
   async create(data: Partial<BPMNNodeCommand>) {
-    const created = await this.repository.create(JSON.parse(JSON.stringify(data)));
+    const created = await this.repository.create(
+      JSON.parse(JSON.stringify(data)),
+    );
     return { result: created };
   }
 
   async update(id: number, data: Partial<BPMNNodeCommand>) {
-    const item = await this.repository.findOne(new QueryOptionsBuilder().filter({ id }).build());
+    const item = await this.repository.findOne(
+      new QueryOptionsBuilder().filter({ id }).build(),
+    );
     if (!item) throw new NotFoundException('bpmn.node_command_not_found');
     await item.update(JSON.parse(JSON.stringify(data)));
     return { result: item };
   }
 
   async deleteById(id: number) {
-    const item = await this.repository.findOne(new QueryOptionsBuilder().filter({ id }).build());
+    const item = await this.repository.findOne(
+      new QueryOptionsBuilder().filter({ id }).build(),
+    );
     if (!item) throw new NotFoundException('bpmn.node_command_not_found');
     await item.update({ isDeleted: true } as any);
     return { ok: true };

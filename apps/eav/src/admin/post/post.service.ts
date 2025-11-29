@@ -120,7 +120,7 @@ export class PostService {
   }
 
   async findById(id: bigint) {
-    let builder = new QueryOptionsBuilder()
+    const builder = new QueryOptionsBuilder()
       .attributes([
         'id',
         'entityTypeId',

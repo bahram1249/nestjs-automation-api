@@ -1,6 +1,10 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
-import { BPMNInboundAction, BPMNActivity, BPMNAction } from '@rahino/localdatabase/models';
+import {
+  BPMNInboundAction,
+  BPMNActivity,
+  BPMNAction,
+} from '@rahino/localdatabase/models';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import { GetInboundActionDto } from './dto/get-inbound-action.dto';
 import { Op, Sequelize } from 'sequelize';
@@ -16,7 +20,11 @@ export class InboundActionService {
     let qb = new QueryOptionsBuilder()
       .filter(
         Sequelize.where(
-          Sequelize.fn('isnull', Sequelize.col('BPMNInboundAction.isDeleted'), 0),
+          Sequelize.fn(
+            'isnull',
+            Sequelize.col('BPMNInboundAction.isDeleted'),
+            0,
+          ),
           { [Op.eq]: 0 },
         ),
       )
@@ -28,8 +36,18 @@ export class InboundActionService {
     qb = qb
       .attributes(['id', 'activityId', 'actionId', 'priority'])
       .include([
-        { model: BPMNActivity, as: 'activity', attributes: ['id', 'name'], required: false },
-        { model: BPMNAction, as: 'action', attributes: ['id', 'name'], required: false },
+        {
+          model: BPMNActivity,
+          as: 'activity',
+          attributes: ['id', 'name'],
+          required: false,
+        },
+        {
+          model: BPMNAction,
+          as: 'action',
+          attributes: ['id', 'name'],
+          required: false,
+        },
       ])
       .limit(filter.limit)
       .offset(filter.offset)
@@ -43,7 +61,11 @@ export class InboundActionService {
     const qbBase = new QueryOptionsBuilder()
       .filter(
         Sequelize.where(
-          Sequelize.fn('isnull', Sequelize.col('BPMNInboundAction.isDeleted'), 0),
+          Sequelize.fn(
+            'isnull',
+            Sequelize.col('BPMNInboundAction.isDeleted'),
+            0,
+          ),
           { [Op.eq]: 0 },
         ),
       )
@@ -55,7 +77,11 @@ export class InboundActionService {
     const qbList = new QueryOptionsBuilder()
       .filter(
         Sequelize.where(
-          Sequelize.fn('isnull', Sequelize.col('BPMNInboundAction.isDeleted'), 0),
+          Sequelize.fn(
+            'isnull',
+            Sequelize.col('BPMNInboundAction.isDeleted'),
+            0,
+          ),
           { [Op.eq]: 0 },
         ),
       )
@@ -63,8 +89,18 @@ export class InboundActionService {
       .filterIf(!!filter.activityId, { activityId: filter.activityId })
       .filterIf(!!filter.actionId, { actionId: filter.actionId })
       .include([
-        { model: BPMNActivity, as: 'activity', attributes: ['id', 'name'], required: false },
-        { model: BPMNAction, as: 'action', attributes: ['id', 'name'], required: false },
+        {
+          model: BPMNActivity,
+          as: 'activity',
+          attributes: ['id', 'name'],
+          required: false,
+        },
+        {
+          model: BPMNAction,
+          as: 'action',
+          attributes: ['id', 'name'],
+          required: false,
+        },
       ])
       .limit(filter.limit ?? 20)
       .offset(filter.offset ?? 0)
@@ -81,7 +117,11 @@ export class InboundActionService {
         .filter({ id })
         .filter(
           Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('BPMNInboundAction.isDeleted'), 0),
+            Sequelize.fn(
+              'isnull',
+              Sequelize.col('BPMNInboundAction.isDeleted'),
+              0,
+            ),
             { [Op.eq]: 0 },
           ),
         )
@@ -96,19 +136,25 @@ export class InboundActionService {
   }
 
   async create(data: Partial<BPMNInboundAction>) {
-    const created = await this.repository.create(JSON.parse(JSON.stringify(data)));
+    const created = await this.repository.create(
+      JSON.parse(JSON.stringify(data)),
+    );
     return { result: created };
   }
 
   async update(id: number, data: Partial<BPMNInboundAction>) {
-    const item = await this.repository.findOne(new QueryOptionsBuilder().filter({ id }).build());
+    const item = await this.repository.findOne(
+      new QueryOptionsBuilder().filter({ id }).build(),
+    );
     if (!item) throw new NotFoundException('bpmn.inbound_action_not_found');
     await item.update(JSON.parse(JSON.stringify(data)));
     return { result: item };
   }
 
   async deleteById(id: number) {
-    const item = await this.repository.findOne(new QueryOptionsBuilder().filter({ id }).build());
+    const item = await this.repository.findOne(
+      new QueryOptionsBuilder().filter({ id }).build(),
+    );
     if (!item) throw new NotFoundException('bpmn.inbound_action_not_found');
     await item.update({ isDeleted: 1 } as any);
     return { ok: true };

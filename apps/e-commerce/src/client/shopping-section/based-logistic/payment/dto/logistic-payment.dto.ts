@@ -1,4 +1,7 @@
-import { OrderShipmentwayEnum, PaymentTypeEnum } from '@rahino/ecommerce/shared/enum';
+import {
+  OrderShipmentwayEnum,
+  PaymentTypeEnum,
+} from '@rahino/ecommerce/shared/enum';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import {
   IsArray,
@@ -95,7 +98,10 @@ export class LogisticShipmentSelectionGroupInput {
   weeklyPeriodTimeId?: number | null;
 
   // Optional explicit sending date; must match logistic-period availability if provided
-  @ApiPropertyOptional({ description: 'Gregorian date (YYYY-MM-DD) or ISO string', type: String })
+  @ApiPropertyOptional({
+    description: 'Gregorian date (YYYY-MM-DD) or ISO string',
+    type: String,
+  })
   @IsOptional()
   @IsDateString()
   sendingDate?: string | null;

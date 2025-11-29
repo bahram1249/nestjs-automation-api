@@ -2,7 +2,7 @@ import { TransactionDetail } from './transaction-detail';
 
 export class VerifyTransaction {
   TransactionDetail: TransactionDetail;
-  ResultCode: Number;
+  ResultCode: number;
   ResultDescription: string;
   Success: boolean;
 }

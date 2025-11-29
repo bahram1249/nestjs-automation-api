@@ -1,7 +1,13 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { AutoMap } from 'automapper-classes';
 import { Type } from 'class-transformer';
-import { IsDateString, IsInt, IsNumber, IsOptional, IsString } from 'class-validator';
+import {
+  IsDateString,
+  IsInt,
+  IsNumber,
+  IsOptional,
+  IsString,
+} from 'class-validator';
 
 export class GetFactorDetailDto {
   @AutoMap()

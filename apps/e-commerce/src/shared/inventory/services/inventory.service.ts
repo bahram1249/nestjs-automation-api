@@ -194,7 +194,7 @@ export class InventoryService {
       );
 
       for (let index = 0; index < inventory.inventoryPrices.length; index++) {
-        let newPrice = await this.calPriceService.getPrice(
+        const newPrice = await this.calPriceService.getPrice(
           productDto,
           inventory.inventoryPrices[index],
           inventory.buyPrice,
@@ -285,7 +285,7 @@ export class InventoryService {
         transaction: transaction,
       });
       for (let index = 0; index < inventory.inventoryPrices.length; index++) {
-        let newPrice = await this.calPriceService.getPrice(
+        const newPrice = await this.calPriceService.getPrice(
           productDto,
           inventory.inventoryPrices[index],
           inventory.buyPrice,

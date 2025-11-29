@@ -211,8 +211,8 @@ export class RequestService {
       );
       requestId = bpmnRequest.id;
 
-      for (let attachmentDto of dto.attachments) {
-        let findAttachment = await this.attachmentRepository.findOne(
+      for (const attachmentDto of dto.attachments) {
+        const findAttachment = await this.attachmentRepository.findOne(
           new QueryOptionsBuilder()
             .filter({ id: attachmentDto.attachmentId })
             .filter({ attachmentTypeId: this.photoTempAttachmentType })
@@ -337,8 +337,8 @@ export class RequestService {
       );
       requestId = bpmnRequest.id;
 
-      for (let attachmentDto of dto.attachments) {
-        let findAttachment = await this.attachmentRepository.findOne(
+      for (const attachmentDto of dto.attachments) {
+        const findAttachment = await this.attachmentRepository.findOne(
           new QueryOptionsBuilder()
             .filter({ id: attachmentDto.attachmentId })
             .filter({ attachmentTypeId: this.photoTempAttachmentType })
@@ -515,8 +515,8 @@ export class RequestService {
       );
       requestId = bpmnRequest.id;
 
-      for (let attachmentDto of dto.attachments) {
-        let findAttachment = await this.attachmentRepository.findOne(
+      for (const attachmentDto of dto.attachments) {
+        const findAttachment = await this.attachmentRepository.findOne(
           new QueryOptionsBuilder()
             .filter({ id: attachmentDto.attachmentId })
             .filter({ attachmentTypeId: this.photoTempAttachmentType })

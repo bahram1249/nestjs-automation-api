@@ -1,7 +1,7 @@
-import { AutoMap } from "automapper-classes";
-import { Table, Column, Model, DataType } from "sequelize-typescript";
+import { AutoMap } from 'automapper-classes';
+import { Table, Column, Model, DataType } from 'sequelize-typescript';
 
-@Table({ tableName: "GSGuaranteePeriods" })
+@Table({ tableName: 'GSGuaranteePeriods' })
 export class GSGuaranteePeriod extends Model {
   @Column({
     type: DataType.INTEGER,

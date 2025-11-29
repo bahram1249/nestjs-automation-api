@@ -41,17 +41,17 @@ export class PreRegistrationOrganizationService {
     });
     let preRegistrationOrganization: GSPreRegistrationOrganization;
 
-    let licenseAttachment = await this.findTempAttachment(
+    const licenseAttachment = await this.findTempAttachment(
       dto.licenseAttachmentId,
     );
 
-    let postalAttachment = await this.findTempAttachment(
+    const postalAttachment = await this.findTempAttachment(
       dto.postalAttachmentId,
     );
-    let estateAttachment = await this.findTempAttachment(
+    const estateAttachment = await this.findTempAttachment(
       dto.estateAttachmentId,
     );
-    let nationalAttachment = await this.findTempAttachment(
+    const nationalAttachment = await this.findTempAttachment(
       dto.nationalAttachmentId,
     );
 

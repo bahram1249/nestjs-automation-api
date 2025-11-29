@@ -54,7 +54,7 @@ export class CartableOrganizationService {
       );
     }
 
-    let query = new QueryOptionsBuilder()
+    const query = new QueryOptionsBuilder()
       .include([
         {
           model: GSAddress,

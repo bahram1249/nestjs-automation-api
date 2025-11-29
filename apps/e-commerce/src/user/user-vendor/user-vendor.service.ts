@@ -131,7 +131,7 @@ export class UserVendorService {
     };
   }
 
-  async isAccessToVendor(user: User, vendorId: number): Promise<Boolean> {
+  async isAccessToVendor(user: User, vendorId: number): Promise<boolean> {
     const findVendor = await this.vendorUserRepository.findOne(
       new QueryOptionsBuilder()
         .filter({ userId: user.id })
@@ -214,7 +214,7 @@ export class UserVendorService {
   async findVendorIdsAsString(user: User) {
     const vendorIds = await this.findVendorIds(user);
     const vendorIdsString = vendorIds.map((item) => item.toString());
-    let vendorIdsStringify = vendorIdsString.join(', ');
+    const vendorIdsStringify = vendorIdsString.join(', ');
     return vendorIdsStringify != '' ? vendorIdsStringify : 'NULL';
   }
 }

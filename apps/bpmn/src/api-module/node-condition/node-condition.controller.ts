@@ -1,4 +1,17 @@
-import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, Post, Put, Query, UseGuards, UseInterceptors } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  HttpCode,
+  HttpStatus,
+  Param,
+  Post,
+  Put,
+  Query,
+  UseGuards,
+  UseInterceptors,
+} from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { JsonResponseTransformInterceptor } from '@rahino/response/interceptor';
 import { JwtGuard } from '@rahino/auth';
@@ -37,7 +50,10 @@ export class NodeConditionController {
   @ApiOperation({ description: 'Get node condition by ids' })
   @Get('/:nodeId/:conditionId')
   @HttpCode(HttpStatus.OK)
-  async findById(@Param('nodeId') nodeId: number, @Param('conditionId') conditionId: number) {
+  async findById(
+    @Param('nodeId') nodeId: number,
+    @Param('conditionId') conditionId: number,
+  ) {
     return this.service.findById(Number(nodeId), Number(conditionId));
   }
 
@@ -71,7 +87,10 @@ export class NodeConditionController {
   @ApiOperation({ description: 'Delete node condition' })
   @Delete('/:nodeId/:conditionId')
   @HttpCode(HttpStatus.OK)
-  async delete(@Param('nodeId') nodeId: number, @Param('conditionId') conditionId: number) {
+  async delete(
+    @Param('nodeId') nodeId: number,
+    @Param('conditionId') conditionId: number,
+  ) {
     return this.service.delete(Number(nodeId), Number(conditionId));
   }
 }

@@ -173,7 +173,7 @@ export class HistoryService {
     );
     if (!request)
       return { result: { requestId: null, histories: [] }, total: 0 };
-    let listFilter = await this.listFilter.create();
+    const listFilter = await this.listFilter.create();
     listFilter.limit = 3;
     const additionalFilter = { ignorePaging: true };
     const filter = _.merge(listFilter, additionalFilter);

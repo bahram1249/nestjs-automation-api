@@ -18,7 +18,7 @@ export class InventoryHistoryService {
   ) {}
 
   async findAll(user: User, inventoryId: bigint, filter: ListFilter) {
-    let inventory = await this.inventoryRepository.findOne(
+    const inventory = await this.inventoryRepository.findOne(
       new QueryOptionsBuilder().filter({ id: inventoryId }).build(),
     );
     if (!inventory) {

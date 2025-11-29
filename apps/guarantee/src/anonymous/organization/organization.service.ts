@@ -38,7 +38,7 @@ export class AnonymousOrganizationService {
   ) {}
 
   async findAll(filter: GetOrganizationDto) {
-    let query = new QueryOptionsBuilder()
+    const query = new QueryOptionsBuilder()
       .include([
         {
           attributes: ['id', 'provinceId', 'cityId', 'latitude', 'longitude'],
@@ -126,7 +126,7 @@ export class AnonymousOrganizationService {
   }
 
   async findById(entityId: number) {
-    let query = new QueryOptionsBuilder()
+    const query = new QueryOptionsBuilder()
       .attributes(['id', 'licenseDate', 'code', 'addressId'])
       .include([
         {
@@ -207,7 +207,7 @@ export class AnonymousOrganizationService {
         .build(),
     );
 
-    let finishedRequestQuery = new QueryOptionsBuilder()
+    const finishedRequestQuery = new QueryOptionsBuilder()
       .include([
         {
           model: GSRequest,
@@ -227,7 +227,7 @@ export class AnonymousOrganizationService {
       finishedRequestQuery.build(),
     );
 
-    let responseQuery = new QueryOptionsBuilder()
+    const responseQuery = new QueryOptionsBuilder()
       .attributes([
         [
           Sequelize.literal(`

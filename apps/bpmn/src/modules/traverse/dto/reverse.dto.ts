@@ -1,6 +1,4 @@
-import {
-  BPMNRequest,
-} from '@rahino/localdatabase/models';
+import { BPMNRequest } from '@rahino/localdatabase/models';
 import { Transaction } from 'sequelize';
 
 export class ReverseDto {

@@ -93,7 +93,7 @@ export class RoleService {
     ) {
       for (let index = 0; index < dto.permissions.length; index++) {
         const permissionId = dto.permissions[index];
-        let permission = await this.permissionRepository.findOne({
+        const permission = await this.permissionRepository.findOne({
           where: {
             id: permissionId,
           },
@@ -152,7 +152,7 @@ export class RoleService {
     ) {
       for (let index = 0; index < dto.permissions.length; index++) {
         const permissionId = dto.permissions[index];
-        let permission = await this.permissionRepository.findOne({
+        const permission = await this.permissionRepository.findOne({
           where: {
             id: permissionId,
           },

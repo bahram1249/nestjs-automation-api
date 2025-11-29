@@ -32,6 +32,9 @@ import { LogisticDecreaseInventoryQtyService } from './services/logistic-decreas
     LogisticDecreaseInventoryQtyService,
     inventoryStatusService,
   ],
-  exports: [LogisticRevertInventoryQtyService, LogisticDecreaseInventoryQtyService],
+  exports: [
+    LogisticRevertInventoryQtyService,
+    LogisticDecreaseInventoryQtyService,
+  ],
 })
 export class LogisticRevertInventoryModule {}

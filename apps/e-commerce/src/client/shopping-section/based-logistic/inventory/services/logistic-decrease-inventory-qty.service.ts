@@ -1,4 +1,8 @@
-import { BadRequestException, Injectable, InternalServerErrorException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  InternalServerErrorException,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import {
   ECInventory,
@@ -62,7 +66,9 @@ export class LogisticDecreaseInventoryQtyService {
     );
 
     if (!payment)
-      throw new InternalServerErrorException(this.l10n.translate('ecommerce.payment_not_found'));
+      throw new InternalServerErrorException(
+        this.l10n.translate('ecommerce.payment_not_found'),
+      );
 
     if (!payment.logisticOrderId)
       throw new InternalServerErrorException(
@@ -74,7 +80,11 @@ export class LogisticDecreaseInventoryQtyService {
         .filter({ logisticOrderId: payment.logisticOrderId })
         .filter(
           Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('ECLogisticOrderGrouped.isDeleted'), 0),
+            Sequelize.fn(
+              'isnull',
+              Sequelize.col('ECLogisticOrderGrouped.isDeleted'),
+              0,
+            ),
             { [Op.eq]: 0 },
           ),
         )
@@ -106,10 +116,11 @@ export class LogisticDecreaseInventoryQtyService {
         throw new BadRequestException('inventory qty unavailable');
       }
 
-      let newQty = Number(inventory.qty) - Number(detail.qty);
+      const newQty = Number(inventory.qty) - Number(detail.qty);
       const patch: Partial<ECInventory> = { qty: newQty as any } as any;
       if (newQty === 0) {
-        (patch as any).inventoryStatusId = InventoryStatusEnum.unavailable as any;
+        (patch as any).inventoryStatusId =
+          InventoryStatusEnum.unavailable as any;
       }
 
       inventory = (
@@ -130,7 +141,7 @@ export class LogisticDecreaseInventoryQtyService {
 
       await this.inventoryStatusService.productInventoryStatusUpdate(
         detail.productId,
-        transaction
+        transaction,
       );
     }
   }

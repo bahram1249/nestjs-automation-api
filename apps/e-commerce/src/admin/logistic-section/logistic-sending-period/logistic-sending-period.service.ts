@@ -31,8 +31,10 @@ export class LogisticSendingPeriodService {
   ) {}
 
   async findAll(user: User, filter: GetLogisticSendingPeriodDto) {
-    const queryBuilder = new QueryOptionsBuilder()
-    .filterIf(isNotNull(filter.logisticShipmentWayId),{ logisticShipmentWayId: filter.logisticShipmentWayId });
+    const queryBuilder = new QueryOptionsBuilder().filterIf(
+      isNotNull(filter.logisticShipmentWayId),
+      { logisticShipmentWayId: filter.logisticShipmentWayId },
+    );
     const count = await this.repository.count(queryBuilder.build());
     const queryOptions = queryBuilder
       .attributes([
@@ -64,7 +66,7 @@ export class LogisticSendingPeriodService {
           },
         ),
       )
-      
+
       .limit(filter.limit)
       .offset(filter.offset)
       .order({ orderBy: filter.orderBy, sortOrder: filter.sortOrder })

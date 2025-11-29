@@ -107,7 +107,7 @@ export class PendingOrderService {
   }
 
   async processDetail(detailId: bigint, user: User) {
-    let detailOrder = await this.orderDetailRepository.findOne(
+    const detailOrder = await this.orderDetailRepository.findOne(
       new QueryOptionsBuilder()
         .filter({ id: detailId })
         .filter({

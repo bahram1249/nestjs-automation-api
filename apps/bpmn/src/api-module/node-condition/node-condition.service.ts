@@ -1,6 +1,10 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
-import { BPMNNodeCondition, BPMNNode, BPMNCondition } from '@rahino/localdatabase/models';
+import {
+  BPMNNodeCondition,
+  BPMNNode,
+  BPMNCondition,
+} from '@rahino/localdatabase/models';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import { GetNodeConditionDto } from './dto/get-node-condition.dto';
 import { Op } from 'sequelize';
@@ -22,8 +26,18 @@ export class NodeConditionService {
     qb = qb
       .attributes(['nodeId', 'conditionId', 'priority'])
       .include([
-        { model: BPMNNode, as: 'node', attributes: ['id', 'name'], required: false },
-        { model: BPMNCondition, as: 'condition', attributes: ['id', 'name'], required: false },
+        {
+          model: BPMNNode,
+          as: 'node',
+          attributes: ['id', 'name'],
+          required: false,
+        },
+        {
+          model: BPMNCondition,
+          as: 'condition',
+          attributes: ['id', 'name'],
+          required: false,
+        },
       ])
       .limit(filter.limit)
       .offset(filter.offset)
@@ -45,8 +59,18 @@ export class NodeConditionService {
       .filterIf(!!filter.nodeId, { nodeId: filter.nodeId })
       .filterIf(!!filter.conditionId, { conditionId: filter.conditionId })
       .include([
-        { model: BPMNNode, as: 'node', attributes: ['id', 'name'], required: false },
-        { model: BPMNCondition, as: 'condition', attributes: ['id', 'name'], required: false },
+        {
+          model: BPMNNode,
+          as: 'node',
+          attributes: ['id', 'name'],
+          required: false,
+        },
+        {
+          model: BPMNCondition,
+          as: 'condition',
+          attributes: ['id', 'name'],
+          required: false,
+        },
       ])
       .limit(filter.limit ?? 20)
       .offset(filter.offset ?? 0)
@@ -72,11 +96,17 @@ export class NodeConditionService {
   }
 
   async create(data: Partial<BPMNNodeCondition>) {
-    const created = await this.repository.create(JSON.parse(JSON.stringify(data)));
+    const created = await this.repository.create(
+      JSON.parse(JSON.stringify(data)),
+    );
     return { result: created };
   }
 
-  async update(nodeId: number, conditionId: number, data: Partial<BPMNNodeCondition>) {
+  async update(
+    nodeId: number,
+    conditionId: number,
+    data: Partial<BPMNNodeCondition>,
+  ) {
     const item = await this.repository.findOne(
       new QueryOptionsBuilder().filter({ nodeId, conditionId }).build(),
     );

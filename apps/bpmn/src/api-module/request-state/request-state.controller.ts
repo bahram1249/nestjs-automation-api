@@ -34,9 +34,7 @@ export class RequestStateController {
   //@CheckPermission({ permissionSymbol: 'bpmn.requestStates.getall' })
   @Get('/')
   @HttpCode(HttpStatus.OK)
-  async findAll(
-    @Query() query: GetRequestStateDto
-  ) {
+  async findAll(@Query() query: GetRequestStateDto) {
     return this.service.findAll(query);
   }
 
