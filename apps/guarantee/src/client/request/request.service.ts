@@ -260,6 +260,8 @@ export class RequestService {
         {
           phoneNumber: user.phoneNumber,
           requestTypeId: dto.requestTypeId,
+          firstname: user.firstname,
+          lastname: user.lastname,
         },
       );
     } catch (error) {
@@ -386,6 +388,8 @@ export class RequestService {
         {
           phoneNumber: user.phoneNumber,
           requestTypeId: dto.requestTypeId,
+          firstname: user.firstname,
+          lastname: user.lastname,
         },
       );
     } catch (error) {
@@ -564,6 +568,8 @@ export class RequestService {
         {
           phoneNumber: user.phoneNumber,
           requestTypeId: dto.requestTypeId,
+          firstname: user.firstname,
+          lastname: user.lastname,
         },
       );
     } catch (error) {

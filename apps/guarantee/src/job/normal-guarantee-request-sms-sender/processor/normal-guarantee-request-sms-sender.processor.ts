@@ -15,7 +15,7 @@ export class NormalGuaranteeRequestSmsSenderProcessor extends WorkerHost {
       const requestTypeEnum = job.data.requesetTypeId as GSRequestTypeEnum;
       const requestType =
         requestTypeEnum == GSRequestTypeEnum.Install ? 'نصب' : 'تعمیر';
-      const template = `مشتری گرامی درخواست ${requestType} شما در کلاب آریاکیش ثبت گردید و پس از بررسی و تایید، اطلاع رسانی خواهد شد.`;
+      const template = `${job.data.firstname} ${job.data.lastname} عزیز درخواست ${requestType} شما در کلاب آریاکیش ثبت گردید و پس از بررسی و تایید، اطلاع رسانی خواهد شد.`;
       await this.smsSenderService.sendSms({
         phoneNumber: job.data.phoneNumber,
         message: template,
