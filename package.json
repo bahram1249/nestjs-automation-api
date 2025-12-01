@@ -74,7 +74,6 @@
     "knex": "^3.1.0",
     "latest": "^0.2.0",
     "loadash": "^1.0.0",
-    "mermaid-cli": "^0.2.4",
     "moment": "^2.30.1",
     "moment-jalaali": "^0.10.0",
     "moment-timezone": "^0.5.45",
