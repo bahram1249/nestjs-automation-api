@@ -53,7 +53,7 @@ export class ProductRepositoryService {
   ) {}
 
   async findBySlug(filter: GetProductDto, slug: string) {
-    const { resultQuery, countQuery } =
+    const { resultQuery } =
       await this.productQueryBuilderService.findAllAndCountQuery(
         filter,
         null,
@@ -125,7 +125,7 @@ export class ProductRepositoryService {
     productId: bigint,
     includeAttribute?: boolean,
   ) {
-    const { resultQuery, countQuery } =
+    const { resultQuery: resultQuery } =
       await this.productQueryBuilderService.findAllAndCountQuery(
         filter,
         productId,
@@ -183,7 +183,7 @@ export class ProductRepositoryService {
   }
 
   async findAllAndCount(filter: GetProductDto) {
-    const { resultQuery, countQuery } =
+    const { resultQuery } =
       await this.productQueryBuilderService.findAllAndCountQuery(filter);
 
     const { rows, count } = await this.repository.findAndCountAll(resultQuery);
@@ -201,7 +201,7 @@ export class ProductRepositoryService {
     const defaultMax =
       this.config.get<number>('DEFAULT_MIN_PRICE_RANGE') || 10000000;
     const defaultMin = this.config.get<number>('DEFAULT_MAX_PRICE_RANGE') || 0;
-    const { resultQuery, countQuery } =
+    const { resultQuery } =
       await this.productQueryBuilderService.findAllAndCountQuery(
         filter,
         null,

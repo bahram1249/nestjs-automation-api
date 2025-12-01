@@ -135,9 +135,11 @@ import { LogisticClientOrderModule } from './client/order/client-order.module';
 import { BasedProductSaleModule } from './report/based-logistic/product-sale/product-sale.module';
 import { BasedPaymentTransactionModule } from './report/based-logistic/payment-transaction/payment-transaction.module';
 import { VendorInventoryModule } from './job/vendor-inventory/vendor-inventory.module';
+import { ProductViewModule } from './client/product-view/product-view.module';
 
 @Module({
   imports: [
+    ProductViewModule,
     VendorInventoryModule,
     BasedProductSaleModule,
     BasedPaymentTransactionModule,

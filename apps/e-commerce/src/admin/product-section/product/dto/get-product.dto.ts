@@ -4,6 +4,7 @@ import { IncludeAttributeFilterDto } from './include-attribute.dto';
 import { EntityTypeFilterDto } from './entity-type-filter.dto';
 import { BrandFilterDto } from './brand.filter.dto';
 import { InventoryStatusFilterDto } from './inventory-status-filter.dto';
+import { ProductIdsFilterDto } from 'apps/e-commerce/src/client/product/dto/product-ids-filter.dto';
 
 export class GetProductDto extends IntersectionType(
   ListFilter,
@@ -11,4 +12,5 @@ export class GetProductDto extends IntersectionType(
   EntityTypeFilterDto,
   BrandFilterDto,
   InventoryStatusFilterDto,
+  ProductIdsFilterDto,
 ) {}

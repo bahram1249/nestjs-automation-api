@@ -30,7 +30,7 @@ import {
   ECVendorAddress,
 } from '@rahino/localdatabase/models';
 import { Attachment } from '@rahino/database';
-import { isNotNull, isNotNullOrEmpty } from '@rahino/commontools';
+import { isNotNull } from '@rahino/commontools';
 
 @Injectable()
 export class ProductQueryBuilderService {
@@ -65,6 +65,11 @@ export class ProductQueryBuilderService {
       })
       .filterIf(isNotNull(filter.brandId), {
         brandId: filter.brandId,
+      })
+      .filterIf(isNotNull(filter.productIds), {
+        id: {
+          [Op.in]: filter.productIds,
+        },
       })
       .filterIf(isNotNull(filter.entityTypeId), {
         entityTypeId: filter.entityTypeId,
@@ -135,6 +140,8 @@ export class ProductQueryBuilderService {
           model: ECGuarantee,
           as: 'guarantee',
           required: false,
+
+          
         },
         {
           attributes: ['id', 'name'],
