@@ -5,9 +5,14 @@ import { SequelizeModule } from '@nestjs/sequelize';
 import { ECProductView } from '@rahino/localdatabase/models/ecommerce-eav/ec-product-view.model';
 import { User } from '@rahino/database';
 import { ProductModule } from '../product/product.module';
+import { SessionModule } from '@rahino/ecommerce/user/session/session.module';
 
 @Module({
-  imports: [SequelizeModule.forFeature([ECProductView, User]), ProductModule],
+  imports: [
+    SequelizeModule.forFeature([ECProductView, User]),
+    ProductModule,
+    SessionModule,
+  ],
   controllers: [ProductViewController],
   providers: [
     {

@@ -37,6 +37,7 @@ import { PublishStatusEnum } from '../enum';
 
 import { InjectConnection, InjectModel } from '@nestjs/sequelize';
 import * as _ from 'lodash';
+import { isNotNull } from '@rahino/commontools';
 
 @Injectable()
 export class ProductQueryBuilderService {
@@ -85,6 +86,13 @@ export class ProductQueryBuilderService {
     }
     if (productId) {
       queryBuilder = queryBuilder.filter({ id: productId });
+    }
+    if (isNotNull(filter.productIds) && filter.productIds.length > 0) {
+      queryBuilder = queryBuilder.filter({
+        id: {
+          [Op.in]: filter.productIds,
+        },
+      });
     }
     if (filter.entityTypeId) {
       const entityTypeIds = [filter.entityTypeId];
@@ -335,7 +343,6 @@ export class ProductQueryBuilderService {
       const productIds = pairs
         .map((p) => Number(p.productId))
         .filter((v) => !Number.isNaN(v));
-
       if (inventoryIds.length > 0 && productIds.length > 0) {
         // Restrict parents to productIds
         queryBuilder = queryBuilder.filter({

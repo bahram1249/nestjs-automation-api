@@ -183,8 +183,10 @@ export class ProductRepositoryService {
   }
 
   async findAllAndCount(filter: GetProductDto) {
+
     const { resultQuery } =
-      await this.productQueryBuilderService.findAllAndCountQuery(filter);
+      await this.productQueryBuilderService.findAllAndCountQuery(filter)
+
 
     const { rows, count } = await this.repository.findAndCountAll(resultQuery);
     let results = rows;

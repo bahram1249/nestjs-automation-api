@@ -7,6 +7,7 @@ import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builde
 import { ProductRepositoryService } from '../product/service/product-repository.service';
 import { GetProductDto } from '../product/dto';
 import { REQUEST } from '@nestjs/core';
+import { Sequelize } from 'sequelize';
 
 @Injectable()
 export class ProductViewService {
@@ -21,9 +22,17 @@ export class ProductViewService {
   async getRecentProducts(user: User, filter: GetRecentProductDto) {
     let builder = new QueryOptionsBuilder();
     builder = builder
-      .attributes(['productId'])
-      .order({ orderBy: 'createdAt', sortOrder: 'DESC' })
+      .attributes([
+        'productId',
+        [
+          Sequelize.fn('MAX', Sequelize.col('ECProductView.createdAt')),
+          'lastSeenAt',
+        ],
+      ])
       .group(['ECProductView.productId'])
+      .order([Sequelize.fn('MAX', Sequelize.col('createdAt')), 'DESC'])
+      //.order({ sortOrder: 'DESC', orderBy: 'cnt' })
+      
       .limit(filter.limit)
       .offset(filter.offset);
 
@@ -42,10 +51,12 @@ export class ProductViewService {
       };
     }
 
-    const productViews = await this.productViewRepository.findAll(
-      builder.build(),
-    );
+    const queryOptions = builder.build();
 
+    
+   
+      const productViews = await this.productViewRepository.findAll(queryOptions);
+    console.log(productViews)
     const productIds = productViews.map((view) => Number(view.productId));
 
     if (productIds.length === 0) {
@@ -62,7 +73,7 @@ export class ProductViewService {
     productFilter.productIds = productIds;
 
     const { result, total } =
-      await this.productRepositoryService.findAllAndCount(productFilter);
+      await this.productRepositoryService.findAll(productFilter);
 
     // Reorder results based on productIds order from recent views
     const orderedResult = productIds

@@ -2,7 +2,7 @@ import { Processor, WorkerHost } from '@nestjs/bullmq';
 import { Job } from 'bullmq';
 import { ECProductView } from '@rahino/localdatabase/models/ecommerce-eav/ec-product-view.model';
 import { ECProduct } from '@rahino/localdatabase/models/ecommerce-eav/ec-product.entity';
-import { InjectModel } from '@nestjs/sequelize';
+import { InjectConnection, InjectModel } from '@nestjs/sequelize';
 import { PRODUCT_VIEW_QUEUE } from '../constants';
 import { Sequelize } from 'sequelize';
 
@@ -13,6 +13,7 @@ export class ProductViewProcessor extends WorkerHost {
     private readonly productViewRepository: typeof ECProductView,
     @InjectModel(ECProduct)
     private readonly productRepository: typeof ECProduct,
+    @InjectConnection()
     private readonly sequelize: Sequelize,
   ) {
     super();

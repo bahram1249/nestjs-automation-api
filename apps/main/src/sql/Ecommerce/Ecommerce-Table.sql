@@ -3875,6 +3875,25 @@ END
 
 GO
 
+-- ec-products-v11.1
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ec-products-v11.1' 
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'SITE_NAME' AND [value] IN ('ecommerce'))
+		)
+BEGIN
+
+    ALTER TABLE ECProducts
+            ADD CONSTRAINT DF_ECProducts_viewCount DEFAULT 0 FOR viewCount;
+
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'ec-products-v11.1', GETDATE(), GETDATE()
+
+END
+GO
+
 -- ec-products-v11
 IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ec-products-v11' 
 			)
@@ -3884,11 +3903,150 @@ IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ec-products-v11'
 		)
 BEGIN
 
-	ALTER TABLE ECProducts
-		ALTER COLUMN viewCount bigint NOT NULL;
+	BEGIN TRAN;
+    DECLARE @Sql NVARCHAR(MAX);
 
-	ALTER TABLE ECProducts
-		ADD CONSTRAINT DF_ECProducts_viewCount DEFAULT 0 FOR viewCount;
+    DECLARE @DF_Name sysname;
+
+    SELECT @DF_Name = dc.name
+    FROM sys.default_constraints dc
+    JOIN sys.columns c
+        ON c.object_id = dc.parent_object_id
+    AND c.column_id = dc.parent_column_id
+    WHERE dc.parent_object_id = OBJECT_ID('dbo.ECProducts')
+    AND c.name = 'viewCount';
+
+    IF @DF_Name IS NOT NULL
+    BEGIN
+        SET @Sql = N'ALTER TABLE dbo.ECProducts DROP CONSTRAINT ' + QUOTENAME(@DF_Name) + ';';
+        PRINT @Sql;
+        EXEC (@Sql);
+    END;
+
+    IF OBJECT_ID('tempdb..#IndexesOn_viewCount') IS NOT NULL
+        DROP TABLE #IndexesOn_viewCount;
+
+    CREATE TABLE #IndexesOn_viewCount
+    (
+        IndexName        sysname,
+        IsUnique         bit,
+        IsClustered      bit,
+        IndexedColumns   NVARCHAR(MAX),
+        IncludedColumns  NVARCHAR(MAX),
+        FilterDefinition NVARCHAR(MAX)
+    );
+
+    INSERT INTO #IndexesOn_viewCount (IndexName, IsUnique, IsClustered, IndexedColumns, IncludedColumns, FilterDefinition)
+    SELECT DISTINCT
+        i.name AS IndexName,
+        i.is_unique,
+        CASE WHEN i.type = 1 THEN 1 ELSE 0 END AS IsClustered,
+        -- key columns
+        STUFF((
+            SELECT ',' + QUOTENAME(c2.name)
+                + CASE WHEN ic2.is_descending_key = 1 THEN ' DESC' ELSE ' ASC' END
+            FROM sys.index_columns ic2
+            JOIN sys.columns c2
+            ON c2.object_id = ic2.object_id
+            AND c2.column_id = ic2.column_id
+            WHERE ic2.object_id = i.object_id
+            AND ic2.index_id = i.index_id
+            AND ic2.is_included_column = 0
+            ORDER BY ic2.key_ordinal
+            FOR XML PATH(''), TYPE
+        ).value('.', 'NVARCHAR(MAX)'), 1, 1, '') AS IndexedColumns,
+        -- included columns
+        STUFF((
+            SELECT ',' + QUOTENAME(c3.name)
+            FROM sys.index_columns ic3
+            JOIN sys.columns c3
+            ON c3.object_id = ic3.object_id
+            AND c3.column_id = ic3.column_id
+            WHERE ic3.object_id = i.object_id
+            AND ic3.index_id = i.index_id
+            AND ic3.is_included_column = 1
+            ORDER BY c3.column_id
+            FOR XML PATH(''), TYPE
+        ).value('.', 'NVARCHAR(MAX)'), 1, 1, '') AS IncludedColumns,
+        i.filter_definition
+    FROM sys.indexes i
+    JOIN sys.index_columns ic
+        ON i.object_id = ic.object_id
+    AND i.index_id  = ic.index_id
+    JOIN sys.columns c
+        ON c.object_id = ic.object_id
+    AND c.column_id = ic.column_id
+    WHERE i.object_id = OBJECT_ID('dbo.ECProducts')
+    AND c.name = 'viewCount'
+    AND i.is_primary_key = 0           
+    AND i.is_unique_constraint = 0     
+    AND i.type IN (1,2);               
+
+    DECLARE @DropSql NVARCHAR(MAX) = N'';
+
+    SELECT @DropSql = @DropSql +
+        N'DROP INDEX ' + QUOTENAME(ix.IndexName) +
+        N' ON ' + QUOTENAME(OBJECT_SCHEMA_NAME(OBJECT_ID('dbo.ECProducts'))) +
+        N'.' + QUOTENAME(OBJECT_NAME(OBJECT_ID('dbo.ECProducts'))) + N';' + CHAR(10)
+    FROM #IndexesOn_viewCount ix;
+
+    IF @DropSql <> N''
+    BEGIN
+        PRINT @DropSql;
+        EXEC (@DropSql);
+    END;
+
+    
+
+    ALTER TABLE dbo.ECProducts
+        ALTER COLUMN viewCount BIGINT NULL;
+
+    DECLARE
+        @IndexName        sysname,
+        @IsUnique         bit,
+        @IsClustered      bit,
+        @IndexedColumns   NVARCHAR(MAX),
+        @IncludedColumns  NVARCHAR(MAX),
+        @FilterDefinition NVARCHAR(MAX);
+
+    DECLARE idx_cursor CURSOR LOCAL FAST_FORWARD FOR
+    SELECT IndexName, IsUnique, IsClustered, IndexedColumns, IncludedColumns, FilterDefinition
+    FROM #IndexesOn_viewCount;
+
+    OPEN idx_cursor;
+
+    FETCH NEXT FROM idx_cursor
+    INTO @IndexName, @IsUnique, @IsClustered, @IndexedColumns, @IncludedColumns, @FilterDefinition;
+
+    WHILE @@FETCH_STATUS = 0
+    BEGIN
+        SET @Sql = N'CREATE ' +
+                CASE WHEN @IsUnique = 1 THEN N'UNIQUE ' ELSE N'' END +
+                CASE WHEN @IsClustered = 1 THEN N'CLUSTERED ' ELSE N'NONCLUSTERED ' END +
+                N'INDEX ' + QUOTENAME(@IndexName) +
+                N' ON dbo.ECProducts(' + @IndexedColumns + N')';
+
+        IF @IncludedColumns IS NOT NULL AND @IncludedColumns <> N''
+            SET @Sql = @Sql + N' INCLUDE (' + @IncludedColumns + N')';
+
+        IF @FilterDefinition IS NOT NULL
+            SET @Sql = @Sql + N' WHERE ' + @FilterDefinition;
+
+        PRINT @Sql;
+        EXEC (@Sql);
+
+        FETCH NEXT FROM idx_cursor
+        INTO @IndexName, @IsUnique, @IsClustered, @IndexedColumns, @IncludedColumns, @FilterDefinition;
+    END;
+
+    CLOSE idx_cursor;
+    DEALLOCATE idx_cursor;
+
+    COMMIT TRAN;
+
+
+	
+        
 
 	INSERT INTO Migrations(version, createdAt, updatedAt)
 	SELECT 'ec-products-v11', GETDATE(), GETDATE()
@@ -3920,10 +4078,10 @@ BEGIN
 	);
 
 	CREATE NONCLUSTERED INDEX NIX_ECProductViews_SessionId ON ECProductViews(sessionId)
-	INCLUDE (id, productId, userId);
+	INCLUDE (productId, userId);
 
 	CREATE NONCLUSTERED INDEX NIX_ECProductViews_UserId ON ECProductViews(userId)
-	INCLUDE (id, productId, sessionId);
+	INCLUDE (productId, sessionId);
 
 	INSERT INTO Migrations(version, createdAt, updatedAt)
 	SELECT 'ec-product-views-v1', GETDATE(), GETDATE()

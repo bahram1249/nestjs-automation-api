@@ -52,6 +52,7 @@ import {
   ECProductCommentStatus,
   ECProductFavorite,
   ECProductPriceFormula,
+  ECProductView,
   ECProvince,
   ECPublishStatus,
   ECRequestLog,
@@ -152,4 +153,5 @@ export const ecommerceEntities = [
   ECLogisticOrder,
   ECLogisticOrderGrouped,
   ECLogisticOrderGroupedDetail,
+  ECProductView,
 ];

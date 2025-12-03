@@ -12,6 +12,7 @@ import {
   WhereOptions,
 } from 'sequelize';
 import { Order, OrderCol } from '@rahino/query-filter';
+import { isNotNull, isNotNullOrEmpty } from '@rahino/commontools';
 
 export class QueryOptionsBuilder {
   options: FindAndCountOptions<any>;
@@ -33,7 +34,7 @@ export class QueryOptionsBuilder {
       this.options.offset = count;
     return this;
   }
-  order(orderArg: Order): QueryOptionsBuilder {
+  order(orderArg: Order | []): QueryOptionsBuilder {
     if (!this.options.order) this.options.order = [];
     const orders = this.options.order as OrderItem[];
     if (isOrderCol(orderArg)) {
@@ -45,8 +46,9 @@ export class QueryOptionsBuilder {
       } else {
         orders.push([orderCol.orderBy, orderCol.sortOrder]);
       }
-    } else {
-      orders.push(orderArg as OrderItem);
+    } else if (isNotNull(orderArg)) {
+      if (!(Array.isArray(orderArg) && orderArg.length == 0))
+        orders.push(orderArg as OrderItem);
     }
 
     this.options.order = orders;
