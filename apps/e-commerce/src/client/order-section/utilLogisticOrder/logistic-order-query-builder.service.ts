@@ -134,6 +134,7 @@ export class LogisticOrderQueryBuilder {
       attributes: ['id', 'firstname', 'lastname', 'username', 'phoneNumber'],
       model: User,
       as: 'user',
+      required: true,
     });
     return this;
   }

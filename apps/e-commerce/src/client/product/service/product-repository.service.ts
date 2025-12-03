@@ -104,7 +104,7 @@ export class ProductRepositoryService {
     this.productViewQueue.add(
       PRODUCT_VIEW_JOB,
       {
-        productId: product.id,
+        productId: product.toJSON().id,
         sessionId: this.request.ecsession.id,
         userId: this.request.user ? this.request.user.id : null,
       },
