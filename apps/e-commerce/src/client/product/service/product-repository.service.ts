@@ -101,17 +101,17 @@ export class ProductRepositoryService {
       );
     }
 
-    this.productViewQueue.add(
-      PRODUCT_VIEW_JOB,
-      {
-        productId: product.toJSON().id,
-        sessionId: this.request.ecsession.id,
-        userId: this.request.user ? this.request.user.id : null,
-      },
-      {
-        removeOnComplete: 500,
-      },
-    );
+    // this.productViewQueue.add(
+    //   PRODUCT_VIEW_JOB,
+    //   {
+    //     productId: product.toJSON().id,
+    //     sessionId: this.request.ecsession.id,
+    //     userId: this.request.user ? this.request.user.id : null,
+    //   },
+    //   {
+    //     removeOnComplete: 500,
+    //   },
+    // );
 
     product = await this.removeEmptyPriceService.applyProduct(product);
     product = await this.applyInventoryStatus.applyProduct(product);
