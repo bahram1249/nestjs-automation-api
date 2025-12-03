@@ -79,6 +79,11 @@ export class LogisticOrderQueryBuilder {
       [Op.or]: [
         { transactionId: { [Op.like]: text } },
         { id: { [Op.like]: text } },
+        {
+          '$user.phoneNumber$': {
+            [Op.like]: text,
+          },
+        },
       ],
     });
     return this;
