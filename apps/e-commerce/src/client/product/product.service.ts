@@ -1,14 +1,18 @@
-import { Injectable, Scope } from '@nestjs/common';
+import { Inject, Injectable, Scope } from '@nestjs/common';
 import { GetProductDto, GetProductLatLonDto, GetUnPriceDto } from './dto';
 import * as _ from 'lodash';
 import { ProductRepositoryService } from './service/product-repository.service';
 import {
+  PRODUCT_VIEW_JOB,
+  PRODUCT_VIEW_QUEUE,
   QUERY_NEXT_PAGE_PRODUCT_JOB,
   QUERY_NEXT_PAGE_PRODUCT_QUEUE,
   QUERY_NEXT_PAGE_PRODUCT_WITH_LAT_LON_QUEUE,
 } from './constants';
 import { InjectQueue } from '@nestjs/bullmq';
 import { Queue } from 'bullmq';
+import { Request } from 'express';
+import { REQUEST } from '@nestjs/core';
 
 @Injectable({ scope: Scope.REQUEST })
 export class ProductService {
@@ -18,11 +22,30 @@ export class ProductService {
     private nextPageQueryQueue: Queue,
     @InjectQueue(QUERY_NEXT_PAGE_PRODUCT_WITH_LAT_LON_QUEUE)
     private nextPageQueryWithLatLonQueue: Queue,
+    @Inject(REQUEST)
+    private readonly request: Request,
+    @InjectQueue(PRODUCT_VIEW_QUEUE)
+    private readonly productViewQueue: Queue,
   ) {}
 
   async findBySlug(filter: GetProductDto, slug: string) {
+    const product = await this.productRepositoryService.findBySlug(
+      filter,
+      slug,
+    );
+    this.productViewQueue.add(
+      PRODUCT_VIEW_JOB,
+      {
+        productId: product.result.id,
+        sessionId: this.request.ecsession?.id,
+        userId: this.request.user ? this.request.user['id'] : null,
+      },
+      {
+        removeOnComplete: 500,
+      },
+    );
     return {
-      result: await this.productRepositoryService.findBySlug(filter, slug),
+      result: product,
     };
   }
 

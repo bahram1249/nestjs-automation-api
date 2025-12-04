@@ -1,12 +1,4 @@
-import {
-  GoneException,
-  Inject,
-  Injectable,
-  NotFoundException,
-  Scope,
-} from '@nestjs/common';
-import { REQUEST } from '@nestjs/core';
-import { User } from '@rahino/database';
+import { GoneException, NotFoundException } from '@nestjs/common';
 import { GetProductDto, GetProductLatLonDto, GetUnPriceDto } from '../dto';
 import { InjectModel } from '@nestjs/sequelize';
 import { ECProduct, ECVendor } from '@rahino/localdatabase/models';
@@ -23,25 +15,15 @@ import { RedirectException } from '@rahino/ecommerce/shared/exception';
 import { SlugVersionTypeEnum } from '@rahino/ecommerce/shared/enum';
 import { ListFilterV2Factory } from '@rahino/query-filter/provider/list-filter-v2.factory';
 import { LocalizationService } from 'apps/main/src/common/localization';
-import { InjectQueue } from '@nestjs/bullmq';
-import { PRODUCT_VIEW_JOB, PRODUCT_VIEW_QUEUE } from '../constants';
-import { Queue } from 'bullmq';
 
-@Injectable({ scope: Scope.REQUEST })
 export class ProductRepositoryService {
   constructor(
-    @Inject(REQUEST)
-    private readonly request: { user?: User; ecsession?: { id: string } },
     @InjectModel(ECProduct)
     private readonly repository: typeof ECProduct,
     @InjectModel(ECSlugVersion)
     private readonly slugVersionRepository: typeof ECSlugVersion,
-
     @InjectModel(ECVendor)
     private readonly vendorRepository: typeof ECVendor,
-    @InjectQueue(PRODUCT_VIEW_QUEUE)
-    private readonly productViewQueue: Queue,
-
     private readonly productQueryBuilderService: ProductQueryBuilderService,
     private readonly applyDiscountService: ApplyDiscountService,
     private readonly applyInventoryStatus: ApplyInventoryStatus,
@@ -100,18 +82,6 @@ export class ProductRepositoryService {
         this.localizationService.translate('core.not_found_slug'),
       );
     }
-
-    // this.productViewQueue.add(
-    //   PRODUCT_VIEW_JOB,
-    //   {
-    //     productId: product.toJSON().id,
-    //     sessionId: this.request.ecsession.id,
-    //     userId: this.request.user ? this.request.user.id : null,
-    //   },
-    //   {
-    //     removeOnComplete: 500,
-    //   },
-    // );
 
     product = await this.removeEmptyPriceService.applyProduct(product);
     product = await this.applyInventoryStatus.applyProduct(product);
@@ -183,10 +153,8 @@ export class ProductRepositoryService {
   }
 
   async findAllAndCount(filter: GetProductDto) {
-
     const { resultQuery } =
-      await this.productQueryBuilderService.findAllAndCountQuery(filter)
-
+      await this.productQueryBuilderService.findAllAndCountQuery(filter);
 
     const { rows, count } = await this.repository.findAndCountAll(resultQuery);
     let results = rows;

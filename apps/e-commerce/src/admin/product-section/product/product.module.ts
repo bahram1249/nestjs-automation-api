@@ -25,7 +25,6 @@ import { DBLoggerModule } from '@rahino/logger';
 import { ProductVideoModule } from '@rahino/ecommerce/admin/product-section/product-video/product-video.module';
 import { ECSlugVersion } from '@rahino/localdatabase/models';
 import { PermissionModule } from '@rahino/core/user/permission/permission.module';
-import { CalPriceFactoryModule } from './price-cal-factory/cal-price-factory.module';
 import { ProductQueryBuilderService } from './query-builder/product-query-builder.service';
 import { LocalizationModule } from 'apps/main/src/common/localization';
 import { InventoryTrackChangeModule } from '@rahino/ecommerce/shared/inventory-track-change/inventory-track-change.module';
