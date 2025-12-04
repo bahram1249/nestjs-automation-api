@@ -7,7 +7,7 @@ import { GetHistoryDto } from '@rahino/guarantee/cartable/history/dto';
 import { GSFactorDeatilAndRemainingAmountService } from '@rahino/guarantee/cartable/factor-detail-and-amount-remaining';
 import { Buffer as NodeBuffer } from 'buffer';
 import * as path from 'path';
-import PdfPrinter = require('pdfmake');
+import PdfPrinter = require('@digicole/pdfmake-rtl');
 
 @Injectable()
 export class CartablePdfService {
@@ -18,12 +18,29 @@ export class CartablePdfService {
     private readonly historyService: HistoryService,
     private readonly factorRemainingService: GSFactorDeatilAndRemainingAmountService,
   ) {
+    const vazirmatnRegular = path.resolve(
+      process.cwd(),
+      'assets/fonts/Vazirmatn-Regular.ttf',
+    );
+    const vazirmatnBold = path.resolve(
+      process.cwd(),
+      'assets/fonts/Vazirmatn-Bold.ttf',
+    );
+
     const fonts = {
       Vazirmatn: {
-        normal: path.resolve(process.cwd(), 'assets/fonts/Vazirmatn-Regular.ttf'),
-        bold: path.resolve(process.cwd(), 'assets/fonts/Vazirmatn-Bold.ttf'),
-        italics: path.resolve(process.cwd(), 'assets/fonts/Vazirmatn-Regular.ttf'),
-        bolditalics: path.resolve(process.cwd(), 'assets/fonts/Vazirmatn-Bold.ttf'),
+        normal: vazirmatnRegular,
+        bold: vazirmatnBold,
+        italics: vazirmatnRegular,
+        bolditalics: vazirmatnBold,
+      },
+      // pdfmake-rtl may internally reference the "Nillima" font for certain scripts;
+      // map it to Vazirmatn files so those references are satisfied.
+      Nillima: {
+        normal: vazirmatnRegular,
+        bold: vazirmatnBold,
+        italics: vazirmatnRegular,
+        bolditalics: vazirmatnBold,
       },
     };
 
@@ -410,6 +427,6 @@ export class CartablePdfService {
       return '-';
     }
 
-    return n.toLocaleString('fa-IR');
+    return n.toLocaleString('en-US');
   }
 }

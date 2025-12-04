@@ -27,6 +27,7 @@
     "@bull-board/api": "^6.9.6",
     "@bull-board/express": "^6.9.6",
     "@bull-board/nestjs": "^6.9.6",
+    "@digicole/pdfmake-rtl": "^1.2.0",
     "@golevelup/nestjs-modules": "^0.7.1",
     "@mermaid-js/mermaid-cli": "^11.12.0",
     "@nestjs/bullmq": "^11.0.2",
