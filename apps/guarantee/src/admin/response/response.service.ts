@@ -11,6 +11,7 @@ import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builde
 import * as _ from 'lodash';
 import { LocalizationService } from 'apps/main/src/common/localization';
 import { User } from '@rahino/database';
+import { Op } from 'sequelize';
 
 @Injectable()
 export class ResponseService {
@@ -43,10 +44,41 @@ export class ResponseService {
           ],
         },
         {
+          attributes: [
+            'id',
+            'firstname',
+            'lastname',
+            'username',
+            'phoneNumber',
+          ],
           model: User,
           as: 'user',
         },
       ])
+      .filter({
+        [Op.or]: [
+          {
+            '$user.firstname$': {
+              [Op.like]: filter.search,
+            },
+          },
+          {
+            '$user.lastname$': {
+              [Op.like]: filter.search,
+            },
+          },
+          {
+            '$user.username$': {
+              [Op.like]: filter.search,
+            },
+          },
+          {
+            '$user.phoneNumber$': {
+              [Op.like]: filter.search,
+            },
+          },
+        ],
+      })
       .limit(filter.limit)
       .offset(filter.offset)
       .order({ orderBy: filter.orderBy, sortOrder: filter.sortOrder });
