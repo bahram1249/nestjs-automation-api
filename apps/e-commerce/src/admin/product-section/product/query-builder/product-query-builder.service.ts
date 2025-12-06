@@ -140,8 +140,6 @@ export class ProductQueryBuilderService {
           model: ECGuarantee,
           as: 'guarantee',
           required: false,
-
-          
         },
         {
           attributes: ['id', 'name'],

@@ -33,7 +33,6 @@ import { Response } from 'express';
   path: '/api/guarantee/admin/cartables',
   version: ['1'],
 })
-
 export class CartableController {
   constructor(
     private service: CartableService,

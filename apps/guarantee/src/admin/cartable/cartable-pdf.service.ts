@@ -129,10 +129,9 @@ export class CartablePdfService {
         variantTitle: request.variant?.title,
         productTypeTitle: request.productType?.title,
         serialNumber: guarantee.serialNumber,
-        userFullName:
-          [user.firstname, user.lastname]
-            .filter((x) => x != null && x !== '')
-            .join(' '),
+        userFullName: [user.firstname, user.lastname]
+          .filter((x) => x != null && x !== '')
+          .join(' '),
         nationalCode: user.nationalCode,
         phoneNumber: user.phoneNumber,
         clientShipmentWayTitle: clientShipmentWay.title,
@@ -215,9 +214,7 @@ export class CartablePdfService {
                 .join(' / ') || '-'
             }`,
             `سریال کارت گارانتی: ${model.request.serialNumber ?? '-'}`,
-            `روش ارسال مشتری: ${
-              model.request.clientShipmentWayTitle ?? '-'
-            }`,
+            `روش ارسال مشتری: ${model.request.clientShipmentWayTitle ?? '-'}`,
             `روش ارسال کارتابل: ${
               model.request.cartableShipmentWayTitle ?? '-'
             }`,

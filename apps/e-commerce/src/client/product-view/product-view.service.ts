@@ -32,7 +32,7 @@ export class ProductViewService {
       .group(['ECProductView.productId'])
       .order([Sequelize.fn('MAX', Sequelize.col('createdAt')), 'DESC'])
       //.order({ sortOrder: 'DESC', orderBy: 'cnt' })
-      
+
       .limit(filter.limit)
       .offset(filter.offset);
 
@@ -53,10 +53,8 @@ export class ProductViewService {
 
     const queryOptions = builder.build();
 
-    
-   
-      const productViews = await this.productViewRepository.findAll(queryOptions);
-    console.log(productViews)
+    const productViews = await this.productViewRepository.findAll(queryOptions);
+    console.log(productViews);
     const productIds = productViews.map((view) => Number(view.productId));
 
     if (productIds.length === 0) {
