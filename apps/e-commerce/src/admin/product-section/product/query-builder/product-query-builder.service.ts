@@ -66,7 +66,7 @@ export class ProductQueryBuilderService {
       .filterIf(isNotNull(filter.brandId), {
         brandId: filter.brandId,
       })
-      .filterIf(isNotNull(filter.productIds), {
+      .filterIf(isNotNull(filter.productIds) && filter.productIds.length > 0, {
         id: {
           [Op.in]: filter.productIds,
         },
