@@ -6,6 +6,7 @@ import {
 import { GetNoramlGuaranteeDto, NoramlGuaranteeDto } from './dto';
 import { InjectModel } from '@nestjs/sequelize';
 import {
+  GSAssignedGuarantee,
   GSBrand,
   GSGuarantee,
   GSGuaranteeConfirmStatus,
@@ -15,6 +16,7 @@ import {
   GSProvider,
   GSVariant,
 } from '@rahino/localdatabase/models';
+import { User } from '@rahino/database';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import { Op } from 'sequelize';
 import { I18nContext, I18nService } from 'nestjs-i18n';
@@ -97,6 +99,24 @@ export class NormalGuaranteeService {
           model: GSProductType,
           as: 'productType',
         },
+        {
+          model: GSAssignedGuarantee,
+          as: 'assignedGuarantee',
+          required: false,
+          include: [
+            {
+              model: User,
+              as: 'user',
+              attributes: [
+                'id',
+                'firstname',
+                'lastname',
+                'username',
+                'phoneNumber',
+              ],
+            },
+          ],
+        },
       ])
       .filter({ guaranteeTypeId: GSGuaranteeTypeEnum.Normal })
       .limit(filter.limit)
@@ -166,6 +186,24 @@ export class NormalGuaranteeService {
           {
             model: GSProductType,
             as: 'productType',
+          },
+          {
+            model: GSAssignedGuarantee,
+            as: 'assignedGuarantee',
+            required: false,
+            include: [
+              {
+                model: User,
+                as: 'user',
+                attributes: [
+                  'id',
+                  'firstname',
+                  'lastname',
+                  'username',
+                  'phoneNumber',
+                ],
+              },
+            ],
           },
         ])
         .filter({ guaranteeTypeId: GSGuaranteeTypeEnum.Normal })
