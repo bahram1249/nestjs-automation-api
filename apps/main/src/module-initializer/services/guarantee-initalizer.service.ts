@@ -15,7 +15,7 @@ export class GuaranteeInitializerService
   async init(app: NestExpressApplication) {
     app.get(BPMNModule).setApp(app);
     await app.get(GSModule).setApp(app);
-    await app.get(SellerSyncService).sync();
+
     await this.runScripts();
   }
 

@@ -25,8 +25,6 @@ export class SellerSyncService {
   ) {}
 
   async sync() {
-    console.log('sync called');
-
     await this.syncSellerBrandQueue.add(
       'sync-seller-brand',
       {},
@@ -70,9 +68,6 @@ export class SellerSyncService {
         jobId: 'sync-seller-variant',
       },
     );
-
-    console.log('sync called warranty');
-
     await this.syncSellerWarrantyQueue.add(
       'sync-seller-warranty',
       {},
