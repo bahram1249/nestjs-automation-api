@@ -55,6 +55,20 @@ export class ResponseService {
           as: 'user',
         },
       ])
+      .include([
+        {
+          attributes: [
+            'id',
+            'firstname',
+            'lastname',
+            'phoneNumber',
+            'username',
+          ],
+          model: User,
+          as: 'user',
+          required: true,
+        },
+      ])
       .filter({
         [Op.or]: [
           {
@@ -77,6 +91,9 @@ export class ResponseService {
               [Op.like]: filter.search,
             },
           },
+          {
+            requestId: { [Op.like]: filter.search },
+          },
         ],
       })
       .limit(filter.limit)
@@ -95,6 +112,20 @@ export class ResponseService {
     const item = await this.repository.findOne(
       new QueryOptionsBuilder()
         .attributes(['id', 'requestId', 'userId', 'fromScore', 'totalScore'])
+        .include([
+          {
+            model: User,
+            as: 'user',
+            required: true,
+            attributes: [
+              'id',
+              'firstname',
+              'lastname',
+              'phoneNumber',
+              'username',
+            ],
+          },
+        ])
         .include([
           {
             model: GSAnswerRecord,
