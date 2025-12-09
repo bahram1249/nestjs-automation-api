@@ -55,20 +55,12 @@ export class ResponseService {
           as: 'user',
         },
       ])
-      .include([
-        {
-          attributes: [
-            'id',
-            'firstname',
-            'lastname',
-            'phoneNumber',
-            'username',
-          ],
-          model: User,
-          as: 'user',
-          required: true,
-        },
-      ])
+      .thenInclude({
+        attributes: ['id', 'firstname', 'lastname', 'phoneNumber', 'username'],
+        model: User,
+        as: 'user',
+        required: true,
+      })
       .filter({
         [Op.or]: [
           {
@@ -112,20 +104,7 @@ export class ResponseService {
     const item = await this.repository.findOne(
       new QueryOptionsBuilder()
         .attributes(['id', 'requestId', 'userId', 'fromScore', 'totalScore'])
-        .include([
-          {
-            model: User,
-            as: 'user',
-            required: true,
-            attributes: [
-              'id',
-              'firstname',
-              'lastname',
-              'phoneNumber',
-              'username',
-            ],
-          },
-        ])
+
         .include([
           {
             model: GSAnswerRecord,
@@ -147,6 +126,18 @@ export class ResponseService {
             attributes: ['id', 'firstname', 'lastname', 'phoneNumber'],
           },
         ])
+        .thenInclude({
+          model: User,
+          as: 'user',
+          required: true,
+          attributes: [
+            'id',
+            'firstname',
+            'lastname',
+            'phoneNumber',
+            'username',
+          ],
+        })
         .filter({ id: entityId })
         .build(),
     );
