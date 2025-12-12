@@ -52,7 +52,7 @@
       "entryFile": "index",
       "sourceRoot": "apps/discount-coffe/src",
       "compilerOptions": {
-        "tsConfigPath": "apps/discountCoffe/tsconfig.lib.json"
+        "tsConfigPath": "apps/discount-coffe/tsconfig.lib.json"
       }
     },
     "pcm": {

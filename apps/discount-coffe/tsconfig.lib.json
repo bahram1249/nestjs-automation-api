@@ -4,6 +4,6 @@
     "declaration": true,
     "outDir": "../../dist/apps/discount-coffe"
   },
-  "include": ["src/**/*"],
+  "include": ["src/**/*", "src/types"],
   "exclude": ["node_modules", "dist", "test", "**/*spec.ts"]
 }
