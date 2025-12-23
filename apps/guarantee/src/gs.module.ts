@@ -119,6 +119,7 @@ import { IrangsImportDataModule } from './admin/irangs-import-data/irangs-import
 import { ClientReceivingDeviceSmsSenderModule } from './job/client-receiving-device-sms-sender';
 import { ConfirmReceiveDeviceInOrganizationModule } from './cartable/confirm-receive-device-in-organization';
 import { ThankfullSuccessPaymentSmsSenderModule } from './job/thankfull-success-payment-sms-sender';
+import { GSAllActivitiesModule } from './cartable/all-activities';
 
 @Module({
   imports: [
@@ -274,6 +275,7 @@ import { ThankfullSuccessPaymentSmsSenderModule } from './job/thankfull-success-
     GSClientProfileModule,
     GSAnonymousCheckModule,
 
+    GSAllActivitiesModule,
     // BullBoardModule.forRoot({
     //   route: '/queues',
     //   adapter: ExpressAdapter,
