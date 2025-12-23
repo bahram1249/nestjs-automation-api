@@ -87,4 +87,14 @@ export class GetCartableFilteDto {
     description: 'activityId',
   })
   activityId?: number;
+
+  @IsInt({ each: true })
+  @Type(() => Number)
+  @IsOptional()
+  @ApiProperty({
+    required: false,
+    type: [IsNumber],
+    description: 'array of requestIds',
+  })
+  requestIds?: bigint[];
 }

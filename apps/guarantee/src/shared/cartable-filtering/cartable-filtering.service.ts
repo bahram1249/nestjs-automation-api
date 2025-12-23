@@ -416,6 +416,7 @@ export class SharedCartableFilteringService {
       .filterIf(filter.requestId != null, { requestId: filter.requestId })
       .filterIf(filter.requestStateId != null, { id: filter.requestStateId })
       .filterIf(filter.activityId != null, { activityId: filter.activityId })
+      .filterIf(filter.requestIds != null, { requestId: { [Op.in]: filter.requestIds } })
       .filterIf(
         filter.serialNumber != null,
         Sequelize.literal(
