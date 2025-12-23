@@ -52,7 +52,10 @@ lerna-debug.log*
 
 # task
 todo.md
+
+# AI
 .codegpt
+.gemini/*
 
 # DataGrip
 apps/main/src/sql/.idea
