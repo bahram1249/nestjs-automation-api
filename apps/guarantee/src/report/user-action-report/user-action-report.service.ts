@@ -80,8 +80,8 @@ export class UserActionReportService {
         [
           Sequelize.fn(
             'STRING_AGG',
-            Sequelize.fn('DISTINCT', Sequelize.col('BPMNRequestHistory.requestId')),
-            ','
+            Sequelize.col('BPMNRequestHistory.requestId'),
+            ',',
           ),
           'requestIds',
         ],
@@ -105,12 +105,16 @@ export class UserActionReportService {
 
   async findAll(dto: GetUserActionReportDto) {
     const queryBuilder = this._buildQuery(dto);
-    const results = await this.requestHistoryRepository.findAll(queryBuilder.build());
-    return results.map(item => {
+    const results = await this.requestHistoryRepository.findAll(
+      queryBuilder.build(),
+    );
+    return results.map((item) => {
       const plainItem = item.get({ plain: true });
       return {
         ...plainItem,
-        requestIds: plainItem.requestIds ? plainItem.requestIds.split(',').map(id => parseInt(id, 10)) : [],
+        requestIds: plainItem.requestIds
+          ? plainItem.requestIds.split(',').map((id) => parseInt(id, 10))
+          : [],
       };
     });
   }
