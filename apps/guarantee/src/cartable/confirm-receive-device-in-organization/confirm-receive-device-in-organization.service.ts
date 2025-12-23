@@ -1,17 +1,24 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { User } from '@rahino/database';
+import { Attachment, User } from '@rahino/database';
 import { ConfirmRequestDto } from './dto';
 import { InjectConnection, InjectModel } from '@nestjs/sequelize';
-import { Sequelize, Transaction } from 'sequelize';
+import { Op, Sequelize, Transaction } from 'sequelize';
 import { GuaranteeTraverseService } from '../guarantee-traverse/guarantee-traverse.service';
 import { TraverseService } from '@rahino/bpmn/modules/traverse/traverse.service';
 import { LocalizationService } from 'apps/main/src/common/localization';
-import { GSRequestItem } from '@rahino/localdatabase/models';
+import {
+  GSRequestItem,
+  GSRequestAttachment,
+} from '@rahino/localdatabase/models';
 import { RequestItemTypeEnum } from '@rahino/guarantee/shared/request-item-type';
 import { RequestItemDto } from './dto/request-item.dto';
+import { GSRequestAttachmentTypeEnum } from '@rahino/guarantee/shared/request-attachment-type';
+import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 
 @Injectable()
 export class ConfirmReceiveDeviceInOrganizationService {
+  private photoTempAttachmentType = 19;
+  private photoAttachmentType = 20;
   constructor(
     private readonly guaranteeTraverseService: GuaranteeTraverseService,
     @InjectConnection()
@@ -20,6 +27,10 @@ export class ConfirmReceiveDeviceInOrganizationService {
     private readonly localizationService: LocalizationService,
     @InjectModel(GSRequestItem)
     private readonly requestItemRepository: typeof GSRequestItem,
+    @InjectModel(GSRequestAttachment)
+    private readonly requestAttachmentRepository: typeof GSRequestAttachment,
+    @InjectModel(Attachment)
+    private readonly attachmentRepository: typeof Attachment,
   ) {}
 
   async traverse(user: User, dto: ConfirmRequestDto) {
@@ -38,6 +49,50 @@ export class ConfirmReceiveDeviceInOrganizationService {
         dto.items,
         transaction,
       );
+      if (dto.attachments?.length > 0) {
+        for (const attachmentDto of dto.attachments) {
+          const findAttachment = await this.attachmentRepository.findOne(
+            new QueryOptionsBuilder()
+              .filter({ id: attachmentDto.attachmentId })
+              .filter({ attachmentTypeId: this.photoTempAttachmentType })
+              .filter(
+                Sequelize.where(
+                  Sequelize.fn(
+                    'isnull',
+                    Sequelize.col('Attachment.isDeleted'),
+                    0,
+                  ),
+                  {
+                    [Op.eq]: 0,
+                  },
+                ),
+              )
+              .transaction(transaction)
+              .build(),
+          );
+          if (!findAttachment) {
+            throw new BadRequestException(
+              this.localizationService.translate(
+                'core.dont_access_to_this_file',
+              ),
+            );
+          }
+
+          findAttachment.attachmentTypeId = this.photoAttachmentType;
+          await findAttachment.save({ transaction: transaction });
+
+          await this.requestAttachmentRepository.create(
+            {
+              requestId: cartableItem.request.id,
+              attachmentId: findAttachment.id,
+              requestAttachmentTypeId:
+                GSRequestAttachmentTypeEnum.SubmitByOrganizationWhenRecived,
+              userId: user.id,
+            },
+            { transaction: transaction },
+          );
+        }
+      }
       // lets traverse request
       await this.traverseService.traverse({
         request: cartableItem.request,

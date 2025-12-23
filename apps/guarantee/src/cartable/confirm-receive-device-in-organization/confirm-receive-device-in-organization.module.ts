@@ -5,7 +5,11 @@ import { SequelizeModule } from '@nestjs/sequelize';
 import { GuaranteeTraverseModule } from '../guarantee-traverse/guarantee-traverse.module';
 import { TraverseModule } from '@rahino/bpmn/modules/traverse/traverse.module';
 import { LocalizationModule } from 'apps/main/src/common/localization';
-import { GSRequestItem } from '@rahino/localdatabase/models';
+import {
+  GSRequestAttachment,
+  GSRequestItem,
+} from '@rahino/localdatabase/models';
+import { Attachment } from '@rahino/database';
 
 @Module({
   imports: [
@@ -13,7 +17,11 @@ import { GSRequestItem } from '@rahino/localdatabase/models';
     SequelizeModule,
     TraverseModule,
     LocalizationModule,
-    SequelizeModule.forFeature([GSRequestItem]),
+    SequelizeModule.forFeature([
+      GSRequestItem,
+      Attachment,
+      GSRequestAttachment,
+    ]),
   ],
   controllers: [ConfirmReceiveDeviceInOrganizationController],
   providers: [ConfirmReceiveDeviceInOrganizationService],
