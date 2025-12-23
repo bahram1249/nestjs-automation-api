@@ -68,6 +68,14 @@ export class ActivityReportService {
           Sequelize.fn('COUNT', Sequelize.col('BPMNRequestHistory.id')),
           'count',
         ],
+        [
+          Sequelize.fn(
+            'STRING_AGG',
+            Sequelize.fn('DISTINCT', Sequelize.col('BPMNRequestHistory.requestId')),
+            ','
+          ),
+          'requestIds',
+        ],
       ])
       .group([
         'BPMNRequestHistory.toActivityId',
@@ -79,26 +87,32 @@ export class ActivityReportService {
 
   async findAll(dto: GetActivityReportDto) {
     const queryBuilder = this._buildQuery(dto);
-    return await this.requestHistoryRepository.findAll(queryBuilder.build());
+    const results = await this.requestHistoryRepository.findAll(queryBuilder.build());
+    return results.map(item => {
+      const plainItem = item.get({ plain: true });
+      return {
+        ...plainItem,
+        requestIds: plainItem.requestIds ? plainItem.requestIds.split(',').map(id => parseInt(id, 10)) : [],
+      };
+    });
   }
 
   async exportExcel(dto: GetActivityReportDto): Promise<Buffer> {
-    const queryBuilder = this._buildQuery(dto);
-    const rows = await this.requestHistoryRepository.findAll(
-      queryBuilder.build(),
-    );
+    const rows = await this.findAll(dto);
 
     const workbook = new ExcelJS.Workbook();
     const sheet = workbook.addWorksheet('ActivityReports');
     sheet.columns = [
       { header: 'به فعالیت', key: 'toActivity', width: 25 },
       { header: 'تعداد', key: 'count', width: 10 },
+      { header: 'شناسه درخواست ها', key: 'requestIds', width: 50 },
     ];
 
     for (const row of rows) {
       sheet.addRow({
         toActivity: row.toActivity.name,
-        count: (row as any).get('count'),
+        count: row.count,
+        requestIds: row.requestIds.join(', '),
       });
     }
 

@@ -77,6 +77,14 @@ export class UserActionReportService {
           Sequelize.fn('COUNT', Sequelize.col('BPMNRequestHistory.id')),
           'count',
         ],
+        [
+          Sequelize.fn(
+            'STRING_AGG',
+            Sequelize.fn('DISTINCT', Sequelize.col('BPMNRequestHistory.requestId')),
+            ','
+          ),
+          'requestIds',
+        ],
       ])
       .group([
         'BPMNRequestHistory.fromUserId',
@@ -97,14 +105,18 @@ export class UserActionReportService {
 
   async findAll(dto: GetUserActionReportDto) {
     const queryBuilder = this._buildQuery(dto);
-    return await this.requestHistoryRepository.findAll(queryBuilder.build());
+    const results = await this.requestHistoryRepository.findAll(queryBuilder.build());
+    return results.map(item => {
+      const plainItem = item.get({ plain: true });
+      return {
+        ...plainItem,
+        requestIds: plainItem.requestIds ? plainItem.requestIds.split(',').map(id => parseInt(id, 10)) : [],
+      };
+    });
   }
 
   async exportExcel(dto: GetUserActionReportDto): Promise<Buffer> {
-    const queryBuilder = this._buildQuery(dto);
-    const rows = await this.requestHistoryRepository.findAll(
-      queryBuilder.build(),
-    );
+    const rows = await this.findAll(dto);
     const workbook = new ExcelJS.Workbook();
     const sheet = workbook.addWorksheet('UserActionReports');
     sheet.columns = [
@@ -112,6 +124,7 @@ export class UserActionReportService {
       { header: 'از فعالیت', key: 'fromActivity', width: 25 },
       { header: 'به فعالیت', key: 'toActivity', width: 25 },
       { header: 'تعداد', key: 'count', width: 10 },
+      { header: 'شناسه درخواست ها', key: 'requestIds', width: 50 },
     ];
 
     for (const row of rows) {
@@ -119,7 +132,8 @@ export class UserActionReportService {
         user: row.fromUser.firstname + ' ' + row.fromUser.lastname,
         fromActivity: row.fromActivity.name,
         toActivity: row.toActivity.name,
-        count: (row as any).get('count'),
+        count: row.count,
+        requestIds: row.requestIds.join(', '),
       });
     }
 
