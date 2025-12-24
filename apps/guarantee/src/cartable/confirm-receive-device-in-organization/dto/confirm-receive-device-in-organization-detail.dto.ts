@@ -12,5 +12,5 @@ export class ConfirmReceiveDeviceInOrganizationDetailDto {
   @IsArray()
   @ValidateNested({ each: true })
   @Type(() => AttachmentDto)
-  attachments?: AttachmentDto[];
+  attachments?: AttachmentDto[] = [];
 }
