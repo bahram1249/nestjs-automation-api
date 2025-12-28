@@ -3,11 +3,10 @@ import { DiscountCodeService } from './discount-code.service';
 import { SequelizeModule } from '@nestjs/sequelize';
 import {
   GSDiscountCode,
-  GSDiscountCodeUsage,
   GSUnitPrice,
   GSVipBundleType,
 } from '@rahino/localdatabase/models';
-import { Permission } from '@rahino/database';
+import { Permission, User } from '@rahino/database';
 import { DiscountCodeController } from './discount-code.controller';
 import { DiscountCodeProfile } from './mapper';
 import { DiscountCodePreviewController } from './discount-code-preview.controller';
@@ -17,9 +16,10 @@ import { LocalizationModule } from 'apps/main/src/common/localization';
   imports: [
     SequelizeModule.forFeature([
       GSDiscountCode,
-      GSDiscountCodeUsage,
       GSUnitPrice,
       GSVipBundleType,
+      Permission,
+      User,
       Permission,
     ]),
     LocalizationModule,

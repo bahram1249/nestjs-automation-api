@@ -5,11 +5,7 @@ import {
 } from '@nestjs/common';
 import { GetRewardRuleDto, RewardRuleDto } from './dto';
 import { InjectModel } from '@nestjs/sequelize';
-import {
-  GSRewardRule,
-  GSUnitPrice,
-  GSWarrantyReward,
-} from '@rahino/localdatabase/models';
+import { GSRewardRule, GSUnitPrice } from '@rahino/localdatabase/models';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import { Op, Sequelize, Transaction } from 'sequelize';
 import { InjectMapper } from 'automapper-nestjs';
@@ -23,8 +19,7 @@ export class RewardRuleService {
   constructor(
     @InjectModel(GSRewardRule)
     private readonly repository: typeof GSRewardRule,
-    @InjectModel(GSWarrantyReward)
-    private readonly warrantyRewardRepository: typeof GSWarrantyReward,
+
     private readonly localizationService: LocalizationService,
     @InjectMapper()
     private readonly mapper: Mapper,

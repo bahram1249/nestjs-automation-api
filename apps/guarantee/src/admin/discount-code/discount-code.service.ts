@@ -10,11 +10,7 @@ import {
   DiscountCodePreviewDto,
 } from './dto';
 import { InjectModel } from '@nestjs/sequelize';
-import {
-  GSDiscountCode,
-  GSDiscountCodeUsage,
-  GSVipBundleType,
-} from '@rahino/localdatabase/models';
+import { GSDiscountCode, GSVipBundleType } from '@rahino/localdatabase/models';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import { Op, Sequelize, Transaction } from 'sequelize';
 import { InjectMapper } from 'automapper-nestjs';
@@ -27,8 +23,6 @@ export class DiscountCodeService {
   constructor(
     @InjectModel(GSDiscountCode)
     private readonly repository: typeof GSDiscountCode,
-    @InjectModel(GSDiscountCodeUsage)
-    private readonly usageRepository: typeof GSDiscountCodeUsage,
     @InjectModel(GSVipBundleType)
     private readonly vipBundleTypeRepository: typeof GSVipBundleType,
     private readonly localizationService: LocalizationService,

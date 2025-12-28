@@ -1,24 +1,15 @@
 import { Module } from '@nestjs/common';
 import { RewardRuleService } from './reward-rule.service';
 import { SequelizeModule } from '@nestjs/sequelize';
-import {
-  GSRewardRule,
-  GSWarrantyReward,
-  GSUnitPrice,
-} from '@rahino/localdatabase/models';
-import { Permission } from '@rahino/database';
+import { GSRewardRule, GSUnitPrice } from '@rahino/localdatabase/models';
+import { Permission, User } from '@rahino/database';
 import { RewardRuleController } from './reward-rule.controller';
 import { RewardRuleProfile } from './mapper';
 import { LocalizationModule } from 'apps/main/src/common/localization';
 
 @Module({
   imports: [
-    SequelizeModule.forFeature([
-      GSRewardRule,
-      GSWarrantyReward,
-      GSUnitPrice,
-      Permission,
-    ]),
+    SequelizeModule.forFeature([GSRewardRule, GSUnitPrice, Permission, User]),
     LocalizationModule,
   ],
   controllers: [RewardRuleController],

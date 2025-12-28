@@ -33,6 +33,6 @@ export class DiscountCodePreviewController {
   @Post('/validate')
   @HttpCode(HttpStatus.OK)
   async validateDiscountCode(@Body() dto: ValidateDiscountCodeDto) {
-    return await this.service.validateDiscountCodeForVipBundle(dto);
+    //return await this.service.validateDiscountCodeForVipBundle(dto);
   }
 }
