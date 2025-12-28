@@ -136,6 +136,7 @@ import { BasedProductSaleModule } from './report/based-logistic/product-sale/pro
 import { BasedPaymentTransactionModule } from './report/based-logistic/payment-transaction/payment-transaction.module';
 import { VendorInventoryModule } from './job/vendor-inventory/vendor-inventory.module';
 import { ProductViewModule } from './client/product-view/product-view.module';
+import { ProductFeedModule } from './client/productFeed/product-feed.module';
 
 @Module({
   imports: [
@@ -274,6 +275,8 @@ import { ProductViewModule } from './client/product-view/product-view.module';
     LogisticCancellOrderModule,
     LogisticTotalOrderModule,
     LogisticClientOrderModule,
+
+    ProductFeedModule,
   ],
   providers: [
     {
