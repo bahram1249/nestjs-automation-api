@@ -3,11 +3,25 @@ import { User } from '@rahino/database';
 import { TrackingRequestService } from '@rahino/guarantee/admin/tracking-request';
 import { GetTrackingRequestExternalDto } from '@rahino/guarantee/admin/tracking-request/dto';
 import { HistoryService } from '@rahino/guarantee/cartable/history';
-import { GetHistoryDto } from '@rahino/guarantee/cartable/history/dto';
+import {
+  GetHistoryDto,
+  HistoryOutputDto,
+} from '@rahino/guarantee/cartable/history/dto';
 import { GSFactorDeatilAndRemainingAmountService } from '@rahino/guarantee/cartable/factor-detail-and-amount-remaining';
 import { Buffer as NodeBuffer } from 'buffer';
 import * as path from 'path';
 import PdfPrinter = require('@digicole/pdfmake-rtl');
+import {
+  BPMNRequestState,
+  GSAddress,
+  GSCity,
+  GSGuarantee,
+  GSNeighborhood,
+  GSProvince,
+  GSRequest,
+  GSRequestItem,
+  GSShippingWay,
+} from '@rahino/localdatabase/models';
 
 @Injectable()
 export class CartablePdfService {
@@ -58,7 +72,7 @@ export class CartablePdfService {
       trackingFilter as any,
     );
 
-    const trackingItems: any[] = trackingResponse?.result ?? [];
+    const trackingItems: BPMNRequestState[] = trackingResponse?.result ?? [];
     if (!trackingItems.length) {
       throw new BadRequestException('invalid request id');
     }
@@ -74,7 +88,7 @@ export class CartablePdfService {
       requestId,
       historyFilter as any,
     );
-    const histories: any[] = historyResponse?.result ?? [];
+    const histories: HistoryOutputDto[] = historyResponse?.result ?? [];
 
     let factorBlock: any = null;
     try {
@@ -95,27 +109,32 @@ export class CartablePdfService {
     return this.buildPdf(model);
   }
 
-  private buildModel(tracking: any, histories: any[], factorBlock: any) {
-    const request = tracking?.guaranteeRequest ?? {};
-    const user = request.user ?? {};
-    const guarantee = request.guarantee ?? {};
-    const address = request.address ?? {};
-    const province = address.province ?? {};
-    const city = address.city ?? {};
-    const neighborhood = address.neighborhood ?? {};
-    const clientShipmentWay = request.clientShipmentWay ?? {};
-    const cartableShipmentWay = request.cartableShipmentWay ?? {};
+  private buildModel(
+    tracking: BPMNRequestState,
+    histories: HistoryOutputDto[],
+    factorBlock: any,
+  ) {
+    const request = tracking?.guaranteeRequest ?? new GSRequest();
+    const user = request.user ?? new User();
+    const guarantee = request.guarantee ?? new GSGuarantee();
+    const address = request.address ?? new GSAddress();
+    const province = address.province ?? new GSProvince();
+    const city = address.city ?? new GSCity();
+    const neighborhood = address.neighborhood ?? new GSNeighborhood();
+    const clientShipmentWay = request.clientShipmentWay ?? new GSShippingWay();
+    const cartableShipmentWay =
+      request.cartableShipmentWay ?? new GSShippingWay();
     const requestItems = request.requestItems ?? [];
 
     const fullAddressParts = [
-      province.name,
-      city.name,
-      neighborhood.name,
-      address.street,
-      address.alley,
-      address.plaque,
-      address.floorNumber,
-      address.postalCode,
+      province ? 'استان:' + province.name : '',
+      city ? 'شهر:' + city.name : '',
+      neighborhood ? 'منطقه:' + neighborhood.name : '',
+      address?.street ? 'خیابان:' + address.street : '',
+      address?.alley ? 'کوچه:' + address.alley : '',
+      address?.plaque ? 'پلاک:' + address.plaque : '',
+      address?.floorNumber ? 'طبقه:' + address.floorNumber : '',
+      address?.postalCode ? 'کدپستی:' + address.postalCode : '',
     ].filter((x) => x != null && x !== '');
     const fullAddress = fullAddressParts.join('، ');
 
