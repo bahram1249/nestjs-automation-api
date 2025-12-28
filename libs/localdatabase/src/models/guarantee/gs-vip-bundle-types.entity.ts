@@ -63,4 +63,12 @@ export class GSVipBundleType extends Model {
     allowNull: true,
   })
   isDeleted?: boolean;
+
+  @AutoMap()
+  @Column({
+    type: DataType.BOOLEAN,
+    allowNull: false,
+    defaultValue: false,
+  })
+  isSystemGenerated: boolean;
 }

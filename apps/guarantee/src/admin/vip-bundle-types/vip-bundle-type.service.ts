@@ -38,7 +38,8 @@ export class VipBundleTypeService {
             [Op.eq]: 0,
           },
         ),
-      );
+      )
+      .filter({ isSystemGenerated: false });
 
     const count = await this.repository.count(query.build());
 
@@ -92,6 +93,7 @@ export class VipBundleTypeService {
           ),
         )
         .filter({ id: entityId })
+        .filter({ isSystemGenerated: false })
         .build(),
     );
     if (!item) {
@@ -121,6 +123,7 @@ export class VipBundleTypeService {
           ),
         )
         .filter({ title: dto.title })
+        .filter({ isSystemGenerated: false })
         .build(),
     );
     if (duplicateItem) {
@@ -156,6 +159,7 @@ export class VipBundleTypeService {
             },
           ),
         )
+        .filter({ isSystemGenerated: false })
         .build(),
     );
 
@@ -185,6 +189,7 @@ export class VipBundleTypeService {
             [Op.ne]: id,
           },
         })
+        .filter({ isSystemGenerated: false })
         .build(),
     );
     if (duplicateItem) {
@@ -221,6 +226,7 @@ export class VipBundleTypeService {
             },
           ),
         )
+        .filter({ isSystemGenerated: false })
         .build(),
     );
     if (!item) {

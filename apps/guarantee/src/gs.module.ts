@@ -61,7 +61,6 @@ import { SubmitFactorModule } from './cartable/submit-factor';
 import { RedirectorModule } from './client/redirector/redirector.module';
 import { GSClientFactorModule } from './client/factor/client-factor.module';
 import { GSCartableFactorModule } from './cartable/cartable-factor/cartable-factor.module';
-import { GSVipGeneratorModule } from './admin/vip-generator';
 import { VipGeneratorJobModule } from './job/vip-generator-job';
 import { ClientVipGuaranteeModule } from './client/vip-guarantee';
 import { GSClientAssignedProductAssignedGuaranteeModule } from './client/assigned-product-guarantee/assigned-product-guarantee.module';
@@ -115,11 +114,14 @@ import { GSAnonymousFaqModule } from './anonymous/faq';
 import { GSClientProfileModule } from './client/profile/gsprofile.module';
 import { ClientSubmitCardSmsSenderModule } from './job/client-submit-card-sms-sender';
 import { GSAnonymousCheckModule } from './anonymous/guarantee-check';
+import { GSAllActivitiesModule } from './cartable/all-activities';
+import { GSDiscountCodeModule } from './admin/discount-code';
+import { GSRewardRuleModule } from './admin/reward-rule';
+import { GSVipGeneratorModule } from './admin/vip-generator';
 import { IrangsImportDataModule } from './admin/irangs-import-data/irangs-import-data.module';
 import { ClientReceivingDeviceSmsSenderModule } from './job/client-receiving-device-sms-sender';
 import { ConfirmReceiveDeviceInOrganizationModule } from './cartable/confirm-receive-device-in-organization';
 import { ThankfullSuccessPaymentSmsSenderModule } from './job/thankfull-success-payment-sms-sender';
-import { GSAllActivitiesModule } from './cartable/all-activities';
 
 @Module({
   imports: [
@@ -276,6 +278,13 @@ import { GSAllActivitiesModule } from './cartable/all-activities';
     GSAnonymousCheckModule,
 
     GSAllActivitiesModule,
+
+    // Discount and Credit System
+
+    GSDiscountCodeModule,
+    GSRewardRuleModule,
+    GSVipGeneratorModule,
+
     // BullBoardModule.forRoot({
     //   route: '/queues',
     //   adapter: ExpressAdapter,

@@ -2392,3 +2392,87 @@ BEGIN
 END;
 GO
 
+
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'gs-discount-codes-v1')
+BEGIN
+    CREATE TABLE GSDiscountCodes (
+        id BIGINT IDENTITY(1,1) PRIMARY KEY,
+        code NVARCHAR(50) NOT NULL UNIQUE,
+        title NVARCHAR(256) NOT NULL,
+        discountType NVARCHAR(20) NOT NULL CHECK (discountType IN ('percentage', 'fixed')),
+        discountValue DECIMAL(5,2) NOT NULL,
+        unitPriceId INT NOT NULL,
+        totalUsageLimit INT NOT NULL,
+        perUserUsageLimit INT NOT NULL,
+        maxDiscountAmount BIGINT NOT NULL,
+        validFrom DATETIMEOFFSET NOT NULL,
+        validUntil DATETIMEOFFSET NOT NULL,
+        isActive BIT NOT NULL DEFAULT 1,
+        organizationId NVARCHAR(100),
+        description NVARCHAR(MAX),
+        isDeleted BIT NOT NULL DEFAULT 0,
+        createdAt DATETIMEOFFSET NOT NULL DEFAULT SYSDATETIMEOFFSET(),
+        updatedAt DATETIMEOFFSET NOT NULL DEFAULT SYSDATETIMEOFFSET(),
+        FOREIGN KEY (unitPriceId) REFERENCES GSUnitPrices(id)
+    );
+
+    CREATE INDEX IX_GSDiscountCodes_Code ON GSDiscountCodes(code);
+    CREATE INDEX IX_GSDiscountCodes_OrganizationId ON GSDiscountCodes(organizationId);
+    CREATE INDEX IX_GSDiscountCodes_ValidDates ON GSDiscountCodes(validFrom, validUntil);
+
+    INSERT INTO Migrations(version, createdAt, updatedAt)
+    SELECT 'gs-discount-codes-v1', GETDATE(), GETDATE();
+END;
+GO
+
+
+
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'gs-reward-rules-v1')
+BEGIN
+    CREATE TABLE GSRewardRules (
+        id BIGINT IDENTITY(1,1) PRIMARY KEY,
+        title NVARCHAR(256) NOT NULL,
+        rewardAmount BIGINT NOT NULL,
+        unitPriceId INT NOT NULL,
+        validFrom DATETIMEOFFSET,
+        validUntil DATETIMEOFFSET,
+        isActive BIT NOT NULL DEFAULT 1,
+        description NVARCHAR(MAX),
+        isDeleted BIT NOT NULL DEFAULT 0,
+        createdAt DATETIMEOFFSET NOT NULL DEFAULT SYSDATETIMEOFFSET(),
+        updatedAt DATETIMEOFFSET NOT NULL DEFAULT SYSDATETIMEOFFSET(),
+        FOREIGN KEY (unitPriceId) REFERENCES GSUnitPrices(id)
+    );
+
+    CREATE INDEX IX_GSRewardRules_IsActive ON GSRewardRules(isActive);
+    CREATE INDEX IX_GSRewardRules_ValidDates ON GSRewardRules(validFrom, validUntil);
+
+    INSERT INTO Migrations(version, createdAt, updatedAt)
+    SELECT 'gs-reward-rules-v1', GETDATE(), GETDATE();
+END;
+GO
+
+
+
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'gs-vip-bundle-types-add-issystemgenerated-v1')
+BEGIN
+    ALTER TABLE GSVipBundleTypes
+    ADD isSystemGenerated BIT NOT NULL DEFAULT 0;
+
+    INSERT INTO Migrations(version, createdAt, updatedAt)
+    SELECT 'gs-vip-bundle-types-add-issystemgenerated-v1', GETDATE(), GETDATE();
+END;
+GO
+
+
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'gs-reward-rules-v2')
+BEGIN
+    ALTER TABLE GSRewardRules
+    ADD monthPeriod INT;
+
+    
+    INSERT INTO Migrations(version, createdAt, updatedAt)
+    SELECT 'gs-reward-rules-v2', GETDATE(), GETDATE();
+END;
+GO
+
