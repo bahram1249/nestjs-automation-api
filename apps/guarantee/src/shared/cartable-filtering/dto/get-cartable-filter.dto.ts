@@ -1,6 +1,12 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
-import { IsInt, IsNumber, IsOptional, IsString } from 'class-validator';
+import {
+  IsArray,
+  IsInt,
+  IsNumber,
+  IsOptional,
+  IsString,
+} from 'class-validator';
 
 export class GetCartableFilteDto {
   @IsInt()
@@ -88,13 +94,14 @@ export class GetCartableFilteDto {
   })
   activityId?: number;
 
+  @IsOptional()
+  @IsArray()
   @IsInt({ each: true })
   @Type(() => Number)
-  @IsOptional()
   @ApiProperty({
     required: false,
-    type: [IsNumber],
+    type: [Number],
     description: 'array of requestIds',
   })
-  requestIds?: bigint[];
+  requestIds?: number[];
 }
