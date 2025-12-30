@@ -106,7 +106,9 @@ export class SellerWarrantyProcessor extends WorkerHost {
       if (newSellerItems.length > 0) {
         // 3. Aggregate names
         const brandNames = [
-          ...new Set(newSellerItems.map((item) => item.brand_name).filter(Boolean)),
+          ...new Set(
+            newSellerItems.map((item) => item.brand_name).filter(Boolean),
+          ),
         ];
         const productTypeNames = [
           ...new Set(
@@ -204,7 +206,10 @@ export class SellerWarrantyProcessor extends WorkerHost {
     const itemsToCreate = uniqueValues.filter((value) => !itemMap.has(value));
     if (itemsToCreate.length > 0) {
       const newItems = await repository.bulkCreate(
-        itemsToCreate.map((value) => ({ title: value, providerId: providerId })),
+        itemsToCreate.map((value) => ({
+          title: value,
+          providerId: providerId,
+        })),
         { returning: true },
       );
       newItems.forEach((item) => itemMap.set(item.title, item));
