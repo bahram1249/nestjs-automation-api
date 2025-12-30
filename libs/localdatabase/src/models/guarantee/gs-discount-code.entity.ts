@@ -123,18 +123,4 @@ export class GSDiscountCode extends Model {
   })
   @AutoMap()
   isDeleted?: boolean;
-
-  @Column({
-    type: DataType.DATE,
-    allowNull: true,
-  })
-  @AutoMap()
-  createdAt?: Date;
-
-  @Column({
-    type: DataType.DATE,
-    allowNull: true,
-  })
-  @AutoMap()
-  updatedAt?: Date;
 }
