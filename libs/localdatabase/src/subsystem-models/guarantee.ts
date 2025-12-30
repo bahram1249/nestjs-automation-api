@@ -56,6 +56,9 @@ import {
   GSIrangsImportData,
   GSIrangsImportStatus,
   GSIrangsImportDataGuarantees,
+  GSDiscountType,
+  GSDiscountCode,
+  GSRewardRule,
 } from '../models';
 import { GSRequestItem } from '../models/guarantee/gs-request-item.entity';
 
@@ -118,4 +121,7 @@ export const guaranteeModels = [
   GSIrangsImportData,
   GSIrangsImportStatus,
   GSIrangsImportDataGuarantees,
+  GSDiscountType,
+  GSDiscountCode,
+  GSRewardRule,
 ];

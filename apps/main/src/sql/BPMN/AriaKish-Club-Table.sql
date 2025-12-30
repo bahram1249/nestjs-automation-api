@@ -2399,7 +2399,7 @@ BEGIN
         id BIGINT IDENTITY(1,1) PRIMARY KEY,
         code NVARCHAR(50) NOT NULL UNIQUE,
         title NVARCHAR(256) NOT NULL,
-        discountType NVARCHAR(20) NOT NULL CHECK (discountType IN ('percentage', 'fixed')),
+        discountType NVARCHAR(20) NOT NULL,
         discountValue DECIMAL(5,2) NOT NULL,
         unitPriceId INT NOT NULL,
         totalUsageLimit INT NOT NULL,
@@ -2465,6 +2465,10 @@ END;
 GO
 
 
+
+
+
+
 IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'gs-reward-rules-v2')
 BEGIN
     ALTER TABLE GSRewardRules
@@ -2475,4 +2479,55 @@ BEGIN
     SELECT 'gs-reward-rules-v2', GETDATE(), GETDATE();
 END;
 GO
+
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'gs-reward-rules-v3')
+BEGIN
+    ALTER TABLE GSRewardRules 
+		ALTER COLUMN isDeleted bit null;
+
+	ALTER TABLE GSRewardRules
+		ADD vipBundleTypeId int not null
+			CONSTRAINT FK_GSRewardRules_VipBundleTypeId
+				FOREIGN KEY REFERENCES GSVipBundleTypes(id)
+        
+    INSERT INTO Migrations(version, createdAt, updatedAt)
+    SELECT 'gs-reward-rules-v3', GETDATE(), GETDATE();
+END;
+GO
+
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'gs-discount-types-v1')
+BEGIN
+
+    CREATE TABLE GSDiscountTypes (
+        id int PRIMARY KEY,
+        title NVARCHAR(256) NOT NULL,
+        createdAt DATETIMEOFFSET NOT NULL DEFAULT SYSDATETIMEOFFSET(),
+        updatedAt DATETIMEOFFSET NOT NULL DEFAULT SYSDATETIMEOFFSET()
+    );
+
+    INSERT INTO Migrations(version, createdAt, updatedAt)
+    SELECT 'gs-discount-types-v1', GETDATE(), GETDATE();
+END;
+GO
+
+
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'gs-discount-codes-v2')
+BEGIN
+
+    
+    ALTER TABLE GSDiscountCodes
+	DROP COLUMN organizationId;
+
+
+	ALTER TABLE GSDiscountCodes
+	ADD discountTypeId int NOT NULL
+		CONSTRAINT FK_GSDiscountCodes_DiscountTypeId
+			FOREIGN KEY REFERENCES GSDiscountTypes(id);
+
+    INSERT INTO Migrations(version, createdAt, updatedAt)
+    SELECT 'gs-discount-codes-v2', GETDATE(), GETDATE();
+END;
+GO
+
+
 

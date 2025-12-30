@@ -8,6 +8,7 @@ import {
   BelongsTo,
 } from 'sequelize-typescript';
 import { GSUnitPrice } from './gs-unit-price.entity';
+import { GSDiscountType } from './gs-discount-type.entity';
 
 @Table({ tableName: 'GSDiscountCodes' })
 export class GSDiscountCode extends Model {
@@ -35,10 +36,17 @@ export class GSDiscountCode extends Model {
 
   @AutoMap()
   @Column({
-    type: DataType.ENUM('percentage', 'fixed'),
+    type: DataType.INTEGER,
     allowNull: false,
   })
-  discountType: 'percentage' | 'fixed';
+  @ForeignKey(() => GSDiscountType)
+  discountTypeId: number;
+
+  @BelongsTo(() => GSDiscountType, {
+    as: 'discountType',
+    foreignKey: 'discountTypeId',
+  })
+  discountType: GSDiscountType;
 
   @AutoMap()
   @Column({
@@ -100,13 +108,6 @@ export class GSDiscountCode extends Model {
     defaultValue: true,
   })
   isActive: boolean;
-
-  @AutoMap()
-  @Column({
-    type: DataType.STRING,
-    allowNull: true,
-  })
-  organizationId?: string;
 
   @AutoMap()
   @Column({

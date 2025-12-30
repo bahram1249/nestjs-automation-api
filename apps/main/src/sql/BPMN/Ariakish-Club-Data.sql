@@ -2686,4 +2686,27 @@ END
 
 GO
 
+
+-- discount code types
+IF NOT EXISTS ( SELECT 1 FROM Migrations WHERE version = 'gs-discount-code-types-Data-v1'
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings
+		WHERE ([key] = 'CUSTOMER_NAME' AND [value] IN ('AriaKish'))
+		)
+
+BEGIN
+
+	INSERT INTO GSDiscountTypes(id, title, createdAt, updatedAt)
+	VALUES (1, N'مقدار ثابت', GETDATE(), GETDATE())
+			,(2, N'درصدی', GETDATE(), GETDATE())
+			
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'gs-discount-code-types-Data-v1', GETDATE(), GETDATE()
+END
+
+GO
+
+
 --

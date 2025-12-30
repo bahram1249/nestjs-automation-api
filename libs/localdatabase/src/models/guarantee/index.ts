@@ -59,3 +59,4 @@ export * from './gs-irangs-import-status.entity';
 export * from './gs-irangs-import-data-guarantees.entity';
 export * from './gs-discount-code.entity';
 export * from './gs-reward-rule.entity';
+export * from './gs-discount-type.entity';

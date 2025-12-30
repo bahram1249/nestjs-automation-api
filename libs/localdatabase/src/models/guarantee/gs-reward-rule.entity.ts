@@ -8,6 +8,7 @@ import {
   BelongsTo,
 } from 'sequelize-typescript';
 import { GSUnitPrice } from './gs-unit-price.entity';
+import { GSVipBundleType } from './gs-vip-bundle-types.entity';
 
 @Table({ tableName: 'GSRewardRules' })
 export class GSRewardRule extends Model {
@@ -87,17 +88,17 @@ export class GSRewardRule extends Model {
   })
   monthPeriod?: number;
 
-  @Column({
-    type: DataType.DATE,
-    allowNull: true,
-  })
   @AutoMap()
-  createdAt?: Date;
+  @Column({
+    type: DataType.INTEGER,
+    allowNull: false,
+  })
+  @ForeignKey(() => GSVipBundleType)
+  vipBundleTypeId?: number;
 
-  @Column({
-    type: DataType.DATE,
-    allowNull: true,
+  @BelongsTo(() => GSVipBundleType, {
+    as: 'vipBundleType',
+    foreignKey: 'vipBundleTypeId',
   })
-  @AutoMap()
-  updatedAt?: Date;
+  vipBundleType?: GSVipBundleType;
 }
