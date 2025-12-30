@@ -10,9 +10,9 @@ import {
   DiscountCodePreviewDto,
 } from './dto';
 import { InjectModel } from '@nestjs/sequelize';
-import { GSDiscountCode, GSVipBundleType } from '@rahino/localdatabase/models';
+import { GSDiscountCode, GSUnitPrice } from '@rahino/localdatabase/models';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
-import { Op, Sequelize, Transaction } from 'sequelize';
+import { Op, Sequelize } from 'sequelize';
 import { InjectMapper } from 'automapper-nestjs';
 import { Mapper } from 'automapper-core';
 import * as _ from 'lodash';
@@ -23,8 +23,6 @@ export class DiscountCodeService {
   constructor(
     @InjectModel(GSDiscountCode)
     private readonly repository: typeof GSDiscountCode,
-    @InjectModel(GSVipBundleType)
-    private readonly vipBundleTypeRepository: typeof GSVipBundleType,
     private readonly localizationService: LocalizationService,
     @InjectMapper()
     private readonly mapper: Mapper,
@@ -67,14 +65,12 @@ export class DiscountCodeService {
         'createdAt',
         'updatedAt',
       ])
+      .include([{ model: GSUnitPrice, as: 'unitPrice' }])
       .limit(filter.limit)
       .offset(filter.offset)
       .order({ orderBy: filter.orderBy, sortOrder: filter.sortOrder });
 
-    const results = await this.repository.findAll({
-      ...query.build(),
-      include: ['unitPrice'],
-    });
+    const results = await this.repository.findAll(query.build());
 
     return {
       result: results,
@@ -83,10 +79,42 @@ export class DiscountCodeService {
   }
 
   async findById(entityId: bigint) {
-    const item = await this.repository.findOne({
-      where: { id: entityId, isDeleted: false },
-      include: ['unitPrice'],
-    });
+    const item = await this.repository.findOne(
+      new QueryOptionsBuilder()
+        .attributes([
+          'id',
+          'code',
+          'title',
+          'discountType',
+          'discountValue',
+          'unitPriceId',
+          'totalUsageLimit',
+          'perUserUsageLimit',
+          'maxDiscountAmount',
+          'validFrom',
+          'validUntil',
+          'isActive',
+          'organizationId',
+          'description',
+          'createdAt',
+          'updatedAt',
+        ])
+        .include([{ model: GSUnitPrice, as: 'unitPrice' }])
+        .filter(
+          Sequelize.where(
+            Sequelize.fn(
+              'isnull',
+              Sequelize.col('GSDiscountCode.isDeleted'),
+              0,
+            ),
+            {
+              [Op.eq]: 0,
+            },
+          ),
+        )
+        .filter({ id: entityId })
+        .build(),
+    );
 
     if (!item) {
       throw new NotFoundException(
@@ -100,9 +128,41 @@ export class DiscountCodeService {
   }
 
   async create(dto: DiscountCodeDto) {
-    const duplicateItem = await this.repository.findOne({
-      where: { code: dto.code, isDeleted: false },
-    });
+    const duplicateItem = await this.repository.findOne(
+      new QueryOptionsBuilder()
+        .attributes([
+          'id',
+          'code',
+          'title',
+          'discountType',
+          'discountValue',
+          'unitPriceId',
+          'totalUsageLimit',
+          'perUserUsageLimit',
+          'maxDiscountAmount',
+          'validFrom',
+          'validUntil',
+          'isActive',
+          'organizationId',
+          'description',
+          'createdAt',
+          'updatedAt',
+        ])
+        .filter(
+          Sequelize.where(
+            Sequelize.fn(
+              'isnull',
+              Sequelize.col('GSDiscountCode.isDeleted'),
+              0,
+            ),
+            {
+              [Op.eq]: 0,
+            },
+          ),
+        )
+        .filter({ code: dto.code })
+        .build(),
+    );
 
     if (duplicateItem) {
       throw new BadRequestException(
@@ -121,9 +181,42 @@ export class DiscountCodeService {
   }
 
   async updateById(id: bigint, dto: DiscountCodeDto) {
-    const item = await this.repository.findOne({
-      where: { id, isDeleted: false },
-    });
+    const item = await this.repository.findOne(
+      new QueryOptionsBuilder()
+        .attributes([
+          'id',
+          'code',
+          'title',
+          'discountType',
+          'discountValue',
+          'unitPriceId',
+          'totalUsageLimit',
+          'perUserUsageLimit',
+          'maxDiscountAmount',
+          'validFrom',
+          'validUntil',
+          'isActive',
+          'organizationId',
+          'description',
+          'createdAt',
+          'updatedAt',
+        ])
+        .include([{ model: GSUnitPrice, as: 'unitPrice' }])
+        .filter(
+          Sequelize.where(
+            Sequelize.fn(
+              'isnull',
+              Sequelize.col('GSDiscountCode.isDeleted'),
+              0,
+            ),
+            {
+              [Op.eq]: 0,
+            },
+          ),
+        )
+        .filter({ id: id })
+        .build(),
+    );
 
     if (!item) {
       throw new BadRequestException(
@@ -131,9 +224,28 @@ export class DiscountCodeService {
       );
     }
 
-    const duplicateItem = await this.repository.findOne({
-      where: { code: dto.code, isDeleted: false, id: { [Op.ne]: id } },
-    });
+    const duplicateItem = await this.repository.findOne(
+      new QueryOptionsBuilder()
+        .filter(
+          Sequelize.where(
+            Sequelize.fn(
+              'isnull',
+              Sequelize.col('GSDiscountCode.isDeleted'),
+              0,
+            ),
+            {
+              [Op.eq]: 0,
+            },
+          ),
+        )
+        .filter({ code: dto.code })
+        .filter({
+          id: {
+            [Op.ne]: id,
+          },
+        })
+        .build(),
+    );
 
     if (duplicateItem) {
       throw new BadRequestException(
@@ -150,9 +262,23 @@ export class DiscountCodeService {
   }
 
   async deleteById(entityId: bigint) {
-    const item = await this.repository.findOne({
-      where: { id: entityId, isDeleted: false },
-    });
+    const item = await this.repository.findOne(
+      new QueryOptionsBuilder()
+        .filter(
+          Sequelize.where(
+            Sequelize.fn(
+              'isnull',
+              Sequelize.col('GSDiscountCode.isDeleted'),
+              0,
+            ),
+            {
+              [Op.eq]: 0,
+            },
+          ),
+        )
+        .filter({ id: entityId })
+        .build(),
+    );
 
     if (!item) {
       throw new BadRequestException(

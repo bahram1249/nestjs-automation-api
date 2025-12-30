@@ -17,7 +17,6 @@ import { LocalizationModule } from 'apps/main/src/common/localization';
     SequelizeModule.forFeature([
       GSDiscountCode,
       GSUnitPrice,
-      GSVipBundleType,
       Permission,
       User,
       Permission,
