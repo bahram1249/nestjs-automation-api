@@ -7,7 +7,7 @@ import { GetRewardRuleDto, RewardRuleDto } from './dto';
 import { InjectModel } from '@nestjs/sequelize';
 import { GSRewardRule, GSUnitPrice } from '@rahino/localdatabase/models';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
-import { Op, Sequelize, Transaction } from 'sequelize';
+import { Op, Sequelize } from 'sequelize';
 import { InjectMapper } from 'automapper-nestjs';
 import { Mapper } from 'automapper-core';
 import * as _ from 'lodash';
@@ -19,7 +19,6 @@ export class RewardRuleService {
   constructor(
     @InjectModel(GSRewardRule)
     private readonly repository: typeof GSRewardRule,
-
     private readonly localizationService: LocalizationService,
     @InjectMapper()
     private readonly mapper: Mapper,
@@ -61,9 +60,7 @@ export class RewardRuleService {
       .offset(filter.offset)
       .order({ orderBy: filter.orderBy, sortOrder: filter.sortOrder });
 
-    const results = await this.repository.findAll({
-      ...query.build(),
-    });
+    const results = await this.repository.findAll(query.build());
 
     return {
       result: results,
@@ -72,15 +69,32 @@ export class RewardRuleService {
   }
 
   async findById(entityId: bigint) {
-    const item = await this.repository.findOne({
-      where: { id: entityId, isDeleted: false },
-      include: [
-        {
-          model: GSUnitPrice,
-          as: 'unitPrice',
-        },
-      ],
-    });
+    const item = await this.repository.findOne(
+      new QueryOptionsBuilder()
+        .attributes([
+          'id',
+          'title',
+          'rewardAmount',
+          'unitPriceId',
+          'validFrom',
+          'validUntil',
+          'isActive',
+          'description',
+          'createdAt',
+          'updatedAt',
+        ])
+        .include([{ model: GSUnitPrice, as: 'unitPrice' }])
+        .filter(
+          Sequelize.where(
+            Sequelize.fn('isnull', Sequelize.col('GSRewardRules.isDeleted'), 0),
+            {
+              [Op.eq]: 0,
+            },
+          ),
+        )
+        .filter({ id: entityId })
+        .build(),
+    );
 
     if (!item) {
       throw new NotFoundException(
@@ -107,9 +121,19 @@ export class RewardRuleService {
   }
 
   async updateById(id: bigint, dto: RewardRuleDto) {
-    const item = await this.repository.findOne({
-      where: { id, isDeleted: false },
-    });
+    const item = await this.repository.findOne(
+      new QueryOptionsBuilder()
+        .filter(
+          Sequelize.where(
+            Sequelize.fn('isnull', Sequelize.col('GSRewardRules.isDeleted'), 0),
+            {
+              [Op.eq]: 0,
+            },
+          ),
+        )
+        .filter({ id: id })
+        .build(),
+    );
 
     if (!item) {
       throw new BadRequestException(
@@ -126,9 +150,19 @@ export class RewardRuleService {
   }
 
   async deleteById(entityId: bigint) {
-    const item = await this.repository.findOne({
-      where: { id: entityId, isDeleted: false },
-    });
+    const item = await this.repository.findOne(
+      new QueryOptionsBuilder()
+        .filter(
+          Sequelize.where(
+            Sequelize.fn('isnull', Sequelize.col('GSRewardRules.isDeleted'), 0),
+            {
+              [Op.eq]: 0,
+            },
+          ),
+        )
+        .filter({ id: entityId })
+        .build(),
+    );
 
     if (!item) {
       throw new BadRequestException(
