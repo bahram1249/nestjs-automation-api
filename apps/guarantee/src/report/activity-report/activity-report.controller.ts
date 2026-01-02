@@ -25,7 +25,6 @@ import { GetActivityReportDto } from './dto/get-activity-report.dto';
 
 @ApiTags('GSReport-ActivityReport')
 @UseGuards(JwtGuard, PermissionGuard)
-@UseInterceptors(JsonResponseTransformInterceptor)
 @ApiBearerAuth()
 @Controller({
   path: '/api/guarantee/report/activityReports',
@@ -34,6 +33,7 @@ import { GetActivityReportDto } from './dto/get-activity-report.dto';
 export class ActivityReportController {
   constructor(private service: ActivityReportService) {}
 
+  @UseInterceptors(JsonResponseTransformInterceptor)
   @ApiOperation({ description: 'show all activity reports' })
   @CheckPermission({
     permissionSymbol: 'gs.report.activityreports.getall',

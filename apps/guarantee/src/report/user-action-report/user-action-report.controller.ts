@@ -25,7 +25,6 @@ import { GetUserActionReportDto } from './dto/user-action-report.dto';
 
 @ApiTags('GSReport-UserActionReport')
 @UseGuards(JwtGuard, PermissionGuard)
-@UseInterceptors(JsonResponseTransformInterceptor)
 @ApiBearerAuth()
 @Controller({
   path: '/api/guarantee/report/userActionReports',
@@ -34,6 +33,7 @@ import { GetUserActionReportDto } from './dto/user-action-report.dto';
 export class UserActionReportController {
   constructor(private service: UserActionReportService) {}
 
+  @UseInterceptors(JsonResponseTransformInterceptor)
   @ApiOperation({ description: 'show all user action reports' })
   @CheckPermission({
     permissionSymbol: 'gs.report.useractionreports.getall',
