@@ -35,6 +35,7 @@ export class SellerSyncService {
           // limit: 1,
         },
         attempts: 1,
+        removeOnComplete: true,
         jobId: 'sync-seller-brand',
       },
     );
@@ -51,6 +52,7 @@ export class SellerSyncService {
           // limit: 1,
         },
         attempts: 1,
+        removeOnComplete: true,
         jobId: 'sync-seller-product-type',
       },
     );
@@ -65,6 +67,7 @@ export class SellerSyncService {
           // limit: 1,
         },
         attempts: 1,
+        removeOnComplete: true,
         jobId: 'sync-seller-variant',
       },
     );
@@ -78,6 +81,7 @@ export class SellerSyncService {
           //limit: 1,
         },
         attempts: 1,
+        removeOnComplete: true,
         jobId: 'sync-seller-warranty',
       },
     );
