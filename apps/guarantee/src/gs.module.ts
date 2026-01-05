@@ -122,6 +122,7 @@ import { IrangsImportDataModule } from './admin/irangs-import-data/irangs-import
 import { ClientReceivingDeviceSmsSenderModule } from './job/client-receiving-device-sms-sender';
 import { ConfirmReceiveDeviceInOrganizationModule } from './cartable/confirm-receive-device-in-organization';
 import { ThankfullSuccessPaymentSmsSenderModule } from './job/thankfull-success-payment-sms-sender';
+import { GSDiscountTypeModule } from './admin/discount-type';
 
 @Module({
   imports: [
@@ -284,6 +285,7 @@ import { ThankfullSuccessPaymentSmsSenderModule } from './job/thankfull-success-
     GSDiscountCodeModule,
     GSRewardRuleModule,
     GSVipGeneratorModule,
+    GSDiscountTypeModule,
 
     // BullBoardModule.forRoot({
     //   route: '/queues',
