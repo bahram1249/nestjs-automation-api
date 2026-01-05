@@ -3,4 +3,5 @@ export enum GSPaymentWayEnum {
   Online = 2,
   NormalGuarantee = 3,
   VipBalance = 4,
+  Discount = 5,
 }

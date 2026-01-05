@@ -2708,5 +2708,22 @@ END
 
 GO
 
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'gs-payment-ways-Data-v2'
+		)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'CUSTOMER_NAME' AND [value] IN ('AriaKish'))
+		)
+BEGIN
+
+	INSERT INTO GSPaymentWays(id, title, createdAt, updatedAt)
+	VALUES (5, N'تخفیف', GETDATE(), GETDATE())
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+	SELECT 'gs-payment-ways-Data-v2', GETDATE(), GETDATE()
+END
+
+GO
+
 
 --
