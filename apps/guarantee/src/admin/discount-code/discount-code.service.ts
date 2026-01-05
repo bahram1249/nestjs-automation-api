@@ -17,6 +17,7 @@ import { InjectMapper } from 'automapper-nestjs';
 import { Mapper } from 'automapper-core';
 import * as _ from 'lodash';
 import { LocalizationService } from 'apps/main/src/common/localization';
+import { GSUnitPriceEnum } from '@rahino/guarantee/shared/unit-price';
 
 @Injectable()
 export class DiscountCodeService {
@@ -168,6 +169,7 @@ export class DiscountCodeService {
     }
 
     const mappedItem = this.mapper.map(dto, DiscountCodeDto, GSDiscountCode);
+    mappedItem.unitPriceId = GSUnitPriceEnum.Toman;
     const insertedItem = _.omit(mappedItem.toJSON(), ['id']);
 
     const result = await this.repository.create(insertedItem);
@@ -250,6 +252,7 @@ export class DiscountCodeService {
     }
 
     const mappedItem = this.mapper.map(dto, DiscountCodeDto, GSDiscountCode);
+    mappedItem.unitPriceId = GSUnitPriceEnum.Toman;
     const updatedItem = _.omit(mappedItem.toJSON(), ['id']);
 
     await this.repository.update(updatedItem, { where: { id } });

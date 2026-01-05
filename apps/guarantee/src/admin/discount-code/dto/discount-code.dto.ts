@@ -28,10 +28,6 @@ export class DiscountCodeDto {
 
   @AutoMap()
   @IsNumber()
-  public unitPriceId: number;
-
-  @AutoMap()
-  @IsNumber()
   public totalUsageLimit: number;
 
   @AutoMap()
