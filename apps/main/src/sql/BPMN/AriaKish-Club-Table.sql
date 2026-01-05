@@ -2530,4 +2530,34 @@ END;
 GO
 
 
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'gs-discountcodeusage-Table-v1'
+		)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'CUSTOMER_NAME' AND [value] IN ('AriaKish'))
+		)
+BEGIN
+
+	CREATE TABLE GSDiscountCodeUsages (
+		id BIGINT IDENTITY(1,1) PRIMARY KEY,
+		discountCodeId BIGINT NOT NULL,
+		userId BIGINT NOT NULL,
+		factorId BIGINT NOT NULL,
+		discountAmount BIGINT NOT NULL,
+		maxDiscountAmount BIGINT NULL,
+		usedAt DATETIMEOFFSET NOT NULL,
+		createdAt DATETIMEOFFSET NOT NULL,
+		updatedAt DATETIMEOFFSET NOT NULL,
+		CONSTRAINT FK_GSDiscountCodeUsages_DiscountCode FOREIGN KEY (discountCodeId) REFERENCES GSDiscountCodes(id),
+		CONSTRAINT FK_GSDiscountCodeUsages_User FOREIGN KEY (userId) REFERENCES Users(id),
+		CONSTRAINT FK_GSDiscountCodeUsages_Factor FOREIGN KEY (factorId) REFERENCES GSFactors(id)
+	)
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+		SELECT 'gs-discountcodeusage-Table-v1', GETDATE(), GETDATE()
+END
+
+GO
+
+
 

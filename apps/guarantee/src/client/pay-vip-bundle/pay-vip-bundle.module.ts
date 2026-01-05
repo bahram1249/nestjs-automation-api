@@ -6,18 +6,29 @@ import {
   GSFactor,
   GSFactorVipBundle,
   GSVipBundleType,
+  GSDiscountCode,
+  GSUnitPrice,
+  GSTransaction,
 } from '@rahino/localdatabase/models';
 import { LocalizationModule } from 'apps/main/src/common/localization';
 import { GSPaymentServiceProviderModule } from '@rahino/guarantee/shared/payment-provider/gs-payment-provider.module';
 import { RialPriceModule } from '@rahino/guarantee/shared/rial-price';
+import { GSDiscountCodeSharedModule } from '@rahino/guarantee/shared/discount-code/discount-code-shared.module';
 
 @Module({
   imports: [
     SequelizeModule,
-    SequelizeModule.forFeature([GSVipBundleType, GSFactorVipBundle, GSFactor]),
+    SequelizeModule.forFeature([
+      GSFactor,
+      GSFactorVipBundle,
+      GSVipBundleType,
+      GSDiscountCode,
+      GSTransaction,
+    ]),
     LocalizationModule,
     GSPaymentServiceProviderModule,
     RialPriceModule,
+    GSDiscountCodeSharedModule,
   ],
   controllers: [PayVipBundleController],
   providers: [PayVipBundleService],

@@ -19,8 +19,8 @@ export class DiscountCodeDto {
   public title: string;
 
   @AutoMap()
-  @IsEnum(['percentage', 'fixed'])
-  public discountType: 'percentage' | 'fixed';
+  @IsNumber()
+  public discountTypeId: number;
 
   @AutoMap()
   @IsNumber()
@@ -51,11 +51,6 @@ export class DiscountCodeDto {
   @AutoMap()
   @IsBoolean()
   public isActive: boolean;
-
-  @AutoMap()
-  @IsOptional()
-  @IsString()
-  public organizationId?: string;
 
   @AutoMap()
   @IsOptional()

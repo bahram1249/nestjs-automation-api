@@ -4,20 +4,25 @@ import {
   HttpCode,
   HttpStatus,
   Post,
-  UseGuards,
   UseInterceptors,
+  UseGuards,
 } from '@nestjs/common';
 import { JsonResponseTransformInterceptor } from '@rahino/response/interceptor';
-import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
-import { JwtGuard } from '@rahino/auth';
+import {
+  ApiBearerAuth,
+  ApiOperation,
+  ApiTags,
+  ApiQuery,
+} from '@nestjs/swagger';
 import { PayVipBundleService } from './pay-vip-bundle.service';
-import { PayVipBundleDto } from './dto';
-import { GetUser } from '@rahino/auth';
+import { PayVipBundleDto, VipBundleDto } from './dto';
+import { GetUser, JwtGuard } from '@rahino/auth';
 import { User } from '@rahino/database';
+import { DiscountCodePreviewResultDto } from '@rahino/guarantee/shared/discount-code/dto';
 
 @ApiTags('GS-PayVipBundle')
-@UseGuards(JwtGuard)
 @ApiBearerAuth()
+@UseGuards(JwtGuard)
 @UseInterceptors(JsonResponseTransformInterceptor)
 @Controller({
   path: '/api/guarantee/client/payVipBundles',
@@ -25,6 +30,19 @@ import { User } from '@rahino/database';
 })
 export class PayVipBundleController {
   constructor(private service: PayVipBundleService) {}
+
+  @Post('/preview')
+  @ApiOperation({ description: 'Preview pricing with discount code' })
+  async preview(
+    @GetUser() user: User,
+    @Body() dto: VipBundleDto,
+  ): Promise<{ result: DiscountCodePreviewResultDto }> {
+    return await this.service.preview(
+      user,
+      dto.vipBundleTypeId,
+      dto.discountCode,
+    );
+  }
 
   @ApiOperation({ description: 'create pay vip bundle types by user' })
   @Post('/')

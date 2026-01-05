@@ -3,12 +3,7 @@ import {
   BadRequestException,
   NotFoundException,
 } from '@nestjs/common';
-import {
-  GetDiscountCodeDto,
-  DiscountCodeDto,
-  ValidateDiscountCodeDto,
-  DiscountCodePreviewDto,
-} from './dto';
+import { GetDiscountCodeDto, DiscountCodeDto } from './dto';
 import { InjectModel } from '@nestjs/sequelize';
 import { GSDiscountCode, GSUnitPrice } from '@rahino/localdatabase/models';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';

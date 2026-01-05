@@ -9,7 +9,6 @@ import {
 import { Permission, User } from '@rahino/database';
 import { DiscountCodeController } from './discount-code.controller';
 import { DiscountCodeProfile } from './mapper';
-import { DiscountCodePreviewController } from './discount-code-preview.controller';
 import { LocalizationModule } from 'apps/main/src/common/localization';
 
 @Module({
@@ -23,7 +22,7 @@ import { LocalizationModule } from 'apps/main/src/common/localization';
     ]),
     LocalizationModule,
   ],
-  controllers: [DiscountCodeController, DiscountCodePreviewController],
+  controllers: [DiscountCodeController],
   providers: [DiscountCodeService, DiscountCodeProfile],
   exports: [DiscountCodeService],
 })

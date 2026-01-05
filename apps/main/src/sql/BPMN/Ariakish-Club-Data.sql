@@ -2703,10 +2703,28 @@ BEGIN
 			
 
 	INSERT INTO Migrations(version, createdAt, updatedAt)
-	SELECT 'gs-discount-code-types-Data-v1', GETDATE(), GETDATE()
+		SELECT 'gs-discount-code-types-Data-v1', GETDATE(), GETDATE()
 END
 
 GO
+
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'gs-paymentgateways-v3'
+		)
+	AND EXISTS (
+		SELECT 1 FROM Settings 
+		WHERE ([key] = 'CUSTOMER_NAME' AND [value] IN ('AriaKish'))
+		)
+BEGIN
+
+	INSERT INTO GSPaymentGateways(id, title, paymentWayId, createdAt, updatedAt)
+		VALUES (6, N'اعمال تخفیف', 5, GETDATE(), GETDATE())
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+		SELECT 'gs-paymentgateways-v3', GETDATE(), GETDATE()
+END
+
+GO
+
 
 IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'gs-payment-ways-Data-v2'
 		)

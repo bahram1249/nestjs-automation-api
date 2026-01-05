@@ -1,1 +1,2 @@
-export * from './pay-additional-package.dto';
+export * from './pay-vip-bundle.dto';
+export * from './vip-bundle.dto';
