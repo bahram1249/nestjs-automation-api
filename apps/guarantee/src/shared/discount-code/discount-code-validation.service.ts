@@ -126,7 +126,7 @@ export class DiscountCodeValidationService {
     const originalPriceBigInt = BigInt(originalPriceInRial);
 
     if (discountCode.discountTypeId == GSDiscountTypeEnum.Percentage) {
-      const discountPercentage = discountCode.discountValue / 100;
+      const discountPercentage = Number(discountCode.discountValue) / 100;
       discountAmount =
         (originalPriceBigInt * BigInt(Math.floor(discountPercentage * 100))) /
         10000n;

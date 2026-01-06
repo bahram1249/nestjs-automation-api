@@ -24,7 +24,7 @@ export class DiscountCodeDto {
 
   @AutoMap()
   @IsNumber()
-  public discountValue: number;
+  public discountValue: bigint;
 
   @AutoMap()
   @IsNumber()

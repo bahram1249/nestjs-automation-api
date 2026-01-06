@@ -50,10 +50,10 @@ export class GSDiscountCode extends Model {
 
   @AutoMap()
   @Column({
-    type: DataType.DECIMAL(5, 2),
+    type: DataType.BIGINT,
     allowNull: false,
   })
-  discountValue: number;
+  discountValue: bigint;
 
   @AutoMap()
   @Column({

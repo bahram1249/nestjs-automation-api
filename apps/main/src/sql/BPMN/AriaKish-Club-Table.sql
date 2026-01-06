@@ -2425,6 +2425,17 @@ BEGIN
 END;
 GO
 
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'gs-discount-codes-v2')
+BEGIN
+    ALTER TABLE GSDiscountCodes (
+    	ALTER discountValue bigint NOT NULL,
+       
+
+    INSERT INTO Migrations(version, createdAt, updatedAt)
+    SELECT 'gs-discount-codes-v2', GETDATE(), GETDATE();
+END;
+GO
+
 
 
 IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'gs-reward-rules-v1')
@@ -2560,4 +2571,14 @@ END
 GO
 
 
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'gs-discount-codes-v3')
+BEGIN
+    ALTER TABLE GSDiscountCodes 
+    	ALTER COLUMN discountValue bigint NOT NULL
+       
+
+    INSERT INTO Migrations(version, createdAt, updatedAt)
+    SELECT 'gs-discount-codes-v3', GETDATE(), GETDATE();
+END;
+GO
 
