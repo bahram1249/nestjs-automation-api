@@ -16,5 +16,12 @@
   "province_not_found": "province not found",
   "city_not_found": "city not found",
   "neighbordhood_not_found": "neighborhood not found",
-  "neighborhood_must_be_select_it": "neighborhood must be select it!"
+  "neighborhood_must_be_select_it": "neighborhood must be select it!",
+  "discount_code_not_found": "Discount code not found",
+  "discount_code_not_found_or_inactive": "Discount code not found or inactive",
+  "discount_code_has_expired": "Discount code has expired",
+  "personal_usage_limit_reached": "You have reached your personal usage limit for this discount code",
+  "total_usage_limit_reached": "Discount code has reached its total usage limit",
+  "discount_code_not_applicable": "Discount code is not applicable",
+  "discount_payment_gateway_not_found": "Discount payment gateway not found"
 }

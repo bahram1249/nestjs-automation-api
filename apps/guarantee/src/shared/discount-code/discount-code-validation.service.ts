@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Inject } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { BadRequestException } from '@nestjs/common';
 import {
@@ -13,6 +13,7 @@ import { Sequelize, Op } from 'sequelize';
 import { RialPriceService } from '../rial-price/rial-price.service';
 import { GSDiscountTypeEnum } from '../discount-type/enum';
 import { DiscountUsageInfo, DiscountValidationResult } from './interface';
+import { LocalizationService } from 'apps/main/src/common/localization';
 
 @Injectable()
 export class DiscountCodeValidationService {
@@ -24,6 +25,7 @@ export class DiscountCodeValidationService {
     @InjectModel(GSPaymentGateway)
     private readonly paymentGateWayRepository: typeof GSPaymentGateway,
     private readonly rialPriceService: RialPriceService,
+    private readonly localizationService: LocalizationService,
   ) {}
 
   async validateDiscountCode(
@@ -53,7 +55,9 @@ export class DiscountCodeValidationService {
       return {
         isValid: false,
         canApply: false,
-        error: 'Discount code not found or inactive',
+        error: this.localizationService
+          .translate('guarantee.discount_code_not_found_or_inactive')
+          .toString(),
       };
     }
 
@@ -65,7 +69,9 @@ export class DiscountCodeValidationService {
       return {
         isValid: false,
         canApply: false,
-        error: 'Discount code has expired',
+        error: this.localizationService
+          .translate('guarantee.discount_code_has_expired')
+          .toString(),
       };
     }
 
@@ -78,8 +84,9 @@ export class DiscountCodeValidationService {
       return {
         isValid: true,
         canApply: false,
-        error:
-          'You have reached your personal usage limit for this discount code',
+        error: this.localizationService
+          .translate('guarantee.personal_usage_limit_reached')
+          .toString(),
       };
     }
 
@@ -87,7 +94,9 @@ export class DiscountCodeValidationService {
       return {
         isValid: true,
         canApply: false,
-        error: 'Discount code has reached its total usage limit',
+        error: this.localizationService
+          .translate('guarantee.total_usage_limit_reached')
+          .toString(),
       };
     }
 
@@ -170,7 +179,11 @@ export class DiscountCodeValidationService {
     );
 
     if (!paymentGateway) {
-      throw new BadRequestException('Discount payment gateway not found');
+      throw new BadRequestException(
+        this.localizationService.translate(
+          'guarantee.discount_payment_gateway_not_found',
+        ),
+      );
     }
 
     return paymentGateway.id;

@@ -117,6 +117,13 @@ export type I18nTranslations = {
         "city_not_found": string;
         "neighbordhood_not_found": string;
         "neighborhood_must_be_select_it": string;
+        "discount_code_not_found": string;
+        "discount_code_not_found_or_inactive": string;
+        "discount_code_has_expired": string;
+        "personal_usage_limit_reached": string;
+        "total_usage_limit_reached": string;
+        "discount_code_not_applicable": string;
+        "discount_payment_gateway_not_found": string;
     };
     "validation": {
         "NOT_EMPTY": string;

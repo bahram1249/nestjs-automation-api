@@ -16,5 +16,12 @@
   "province_not_found": "استان انتخابی یافت نشد",
   "city_not_found": "شهر انتخابی یافت نشد",
   "neighbordhood_not_found": "محله انتخابی یافت نشد",
-  "neighborhood_must_be_select_it": "محله باید انتخاب شود"
+  "neighborhood_must_be_select_it": "محله باید انتخاب شود",
+  "discount_code_not_found": "کد تخفیف یافت نشد",
+  "discount_code_not_found_or_inactive": "کد تخفیف یافت نشد یا غیرفعال است",
+  "discount_code_has_expired": "کد تخفیف منقضی شده است",
+  "personal_usage_limit_reached": "شما به سقف استفاده شخصی از این کد تخفیف رسیده‌اید",
+  "total_usage_limit_reached": "کد تخفیف به سقف کل استفاده خود رسیده است",
+  "discount_code_not_applicable": "کد تخفیف قابل استفاده نیست",
+  "discount_payment_gateway_not_found": "درگاه پرداخت تخفیف یافت نشد"
 }
