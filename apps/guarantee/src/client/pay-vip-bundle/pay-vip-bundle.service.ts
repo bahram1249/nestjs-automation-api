@@ -132,7 +132,7 @@ export class PayVipBundleService {
         vipBundleType,
         discountCode.id,
         discountAmountInRial,
-        BigInt(discountPaymentGatewayId),
+        discountPaymentGatewayId,
       );
     }
 
@@ -205,7 +205,7 @@ export class PayVipBundleService {
     vipBundleType: GSVipBundleType,
     discountCodeId: bigint,
     discountAmountInRial: number,
-    discountPaymentGatewayId: bigint,
+    discountPaymentGatewayId: number,
   ): Promise<GSRequestPaymentOutputDto> {
     const totalPrices = this.rialPriceService.getRialPrice({
       price: Number(vipBundleType.price),
@@ -391,7 +391,7 @@ export class PayVipBundleService {
         bundlePrice,
       );
 
-    const finalPrice = bundlePrice - Number(discountAmount);
+    const finalPrice = bundlePrice - discountAmount;
 
     return {
       result: {

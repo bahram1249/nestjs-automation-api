@@ -123,7 +123,7 @@ export class DiscountCodeValidationService {
     }
 
     let discountAmount: number;
-    const originalPriceBigInt = originalPriceInRial;
+    const originalPrice = originalPriceInRial;
 
     if (discountCode.discountTypeId == GSDiscountTypeEnum.Percentage) {
       const discountValue = Number(discountCode.discountValue);
@@ -132,7 +132,7 @@ export class DiscountCodeValidationService {
       }
       const discountPercentage = discountValue / 100;
       discountAmount =
-        (originalPriceBigInt * Math.floor(discountPercentage * 100)) / 10000;
+        (originalPrice * Math.floor(discountPercentage * 100)) / 10000;
     } else {
       const discountValue = Number(discountCode.discountValue);
       if (isNaN(discountValue)) {
@@ -203,7 +203,7 @@ export class DiscountCodeValidationService {
     userId: bigint,
     factorId: bigint,
     discountAmount: number,
-    maxDiscountAmount?: bigint,
+    maxDiscountAmount?: number,
   ): Promise<void> {
     const discountCode = await this.discountCodeRepository.findOne(
       new QueryOptionsBuilder()
