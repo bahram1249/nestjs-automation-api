@@ -12,7 +12,8 @@ export class GSPaymentServiceProviderFactory {
   ) {}
 
   async create() {
-    const paymentGatewayId = Number(this.request?.body?.paymentGatewayId);
+    const paymentGatewayId = this.request?.body?.paymentGatewayId;
+    if (paymentGatewayId == null) return;
     return await this.provider.create(paymentGatewayId);
   }
 }
