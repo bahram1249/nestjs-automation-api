@@ -26,6 +26,8 @@ import { GSGuaranteeConfirmStatus } from '@rahino/guarantee/shared/guarantee-con
 import { InjectQueue } from '@nestjs/bullmq';
 import { CLIENT_SUBMIT_CARD_SMS_SENDER_QUEUE } from '@rahino/guarantee/job/client-submit-card-sms-sender/constants';
 import { Queue } from 'bullmq';
+import { GSRewardRuleSharedService } from '@rahino/guarantee/shared/reward-rule';
+
 @Injectable()
 export class NormalGuaranteeService {
   constructor(
@@ -36,6 +38,7 @@ export class NormalGuaranteeService {
     private readonly i18n: I18nService<I18nTranslations>,
     @InjectQueue(CLIENT_SUBMIT_CARD_SMS_SENDER_QUEUE)
     private readonly clientSubmitCardSmsSenderQueue: Queue,
+    private readonly rewardService: GSRewardRuleSharedService,
   ) {}
 
   async findAll(user: User, filter: ListFilter) {
@@ -180,6 +183,11 @@ export class NormalGuaranteeService {
       guaranteeId: guarantee.id,
       userId: user.id,
     });
+
+    const reward = await this.rewardService.checkAndGrantReward(
+      user,
+      guarantee,
+    );
 
     await this.clientSubmitCardSmsSenderQueue.add(
       'send-client-submit-card-sms',

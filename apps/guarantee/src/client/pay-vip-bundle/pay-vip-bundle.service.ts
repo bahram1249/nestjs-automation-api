@@ -84,7 +84,10 @@ export class PayVipBundleService {
 
       if (!validation.canApply) {
         throw new BadRequestException(
-          validation.error || 'Discount code is not applicable',
+          validation.error ||
+            this.localizationService.translate(
+              'guarantee.discount_code_not_applicable',
+            ),
         );
       }
 
@@ -105,7 +108,11 @@ export class PayVipBundleService {
       );
 
       if (!discountCode) {
-        throw new BadRequestException('Discount code not found');
+        throw new BadRequestException(
+          this.localizationService.translate(
+            'guarantee.discount_code_not_found',
+          ),
+        );
       }
 
       const discountAmountInRial =
@@ -244,7 +251,7 @@ export class PayVipBundleService {
         },
       );
 
-      let transactionRecord = await this.transactionRepository.create(
+      const transactionRecord = await this.transactionRepository.create(
         {
           transactionStatusId: GSTransactionStatusEnum.Paid,
           unitPriceId: GSUnitPriceEnum.Rial,
@@ -369,7 +376,9 @@ export class PayVipBundleService {
           finalPrice: originalPrice,
           userPayAmount: originalPrice,
           canApply: false,
-          error: 'Discount code not found',
+          error: this.localizationService
+            .translate('guarantee.discount_code_not_found')
+            .toString(),
         },
       };
     }

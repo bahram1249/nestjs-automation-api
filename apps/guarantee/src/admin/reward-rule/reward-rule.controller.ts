@@ -7,7 +7,6 @@ import {
   HttpStatus,
   Param,
   Post,
-  Put,
   Query,
   UseGuards,
   UseInterceptors,
@@ -64,14 +63,6 @@ export class RewardRuleController {
   @HttpCode(HttpStatus.CREATED)
   async create(@Body() dto: RewardRuleDto) {
     return await this.service.create(dto);
-  }
-
-  @ApiOperation({ description: 'update reward rule by given id' })
-  @CheckPermission({ permissionSymbol: 'gs.admin.rewardrules.update' })
-  @Put('/:id')
-  @HttpCode(HttpStatus.OK)
-  async updateById(@Param('id') id: bigint, @Body() dto: RewardRuleDto) {
-    return await this.service.updateById(id, dto);
   }
 
   @ApiOperation({ description: 'delete reward rule by id' })

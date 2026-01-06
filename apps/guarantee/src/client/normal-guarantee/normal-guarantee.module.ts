@@ -6,6 +6,7 @@ import { NormalGuaranteeController } from './normal-guarantee.controller';
 import { BullModule } from '@nestjs/bullmq';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { CLIENT_SUBMIT_CARD_SMS_SENDER_QUEUE } from '@rahino/guarantee/job/client-submit-card-sms-sender/constants';
+import { GSRewardRuleSharedModule } from '@rahino/guarantee/shared/reward-rule';
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { CLIENT_SUBMIT_CARD_SMS_SENDER_QUEUE } from '@rahino/guarantee/job/clien
     BullModule.registerQueueAsync({
       name: CLIENT_SUBMIT_CARD_SMS_SENDER_QUEUE,
     }),
+    GSRewardRuleSharedModule,
   ],
   controllers: [NormalGuaranteeController],
   providers: [NormalGuaranteeService],

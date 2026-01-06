@@ -5,7 +5,11 @@ import {
 } from '@nestjs/common';
 import { GetRewardRuleDto, RewardRuleDto } from './dto';
 import { InjectModel } from '@nestjs/sequelize';
-import { GSRewardRule, GSUnitPrice } from '@rahino/localdatabase/models';
+import {
+  GSRewardRule,
+  GSUnitPrice,
+  GSVipBundleType,
+} from '@rahino/localdatabase/models';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import { Op, Sequelize } from 'sequelize';
 import { InjectMapper } from 'automapper-nestjs';
@@ -13,15 +17,19 @@ import { Mapper } from 'automapper-core';
 import * as _ from 'lodash';
 import { LocalizationService } from 'apps/main/src/common/localization';
 import { GSUnitPriceEnum } from '@rahino/guarantee/shared/unit-price';
+import { VipBundleTypeService } from '../vip-bundle-types/vip-bundle-type.service';
 
 @Injectable()
 export class RewardRuleService {
   constructor(
     @InjectModel(GSRewardRule)
     private readonly repository: typeof GSRewardRule,
+    @InjectModel(GSVipBundleType)
+    private readonly vipBundleTypeRepository: typeof GSVipBundleType,
     private readonly localizationService: LocalizationService,
     @InjectMapper()
     private readonly mapper: Mapper,
+    private readonly vipBundleTypeService: VipBundleTypeService,
   ) {}
 
   async findAll(filter: GetRewardRuleDto) {
@@ -111,6 +119,18 @@ export class RewardRuleService {
     const mappedItem = this.mapper.map(dto, RewardRuleDto, GSRewardRule);
 
     mappedItem.unitPriceId = GSUnitPriceEnum.Toman;
+
+    const vipBundleType = await this.vipBundleTypeRepository.create({
+      title: `${mappedItem.title} - VIP Bundle`,
+      price: mappedItem.rewardAmount,
+      fee: 0n,
+      monthPeriod: mappedItem.monthPeriod || 12,
+      cardColor: '#1ec700ff',
+      unitPriceId: GSUnitPriceEnum.Toman,
+      isSystemGenerated: true,
+    });
+
+    mappedItem.vipBundleTypeId = vipBundleType.id;
     const insertedItem = _.omit(mappedItem.toJSON(), ['id']);
 
     const result = await this.repository.create(insertedItem);
@@ -118,35 +138,6 @@ export class RewardRuleService {
     return {
       result: result,
     };
-  }
-
-  async updateById(id: bigint, dto: RewardRuleDto) {
-    const item = await this.repository.findOne(
-      new QueryOptionsBuilder()
-        .filter(
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('GSRewardRules.isDeleted'), 0),
-            {
-              [Op.eq]: 0,
-            },
-          ),
-        )
-        .filter({ id: id })
-        .build(),
-    );
-
-    if (!item) {
-      throw new BadRequestException(
-        this.localizationService.translate('core.not_found_id'),
-      );
-    }
-
-    const mappedItem = this.mapper.map(dto, RewardRuleDto, GSRewardRule);
-    const updatedItem = _.omit(mappedItem.toJSON(), ['id']);
-
-    await this.repository.update(updatedItem, { where: { id } });
-
-    return await this.findById(id);
   }
 
   async deleteById(entityId: bigint) {
