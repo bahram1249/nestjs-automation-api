@@ -61,3 +61,4 @@ export * from './gs-discount-code.entity';
 export * from './gs-discount-code-usage.entity';
 export * from './gs-reward-rule.entity';
 export * from './gs-discount-type.entity';
+export * from './gs-discount-code-usage.entity';
