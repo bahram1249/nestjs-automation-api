@@ -39,12 +39,10 @@ export class DiscountCodeDto {
   public maxDiscountAmount: bigint;
 
   @AutoMap()
-  @Type(() => Date)
   @IsDateString()
   public validFrom: Date;
 
   @AutoMap()
-  @Type(() => Date)
   @IsDateString()
   public validUntil: Date;
 
