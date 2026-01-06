@@ -90,6 +90,7 @@ import { IncomeReportModule } from './report/income-report/income-report.module'
 import { UserActionReportModule } from './report/user-action-report/user-action-report.module';
 import { ActivityReportModule } from './report/activity-report/activity-report.module';
 import { TechnicalPersonReportModule } from './report/technical-person-report/technical-person-report.module';
+import { DiscountCodeUsageReportModule } from './report/discount-code-usage-report/discount-code-usage-report.module';
 import { SupplierReportModule } from './report/supplier-report/supplier-report.module';
 import { ClientSupplierStateRequestSmsSenderModule } from './job/client-supplier-state-request-sms-sender';
 import { ClientTechnicalStateRequestSmsSenderModule } from './job/client-technical-state-request-sms-sender';
@@ -251,6 +252,7 @@ import { GSDiscountTypeModule } from './admin/discount-type';
     UserActionReportModule,
     ActivityReportModule,
     TechnicalPersonReportModule,
+    DiscountCodeUsageReportModule,
     SupplierReportModule,
 
     UserPointModule,
