@@ -25,6 +25,7 @@ import * as _ from 'lodash';
 import { GSGuaranteeConfirmStatus } from '@rahino/guarantee/shared/guarantee-confirm-status';
 import { InjectQueue } from '@nestjs/bullmq';
 import { CLIENT_SUBMIT_CARD_SMS_SENDER_QUEUE } from '@rahino/guarantee/job/client-submit-card-sms-sender/constants';
+import { CLIENT_REWARD_SMS_SENDER_QUEUE } from '@rahino/guarantee/job/client-reward-sms-sender/constants';
 import { Queue } from 'bullmq';
 import { GSRewardRuleSharedService } from '@rahino/guarantee/shared/reward-rule';
 
@@ -38,6 +39,8 @@ export class NormalGuaranteeService {
     private readonly i18n: I18nService<I18nTranslations>,
     @InjectQueue(CLIENT_SUBMIT_CARD_SMS_SENDER_QUEUE)
     private readonly clientSubmitCardSmsSenderQueue: Queue,
+    @InjectQueue(CLIENT_REWARD_SMS_SENDER_QUEUE)
+    private readonly clientRewardSmsSenderQueue: Queue,
     private readonly rewardService: GSRewardRuleSharedService,
   ) {}
 
@@ -199,6 +202,16 @@ export class NormalGuaranteeService {
         serialNumber: guarantee.serialNumber,
       },
     );
+
+    if (reward) {
+      await this.clientRewardSmsSenderQueue.add('send-client-reward-sms', {
+        id: user.id,
+        firstname: user.firstname,
+        lastname: user.lastname,
+        phoneNumber: user.phoneNumber,
+        rewardAmount: reward.guarantee.totalCredit,
+      });
+    }
 
     return {
       result: guarantee,

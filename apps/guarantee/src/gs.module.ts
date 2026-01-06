@@ -122,6 +122,7 @@ import { IrangsImportDataModule } from './admin/irangs-import-data/irangs-import
 import { ClientReceivingDeviceSmsSenderModule } from './job/client-receiving-device-sms-sender';
 import { ConfirmReceiveDeviceInOrganizationModule } from './cartable/confirm-receive-device-in-organization';
 import { ThankfullSuccessPaymentSmsSenderModule } from './job/thankfull-success-payment-sms-sender';
+import { ClientRewardSmsSenderModule } from './job/client-reward-sms-sender';
 import { GSDiscountTypeModule } from './admin/discount-type';
 
 @Module({
@@ -200,6 +201,7 @@ import { GSDiscountTypeModule } from './admin/discount-type';
     PreRegistrationSucessSmsSenderModule,
     PreRegistrationRejectDescriptionSmsSenderModule,
     ClientSubmitCardSmsSenderModule,
+    ClientRewardSmsSenderModule,
     ThankfullSuccessPaymentSmsSenderModule,
 
     // test

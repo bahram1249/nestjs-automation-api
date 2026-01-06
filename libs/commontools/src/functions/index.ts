@@ -3,6 +3,7 @@ export * from './replace-character-slug';
 export * from './getIntegerRandomArbitrary';
 export * from './safe-json-parse';
 export * from './number-with-commas';
+export * from './format-persian-amount';
 export * from './add-days';
 export * from './is-not-null-or-empty';
 export * from './sum-property';
