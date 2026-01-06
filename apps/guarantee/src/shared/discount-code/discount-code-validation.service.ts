@@ -204,7 +204,9 @@ export class DiscountCodeValidationService {
     );
 
     if (!discountCode) {
-      throw new BadRequestException('Discount code not found');
+      throw new BadRequestException(
+        this.localizationService.translate('guarantee.discount_code_not_found'),
+      );
     }
 
     const actualDiscountAmount = maxDiscountAmount || discountAmount;
