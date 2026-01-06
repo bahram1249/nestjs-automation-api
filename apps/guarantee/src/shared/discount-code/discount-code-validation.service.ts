@@ -109,7 +109,7 @@ export class DiscountCodeValidationService {
   async calculateDiscount(
     discountCodeId: bigint,
     originalPriceInRial: number,
-  ): Promise<bigint> {
+  ): Promise<number> {
     const discountCode = await this.discountCodeRepository.findOne(
       new QueryOptionsBuilder()
         .filter({ id: discountCodeId })
@@ -122,8 +122,8 @@ export class DiscountCodeValidationService {
       throw new BadRequestException('Discount code not found');
     }
 
-    let discountAmount: bigint;
-    const originalPriceBigInt = BigInt(originalPriceInRial);
+    let discountAmount: number;
+    const originalPriceBigInt = originalPriceInRial;
 
     if (discountCode.discountTypeId == GSDiscountTypeEnum.Percentage) {
       const discountValue = Number(discountCode.discountValue);
@@ -132,22 +132,19 @@ export class DiscountCodeValidationService {
       }
       const discountPercentage = discountValue / 100;
       discountAmount =
-        (originalPriceBigInt * BigInt(Math.floor(discountPercentage * 100))) /
-        10000n;
+        (originalPriceBigInt * Math.floor(discountPercentage * 100)) / 10000;
     } else {
       const discountValue = Number(discountCode.discountValue);
       if (isNaN(discountValue)) {
         throw new BadRequestException('Invalid discount value');
       }
-      discountAmount = BigInt(discountValue);
+      discountAmount = discountValue;
     }
 
-    const discountAmountInRial = BigInt(
-      this.rialPriceService.getRialPrice({
-        price: Number(discountAmount),
-        unitPriceId: discountCode.unitPriceId,
-      }),
-    );
+    const discountAmountInRial = this.rialPriceService.getRialPrice({
+      price: Number(discountAmount),
+      unitPriceId: discountCode.unitPriceId,
+    });
 
     const maxDiscountAmount = Number(discountCode.maxDiscountAmount);
     if (isNaN(maxDiscountAmount)) {
@@ -159,7 +156,7 @@ export class DiscountCodeValidationService {
     });
 
     if (discountAmountInRial > maxDiscountAmountInRial) {
-      return BigInt(maxDiscountAmountInRial);
+      return maxDiscountAmountInRial;
     }
 
     return discountAmountInRial;
@@ -205,7 +202,7 @@ export class DiscountCodeValidationService {
     discountCodeId: bigint,
     userId: bigint,
     factorId: bigint,
-    discountAmount: bigint,
+    discountAmount: number,
     maxDiscountAmount?: bigint,
   ): Promise<void> {
     const discountCode = await this.discountCodeRepository.findOne(

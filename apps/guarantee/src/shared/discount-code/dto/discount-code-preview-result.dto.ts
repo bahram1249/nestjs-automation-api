@@ -22,7 +22,7 @@ export class DiscountCodePreviewResultDto {
 
   @AutoMap()
   @IsNumber()
-  public discountAmount: bigint;
+  public discountAmount: number;
 
   @AutoMap()
   @IsNumber()
