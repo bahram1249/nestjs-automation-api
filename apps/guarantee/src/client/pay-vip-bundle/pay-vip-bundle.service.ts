@@ -115,14 +115,19 @@ export class PayVipBundleService {
         );
       }
 
-      const discountAmountInRial =
+      const originalPriceInRial = await this.rialPriceService.getRialPrice({
+        price: Number(vipBundleType.price),
+        unitPriceId: vipBundleType.unitPriceId,
+      });
+
+      let discountAmountInRial =
         await this.discountCodeValidationService.calculateDiscount(
           discountCode.id,
-          await this.rialPriceService.getRialPrice({
-            price: Number(vipBundleType.price),
-            unitPriceId: vipBundleType.unitPriceId,
-          }),
+          originalPriceInRial,
         );
+
+      if (discountAmountInRial > originalPriceInRial)
+        discountAmountInRial = originalPriceInRial;
 
       const discountPaymentGatewayId =
         await this.discountCodeValidationService.getDiscountGatewayId();
@@ -318,7 +323,7 @@ export class PayVipBundleService {
     if (!discountCode || discountCode.trim() === '') {
       return {
         result: {
-          discountCodeId: 0n,
+          discountCodeId: 0,
           discountCode: '',
           originalPrice: bundlePrice,
           discountAmount: 0,
@@ -340,7 +345,7 @@ export class PayVipBundleService {
     if (!validation.canApply) {
       return {
         result: {
-          discountCodeId: 0n,
+          discountCodeId: 0,
           discountCode: '',
           originalPrice: bundlePrice,
           discountAmount: 0,
@@ -371,7 +376,7 @@ export class PayVipBundleService {
     if (!discountCodeEntity) {
       return {
         result: {
-          discountCodeId: 0n,
+          discountCodeId: 0,
           discountCode: '',
           originalPrice: bundlePrice,
           discountAmount: 0,
@@ -395,7 +400,7 @@ export class PayVipBundleService {
 
     return {
       result: {
-        discountCodeId: discountCodeEntity.id,
+        discountCodeId: Number(discountCodeEntity.id),
         discountCode,
         originalPrice: bundlePrice,
         discountAmount,

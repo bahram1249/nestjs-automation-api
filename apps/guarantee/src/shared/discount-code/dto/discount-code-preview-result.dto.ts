@@ -9,8 +9,8 @@ import {
 
 export class DiscountCodePreviewResultDto {
   @AutoMap()
-  @IsString()
-  public discountCodeId: bigint;
+  @IsNumber()
+  public discountCodeId: number;
 
   @AutoMap()
   @IsString()
