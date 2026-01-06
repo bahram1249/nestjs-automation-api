@@ -126,12 +126,20 @@ export class DiscountCodeValidationService {
     const originalPriceBigInt = BigInt(originalPriceInRial);
 
     if (discountCode.discountTypeId == GSDiscountTypeEnum.Percentage) {
-      const discountPercentage = Number(discountCode.discountValue) / 100;
+      const discountValue = Number(discountCode.discountValue);
+      if (isNaN(discountValue)) {
+        throw new BadRequestException('Invalid discount value');
+      }
+      const discountPercentage = discountValue / 100;
       discountAmount =
         (originalPriceBigInt * BigInt(Math.floor(discountPercentage * 100))) /
         10000n;
     } else {
-      discountAmount = BigInt(discountCode.discountValue);
+      const discountValue = Number(discountCode.discountValue);
+      if (isNaN(discountValue)) {
+        throw new BadRequestException('Invalid discount value');
+      }
+      discountAmount = BigInt(discountValue);
     }
 
     const discountAmountInRial = BigInt(
@@ -141,8 +149,12 @@ export class DiscountCodeValidationService {
       }),
     );
 
+    const maxDiscountAmount = Number(discountCode.maxDiscountAmount);
+    if (isNaN(maxDiscountAmount)) {
+      throw new BadRequestException('Invalid max discount amount');
+    }
     const maxDiscountAmountInRial = this.rialPriceService.getRialPrice({
-      price: Number(discountCode.maxDiscountAmount),
+      price: maxDiscountAmount,
       unitPriceId: discountCode.unitPriceId,
     });
 

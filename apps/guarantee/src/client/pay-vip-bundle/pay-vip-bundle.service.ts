@@ -310,16 +310,20 @@ export class PayVipBundleService {
       );
     }
 
+    const bundlePrice = Number(vipBundleType.price);
+    if (isNaN(bundlePrice)) {
+      throw new BadRequestException('Invalid VIP bundle price');
+    }
+
     if (!discountCode || discountCode.trim() === '') {
-      const originalPrice = Number(vipBundleType.price);
       return {
         result: {
           discountCodeId: 0n,
           discountCode: '',
-          originalPrice,
+          originalPrice: bundlePrice,
           discountAmount: 0n,
-          finalPrice: originalPrice,
-          userPayAmount: originalPrice,
+          finalPrice: bundlePrice,
+          userPayAmount: bundlePrice,
           canApply: false,
           error: undefined,
         },
@@ -334,15 +338,14 @@ export class PayVipBundleService {
       );
 
     if (!validation.canApply) {
-      const originalPrice = Number(vipBundleType.price);
       return {
         result: {
           discountCodeId: 0n,
           discountCode: '',
-          originalPrice,
+          originalPrice: bundlePrice,
           discountAmount: 0n,
-          finalPrice: originalPrice,
-          userPayAmount: originalPrice,
+          finalPrice: bundlePrice,
+          userPayAmount: bundlePrice,
           canApply: false,
           error: validation.error,
         },
@@ -366,15 +369,14 @@ export class PayVipBundleService {
     );
 
     if (!discountCodeEntity) {
-      const originalPrice = Number(vipBundleType.price);
       return {
         result: {
           discountCodeId: 0n,
           discountCode: '',
-          originalPrice,
+          originalPrice: bundlePrice,
           discountAmount: 0n,
-          finalPrice: originalPrice,
-          userPayAmount: originalPrice,
+          finalPrice: bundlePrice,
+          userPayAmount: bundlePrice,
           canApply: false,
           error: this.localizationService
             .translate('guarantee.discount_code_not_found')
@@ -386,17 +388,16 @@ export class PayVipBundleService {
     const discountAmount =
       await this.discountCodeValidationService.calculateDiscount(
         discountCodeEntity.id,
-        Number(vipBundleType.price),
+        bundlePrice,
       );
 
-    const originalPrice = Number(vipBundleType.price);
-    const finalPrice = originalPrice - Number(discountAmount);
+    const finalPrice = bundlePrice - Number(discountAmount);
 
     return {
       result: {
         discountCodeId: discountCodeEntity.id,
         discountCode,
-        originalPrice,
+        originalPrice: bundlePrice,
         discountAmount,
         finalPrice,
         userPayAmount: finalPrice,
