@@ -251,7 +251,7 @@ export class PayVipBundleService {
         },
       );
 
-      let transactionRecord = await this.transactionRepository.create(
+      const transactionRecord = await this.transactionRepository.create(
         {
           transactionStatusId: GSTransactionStatusEnum.Paid,
           unitPriceId: GSUnitPriceEnum.Rial,
