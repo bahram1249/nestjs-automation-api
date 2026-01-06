@@ -3,6 +3,7 @@ import { InjectModel } from '@nestjs/sequelize';
 import { BadRequestException } from '@nestjs/common';
 import {
   GSDiscountCode,
+  GSDiscountType,
   GSPaymentGateway,
   GSUnitPrice,
 } from '@rahino/localdatabase/models';
@@ -114,7 +115,7 @@ export class DiscountCodeValidationService {
       new QueryOptionsBuilder()
         .filter({ id: discountCodeId })
         .include([{ model: GSUnitPrice, as: 'unitPrice' }])
-        .include([{ model: GSDiscountCode, as: 'discountType' }])
+        .include([{ model: GSDiscountType, as: 'discountType' }])
         .build(),
     );
 
