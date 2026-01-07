@@ -390,11 +390,13 @@ export class PayVipBundleService {
       };
     }
 
-    const discountAmount =
+    let discountAmount =
       await this.discountCodeValidationService.calculateDiscount(
         discountCodeEntity.id,
         bundlePrice,
       );
+
+    if (discountAmount > bundlePrice) discountAmount = bundlePrice;
 
     const finalPrice = bundlePrice - discountAmount;
 
