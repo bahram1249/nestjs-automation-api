@@ -2716,8 +2716,8 @@ IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'gs-paymentgateways-v3'
 		)
 BEGIN
 
-	INSERT INTO GSPaymentGateways(id, title, paymentWayId, createdAt, updatedAt)
-		VALUES (6, N'اعمال تخفیف', 5, GETDATE(), GETDATE())
+	INSERT INTO GSPaymentGateways(title, paymentWayId, createdAt, updatedAt)
+		VALUES (N'اعمال تخفیف', 5, GETDATE(), GETDATE())
 
 	INSERT INTO Migrations(version, createdAt, updatedAt)
 		SELECT 'gs-paymentgateways-v3', GETDATE(), GETDATE()
