@@ -71,14 +71,22 @@ export class DiscountCodeUsageReportService {
 
   async findAll(dto: GetDiscountCodeUsageReportDto) {
     const queryBuilder = this._buildQuery(dto);
-    const results = await this.discountCodeUsageRepository.findAll(
-      queryBuilder.build(),
+    const count = await this.discountCodeUsageRepository.count(
+      queryBuilder.attributes([]).build(),
     );
-    return results;
+    const data = await this.discountCodeUsageRepository.findAll(
+      queryBuilder.offset(dto.offset).limit(dto.limit).build(),
+    );
+    return {
+      result: data,
+      total: count,
+    };
   }
 
   async exportExcel(dto: GetDiscountCodeUsageReportDto): Promise<Buffer> {
-    const rows = await this.findAll(dto);
+    dto.limit = 100000;
+    const data = await this.findAll(dto);
+    const rows = data.result;
     const workbook = new ExcelJS.Workbook();
     const sheet = workbook.addWorksheet('DiscountCodeUsageReports');
     sheet.columns = [

@@ -85,14 +85,22 @@ export class RewardHistoryReportService {
 
   async findAll(dto: GetRewardHistoryReportDto) {
     const queryBuilder = this._buildQuery(dto);
-    const results = await this.rewardHistoryRepository.findAll(
-      queryBuilder.build(),
+    const count = await this.rewardHistoryRepository.count(
+      queryBuilder.attributes([]).build(),
     );
-    return results;
+    const data = await this.rewardHistoryRepository.findAll(
+      queryBuilder.offset(dto.offset).limit(dto.limit).build(),
+    );
+    return {
+      result: data,
+      total: count,
+    };
   }
 
   async exportExcel(dto: GetRewardHistoryReportDto): Promise<Buffer> {
-    const rows = await this.findAll(dto);
+    dto.limit = 100000;
+    const data = await this.findAll(dto);
+    const rows = data.result;
     const workbook = new ExcelJS.Workbook();
     const sheet = workbook.addWorksheet('RewardHistoryReports');
     sheet.columns = [

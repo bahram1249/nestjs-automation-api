@@ -13260,7 +13260,7 @@ IF NOT EXISTS ( SELECT 1 FROM Migrations WHERE version = 'CORE-Permissions-Data-
 			)
 	AND EXISTS (
 		SELECT 1 FROM Settings
-		WHERE ([key] = 'SITE_NAME' AND [value] IN ('AriaKish'))
+		WHERE ([key] = 'SITE_NAME' AND [value] IN ('BPMN'))
 		)
 BEGIN
 
@@ -13307,7 +13307,7 @@ BEGIN
 
 	DECLARE @parentMenuId int = null
 	DECLARE @findParentMenu bit = 1;
-	DECLARE @parentMenuName nvarchar(256) = N'گزارش‌ها'
+	DECLARE @parentMenuName nvarchar(256) = N'گزارشات'
 	DECLARE @menuName nvarchar(256) = N'تاریخچه پاداش'
 
 	DECLARE @menuUrl nvarchar(512) = N'/guarantee/report/rewardHistories'
