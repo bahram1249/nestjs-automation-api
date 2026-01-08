@@ -5,7 +5,7 @@ import { i18nValidationMessage } from 'nestjs-i18n';
 import { I18nTranslations } from 'apps/main/src/generated/i18n.generated';
 import { ListFilter } from '@rahino/query-filter';
 
-export class DiscountCodeUsageReportDto {
+export class RewardHistoryReportDto {
   @IsDateString()
   startDate: Date;
 
@@ -15,13 +15,13 @@ export class DiscountCodeUsageReportDto {
   @ApiProperty({
     required: false,
     type: String,
-    description: 'discount code',
+    description: 'original guarantee serial number',
   })
   @IsOptional()
   @IsString({
     message: i18nValidationMessage<I18nTranslations>('validation.STRING'),
   })
-  discountCode?: string;
+  originalGuaranteeSerialNumber?: string;
 
   @ApiProperty({
     required: false,
@@ -35,7 +35,7 @@ export class DiscountCodeUsageReportDto {
   userFullName?: string;
 }
 
-export class GetDiscountCodeUsageReportDto extends IntersectionType(
-  DiscountCodeUsageReportDto,
+export class GetRewardHistoryReportDto extends IntersectionType(
+  RewardHistoryReportDto,
   ListFilter,
 ) {}

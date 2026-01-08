@@ -92,6 +92,7 @@ import { ActivityReportModule } from './report/activity-report/activity-report.m
 import { TechnicalPersonReportModule } from './report/technical-person-report/technical-person-report.module';
 import { DiscountCodeUsageReportModule } from './report/discount-code-usage-report/discount-code-usage-report.module';
 import { SupplierReportModule } from './report/supplier-report/supplier-report.module';
+import { RewardHistoryReportModule } from './report/reward-history-report/reward-history-report.module';
 import { ClientSupplierStateRequestSmsSenderModule } from './job/client-supplier-state-request-sms-sender';
 import { ClientTechnicalStateRequestSmsSenderModule } from './job/client-technical-state-request-sms-sender';
 import { UserPointModule } from './client/user-point';
@@ -254,6 +255,7 @@ import { GSDiscountTypeModule } from './admin/discount-type';
     TechnicalPersonReportModule,
     DiscountCodeUsageReportModule,
     SupplierReportModule,
+    RewardHistoryReportModule,
 
     UserPointModule,
     RevertRequestModule,

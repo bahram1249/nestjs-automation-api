@@ -5,6 +5,7 @@ import {
   GSVipBundleType,
   GSAssignedGuarantee,
   GSGuarantee,
+  GSRewardHistory,
 } from '@rahino/localdatabase/models';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import { Op, Sequelize } from 'sequelize';
@@ -27,6 +28,8 @@ export class GSRewardRuleSharedService {
     private readonly assignedGuaranteeRepository: typeof GSAssignedGuarantee,
     @InjectModel(GSGuarantee)
     private readonly guaranteeRepository: typeof GSGuarantee,
+    @InjectModel(GSRewardHistory)
+    private readonly rewardHistoryRepository: typeof GSRewardHistory,
     private readonly rialPriceService: RialPriceService,
   ) {}
 
@@ -40,7 +43,7 @@ export class GSRewardRuleSharedService {
       return;
     }
 
-    return await this.generateVipCardForUser(user, rewardRule);
+    return await this.generateVipCardForUser(user, rewardRule, guarantee);
   }
 
   private async findActiveRewardRule(): Promise<GSRewardRule | null> {
@@ -72,6 +75,7 @@ export class GSRewardRuleSharedService {
   private async generateVipCardForUser(
     user: User,
     rewardRule: GSRewardRule,
+    originalGuarantee: GSGuarantee,
   ): Promise<GSAssignedGuarantee> {
     const uid = new ShortUniqueId({ length: 10 });
     const currentDate = new Date();
@@ -101,9 +105,25 @@ export class GSRewardRuleSharedService {
       }),
     });
 
-    return await this.assignedGuaranteeRepository.create({
+    const assignedGuarantee = await this.assignedGuaranteeRepository.create({
       guaranteeId: guarantee.id,
       userId: user.id,
     });
+
+    await this.rewardHistoryRepository.create({
+      userId: user.id,
+      guaranteeId: originalGuarantee.id,
+      rewardRuleId: rewardRule.id,
+      rewardGuaranteeId: guarantee.id,
+      unitPriceId: rewardRule.unitPriceId,
+      originalGuaranteeSerialNumber: originalGuarantee.serialNumber,
+      rewardAmount: this.rialPriceService.getRialPrice({
+        price: Number(rewardRule.rewardAmount),
+        unitPriceId: rewardRule.unitPriceId,
+      }),
+      rewardDate: currentDate,
+    });
+
+    return assignedGuarantee;
   }
 }

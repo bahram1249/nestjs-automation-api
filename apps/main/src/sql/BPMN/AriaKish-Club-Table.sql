@@ -2572,3 +2572,43 @@ BEGIN
 END;
 GO
 
+
+-- gs-reward-histories-v1
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'gs-reward-histories-v1')
+	)
+	AND EXISTS (
+		SELECT 1 FROM Settings
+		WHERE ([key] = 'CUSTOMER_NAME' AND [value] IN ('AriaKish'))
+	)
+BEGIN
+
+	CREATE TABLE GSRewardHistories (
+		id BIGINT IDENTITY(1,1) PRIMARY KEY,
+		userId BIGINT NOT NULL
+			CONSTRAINT FK_GSRewardHistories_UserId
+				FOREIGN KEY REFERENCES Users(id),
+		guaranteeId BIGINT NOT NULL
+			CONSTRAINT FK_GSRewardHistories_GuaranteeId
+				FOREIGN KEY REFERENCES GSGuarantees(id),
+		rewardRuleId BIGINT NOT NULL
+			CONSTRAINT FK_GSRewardHistories_RewardRuleId
+				FOREIGN KEY REFERENCES GSRewardRules(id),
+		rewardGuaranteeId BIGINT NOT NULL
+			CONSTRAINT FK_GSRewardHistories_RewardGuaranteeId
+				FOREIGN KEY REFERENCES GSGuarantees(id),
+		unitPriceId INT NOT NULL
+			CONSTRAINT FK_GSRewardHistories_UnitPriceId
+				FOREIGN KEY REFERENCES GSUnitPrices(id),
+		originalGuaranteeSerialNumber NVARCHAR(256) NOT NULL,
+		rewardAmount BIGINT NOT NULL,
+		rewardDate DATETIMEOFFSET NOT NULL,
+		createdAt DATETIMEOFFSET NOT NULL,
+		updatedAt DATETIMEOFFSET NOT NULL
+	)
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+		SELECT 'gs-reward-histories-v1', GETDATE(), GETDATE()
+END
+
+GO
+

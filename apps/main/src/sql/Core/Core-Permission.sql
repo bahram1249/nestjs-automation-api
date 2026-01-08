@@ -13244,11 +13244,114 @@ BEGIN
 
 		SELECT @menuId = menuId FROM @MenuTemp
 
-		INSERT INTO PermissionMenus(permissionId, menuId, createdAt, updatedAt)
+	INSERT INTO PermissionMenus(permissionId, menuId, createdAt, updatedAt)
 		SELECT @permissionId, @menuId, getdate(), getdate()
 
-		INSERT INTO Migrations(version, createdAt, updatedAt)
+	INSERT INTO Migrations(version, createdAt, updatedAt)
 		SELECT 'CORE-Permissions-Data-v111', GETDATE(), GETDATE()
+END
+
+GO
+
+
+-- guarantee reward history
+-- reward histories
+IF NOT EXISTS ( SELECT 1 FROM Migrations WHERE version = 'CORE-Permissions-Data-v112'
+			)
+	AND EXISTS (
+		SELECT 1 FROM Settings
+		WHERE ([key] = 'SITE_NAME' AND [value] IN ('AriaKish'))
+		)
+BEGIN
+
+	DECLARE @roleId int = (SELECT TOP 1 id FROM Roles WHERE static_id = 1)
+	DECLARE @userId bigint = (SELECT TOP 1 id FROM Users WHERE static_id = 1)
+
+	DECLARE @GroupTemp TABLE (
+		gorupId int
+	);
+
+	DECLARE @groupId int = null;
+
+	DECLARE @entityName nvarchar(256) = N'GuaranteeRewardHistories'
+	DECLARE @groupName nvarchar(256) = N'gs.report.rewardhistories'
+
+	DECLARE @permissionSymbolGetAll nvarchar(512) = @groupName + '.getall';
+
+	-- permission groups
+	INSERT INTO PermissionGroups(permissionGroupName, [visibility], createdAt, updatedAt)
+	OUTPUT inserted.id INTO @GroupTemp(gorupId)
+	SELECT @groupName, 1, GETDATE(), GETDATE();
+
+	SELECT @groupId = gorupId FROM @GroupTemp
+
+	-- permissions
+
+	DECLARE @PermissionTemp TABLE (
+		permissionId int
+	);
+
+	INSERT INTO Permissions(permissionName ,permissionSymbol,permissionGroupId,  createdAt, updatedAt)
+	OUTPUT inserted.id INTO @PermissionTemp(permissionId)
+	SELECT 'GETALL_' + @entityName, @permissionSymbolGetAll, @groupId, GETDATE(), GETDATE()
+
+	-- CRUD THIS Enity FOR super-admin
+	INSERT INTO RolePermissions(roleId, permissionId, createdAt, updatedAt)
+	SELECT @roleId, permissionId, GETDATE(), GETDATE()
+	FROM @PermissionTemp
+
+	DELETE FROM @PermissionTemp
+
+	DECLARE @permissionId int = null
+	SELECT @permissionId = permissionId FROM @PermissionTemp
+
+	DECLARE @parentMenuId int = null
+	DECLARE @findParentMenu bit = 1;
+	DECLARE @parentMenuName nvarchar(256) = N'گزارش‌ها'
+	DECLARE @menuName nvarchar(256) = N'تاریخچه پاداش'
+
+	DECLARE @menuUrl nvarchar(512) = N'/guarantee/report/rewardHistories'
+
+	DECLARE @permissionSymbolShowMenu nvarchar(512) = @groupName + '.showmenu';
+
+	INSERT INTO Permissions(permissionName ,permissionSymbol, permissionGroupId,createdAt, updatedAt)
+	OUTPUT inserted.id INTO @PermissionTemp(permissionId)
+	SELECT 'SHOWMENU_' + @entityName, @permissionSymbolShowMenu, @groupId,GETDATE(), GETDATE()
+
+	INSERT INTO RolePermissions(roleId, permissionId, createdAt, updatedAt)
+	SELECT @roleId, permissionId, GETDATE(), GETDATE()
+	FROM @PermissionTemp
+
+	SELECT @permissionId = permissionId FROM @PermissionTemp
+
+	SELECT @parentMenuId = id
+		FROM Menus
+		WHERE title = @parentMenuName
+
+	IF @parentMenuId IS NOT NULL
+		AND NOT EXISTS (SELECT 1 FROM PermissionMenus WHERE permissionId = @permissionId AND menuId = @parentMenuId)
+	BEGIN
+		INSERT INTO PermissionMenus(permissionId, menuId, createdAt, updatedAt)
+		SELECT @permissionId, @parentMenuId, getdate(), getdate()
+
+	END
+
+	DECLARE @MenuTemp TABLE (
+			menuId int
+		);
+	DECLARE @menuId int = null
+
+	INSERT INTO Menus(title, url, parentMenuId, className, visibility, createdAt, updatedAt)
+	OUTPUT inserted.id INTO @MenuTemp(menuId)
+	SELECT @menuName, @menuUrl, @parentMenuId,null, null, GETDATE(), GETDATE()
+
+	SELECT @menuId = menuId FROM @MenuTemp
+
+	INSERT INTO PermissionMenus(permissionId, menuId, createdAt, updatedAt)
+	SELECT @permissionId, @menuId, getdate(), getdate()
+
+	INSERT INTO Migrations(version, createdAt, updatedAt)
+		SELECT 'CORE-Permissions-Data-v112', GETDATE(), GETDATE()
 END
 
 GO

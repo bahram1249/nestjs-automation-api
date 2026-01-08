@@ -6,6 +6,7 @@ import {
   GSVipBundleType,
   GSAssignedGuarantee,
   GSGuarantee,
+  GSRewardHistory,
 } from '@rahino/localdatabase/models';
 import { RialPriceModule } from '../rial-price';
 
@@ -16,6 +17,7 @@ import { RialPriceModule } from '../rial-price';
       GSVipBundleType,
       GSAssignedGuarantee,
       GSGuarantee,
+      GSRewardHistory,
     ]),
     RialPriceModule,
   ],
