@@ -2575,7 +2575,7 @@ GO
 
 -- gs-reward-histories-v1
 IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'gs-reward-histories-v1')
-	)
+	
 	AND EXISTS (
 		SELECT 1 FROM Settings
 		WHERE ([key] = 'CUSTOMER_NAME' AND [value] IN ('AriaKish'))
