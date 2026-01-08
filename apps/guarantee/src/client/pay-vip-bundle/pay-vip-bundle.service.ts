@@ -50,7 +50,7 @@ export class PayVipBundleService {
   async create(user: User, dto: PayVipBundleDto) {
     const vipBundleType = await this.vipBundleTypeRepository.findOne(
       new QueryOptionsBuilder()
-        .filter({ id: BigInt(dto.vipBundleTypeId) })
+        .filter({ id: dto.vipBundleTypeId })
         .filter(
           Sequelize.where(
             Sequelize.fn(
@@ -78,7 +78,6 @@ export class PayVipBundleService {
       const validation =
         await this.discountCodeValidationService.validateDiscountCode(
           dto.discountCode,
-
           user.id,
         );
 

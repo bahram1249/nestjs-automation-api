@@ -41,7 +41,7 @@ export class RewardRuleService {
       })
       .filter(
         Sequelize.where(
-          Sequelize.fn('isnull', Sequelize.col('GSRewardRules.isDeleted'), 0),
+          Sequelize.fn('isnull', Sequelize.col('GSRewardRule.isDeleted'), 0),
           {
             [Op.eq]: 0,
           },
@@ -94,7 +94,7 @@ export class RewardRuleService {
         .include([{ model: GSUnitPrice, as: 'unitPrice' }])
         .filter(
           Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('GSRewardRules.isDeleted'), 0),
+            Sequelize.fn('isnull', Sequelize.col('GSRewardRule.isDeleted'), 0),
             {
               [Op.eq]: 0,
             },
@@ -145,7 +145,7 @@ export class RewardRuleService {
       new QueryOptionsBuilder()
         .filter(
           Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('GSRewardRules.isDeleted'), 0),
+            Sequelize.fn('isnull', Sequelize.col('GSRewardRule.isDeleted'), 0),
             {
               [Op.eq]: 0,
             },
@@ -179,52 +179,4 @@ export class RewardRuleService {
       ]),
     };
   }
-
-  // async getActiveRewardRule(): Promise<GSRewardRule | null> {
-  //   const now = new Date();
-
-  //   const rewardRule = await this.repository.findOne({
-  //     where: {
-  //       isActive: true,
-  //       isDeleted: false,
-  //       [Op.or]: [
-  //         { validFrom: null, validUntil: null },
-  //         { validFrom: { [Op.lte]: now }, validUntil: { [Op.gte]: now } },
-  //       ],
-  //     },
-  //     include: ['vipBundleType'],
-  //     order: [['createdAt', 'DESC']],
-  //   });
-
-  //   return rewardRule;
-  // }
-
-  // async checkAndGrantWarrantyReward(
-  //   guaranteeId: bigint,
-  //   transaction?: Transaction,
-  // ): Promise<GSRewardRule | null> {
-  //   const existingReward = await this.warrantyRewardRepository.findOne({
-  //     where: { guaranteeId },
-  //   });
-
-  //   if (existingReward) {
-  //     return null;
-  //   }
-
-  //   const rewardRule = await this.getActiveRewardRule();
-
-  //   if (!rewardRule) {
-  //     return null;
-  //   }
-
-  //   await this.warrantyRewardRepository.create(
-  //     {
-  //       guaranteeId,
-  //       rewardRuleId: rewardRule.id,
-  //     },
-  //     { transaction },
-  //   );
-
-  //   return rewardRule;
-  // }
 }
