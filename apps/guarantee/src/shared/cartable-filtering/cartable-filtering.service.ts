@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { OrganizationUserService } from '@rahino/bpmn/modules/organization-user/organization-user.service';
-
 import { Role, User, UserRole, UserType } from '@rahino/database';
 import {
   BPMNActivity,
@@ -40,7 +39,11 @@ import { RoleService } from '@rahino/core/user/role/role.service';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import { ActivityTypeEnum } from '@rahino/bpmn/modules/activity-type';
 import { GuaranteeStaticRoleEnum } from '../static-role/enum';
-
+import { FactorService } from '@rahino/guarantee/cartable/cartable-factor/cartable-factor.service';
+import { ListFilter } from '@rahino/query-filter';
+import { GetFactorDto } from '@rahino/guarantee/cartable/cartable-factor/dto';
+import { GSFactorOutputDto } from '../success-factor-query-builder/dto/factor-output.dto';
+import * as _ from 'lodash';
 @Injectable()
 export class SharedCartableFilteringService {
   private readonly superAdminStaticId = 1;
@@ -53,6 +56,7 @@ export class SharedCartableFilteringService {
     private readonly userRoleRepository: typeof UserRole,
     private readonly roleService: RoleService,
     private readonly organizationUserService: OrganizationUserService,
+    private readonly factorService: FactorService,
   ) {}
 
   async findAllForCurrentUser(user: User, filter: GetCartableDto) {
@@ -103,7 +107,7 @@ export class SharedCartableFilteringService {
       isEndActivity: false,
     };
 
-    return this.findAllWithFilter(customFilter);
+    return this.findAllWithFilter(user, customFilter);
   }
 
   async findAllForTracking(user: User, filter: GetCartableDto) {
@@ -148,7 +152,7 @@ export class SharedCartableFilteringService {
         trackingInCartable,
       ],
     };
-    return await this.findAllWithFilter(customFilter);
+    return await this.findAllWithFilter(user, customFilter);
   }
 
   async findCurrentStates(
@@ -231,7 +235,10 @@ export class SharedCartableFilteringService {
     return await Promise.all(states);
   }
 
-  private async findAllWithFilter(filter: CartableFindAllWithFilter) {
+  private async findAllWithFilter(
+    user: User,
+    filter: CartableFindAllWithFilter,
+  ) {
     let query = new QueryOptionsBuilder()
       .include([
         {
@@ -439,7 +446,6 @@ export class SharedCartableFilteringService {
 
     query = query
       .attributes(['id', 'requestId', 'activityId', 'createdAt', 'updatedAt'])
-
       .thenIncludeIf(filter.includeNodeFilter, {
         attributes: ['id', 'injectForm', 'name', 'description'],
         model: BPMNNode,
@@ -472,10 +478,39 @@ export class SharedCartableFilteringService {
       .order({ orderBy: filter.orderBy, sortOrder: filter.sortOrder });
 
     const results = await this.repository.findAll(query.build());
+    const successFactors = await this.getSuccessFactorByRequestIds(
+      user,
+      filter,
+      results.map((result) => Number(result.requestId)),
+    );
+    const finalData = this.mergeCurrentStateWithFactor(results, successFactors);
 
     return {
-      result: results,
+      result: finalData,
       total: count,
     };
+  }
+
+  private async getSuccessFactorByRequestIds(
+    user: User,
+    parentFilter: CartableFindAllWithFilter,
+    requestIds: number[],
+  ) {
+    const listFilter = parentFilter as ListFilter;
+    const filter = _.merge(listFilter, requestIds) as GetFactorDto;
+    const data = await this.factorService.findAll(user, filter);
+    return data.result;
+  }
+
+  private mergeCurrentStateWithFactor(
+    currentStates: BPMNRequestState[],
+    successFactors: GSFactorOutputDto[],
+  ) {
+    return currentStates.map((currentState) => {
+      const requestFactors = successFactors.filter(
+        (factor) => factor.requestId == currentState.requestId,
+      );
+      return _.merge(currentState, { successFactors: requestFactors });
+    });
   }
 }

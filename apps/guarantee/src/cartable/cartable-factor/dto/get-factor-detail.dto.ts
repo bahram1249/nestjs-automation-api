@@ -2,6 +2,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { AutoMap } from 'automapper-classes';
 import { Type } from 'class-transformer';
 import {
+  IsArray,
   IsDateString,
   IsInt,
   IsNumber,
@@ -95,4 +96,15 @@ export class GetFactorDetailDto {
     description: 'serialNumber',
   })
   serialNumber?: string;
+
+  @IsOptional()
+  @IsArray()
+  @IsInt({ each: true })
+  @Type(() => Number)
+  @ApiProperty({
+    required: false,
+    type: [Number],
+    description: 'array of requestIds',
+  })
+  requestIds?: number[];
 }

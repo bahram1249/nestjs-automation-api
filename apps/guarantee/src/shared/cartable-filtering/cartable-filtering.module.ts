@@ -9,17 +9,19 @@ import {
 } from '@rahino/localdatabase/models';
 import { RoleModule } from '@rahino/core/user/role/role.module';
 import { UserRole } from '@rahino/database';
+import { GSSuccessFactorQueryBuilderModule } from '../success-factor-query-builder';
+import { GSCartableFactorModule } from '@rahino/guarantee/cartable/cartable-factor/cartable-factor.module';
 
 @Module({
   imports: [
     BPMNOrganizationUserModule,
     RoleModule,
-
     SequelizeModule.forFeature([
       BPMNRequestState,
       BPMNOrganizationUser,
       UserRole,
     ]),
+    GSCartableFactorModule,
   ],
   providers: [SharedCartableFilteringService],
   exports: [SharedCartableFilteringService],

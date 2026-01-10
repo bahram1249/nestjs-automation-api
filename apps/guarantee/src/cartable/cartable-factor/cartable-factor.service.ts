@@ -10,6 +10,7 @@ import { OrganizationStuffService } from '@rahino/guarantee/shared/organization-
 import { RoleService } from '@rahino/core/user/role/role.service';
 import { GuaranteeStaticRoleEnum } from '@rahino/guarantee/shared/static-role/enum';
 import { Sequelize } from 'sequelize';
+import { isNotNull } from '@rahino/commontools';
 
 @Injectable()
 export class FactorService {
@@ -147,6 +148,19 @@ export class FactorService {
             FROM GSRequests AS Req
             WHERE Req.id = GSFactor.requestId
               AND Req.id = ${filter.requestId}) `.replaceAll(/\s\s+/g, ' '),
+        ),
+      )
+      .filterIf(
+        isNotNull(filter.requestIds) && filter.requestIds.length > 0,
+        Sequelize.literal(
+          `EXISTS (
+            SELECT 1
+            FROM GSRequests AS Req
+            WHERE Req.id = GSFactor.requestId
+              AND Req.id IN (${filter.requestIds.join(',')})) `.replaceAll(
+            /\s\s+/g,
+            ' ',
+          ),
         ),
       );
     const count = await this.repository.count(query.build());
