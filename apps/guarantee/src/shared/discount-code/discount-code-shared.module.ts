@@ -4,18 +4,13 @@ import { SequelizeModule } from '@nestjs/sequelize';
 import {
   GSDiscountCode,
   GSDiscountCodeUsage,
-  GSPaymentGateway,
 } from '@rahino/localdatabase/models';
 import { LocalizationModule } from 'apps/main/src/common/localization';
 import { RialPriceModule } from '../rial-price';
 
 @Module({
   imports: [
-    SequelizeModule.forFeature([
-      GSPaymentGateway,
-      GSDiscountCodeUsage,
-      GSDiscountCode,
-    ]),
+    SequelizeModule.forFeature([GSDiscountCodeUsage, GSDiscountCode]),
     LocalizationModule,
     RialPriceModule,
   ],

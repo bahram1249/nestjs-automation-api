@@ -1,16 +1,9 @@
-import { Injectable, Inject } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
-import { BadRequestException } from '@nestjs/common';
-import {
-  GSDiscountCode,
-  GSDiscountType,
-  GSPaymentGateway,
-  GSUnitPrice,
-} from '@rahino/localdatabase/models';
-import { GSPaymentWayEnum } from '../payment-way/enum/gs-payment-way.enum';
+import { GSDiscountCode, GSUnitPrice } from '@rahino/localdatabase/models';
 import { GSDiscountCodeUsage } from '@rahino/localdatabase/models';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
-import { Sequelize, Op } from 'sequelize';
+import { Sequelize, Op, Transaction } from 'sequelize';
 import { RialPriceService } from '../rial-price/rial-price.service';
 import { GSDiscountTypeEnum } from '../discount-type/enum';
 import { DiscountUsageInfo, DiscountValidationResult } from './interface';
@@ -23,8 +16,6 @@ export class DiscountCodeValidationService {
     private readonly discountCodeRepository: typeof GSDiscountCode,
     @InjectModel(GSDiscountCodeUsage)
     private readonly discountCodeUsageRepository: typeof GSDiscountCodeUsage,
-    @InjectModel(GSPaymentGateway)
-    private readonly paymentGateWayRepository: typeof GSPaymentGateway,
     private readonly rialPriceService: RialPriceService,
     private readonly localizationService: LocalizationService,
   ) {}
@@ -33,6 +24,7 @@ export class DiscountCodeValidationService {
     discountCode: string,
     userId: bigint,
   ): Promise<DiscountValidationResult> {
+    // find discountCode
     const discountCodeEntity = await this.discountCodeRepository.findOne(
       new QueryOptionsBuilder()
         .filter(
@@ -70,6 +62,7 @@ export class DiscountCodeValidationService {
       return {
         isValid: false,
         canApply: false,
+        discountCode: discountCodeEntity,
         error: this.localizationService
           .translate('guarantee.discount_code_has_expired')
           .toString(),
@@ -81,20 +74,24 @@ export class DiscountCodeValidationService {
       userId,
     );
 
+    // validate userUsage
     if (discountCodeUsage.userUsage >= discountCodeEntity.perUserUsageLimit) {
       return {
         isValid: true,
         canApply: false,
+        discountCode: discountCodeEntity,
         error: this.localizationService
           .translate('guarantee.personal_usage_limit_reached')
           .toString(),
       };
     }
 
+    // validate total usage
     if (discountCodeUsage.totalUsage >= discountCodeEntity.totalUsageLimit) {
       return {
         isValid: true,
         canApply: false,
+        discountCode: discountCodeEntity,
         error: this.localizationService
           .translate('guarantee.total_usage_limit_reached')
           .toString(),
@@ -104,66 +101,60 @@ export class DiscountCodeValidationService {
     return {
       isValid: true,
       canApply: true,
+      discountCode: discountCodeEntity,
     };
   }
 
   async calculateDiscount(
-    discountCodeId: bigint,
+    discountCode: GSDiscountCode,
     originalPriceInRial: number,
   ): Promise<number> {
-    const discountCode = await this.discountCodeRepository.findOne(
-      new QueryOptionsBuilder()
-        .filter({ id: discountCodeId })
-        .include([{ model: GSUnitPrice, as: 'unitPrice' }])
-        .include([{ model: GSDiscountType, as: 'discountType' }])
-        .build(),
+    let discountAmountInRial = await this.calculateDiscountAmountInRial(
+      discountCode,
+      originalPriceInRial,
     );
 
-    if (!discountCode) {
-      throw new BadRequestException('Discount code not found');
-    }
-
-    let discountAmount: number;
-    const originalPrice = originalPriceInRial;
-
-    if (discountCode.discountTypeId == GSDiscountTypeEnum.Percentage) {
-      const discountValue = Number(discountCode.discountValue);
-      if (isNaN(discountValue)) {
-        throw new BadRequestException('Invalid discount value');
-      }
-      const discountPercentage = discountValue / 100;
-      discountAmount =
-        (originalPrice * Math.floor(discountPercentage * 100)) / 10000;
-    } else {
-      const discountValue = Number(discountCode.discountValue);
-      if (isNaN(discountValue)) {
-        throw new BadRequestException('Invalid discount value');
-      }
-      discountAmount = discountValue;
-    }
-
-    const discountAmountInRial = this.rialPriceService.getRialPrice({
-      price: Number(discountAmount),
-      unitPriceId: discountCode.unitPriceId,
-    });
-
     const maxDiscountAmount = Number(discountCode.maxDiscountAmount);
-    if (isNaN(maxDiscountAmount)) {
-      throw new BadRequestException('Invalid max discount amount');
-    }
+
     const maxDiscountAmountInRial = this.rialPriceService.getRialPrice({
       price: maxDiscountAmount,
       unitPriceId: discountCode.unitPriceId,
     });
 
     if (discountAmountInRial > maxDiscountAmountInRial) {
-      return maxDiscountAmountInRial;
+      discountAmountInRial = maxDiscountAmountInRial;
+    }
+
+    if (discountAmountInRial > originalPriceInRial) {
+      discountAmountInRial = originalPriceInRial;
     }
 
     return discountAmountInRial;
   }
 
-  async getDiscountCodeUsage(
+  async incrementUsage(
+    discountCode: GSDiscountCode,
+    userId: bigint,
+    factorId: bigint,
+    discountAmount: number,
+    transaction?: Transaction,
+  ): Promise<void> {
+    await this.discountCodeUsageRepository.create(
+      {
+        discountCodeId: discountCode.id,
+        userId,
+        factorId,
+        discountAmount: discountAmount,
+        maxDiscountAmount: discountCode.maxDiscountAmount,
+        usedAt: new Date(),
+      },
+      {
+        transaction: transaction,
+      },
+    );
+  }
+
+  private async getDiscountCodeUsage(
     discountCodeId: bigint,
     userId: bigint,
   ): Promise<DiscountUsageInfo> {
@@ -181,72 +172,22 @@ export class DiscountCodeValidationService {
     };
   }
 
-  async getDiscountGatewayId(): Promise<number> {
-    const paymentGateway = await this.paymentGateWayRepository.findOne(
-      new QueryOptionsBuilder()
-        .filter({ paymentWayId: GSPaymentWayEnum.Discount })
-        .build(),
-    );
-
-    if (!paymentGateway) {
-      throw new BadRequestException(
-        this.localizationService.translate(
-          'guarantee.discount_payment_gateway_not_found',
-        ),
+  private async calculateDiscountAmountInRial(
+    discountCode: GSDiscountCode,
+    originalPriceInRial: number,
+  ) {
+    if (discountCode.discountTypeId == GSDiscountTypeEnum.Percentage) {
+      const discountValue = Number(discountCode.discountValue);
+      const discountPercentage = discountValue / 100;
+      return (
+        (originalPriceInRial * Math.floor(discountPercentage * 100)) / 10000
       );
     }
-
-    return paymentGateway.id;
-  }
-
-  async incrementUsage(
-    discountCodeId: bigint,
-    userId: bigint,
-    factorId: bigint,
-    discountAmount: number,
-    maxDiscountAmount?: number,
-  ): Promise<void> {
-    const discountCode = await this.discountCodeRepository.findOne(
-      new QueryOptionsBuilder()
-        .filter({ id: discountCodeId })
-        .include([{ model: GSUnitPrice, as: 'unitPrice' }])
-        .build(),
-    );
-
-    if (!discountCode) {
-      throw new BadRequestException(
-        this.localizationService.translate('guarantee.discount_code_not_found'),
-      );
-    }
-
-    const actualDiscountAmount = maxDiscountAmount || discountAmount;
-
-    await this.discountCodeUsageRepository.create({
-      discountCodeId,
-      userId,
-      factorId,
-      discountAmount: actualDiscountAmount,
-      maxDiscountAmount: discountCode.maxDiscountAmount,
-      usedAt: new Date(),
+    const discountValue = this.rialPriceService.getRialPrice({
+      price: Number(discountCode.discountValue),
+      unitPriceId: discountCode.unitPriceId,
     });
-  }
 
-  async getDiscountCodeByCode(code: string): Promise<GSDiscountCode | null> {
-    const discountCode = await this.discountCodeRepository.findOne(
-      new QueryOptionsBuilder()
-        .filter({ code })
-        .filter(
-          Sequelize.where(
-            Sequelize.fn(
-              'isnull',
-              Sequelize.col('GSDiscountCode.isDeleted'),
-              0,
-            ),
-            { [Op.eq]: 0 },
-          ),
-        )
-        .build(),
-    );
-    return discountCode;
+    return discountValue;
   }
 }

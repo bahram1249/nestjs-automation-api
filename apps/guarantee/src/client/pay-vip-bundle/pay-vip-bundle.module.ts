@@ -7,8 +7,8 @@ import {
   GSFactorVipBundle,
   GSVipBundleType,
   GSDiscountCode,
-  GSUnitPrice,
   GSTransaction,
+  GSPaymentGateway,
 } from '@rahino/localdatabase/models';
 import { LocalizationModule } from 'apps/main/src/common/localization';
 import { GSPaymentServiceProviderModule } from '@rahino/guarantee/shared/payment-provider/gs-payment-provider.module';
@@ -24,6 +24,7 @@ import { GSDiscountCodeSharedModule } from '@rahino/guarantee/shared/discount-co
       GSVipBundleType,
       GSDiscountCode,
       GSTransaction,
+      GSPaymentGateway,
     ]),
     LocalizationModule,
     GSPaymentServiceProviderModule,

@@ -9,6 +9,7 @@ import {
   GSVipBundleType,
   GSDiscountCode,
   GSTransaction,
+  GSPaymentGateway,
 } from '@rahino/localdatabase/models';
 import { User } from '@rahino/database';
 import { LocalizationService } from 'apps/main/src/common/localization';
@@ -23,6 +24,8 @@ import { DiscountCodeValidationService } from '@rahino/guarantee/shared/discount
 import { DiscountCodePreviewResultDto } from '@rahino/guarantee/shared/discount-code/dto';
 import { PayVipBundleDto } from './dto';
 import { GSTransactionStatusEnum } from '@rahino/guarantee/shared/transaction-status';
+import { isNotNull } from '@rahino/commontools';
+import { GSPaymentWayEnum } from '@rahino/guarantee/shared/payment-way';
 
 @Injectable()
 export class PayVipBundleService {
@@ -43,249 +46,10 @@ export class PayVipBundleService {
     @Inject(GS_PAYMENT_PROVIDER_TOKEN)
     private readonly paymentService: GSPaymentInterface,
     private readonly rialPriceService: RialPriceService,
-    @Inject(DiscountCodeValidationService)
     private readonly discountCodeValidationService: DiscountCodeValidationService,
+    @InjectModel(GSPaymentGateway)
+    private readonly paymentGateWayRepository: typeof GSPaymentGateway,
   ) {}
-
-  async create(user: User, dto: PayVipBundleDto) {
-    const vipBundleType = await this.vipBundleTypeRepository.findOne(
-      new QueryOptionsBuilder()
-        .filter({ id: dto.vipBundleTypeId })
-        .filter(
-          Sequelize.where(
-            Sequelize.fn(
-              'isnull',
-              Sequelize.col('GSVipBundleType.isDeleted'),
-              0,
-            ),
-            { [Op.eq]: 0 },
-          ),
-        )
-        .build(),
-    );
-
-    if (!vipBundleType) {
-      throw new BadRequestException(
-        this.localizationService.translate('core.not_found_id'),
-      );
-    }
-
-    let result: GSRequestPaymentOutputDto;
-
-    if (!dto.discountCode || dto.discountCode.trim() === '') {
-      result = await this.createFactorAndMakeTransaction(user, vipBundleType);
-    } else {
-      const validation =
-        await this.discountCodeValidationService.validateDiscountCode(
-          dto.discountCode,
-          user.id,
-        );
-
-      if (!validation.canApply) {
-        throw new BadRequestException(
-          validation.error ||
-            this.localizationService.translate(
-              'guarantee.discount_code_not_applicable',
-            ),
-        );
-      }
-
-      const discountCode = await this.discountCodeRepository.findOne(
-        new QueryOptionsBuilder()
-          .filter({ code: dto.discountCode })
-          .filter(
-            Sequelize.where(
-              Sequelize.fn(
-                'isnull',
-                Sequelize.col('GSDiscountCode.isDeleted'),
-                0,
-              ),
-              { [Op.eq]: 0 },
-            ),
-          )
-          .build(),
-      );
-
-      if (!discountCode) {
-        throw new BadRequestException(
-          this.localizationService.translate(
-            'guarantee.discount_code_not_found',
-          ),
-        );
-      }
-
-      const originalPriceInRial = await this.rialPriceService.getRialPrice({
-        price: Number(vipBundleType.price),
-        unitPriceId: vipBundleType.unitPriceId,
-      });
-
-      let discountAmountInRial =
-        await this.discountCodeValidationService.calculateDiscount(
-          discountCode.id,
-          originalPriceInRial,
-        );
-
-      if (discountAmountInRial > originalPriceInRial)
-        discountAmountInRial = originalPriceInRial;
-
-      const discountPaymentGatewayId =
-        await this.discountCodeValidationService.getDiscountGatewayId();
-
-      result = await this.createFactorAndMakeTransactionWithDiscount(
-        user,
-        vipBundleType,
-        discountCode.id,
-        discountAmountInRial,
-        discountPaymentGatewayId,
-      );
-    }
-
-    return { result };
-  }
-
-  async createFactorAndMakeTransaction(
-    user: User,
-    vipBundleType: GSVipBundleType,
-  ): Promise<GSRequestPaymentOutputDto> {
-    const totalPrices = this.rialPriceService.getRialPrice({
-      price: Number(vipBundleType.price),
-      unitPriceId: vipBundleType.unitPriceId,
-    });
-
-    const transaction = await this.sequelize.transaction({
-      isolationLevel: Transaction.ISOLATION_LEVELS.READ_COMMITTED,
-    });
-    try {
-      const factor = await this.factorRepository.create(
-        {
-          unitPriceId: GSUnitPriceEnum.Rial,
-          totalPrice: totalPrices,
-          factorStatusId: GSFactorStatusEnum.WaitingForPayment,
-          factorTypeId: GSFactorTypeEnum.BuyVipCard,
-          userId: user.id,
-          expireDate: Sequelize.fn(
-            'dateadd',
-            Sequelize.literal('day'),
-            7,
-            Sequelize.fn('getdate'),
-          ),
-        },
-        { transaction: transaction },
-      );
-
-      await this.factorVipBundleRepository.create(
-        {
-          factorId: factor.id,
-          vipBundleTypeId: vipBundleType.id,
-          itemPrice: BigInt(totalPrices),
-          unitPriceId: GSUnitPriceEnum.Rial,
-          fee: BigInt(
-            this.rialPriceService.getRialPrice({
-              price: Number(vipBundleType.fee),
-              unitPriceId: vipBundleType.unitPriceId,
-            }),
-          ),
-        },
-        {
-          transaction: transaction,
-        },
-      );
-
-      const result = await this.paymentService.requestPayment({
-        factorId: factor.id,
-        userId: user.id,
-        transaction: transaction,
-      });
-      await transaction.commit();
-      return result;
-    } catch (error) {
-      await transaction.rollback();
-      throw new BadRequestException(error.message);
-    }
-  }
-
-  async createFactorAndMakeTransactionWithDiscount(
-    user: User,
-    vipBundleType: GSVipBundleType,
-    discountCodeId: bigint,
-    discountAmountInRial: number,
-    discountPaymentGatewayId: number,
-  ): Promise<GSRequestPaymentOutputDto> {
-    const totalPrices = this.rialPriceService.getRialPrice({
-      price: Number(vipBundleType.price),
-      unitPriceId: vipBundleType.unitPriceId,
-    });
-
-    const transaction = await this.sequelize.transaction({
-      isolationLevel: Transaction.ISOLATION_LEVELS.READ_COMMITTED,
-    });
-    try {
-      const factor = await this.factorRepository.create(
-        {
-          unitPriceId: GSUnitPriceEnum.Rial,
-          totalPrice: totalPrices,
-          factorStatusId: GSFactorStatusEnum.WaitingForPayment,
-          factorTypeId: GSFactorTypeEnum.BuyVipCard,
-          userId: user.id,
-          expireDate: Sequelize.fn(
-            'dateadd',
-            Sequelize.literal('day'),
-            7,
-            Sequelize.fn('getdate'),
-          ),
-        },
-        { transaction: transaction },
-      );
-
-      await this.factorVipBundleRepository.create(
-        {
-          factorId: factor.id,
-          vipBundleTypeId: vipBundleType.id,
-          itemPrice: BigInt(totalPrices),
-          unitPriceId: GSUnitPriceEnum.Rial,
-          fee: BigInt(
-            this.rialPriceService.getRialPrice({
-              price: Number(vipBundleType.fee),
-              unitPriceId: vipBundleType.unitPriceId,
-            }),
-          ),
-        },
-        {
-          transaction: transaction,
-        },
-      );
-
-      const transactionRecord = await this.transactionRepository.create(
-        {
-          transactionStatusId: GSTransactionStatusEnum.Paid,
-          unitPriceId: GSUnitPriceEnum.Rial,
-          totalPrice: discountAmountInRial,
-          factorId: factor.id,
-          userId: user.id,
-          paymentGatewayId: discountPaymentGatewayId,
-        },
-        { transaction: transaction },
-      );
-
-      await this.discountCodeValidationService.incrementUsage(
-        discountCodeId,
-        user.id,
-        factor.id,
-        discountAmountInRial,
-      );
-
-      const result = await this.paymentService.requestPayment({
-        factorId: factor.id,
-        userId: user.id,
-        transaction: transaction,
-      });
-      await transaction.commit();
-      return result;
-    } catch (error) {
-      await transaction.rollback();
-      throw new BadRequestException(error.message);
-    }
-  }
 
   async preview(
     user: User,
@@ -314,20 +78,20 @@ export class PayVipBundleService {
       );
     }
 
-    const bundlePrice = Number(vipBundleType.price);
-    if (isNaN(bundlePrice)) {
-      throw new BadRequestException('Invalid VIP bundle price');
-    }
+    const bundlePriceInRial = this.rialPriceService.getRialPrice({
+      price: Number(vipBundleType.price),
+      unitPriceId: vipBundleType.unitPriceId,
+    });
 
     if (!discountCode || discountCode.trim() === '') {
       return {
         result: {
           discountCodeId: 0,
           discountCode: '',
-          originalPrice: bundlePrice,
+          originalPrice: bundlePriceInRial,
           discountAmount: 0,
-          finalPrice: bundlePrice,
-          userPayAmount: bundlePrice,
+          finalPrice: bundlePriceInRial,
+          userPayAmount: bundlePriceInRial,
           canApply: false,
           error: undefined,
         },
@@ -337,7 +101,6 @@ export class PayVipBundleService {
     const validation =
       await this.discountCodeValidationService.validateDiscountCode(
         discountCode,
-
         user.id,
       );
 
@@ -346,41 +109,27 @@ export class PayVipBundleService {
         result: {
           discountCodeId: 0,
           discountCode: '',
-          originalPrice: bundlePrice,
+          originalPrice: bundlePriceInRial,
           discountAmount: 0,
-          finalPrice: bundlePrice,
-          userPayAmount: bundlePrice,
+          finalPrice: bundlePriceInRial,
+          userPayAmount: bundlePriceInRial,
           canApply: false,
           error: validation.error,
         },
       };
     }
 
-    const discountCodeEntity = await this.discountCodeRepository.findOne(
-      new QueryOptionsBuilder()
-        .filter({ code: discountCode })
-        .filter(
-          Sequelize.where(
-            Sequelize.fn(
-              'isnull',
-              Sequelize.col('GSDiscountCode.isDeleted'),
-              0,
-            ),
-            { [Op.eq]: 0 },
-          ),
-        )
-        .build(),
-    );
+    const discountCodeEntity = validation.discountCode;
 
     if (!discountCodeEntity) {
       return {
         result: {
           discountCodeId: 0,
           discountCode: '',
-          originalPrice: bundlePrice,
+          originalPrice: bundlePriceInRial,
           discountAmount: 0,
-          finalPrice: bundlePrice,
-          userPayAmount: bundlePrice,
+          finalPrice: bundlePriceInRial,
+          userPayAmount: bundlePriceInRial,
           canApply: false,
           error: this.localizationService
             .translate('guarantee.discount_code_not_found')
@@ -389,27 +138,203 @@ export class PayVipBundleService {
       };
     }
 
-    let discountAmount =
+    let discountAmountInRial =
       await this.discountCodeValidationService.calculateDiscount(
-        discountCodeEntity.id,
-        bundlePrice,
+        validation.discountCode,
+        bundlePriceInRial,
       );
 
-    if (discountAmount > bundlePrice) discountAmount = bundlePrice;
-
-    const finalPrice = bundlePrice - discountAmount;
+    const finalPriceInRial = bundlePriceInRial - discountAmountInRial;
 
     return {
       result: {
         discountCodeId: Number(discountCodeEntity.id),
         discountCode,
-        originalPrice: bundlePrice,
-        discountAmount,
-        finalPrice,
-        userPayAmount: finalPrice,
+        originalPrice: bundlePriceInRial,
+        discountAmount: discountAmountInRial,
+        finalPrice: finalPriceInRial,
+        userPayAmount: finalPriceInRial,
         canApply: true,
         error: undefined,
       },
     };
+  }
+
+  async create(user: User, dto: PayVipBundleDto) {
+    // find vip bundle type
+    const vipBundleType = await this.vipBundleTypeRepository.findOne(
+      new QueryOptionsBuilder()
+        .filter({ id: dto.vipBundleTypeId })
+        .filter(
+          Sequelize.where(
+            Sequelize.fn(
+              'isnull',
+              Sequelize.col('GSVipBundleType.isDeleted'),
+              0,
+            ),
+            { [Op.eq]: 0 },
+          ),
+        )
+        .build(),
+    );
+
+    if (!vipBundleType) {
+      throw new BadRequestException(
+        this.localizationService.translate('core.not_found_id'),
+      );
+    }
+
+    let result: GSRequestPaymentOutputDto;
+
+    // if doent set any discount code
+    if (!dto.discountCode || dto.discountCode.trim() === '') {
+      result = await this.createFactorAndMakeTransaction(
+        user,
+        vipBundleType,
+        0,
+      );
+      return { result };
+    }
+
+    const validation =
+      await this.discountCodeValidationService.validateDiscountCode(
+        dto.discountCode,
+        user.id,
+      );
+
+    if (!validation.canApply) {
+      throw new BadRequestException(
+        validation.error ||
+          this.localizationService.translate(
+            'guarantee.discount_code_not_applicable',
+          ),
+      );
+    }
+
+    const originalPriceInRial = await this.rialPriceService.getRialPrice({
+      price: Number(vipBundleType.price),
+      unitPriceId: vipBundleType.unitPriceId,
+    });
+
+    let discountAmountInRial =
+      await this.discountCodeValidationService.calculateDiscount(
+        validation.discountCode,
+        originalPriceInRial,
+      );
+
+    result = await this.createFactorAndMakeTransaction(
+      user,
+      vipBundleType,
+      discountAmountInRial,
+      validation.discountCode,
+    );
+
+    return { result };
+  }
+
+  async createFactorAndMakeTransaction(
+    user: User,
+    vipBundleType: GSVipBundleType,
+    discountAmountInRial: number,
+    discountCode?: GSDiscountCode,
+  ): Promise<GSRequestPaymentOutputDto> {
+    const totalPrices = this.rialPriceService.getRialPrice({
+      price: Number(vipBundleType.price),
+      unitPriceId: vipBundleType.unitPriceId,
+    });
+
+    const transaction = await this.sequelize.transaction({
+      isolationLevel: Transaction.ISOLATION_LEVELS.READ_COMMITTED,
+    });
+    try {
+      const factor = await this.factorRepository.create(
+        {
+          unitPriceId: GSUnitPriceEnum.Rial,
+          totalPrice: totalPrices,
+          factorStatusId: GSFactorStatusEnum.WaitingForPayment,
+          factorTypeId: GSFactorTypeEnum.BuyVipCard,
+          userId: user.id,
+          expireDate: Sequelize.fn(
+            'dateadd',
+            Sequelize.literal('day'),
+            7,
+            Sequelize.fn('getdate'),
+          ),
+        },
+        { transaction: transaction },
+      );
+
+      await this.factorVipBundleRepository.create(
+        {
+          factorId: factor.id,
+          vipBundleTypeId: vipBundleType.id,
+          itemPrice: BigInt(totalPrices),
+          unitPriceId: GSUnitPriceEnum.Rial,
+          fee: BigInt(
+            this.rialPriceService.getRialPrice({
+              price: Number(vipBundleType.fee),
+              unitPriceId: vipBundleType.unitPriceId,
+            }),
+          ),
+        },
+        {
+          transaction: transaction,
+        },
+      );
+
+      if (isNotNull(discountCode) && discountAmountInRial > 0) {
+        const discountPaymentGatewayId = await this.getDiscountGatewayId();
+
+        await this.transactionRepository.create(
+          {
+            transactionStatusId: GSTransactionStatusEnum.Paid,
+            unitPriceId: GSUnitPriceEnum.Rial,
+            totalPrice: discountAmountInRial,
+            factorId: factor.id,
+            userId: user.id,
+            paymentGatewayId: discountPaymentGatewayId,
+          },
+          { transaction: transaction },
+        );
+
+        await this.discountCodeValidationService.incrementUsage(
+          discountCode,
+          user.id,
+          factor.id,
+          discountAmountInRial,
+          transaction,
+        );
+      }
+
+      const result = await this.paymentService.requestPayment({
+        factorId: factor.id,
+        userId: user.id,
+        transaction: transaction,
+      });
+
+      await transaction.commit();
+      return result;
+    } catch (error) {
+      await transaction.rollback();
+      throw new BadRequestException(error.message);
+    }
+  }
+
+  async getDiscountGatewayId(): Promise<number> {
+    const paymentGateway = await this.paymentGateWayRepository.findOne(
+      new QueryOptionsBuilder()
+        .filter({ paymentWayId: GSPaymentWayEnum.Discount })
+        .build(),
+    );
+
+    if (!paymentGateway) {
+      throw new BadRequestException(
+        this.localizationService.translate(
+          'guarantee.discount_payment_gateway_not_found',
+        ),
+      );
+    }
+
+    return paymentGateway.id;
   }
 }

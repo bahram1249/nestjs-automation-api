@@ -2417,7 +2417,6 @@ BEGIN
     );
 
     CREATE INDEX IX_GSDiscountCodes_Code ON GSDiscountCodes(code);
-    CREATE INDEX IX_GSDiscountCodes_OrganizationId ON GSDiscountCodes(organizationId);
     CREATE INDEX IX_GSDiscountCodes_ValidDates ON GSDiscountCodes(validFrom, validUntil);
 
     INSERT INTO Migrations(version, createdAt, updatedAt)
