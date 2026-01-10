@@ -6,7 +6,6 @@ import {
   GSFactor,
   GSFactorVipBundle,
   GSVipBundleType,
-  GSDiscountCode,
   GSTransaction,
   GSPaymentGateway,
 } from '@rahino/localdatabase/models';
@@ -22,7 +21,6 @@ import { GSDiscountCodeSharedModule } from '@rahino/guarantee/shared/discount-co
       GSFactor,
       GSFactorVipBundle,
       GSVipBundleType,
-      GSDiscountCode,
       GSTransaction,
       GSPaymentGateway,
     ]),

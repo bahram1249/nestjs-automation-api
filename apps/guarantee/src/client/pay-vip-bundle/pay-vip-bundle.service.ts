@@ -36,8 +36,7 @@ export class PayVipBundleService {
     private readonly factorRepository: typeof GSFactor,
     @InjectModel(GSVipBundleType)
     private readonly vipBundleTypeRepository: typeof GSVipBundleType,
-    @InjectModel(GSDiscountCode)
-    private readonly discountCodeRepository: typeof GSDiscountCode,
+
     @InjectModel(GSTransaction)
     private readonly transactionRepository: typeof GSTransaction,
     private readonly localizationService: LocalizationService,
