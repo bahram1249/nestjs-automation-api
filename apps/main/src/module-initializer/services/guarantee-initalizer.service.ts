@@ -13,9 +13,13 @@ export class GuaranteeInitializerService
 {
   constructor(private readonly scriptRunnerService: ScriptRunnerService) {}
   async init(app: NestExpressApplication) {
+    app.get(CoreModule).setApp(app);
     app.get(BPMNModule).setApp(app);
-    await app.get(GSModule).setApp(app);
+    app.get(GSModule).setApp(app);
+    await app.get(SellerSyncService).sync();
+  }
 
+  async runOnPrimaryClustred(app: NestExpressApplication) {
     await this.runScripts();
   }
 

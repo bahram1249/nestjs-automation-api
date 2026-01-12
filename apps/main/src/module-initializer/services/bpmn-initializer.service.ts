@@ -12,4 +12,6 @@ export class BpmnInitializerService
     app.get(CoreModule).setApp(app);
     app.get(BPMNModule).setApp(app);
   }
+
+  async runOnPrimaryClustred(app: NestExpressApplication) {}
 }

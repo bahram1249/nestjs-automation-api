@@ -12,4 +12,6 @@ export class PcmInitializerService
     app.get(CoreModule).setApp(app);
     app.get(PCMModule).setApp(app);
   }
+
+  async runOnPrimaryClustred(app: NestExpressApplication) {}
 }

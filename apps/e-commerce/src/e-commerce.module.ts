@@ -18,7 +18,6 @@ import { NeighborhoodModule } from './client/neighborhood/neighborhood.module';
 import { AddressModule } from './user/address/address.module';
 import { ProductPhotoModule } from './admin/product-section/product-photo/product-photo.module';
 import { ProductImageRemovalModule } from './job/product-image-removal/product-image-removal.module';
-import { ProductImageRemovalService } from './job/product-image-removal/product-image-removal.service';
 import { AdminVendorModule } from './admin/vendor/admin-vendor.module';
 import { UserVendorModule } from './user/user-vendor/user-vendor.module';
 import { VendorAddressModule } from './vendor-address/vendor-address.module';
@@ -89,9 +88,7 @@ import { HomePagePhotoModule } from './admin/home-page-section/home-page-photo/h
 import { EntityTypeSortModule } from './admin/home-page-section/entity-type-sort/entity-type-sort.module';
 import { HomePhotoModule } from './client/home-photo/home-photo.module';
 import { HomePageModule } from './client/home/home.module';
-import { ProcessHomeRunnerService } from './client/home/process-home-runner.service';
 import { ProductVideoModule } from './admin/product-section/product-video/product-video.module';
-import { ProductVideoRemovalService } from './job/product-video-removal/product-video-removal.service';
 import { ProductFavoriteModule } from './user/product-favorite/product-favorite.module';
 import { ProductVideoRemovalModule } from './job/product-video-removal/product-video-removal.module';
 import { AdminNotificationModule } from './admin/notification/notification.module';
@@ -101,7 +98,6 @@ import { UserHeaderNotificationModule } from './user/header-notification/notific
 import { CustomerCustomizeMoudle } from './customer-customize/customer-customize.module';
 import { GoldModule } from './customer-customize/gold/gold.module';
 import { FactorDiscountModule } from './admin/discount-section/factor-discount/factor-discount.module';
-import { RetrievePriceRunnerService } from './customer-customize/gold/retrieve-price-job/services';
 import { SelectedProductModule } from './admin/product-section/selected-product/selected-product.module';
 import { SelectedProductItemModule } from './admin/product-section/selected-product-items/selected-product-item.module';
 import { UserSelectedProductModule } from './user/selected-product/selected-product.module';
@@ -292,32 +288,23 @@ export class ECommerceModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {}
   async setApp(app: INestApplication<any>) {
     this.app = app;
-    const coreConfig = new DocumentBuilder()
+
+    const ecommerceConfig = new DocumentBuilder()
       .setTitle('ECommerce Api')
       .setDescription('The ECommerce API description')
       .setVersion('1.0')
       .addBearerAuth()
       .build();
-    const coreDocument = SwaggerModule.createDocument(this.app, coreConfig, {
-      include: [ECommerceModule, GoldModule],
-      deepScanRoutes: true,
-    });
 
-    SwaggerModule.setup('api/ecommerce', this.app, coreDocument);
+    const ecommerceDocument = SwaggerModule.createDocument(
+      this.app,
+      ecommerceConfig,
+      {
+        include: [ECommerceModule, GoldModule],
+        deepScanRoutes: true,
+      },
+    );
 
-    // add product image removal job
-    app.get(ProductImageRemovalService).run();
-
-    // add product video removal job
-    app.get(ProductVideoRemovalService).run();
-
-    // add discount cacher
-    //app.get(ProductDiscountJobRunnerService).run();
-
-    // add dynamic cacher of home page elements
-    app.get(ProcessHomeRunnerService).run();
-
-    // add live price job runner
-    await app.get(RetrievePriceRunnerService).run();
+    SwaggerModule.setup('api/ecommerce', this.app, ecommerceDocument);
   }
 }

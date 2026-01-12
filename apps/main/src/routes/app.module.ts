@@ -11,7 +11,6 @@ import helmet from 'helmet';
 import { ThrottlerModule } from '@nestjs/throttler';
 import { DevtoolsModule } from '@nestjs/devtools-integration';
 import { CacheModule } from '@nestjs/cache-manager';
-import { CoreModule } from '@rahino/core';
 import { HttpExceptionFilter } from '@rahino/http-exception-filter';
 import { DBLogger, DBLoggerModule } from '@rahino/logger';
 import { AutomapperModule } from 'automapper-nestjs';
@@ -121,7 +120,6 @@ import { ModuleInitializerServiceInterface } from '../module-initializer/interfa
     AutomapperModule.forRoot({
       strategyInitializer: classes(),
     }),
-    CoreModule,
     // UIModule,
     DynamicProviderModule.register(),
     I18nModule.forRoot({
@@ -211,6 +209,21 @@ export class AppModule implements NestModule {
   }
 
   private async initializerModule(app: NestExpressApplication) {
+    const projectName = this.config.get<string>('PROJECT_NAME');
+    const serviceInstance: ModuleInitializerServiceInterface =
+      await this.moduleRef.get<ModuleInitializerServiceInterface>(
+        projectName + 'InitializerService',
+        {
+          strict: false,
+        },
+      );
+
+    if (!serviceInstance) {
+      throw new Error(
+        `Service with token ${projectName + 'InitializerService'} not found`,
+      );
+    }
+
     const numCpu = Number(
       this.config.get<string>('CLUSTER_COUNT') || os.cpus().length,
     );
@@ -224,24 +237,10 @@ export class AppModule implements NestModule {
         this.logger.warn(`worker exit ${worker.process.pid} !`);
         cluster.fork();
       });
+
+      await serviceInstance.runOnPrimaryClustred(app);
     } else {
-      const projectName = this.config.get<string>('PROJECT_NAME');
-      const serviceInstance: ModuleInitializerServiceInterface =
-        await this.moduleRef.get<ModuleInitializerServiceInterface>(
-          projectName + 'InitializerService',
-          {
-            strict: false,
-          },
-        );
-
-      if (!serviceInstance) {
-        throw new Error(
-          `Service with token ${projectName + 'InitializerService'} not found`,
-        );
-      }
-
       await serviceInstance.init(app);
-
       const port = this.config.get('HOST_PORT');
       const host = this.config.get('HOST_NAME');
 

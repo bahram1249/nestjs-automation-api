@@ -1,4 +1,5 @@
 import { BPMNModule } from '@rahino/bpmn';
+import { CoreModule } from '@rahino/core';
 import { GSModule } from 'apps/guarantee/src';
 
-export const guaranteeProviders = [BPMNModule, GSModule];
+export const guaranteeProviders = [CoreModule, BPMNModule, GSModule];

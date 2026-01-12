@@ -1,3 +1,4 @@
 import { BPMNModule } from '@rahino/bpmn';
+import { CoreModule } from '@rahino/core';
 
-export const bpmnProviders = [BPMNModule];
+export const bpmnProviders = [CoreModule, BPMNModule];

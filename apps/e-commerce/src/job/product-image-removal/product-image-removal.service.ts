@@ -12,7 +12,7 @@ export class ProductImageRemovalService {
     @InjectQueue(REMOVE_PRODUCT_PHOTO_QUEUE) private removeQueue: Queue,
   ) {}
 
-  run() {
+  async run() {
     const tommorow = new Date(new Date().setDate(new Date().getDate() + 1));
     const targetTime = new Date(tommorow.setHours(3, 15, 0, 0));
     const delay = Number(targetTime) - Number(new Date());
