@@ -157,7 +157,7 @@ export class FactorService {
             SELECT 1
             FROM GSRequests AS Req
             WHERE Req.id = GSFactor.requestId
-              AND Req.id IN (${filter.requestIds.join(',')})) `.replaceAll(
+              AND Req.id IN (${filter.requestIds?.join(',')})) `.replaceAll(
             /\s\s+/g,
             ' ',
           ),
