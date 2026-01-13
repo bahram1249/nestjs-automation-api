@@ -20,8 +20,7 @@
     "test:e2e": "jest --config ./apps/main/test/jest-e2e.json",
     "test:e2e:ecommerce": "jest --config ./apps/e-commerce/test/jest-e2e.json",
     "test:e2e:ecommerce:watch": "jest --config ./apps/e-commerce/test/jest-e2e.json --watch",
-    "test:e2e:ecommerce:client-order": "jest --config ./apps/e-commerce/test/jest-e2e.json apps/e-commerce/test/client-order.e2e-spec.ts",
-    "test:e2e:ecommerce:mssql:client-order": "set DB_DIALECT=mssql&& jest --config ./apps/e-commerce/test/jest-e2e.json apps/e-commerce/test/client-order.e2e-spec.ts"
+    "test:e2e:ecommerce:client-order": "jest --config ./apps/e-commerce/test/jest-e2e.json apps/e-commerce/test/client/order/client-order.e2e-spec.ts"
   },
   "dependencies": {
     "@bull-board/api": "^6.9.6",

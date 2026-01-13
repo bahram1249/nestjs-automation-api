@@ -84,7 +84,7 @@ import { ModuleInitializerServiceInterface } from '../module-initializer/interfa
         port: configService.get<number>('DB_PORT'),
         username: configService.get<string>('DB_USER'),
         password: configService.get<string>('DB_PASS'),
-        database: configService.get<string>('DB_NAME_DEVELOPMENT'),
+        database: configService.get<string>('DB_NAME_PRODUCTION'),
         autoLoadModels: configService.get('DB_AUTO_LOAD_MODELS') === 'true',
         logging: configService.get('DB_LOG') === 'true',
         synchronize: configService.get('DB_SYNCHRONIZE') === 'true',

@@ -1,8 +1,4 @@
-import {
-  INestApplication,
-  CanActivate,
-  ExecutionContext,
-} from '@nestjs/common';
+import { VersioningType } from '@nestjs/common';
 import { Test, TestingModuleBuilder } from '@nestjs/testing';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { DatabaseModule } from '@rahino/database';
@@ -23,43 +19,33 @@ import {
   guaranteeModels,
   pcmEntities,
 } from '@rahino/localdatabase/subsystem-models';
+import { TestingJwtGuard } from '.';
+import { Dialect } from 'sequelize';
+import { AutomapperModule } from 'automapper-nestjs';
+import { classes } from 'automapper-classes';
+import { CacheModule } from '@nestjs/cache-manager';
+import { NestExpressApplication } from '@nestjs/platform-express';
 
 // Shared testing JwtGuard: accepts any Bearer token and injects a mock req.user
-export class TestingJwtGuard implements CanActivate {
-  canActivate(context: ExecutionContext): boolean {
-    const req = context.switchToHttp().getRequest();
-    const auth: string | undefined = req.headers['authorization'];
-    const token = auth?.startsWith('Bearer ')
-      ? auth.slice('Bearer '.length)
-      : undefined;
-    if (!token) return false;
-    req.user = {
-      id: 1,
-      username: 'e2e-test-user',
-      token,
-    };
-    return true;
-  }
-}
 
-// Build an e-commerce e2e Nest app with real DB connection
-export async function createEcommerceE2EApp(options?: {
+export async function createE2EApp(options?: {
   imports?: any[];
   controllers?: any[];
   providers?: any[];
   overrideJwt?: boolean; // default: true
-}): Promise<INestApplication> {
+}): Promise<NestExpressApplication> {
   const builder: TestingModuleBuilder = Test.createTestingModule({
     imports: [
       ConfigModule.forRoot({
-        envFilePath: ['.env.test', '.env.development', '.env.local', '.env'],
+        envFilePath: ['.env.test'],
         isGlobal: true,
       }),
       DatabaseModule.forRootAsync({
         inject: [ConfigService],
         useFactory: (configService: ConfigService) => ({
-          name: 'sequelize_default',
-          dialect: configService.get<string>('DB_DIALECT') as any as any,
+          // name: 'sequelize_default',
+          dialect: configService.get<Dialect>('DB_DIALECT'),
+          logQueryParameters: true,
           host: configService.get<string>('DB_HOST'),
           port: configService.get<number>('DB_PORT'),
           username: configService.get<string>('DB_USER'),
@@ -100,6 +86,13 @@ export async function createEcommerceE2EApp(options?: {
           AcceptLanguageResolver,
         ],
       }),
+      AutomapperModule.forRoot({
+        strategyInitializer: classes(),
+      }),
+      CacheModule.register({
+        isGlobal: true,
+        ttl: 60000,
+      }),
       ...(options?.imports ?? []),
     ],
     controllers: options?.controllers ?? [],
@@ -111,13 +104,18 @@ export async function createEcommerceE2EApp(options?: {
   }
 
   const moduleRef = await builder.compile();
-  const app = moduleRef.createNestApplication();
+
+  const app = moduleRef.createNestApplication<NestExpressApplication>();
+  app.enableVersioning({
+    type: VersioningType.URI,
+  });
   app.useGlobalPipes(
     new I18nValidationPipe({
       transform: true,
       whitelist: true,
     }),
   );
+
   await app.init();
   return app;
 }
