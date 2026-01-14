@@ -19,6 +19,7 @@
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./apps/main/test/jest-e2e.json",
     "test:e2e:ecommerce": "jest --config ./apps/e-commerce/test/jest-e2e.json",
+    "test:e2e:guarantee": "jest --config ./apps/guarantee/test/jest-e2e.json",
     "test:e2e:ecommerce:watch": "jest --config ./apps/e-commerce/test/jest-e2e.json --watch",
     "test:e2e:ecommerce:client-order": "jest --config ./apps/e-commerce/test/jest-e2e.json apps/e-commerce/test/client/order/client-order.e2e-spec.ts"
   },
@@ -152,6 +153,10 @@
       "<rootDir>/libs/"
     ],
     "moduleNameMapper": {
+      "^apps/main/src(|/.*)$": [
+        "<rootDir>/apps/main/src/$1"
+      ],
+      "^@rahino/core(|/.*)$": "<rootDir>/apps/core/src/$1",
       "^@rahino/pcm(|/.*)$": "<rootDir>/apps/pcm/src/$1",
       "^@rahino/eav(|/.*)$": "<rootDir>/apps/eav/src/$1",
       "^@rahino/discountCoffe(|/.*)$": "<rootDir>/apps/discount-coffe/src/$1",

@@ -1,6 +1,5 @@
 import { Module } from '@nestjs/common';
 import { BPMNOrganizationUserModule } from '@rahino/bpmn/modules/organization-user/organization-user.module';
-
 import { SharedCartableFilteringService } from './cartable-filtering.service';
 import { SequelizeModule } from '@nestjs/sequelize';
 import {
@@ -9,7 +8,6 @@ import {
 } from '@rahino/localdatabase/models';
 import { RoleModule } from '@rahino/core/user/role/role.module';
 import { UserRole } from '@rahino/database';
-import { GSSuccessFactorQueryBuilderModule } from '../success-factor-query-builder';
 import { GSCartableFactorModule } from '@rahino/guarantee/cartable/cartable-factor/cartable-factor.module';
 
 @Module({
