@@ -1,11 +1,7 @@
 import * as request from 'supertest';
-import {
-  authHeader,
-  MockGetUserInterceptor,
-  createE2EApp,
-} from '../../../../main/test/util';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { LogisticClientOrderModule } from '@rahino/ecommerce/client/order/client-order.module';
+import { authHeader, createE2EApp } from '@rahino/commontools/test/util';
 
 const hasDbConfig = Boolean(
   process.env.DB_HOST &&
@@ -21,11 +17,6 @@ const hasDbConfig = Boolean(
     app = await createE2EApp({
       imports: [LogisticClientOrderModule],
     });
-
-    const mockUser = { id: 1, name: 'Test User', email: 'test@example.com' };
-
-    // Apply the mock interceptor globally
-    app.useGlobalInterceptors(new MockGetUserInterceptor(mockUser));
   });
 
   afterAll(async () => {

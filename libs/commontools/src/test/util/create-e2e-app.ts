@@ -19,7 +19,7 @@ import {
   guaranteeModels,
   pcmEntities,
 } from '@rahino/localdatabase/subsystem-models';
-import { TestingJwtGuard } from '.';
+import { MockGetUserInterceptor, TestingJwtGuard } from '.';
 import { Dialect } from 'sequelize';
 import { AutomapperModule } from 'automapper-nestjs';
 import { classes } from 'automapper-classes';
@@ -74,7 +74,7 @@ export async function createE2EApp(options?: {
         loaderOptions: {
           path: [
             // from apps/e-commerce/test/utils -> up to apps -> into main/src/i18n
-            path.join(__dirname, '../../../main/src/i18n/'),
+            path.join(__dirname, '../../../../../apps/main/src/i18n/'),
           ],
           watch: false,
         },
@@ -117,5 +117,11 @@ export async function createE2EApp(options?: {
   );
 
   await app.init();
+
+  const mockUser = { id: 1, name: 'Test User', email: 'test@example.com' };
+
+  // Apply the mock interceptor globally
+  app.useGlobalInterceptors(new MockGetUserInterceptor(mockUser));
+
   return app;
 }
