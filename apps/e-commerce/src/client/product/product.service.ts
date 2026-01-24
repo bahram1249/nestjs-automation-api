@@ -13,6 +13,7 @@ import { InjectQueue } from '@nestjs/bullmq';
 import { Queue } from 'bullmq';
 import { Request } from 'express';
 import { REQUEST } from '@nestjs/core';
+import { InTestRuntime } from '@rahino/commontools';
 
 @Injectable({ scope: Scope.REQUEST })
 export class ProductService {
@@ -58,15 +59,19 @@ export class ProductService {
   async findAll(filter: GetProductDto) {
     const { result, total } =
       await this.productRepositoryService.findAll(filter);
-    this.nextPageQueryQueue.add(
-      QUERY_NEXT_PAGE_PRODUCT_JOB,
-      {
-        filter: filter,
-      },
-      {
-        removeOnComplete: 500,
-      },
-    );
+
+    if (!InTestRuntime()) {
+      this.nextPageQueryQueue.add(
+        QUERY_NEXT_PAGE_PRODUCT_JOB,
+        {
+          filter: filter,
+        },
+        {
+          removeOnComplete: 500,
+        },
+      );
+    }
+
     return {
       result: result,
       total: total,
@@ -77,16 +82,18 @@ export class ProductService {
     const { result, total } =
       await this.productRepositoryService.findAllWithLatLon(filter);
 
-    // todo
-    this.nextPageQueryWithLatLonQueue.add(
-      QUERY_NEXT_PAGE_PRODUCT_JOB,
-      {
-        filter: filter,
-      },
-      {
-        removeOnComplete: 500,
-      },
-    );
+    if (!InTestRuntime()) {
+      this.nextPageQueryWithLatLonQueue.add(
+        QUERY_NEXT_PAGE_PRODUCT_JOB,
+        {
+          filter: filter,
+        },
+        {
+          removeOnComplete: 500,
+        },
+      );
+    }
+
     return {
       result: result,
       total: total,

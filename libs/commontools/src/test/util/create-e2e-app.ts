@@ -9,7 +9,7 @@ import {
   I18nValidationPipe,
 } from 'nestjs-i18n';
 import * as path from 'path';
-import { JwtGuard } from '@rahino/auth';
+import { JwtGuard, OptionalJwtGuard } from '@rahino/auth';
 import { coreModels } from '@rahino/database';
 import {
   bpmnModels,
@@ -25,6 +25,7 @@ import { AutomapperModule } from 'automapper-nestjs';
 import { classes } from 'automapper-classes';
 import { CacheModule } from '@nestjs/cache-manager';
 import { NestExpressApplication } from '@nestjs/platform-express';
+import { ThrottlerModule } from '@nestjs/throttler';
 
 // Shared testing JwtGuard: accepts any Bearer token and injects a mock req.user
 
@@ -69,6 +70,26 @@ export async function createE2EApp(options?: {
           ],
         }),
       }),
+      ThrottlerModule.forRootAsync({
+        inject: [ConfigService],
+        useFactory: (config: ConfigService) => [
+          {
+            name: 'short',
+            ttl: 1000,
+            limit: config.get('THROTTLER_SHORT_LIMIT'),
+          },
+          {
+            name: 'medium',
+            ttl: 10000,
+            limit: config.get('THROTTLER_MEDIUM_LIMIT'),
+          },
+          {
+            name: 'long',
+            ttl: 60000,
+            limit: config.get('THROTTLER_LONG_LIMIT'),
+          },
+        ],
+      }),
       I18nModule.forRoot({
         fallbackLanguage: 'en',
         loaderOptions: {
@@ -101,6 +122,7 @@ export async function createE2EApp(options?: {
 
   if (options?.overrideJwt !== false) {
     builder.overrideGuard(JwtGuard).useClass(TestingJwtGuard);
+    builder.overrideGuard(OptionalJwtGuard).useClass(TestingJwtGuard);
   }
 
   const moduleRef = await builder.compile();

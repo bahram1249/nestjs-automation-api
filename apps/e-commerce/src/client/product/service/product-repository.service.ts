@@ -169,8 +169,10 @@ export class ProductRepositoryService {
 
   async priceRange(filter: GetUnPriceDto) {
     const defaultMax =
-      this.config.get<number>('DEFAULT_MIN_PRICE_RANGE') || 10000000;
-    const defaultMin = this.config.get<number>('DEFAULT_MAX_PRICE_RANGE') || 0;
+      this.config.get<number>('DEFAULT_MAX_PRICE_RANGE') || 10000000;
+
+    const defaultMin = this.config.get<number>('DEFAULT_MIN_PRICE_RANGE') || 0;
+
     const { resultQuery } =
       await this.productQueryBuilderService.findAllAndCountQuery(
         filter,
