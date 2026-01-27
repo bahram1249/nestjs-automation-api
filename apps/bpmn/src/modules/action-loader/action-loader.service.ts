@@ -18,12 +18,6 @@ export class ActionLoaderService {
     }
 
     // Execute the action
-    return await serviceInstance.executeAction({
-      node: dto.sourceExecuteAction.node,
-      request: dto.sourceExecuteAction.request,
-      requestState: dto.sourceExecuteAction.requestState,
-      transaction: dto.sourceExecuteAction.transaction,
-      userExecuterId: dto.sourceExecuteAction.userExecuterId,
-    });
+    return await serviceInstance.executeAction(dto.sourceExecuteAction);
   }
 }
