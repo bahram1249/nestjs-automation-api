@@ -47,7 +47,13 @@ export class RewardHistoryReportService {
         {
           model: User,
           as: 'user',
-          attributes: ['firstname', 'lastname', 'username', 'email'],
+          attributes: [
+            'firstname',
+            'lastname',
+            'username',
+            'email',
+            'phoneNumber',
+          ],
           required: true,
         },
         {
