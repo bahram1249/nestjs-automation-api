@@ -23,14 +23,22 @@ export class LoginService {
     private readonly config: ConfigService,
   ) {}
   async login(dto: LoginDto) {
-    const rand = getIntegerRandomArbitrary(100000, 999999).toString();
+    const loginStatus =
+      this.config.get('ECOMMERCE_LOGIN_SMS_CODE_STATUS') || 'true';
+
+    const rand =
+      loginStatus == 'false'
+        ? '123456'
+        : getIntegerRandomArbitrary(100000, 999999).toString();
     const findUser = await this.userRepository.findOne({
       where: {
         phoneNumber: dto.phoneNumber,
       },
     });
 
-    await this.smsService.loginSms(rand, dto.phoneNumber);
+    if (loginStatus != 'false') {
+      await this.smsService.loginSms(rand, dto.phoneNumber);
+    }
 
     await this.redisRepository.setWithExpiry(
       'usercode',

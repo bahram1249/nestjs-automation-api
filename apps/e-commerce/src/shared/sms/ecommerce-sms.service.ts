@@ -31,6 +31,7 @@ export class ECommmerceSmsService {
     /*
     کد تایید شما : {0} جهیزان
     */
+
     const loginBody = this.config.get('ECOMMERCE_LOGIN_SMS_CODE');
     await this.smsService.sendMessage({
       text: text,
