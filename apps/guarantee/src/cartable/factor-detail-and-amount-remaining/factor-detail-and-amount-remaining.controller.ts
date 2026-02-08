@@ -26,7 +26,7 @@ export class GsFactorDetailAndReaminingAmountController {
   @ApiOperation({ description: 'find remaining amount for a given request' })
   @Get('/request/:requestId')
   @HttpCode(HttpStatus.OK)
-  async findRemainingAmount(@Param('requestId') requestId: bigint) {
+  async findRemainingAmount(@Param('requestId') requestId: number) {
     return await this.service.findFactorDeatilAndRemainingAmount(requestId);
   }
 }

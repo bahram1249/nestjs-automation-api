@@ -14,20 +14,20 @@ export class GetCartableFilteDto {
   @IsOptional()
   @ApiProperty({
     required: false,
-    type: IsNumber,
+    type: Number,
     description: 'requestId',
   })
-  requestId?: bigint;
+  requestId?: number;
 
   @IsInt()
   @Type(() => Number)
   @IsOptional()
   @ApiProperty({
     required: false,
-    type: IsNumber,
+    type: Number,
     description: 'requestStateId',
   })
-  requestStateId?: bigint;
+  requestStateId?: number;
 
   @IsString()
   @IsOptional()

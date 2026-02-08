@@ -38,7 +38,7 @@ export class GSSharedFactorDetailAndRemainingAmountService {
   ) {}
 
   async getFactorDetailAndRemainingAmount(
-    requestId: bigint,
+    requestId: number,
     transaction?: Transaction,
   ) {
     const request = await this.requestRepository.findOne(

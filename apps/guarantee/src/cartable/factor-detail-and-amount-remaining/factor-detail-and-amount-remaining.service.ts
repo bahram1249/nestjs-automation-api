@@ -11,7 +11,7 @@ export class GSFactorDeatilAndRemainingAmountService {
     private readonly rialPriceService: RialPriceService,
   ) {}
 
-  async findFactorDeatilAndRemainingAmount(requestId: bigint) {
+  async findFactorDeatilAndRemainingAmount(requestId: number) {
     const { result } =
       await this.sharedFactorRemainingAmountService.getFactorDetailAndRemainingAmount(
         requestId,

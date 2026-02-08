@@ -249,7 +249,7 @@ export class RequestFactorService {
   }
 
   private async findSolutionItemsFromDatabase(
-    requestId: bigint,
+    requestId: number,
     solutionItems: SolutionArrayDto[],
   ) {
     const solutionOutputs: SolutionOutputDto[] = [];

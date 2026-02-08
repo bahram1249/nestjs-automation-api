@@ -178,9 +178,9 @@ export class FactorFinalizedService {
     const dto = new GuaranteeTraverseDto();
     dto.isClientSideCartable = true;
     dto.nodeCommandId = factor.traverseNodeCommandId;
-    dto.requestId = factor.traverseRequestId;
+    dto.requestId = Number(factor.traverseRequestId);
     dto.nodeId = factor.traverseNodeId;
-    dto.requestStateId = factor.traverseRequestStateId;
+    dto.requestStateId = Number(factor.traverseRequestStateId);
 
     dto.isClientSideCartable = true;
     const cartableItem =

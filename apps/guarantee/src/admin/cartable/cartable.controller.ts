@@ -63,12 +63,12 @@ export class CartableController {
   @HttpCode(HttpStatus.OK)
   async exportRequestPdf(
     @GetUser() user: User,
-    @Param('requestId') requestId: bigint,
+    @Param('requestId') requestId: number,
     @Res() res: Response,
   ) {
     const buffer = await this.cartablePdfService.generateRequestPdf(
       user,
-      requestId,
+      Number(requestId),
     );
 
     res.setHeader('Content-Type', 'application/pdf');

@@ -2,9 +2,9 @@ import { IsBoolean, IsNumber } from 'class-validator';
 
 export class GuaranteeTraverseDto {
   @IsNumber()
-  requestStateId: bigint;
+  requestStateId: number;
   @IsNumber()
-  requestId: bigint;
+  requestId: number;
   @IsNumber()
   nodeId: number;
   @IsNumber()

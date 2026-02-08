@@ -23,7 +23,7 @@ export class RemainingTransactionInCashActionService
   async executeAction(dto: ExecuteActionDto) {
     const { result } =
       await this.factorDeatilAndRemainingAmountService.getFactorDetailAndRemainingAmount(
-        dto.request.id,
+        Number(dto.request.id),
         dto.transaction,
       );
 
