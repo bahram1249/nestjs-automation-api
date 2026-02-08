@@ -21,10 +21,11 @@ import {
   ApiQuery,
   ApiTags,
 } from '@nestjs/swagger';
-import { RoleDto } from './dto';
+import { RoleDto, RoleResponseDto, RolePermissionResponseDto } from './dto';
 import { RoleService } from './role.service';
 import { RoleGetDto } from './dto/role-get.dto';
 import { JwtGuard } from '@rahino/auth';
+import { ApiJsonResponse } from '@rahino/response';
 
 @ApiTags('Admin-Role')
 @ApiBearerAuth()
@@ -37,6 +38,11 @@ import { JwtGuard } from '@rahino/auth';
 export class RoleController {
   constructor(private service: RoleService) {}
   @ApiOperation({ description: 'show all roles' })
+  @ApiJsonResponse({
+    type: RoleResponseDto,
+    isArray: true,
+    extraModels: [RolePermissionResponseDto],
+  })
   @CheckPermission({ permissionSymbol: 'core.admin.roles.getall' })
   @Get('/')
   @ApiQuery({
@@ -50,6 +56,10 @@ export class RoleController {
   }
 
   @ApiOperation({ description: 'show role by given id' })
+  @ApiJsonResponse({
+    type: RoleResponseDto,
+    extraModels: [RolePermissionResponseDto],
+  })
   @CheckPermission({ permissionSymbol: 'core.admin.roles.getone' })
   @Get('/:id')
   @HttpCode(HttpStatus.OK)
@@ -57,6 +67,11 @@ export class RoleController {
     return await this.service.findById(roleId);
   }
   @ApiOperation({ description: 'create role by admin' })
+  @ApiJsonResponse({
+    type: RoleResponseDto,
+    status: 201,
+    extraModels: [RolePermissionResponseDto],
+  })
   @CheckPermission({ permissionSymbol: 'core.admin.roles.create' })
   @Post('/')
   @HttpCode(HttpStatus.CREATED)
@@ -65,6 +80,10 @@ export class RoleController {
   }
 
   @ApiOperation({ description: 'update role by admin' })
+  @ApiJsonResponse({
+    type: RoleResponseDto,
+    extraModels: [RolePermissionResponseDto],
+  })
   @Put('/:id')
   @CheckPermission({ permissionSymbol: 'core.admin.roles.update' })
   @HttpCode(HttpStatus.OK)
@@ -73,6 +92,10 @@ export class RoleController {
   }
 
   @ApiOperation({ description: 'delete role by admin' })
+  @ApiJsonResponse({
+    type: RoleResponseDto,
+    extraModels: [RolePermissionResponseDto],
+  })
   @Delete('/:id')
   @CheckPermission({ permissionSymbol: 'core.admin.roles.delete' })
   @HttpCode(HttpStatus.OK)

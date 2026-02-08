@@ -18,9 +18,10 @@ import {
 } from '@nestjs/swagger';
 import { RoleService } from './role.service';
 import { User } from '@rahino/database';
-import { RoleGetDto } from './dto';
+import { RoleGetDto, RoleResponseDto } from './dto';
 import { JwtGuard } from '@rahino/auth';
 import { GetUser } from '@rahino/auth';
+import { ApiJsonResponse } from '@rahino/response';
 
 @ApiTags('User-Roles')
 @ApiBearerAuth()
@@ -33,6 +34,7 @@ import { GetUser } from '@rahino/auth';
 export class RoleController {
   constructor(private service: RoleService) {}
   @ApiOperation({ description: 'show all roles of current user' })
+  @ApiJsonResponse({ type: RoleResponseDto, isArray: true })
   @Get('/')
   @ApiQuery({
     type: RoleGetDto,
