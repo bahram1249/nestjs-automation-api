@@ -37,6 +37,14 @@ export class CommentUserResponseDto {
   lastname?: string;
 }
 
+export class CommentFactorDetailDto {
+  @ApiProperty({ example: 1, description: 'Factor ID' })
+  id: number;
+
+  @ApiProperty({ example: 'Quality', description: 'Factor name' })
+  name: string;
+}
+
 export class CommentFactorResponseDto {
   @ApiProperty({ example: 1, description: 'Comment factor ID' })
   id: bigint;
@@ -54,11 +62,11 @@ export class CommentFactorResponseDto {
   score: number;
 
   @ApiProperty({
-    type: () => Object,
+    type: () => CommentFactorDetailDto,
     description: 'Factor details',
     required: false,
   })
-  factor?: any;
+  factor?: CommentFactorDetailDto;
 }
 
 export class CommentResponseDto {

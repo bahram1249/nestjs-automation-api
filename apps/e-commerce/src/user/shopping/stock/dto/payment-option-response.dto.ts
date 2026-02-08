@@ -1,5 +1,40 @@
 import { ApiProperty } from '@nestjs/swagger';
 
+export class PaymentOptionGatewayDto {
+  @ApiProperty({ example: 1, description: 'Payment gateway ID' })
+  id: number;
+
+  @ApiProperty({ example: 'zarinpal', description: 'Payment gateway name' })
+  name: string;
+
+  @ApiProperty({
+    example: 'https://example.com/payment-logo.png',
+    description: 'Image URL for the payment gateway',
+    required: false,
+  })
+  imageUrl?: string;
+
+  @ApiProperty({
+    example: true,
+    description: 'Whether the payment gateway is eligible',
+  })
+  eligibleCheck: boolean;
+
+  @ApiProperty({
+    example: 'Pay with Zarinpal',
+    description: 'Title message for the payment gateway',
+    required: false,
+  })
+  titleMessage?: string;
+
+  @ApiProperty({
+    example: 'Secure payment via Zarinpal',
+    description: 'Description of the payment gateway',
+    required: false,
+  })
+  description?: string;
+}
+
 export class PaymentOptionResponseDto {
   @ApiProperty({ example: 1, description: 'Variation price ID' })
   variationPriceId: number;
@@ -33,7 +68,7 @@ export class PaymentOptionResponseDto {
 
   @ApiProperty({
     description: 'Available payment gateways',
-    type: [Object],
+    type: () => [PaymentOptionGatewayDto],
   })
-  payments: any[];
+  payments: PaymentOptionGatewayDto[];
 }

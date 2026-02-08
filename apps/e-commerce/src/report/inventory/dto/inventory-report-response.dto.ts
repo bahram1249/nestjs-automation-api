@@ -1,4 +1,10 @@
 import { ApiProperty } from '@nestjs/swagger';
+import {
+  ReportInventoryStatusResponseDto,
+  ReportProductResponseDto,
+  ReportColorResponseDto,
+  ReportGuaranteeResponseDto,
+} from '../../dto/report-shared-response.dto';
 
 export class InventoryReportResponseDto {
   @ApiProperty({ example: 1, description: 'Inventory ID' })
@@ -33,29 +39,29 @@ export class InventoryReportResponseDto {
 
   @ApiProperty({
     description: 'Inventory status details',
-    type: 'object',
+    type: () => ReportInventoryStatusResponseDto,
     required: false,
   })
-  inventoryStatus?: any;
+  inventoryStatus?: ReportInventoryStatusResponseDto;
 
   @ApiProperty({
     description: 'Product details',
-    type: 'object',
+    type: () => ReportProductResponseDto,
     required: false,
   })
-  product?: any;
+  product?: ReportProductResponseDto;
 
   @ApiProperty({
     description: 'Color details',
-    type: 'object',
+    type: () => ReportColorResponseDto,
     required: false,
   })
-  color?: any;
+  color?: ReportColorResponseDto;
 
   @ApiProperty({
     description: 'Guarantee details',
-    type: 'object',
+    type: () => ReportGuaranteeResponseDto,
     required: false,
   })
-  guarantee?: any;
+  guarantee?: ReportGuaranteeResponseDto;
 }

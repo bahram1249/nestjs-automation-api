@@ -1,4 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { ReportOrderStatusResponseDto } from '../../dto/report-shared-response.dto';
 
 export class PaymentTransactionResponseDto {
   @ApiProperty({ example: 1, description: 'Order ID' })
@@ -56,10 +57,10 @@ export class PaymentTransactionResponseDto {
 
   @ApiProperty({
     description: 'Order status details',
-    type: 'object',
+    type: () => ReportOrderStatusResponseDto,
     required: false,
   })
-  orderStatus?: any;
+  orderStatus?: ReportOrderStatusResponseDto;
 }
 
 export class PaymentTransactionTotalResponseDto {

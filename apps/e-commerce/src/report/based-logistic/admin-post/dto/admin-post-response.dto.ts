@@ -1,4 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { ReportOrderStatusResponseDto } from '../../../dto/report-shared-response.dto';
 
 export class BasedAdminPostResponseDto {
   @ApiProperty({ example: 1, description: 'Order grouped ID' })
@@ -54,10 +55,10 @@ export class BasedAdminPostResponseDto {
 
   @ApiProperty({
     description: 'Order status details',
-    type: 'object',
+    type: () => ReportOrderStatusResponseDto,
     required: false,
   })
-  orderStatus?: any;
+  orderStatus?: ReportOrderStatusResponseDto;
 }
 
 export class BasedAdminPostTotalResponseDto {
