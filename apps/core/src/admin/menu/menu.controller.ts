@@ -20,9 +20,10 @@ import {
   ApiQuery,
   ApiTags,
 } from '@nestjs/swagger';
-import { GetMenuDto, MenuDto } from './dto';
+import { GetMenuDto, MenuDto, MenuResponseDto, SubMenuDto } from './dto';
 import { MenuService } from './menu.service';
 import { JwtGuard } from '@rahino/auth';
+import { ApiJsonResponse } from '@rahino/response';
 
 @ApiTags('Admin-Menu')
 @ApiBearerAuth()
@@ -34,7 +35,13 @@ import { JwtGuard } from '@rahino/auth';
 @UseInterceptors(JsonResponseTransformInterceptor)
 export class MenuController {
   constructor(private service: MenuService) {}
+
   @ApiOperation({ description: 'show all menus' })
+  @ApiJsonResponse({
+    type: MenuResponseDto,
+    isArray: true,
+    extraModels: [SubMenuDto],
+  })
   @CheckPermission({ permissionSymbol: 'core.admin.menus.getall' })
   @Get('/')
   @ApiQuery({
@@ -49,13 +56,20 @@ export class MenuController {
   }
 
   @ApiOperation({ description: 'show menu by given id' })
+  @ApiJsonResponse({ type: MenuResponseDto, extraModels: [SubMenuDto] })
   @CheckPermission({ permissionSymbol: 'core.admin.menus.getone' })
   @Get('/:id')
   @HttpCode(HttpStatus.OK)
   async findById(@Param('id') menuId: number) {
     return await this.service.findById(menuId);
   }
+
   @ApiOperation({ description: 'create menu by admin' })
+  @ApiJsonResponse({
+    type: MenuResponseDto,
+    status: 201,
+    extraModels: [SubMenuDto],
+  })
   @CheckPermission({ permissionSymbol: 'core.admin.menus.create' })
   @Post('/')
   @HttpCode(HttpStatus.CREATED)
@@ -64,6 +78,7 @@ export class MenuController {
   }
 
   @ApiOperation({ description: 'update menu by admin' })
+  @ApiJsonResponse({ type: MenuResponseDto, extraModels: [SubMenuDto] })
   @Put('/:id')
   @CheckPermission({ permissionSymbol: 'core.admin.menus.update' })
   @HttpCode(HttpStatus.OK)
