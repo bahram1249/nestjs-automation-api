@@ -8,18 +8,20 @@ import {
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
+import { ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
 import { LogisticPaymentService } from './logistic-payment.service';
 import {
   LogisticStockPaymentDto,
-  LogisticPaymentRequestResult,
-} from './dto/logistic-payment.dto';
+  LogisticPaymentRequestResultDto,
+  LogisticPaymentGatewayDto,
+} from './dto';
 import { User } from '@rahino/database';
 import { ECUserSession } from '@rahino/localdatabase/models';
 import { GetUser, JwtGuard } from '@rahino/auth';
 import { GetECSession } from 'apps/main/src/decorator';
 import { SessionGuard } from '@rahino/ecommerce/user/session/guard';
-import { ApiBearerAuth } from '@nestjs/swagger';
 import { JsonResponseTransformInterceptor } from '@rahino/response/interceptor';
+import { ApiJsonResponse } from '@rahino/response';
 import { LogisticPaymentGatewaysService } from './logistic-payment-gateways.service';
 
 @Controller({
@@ -36,17 +38,21 @@ export class LogisticPaymentController {
   ) {}
 
   @Post('/stock')
+  @ApiOperation({ description: 'Process stock payment' })
+  @ApiJsonResponse({ type: LogisticPaymentRequestResultDto })
   async stock(
     @GetUser() user: User,
     @GetECSession() session: ECUserSession,
     @Body() dto: LogisticStockPaymentDto,
-  ): Promise<{ result: LogisticPaymentRequestResult }> {
+  ): Promise<{ result: LogisticPaymentRequestResultDto }> {
     const result = await this.service.stock(session, dto, user);
     return { result };
   }
 
   @Get('/gateways')
   @HttpCode(HttpStatus.OK)
+  @ApiOperation({ description: 'Get available payment gateways' })
+  @ApiJsonResponse({ type: LogisticPaymentGatewayDto, isArray: true })
   async gateways(@GetECSession() session: ECUserSession) {
     const result = await this.gatewaysService.list(session);
     return { result };

@@ -18,8 +18,13 @@ import {
 } from '@nestjs/swagger';
 
 import { JwtGuard } from '@rahino/auth';
-import { GetPaymentTransactionDto } from './dto';
+import {
+  GetPaymentTransactionDto,
+  PaymentTransactionResponseDto,
+  PaymentTransactionTotalResponseDto,
+} from './dto';
 import { PaymentTransactionService } from './payment-transaction.service';
+import { ApiJsonResponse } from '@rahino/response';
 
 @ApiTags('Report-PaymentTransaction')
 @UseGuards(JwtGuard, PermissionGuard)
@@ -33,6 +38,10 @@ export class PaymentTransactionController {
   constructor(private service: PaymentTransactionService) {}
 
   @ApiOperation({ description: 'show all payment transactions report admin' })
+  @ApiJsonResponse({
+    type: PaymentTransactionResponseDto,
+    isArray: true,
+  })
   @CheckPermission({
     permissionSymbol: 'ecommerce.report.paymenttransactions.getall',
   })
@@ -49,6 +58,9 @@ export class PaymentTransactionController {
   }
 
   @ApiOperation({ description: 'show total payment transactions report' })
+  @ApiJsonResponse({
+    type: PaymentTransactionTotalResponseDto,
+  })
   @CheckPermission({
     permissionSymbol: 'ecommerce.report.paymenttransactions.getall',
   })

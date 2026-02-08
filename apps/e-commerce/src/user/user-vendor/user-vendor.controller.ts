@@ -9,6 +9,7 @@ import {
 } from '@nestjs/common';
 
 import { JsonResponseTransformInterceptor } from '@rahino/response/interceptor';
+import { ApiJsonResponse } from '@rahino/response';
 import {
   ApiBearerAuth,
   ApiOperation,
@@ -20,6 +21,7 @@ import { JwtGuard } from '@rahino/auth';
 import { ListFilter } from '@rahino/query-filter';
 import { GetUser } from '@rahino/auth';
 import { User } from '@rahino/database';
+import { UserVendorResponseDto } from './dto';
 
 @UseGuards(JwtGuard)
 @ApiBearerAuth()
@@ -39,6 +41,7 @@ export class UserVendorController {
     explode: true,
   })
   @ApiOperation({ description: 'show all vendors that this user is access' })
+  @ApiJsonResponse({ type: UserVendorResponseDto, isArray: true })
   @Get('/')
   @HttpCode(HttpStatus.OK)
   async findAll(@GetUser() user: User, @Query() filter: ListFilter) {

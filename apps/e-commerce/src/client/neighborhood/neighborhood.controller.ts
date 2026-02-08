@@ -11,9 +11,10 @@ import {
 import { JsonResponseTransformInterceptor } from '@rahino/response/interceptor';
 import { ApiOperation, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { NeighborhoodService } from './neighborhood.service';
-import { GetNeighborhoodDto } from './dto';
+import { GetNeighborhoodDto, NeighborhoodResponseDto } from './dto';
 import { OptionalJwtGuard } from '@rahino/auth';
 import { OptionalSessionGuard } from '../../user/session/guard';
+import { ApiJsonResponse } from '@rahino/response';
 
 @ApiTags('Neighborhoods')
 @Controller({
@@ -27,6 +28,7 @@ export class NeighborhoodController {
   // public url
   @UseGuards(OptionalJwtGuard, OptionalSessionGuard)
   @ApiOperation({ description: 'show all neighborhoods' })
+  @ApiJsonResponse({ type: NeighborhoodResponseDto, isArray: true })
   @Get('/')
   @ApiQuery({
     name: 'filter',

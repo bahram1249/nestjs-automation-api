@@ -5,16 +5,20 @@ import {
   HttpStatus,
   Query,
   UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { GetUser } from '@rahino/auth';
 import { User } from '@rahino/database';
 import { ProductViewService } from './product-view.service';
-import { GetRecentProductDto } from './dto/get-recent-product.dto';
+import { GetRecentProductDto, ProductViewResponseDto } from './dto';
 import { OptionalJwtGuard } from '@rahino/auth';
 import { OptionalSessionGuard } from '@rahino/ecommerce/user/session/guard';
+import { ApiJsonResponse } from '@rahino/response';
+import { JsonResponseTransformInterceptor } from '@rahino/response/interceptor';
 
 @ApiTags('ProductViews - Client')
+@UseInterceptors(JsonResponseTransformInterceptor)
 @Controller({
   path: '/api/ecommerce/client/productViews',
   version: ['1'],
@@ -25,6 +29,7 @@ export class ProductViewController {
   @ApiBearerAuth()
   @ApiOperation({ summary: 'get all recent products' })
   @UseGuards(OptionalJwtGuard, OptionalSessionGuard)
+  @ApiJsonResponse({ type: ProductViewResponseDto, isArray: true })
   @HttpCode(HttpStatus.OK)
   @Get('/recent')
   async getRecentProducts(

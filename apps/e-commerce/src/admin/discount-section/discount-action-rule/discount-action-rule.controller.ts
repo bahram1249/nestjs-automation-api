@@ -11,6 +11,8 @@ import { JsonResponseTransformInterceptor } from '@rahino/response/interceptor';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { DiscountActionRuleService } from './discount-action-rule.service';
 import { JwtGuard } from '@rahino/auth';
+import { ApiJsonResponse } from '@rahino/response';
+import { DiscountActionRuleResponseDto } from './dto';
 
 @ApiTags('Admin-DiscountActionRules')
 @ApiBearerAuth()
@@ -25,6 +27,7 @@ export class DiscountActionRuleController {
 
   // public url
   @ApiOperation({ description: 'show all discount Action rules' })
+  @ApiJsonResponse({ type: DiscountActionRuleResponseDto, isArray: true })
   @Get('/')
   @HttpCode(HttpStatus.OK)
   async findAll() {

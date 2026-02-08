@@ -23,6 +23,27 @@ import { User } from '@rahino/database';
 import { GetOrderDto } from './dto';
 import { PermissionGuard } from '@rahino/permission-checker/guard';
 import { CheckPermission } from '@rahino/permission-checker/decorator';
+import { ApiJsonResponse } from '@rahino/response';
+import {
+  OrderResponseDto,
+  OrderDetailResponseDto,
+  UserResponseDto,
+  OrderStatusResponseDto,
+  OrderShipmentWayResponseDto,
+  AddressResponseDto,
+  VendorResponseDto,
+  ProductResponseDto,
+  OrderDetailStatusResponseDto,
+  DiscountResponseDto,
+  ProvinceResponseDto,
+  CityResponseDto,
+  NeighborhoodResponseDto,
+  ColorResponseDto,
+  GuaranteeResponseDto,
+  GuaranteeMonthResponseDto,
+  InventoryResponseDto,
+  AttachmentResponseDto,
+} from '../dto';
 
 @ApiTags('Admin-Orders')
 @UseGuards(JwtGuard, PermissionGuard)
@@ -44,6 +65,29 @@ export class PendingOrderController {
     style: 'deepObject',
     explode: true,
   })
+  @ApiJsonResponse({
+    type: OrderResponseDto,
+    isArray: true,
+    extraModels: [
+      OrderDetailResponseDto,
+      UserResponseDto,
+      OrderStatusResponseDto,
+      OrderShipmentWayResponseDto,
+      AddressResponseDto,
+      VendorResponseDto,
+      ProductResponseDto,
+      OrderDetailStatusResponseDto,
+      DiscountResponseDto,
+      ProvinceResponseDto,
+      CityResponseDto,
+      NeighborhoodResponseDto,
+      ColorResponseDto,
+      GuaranteeResponseDto,
+      GuaranteeMonthResponseDto,
+      InventoryResponseDto,
+      AttachmentResponseDto,
+    ],
+  })
   @HttpCode(HttpStatus.OK)
   async findAll(@GetUser() user: User, @Query() filter: GetOrderDto) {
     return await this.service.findAll(user, filter);
@@ -52,6 +96,28 @@ export class PendingOrderController {
   @ApiOperation({ description: 'show pending orders by given id' })
   @CheckPermission({ permissionSymbol: 'ecommerce.admin.pendingorders.getone' })
   @Get('/:id')
+  @ApiJsonResponse({
+    type: OrderResponseDto,
+    extraModels: [
+      OrderDetailResponseDto,
+      UserResponseDto,
+      OrderStatusResponseDto,
+      OrderShipmentWayResponseDto,
+      AddressResponseDto,
+      VendorResponseDto,
+      ProductResponseDto,
+      OrderDetailStatusResponseDto,
+      DiscountResponseDto,
+      ProvinceResponseDto,
+      CityResponseDto,
+      NeighborhoodResponseDto,
+      ColorResponseDto,
+      GuaranteeResponseDto,
+      GuaranteeMonthResponseDto,
+      InventoryResponseDto,
+      AttachmentResponseDto,
+    ],
+  })
   @HttpCode(HttpStatus.OK)
   async findById(
     @Param('id') entityId: bigint,
@@ -66,6 +132,20 @@ export class PendingOrderController {
     permissionSymbol: 'ecommerce.admin.pendingorders.processdetail',
   })
   @Patch('/processDetail/:id')
+  @ApiJsonResponse({
+    type: OrderDetailResponseDto,
+    extraModels: [
+      VendorResponseDto,
+      ProductResponseDto,
+      OrderDetailStatusResponseDto,
+      DiscountResponseDto,
+      ColorResponseDto,
+      GuaranteeResponseDto,
+      GuaranteeMonthResponseDto,
+      InventoryResponseDto,
+      AttachmentResponseDto,
+    ],
+  })
   @HttpCode(HttpStatus.OK)
   async processDetail(@Param('id') detailId: bigint, @GetUser() user: User) {
     return await this.service.processDetail(detailId, user);

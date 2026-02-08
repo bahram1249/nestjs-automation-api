@@ -31,6 +31,27 @@ import {
   EditReceiptPostDto,
 } from './dto';
 import { GetTotalOrderFilterDto } from './dto/get-total-order.dto';
+import { ApiJsonResponse } from '@rahino/response';
+import {
+  OrderResponseDto,
+  OrderDetailResponseDto,
+  UserResponseDto,
+  OrderStatusResponseDto,
+  OrderShipmentWayResponseDto,
+  AddressResponseDto,
+  VendorResponseDto,
+  ProductResponseDto,
+  OrderDetailStatusResponseDto,
+  DiscountResponseDto,
+  ProvinceResponseDto,
+  CityResponseDto,
+  NeighborhoodResponseDto,
+  ColorResponseDto,
+  GuaranteeResponseDto,
+  GuaranteeMonthResponseDto,
+  InventoryResponseDto,
+  AttachmentResponseDto,
+} from '../dto';
 
 @ApiTags('Total-Orders')
 @UseGuards(JwtGuard, PermissionGuard)
@@ -52,6 +73,29 @@ export class TotalOrderController {
     style: 'deepObject',
     explode: true,
   })
+  @ApiJsonResponse({
+    type: OrderResponseDto,
+    isArray: true,
+    extraModels: [
+      OrderDetailResponseDto,
+      UserResponseDto,
+      OrderStatusResponseDto,
+      OrderShipmentWayResponseDto,
+      AddressResponseDto,
+      VendorResponseDto,
+      ProductResponseDto,
+      OrderDetailStatusResponseDto,
+      DiscountResponseDto,
+      ProvinceResponseDto,
+      CityResponseDto,
+      NeighborhoodResponseDto,
+      ColorResponseDto,
+      GuaranteeResponseDto,
+      GuaranteeMonthResponseDto,
+      InventoryResponseDto,
+      AttachmentResponseDto,
+    ],
+  })
   @HttpCode(HttpStatus.OK)
   async findAll(
     @GetUser() user: User,
@@ -63,6 +107,28 @@ export class TotalOrderController {
   @ApiOperation({ description: 'show total orders by given id' })
   @CheckPermission({ permissionSymbol: 'ecommerce.admin.totalorders.getone' })
   @Get('/:id')
+  @ApiJsonResponse({
+    type: OrderResponseDto,
+    extraModels: [
+      OrderDetailResponseDto,
+      UserResponseDto,
+      OrderStatusResponseDto,
+      OrderShipmentWayResponseDto,
+      AddressResponseDto,
+      VendorResponseDto,
+      ProductResponseDto,
+      OrderDetailStatusResponseDto,
+      DiscountResponseDto,
+      ProvinceResponseDto,
+      CityResponseDto,
+      NeighborhoodResponseDto,
+      ColorResponseDto,
+      GuaranteeResponseDto,
+      GuaranteeMonthResponseDto,
+      InventoryResponseDto,
+      AttachmentResponseDto,
+    ],
+  })
   @HttpCode(HttpStatus.OK)
   async findById(@Param('id') entityId: bigint, @GetUser() user: User) {
     return await this.service.findById(entityId, user);
@@ -73,6 +139,7 @@ export class TotalOrderController {
     permissionSymbol: 'ecommerce.admin.totalorders.removedetail',
   })
   @Delete('/removeDetail/:id')
+  @ApiJsonResponse({ type: Object })
   @HttpCode(HttpStatus.OK)
   async removeDetail(@Param('id') detailId: bigint, @GetUser() user: User) {
     return await this.service.removeDetail(detailId, user);
@@ -83,6 +150,7 @@ export class TotalOrderController {
     permissionSymbol: 'ecommerce.admin.totalorders.decreasedetail',
   })
   @Delete('/decreaseDetail/:id')
+  @ApiJsonResponse({ type: Object })
   @HttpCode(HttpStatus.OK)
   async decreaseDetail(@Param('id') detailId: bigint, @GetUser() user: User) {
     return await this.service.decreaseDetail(detailId, user);
@@ -93,6 +161,7 @@ export class TotalOrderController {
     permissionSymbol: 'ecommerce.admin.totalorders.delete',
   })
   @Delete('/:id')
+  @ApiJsonResponse({ type: Object })
   @HttpCode(HttpStatus.OK)
   async removeById(@Param('id') id: bigint, @GetUser() user: User) {
     return await this.service.removeById(id);
@@ -103,6 +172,7 @@ export class TotalOrderController {
     permissionSymbol: 'ecommerce.admin.totalorders.changeshipmentway',
   })
   @Patch('/changeShipmentWay/:id')
+  @ApiJsonResponse({ type: OrderResponseDto })
   @HttpCode(HttpStatus.OK)
   async changeShipmentWay(
     @Param('id') id: bigint,
@@ -117,6 +187,10 @@ export class TotalOrderController {
     permissionSymbol: 'ecommerce.admin.totalorders.changeorderstatus',
   })
   @Patch('/changeOrderStatus/:id')
+  @ApiJsonResponse({
+    type: OrderResponseDto,
+    extraModels: [OrderStatusResponseDto],
+  })
   @HttpCode(HttpStatus.OK)
   async changeOrderStatus(
     @Param('id') id: bigint,
@@ -131,6 +205,7 @@ export class TotalOrderController {
     permissionSymbol: 'ecommerce.admin.totalorders.editreceiptpost',
   })
   @Patch('/editReceiptPost/:id')
+  @ApiJsonResponse({ type: OrderResponseDto })
   @HttpCode(HttpStatus.OK)
   async editReceiptPost(
     @Param('id') id: bigint,

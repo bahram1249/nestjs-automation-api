@@ -19,9 +19,10 @@ import {
 
 import { JwtGuard } from '@rahino/auth';
 import { InventoryReportService } from './inventory-report.service';
-import { GetInventoryDto } from './dto';
+import { GetInventoryDto, InventoryReportResponseDto } from './dto';
 import { GetUser } from '@rahino/auth';
 import { User } from '@rahino/database';
+import { ApiJsonResponse } from '@rahino/response';
 
 @ApiTags('Report-Inventory')
 @UseGuards(JwtGuard, PermissionGuard)
@@ -35,6 +36,10 @@ export class InventoryReportController {
   constructor(private service: InventoryReportService) {}
 
   @ApiOperation({ description: 'show all inventories report admin' })
+  @ApiJsonResponse({
+    type: InventoryReportResponseDto,
+    isArray: true,
+  })
   @CheckPermission({
     permissionSymbol: 'ecommerce.report.inventories.getall',
   })

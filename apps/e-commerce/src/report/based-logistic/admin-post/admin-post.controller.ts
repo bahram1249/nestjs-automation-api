@@ -16,9 +16,14 @@ import {
 import { CheckPermission } from '@rahino/permission-checker/decorator';
 import { PermissionGuard } from '@rahino/permission-checker/guard';
 import { JsonResponseTransformInterceptor } from '@rahino/response/interceptor';
+import { ApiJsonResponse } from '@rahino/response';
 import { JwtGuard } from '@rahino/auth';
 import { BasedAdminPostService } from './admin-post.service';
 import { GetAdminPostDto } from '../../admin-post/dto';
+import {
+  BasedAdminPostResponseDto,
+  BasedAdminPostTotalResponseDto,
+} from './dto';
 
 @ApiTags('Report-AdminPosts-BasedLogistic')
 @UseGuards(JwtGuard, PermissionGuard)
@@ -32,6 +37,10 @@ export class BasedAdminPostController {
   constructor(private readonly service: BasedAdminPostService) {}
 
   @ApiOperation({ description: 'show all posts report admin (based-logistic)' })
+  @ApiJsonResponse({
+    type: BasedAdminPostResponseDto,
+    isArray: true,
+  })
   @CheckPermission({ permissionSymbol: 'ecommerce.report.adminposts.getall' })
   @Get('/')
   @ApiQuery({
@@ -47,6 +56,9 @@ export class BasedAdminPostController {
 
   @ApiOperation({
     description: 'show total admin post report (based-logistic)',
+  })
+  @ApiJsonResponse({
+    type: BasedAdminPostTotalResponseDto,
   })
   @CheckPermission({ permissionSymbol: 'ecommerce.report.adminposts.getall' })
   @Get('/total')

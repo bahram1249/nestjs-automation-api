@@ -16,7 +16,12 @@ import { GetECSession } from 'apps/main/src/decorator';
 import { ECUserSession } from '@rahino/localdatabase/models';
 import { GetUser } from '@rahino/auth';
 import { User } from '@rahino/database';
-import { StockPaymentDto, WalletPaymentDto } from './dto';
+import {
+  StockPaymentDto,
+  WalletPaymentDto,
+  PaymentRedirectResponseDto,
+} from './dto';
+import { ApiJsonResponse } from '@rahino/response';
 
 @ApiTags('payments')
 @ApiBearerAuth()
@@ -30,6 +35,7 @@ export class PaymentController {
 
   @UseGuards(JwtGuard, SessionGuard)
   @ApiOperation({ description: 'request stock payment' })
+  @ApiJsonResponse({ type: PaymentRedirectResponseDto })
   @Post('/stock')
   @HttpCode(HttpStatus.OK)
   async stock(
@@ -42,6 +48,7 @@ export class PaymentController {
 
   @UseGuards(JwtGuard)
   @ApiOperation({ description: 'request charging wallet payment' })
+  @ApiJsonResponse({ type: PaymentRedirectResponseDto })
   @Post('/walletCharging')
   @HttpCode(HttpStatus.OK)
   async walletCharging(@Body() body: WalletPaymentDto, @GetUser() user: User) {

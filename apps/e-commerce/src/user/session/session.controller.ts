@@ -12,9 +12,10 @@ import { User } from '@rahino/database';
 import { SessionService } from './session.service';
 import { JsonResponseTransformInterceptor } from '@rahino/response/interceptor';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
-import { ECUserSession } from '@rahino/localdatabase/models';
 import { Throttle } from '@nestjs/throttler';
 import { ThrottlerBehindProxyGuard } from '@rahino/commontools/guard';
+import { ApiJsonResponse } from '@rahino/response';
+import { SessionResponseDto } from './dto';
 
 @ApiTags('User-Session')
 @UseGuards(ThrottlerBehindProxyGuard, OptionalJwtGuard)
@@ -31,11 +32,10 @@ export class SessionController {
     description:
       'generate or get a session, if user is authenticated, return session based user',
   })
+  @ApiJsonResponse({ type: SessionResponseDto })
   @Post('/generate')
   @HttpCode(HttpStatus.OK)
-  async getSession(
-    @GetUser() user?: User,
-  ): Promise<Pick<ECUserSession, 'id' | 'userId' | 'expireAt'>> {
+  async getSession(@GetUser() user?: User) {
     return await this.service.getSession(user);
   }
 }

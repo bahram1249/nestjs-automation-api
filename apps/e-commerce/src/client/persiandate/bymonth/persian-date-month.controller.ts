@@ -8,9 +8,11 @@ import {
 } from '@nestjs/common';
 
 import { JsonResponseTransformInterceptor } from '@rahino/response/interceptor';
+import { ApiJsonResponse } from '@rahino/response';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { PersianDateMonthService } from './persian-date-month.service';
 import { JwtGuard } from '@rahino/auth';
+import { PersianDateMonthResponseDto } from './dto';
 
 @ApiTags('PersianDate-Month')
 @ApiBearerAuth()
@@ -26,6 +28,7 @@ export class PersianDateMonthController {
   // public url
 
   @ApiOperation({ description: 'show first day of months' })
+  @ApiJsonResponse({ type: PersianDateMonthResponseDto, isArray: true })
   @Get('/firstDays')
   @HttpCode(HttpStatus.OK)
   async firstDays() {
@@ -35,6 +38,7 @@ export class PersianDateMonthController {
   // public url
   @UseGuards(JwtGuard)
   @ApiOperation({ description: 'show last day of months' })
+  @ApiJsonResponse({ type: PersianDateMonthResponseDto, isArray: true })
   @Get('/lastDays')
   @HttpCode(HttpStatus.OK)
   async lastDays() {

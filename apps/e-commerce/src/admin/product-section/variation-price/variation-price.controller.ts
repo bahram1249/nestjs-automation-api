@@ -22,6 +22,8 @@ import { JsonResponseTransformInterceptor } from '@rahino/response/interceptor';
 import { PermissionGuard } from '@rahino/permission-checker/guard';
 import { CheckPermission } from '@rahino/permission-checker/decorator';
 import { VariationPriceService } from './variation-price.service';
+import { ApiJsonResponse } from '@rahino/response';
+import { VariationPriceResponseDto } from './dto';
 
 @ApiTags('variation prices')
 @UseGuards(JwtGuard, PermissionGuard)
@@ -46,6 +48,10 @@ export class VariationPriceController {
     style: 'deepObject',
     explode: true,
   })
+  @ApiJsonResponse({
+    type: VariationPriceResponseDto,
+    isArray: true,
+  })
   @HttpCode(HttpStatus.OK)
   async findAll(@GetUser() user: User, @Query() filter: ListFilter) {
     return await this.service.findAll(user, filter);
@@ -56,6 +62,9 @@ export class VariationPriceController {
   })
   @ApiOperation({ description: 'show variation price by given id' })
   @Get('/:id')
+  @ApiJsonResponse({
+    type: VariationPriceResponseDto,
+  })
   @HttpCode(HttpStatus.OK)
   async findById(@GetUser() user: User, @Param('id') entityId: number) {
     return await this.service.findById(user, entityId);

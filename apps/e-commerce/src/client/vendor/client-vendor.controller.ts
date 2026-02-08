@@ -10,7 +10,8 @@ import {
 import { JsonResponseTransformInterceptor } from '@rahino/response/interceptor';
 import { ApiOperation, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { ClientVendorService } from './client-vendor.service';
-import { GetVendorDto } from './dto';
+import { GetVendorDto, VendorResponseDto, AttachmentResponseDto } from './dto';
+import { ApiJsonResponse } from '@rahino/response';
 
 @UseInterceptors(JsonResponseTransformInterceptor)
 @ApiTags('Client-Vendors')
@@ -22,6 +23,11 @@ export class ClientVendorController {
   constructor(private service: ClientVendorService) {}
 
   @ApiOperation({ description: 'show all vendors in client' })
+  @ApiJsonResponse({
+    type: VendorResponseDto,
+    isArray: true,
+    extraModels: [AttachmentResponseDto],
+  })
   @Get('/')
   @ApiQuery({
     name: 'filter',
@@ -35,6 +41,10 @@ export class ClientVendorController {
   }
 
   @ApiOperation({ description: 'show vendor by given id' })
+  @ApiJsonResponse({
+    type: VendorResponseDto,
+    extraModels: [AttachmentResponseDto],
+  })
   @Get('/:id')
   @HttpCode(HttpStatus.OK)
   async findById(@Param('id') entityId: number) {
@@ -42,6 +52,10 @@ export class ClientVendorController {
   }
 
   @ApiOperation({ description: 'show vendor by given slug' })
+  @ApiJsonResponse({
+    type: VendorResponseDto,
+    extraModels: [AttachmentResponseDto],
+  })
   @Get('/slug/:slug')
   @HttpCode(HttpStatus.OK)
   async findBySlug(@Param('slug') slug: string) {

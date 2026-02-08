@@ -24,7 +24,12 @@ import {
 import { CheckPermission } from '@rahino/permission-checker/decorator';
 import { GetUser } from '@rahino/auth';
 import { User } from '@rahino/database';
-import { DiscountConditionDto, GetDiscountConditionDto } from './dto';
+import {
+  DiscountConditionDto,
+  GetDiscountConditionDto,
+  DiscountConditionResponseDto,
+} from './dto';
+import { ApiJsonResponse } from '@rahino/response';
 
 @ApiTags('Admin-DiscountConditions')
 @ApiBearerAuth()
@@ -37,7 +42,12 @@ import { DiscountConditionDto, GetDiscountConditionDto } from './dto';
 export class DiscountConditionController {
   constructor(private readonly service: DiscountConditionService) {}
 
-  @ApiOperation({ description: 'show all discounts' })
+  @ApiOperation({ description: 'show all discount conditions' })
+  @ApiJsonResponse({
+    type: DiscountConditionResponseDto,
+    isArray: true,
+    extraModels: [DiscountConditionResponseDto],
+  })
   @Get('/')
   @ApiQuery({
     name: 'filter',
@@ -58,7 +68,8 @@ export class DiscountConditionController {
 
   @UseGuards(JwtGuard, PermissionGuard)
   @ApiBearerAuth()
-  @ApiOperation({ description: 'show discount by given id' })
+  @ApiOperation({ description: 'show discount condition by given id' })
+  @ApiJsonResponse({ type: DiscountConditionResponseDto })
   @CheckPermission({
     permissionSymbol: 'ecommerce.admin.discountconditions.getone',
   })
@@ -70,7 +81,8 @@ export class DiscountConditionController {
 
   @UseGuards(JwtGuard, PermissionGuard)
   @ApiBearerAuth()
-  @ApiOperation({ description: 'create discount by admin' })
+  @ApiOperation({ description: 'create discount condition by admin' })
+  @ApiJsonResponse({ type: DiscountConditionResponseDto })
   @CheckPermission({
     permissionSymbol: 'ecommerce.admin.discountconditions.create',
   })
@@ -82,7 +94,8 @@ export class DiscountConditionController {
 
   @UseGuards(JwtGuard, PermissionGuard)
   @ApiBearerAuth()
-  @ApiOperation({ description: 'delete discount by admin' })
+  @ApiOperation({ description: 'delete discount condition by admin' })
+  @ApiJsonResponse({ type: DiscountConditionResponseDto })
   @Delete('/:id')
   @CheckPermission({
     permissionSymbol: 'ecommerce.admin.discountconditions.delete',

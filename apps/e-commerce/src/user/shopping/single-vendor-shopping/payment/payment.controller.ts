@@ -16,7 +16,11 @@ import { GetUser } from '@rahino/auth';
 import { User } from '@rahino/database';
 import { SingleVendorPaymentService } from './payment.service';
 import { SessionGuard } from '@rahino/ecommerce/user/session/guard';
-import { SingleVendorShoppingPaymentDto } from './dto';
+import {
+  SingleVendorShoppingPaymentDto,
+  SingleVendorPaymentRedirectResponseDto,
+} from './dto';
+import { ApiJsonResponse } from '@rahino/response';
 
 @ApiTags('SingleVendorPayments')
 @ApiBearerAuth()
@@ -30,6 +34,7 @@ export class SingleVendorPaymentController {
   constructor(private readonly service: SingleVendorPaymentService) {}
 
   @ApiOperation({ description: 'request stock payment' })
+  @ApiJsonResponse({ type: SingleVendorPaymentRedirectResponseDto })
   @Post('/shoppingPayment')
   @HttpCode(HttpStatus.OK)
   async stock(

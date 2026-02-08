@@ -16,7 +16,13 @@ import { NearbyVendorService } from './nearby-vendor.service';
 import { OptionalJwtGuard } from '@rahino/auth';
 import { OptionalSessionGuard } from '@rahino/ecommerce/user/session/guard';
 import { ListFilter } from '@rahino/query-filter';
-import { GetNearbyVendorDto, ValidAreaDto } from './dto';
+import {
+  GetNearbyVendorDto,
+  ValidAreaDto,
+  NearbyVendorResponseDto,
+  ValidAreaResponseDto,
+} from './dto';
+import { ApiJsonResponse } from '@rahino/response';
 
 @ApiTags('AnonymousNearbyVendors')
 @Controller({
@@ -30,6 +36,7 @@ export class NearbyVendorController {
   // public url
   @UseGuards(OptionalJwtGuard, OptionalSessionGuard)
   @ApiOperation({ description: 'show all nearby vendors' })
+  @ApiJsonResponse({ type: NearbyVendorResponseDto, isArray: true })
   @Get('/')
   @ApiQuery({
     name: 'filter',
@@ -46,6 +53,7 @@ export class NearbyVendorController {
   @ApiOperation({
     description: 'is it this latitude and longitude in valid area of vendor',
   })
+  @ApiJsonResponse({ type: ValidAreaResponseDto })
   @Post('/InValidArea')
   @HttpCode(HttpStatus.OK)
   async inValidArea(@Body() dto: ValidAreaDto) {

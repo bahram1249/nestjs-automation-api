@@ -23,7 +23,15 @@ import { JwtGuard } from '@rahino/auth';
 import { PermissionGuard } from '@rahino/permission-checker/guard';
 import { JsonResponseTransformInterceptor } from '@rahino/response/interceptor';
 import { CheckPermission } from '@rahino/permission-checker/decorator';
-import { LogisticSendingPeriodDto, GetLogisticSendingPeriodDto } from './dto';
+import {
+  LogisticSendingPeriodDto,
+  GetLogisticSendingPeriodDto,
+  LogisticSendingPeriodResponseDto,
+  LogisticSendingPeriodDeleteResponseDto,
+  ShipmentWayResponseDto,
+  ScheduleSendingTypeResponseDto,
+} from './dto';
+import { ApiJsonResponse } from '@rahino/response';
 import { GetUser } from '@rahino/auth';
 import { User } from '@rahino/database';
 
@@ -50,6 +58,11 @@ export class LogisticSendingPeriodController {
   @CheckPermission({
     permissionSymbol: 'ecommerce.admin.logisticsendingperiods.getall',
   })
+  @ApiJsonResponse({
+    type: LogisticSendingPeriodResponseDto,
+    isArray: true,
+    extraModels: [ShipmentWayResponseDto, ScheduleSendingTypeResponseDto],
+  })
   @HttpCode(HttpStatus.OK)
   async findAll(
     @Query() filter: GetLogisticSendingPeriodDto,
@@ -65,6 +78,10 @@ export class LogisticSendingPeriodController {
     permissionSymbol: 'ecommerce.admin.logisticsendingperiods.getone',
   })
   @Get('/:id')
+  @ApiJsonResponse({
+    type: LogisticSendingPeriodResponseDto,
+    extraModels: [ShipmentWayResponseDto, ScheduleSendingTypeResponseDto],
+  })
   @HttpCode(HttpStatus.OK)
   async findById(@Param('id') entityId: bigint, @GetUser() user: User) {
     return await this.service.findById(entityId, user);
@@ -77,6 +94,11 @@ export class LogisticSendingPeriodController {
     permissionSymbol: 'ecommerce.admin.logisticsendingperiods.create',
   })
   @Post('/')
+  @ApiJsonResponse({
+    type: LogisticSendingPeriodResponseDto,
+    status: 201,
+    extraModels: [ShipmentWayResponseDto, ScheduleSendingTypeResponseDto],
+  })
   @HttpCode(HttpStatus.CREATED)
   async create(@GetUser() user: User, @Body() dto: LogisticSendingPeriodDto) {
     return await this.service.create(user, dto);
@@ -88,6 +110,10 @@ export class LogisticSendingPeriodController {
   @Put('/:id')
   @CheckPermission({
     permissionSymbol: 'ecommerce.admin.logisticsendingperiods.update',
+  })
+  @ApiJsonResponse({
+    type: LogisticSendingPeriodResponseDto,
+    extraModels: [ShipmentWayResponseDto, ScheduleSendingTypeResponseDto],
   })
   @HttpCode(HttpStatus.OK)
   async update(
@@ -105,6 +131,7 @@ export class LogisticSendingPeriodController {
   @CheckPermission({
     permissionSymbol: 'ecommerce.admin.logisticsendingperiods.delete',
   })
+  @ApiJsonResponse({ type: LogisticSendingPeriodDeleteResponseDto })
   @HttpCode(HttpStatus.OK)
   async deleteById(@Param('id') entityId: bigint) {
     return await this.service.deleteById(entityId);

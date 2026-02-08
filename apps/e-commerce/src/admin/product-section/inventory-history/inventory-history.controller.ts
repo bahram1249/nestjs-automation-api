@@ -21,6 +21,8 @@ import { CheckPermission } from '@rahino/permission-checker/decorator';
 import { GetUser } from '@rahino/auth';
 import { User } from '@rahino/database';
 import { InventoryHistoryService } from './inventory-history.service';
+import { InventoryHistoryResponseDto } from './dto';
+import { ApiJsonResponse } from '@rahino/response';
 import { ListFilter } from '@rahino/query-filter';
 
 @ApiTags('Admin-InventoryHistories')
@@ -44,6 +46,10 @@ export class InventoryHistoryController {
   })
   @CheckPermission({
     permissionSymbol: 'ecommerce.admin.inventoryhistories.getall',
+  })
+  @ApiJsonResponse({
+    type: InventoryHistoryResponseDto,
+    isArray: true,
   })
   @HttpCode(HttpStatus.OK)
   async findAll(

@@ -23,7 +23,8 @@ import { HomePageService } from './home-page.service';
 import { GetUser } from '@rahino/auth';
 import { User } from '@rahino/database';
 import { ListFilter } from '@rahino/query-filter';
-import { HomePageDto } from './dto/home-page.dto';
+import { HomePageDto, HomePageResponseDto } from './dto';
+import { ApiJsonResponse } from '@rahino/response';
 
 @ApiTags('Admin-HomePages')
 @UseGuards(JwtGuard, PermissionGuard)
@@ -38,6 +39,7 @@ export class HomePageController {
   @UseInterceptors(JsonResponseTransformInterceptor)
   @CheckPermission({ permissionSymbol: 'ecommerce.admin.homepages.getall' })
   @ApiOperation({ description: 'return all record of home page settings' })
+  @ApiJsonResponse({ type: HomePageResponseDto, isArray: true })
   @Get('/')
   @ApiQuery({
     name: 'filter',
@@ -52,6 +54,7 @@ export class HomePageController {
 
   @UseInterceptors(JsonResponseTransformInterceptor)
   @ApiOperation({ description: 'create home page settings by admin' })
+  @ApiJsonResponse({ type: Object, status: 201 })
   @CheckPermission({ permissionSymbol: 'ecommerce.admin.homepages.create' })
   @Post('/')
   @HttpCode(HttpStatus.CREATED)

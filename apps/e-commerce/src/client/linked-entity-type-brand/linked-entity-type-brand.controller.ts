@@ -7,9 +7,13 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { JsonResponseTransformInterceptor } from '@rahino/response/interceptor';
+import { ApiJsonResponse } from '@rahino/response';
 import { ApiOperation, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { LinkedEntityTypeBrandService } from './linked-entity-type-brand.service';
-import { GetLinkedEntityTypeBrandDto } from './dto';
+import {
+  GetLinkedEntityTypeBrandDto,
+  LinkedEntityTypeBrandResponseDto,
+} from './dto';
 
 @UseInterceptors(JsonResponseTransformInterceptor)
 @ApiTags('Client-LinkedEntityTypeBrands')
@@ -27,6 +31,7 @@ export class LinkedEntityTypeBrandController {
     explode: true,
   })
   @ApiOperation({ description: 'show linked entity type brand slug filter' })
+  @ApiJsonResponse({ type: LinkedEntityTypeBrandResponseDto })
   @Get('/')
   @HttpCode(HttpStatus.OK)
   async findById(@Query() filter: GetLinkedEntityTypeBrandDto) {

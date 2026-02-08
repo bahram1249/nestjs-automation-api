@@ -26,6 +26,8 @@ import { User } from '@rahino/database';
 import { DISCOUNT_CONDITION_VALUE_PROVIDER_TOKEN } from './provider/discount-condition-value.constants';
 import { CheckPermission } from '@rahino/permission-checker/decorator';
 import { PermissionGuard } from '@rahino/permission-checker/guard';
+import { ApiJsonResponse } from '@rahino/response';
+import { ConditionValueResponseDto } from './dto';
 
 @ApiTags('Admin-DiscountConditionValues')
 @ApiBearerAuth()
@@ -44,6 +46,7 @@ export class DiscountConditionValueController {
   @ApiOperation({
     description: 'show all discount condition values based conditionTypeId',
   })
+  @ApiJsonResponse({ type: ConditionValueResponseDto })
   @ApiQuery({
     name: 'filter',
     type: GetConditionValueDto,

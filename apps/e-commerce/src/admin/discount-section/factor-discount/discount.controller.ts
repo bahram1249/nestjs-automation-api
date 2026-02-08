@@ -23,9 +23,15 @@ import { JwtGuard } from '@rahino/auth';
 import { PermissionGuard } from '@rahino/permission-checker/guard';
 import { JsonResponseTransformInterceptor } from '@rahino/response/interceptor';
 import { CheckPermission } from '@rahino/permission-checker/decorator';
-import { CreateDiscountDto, FactorDiscountDto, GetDiscountDto } from './dto';
+import {
+  CreateDiscountDto,
+  FactorDiscountDto,
+  GetDiscountDto,
+  FactorDiscountResponseDto,
+} from './dto';
 import { GetUser } from '@rahino/auth';
 import { User } from '@rahino/database';
+import { ApiJsonResponse } from '@rahino/response';
 
 @ApiTags('Admin-FactorDiscounts')
 @ApiBearerAuth()
@@ -40,6 +46,11 @@ export class DiscountController {
 
   // public url
   @ApiOperation({ description: 'show all factor discounts' })
+  @ApiJsonResponse({
+    type: FactorDiscountResponseDto,
+    isArray: true,
+    extraModels: [FactorDiscountResponseDto],
+  })
   @Get('/')
   @ApiQuery({
     name: 'filter',
@@ -58,6 +69,7 @@ export class DiscountController {
   @UseGuards(JwtGuard, PermissionGuard)
   @ApiBearerAuth()
   @ApiOperation({ description: 'show factor discount by given id' })
+  @ApiJsonResponse({ type: FactorDiscountResponseDto })
   @CheckPermission({
     permissionSymbol: 'ecommerce.admin.factordiscounts.getone',
   })
@@ -70,6 +82,7 @@ export class DiscountController {
   @UseGuards(JwtGuard, PermissionGuard)
   @ApiBearerAuth()
   @ApiOperation({ description: 'create factor discount by admin' })
+  @ApiJsonResponse({ type: FactorDiscountResponseDto })
   @CheckPermission({
     permissionSymbol: 'ecommerce.admin.factordiscounts.create',
   })
@@ -82,6 +95,7 @@ export class DiscountController {
   @UseGuards(JwtGuard, PermissionGuard)
   @ApiBearerAuth()
   @ApiOperation({ description: 'update factor discount by admin' })
+  @ApiJsonResponse({ type: FactorDiscountResponseDto })
   @Put('/:id')
   @CheckPermission({
     permissionSymbol: 'ecommerce.admin.factordiscounts.update',
@@ -98,6 +112,7 @@ export class DiscountController {
   @UseGuards(JwtGuard, PermissionGuard)
   @ApiBearerAuth()
   @ApiOperation({ description: 'delete factor discounts by admin' })
+  @ApiJsonResponse({ type: FactorDiscountResponseDto })
   @Delete('/:id')
   @CheckPermission({
     permissionSymbol: 'ecommerce.admin.factordiscounts.delete',

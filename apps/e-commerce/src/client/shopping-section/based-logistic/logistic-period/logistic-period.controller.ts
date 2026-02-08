@@ -11,11 +11,12 @@ import {
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { GetUser, JwtGuard, OptionalJwtGuard } from '@rahino/auth';
 import { JsonResponseTransformInterceptor } from '@rahino/response/interceptor';
+import { ApiJsonResponse } from '@rahino/response';
 import { GetECSession } from 'apps/main/src/decorator';
 import { ECUserSession } from '@rahino/localdatabase/models';
 import { LogisticPeriodService } from './logistic-period.service';
 import { SessionGuard } from '@rahino/ecommerce/user/session/guard';
-import { ClientLogisticPeriodDto } from './dto';
+import { ClientLogisticPeriodDto, LogisticPeriodResponseDto } from './dto';
 import { User } from '@rahino/database';
 
 @ApiTags('Client Logistic Periods')
@@ -31,6 +32,7 @@ export class LogisticPeriodController {
 
   @UseGuards(OptionalJwtGuard, SessionGuard)
   @ApiOperation({ description: 'show all logistic periods' })
+  @ApiJsonResponse({ type: LogisticPeriodResponseDto })
   @Post('/')
   @HttpCode(HttpStatus.OK)
   async findAll(

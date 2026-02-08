@@ -10,6 +10,7 @@ import {
 import { CheckPermission } from '@rahino/permission-checker/decorator';
 import { PermissionGuard } from '@rahino/permission-checker/guard';
 import { JsonResponseTransformInterceptor } from '@rahino/response/interceptor';
+import { ApiJsonResponse } from '@rahino/response';
 import {
   ApiBearerAuth,
   ApiOperation,
@@ -20,6 +21,10 @@ import { JwtGuard, GetUser } from '@rahino/auth';
 import { BasedVendorSaleService } from './vendor-sale.service';
 import { GetVendorSaleDto } from '../../vendor-sale/dto';
 import { User } from '@rahino/database';
+import {
+  BasedVendorSaleResponseDto,
+  BasedVendorSaleTotalResponseDto,
+} from './dto';
 
 @ApiTags('Report-VendorSales-BasedLogistic')
 @UseGuards(JwtGuard, PermissionGuard)
@@ -33,6 +38,10 @@ export class BasedVendorSaleController {
   constructor(private service: BasedVendorSaleService) {}
 
   @ApiOperation({ description: 'show all vendor sales (based-logistic)' })
+  @ApiJsonResponse({
+    type: BasedVendorSaleResponseDto,
+    isArray: true,
+  })
   @CheckPermission({ permissionSymbol: 'ecommerce.report.vendorsales.getall' })
   @Get('/')
   @ApiQuery({
@@ -47,6 +56,9 @@ export class BasedVendorSaleController {
   }
 
   @ApiOperation({ description: 'show total vendor sales (based-logistic)' })
+  @ApiJsonResponse({
+    type: BasedVendorSaleTotalResponseDto,
+  })
   @CheckPermission({ permissionSymbol: 'ecommerce.report.vendorsales.getall' })
   @Get('/total')
   @ApiQuery({

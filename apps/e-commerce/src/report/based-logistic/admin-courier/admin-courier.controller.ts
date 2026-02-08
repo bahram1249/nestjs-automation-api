@@ -16,9 +16,14 @@ import {
 import { CheckPermission } from '@rahino/permission-checker/decorator';
 import { PermissionGuard } from '@rahino/permission-checker/guard';
 import { JsonResponseTransformInterceptor } from '@rahino/response/interceptor';
+import { ApiJsonResponse } from '@rahino/response';
 import { JwtGuard } from '@rahino/auth';
 import { BasedAdminCourierService } from './admin-courier.service';
 import { GetAdminCourierDto } from '../../admin-courier/dto';
+import {
+  BasedAdminCourierResponseDto,
+  BasedAdminCourierTotalResponseDto,
+} from './dto';
 
 @ApiTags('Report-AdminCouriers-BasedLogistic')
 @UseGuards(JwtGuard, PermissionGuard)
@@ -33,6 +38,10 @@ export class BasedAdminCourierController {
 
   @ApiOperation({
     description: 'show all couriers report admin (based-logistic)',
+  })
+  @ApiJsonResponse({
+    type: BasedAdminCourierResponseDto,
+    isArray: true,
   })
   @CheckPermission({
     permissionSymbol: 'ecommerce.report.admincouriers.getall',
@@ -51,6 +60,9 @@ export class BasedAdminCourierController {
 
   @ApiOperation({
     description: 'show total admin courier report (based-logistic)',
+  })
+  @ApiJsonResponse({
+    type: BasedAdminCourierTotalResponseDto,
   })
   @CheckPermission({
     permissionSymbol: 'ecommerce.report.admincouriers.getall',

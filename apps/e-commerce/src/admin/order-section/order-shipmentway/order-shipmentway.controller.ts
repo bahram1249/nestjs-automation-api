@@ -22,6 +22,8 @@ import { JsonResponseTransformInterceptor } from '@rahino/response/interceptor';
 import { PermissionGuard } from '@rahino/permission-checker/guard';
 import { CheckPermission } from '@rahino/permission-checker/decorator';
 import { OrderShipmentWayService } from './order-shipmentway.service';
+import { ApiJsonResponse } from '@rahino/response';
+import { OrderShipmentWayResponseDto } from './dto';
 
 @ApiTags('order shipment ways')
 @UseGuards(JwtGuard, PermissionGuard)
@@ -46,6 +48,7 @@ export class OrderShipmentWayController {
     style: 'deepObject',
     explode: true,
   })
+  @ApiJsonResponse({ type: OrderShipmentWayResponseDto, isArray: true })
   @HttpCode(HttpStatus.OK)
   async findAll(@GetUser() user: User, @Query() filter: ListFilter) {
     return await this.service.findAll(user, filter);
@@ -56,6 +59,7 @@ export class OrderShipmentWayController {
   })
   @ApiOperation({ description: 'show order shipment ways by given id' })
   @Get('/:id')
+  @ApiJsonResponse({ type: OrderShipmentWayResponseDto, isArray: true })
   @HttpCode(HttpStatus.OK)
   async findById(@GetUser() user: User, @Param('id') entityId: number) {
     return await this.service.findById(user, entityId);

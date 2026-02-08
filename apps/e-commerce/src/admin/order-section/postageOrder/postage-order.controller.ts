@@ -25,6 +25,27 @@ import { PermissionGuard } from '@rahino/permission-checker/guard';
 import { CheckPermission } from '@rahino/permission-checker/decorator';
 import { ListFilter } from '@rahino/query-filter';
 import { PostProcessDto } from './dto';
+import { ApiJsonResponse } from '@rahino/response';
+import {
+  OrderResponseDto,
+  OrderDetailResponseDto,
+  UserResponseDto,
+  OrderStatusResponseDto,
+  OrderShipmentWayResponseDto,
+  AddressResponseDto,
+  VendorResponseDto,
+  ProductResponseDto,
+  OrderDetailStatusResponseDto,
+  DiscountResponseDto,
+  ProvinceResponseDto,
+  CityResponseDto,
+  NeighborhoodResponseDto,
+  ColorResponseDto,
+  GuaranteeResponseDto,
+  GuaranteeMonthResponseDto,
+  InventoryResponseDto,
+  AttachmentResponseDto,
+} from '../dto';
 
 @ApiTags('Postage-Orders')
 @UseGuards(JwtGuard, PermissionGuard)
@@ -46,6 +67,29 @@ export class PostageOrderController {
     style: 'deepObject',
     explode: true,
   })
+  @ApiJsonResponse({
+    type: OrderResponseDto,
+    isArray: true,
+    extraModels: [
+      OrderDetailResponseDto,
+      UserResponseDto,
+      OrderStatusResponseDto,
+      OrderShipmentWayResponseDto,
+      AddressResponseDto,
+      VendorResponseDto,
+      ProductResponseDto,
+      OrderDetailStatusResponseDto,
+      DiscountResponseDto,
+      ProvinceResponseDto,
+      CityResponseDto,
+      NeighborhoodResponseDto,
+      ColorResponseDto,
+      GuaranteeResponseDto,
+      GuaranteeMonthResponseDto,
+      InventoryResponseDto,
+      AttachmentResponseDto,
+    ],
+  })
   @HttpCode(HttpStatus.OK)
   async findAll(@GetUser() user: User, @Query() filter: ListFilter) {
     return await this.service.findAll(user, filter);
@@ -54,6 +98,28 @@ export class PostageOrderController {
   @ApiOperation({ description: 'show postage orders by given id' })
   @CheckPermission({ permissionSymbol: 'ecommerce.admin.postageorders.getone' })
   @Get('/:id')
+  @ApiJsonResponse({
+    type: OrderResponseDto,
+    extraModels: [
+      OrderDetailResponseDto,
+      UserResponseDto,
+      OrderStatusResponseDto,
+      OrderShipmentWayResponseDto,
+      AddressResponseDto,
+      VendorResponseDto,
+      ProductResponseDto,
+      OrderDetailStatusResponseDto,
+      DiscountResponseDto,
+      ProvinceResponseDto,
+      CityResponseDto,
+      NeighborhoodResponseDto,
+      ColorResponseDto,
+      GuaranteeResponseDto,
+      GuaranteeMonthResponseDto,
+      InventoryResponseDto,
+      AttachmentResponseDto,
+    ],
+  })
   @HttpCode(HttpStatus.OK)
   async findById(@Param('id') entityId: bigint, @GetUser() user: User) {
     return await this.service.findById(entityId, user);
@@ -64,6 +130,15 @@ export class PostageOrderController {
     permissionSymbol: 'ecommerce.admin.postageorders.processpost',
   })
   @Patch('/processPost/:id')
+  @ApiJsonResponse({
+    type: OrderResponseDto,
+    extraModels: [
+      UserResponseDto,
+      OrderStatusResponseDto,
+      OrderShipmentWayResponseDto,
+      AddressResponseDto,
+    ],
+  })
   @HttpCode(HttpStatus.OK)
   async processPost(
     @Param('id') orderId: bigint,

@@ -17,6 +17,8 @@ import { JwtGuard } from '@rahino/auth';
 import { JsonResponseTransformInterceptor } from '@rahino/response/interceptor';
 import { ChargingWalletPaymentService } from './charging-wallet-payment.service';
 import { ListFilter } from '@rahino/query-filter';
+import { ApiJsonResponse } from '@rahino/response';
+import { ChargingWalletPaymentResponseDto } from './dto';
 
 @ApiTags('User-ChargingWalletPayments')
 @UseGuards(JwtGuard)
@@ -36,6 +38,7 @@ export class ChargingWalletPaymentController {
     explode: true,
   })
   @ApiOperation({ description: 'show total payment gateways' })
+  @ApiJsonResponse({ type: ChargingWalletPaymentResponseDto, isArray: true })
   @Get('/')
   @HttpCode(HttpStatus.OK)
   async findAll(@Query() filter: ListFilter) {

@@ -14,9 +14,14 @@ import { JsonResponseTransformInterceptor } from '@rahino/response/interceptor';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { JwtGuard } from '@rahino/auth';
 import { CurrentPriceService } from './current-price.service';
-import { CurrentPriceDto } from './dto';
+import {
+  CurrentPriceDto,
+  CurrentPriceDetailResponseDto,
+  CurrentPriceUpdateResponseDto,
+} from './dto';
 import { GetUser } from '@rahino/auth';
 import { User } from '@rahino/database';
+import { ApiJsonResponse } from '@rahino/response';
 
 @ApiTags('Admin-CurrentPrices')
 @UseGuards(JwtGuard, PermissionGuard)
@@ -33,6 +38,7 @@ export class CurrentPriceController {
     permissionSymbol: 'ecommerce.admin.currentprices.getall',
   })
   @ApiOperation({ description: 'get header notification' })
+  @ApiJsonResponse({ type: CurrentPriceDetailResponseDto })
   @Get('/')
   @HttpCode(HttpStatus.OK)
   async findOne() {
@@ -41,6 +47,7 @@ export class CurrentPriceController {
 
   @UseInterceptors(JsonResponseTransformInterceptor)
   @ApiOperation({ description: 'update notification by admin' })
+  @ApiJsonResponse({ type: CurrentPriceUpdateResponseDto })
   @Put('/')
   @CheckPermission({
     permissionSymbol: 'ecommerce.admin.currentprices.update',

@@ -21,8 +21,17 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { JwtGuard } from '@rahino/auth';
+import { ApiJsonResponse } from '@rahino/response';
 import { AddressService } from './address.service';
-import { AddressDto, AddressV2Dto, GetAddressDto } from './dto';
+import {
+  AddressDto,
+  AddressV2Dto,
+  GetAddressDto,
+  AddressResponseDto,
+  ProvinceResponseDto,
+  CityResponseDto,
+  NeighborhoodResponseDto,
+} from './dto';
 import { GetUser } from '@rahino/auth';
 import { User } from '@rahino/database';
 import { OptionalSessionGuard } from '../session/guard';
@@ -47,6 +56,15 @@ export class AddressController {
     style: 'deepObject',
     explode: true,
   })
+  @ApiJsonResponse({
+    type: AddressResponseDto,
+    isArray: true,
+    extraModels: [
+      ProvinceResponseDto,
+      CityResponseDto,
+      NeighborhoodResponseDto,
+    ],
+  })
   @HttpCode(HttpStatus.OK)
   async findAll(@GetUser() user: User, @Query() filter: GetAddressDto) {
     return await this.service.findAll(user, filter);
@@ -61,6 +79,11 @@ export class AddressController {
     style: 'deepObject',
     explode: true,
   })
+  @ApiJsonResponse({
+    type: AddressResponseDto,
+    isArray: true,
+    extraModels: [ProvinceResponseDto, CityResponseDto],
+  })
   @HttpCode(HttpStatus.OK)
   async findAllV2(@GetUser() user: User, @Query() filter: GetAddressDto) {
     return await this.service.findAllV2(user, filter);
@@ -68,6 +91,14 @@ export class AddressController {
 
   @ApiOperation({ description: 'get latest address by user id' })
   @Get('/latest')
+  @ApiJsonResponse({
+    type: AddressResponseDto,
+    extraModels: [
+      ProvinceResponseDto,
+      CityResponseDto,
+      NeighborhoodResponseDto,
+    ],
+  })
   @HttpCode(HttpStatus.OK)
   async findLatestAddress(@GetUser() user: User) {
     return await this.service.findLatestAddress(user);
@@ -75,6 +106,14 @@ export class AddressController {
 
   @ApiOperation({ description: 'show address by given id' })
   @Get('/:id')
+  @ApiJsonResponse({
+    type: AddressResponseDto,
+    extraModels: [
+      ProvinceResponseDto,
+      CityResponseDto,
+      NeighborhoodResponseDto,
+    ],
+  })
   @HttpCode(HttpStatus.OK)
   async findById(@GetUser() user: User, @Param('id') entityId: bigint) {
     return await this.service.findById(user, entityId);
@@ -83,6 +122,10 @@ export class AddressController {
   @Version('2')
   @ApiOperation({ description: 'show address by given id' })
   @Get('/:id')
+  @ApiJsonResponse({
+    type: AddressResponseDto,
+    extraModels: [ProvinceResponseDto, CityResponseDto],
+  })
   @HttpCode(HttpStatus.OK)
   async findByIdV2(@GetUser() user: User, @Param('id') entityId: bigint) {
     return await this.service.findByIdV2(user, entityId);
@@ -90,6 +133,14 @@ export class AddressController {
 
   @ApiOperation({ description: 'create address by user' })
   @Post('/')
+  @ApiJsonResponse({
+    type: AddressResponseDto,
+    extraModels: [
+      ProvinceResponseDto,
+      CityResponseDto,
+      NeighborhoodResponseDto,
+    ],
+  })
   @HttpCode(HttpStatus.CREATED)
   async create(@GetUser() user: User, @Body() dto: AddressDto) {
     return await this.service.create(user, dto);
@@ -98,6 +149,10 @@ export class AddressController {
   @Version('2')
   @ApiOperation({ description: 'create address by user' })
   @Post('/')
+  @ApiJsonResponse({
+    type: AddressResponseDto,
+    extraModels: [ProvinceResponseDto, CityResponseDto],
+  })
   @HttpCode(HttpStatus.CREATED)
   async createV2(@GetUser() user: User, @Body() dto: AddressV2Dto) {
     return await this.service.createV2(user, dto);
@@ -105,6 +160,14 @@ export class AddressController {
 
   @ApiOperation({ description: 'update address by user' })
   @Put('/:id')
+  @ApiJsonResponse({
+    type: AddressResponseDto,
+    extraModels: [
+      ProvinceResponseDto,
+      CityResponseDto,
+      NeighborhoodResponseDto,
+    ],
+  })
   @HttpCode(HttpStatus.OK)
   async update(
     @GetUser() user: User,
@@ -117,6 +180,10 @@ export class AddressController {
   @Version('2')
   @ApiOperation({ description: 'update address by user' })
   @Put('/:id')
+  @ApiJsonResponse({
+    type: AddressResponseDto,
+    extraModels: [ProvinceResponseDto, CityResponseDto],
+  })
   @HttpCode(HttpStatus.OK)
   async updateV2(
     @GetUser() user: User,
@@ -128,6 +195,14 @@ export class AddressController {
 
   @ApiOperation({ description: 'delete address by user' })
   @Delete('/:id')
+  @ApiJsonResponse({
+    type: AddressResponseDto,
+    extraModels: [
+      ProvinceResponseDto,
+      CityResponseDto,
+      NeighborhoodResponseDto,
+    ],
+  })
   @HttpCode(HttpStatus.OK)
   async deleteById(@GetUser() user: User, @Param('id') entityId: bigint) {
     return await this.service.deleteById(user, entityId);

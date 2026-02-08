@@ -7,8 +7,10 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { JsonResponseTransformInterceptor } from '@rahino/response/interceptor';
+import { ApiJsonResponse } from '@rahino/response';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { TorobProductService } from './torob-product.service';
+import { TorobProductListResponseDto } from './dto';
 
 @ApiTags('TorobProducts')
 @UseInterceptors(JsonResponseTransformInterceptor)
@@ -22,6 +24,7 @@ export class TorobProductController {
   // public url
 
   @ApiOperation({ description: 'show all products' })
+  @ApiJsonResponse({ type: TorobProductListResponseDto })
   @Get('/')
   @HttpCode(HttpStatus.OK)
   async findAll() {
@@ -30,6 +33,7 @@ export class TorobProductController {
   }
 
   @ApiOperation({ description: 'show all products by page' })
+  @ApiJsonResponse({ type: TorobProductListResponseDto })
   @Get('/page/:page')
   @HttpCode(HttpStatus.OK)
   async findAllByPaging(@Param('page') page: number) {

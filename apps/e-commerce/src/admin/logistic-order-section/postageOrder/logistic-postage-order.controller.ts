@@ -24,6 +24,11 @@ import { CheckPermission } from '@rahino/permission-checker/decorator';
 import { ListFilter } from '@rahino/query-filter';
 import { PostProcessDto } from 'apps/e-commerce/src/admin/order-section/postageOrder/dto';
 import { LogisticPostageOrderService } from './logistic-postage-order.service';
+import {
+  LogisticPostageOrderResponseDto,
+  LogisticOrderGroupedResponseDto,
+} from './dto';
+import { ApiJsonResponse } from '@rahino/response';
 
 @ApiTags('Logistic-Postage-Orders')
 @UseGuards(JwtGuard, PermissionGuard)
@@ -45,6 +50,10 @@ export class LogisticPostageOrderController {
     style: 'deepObject',
     explode: true,
   })
+  @ApiJsonResponse({
+    type: LogisticPostageOrderResponseDto,
+    isArray: true,
+  })
   @HttpCode(HttpStatus.OK)
   async findAll(@GetUser() user: User, @Query() filter: ListFilter) {
     return await this.service.findAll(user, filter);
@@ -53,6 +62,9 @@ export class LogisticPostageOrderController {
   @ApiOperation({ description: 'show postage orders by given id' })
   @CheckPermission({ permissionSymbol: 'ecommerce.admin.postageorders.getone' })
   @Get('/:id')
+  @ApiJsonResponse({
+    type: LogisticPostageOrderResponseDto,
+  })
   @HttpCode(HttpStatus.OK)
   async findById(@Param('id') entityId: bigint, @GetUser() user: User) {
     return await this.service.findById(entityId, user);
@@ -65,6 +77,9 @@ export class LogisticPostageOrderController {
     permissionSymbol: 'ecommerce.admin.postageorders.processpost',
   })
   @Patch('/processPost/:id')
+  @ApiJsonResponse({
+    type: LogisticOrderGroupedResponseDto,
+  })
   @HttpCode(HttpStatus.OK)
   async processPost(
     @Param('id') groupId: bigint,

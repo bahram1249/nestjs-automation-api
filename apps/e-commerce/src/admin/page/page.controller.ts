@@ -23,10 +23,11 @@ import {
 } from '@nestjs/swagger';
 import { JwtGuard } from '@rahino/auth';
 import { PageService } from './page.service';
-import { PageDto } from './dto';
+import { PageDto, PageResponseDto } from './dto';
 import { GetUser } from '@rahino/auth';
 import { User } from '@rahino/database';
 import { ListFilter } from '@rahino/query-filter';
+import { ApiJsonResponse } from '@rahino/response';
 
 @ApiTags('Admin-Pages')
 @UseGuards(JwtGuard, PermissionGuard)
@@ -41,6 +42,7 @@ export class PageController {
   @UseInterceptors(JsonResponseTransformInterceptor)
   @CheckPermission({ permissionSymbol: 'ecommerce.admin.pages.getall' })
   @ApiOperation({ description: 'show all pages' })
+  @ApiJsonResponse({ type: PageResponseDto, isArray: true })
   @Get('/')
   @ApiQuery({
     name: 'filter',
@@ -55,6 +57,7 @@ export class PageController {
 
   @UseInterceptors(JsonResponseTransformInterceptor)
   @ApiOperation({ description: 'show page by given id' })
+  @ApiJsonResponse({ type: PageResponseDto })
   @CheckPermission({ permissionSymbol: 'ecommerce.admin.pages.getone' })
   @Get('/:id')
   @HttpCode(HttpStatus.OK)
@@ -64,6 +67,7 @@ export class PageController {
 
   @UseInterceptors(JsonResponseTransformInterceptor)
   @ApiOperation({ description: 'create page by admin' })
+  @ApiJsonResponse({ type: PageResponseDto, status: 201 })
   @CheckPermission({ permissionSymbol: 'ecommerce.admin.pages.create' })
   @Post('/')
   @HttpCode(HttpStatus.CREATED)
@@ -73,6 +77,7 @@ export class PageController {
 
   @UseInterceptors(JsonResponseTransformInterceptor)
   @ApiOperation({ description: 'update page by admin' })
+  @ApiJsonResponse({ type: PageResponseDto })
   @Put('/:id')
   @CheckPermission({ permissionSymbol: 'ecommerce.admin.pages.update' })
   @HttpCode(HttpStatus.OK)
@@ -86,6 +91,7 @@ export class PageController {
 
   @UseInterceptors(JsonResponseTransformInterceptor)
   @ApiOperation({ description: 'delete page by admin' })
+  @ApiJsonResponse({ type: PageResponseDto })
   @Delete('/:id')
   @CheckPermission({ permissionSymbol: 'ecommerce.admin.pages.delete' })
   @HttpCode(HttpStatus.OK)

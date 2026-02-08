@@ -31,8 +31,14 @@ import {
 import { Response } from 'express';
 import { JwtGuard, OptionalJwtGuard } from '@rahino/auth';
 import { BrandService } from './brand.service';
-import { BrandDto, GetBrandDto } from './dto';
+import {
+  BrandDto,
+  GetBrandDto,
+  BrandResponseDto,
+  AttachmentResponseDto,
+} from './dto';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { ApiJsonResponse } from '@rahino/response';
 import { imageOptions } from './file-options';
 import { GetUser } from '@rahino/auth';
 import { User } from '@rahino/database';
@@ -50,6 +56,11 @@ export class BrandController {
   @UseGuards(OptionalJwtGuard, OptionalSessionGuard)
   @UseInterceptors(JsonResponseTransformInterceptor)
   @ApiOperation({ description: 'show all brands' })
+  @ApiJsonResponse({
+    type: BrandResponseDto,
+    isArray: true,
+    extraModels: [AttachmentResponseDto],
+  })
   @Get('/')
   @ApiQuery({
     name: 'filter',
@@ -66,6 +77,10 @@ export class BrandController {
   @UseGuards(JwtGuard, PermissionGuard)
   @ApiBearerAuth()
   @ApiOperation({ description: 'show brand by given id' })
+  @ApiJsonResponse({
+    type: BrandResponseDto,
+    extraModels: [AttachmentResponseDto],
+  })
   @CheckPermission({ permissionSymbol: 'ecommerce.brands.getone' })
   @Get('/:id')
   @HttpCode(HttpStatus.OK)
@@ -77,6 +92,10 @@ export class BrandController {
   @UseGuards(JwtGuard, PermissionGuard)
   @ApiBearerAuth()
   @ApiOperation({ description: 'create brand by admin' })
+  @ApiJsonResponse({
+    type: BrandResponseDto,
+    status: 201,
+  })
   @CheckPermission({ permissionSymbol: 'ecommerce.brands.create' })
   @Post('/')
   @HttpCode(HttpStatus.CREATED)
@@ -88,6 +107,9 @@ export class BrandController {
   @UseGuards(JwtGuard, PermissionGuard)
   @ApiBearerAuth()
   @ApiOperation({ description: 'update brand by admin' })
+  @ApiJsonResponse({
+    type: BrandResponseDto,
+  })
   @Put('/:id')
   @CheckPermission({ permissionSymbol: 'ecommerce.brands.update' })
   @HttpCode(HttpStatus.OK)
@@ -99,6 +121,9 @@ export class BrandController {
   @UseGuards(JwtGuard, PermissionGuard)
   @ApiBearerAuth()
   @ApiOperation({ description: 'delete brand by admin' })
+  @ApiJsonResponse({
+    type: BrandResponseDto,
+  })
   @Delete('/:id')
   @CheckPermission({ permissionSymbol: 'ecommerce.brands.delete' })
   @HttpCode(HttpStatus.OK)
@@ -108,6 +133,10 @@ export class BrandController {
 
   @UseInterceptors(JsonResponseTransformInterceptor)
   @ApiOperation({ description: 'get brand by slug' })
+  @ApiJsonResponse({
+    type: BrandResponseDto,
+    extraModels: [AttachmentResponseDto],
+  })
   @Get('/slug/:slug')
   @HttpCode(HttpStatus.OK)
   async findBySlug(@Param('slug') slug: string) {
@@ -118,6 +147,9 @@ export class BrandController {
   @UseGuards(JwtGuard, PermissionGuard)
   @ApiBearerAuth()
   @CheckPermission({ permissionSymbol: 'ecommerce.brands.uploadImage' })
+  @ApiJsonResponse({
+    type: AttachmentResponseDto,
+  })
   @UseInterceptors(FileInterceptor('file', imageOptions()))
   @ApiConsumes('multipart/form-data')
   @ApiBody({

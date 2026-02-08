@@ -22,6 +22,8 @@ import { PermissionGuard } from '@rahino/permission-checker/guard';
 import { CheckPermission } from '@rahino/permission-checker/decorator';
 import { ListFilter } from '@rahino/query-filter';
 import { LogisticDeliveryOrderService } from './logistic-delivery-order.service';
+import { LogisticDeliveryOrderResponseDto } from './dto';
+import { ApiJsonResponse } from '@rahino/response';
 
 @ApiTags('Logistic-Delivery-Orders')
 @UseGuards(JwtGuard, PermissionGuard)
@@ -45,6 +47,10 @@ export class LogisticDeliveryOrderController {
     style: 'deepObject',
     explode: true,
   })
+  @ApiJsonResponse({
+    type: LogisticDeliveryOrderResponseDto,
+    isArray: true,
+  })
   @HttpCode(HttpStatus.OK)
   async findAll(@GetUser() user: User, @Query() filter: ListFilter) {
     return await this.service.findAll(user, filter);
@@ -55,6 +61,9 @@ export class LogisticDeliveryOrderController {
     permissionSymbol: 'ecommerce.admin.deliveryorders.getone',
   })
   @Get('/:id')
+  @ApiJsonResponse({
+    type: LogisticDeliveryOrderResponseDto,
+  })
   @HttpCode(HttpStatus.OK)
   async findById(@Param('id') entityId: bigint, @GetUser() user: User) {
     return await this.service.findById(entityId, user);
@@ -67,6 +76,9 @@ export class LogisticDeliveryOrderController {
     permissionSymbol: 'ecommerce.admin.deliveryorders.processdeliver',
   })
   @Patch('/processDelivery/:id')
+  @ApiJsonResponse({
+    type: LogisticDeliveryOrderResponseDto,
+  })
   @HttpCode(HttpStatus.OK)
   async processPost(@Param('id') groupId: bigint, @GetUser() user: User) {
     return await this.service.processDelivery(groupId, user);

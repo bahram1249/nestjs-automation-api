@@ -6,14 +6,11 @@ import {
 } from '@nestjs/swagger';
 import { CancellOrderService } from './cancell-order.service';
 import {
-  Body,
   Controller,
-  Delete,
   Get,
   HttpCode,
   HttpStatus,
   Param,
-  Patch,
   Query,
   UseGuards,
   UseInterceptors,
@@ -25,6 +22,27 @@ import { User } from '@rahino/database';
 import { PermissionGuard } from '@rahino/permission-checker/guard';
 import { CheckPermission } from '@rahino/permission-checker/decorator';
 import { GetTotalOrderFilterDto } from './dto/get-total-order.dto';
+import { ApiJsonResponse } from '@rahino/response';
+import {
+  OrderResponseDto,
+  OrderDetailResponseDto,
+  UserResponseDto,
+  OrderStatusResponseDto,
+  OrderShipmentWayResponseDto,
+  AddressResponseDto,
+  VendorResponseDto,
+  ProductResponseDto,
+  OrderDetailStatusResponseDto,
+  DiscountResponseDto,
+  ProvinceResponseDto,
+  CityResponseDto,
+  NeighborhoodResponseDto,
+  ColorResponseDto,
+  GuaranteeResponseDto,
+  GuaranteeMonthResponseDto,
+  InventoryResponseDto,
+  AttachmentResponseDto,
+} from '../dto';
 
 @ApiTags('Cancell-Orders')
 @UseGuards(JwtGuard, PermissionGuard)
@@ -46,6 +64,29 @@ export class CancellOrderController {
     style: 'deepObject',
     explode: true,
   })
+  @ApiJsonResponse({
+    type: OrderResponseDto,
+    isArray: true,
+    extraModels: [
+      OrderDetailResponseDto,
+      UserResponseDto,
+      OrderStatusResponseDto,
+      OrderShipmentWayResponseDto,
+      AddressResponseDto,
+      VendorResponseDto,
+      ProductResponseDto,
+      OrderDetailStatusResponseDto,
+      DiscountResponseDto,
+      ProvinceResponseDto,
+      CityResponseDto,
+      NeighborhoodResponseDto,
+      ColorResponseDto,
+      GuaranteeResponseDto,
+      GuaranteeMonthResponseDto,
+      InventoryResponseDto,
+      AttachmentResponseDto,
+    ],
+  })
   @HttpCode(HttpStatus.OK)
   async findAll(
     @GetUser() user: User,
@@ -57,6 +98,28 @@ export class CancellOrderController {
   @ApiOperation({ description: 'show cancell orders by given id' })
   @CheckPermission({ permissionSymbol: 'ecommerce.admin.cancellorders.getone' })
   @Get('/:id')
+  @ApiJsonResponse({
+    type: OrderResponseDto,
+    extraModels: [
+      OrderDetailResponseDto,
+      UserResponseDto,
+      OrderStatusResponseDto,
+      OrderShipmentWayResponseDto,
+      AddressResponseDto,
+      VendorResponseDto,
+      ProductResponseDto,
+      OrderDetailStatusResponseDto,
+      DiscountResponseDto,
+      ProvinceResponseDto,
+      CityResponseDto,
+      NeighborhoodResponseDto,
+      ColorResponseDto,
+      GuaranteeResponseDto,
+      GuaranteeMonthResponseDto,
+      InventoryResponseDto,
+      AttachmentResponseDto,
+    ],
+  })
   @HttpCode(HttpStatus.OK)
   async findById(@Param('id') entityId: bigint, @GetUser() user: User) {
     return await this.service.findById(entityId, user);

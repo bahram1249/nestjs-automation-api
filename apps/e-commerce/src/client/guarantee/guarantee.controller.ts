@@ -23,6 +23,7 @@ import {
   ImageResponseTransformInterceptor,
   JsonResponseTransformInterceptor,
 } from '@rahino/response/interceptor';
+import { ApiJsonResponse } from '@rahino/response';
 import {
   ApiBearerAuth,
   ApiBody,
@@ -34,7 +35,12 @@ import {
 
 import { JwtGuard, OptionalJwtGuard } from '@rahino/auth';
 import { GuaranteeService } from './guarantee.service';
-import { GuaranteeDto, GetGuaranteeDto } from './dto';
+import {
+  GuaranteeDto,
+  GetGuaranteeDto,
+  GuaranteeResponseDto,
+  GuaranteeAttachmentResponseDto,
+} from './dto';
 import { GetUser } from '@rahino/auth';
 import { User } from '@rahino/database';
 import { FileInterceptor } from '@nestjs/platform-express';
@@ -54,6 +60,7 @@ export class GuaranteeController {
   @UseInterceptors(JsonResponseTransformInterceptor)
   @UseGuards(OptionalJwtGuard, OptionalSessionGuard)
   @ApiOperation({ description: 'show all guarantees' })
+  @ApiJsonResponse({ type: GuaranteeResponseDto, isArray: true })
   @Get('/')
   @ApiQuery({
     name: 'filter',
@@ -71,6 +78,7 @@ export class GuaranteeController {
   @ApiBearerAuth()
   @ApiOperation({ description: 'show guarantee by given id' })
   @CheckPermission({ permissionSymbol: 'ecommerce.guarantees.getone' })
+  @ApiJsonResponse({ type: GuaranteeResponseDto })
   @Get('/:id')
   @HttpCode(HttpStatus.OK)
   async findById(@Param('id') entityId: number) {
@@ -82,6 +90,7 @@ export class GuaranteeController {
   @ApiBearerAuth()
   @ApiOperation({ description: 'create guarantee by admin' })
   @CheckPermission({ permissionSymbol: 'ecommerce.guarantees.create' })
+  @ApiJsonResponse({ type: GuaranteeResponseDto, status: 201 })
   @Post('/')
   @HttpCode(HttpStatus.CREATED)
   async create(@Body() dto: GuaranteeDto) {
@@ -92,8 +101,9 @@ export class GuaranteeController {
   @UseGuards(JwtGuard, PermissionGuard)
   @ApiBearerAuth()
   @ApiOperation({ description: 'update guarantee by admin' })
-  @Put('/:id')
   @CheckPermission({ permissionSymbol: 'ecommerce.guarantees.update' })
+  @ApiJsonResponse({ type: GuaranteeResponseDto })
+  @Put('/:id')
   @HttpCode(HttpStatus.OK)
   async update(@Param('id') entityId: number, @Body() dto: GuaranteeDto) {
     return await this.service.update(entityId, dto);
@@ -103,8 +113,9 @@ export class GuaranteeController {
   @UseGuards(JwtGuard, PermissionGuard)
   @ApiBearerAuth()
   @ApiOperation({ description: 'delete guarantee by admin' })
-  @Delete('/:id')
   @CheckPermission({ permissionSymbol: 'ecommerce.guarantees.delete' })
+  @ApiJsonResponse({ type: GuaranteeResponseDto })
+  @Delete('/:id')
   @HttpCode(HttpStatus.OK)
   async deleteById(@Param('id') entityId: number) {
     return await this.service.deleteById(entityId);
@@ -112,6 +123,7 @@ export class GuaranteeController {
 
   @UseInterceptors(JsonResponseTransformInterceptor)
   @ApiOperation({ description: 'get guarantee by slug' })
+  @ApiJsonResponse({ type: GuaranteeResponseDto })
   @Get('/slug/:slug')
   @HttpCode(HttpStatus.OK)
   async findBySlug(@Param('slug') slug: string) {
@@ -135,6 +147,7 @@ export class GuaranteeController {
       },
     },
   })
+  @ApiJsonResponse({ type: GuaranteeAttachmentResponseDto })
   @Post('/image/:id')
   @HttpCode(HttpStatus.OK)
   async uploadImage(

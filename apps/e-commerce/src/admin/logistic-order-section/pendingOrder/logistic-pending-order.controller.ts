@@ -22,6 +22,11 @@ import { PermissionGuard } from '@rahino/permission-checker/guard';
 import { CheckPermission } from '@rahino/permission-checker/decorator';
 import { GetOrderDto } from 'apps/e-commerce/src/admin/order-section/pendingOrder/dto';
 import { LogisticPendingOrderService } from './logistic-pending-order.service';
+import {
+  LogisticPendingOrderResponseDto,
+  LogisticPendingOrderDetailResponseDto,
+} from './dto';
+import { ApiJsonResponse } from '@rahino/response';
 
 @ApiTags('Logistic-Pending-Orders')
 @UseGuards(JwtGuard, PermissionGuard)
@@ -43,6 +48,10 @@ export class LogisticPendingOrderController {
     style: 'deepObject',
     explode: true,
   })
+  @ApiJsonResponse({
+    type: LogisticPendingOrderResponseDto,
+    isArray: true,
+  })
   @HttpCode(HttpStatus.OK)
   async findAll(@GetUser() user: User, @Query() filter: GetOrderDto) {
     return await this.service.findAll(user, filter);
@@ -51,6 +60,9 @@ export class LogisticPendingOrderController {
   @ApiOperation({ description: 'show pending orders by given id' })
   @CheckPermission({ permissionSymbol: 'ecommerce.admin.pendingorders.getone' })
   @Get('/:id')
+  @ApiJsonResponse({
+    type: LogisticPendingOrderResponseDto,
+  })
   @HttpCode(HttpStatus.OK)
   async findById(
     @Param('id') entityId: bigint,
@@ -65,6 +77,9 @@ export class LogisticPendingOrderController {
     permissionSymbol: 'ecommerce.admin.pendingorders.processdetail',
   })
   @Patch('/processDetail/:id')
+  @ApiJsonResponse({
+    type: LogisticPendingOrderDetailResponseDto,
+  })
   @HttpCode(HttpStatus.OK)
   async processDetail(@Param('id') detailId: bigint, @GetUser() user: User) {
     return await this.service.processDetail(detailId, user);

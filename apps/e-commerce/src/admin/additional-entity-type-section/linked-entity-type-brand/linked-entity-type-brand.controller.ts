@@ -23,10 +23,14 @@ import {
 } from '@nestjs/swagger';
 import { JwtGuard } from '@rahino/auth';
 import { LinkedEntityTypeBrandService } from './linked-entity-type-brand.service';
-import { LinkedEntityTypeBrandDto } from './dto';
+import {
+  LinkedEntityTypeBrandDto,
+  LinkedEntityTypeBrandResponseDto,
+} from './dto';
 import { GetUser } from '@rahino/auth';
 import { User } from '@rahino/database';
 import { ListFilter } from '@rahino/query-filter';
+import { ApiJsonResponse } from '@rahino/response';
 
 @ApiTags('Admin-LinkedEntityTypeBrands')
 @UseGuards(JwtGuard, PermissionGuard)
@@ -50,6 +54,10 @@ export class LinkedEntityTypeBrandController {
     style: 'deepObject',
     explode: true,
   })
+  @ApiJsonResponse({
+    type: LinkedEntityTypeBrandResponseDto,
+    isArray: true,
+  })
   @HttpCode(HttpStatus.OK)
   async findAll(@Query() filter: ListFilter) {
     return await this.service.findAll(filter);
@@ -61,6 +69,9 @@ export class LinkedEntityTypeBrandController {
     permissionSymbol: 'ecommerce.admin.linkedentitytypebrands.getone',
   })
   @Get('/:id')
+  @ApiJsonResponse({
+    type: LinkedEntityTypeBrandResponseDto,
+  })
   @HttpCode(HttpStatus.OK)
   async findById(@Param('id') entityId: number) {
     return await this.service.findById(entityId);
@@ -72,6 +83,9 @@ export class LinkedEntityTypeBrandController {
     permissionSymbol: 'ecommerce.admin.linkedentitytypebrands.create',
   })
   @Post('/')
+  @ApiJsonResponse({
+    type: LinkedEntityTypeBrandResponseDto,
+  })
   @HttpCode(HttpStatus.CREATED)
   async create(@Body() dto: LinkedEntityTypeBrandDto, @GetUser() user: User) {
     return await this.service.create(dto, user);
@@ -82,6 +96,9 @@ export class LinkedEntityTypeBrandController {
   @Put('/:id')
   @CheckPermission({
     permissionSymbol: 'ecommerce.admin.linkedentitytypebrands.update',
+  })
+  @ApiJsonResponse({
+    type: LinkedEntityTypeBrandResponseDto,
   })
   @HttpCode(HttpStatus.OK)
   async update(
@@ -97,6 +114,9 @@ export class LinkedEntityTypeBrandController {
   @Delete('/:id')
   @CheckPermission({
     permissionSymbol: 'ecommerce.admin.linkedentitytypebrands.delete',
+  })
+  @ApiJsonResponse({
+    type: LinkedEntityTypeBrandResponseDto,
   })
   @HttpCode(HttpStatus.OK)
   async deleteById(@Param('id') entityId: number) {

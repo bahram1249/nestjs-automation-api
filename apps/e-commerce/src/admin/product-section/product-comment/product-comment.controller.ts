@@ -22,8 +22,17 @@ import { GetUser } from '@rahino/auth';
 import { User } from '@rahino/database';
 import { PermissionGuard } from '@rahino/permission-checker/guard';
 import { CheckPermission } from '@rahino/permission-checker/decorator';
-import { ConfirmCommentDto, GetProductCommentDto } from './dto';
+import {
+  ConfirmCommentDto,
+  GetProductCommentDto,
+  ProductCommentResponseDto,
+  ProductCommentStatusResponseDto,
+  ProductCommentProductResponseDto,
+  ProductCommentUserResponseDto,
+  ProductCommentFactorResponseDto,
+} from './dto';
 import { ProductCommentService } from './product-comment.service';
+import { ApiJsonResponse } from '@rahino/response';
 
 @ApiTags('Product-Comment-Admin')
 @UseGuards(JwtGuard, PermissionGuard)
@@ -37,6 +46,16 @@ export class ProductCommentController {
   constructor(private readonly service: ProductCommentService) {}
 
   @ApiOperation({ description: 'show all product comments' })
+  @ApiJsonResponse({
+    type: ProductCommentResponseDto,
+    isArray: true,
+    extraModels: [
+      ProductCommentStatusResponseDto,
+      ProductCommentProductResponseDto,
+      ProductCommentUserResponseDto,
+      ProductCommentFactorResponseDto,
+    ],
+  })
   @CheckPermission({
     permissionSymbol: 'ecommerce.admin.productcomments.getall',
   })
@@ -52,7 +71,16 @@ export class ProductCommentController {
     return await this.service.findAll(user, filter);
   }
 
-  @ApiOperation({ description: 'show postage orders by given id' })
+  @ApiOperation({ description: 'show product comment by given id' })
+  @ApiJsonResponse({
+    type: ProductCommentResponseDto,
+    extraModels: [
+      ProductCommentStatusResponseDto,
+      ProductCommentProductResponseDto,
+      ProductCommentUserResponseDto,
+      ProductCommentFactorResponseDto,
+    ],
+  })
   @CheckPermission({
     permissionSymbol: 'ecommerce.admin.productcomments.getone',
   })
@@ -63,6 +91,7 @@ export class ProductCommentController {
   }
 
   @ApiOperation({ description: 'confirm comment by id' })
+  @ApiJsonResponse({ type: ProductCommentResponseDto })
   @CheckPermission({
     permissionSymbol: 'ecommerce.admin.productcomments.confirmcomment',
   })
@@ -77,6 +106,7 @@ export class ProductCommentController {
   }
 
   @ApiOperation({ description: 'reject comment by id' })
+  @ApiJsonResponse({ type: ProductCommentResponseDto })
   @CheckPermission({
     permissionSymbol: 'ecommerce.admin.productcomments.rejectcomment',
   })

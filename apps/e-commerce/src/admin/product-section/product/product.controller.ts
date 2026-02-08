@@ -27,9 +27,18 @@ import {
   ApiConsumes,
   ApiBody,
 } from '@nestjs/swagger';
-import { GetProductDto, ProductDto } from './dto';
+import {
+  GetProductDto,
+  ProductDto,
+  ProductResponseDto,
+  BrandResponseDto,
+  PublishStatusResponseDto,
+  InventoryStatusResponseDto,
+  EntityTypeResponseDto,
+} from './dto';
 import { JwtGuard } from '@rahino/auth';
 import { ProductService } from './product.service';
+import { ApiJsonResponse } from '@rahino/response';
 import { GetUser } from '@rahino/auth';
 import { User } from '@rahino/database';
 import { FileInterceptor } from '@nestjs/platform-express';
@@ -47,6 +56,16 @@ export class ProductController {
 
   @UseInterceptors(JsonResponseTransformInterceptor)
   @ApiOperation({ description: 'show all products' })
+  @ApiJsonResponse({
+    type: ProductResponseDto,
+    isArray: true,
+    extraModels: [
+      BrandResponseDto,
+      PublishStatusResponseDto,
+      InventoryStatusResponseDto,
+      EntityTypeResponseDto,
+    ],
+  })
   @CheckPermission({ permissionSymbol: 'ecommerce.admin.products.getall' })
   @Get('/')
   @ApiQuery({
@@ -62,6 +81,15 @@ export class ProductController {
 
   @UseInterceptors(JsonResponseTransformInterceptor)
   @ApiOperation({ description: 'show product by given id' })
+  @ApiJsonResponse({
+    type: ProductResponseDto,
+    extraModels: [
+      BrandResponseDto,
+      PublishStatusResponseDto,
+      InventoryStatusResponseDto,
+      EntityTypeResponseDto,
+    ],
+  })
   @CheckPermission({ permissionSymbol: 'ecommerce.admin.products.getone' })
   @Get('/:id')
   @HttpCode(HttpStatus.OK)
@@ -71,6 +99,16 @@ export class ProductController {
 
   @UseInterceptors(JsonResponseTransformInterceptor)
   @ApiOperation({ description: 'create product by admin' })
+  @ApiJsonResponse({
+    type: ProductResponseDto,
+    status: 201,
+    extraModels: [
+      BrandResponseDto,
+      PublishStatusResponseDto,
+      InventoryStatusResponseDto,
+      EntityTypeResponseDto,
+    ],
+  })
   @CheckPermission({ permissionSymbol: 'ecommerce.admin.products.create' })
   @Post('/')
   @UsePipes(new ValidationPipe({ transform: true }))
@@ -114,6 +152,7 @@ export class ProductController {
     description:
       'Import products inventories from Excel (insert/update accessible inventories only)',
   })
+  @ApiJsonResponse({ type: Object })
   @CheckPermission({ permissionSymbol: 'ecommerce.admin.products.create' })
   @Post('/inventories/import')
   @ApiConsumes('multipart/form-data')
@@ -136,6 +175,15 @@ export class ProductController {
 
   @UseInterceptors(JsonResponseTransformInterceptor)
   @ApiOperation({ description: 'update products by admin' })
+  @ApiJsonResponse({
+    type: ProductResponseDto,
+    extraModels: [
+      BrandResponseDto,
+      PublishStatusResponseDto,
+      InventoryStatusResponseDto,
+      EntityTypeResponseDto,
+    ],
+  })
   @Put('/:id')
   @CheckPermission({ permissionSymbol: 'ecommerce.admin.products.update' })
   @UsePipes(new ValidationPipe({ transform: true }))
@@ -150,6 +198,7 @@ export class ProductController {
 
   @UseInterceptors(JsonResponseTransformInterceptor)
   @ApiOperation({ description: 'delete products by admin' })
+  @ApiJsonResponse({ type: ProductResponseDto })
   @Delete('/:id')
   @CheckPermission({ permissionSymbol: 'ecommerce.admin.products.delete' })
   @HttpCode(HttpStatus.OK)

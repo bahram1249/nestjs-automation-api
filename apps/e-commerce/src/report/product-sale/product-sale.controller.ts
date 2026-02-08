@@ -20,7 +20,8 @@ import { JwtGuard } from '@rahino/auth';
 import { ProductSaleService } from './product-sale.service';
 import { GetUser } from '@rahino/auth';
 import { User } from '@rahino/database';
-import { GetVendorSaleDto } from './dto';
+import { GetVendorSaleDto, ProductSaleResponseDto } from './dto';
+import { ApiJsonResponse } from '@rahino/response';
 
 @ApiTags('Report-ProductSales')
 @UseGuards(JwtGuard, PermissionGuard)
@@ -34,6 +35,10 @@ export class ProductSaleController {
   constructor(private service: ProductSaleService) {}
 
   @ApiOperation({ description: 'show all product sales' })
+  @ApiJsonResponse({
+    type: ProductSaleResponseDto,
+    isArray: true,
+  })
   @CheckPermission({ permissionSymbol: 'ecommerce.report.productsales.getall' })
   @Get('/')
   @ApiQuery({

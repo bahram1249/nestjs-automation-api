@@ -21,6 +21,8 @@ import { PermissionGuard } from '@rahino/permission-checker/guard';
 import { CheckPermission } from '@rahino/permission-checker/decorator';
 import { GetTotalOrderFilterDto } from 'apps/e-commerce/src/admin/order-section/cancell-order/dto/get-total-order.dto';
 import { LogisticCancellOrderService } from './logistic-cancell-order.service';
+import { LogisticCancellOrderResponseDto } from './dto';
+import { ApiJsonResponse } from '@rahino/response';
 
 @ApiTags('Logistic-Cancell-Orders')
 @UseGuards(JwtGuard, PermissionGuard)
@@ -42,6 +44,10 @@ export class LogisticCancellOrderController {
     style: 'deepObject',
     explode: true,
   })
+  @ApiJsonResponse({
+    type: LogisticCancellOrderResponseDto,
+    isArray: true,
+  })
   @HttpCode(HttpStatus.OK)
   async findAll(
     @GetUser() user: User,
@@ -53,6 +59,9 @@ export class LogisticCancellOrderController {
   @ApiOperation({ description: 'show cancell orders by given id' })
   @CheckPermission({ permissionSymbol: 'ecommerce.admin.cancellorders.getone' })
   @Get('/:id')
+  @ApiJsonResponse({
+    type: LogisticCancellOrderResponseDto,
+  })
   @HttpCode(HttpStatus.OK)
   async findById(@Param('id') entityId: bigint, @GetUser() user: User) {
     return await this.service.findById(entityId, user);

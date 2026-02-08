@@ -6,7 +6,6 @@ import {
 } from '@nestjs/swagger';
 import { DeliveryOrderService } from './delivery-order.service';
 import {
-  Body,
   Controller,
   Get,
   HttpCode,
@@ -24,6 +23,27 @@ import { User } from '@rahino/database';
 import { PermissionGuard } from '@rahino/permission-checker/guard';
 import { CheckPermission } from '@rahino/permission-checker/decorator';
 import { ListFilter } from '@rahino/query-filter';
+import { ApiJsonResponse } from '@rahino/response';
+import {
+  OrderResponseDto,
+  OrderDetailResponseDto,
+  UserResponseDto,
+  OrderStatusResponseDto,
+  OrderShipmentWayResponseDto,
+  AddressResponseDto,
+  VendorResponseDto,
+  ProductResponseDto,
+  OrderDetailStatusResponseDto,
+  DiscountResponseDto,
+  ProvinceResponseDto,
+  CityResponseDto,
+  NeighborhoodResponseDto,
+  ColorResponseDto,
+  GuaranteeResponseDto,
+  GuaranteeMonthResponseDto,
+  InventoryResponseDto,
+  AttachmentResponseDto,
+} from '../dto';
 
 @ApiTags('Courier-Orders')
 @UseGuards(JwtGuard, PermissionGuard)
@@ -47,6 +67,29 @@ export class DeliveryOrderController {
     style: 'deepObject',
     explode: true,
   })
+  @ApiJsonResponse({
+    type: OrderResponseDto,
+    isArray: true,
+    extraModels: [
+      OrderDetailResponseDto,
+      UserResponseDto,
+      OrderStatusResponseDto,
+      OrderShipmentWayResponseDto,
+      AddressResponseDto,
+      VendorResponseDto,
+      ProductResponseDto,
+      OrderDetailStatusResponseDto,
+      DiscountResponseDto,
+      ProvinceResponseDto,
+      CityResponseDto,
+      NeighborhoodResponseDto,
+      ColorResponseDto,
+      GuaranteeResponseDto,
+      GuaranteeMonthResponseDto,
+      InventoryResponseDto,
+      AttachmentResponseDto,
+    ],
+  })
   @HttpCode(HttpStatus.OK)
   async findAll(@GetUser() user: User, @Query() filter: ListFilter) {
     return await this.service.findAll(user, filter);
@@ -57,6 +100,28 @@ export class DeliveryOrderController {
     permissionSymbol: 'ecommerce.admin.deliveryorders.getone',
   })
   @Get('/:id')
+  @ApiJsonResponse({
+    type: OrderResponseDto,
+    extraModels: [
+      OrderDetailResponseDto,
+      UserResponseDto,
+      OrderStatusResponseDto,
+      OrderShipmentWayResponseDto,
+      AddressResponseDto,
+      VendorResponseDto,
+      ProductResponseDto,
+      OrderDetailStatusResponseDto,
+      DiscountResponseDto,
+      ProvinceResponseDto,
+      CityResponseDto,
+      NeighborhoodResponseDto,
+      ColorResponseDto,
+      GuaranteeResponseDto,
+      GuaranteeMonthResponseDto,
+      InventoryResponseDto,
+      AttachmentResponseDto,
+    ],
+  })
   @HttpCode(HttpStatus.OK)
   async findById(@Param('id') entityId: bigint, @GetUser() user: User) {
     return await this.service.findById(entityId, user);
@@ -67,6 +132,28 @@ export class DeliveryOrderController {
     permissionSymbol: 'ecommerce.admin.deliveryorders.processdeliver',
   })
   @Patch('/processDelivery/:id')
+  @ApiJsonResponse({
+    type: OrderResponseDto,
+    extraModels: [
+      OrderDetailResponseDto,
+      UserResponseDto,
+      OrderStatusResponseDto,
+      OrderShipmentWayResponseDto,
+      AddressResponseDto,
+      VendorResponseDto,
+      ProductResponseDto,
+      OrderDetailStatusResponseDto,
+      DiscountResponseDto,
+      ProvinceResponseDto,
+      CityResponseDto,
+      NeighborhoodResponseDto,
+      ColorResponseDto,
+      GuaranteeResponseDto,
+      GuaranteeMonthResponseDto,
+      InventoryResponseDto,
+      AttachmentResponseDto,
+    ],
+  })
   @HttpCode(HttpStatus.OK)
   async processPost(@Param('id') orderId: bigint, @GetUser() user: User) {
     return await this.service.processDelivery(orderId, user);

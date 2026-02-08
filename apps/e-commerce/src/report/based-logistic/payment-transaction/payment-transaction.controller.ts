@@ -10,6 +10,7 @@ import {
 import { CheckPermission } from '@rahino/permission-checker/decorator';
 import { PermissionGuard } from '@rahino/permission-checker/guard';
 import { JsonResponseTransformInterceptor } from '@rahino/response/interceptor';
+import { ApiJsonResponse } from '@rahino/response';
 import {
   ApiBearerAuth,
   ApiOperation,
@@ -18,7 +19,11 @@ import {
 } from '@nestjs/swagger';
 import { JwtGuard } from '@rahino/auth';
 import { BasedPaymentTransactionService } from './payment-transaction.service';
-import { GetPaymentTransactionDto } from './dto/get-payment-transaction.dto';
+import {
+  GetPaymentTransactionDto,
+  BasedPaymentTransactionResponseDto,
+  BasedPaymentTransactionTotalResponseDto,
+} from './dto';
 
 @ApiTags('Report-PaymentTransactions-BasedLogistic')
 @UseGuards(JwtGuard, PermissionGuard)
@@ -33,6 +38,10 @@ export class BasedPaymentTransactionController {
 
   @ApiOperation({
     description: 'show all payment transactions (based-logistic)',
+  })
+  @ApiJsonResponse({
+    type: BasedPaymentTransactionResponseDto,
+    isArray: true,
   })
   @CheckPermission({
     permissionSymbol: 'ecommerce.report.paymenttransactions.getall',
@@ -51,6 +60,9 @@ export class BasedPaymentTransactionController {
 
   @ApiOperation({
     description: 'show total payment transactions (based-logistic)',
+  })
+  @ApiJsonResponse({
+    type: BasedPaymentTransactionTotalResponseDto,
   })
   @CheckPermission({
     permissionSymbol: 'ecommerce.report.paymenttransactions.getall',

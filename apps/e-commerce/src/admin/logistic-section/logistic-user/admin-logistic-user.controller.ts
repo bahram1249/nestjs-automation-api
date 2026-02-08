@@ -22,7 +22,13 @@ import {
 } from '@nestjs/swagger';
 import { JwtGuard } from '@rahino/auth';
 import { AdminLogisticUserService } from './admin-logistic-user.service';
-import { CreateLogisticUserDto, GetLogisticUserDto } from './dto';
+import {
+  CreateLogisticUserDto,
+  GetLogisticUserDto,
+  LogisticUserResponseDto,
+  UserInfoResponseDto,
+} from './dto';
+import { ApiJsonResponse } from '@rahino/response';
 import { GetUser } from '@rahino/auth';
 import { User } from '@rahino/database';
 
@@ -46,6 +52,11 @@ export class AdminLogisticUserController {
     style: 'deepObject',
     explode: true,
   })
+  @ApiJsonResponse({
+    type: LogisticUserResponseDto,
+    isArray: true,
+    extraModels: [UserInfoResponseDto],
+  })
   @HttpCode(HttpStatus.OK)
   async findAll(
     @Query() filter: GetLogisticUserDto,
@@ -57,6 +68,7 @@ export class AdminLogisticUserController {
   @ApiOperation({ description: 'create logistic user by admin' })
   @CheckPermission({ permissionSymbol: 'ecommerce.logisticusers.create' })
   @Post('/')
+  @ApiJsonResponse({ type: String, status: 201 })
   @HttpCode(HttpStatus.CREATED)
   async create(@GetUser() user: User, @Body() dto: CreateLogisticUserDto) {
     return await this.service.create(user, dto);
@@ -65,6 +77,7 @@ export class AdminLogisticUserController {
   @ApiOperation({ description: 'delete logistics user by admin' })
   @Delete('/:id')
   @CheckPermission({ permissionSymbol: 'ecommerce.logisticusers.delete' })
+  @ApiJsonResponse({ type: String })
   @HttpCode(HttpStatus.OK)
   async deleteById(@Param('id') entityId: bigint) {
     return await this.service.deleteById(entityId);

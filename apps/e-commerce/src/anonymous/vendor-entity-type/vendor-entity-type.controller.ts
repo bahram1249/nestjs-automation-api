@@ -9,8 +9,9 @@ import {
 } from '@nestjs/common';
 import { JsonResponseTransformInterceptor } from '@rahino/response/interceptor';
 import { ApiOperation, ApiQuery, ApiTags } from '@nestjs/swagger';
-import { GetEntityTypeDto } from './dto';
+import { GetEntityTypeDto, EntityTypeResponseDto } from './dto';
 import { VendorEntityTypeService } from './vendor-entity-type.service';
+import { ApiJsonResponse } from '@rahino/response';
 
 @UseInterceptors(JsonResponseTransformInterceptor)
 @ApiTags('AnonymousEcommerce-VendorEntityTypes')
@@ -22,6 +23,7 @@ export class VendorEntityTypeController {
   constructor(private service: VendorEntityTypeService) {}
 
   @ApiOperation({ description: 'show all entitytypes from client side' })
+  @ApiJsonResponse({ type: EntityTypeResponseDto, isArray: true })
   @Get('/')
   @ApiQuery({
     name: 'filter',

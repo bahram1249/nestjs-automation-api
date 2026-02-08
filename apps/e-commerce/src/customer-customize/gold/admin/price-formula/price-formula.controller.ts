@@ -21,7 +21,9 @@ import { ListFilter } from '@rahino/query-filter';
 import { JsonResponseTransformInterceptor } from '@rahino/response/interceptor';
 import { PermissionGuard } from '@rahino/permission-checker/guard';
 import { CheckPermission } from '@rahino/permission-checker/decorator';
+import { ApiJsonResponse } from '@rahino/response';
 import { PriceFormulaService } from './price-formula.service';
+import { PriceFormulaResponseDto } from './dto';
 
 @ApiTags('Price Formula')
 @UseGuards(JwtGuard, PermissionGuard)
@@ -39,6 +41,7 @@ export class PriceFormulaController {
     permissionSymbol: 'ecommerce.admin.priceformulas.getall',
   })
   @ApiOperation({ description: 'show all price formulas' })
+  @ApiJsonResponse({ type: PriceFormulaResponseDto, isArray: true })
   @Get('/')
   @ApiQuery({
     name: 'filter',
@@ -55,6 +58,7 @@ export class PriceFormulaController {
     permissionSymbol: 'ecommerce.admin.priceformulas.getone',
   })
   @ApiOperation({ description: 'show price formulas by given id' })
+  @ApiJsonResponse({ type: PriceFormulaResponseDto })
   @Get('/:id')
   @HttpCode(HttpStatus.OK)
   async findById(@GetUser() user: User, @Param('id') entityId: number) {
