@@ -2,7 +2,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { ProvinceResponseDto } from './province-response.dto';
 import { CityResponseDto } from './city-response.dto';
 import { NeighborhoodResponseDto } from './neighborhood-response.dto';
-import { UserResponseDto } from './user-response.dto';
+import { AdminAddressUserResponseDto } from './user-response.dto';
 
 export class AddressResponseDto {
   @ApiProperty({ example: 1, description: 'Address ID' })
@@ -79,9 +79,9 @@ export class AddressResponseDto {
   neighborhood?: NeighborhoodResponseDto;
 
   @ApiProperty({
-    type: () => UserResponseDto,
+    type: () => AdminAddressUserResponseDto,
     description: 'User details',
     required: false,
   })
-  user?: UserResponseDto;
+  user?: AdminAddressUserResponseDto;
 }

@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 
-export class GuaranteeAttachmentResponseDto {
+export class ClientGuaranteeAttachmentResponseDto {
   @ApiProperty({ example: 1, description: 'Attachment ID' })
   id: number;
 

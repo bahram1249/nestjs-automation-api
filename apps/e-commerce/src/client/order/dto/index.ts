@@ -21,5 +21,6 @@ export * from './color-response.dto';
 export * from './guarantee-response.dto';
 export * from './guarantee-month-response.dto';
 export * from './vendor-response.dto';
+export { ClientOrderVendorResponseDto } from './vendor-response.dto';
 export * from './discount-response.dto';
 export * from './attachment-response.dto';

@@ -30,8 +30,8 @@ import {
 import {
   GetProductDto,
   ProductDto,
-  ProductResponseDto,
-  BrandResponseDto,
+  AdminProductResponseDto,
+  AdminProductBrandResponseDto,
   PublishStatusResponseDto,
   InventoryStatusResponseDto,
   EntityTypeResponseDto,
@@ -57,10 +57,10 @@ export class ProductController {
   @UseInterceptors(JsonResponseTransformInterceptor)
   @ApiOperation({ description: 'show all products' })
   @ApiJsonResponse({
-    type: ProductResponseDto,
+    type: AdminProductResponseDto,
     isArray: true,
     extraModels: [
-      BrandResponseDto,
+      AdminProductBrandResponseDto,
       PublishStatusResponseDto,
       InventoryStatusResponseDto,
       EntityTypeResponseDto,
@@ -82,9 +82,9 @@ export class ProductController {
   @UseInterceptors(JsonResponseTransformInterceptor)
   @ApiOperation({ description: 'show product by given id' })
   @ApiJsonResponse({
-    type: ProductResponseDto,
+    type: AdminProductResponseDto,
     extraModels: [
-      BrandResponseDto,
+      AdminProductBrandResponseDto,
       PublishStatusResponseDto,
       InventoryStatusResponseDto,
       EntityTypeResponseDto,
@@ -100,10 +100,10 @@ export class ProductController {
   @UseInterceptors(JsonResponseTransformInterceptor)
   @ApiOperation({ description: 'create product by admin' })
   @ApiJsonResponse({
-    type: ProductResponseDto,
+    type: AdminProductResponseDto,
     status: 201,
     extraModels: [
-      BrandResponseDto,
+      AdminProductBrandResponseDto,
       PublishStatusResponseDto,
       InventoryStatusResponseDto,
       EntityTypeResponseDto,
@@ -176,9 +176,9 @@ export class ProductController {
   @UseInterceptors(JsonResponseTransformInterceptor)
   @ApiOperation({ description: 'update products by admin' })
   @ApiJsonResponse({
-    type: ProductResponseDto,
+    type: AdminProductResponseDto,
     extraModels: [
-      BrandResponseDto,
+      AdminProductBrandResponseDto,
       PublishStatusResponseDto,
       InventoryStatusResponseDto,
       EntityTypeResponseDto,
@@ -198,7 +198,7 @@ export class ProductController {
 
   @UseInterceptors(JsonResponseTransformInterceptor)
   @ApiOperation({ description: 'delete products by admin' })
-  @ApiJsonResponse({ type: ProductResponseDto })
+  @ApiJsonResponse({ type: AdminProductResponseDto })
   @Delete('/:id')
   @CheckPermission({ permissionSymbol: 'ecommerce.admin.products.delete' })
   @HttpCode(HttpStatus.OK)

@@ -26,7 +26,7 @@ import {
   ProvinceResponseDto,
   CityResponseDto,
   NeighborhoodResponseDto,
-  UserResponseDto,
+  AdminAddressUserResponseDto,
 } from './dto';
 import { ApiJsonResponse } from '@rahino/response';
 import { GetUser } from '@rahino/auth';
@@ -54,7 +54,7 @@ export class AdminAddressController {
       ProvinceResponseDto,
       CityResponseDto,
       NeighborhoodResponseDto,
-      UserResponseDto,
+      AdminAddressUserResponseDto,
     ],
   })
   @CheckPermission({ permissionSymbol: 'ecommerce.admin.addresses.getall' })
@@ -81,7 +81,7 @@ export class AdminAddressController {
       ProvinceResponseDto,
       CityResponseDto,
       NeighborhoodResponseDto,
-      UserResponseDto,
+      AdminAddressUserResponseDto,
     ],
   })
   @CheckPermission({ permissionSymbol: 'ecommerce.admin.addresses.getone' })

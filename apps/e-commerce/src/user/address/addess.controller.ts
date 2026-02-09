@@ -27,7 +27,7 @@ import {
   AddressDto,
   AddressV2Dto,
   GetAddressDto,
-  AddressResponseDto,
+  UserAddressResponseDto,
   ProvinceResponseDto,
   CityResponseDto,
   NeighborhoodResponseDto,
@@ -57,7 +57,7 @@ export class AddressController {
     explode: true,
   })
   @ApiJsonResponse({
-    type: AddressResponseDto,
+    type: UserAddressResponseDto,
     isArray: true,
     extraModels: [
       ProvinceResponseDto,
@@ -80,7 +80,7 @@ export class AddressController {
     explode: true,
   })
   @ApiJsonResponse({
-    type: AddressResponseDto,
+    type: UserAddressResponseDto,
     isArray: true,
     extraModels: [ProvinceResponseDto, CityResponseDto],
   })
@@ -92,7 +92,7 @@ export class AddressController {
   @ApiOperation({ description: 'get latest address by user id' })
   @Get('/latest')
   @ApiJsonResponse({
-    type: AddressResponseDto,
+    type: UserAddressResponseDto,
     extraModels: [
       ProvinceResponseDto,
       CityResponseDto,
@@ -107,7 +107,7 @@ export class AddressController {
   @ApiOperation({ description: 'show address by given id' })
   @Get('/:id')
   @ApiJsonResponse({
-    type: AddressResponseDto,
+    type: UserAddressResponseDto,
     extraModels: [
       ProvinceResponseDto,
       CityResponseDto,
@@ -123,7 +123,7 @@ export class AddressController {
   @ApiOperation({ description: 'show address by given id' })
   @Get('/:id')
   @ApiJsonResponse({
-    type: AddressResponseDto,
+    type: UserAddressResponseDto,
     extraModels: [ProvinceResponseDto, CityResponseDto],
   })
   @HttpCode(HttpStatus.OK)
@@ -134,7 +134,7 @@ export class AddressController {
   @ApiOperation({ description: 'create address by user' })
   @Post('/')
   @ApiJsonResponse({
-    type: AddressResponseDto,
+    type: UserAddressResponseDto,
     extraModels: [
       ProvinceResponseDto,
       CityResponseDto,
@@ -150,7 +150,7 @@ export class AddressController {
   @ApiOperation({ description: 'create address by user' })
   @Post('/')
   @ApiJsonResponse({
-    type: AddressResponseDto,
+    type: UserAddressResponseDto,
     extraModels: [ProvinceResponseDto, CityResponseDto],
   })
   @HttpCode(HttpStatus.CREATED)
@@ -161,7 +161,7 @@ export class AddressController {
   @ApiOperation({ description: 'update address by user' })
   @Put('/:id')
   @ApiJsonResponse({
-    type: AddressResponseDto,
+    type: UserAddressResponseDto,
     extraModels: [
       ProvinceResponseDto,
       CityResponseDto,
@@ -181,7 +181,7 @@ export class AddressController {
   @ApiOperation({ description: 'update address by user' })
   @Put('/:id')
   @ApiJsonResponse({
-    type: AddressResponseDto,
+    type: UserAddressResponseDto,
     extraModels: [ProvinceResponseDto, CityResponseDto],
   })
   @HttpCode(HttpStatus.OK)
@@ -196,7 +196,7 @@ export class AddressController {
   @ApiOperation({ description: 'delete address by user' })
   @Delete('/:id')
   @ApiJsonResponse({
-    type: AddressResponseDto,
+    type: UserAddressResponseDto,
     extraModels: [
       ProvinceResponseDto,
       CityResponseDto,

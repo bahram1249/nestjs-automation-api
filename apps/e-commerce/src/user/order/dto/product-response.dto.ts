@@ -2,7 +2,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { InventoryResponseDto } from './inventory-response.dto';
 import { AttachmentResponseDto } from './attachment-response.dto';
 
-export class ProductResponseDto {
+export class UserOrderProductResponseDto {
   @ApiProperty({ example: 1, description: 'Product ID' })
   id: bigint;
 

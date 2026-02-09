@@ -17,8 +17,8 @@ import {
   GetProductDto,
   GetProductLatLonDto,
   GetUnPriceDto,
-  ProductResponseDto,
-  BrandResponseDto,
+  ClientProductResponseDto,
+  ClientProductBrandResponseDto,
   PublishStatusResponseDto,
   InventoryStatusResponseDto,
   EntityTypeResponseDto,
@@ -27,11 +27,11 @@ import {
   GuaranteeResponseDto,
   GuaranteeMonthResponseDto,
   ProvinceResponseDto,
-  VendorResponseDto,
+  ClientProductVendorResponseDto,
   ScheduleSendingTypeResponseDto,
   VariationPriceResponseDto,
   InventoryPriceResponseDto,
-  AttachmentResponseDto,
+  ClientProductAttachmentResponseDto,
   PriceRangeResponseDto,
 } from './dto';
 import { ProductService } from './product.service';
@@ -53,10 +53,10 @@ export class ProductController {
 
   @ApiOperation({ description: 'show all products by vendor nearby' })
   @ApiJsonResponse({
-    type: ProductResponseDto,
+    type: ClientProductResponseDto,
     isArray: true,
     extraModels: [
-      BrandResponseDto,
+      ClientProductBrandResponseDto,
       PublishStatusResponseDto,
       InventoryStatusResponseDto,
       EntityTypeResponseDto,
@@ -65,11 +65,11 @@ export class ProductController {
       GuaranteeResponseDto,
       GuaranteeMonthResponseDto,
       ProvinceResponseDto,
-      VendorResponseDto,
+      ClientProductVendorResponseDto,
       ScheduleSendingTypeResponseDto,
       VariationPriceResponseDto,
       InventoryPriceResponseDto,
-      AttachmentResponseDto,
+      ClientProductAttachmentResponseDto,
     ],
   })
   @Get('/byVendorNearby')
@@ -88,10 +88,10 @@ export class ProductController {
 
   @ApiOperation({ description: 'show all products' })
   @ApiJsonResponse({
-    type: ProductResponseDto,
+    type: ClientProductResponseDto,
     isArray: true,
     extraModels: [
-      BrandResponseDto,
+      ClientProductBrandResponseDto,
       PublishStatusResponseDto,
       InventoryStatusResponseDto,
       EntityTypeResponseDto,
@@ -100,11 +100,11 @@ export class ProductController {
       GuaranteeResponseDto,
       GuaranteeMonthResponseDto,
       ProvinceResponseDto,
-      VendorResponseDto,
+      ClientProductVendorResponseDto,
       ScheduleSendingTypeResponseDto,
       VariationPriceResponseDto,
       InventoryPriceResponseDto,
-      AttachmentResponseDto,
+      ClientProductAttachmentResponseDto,
     ],
   })
   @Get('/')
@@ -139,9 +139,9 @@ export class ProductController {
 
   @ApiOperation({ description: 'show product by given slug' })
   @ApiJsonResponse({
-    type: ProductResponseDto,
+    type: ClientProductResponseDto,
     extraModels: [
-      BrandResponseDto,
+      ClientProductBrandResponseDto,
       PublishStatusResponseDto,
       InventoryStatusResponseDto,
       EntityTypeResponseDto,
@@ -150,11 +150,11 @@ export class ProductController {
       GuaranteeResponseDto,
       GuaranteeMonthResponseDto,
       ProvinceResponseDto,
-      VendorResponseDto,
+      ClientProductVendorResponseDto,
       ScheduleSendingTypeResponseDto,
       VariationPriceResponseDto,
       InventoryPriceResponseDto,
-      AttachmentResponseDto,
+      ClientProductAttachmentResponseDto,
     ],
   })
   @Get('/:slug')
@@ -168,9 +168,9 @@ export class ProductController {
 
   @ApiOperation({ description: 'show product by given id' })
   @ApiJsonResponse({
-    type: ProductResponseDto,
+    type: ClientProductResponseDto,
     extraModels: [
-      BrandResponseDto,
+      ClientProductBrandResponseDto,
       PublishStatusResponseDto,
       InventoryStatusResponseDto,
       EntityTypeResponseDto,
@@ -179,11 +179,11 @@ export class ProductController {
       GuaranteeResponseDto,
       GuaranteeMonthResponseDto,
       ProvinceResponseDto,
-      VendorResponseDto,
+      ClientProductVendorResponseDto,
       ScheduleSendingTypeResponseDto,
       VariationPriceResponseDto,
       InventoryPriceResponseDto,
-      AttachmentResponseDto,
+      ClientProductAttachmentResponseDto,
     ],
   })
   @Get('/id/:id')

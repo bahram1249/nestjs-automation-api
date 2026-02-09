@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { ProductResponseDto } from '@rahino/ecommerce/client/product/dto/product-response.dto';
+import { ClientProductResponseDto } from '@rahino/ecommerce/client/product/dto/product-response.dto';
 
 export class ProductFavoriteResponseDto {
   @ApiProperty({ example: 1, description: 'User ID' })
@@ -11,9 +11,9 @@ export class ProductFavoriteResponseDto {
   @ApiProperty({
     description: 'Product details',
     required: false,
-    type: () => ProductResponseDto,
+    type: () => ClientProductResponseDto,
   })
-  product?: ProductResponseDto;
+  product?: ClientProductResponseDto;
 }
 
 export class ProductFavoriteStatusResponseDto {

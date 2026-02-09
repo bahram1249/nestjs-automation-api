@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { VendorResponseDto } from './vendor-response.dto';
-import { ProductResponseDto } from './product-response.dto';
+import { AdminOrderVendorResponseDto } from './vendor-response.dto';
+import { AdminOrderProductResponseDto } from './product-response.dto';
 import { OrderDetailStatusResponseDto } from './order-detail-status-response.dto';
 import { DiscountResponseDto } from './discount-response.dto';
 
@@ -49,6 +49,9 @@ export class OrderDetailResponseDto {
   @ApiProperty({ example: 90000, description: 'Total price', required: false })
   totalPrice?: bigint;
 
+  @ApiProperty({ example: 1, description: 'User ID', required: false })
+  userId?: bigint;
+
   @ApiProperty({
     example: '2024-01-01T00:00:00.000Z',
     description: 'Created at',
@@ -62,11 +65,11 @@ export class OrderDetailResponseDto {
   updatedAt: Date;
 
   @ApiProperty({
-    type: () => VendorResponseDto,
+    type: () => AdminOrderVendorResponseDto,
     description: 'Vendor details',
     required: false,
   })
-  vendor?: VendorResponseDto;
+  vendor?: AdminOrderVendorResponseDto;
 
   @ApiProperty({
     type: () => OrderDetailStatusResponseDto,
@@ -76,11 +79,11 @@ export class OrderDetailResponseDto {
   orderDetailStatus?: OrderDetailStatusResponseDto;
 
   @ApiProperty({
-    type: () => ProductResponseDto,
+    type: () => AdminOrderProductResponseDto,
     description: 'Product details',
     required: false,
   })
-  product?: ProductResponseDto;
+  product?: AdminOrderProductResponseDto;
 
   @ApiProperty({
     type: () => DiscountResponseDto,

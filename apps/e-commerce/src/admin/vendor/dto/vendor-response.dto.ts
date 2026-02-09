@@ -1,10 +1,10 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { AttachmentResponseDto } from './attachment-response.dto';
+import { AdminVendorAttachmentResponseDto } from './attachment-response.dto';
 import { VendorUserResponseDto } from './vendor-user-response.dto';
 import { VendorCommissionResponseDto } from './vendor-commission-response.dto';
 import { VendorLogisticResponseDto } from './vendor-logistic-response.dto';
 
-export class VendorResponseDto {
+export class AdminVendorResponseDto {
   @ApiProperty({ example: 1, description: 'Vendor ID' })
   id: number;
 
@@ -72,11 +72,11 @@ export class VendorResponseDto {
   longitude?: string;
 
   @ApiProperty({
-    type: () => AttachmentResponseDto,
+    type: () => AdminVendorAttachmentResponseDto,
     description: 'Attachment details',
     required: false,
   })
-  attachment?: AttachmentResponseDto;
+  attachment?: AdminVendorAttachmentResponseDto;
 
   @ApiProperty({
     type: () => VendorUserResponseDto,

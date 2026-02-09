@@ -36,10 +36,10 @@ import {
   VendorDto,
   GetVendorDto,
   VendorV2Dto,
-  VendorResponseDto,
+  AdminVendorResponseDto,
   VendorUserResponseDto,
-  AttachmentResponseDto,
-  UserResponseDto,
+  AdminVendorAttachmentResponseDto,
+  AdminVendorUserResponseDto,
   VendorCommissionResponseDto,
   VariationPriceResponseDto,
   VendorCommissionTypeResponseDto,
@@ -65,12 +65,12 @@ export class VendorController {
   @ApiBearerAuth()
   @ApiOperation({ description: 'show all vendors' })
   @ApiJsonResponse({
-    type: VendorResponseDto,
+    type: AdminVendorResponseDto,
     isArray: true,
     extraModels: [
       VendorUserResponseDto,
-      AttachmentResponseDto,
-      UserResponseDto,
+      AdminVendorAttachmentResponseDto,
+      AdminVendorUserResponseDto,
       VendorCommissionResponseDto,
       VariationPriceResponseDto,
       VendorCommissionTypeResponseDto,
@@ -96,12 +96,12 @@ export class VendorController {
   @ApiBearerAuth()
   @ApiOperation({ description: 'show all vendors' })
   @ApiJsonResponse({
-    type: VendorResponseDto,
+    type: AdminVendorResponseDto,
     isArray: true,
     extraModels: [
       VendorUserResponseDto,
-      AttachmentResponseDto,
-      UserResponseDto,
+      AdminVendorAttachmentResponseDto,
+      AdminVendorUserResponseDto,
       VendorCommissionResponseDto,
       VariationPriceResponseDto,
       VendorCommissionTypeResponseDto,
@@ -126,11 +126,11 @@ export class VendorController {
   @ApiBearerAuth()
   @ApiOperation({ description: 'show vendor by given id' })
   @ApiJsonResponse({
-    type: VendorResponseDto,
+    type: AdminVendorResponseDto,
     extraModels: [
       VendorUserResponseDto,
-      AttachmentResponseDto,
-      UserResponseDto,
+      AdminVendorAttachmentResponseDto,
+      AdminVendorUserResponseDto,
       VendorCommissionResponseDto,
       VariationPriceResponseDto,
       VendorCommissionTypeResponseDto,
@@ -150,11 +150,11 @@ export class VendorController {
   @ApiBearerAuth()
   @ApiOperation({ description: 'show vendor by given id' })
   @ApiJsonResponse({
-    type: VendorResponseDto,
+    type: AdminVendorResponseDto,
     extraModels: [
       VendorUserResponseDto,
-      AttachmentResponseDto,
-      UserResponseDto,
+      AdminVendorAttachmentResponseDto,
+      AdminVendorUserResponseDto,
       VendorCommissionResponseDto,
       VariationPriceResponseDto,
       VendorCommissionTypeResponseDto,
@@ -173,12 +173,12 @@ export class VendorController {
   @ApiBearerAuth()
   @ApiOperation({ description: 'create vendor by admin' })
   @ApiJsonResponse({
-    type: VendorResponseDto,
+    type: AdminVendorResponseDto,
     status: 201,
     extraModels: [
       VendorUserResponseDto,
-      AttachmentResponseDto,
-      UserResponseDto,
+      AdminVendorAttachmentResponseDto,
+      AdminVendorUserResponseDto,
       VendorCommissionResponseDto,
       VariationPriceResponseDto,
       VendorCommissionTypeResponseDto,
@@ -198,12 +198,12 @@ export class VendorController {
   @ApiBearerAuth()
   @ApiOperation({ description: 'create vendor by admin' })
   @ApiJsonResponse({
-    type: VendorResponseDto,
+    type: AdminVendorResponseDto,
     status: 201,
     extraModels: [
       VendorUserResponseDto,
-      AttachmentResponseDto,
-      UserResponseDto,
+      AdminVendorAttachmentResponseDto,
+      AdminVendorUserResponseDto,
       VendorCommissionResponseDto,
       VariationPriceResponseDto,
       VendorCommissionTypeResponseDto,
@@ -222,11 +222,11 @@ export class VendorController {
   @ApiBearerAuth()
   @ApiOperation({ description: 'update vendor by admin' })
   @ApiJsonResponse({
-    type: VendorResponseDto,
+    type: AdminVendorResponseDto,
     extraModels: [
       VendorUserResponseDto,
-      AttachmentResponseDto,
-      UserResponseDto,
+      AdminVendorAttachmentResponseDto,
+      AdminVendorUserResponseDto,
       VendorCommissionResponseDto,
       VariationPriceResponseDto,
       VendorCommissionTypeResponseDto,
@@ -246,11 +246,11 @@ export class VendorController {
   @ApiBearerAuth()
   @ApiOperation({ description: 'update vendor by admin' })
   @ApiJsonResponse({
-    type: VendorResponseDto,
+    type: AdminVendorResponseDto,
     extraModels: [
       VendorUserResponseDto,
-      AttachmentResponseDto,
-      UserResponseDto,
+      AdminVendorAttachmentResponseDto,
+      AdminVendorUserResponseDto,
       VendorCommissionResponseDto,
       VariationPriceResponseDto,
       VendorCommissionTypeResponseDto,
@@ -269,7 +269,7 @@ export class VendorController {
   @ApiBearerAuth()
   @ApiOperation({ description: 'delete vendor by admin' })
   @ApiJsonResponse({
-    type: VendorResponseDto,
+    type: AdminVendorResponseDto,
   })
   @Delete('/:id')
   @CheckPermission({ permissionSymbol: 'ecommerce.vendors.delete' })
@@ -282,8 +282,8 @@ export class VendorController {
   @UseInterceptors(JsonResponseTransformInterceptor)
   @ApiOperation({ description: 'show vendor by given slug' })
   @ApiJsonResponse({
-    type: VendorResponseDto,
-    extraModels: [AttachmentResponseDto, VendorLogisticResponseDto],
+    type: AdminVendorResponseDto,
+    extraModels: [AdminVendorAttachmentResponseDto, VendorLogisticResponseDto],
   })
   @Get('/slug/:slug')
   @HttpCode(HttpStatus.OK)
@@ -296,11 +296,11 @@ export class VendorController {
   @ApiBearerAuth()
   @CheckPermission({ permissionSymbol: 'ecommerce.vendors.uploadImage' })
   @ApiJsonResponse({
-    type: VendorResponseDto,
+    type: AdminVendorResponseDto,
     extraModels: [
       VendorUserResponseDto,
-      AttachmentResponseDto,
-      UserResponseDto,
+      AdminVendorAttachmentResponseDto,
+      AdminVendorUserResponseDto,
       VendorCommissionResponseDto,
       VariationPriceResponseDto,
       VendorCommissionTypeResponseDto,

@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { AttachmentResponseDto } from './attachment-response.dto';
+import { ClientProductAttachmentResponseDto } from './attachment-response.dto';
 
-export class VendorResponseDto {
+export class ClientProductVendorResponseDto {
   @ApiProperty({ example: 1, description: 'Vendor ID' })
   id: number;
 
@@ -19,9 +19,9 @@ export class VendorResponseDto {
   priorityOrder?: number;
 
   @ApiProperty({
-    type: () => AttachmentResponseDto,
+    type: () => ClientProductAttachmentResponseDto,
     description: 'Vendor attachment',
     required: false,
   })
-  attachment?: AttachmentResponseDto;
+  attachment?: ClientProductAttachmentResponseDto;
 }

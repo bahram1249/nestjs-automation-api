@@ -10,7 +10,11 @@ import {
 import { JsonResponseTransformInterceptor } from '@rahino/response/interceptor';
 import { ApiOperation, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { ClientVendorService } from './client-vendor.service';
-import { GetVendorDto, VendorResponseDto, AttachmentResponseDto } from './dto';
+import {
+  GetVendorDto,
+  ClientVendorResponseDto,
+  ClientVendorAttachmentResponseDto,
+} from './dto';
 import { ApiJsonResponse } from '@rahino/response';
 
 @UseInterceptors(JsonResponseTransformInterceptor)
@@ -24,9 +28,9 @@ export class ClientVendorController {
 
   @ApiOperation({ description: 'show all vendors in client' })
   @ApiJsonResponse({
-    type: VendorResponseDto,
+    type: ClientVendorResponseDto,
     isArray: true,
-    extraModels: [AttachmentResponseDto],
+    extraModels: [ClientVendorAttachmentResponseDto],
   })
   @Get('/')
   @ApiQuery({
@@ -42,8 +46,8 @@ export class ClientVendorController {
 
   @ApiOperation({ description: 'show vendor by given id' })
   @ApiJsonResponse({
-    type: VendorResponseDto,
-    extraModels: [AttachmentResponseDto],
+    type: ClientVendorResponseDto,
+    extraModels: [ClientVendorAttachmentResponseDto],
   })
   @Get('/:id')
   @HttpCode(HttpStatus.OK)
@@ -53,8 +57,8 @@ export class ClientVendorController {
 
   @ApiOperation({ description: 'show vendor by given slug' })
   @ApiJsonResponse({
-    type: VendorResponseDto,
-    extraModels: [AttachmentResponseDto],
+    type: ClientVendorResponseDto,
+    extraModels: [ClientVendorAttachmentResponseDto],
   })
   @Get('/slug/:slug')
   @HttpCode(HttpStatus.OK)

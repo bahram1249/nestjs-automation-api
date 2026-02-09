@@ -6,6 +6,7 @@ export * from './order-address-response.dto';
 export * from './order-payment-response.dto';
 export * from './product-response.dto';
 export * from './vendor-response.dto';
+export { UserOrderVendorResponseDto } from './vendor-response.dto';
 export * from './inventory-response.dto';
 export * from './color-response.dto';
 export * from './guarantee-response.dto';

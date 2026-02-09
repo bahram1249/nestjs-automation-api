@@ -7,6 +7,10 @@ export class ProvinceResponseDto {
   @ApiProperty({ example: 'Tehran', description: 'Province name' })
   name: string;
 
-  @ApiProperty({ example: 'tehran', description: 'Province slug' })
-  slug: string;
+  @ApiProperty({
+    example: 'tehran',
+    description: 'Province slug',
+    required: false,
+  })
+  slug?: string;
 }

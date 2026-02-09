@@ -34,8 +34,8 @@ import { BrandService } from './brand.service';
 import {
   BrandDto,
   GetBrandDto,
-  BrandResponseDto,
-  AttachmentResponseDto,
+  ClientBrandResponseDto,
+  ClientBrandAttachmentResponseDto,
 } from './dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiJsonResponse } from '@rahino/response';
@@ -57,9 +57,9 @@ export class BrandController {
   @UseInterceptors(JsonResponseTransformInterceptor)
   @ApiOperation({ description: 'show all brands' })
   @ApiJsonResponse({
-    type: BrandResponseDto,
+    type: ClientBrandResponseDto,
     isArray: true,
-    extraModels: [AttachmentResponseDto],
+    extraModels: [ClientBrandAttachmentResponseDto],
   })
   @Get('/')
   @ApiQuery({
@@ -78,8 +78,8 @@ export class BrandController {
   @ApiBearerAuth()
   @ApiOperation({ description: 'show brand by given id' })
   @ApiJsonResponse({
-    type: BrandResponseDto,
-    extraModels: [AttachmentResponseDto],
+    type: ClientBrandResponseDto,
+    extraModels: [ClientBrandAttachmentResponseDto],
   })
   @CheckPermission({ permissionSymbol: 'ecommerce.brands.getone' })
   @Get('/:id')
@@ -93,7 +93,7 @@ export class BrandController {
   @ApiBearerAuth()
   @ApiOperation({ description: 'create brand by admin' })
   @ApiJsonResponse({
-    type: BrandResponseDto,
+    type: ClientBrandResponseDto,
     status: 201,
   })
   @CheckPermission({ permissionSymbol: 'ecommerce.brands.create' })
@@ -108,7 +108,7 @@ export class BrandController {
   @ApiBearerAuth()
   @ApiOperation({ description: 'update brand by admin' })
   @ApiJsonResponse({
-    type: BrandResponseDto,
+    type: ClientBrandResponseDto,
   })
   @Put('/:id')
   @CheckPermission({ permissionSymbol: 'ecommerce.brands.update' })
@@ -122,7 +122,7 @@ export class BrandController {
   @ApiBearerAuth()
   @ApiOperation({ description: 'delete brand by admin' })
   @ApiJsonResponse({
-    type: BrandResponseDto,
+    type: ClientBrandResponseDto,
   })
   @Delete('/:id')
   @CheckPermission({ permissionSymbol: 'ecommerce.brands.delete' })
@@ -134,8 +134,8 @@ export class BrandController {
   @UseInterceptors(JsonResponseTransformInterceptor)
   @ApiOperation({ description: 'get brand by slug' })
   @ApiJsonResponse({
-    type: BrandResponseDto,
-    extraModels: [AttachmentResponseDto],
+    type: ClientBrandResponseDto,
+    extraModels: [ClientBrandAttachmentResponseDto],
   })
   @Get('/slug/:slug')
   @HttpCode(HttpStatus.OK)
@@ -148,7 +148,7 @@ export class BrandController {
   @ApiBearerAuth()
   @CheckPermission({ permissionSymbol: 'ecommerce.brands.uploadImage' })
   @ApiJsonResponse({
-    type: AttachmentResponseDto,
+    type: ClientBrandAttachmentResponseDto,
   })
   @UseInterceptors(FileInterceptor('file', imageOptions()))
   @ApiConsumes('multipart/form-data')

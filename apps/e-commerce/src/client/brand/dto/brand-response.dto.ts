@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { AttachmentResponseDto } from './attachment-response.dto';
+import { ClientBrandAttachmentResponseDto } from './attachment-response.dto';
 
-export class BrandResponseDto {
+export class ClientBrandResponseDto {
   @ApiProperty({ example: 1, description: 'Brand ID' })
   id: number;
 
@@ -55,9 +55,9 @@ export class BrandResponseDto {
   updatedAt: Date;
 
   @ApiProperty({
-    type: () => AttachmentResponseDto,
+    type: () => ClientBrandAttachmentResponseDto,
     description: 'Brand attachment',
     required: false,
   })
-  attachment?: AttachmentResponseDto;
+  attachment?: ClientBrandAttachmentResponseDto;
 }

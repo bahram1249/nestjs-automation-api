@@ -39,7 +39,7 @@ import {
   GuaranteeDto,
   GetGuaranteeDto,
   GuaranteeResponseDto,
-  GuaranteeAttachmentResponseDto,
+  ClientGuaranteeAttachmentResponseDto,
 } from './dto';
 import { GetUser } from '@rahino/auth';
 import { User } from '@rahino/database';
@@ -147,7 +147,7 @@ export class GuaranteeController {
       },
     },
   })
-  @ApiJsonResponse({ type: GuaranteeAttachmentResponseDto })
+  @ApiJsonResponse({ type: ClientGuaranteeAttachmentResponseDto })
   @Post('/image/:id')
   @HttpCode(HttpStatus.OK)
   async uploadImage(

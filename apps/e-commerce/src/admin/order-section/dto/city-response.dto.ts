@@ -11,8 +11,8 @@ export class CityResponseDto {
   @ApiProperty({ example: 'tehran', description: 'City slug', required: false })
   slug?: string;
 
-  @ApiProperty({ example: 1, description: 'Province ID' })
-  provinceId: number;
+  @ApiProperty({ example: 1, description: 'Province ID', required: false })
+  provinceId?: number;
 
   @ApiProperty({
     type: () => ProvinceResponseDto,

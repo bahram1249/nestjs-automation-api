@@ -33,7 +33,7 @@ import {
   CourierV2ResponseDto,
 } from './dto';
 import { ApiJsonResponse } from '@rahino/response';
-import { UserResponseDto, VendorResponseDto } from '../dto';
+import { AdminOrderUserResponseDto, AdminOrderVendorResponseDto } from '../dto';
 
 @ApiTags('Admin-Couriers')
 @ApiBearerAuth()
@@ -59,7 +59,7 @@ export class CourierController {
   @ApiJsonResponse({
     type: CourierResponseDto,
     isArray: true,
-    extraModels: [UserResponseDto],
+    extraModels: [AdminOrderUserResponseDto],
   })
   @HttpCode(HttpStatus.OK)
   async findAll(@Query() filter: GetCourierDto, @GetUser() user: User) {
@@ -79,7 +79,7 @@ export class CourierController {
   @ApiJsonResponse({
     type: CourierV2ResponseDto,
     isArray: true,
-    extraModels: [UserResponseDto, VendorResponseDto],
+    extraModels: [AdminOrderUserResponseDto, AdminOrderVendorResponseDto],
   })
   @HttpCode(HttpStatus.OK)
   async findAllV2(@Query() filter: GetCourierDto, @GetUser() user: User) {
@@ -93,7 +93,7 @@ export class CourierController {
   @Get('/:id')
   @ApiJsonResponse({
     type: CourierResponseDto,
-    extraModels: [UserResponseDto],
+    extraModels: [AdminOrderUserResponseDto],
   })
   @HttpCode(HttpStatus.OK)
   async findById(@Param('id') entityId: number, @GetUser() user: User) {
@@ -108,7 +108,7 @@ export class CourierController {
   @Get('/:id')
   @ApiJsonResponse({
     type: CourierV2ResponseDto,
-    extraModels: [UserResponseDto, VendorResponseDto],
+    extraModels: [AdminOrderUserResponseDto, AdminOrderVendorResponseDto],
   })
   @HttpCode(HttpStatus.OK)
   async findByIdV2(@Param('id') entityId: number, @GetUser() user: User) {
@@ -145,7 +145,7 @@ export class CourierController {
   @CheckPermission({ permissionSymbol: 'ecommerce.admin.couriers.delete' })
   @ApiJsonResponse({
     type: CourierResponseDto,
-    extraModels: [UserResponseDto],
+    extraModels: [AdminOrderUserResponseDto],
   })
   @HttpCode(HttpStatus.OK)
   async deleteById(@Param('id') entityId: number) {

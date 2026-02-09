@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { ProductResponseDto } from './product-response.dto';
-import { VendorResponseDto } from './vendor-response.dto';
+import { ClientOrderProductResponseDto } from './product-response.dto';
+import { ClientOrderVendorResponseDto } from './vendor-response.dto';
 import { DiscountResponseDto } from './discount-response.dto';
 
 export class LogisticOrderGroupedDetailResponseDto {
@@ -68,18 +68,18 @@ export class LogisticOrderGroupedDetailResponseDto {
   updatedAt: Date;
 
   @ApiProperty({
-    type: () => VendorResponseDto,
+    type: () => ClientOrderVendorResponseDto,
     description: 'Vendor details',
     required: false,
   })
-  vendor?: VendorResponseDto;
+  vendor?: ClientOrderVendorResponseDto;
 
   @ApiProperty({
-    type: () => ProductResponseDto,
+    type: () => ClientOrderProductResponseDto,
     description: 'Product details',
     required: false,
   })
-  product?: ProductResponseDto;
+  product?: ClientOrderProductResponseDto;
 
   @ApiProperty({
     type: () => DiscountResponseDto,

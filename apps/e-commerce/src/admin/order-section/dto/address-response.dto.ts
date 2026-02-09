@@ -3,7 +3,7 @@ import { ProvinceResponseDto } from './province-response.dto';
 import { CityResponseDto } from './city-response.dto';
 import { NeighborhoodResponseDto } from './neighborhood-response.dto';
 
-export class AddressResponseDto {
+export class AdminOrderAddressResponseDto {
   @ApiProperty({ example: 1, description: 'Address ID' })
   id: bigint;
 

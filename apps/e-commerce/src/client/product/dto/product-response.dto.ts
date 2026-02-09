@@ -1,12 +1,12 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { BrandResponseDto } from './brand-response.dto';
+import { ClientProductBrandResponseDto } from './brand-response.dto';
 import { PublishStatusResponseDto } from './publish-status-response.dto';
 import { InventoryStatusResponseDto } from './inventory-status-response.dto';
 import { EntityTypeResponseDto } from './entity-type-response.dto';
 import { InventoryResponseDto } from './inventory-response.dto';
-import { AttachmentResponseDto } from './attachment-response.dto';
+import { ClientProductAttachmentResponseDto } from './attachment-response.dto';
 
-export class ProductResponseDto {
+export class ClientProductResponseDto {
   @ApiProperty({ example: 1, description: 'Product ID' })
   id: bigint;
 
@@ -110,11 +110,11 @@ export class ProductResponseDto {
   lastPrice?: bigint;
 
   @ApiProperty({
-    type: () => BrandResponseDto,
+    type: () => ClientProductBrandResponseDto,
     description: 'Brand details',
     required: false,
   })
-  brand?: BrandResponseDto;
+  brand?: ClientProductBrandResponseDto;
 
   @ApiProperty({
     type: () => PublishStatusResponseDto,
@@ -145,9 +145,23 @@ export class ProductResponseDto {
   inventories?: InventoryResponseDto[];
 
   @ApiProperty({
-    type: () => [AttachmentResponseDto],
+    type: () => [ClientProductAttachmentResponseDto],
     description: 'Product attachments',
     required: false,
   })
-  attachments?: AttachmentResponseDto[];
+  attachments?: ClientProductAttachmentResponseDto[];
+
+  @ApiProperty({
+    example: '2024-01-01T00:00:00.000Z',
+    description: 'Created at timestamp',
+    required: false,
+  })
+  createdAt?: Date;
+
+  @ApiProperty({
+    example: '2024-01-01T00:00:00.000Z',
+    description: 'Updated at timestamp',
+    required: false,
+  })
+  updatedAt?: Date;
 }

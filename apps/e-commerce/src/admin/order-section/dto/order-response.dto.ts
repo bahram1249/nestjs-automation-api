@@ -1,8 +1,8 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { UserResponseDto } from './user-response.dto';
+import { AdminOrderUserResponseDto } from './user-response.dto';
 import { OrderStatusResponseDto } from './order-status-response.dto';
 import { OrderShipmentWayResponseDto } from './order-shipmentway-response.dto';
-import { AddressResponseDto } from './address-response.dto';
+import { AdminOrderAddressResponseDto } from './address-response.dto';
 import { OrderDetailResponseDto } from './order-detail-response.dto';
 
 export class OrderResponseDto {
@@ -118,11 +118,11 @@ export class OrderResponseDto {
   noteDescription?: string;
 
   @ApiProperty({
-    type: () => UserResponseDto,
+    type: () => AdminOrderUserResponseDto,
     description: 'User details',
     required: false,
   })
-  user?: UserResponseDto;
+  user?: AdminOrderUserResponseDto;
 
   @ApiProperty({
     type: () => OrderStatusResponseDto,
@@ -139,11 +139,11 @@ export class OrderResponseDto {
   orderShipmentWay?: OrderShipmentWayResponseDto;
 
   @ApiProperty({
-    type: () => AddressResponseDto,
+    type: () => AdminOrderAddressResponseDto,
     description: 'Address details',
     required: false,
   })
-  address?: AddressResponseDto;
+  address?: AdminOrderAddressResponseDto;
 
   @ApiProperty({
     type: () => [OrderDetailResponseDto],

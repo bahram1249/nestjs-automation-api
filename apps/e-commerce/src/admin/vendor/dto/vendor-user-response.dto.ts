@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { UserResponseDto } from './user-response.dto';
+import { AdminVendorUserResponseDto } from './user-response.dto';
 
 export class VendorUserResponseDto {
   @ApiProperty({ example: 1, description: 'Vendor ID' })
@@ -16,9 +16,9 @@ export class VendorUserResponseDto {
   isDefault?: boolean;
 
   @ApiProperty({
-    type: () => UserResponseDto,
+    type: () => AdminVendorUserResponseDto,
     description: 'User details',
     required: false,
   })
-  user?: UserResponseDto;
+  user?: AdminVendorUserResponseDto;
 }

@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { InventoryStatusResponseDto } from './inventory-status-response.dto';
-import { VendorResponseDto } from './vendor-response.dto';
+import { ClientProductVendorResponseDto } from './vendor-response.dto';
 import { ColorResponseDto } from './color-response.dto';
 import { GuaranteeResponseDto } from './guarantee-response.dto';
 import { GuaranteeMonthResponseDto } from './guarantee-month-response.dto';
@@ -78,6 +78,13 @@ export class InventoryResponseDto {
   scheduleSendingTypeId?: number;
 
   @ApiProperty({
+    example: 1,
+    description: 'Vendor Address ID',
+    required: false,
+  })
+  vendorAddressId?: number;
+
+  @ApiProperty({
     type: () => InventoryStatusResponseDto,
     description: 'Inventory status details',
     required: false,
@@ -85,11 +92,11 @@ export class InventoryResponseDto {
   inventoryStatus?: InventoryStatusResponseDto;
 
   @ApiProperty({
-    type: () => VendorResponseDto,
+    type: () => ClientProductVendorResponseDto,
     description: 'Vendor details',
     required: false,
   })
-  vendor?: VendorResponseDto;
+  vendor?: ClientProductVendorResponseDto;
 
   @ApiProperty({
     type: () => ColorResponseDto,

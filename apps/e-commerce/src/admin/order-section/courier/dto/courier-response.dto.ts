@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { UserResponseDto } from '../../dto';
+import { AdminOrderUserResponseDto } from '../../dto';
 
 export class CourierResponseDto {
   @ApiProperty({ example: 1, description: 'Courier ID' })
@@ -21,9 +21,9 @@ export class CourierResponseDto {
   updatedAt: Date;
 
   @ApiProperty({
-    type: () => UserResponseDto,
+    type: () => AdminOrderUserResponseDto,
     description: 'User details',
     required: false,
   })
-  user?: UserResponseDto;
+  user?: AdminOrderUserResponseDto;
 }
