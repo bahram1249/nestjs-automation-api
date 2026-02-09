@@ -14,6 +14,7 @@ import {
 import { CheckPermission } from '@rahino/permission-checker/decorator';
 import { PermissionGuard } from '@rahino/permission-checker/guard';
 import { JsonResponseTransformInterceptor } from '@rahino/response/interceptor';
+import { ApiJsonResponse } from '@rahino/response';
 import {
   ApiBearerAuth,
   ApiOperation,
@@ -22,7 +23,11 @@ import {
 } from '@nestjs/swagger';
 import { GetUser, JwtGuard } from '@rahino/auth';
 import { VipGeneratorService } from './vip-generator.service';
-import { GetVipGeneratorDto, VipGeneratorDto } from './dto';
+import {
+  GetVipGeneratorDto,
+  VipGeneratorDto,
+  GuaranteeAdminVipGeneratorResponseDto,
+} from './dto';
 import { User } from '@rahino/database';
 import { Response } from 'express';
 
@@ -46,6 +51,10 @@ export class VipGeneratorController {
     style: 'deepObject',
     explode: true,
   })
+  @ApiJsonResponse({
+    type: GuaranteeAdminVipGeneratorResponseDto,
+    isArray: true,
+  })
   @HttpCode(HttpStatus.OK)
   async findAll(@Query() filter: GetVipGeneratorDto) {
     return await this.service.findAll(filter);
@@ -55,6 +64,7 @@ export class VipGeneratorController {
   @ApiOperation({ description: 'show vip generator by given id' })
   @CheckPermission({ permissionSymbol: 'gs.admin.vipgenerators.getone' })
   @Get('/:id')
+  @ApiJsonResponse({ type: GuaranteeAdminVipGeneratorResponseDto })
   @HttpCode(HttpStatus.OK)
   async findById(@Param('id') entityId: number) {
     return await this.service.findById(entityId);
@@ -64,6 +74,7 @@ export class VipGeneratorController {
   @ApiOperation({ description: 'create vip generators' })
   @CheckPermission({ permissionSymbol: 'gs.admin.vipgenerators.create' })
   @Post('/')
+  @ApiJsonResponse({ type: GuaranteeAdminVipGeneratorResponseDto, status: 201 })
   @HttpCode(HttpStatus.CREATED)
   async create(@GetUser() user: User, @Body() dto: VipGeneratorDto) {
     return await this.service.create(user, dto);

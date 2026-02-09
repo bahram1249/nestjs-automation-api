@@ -10,9 +10,10 @@ import {
 import { JsonResponseTransformInterceptor } from '@rahino/response/interceptor';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { GetUser, JwtGuard } from '@rahino/auth';
-import { ConfirmRequestDto } from './dto';
+import { ConfirmRequestDto, GuaranteeCartableConfirmResponseDto } from './dto';
 import { User } from '@rahino/database';
 import { ConfirmService } from './confirm.service';
+import { ApiJsonResponse } from '@rahino/response';
 
 @ApiBearerAuth()
 @UseGuards(JwtGuard)
@@ -28,6 +29,7 @@ export class ConfirmController {
   @ApiOperation({ description: 'confirm request' })
   @Post('/')
   @HttpCode(HttpStatus.OK)
+  @ApiJsonResponse({ type: GuaranteeCartableConfirmResponseDto })
   async traverse(@GetUser() user: User, @Body() dto: ConfirmRequestDto) {
     return await this.service.traverse(user, dto);
   }

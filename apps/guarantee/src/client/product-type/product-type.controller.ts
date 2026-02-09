@@ -16,8 +16,12 @@ import {
 } from '@nestjs/swagger';
 
 import { JwtGuard } from '@rahino/auth';
+import { ApiJsonResponse } from '@rahino/response';
 import { ProductTypeService } from './product-type.service';
-import { GetProductTypeDto } from './dto';
+import {
+  GetProductTypeDto,
+  GuaranteeClientProductTypeListResponseDto,
+} from './dto';
 
 @ApiBearerAuth()
 @UseGuards(JwtGuard)
@@ -39,6 +43,7 @@ export class ProductTypeController {
     explode: true,
   })
   @HttpCode(HttpStatus.OK)
+  @ApiJsonResponse({ type: GuaranteeClientProductTypeListResponseDto })
   async findAll(@Query() filter: GetProductTypeDto) {
     return await this.service.findAll(filter);
   }

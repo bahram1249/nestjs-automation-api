@@ -15,9 +15,13 @@ import {
   ApiQuery,
   ApiTags,
 } from '@nestjs/swagger';
+import { ApiJsonResponse } from '@rahino/response';
 import { JwtGuard } from '@rahino/auth';
 import { CartableWarrantyServiceTypeService } from './warranty-service-type.service';
-import { GetWarrantyServiceTypeDto } from './dto';
+import {
+  GetWarrantyServiceTypeDto,
+  GuaranteeCartableWarrantyServiceTypeResponseDto,
+} from './dto';
 
 @ApiBearerAuth()
 @UseGuards(JwtGuard)
@@ -38,6 +42,7 @@ export class CartableWarrantyServiceTypeController {
     style: 'deepObject',
     explode: true,
   })
+  @ApiJsonResponse({ type: GuaranteeCartableWarrantyServiceTypeResponseDto })
   @HttpCode(HttpStatus.OK)
   async findAll(
     @Param('requestId') requestId: bigint,

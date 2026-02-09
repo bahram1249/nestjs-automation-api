@@ -9,6 +9,7 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { JsonResponseTransformInterceptor } from '@rahino/response/interceptor';
+import { ApiJsonResponse } from '@rahino/response';
 import {
   ApiBearerAuth,
   ApiOperation,
@@ -17,7 +18,11 @@ import {
 } from '@nestjs/swagger';
 import { GetUser, JwtGuard } from '@rahino/auth';
 import { HistoryService } from './history.service';
-import { GetHistoryDto } from './dto';
+import {
+  GetHistoryDto,
+  GuaranteeClientHistoryListResponseDto,
+  GuaranteeClientLatestHistoryResponseDto,
+} from './dto';
 import { User } from '@rahino/database';
 
 @ApiBearerAuth()
@@ -39,6 +44,10 @@ export class HistoryController {
     style: 'deepObject',
     explode: true,
   })
+  @ApiJsonResponse({
+    type: GuaranteeClientHistoryListResponseDto,
+    description: 'List of histories retrieved successfully',
+  })
   @HttpCode(HttpStatus.OK)
   async findAll(
     @GetUser() user: User,
@@ -48,7 +57,12 @@ export class HistoryController {
     return await this.service.findAll(user, requestId, filter);
   }
 
+  @ApiOperation({ description: 'show latest request history' })
   @Get('/latestRequest')
+  @ApiJsonResponse({
+    type: GuaranteeClientLatestHistoryResponseDto,
+    description: 'Latest request history retrieved successfully',
+  })
   @HttpCode(HttpStatus.OK)
   async lastRequest(@GetUser() user: User) {
     return await this.service.findByLatestRequest(user);

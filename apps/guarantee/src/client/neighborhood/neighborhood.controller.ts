@@ -8,9 +8,13 @@ import {
 } from '@nestjs/common';
 
 import { JsonResponseTransformInterceptor } from '@rahino/response/interceptor';
+import { ApiJsonResponse } from '@rahino/response';
 import { ApiOperation, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { NeighborhoodService } from './neighborhood.service';
-import { GetNeighborhoodDto } from './dto';
+import {
+  GetNeighborhoodDto,
+  GuaranteeClientNeighborhoodListResponseDto,
+} from './dto';
 
 @ApiTags('GS-Neighborhoods')
 @Controller({
@@ -31,6 +35,7 @@ export class NeighborhoodController {
     explode: true,
   })
   @HttpCode(HttpStatus.OK)
+  @ApiJsonResponse({ type: GuaranteeClientNeighborhoodListResponseDto })
   async findAll(@Query() filter: GetNeighborhoodDto) {
     return await this.service.findAll(filter);
   }

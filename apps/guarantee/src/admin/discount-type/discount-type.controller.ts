@@ -17,8 +17,13 @@ import {
 } from '@nestjs/swagger';
 
 import { JwtGuard } from '@rahino/auth';
+import { ApiJsonResponse } from '@rahino/response';
 import { DiscountTypeService } from './discount-type.service';
-import { GetDiscountTypeDto } from './dto';
+import {
+  GetDiscountTypeDto,
+  GuaranteeAdminDiscountTypeListResponseDto,
+  GuaranteeAdminDiscountTypeSingleResponseDto,
+} from './dto';
 
 @ApiBearerAuth()
 @UseGuards(JwtGuard)
@@ -39,6 +44,7 @@ export class DiscountTypeController {
     style: 'deepObject',
     explode: true,
   })
+  @ApiJsonResponse({ type: GuaranteeAdminDiscountTypeListResponseDto })
   @HttpCode(HttpStatus.OK)
   async findAll(@Query() filter: GetDiscountTypeDto) {
     return await this.service.findAll(filter);
@@ -46,6 +52,7 @@ export class DiscountTypeController {
 
   @ApiOperation({ description: 'show discount type by given id' })
   @Get('/:id')
+  @ApiJsonResponse({ type: GuaranteeAdminDiscountTypeSingleResponseDto })
   @HttpCode(HttpStatus.OK)
   async findById(@Param('id') entityId: number) {
     return await this.service.findById(entityId);

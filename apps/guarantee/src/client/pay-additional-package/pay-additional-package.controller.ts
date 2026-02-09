@@ -8,10 +8,14 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { JsonResponseTransformInterceptor } from '@rahino/response/interceptor';
+import { ApiJsonResponse } from '@rahino/response';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { JwtGuard } from '@rahino/auth';
 import { PayAdditionalPackageService } from './pay-additional-package.service';
-import { PayAdditionalPackageDto } from './dto';
+import {
+  PayAdditionalPackageDto,
+  GuaranteeClientPayAdditionalPackageResponseDto,
+} from './dto';
 import { GetUser } from '@rahino/auth';
 import { User } from '@rahino/database';
 
@@ -28,6 +32,11 @@ export class PayAdditionalPackageController {
 
   @ApiOperation({ description: 'create pay additional package by user' })
   @Post('/')
+  @ApiJsonResponse({
+    type: GuaranteeClientPayAdditionalPackageResponseDto,
+    status: 201,
+    description: 'Pay additional package created successfully',
+  })
   @HttpCode(HttpStatus.CREATED)
   async create(@GetUser() user: User, @Body() dto: PayAdditionalPackageDto) {
     return await this.service.create(user, dto);

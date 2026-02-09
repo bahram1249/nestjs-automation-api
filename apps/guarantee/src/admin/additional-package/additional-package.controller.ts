@@ -22,8 +22,14 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { JwtGuard } from '@rahino/auth';
+import { ApiJsonResponse } from '@rahino/response';
 import { AdditionalPackageService } from './additional-package.service';
-import { GetAdditionalPackageDto, AdditionalPackageDto } from './dto';
+import {
+  GetAdditionalPackageDto,
+  AdditionalPackageDto,
+  GuaranteeAdminAdditionalPackageListResponseDto,
+  GuaranteeAdminAdditionalPackageSingleResponseDto,
+} from './dto';
 
 @ApiBearerAuth()
 @UseGuards(JwtGuard, PermissionGuard)
@@ -45,6 +51,7 @@ export class AdditionalPackageController {
     style: 'deepObject',
     explode: true,
   })
+  @ApiJsonResponse({ type: GuaranteeAdminAdditionalPackageListResponseDto })
   @HttpCode(HttpStatus.OK)
   async findAll(@Query() filter: GetAdditionalPackageDto) {
     return await this.service.findAll(filter);
@@ -53,6 +60,7 @@ export class AdditionalPackageController {
   @ApiOperation({ description: 'show additional package by given id' })
   @CheckPermission({ permissionSymbol: 'gs.admin.additionalpackages.getone' })
   @Get('/:id')
+  @ApiJsonResponse({ type: GuaranteeAdminAdditionalPackageSingleResponseDto })
   @HttpCode(HttpStatus.OK)
   async findById(@Param('id') entityId: number) {
     return await this.service.findById(entityId);
@@ -61,6 +69,10 @@ export class AdditionalPackageController {
   @ApiOperation({ description: 'create additional package' })
   @CheckPermission({ permissionSymbol: 'gs.admin.additionalpackages.create' })
   @Post('/')
+  @ApiJsonResponse({
+    type: GuaranteeAdminAdditionalPackageSingleResponseDto,
+    status: 201,
+  })
   @HttpCode(HttpStatus.CREATED)
   async create(@Body() dto: AdditionalPackageDto) {
     return await this.service.create(dto);
@@ -69,6 +81,7 @@ export class AdditionalPackageController {
   @ApiOperation({ description: 'update additional package by given id' })
   @CheckPermission({ permissionSymbol: 'gs.admin.additionalpackages.update' })
   @Put('/:id')
+  @ApiJsonResponse({ type: GuaranteeAdminAdditionalPackageSingleResponseDto })
   @HttpCode(HttpStatus.OK)
   async updateById(@Param('id') id: number, @Body() dto: AdditionalPackageDto) {
     return await this.service.updateById(id, dto);
@@ -77,6 +90,7 @@ export class AdditionalPackageController {
   @ApiOperation({ description: 'delete additional package by id' })
   @CheckPermission({ permissionSymbol: 'gs.admin.additionalpackages.delete' })
   @Delete('/:id')
+  @ApiJsonResponse({ type: GuaranteeAdminAdditionalPackageSingleResponseDto })
   @HttpCode(HttpStatus.OK)
   async deleteById(@Param('id') entityId: number) {
     return await this.service.deleteById(entityId);

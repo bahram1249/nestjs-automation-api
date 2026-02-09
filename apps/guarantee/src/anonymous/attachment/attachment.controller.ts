@@ -15,9 +15,11 @@ import {
 } from '@nestjs/common';
 import { JsonResponseTransformInterceptor } from '@rahino/response/interceptor';
 import { ApiBody, ApiConsumes, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiJsonResponse } from '@rahino/response';
 import { AttachmentService } from './attachment.service';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { imageOptions } from './file-options';
+import { GuaranteeAnonymousAttachmentResponseDto } from './dto';
 
 @ApiTags('GS-Anonymous-Attachments')
 @Controller({
@@ -43,6 +45,7 @@ export class AttachmentController {
   })
   @Post('/image')
   @HttpCode(HttpStatus.OK)
+  @ApiJsonResponse({ type: GuaranteeAnonymousAttachmentResponseDto })
   async uploadImage(
     @UploadedFile(
       new ParseFilePipe({

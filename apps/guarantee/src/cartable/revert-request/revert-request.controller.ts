@@ -14,6 +14,8 @@ import { RevertRequestDto } from './dto';
 import { User } from '@rahino/database';
 import { RevertRequestService } from './revert-request.service';
 import { RevertRequestByHistoryDto } from './dto/revert-request-by-history.dto';
+import { ApiJsonResponse } from '@rahino/response';
+import { GuaranteeCartableRevertRequestResponseDto } from './dto';
 
 @ApiBearerAuth()
 @UseGuards(JwtGuard)
@@ -27,6 +29,7 @@ export class RevertRequestController {
   constructor(private service: RevertRequestService) {}
 
   @ApiOperation({ description: 'revert request by history' })
+  @ApiJsonResponse({ type: GuaranteeCartableRevertRequestResponseDto })
   @Post('/byHistory')
   @HttpCode(HttpStatus.OK)
   async revertByHistory(
@@ -37,6 +40,7 @@ export class RevertRequestController {
   }
 
   @ApiOperation({ description: 'revert request' })
+  @ApiJsonResponse({ type: GuaranteeCartableRevertRequestResponseDto })
   @Post('/')
   @HttpCode(HttpStatus.OK)
   async revertToInit(@GetUser() user: User, @Body() dto: RevertRequestDto) {

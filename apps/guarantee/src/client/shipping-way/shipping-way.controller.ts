@@ -9,9 +9,11 @@ import {
 } from '@nestjs/common';
 
 import { JsonResponseTransformInterceptor } from '@rahino/response/interceptor';
+import { ApiJsonResponse } from '@rahino/response';
 import { ApiOperation, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { ShippingWayService } from './shipping-way.service';
 import { ListFilter } from '@rahino/query-filter';
+import { GuaranteeClientShippingWayListResponseDto } from './dto';
 
 @ApiTags('GS-Client-ShippingWays')
 @Controller({
@@ -31,6 +33,7 @@ export class ShippingWayController {
     explode: true,
   })
   @HttpCode(HttpStatus.OK)
+  @ApiJsonResponse({ type: GuaranteeClientShippingWayListResponseDto })
   async findAll(
     @Param('requestId') requestId: bigint,
     @Query() filter: ListFilter,

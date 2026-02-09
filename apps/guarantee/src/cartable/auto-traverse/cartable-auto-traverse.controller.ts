@@ -13,6 +13,8 @@ import { GetUser, JwtGuard } from '@rahino/auth';
 import { User } from '@rahino/database';
 import { CartableAutoTraverseService } from './cartable-auto-traverse.service';
 import { RequestStateIdDto } from './dto';
+import { ApiJsonResponse } from '@rahino/response';
+import { GuaranteeCartableAutoTraverseResponseDto } from './dto';
 
 @ApiBearerAuth()
 @UseGuards(JwtGuard)
@@ -26,6 +28,7 @@ export class CartableAutoTraverseController {
   constructor(private service: CartableAutoTraverseService) {}
 
   @ApiOperation({ description: 'auto traverse' })
+  @ApiJsonResponse({ type: GuaranteeCartableAutoTraverseResponseDto })
   @Post('/')
   @HttpCode(HttpStatus.OK)
   async traverse(@GetUser() user: User, @Body() dto: RequestStateIdDto) {

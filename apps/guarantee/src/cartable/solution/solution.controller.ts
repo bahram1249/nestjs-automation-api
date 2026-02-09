@@ -15,9 +15,14 @@ import {
   ApiQuery,
   ApiTags,
 } from '@nestjs/swagger';
+import { ApiJsonResponse } from '@rahino/response';
 import { JwtGuard } from '@rahino/auth';
 import { SolutionService } from './solution.service';
-import { GetSolutionDto } from './dto';
+import {
+  GetSolutionDto,
+  GuaranteeCartableSolutionListResponseDto,
+  GuaranteeCartableSolutionResponseDto,
+} from './dto';
 import { GetSolutionRequestFilterDto } from './dto/get-solution-request-filter.dto';
 
 @ApiBearerAuth()
@@ -39,6 +44,7 @@ export class SolutionController {
     style: 'deepObject',
     explode: true,
   })
+  @ApiJsonResponse({ type: GuaranteeCartableSolutionListResponseDto })
   @HttpCode(HttpStatus.OK)
   async findAll(@Query() filter: GetSolutionDto) {
     return await this.service.findAll(filter);
@@ -46,6 +52,7 @@ export class SolutionController {
 
   @ApiOperation({ description: 'show solution by given id' })
   @Get('/:id')
+  @ApiJsonResponse({ type: GuaranteeCartableSolutionResponseDto })
   @HttpCode(HttpStatus.OK)
   async findById(
     @Param('id') entityId: number,

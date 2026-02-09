@@ -12,6 +12,7 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { JsonResponseTransformInterceptor } from '@rahino/response/interceptor';
+import { ApiJsonResponse } from '@rahino/response';
 import {
   ApiBearerAuth,
   ApiOperation,
@@ -23,6 +24,7 @@ import { AssignedProductGuaranteeService } from './assigned-product-guarantee.se
 import {
   AssignedProductGuaranteeDto,
   GetAssignedProductGuarantee,
+  GuaranteeClientAssignedProductGuaranteeResponseDto,
 } from './dto';
 import { GetUser } from '@rahino/auth';
 import { User } from '@rahino/database';
@@ -47,6 +49,10 @@ export class AssignedProductGuaranteeController {
     style: 'deepObject',
     explode: true,
   })
+  @ApiJsonResponse({
+    type: GuaranteeClientAssignedProductGuaranteeResponseDto,
+    isArray: true,
+  })
   @HttpCode(HttpStatus.OK)
   async findAll(
     @Param('guaranteeId') guaranteeId: bigint,
@@ -58,6 +64,7 @@ export class AssignedProductGuaranteeController {
 
   @ApiOperation({ description: 'show assigned product guarantees by given id' })
   @Get('/:id')
+  @ApiJsonResponse({ type: GuaranteeClientAssignedProductGuaranteeResponseDto })
   @HttpCode(HttpStatus.OK)
   async findById(@GetUser() user: User, @Param('id') entityId: bigint) {
     return await this.service.findById(user, entityId);
@@ -65,6 +72,10 @@ export class AssignedProductGuaranteeController {
 
   @ApiOperation({ description: 'create assigened guarantee by user' })
   @Post('/')
+  @ApiJsonResponse({
+    type: GuaranteeClientAssignedProductGuaranteeResponseDto,
+    status: 201,
+  })
   @HttpCode(HttpStatus.CREATED)
   async create(
     @GetUser() user: User,
@@ -75,6 +86,7 @@ export class AssignedProductGuaranteeController {
 
   @ApiOperation({ description: 'delete assigned guarantee product by user' })
   @Delete('/:id')
+  @ApiJsonResponse({ type: GuaranteeClientAssignedProductGuaranteeResponseDto })
   @HttpCode(HttpStatus.OK)
   async deleteById(@GetUser() user: User, @Param('id') entityId: bigint) {
     return await this.service.deleteById(user, entityId);

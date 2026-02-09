@@ -19,10 +19,13 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { GetUser, JwtGuard } from '@rahino/auth';
+import { ApiJsonResponse } from '@rahino/response';
 import { CartableService } from './cartable.service';
-import { GetCartableDto } from '../../shared/cartable-filtering/dto';
 import { User } from '@rahino/database';
-import { GetCartableExternalDto } from './dto';
+import {
+  GetCartableExternalDto,
+  GuaranteeAdminCartableListResponseDto,
+} from './dto';
 import { CartablePdfService } from './cartable-pdf.service';
 import { Response } from 'express';
 
@@ -49,6 +52,7 @@ export class CartableController {
     style: 'deepObject',
     explode: true,
   })
+  @ApiJsonResponse({ type: GuaranteeAdminCartableListResponseDto })
   @HttpCode(HttpStatus.OK)
   async findAll(
     @GetUser() user: User,

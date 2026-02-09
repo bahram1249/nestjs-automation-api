@@ -15,6 +15,7 @@ import {
 import { CheckPermission } from '@rahino/permission-checker/decorator';
 import { PermissionGuard } from '@rahino/permission-checker/guard';
 import { JsonResponseTransformInterceptor } from '@rahino/response/interceptor';
+import { ApiJsonResponse } from '@rahino/response';
 import {
   ApiBearerAuth,
   ApiOperation,
@@ -22,7 +23,11 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { GetUser, JwtGuard } from '@rahino/auth';
-import { GetTechnicalPersonDto, TechnicalPersonDto } from './dto';
+import {
+  GetTechnicalPersonDto,
+  TechnicalPersonDto,
+  GuaranteeAdminTechnicalPersonResponseDto,
+} from './dto';
 import { TechnicalPersonService } from './technical-person.service';
 import { User } from '@rahino/database';
 
@@ -46,6 +51,11 @@ export class TechnicalPersonController {
     style: 'deepObject',
     explode: true,
   })
+  @ApiJsonResponse({
+    type: GuaranteeAdminTechnicalPersonResponseDto,
+    isArray: true,
+    description: 'List of technical persons retrieved successfully',
+  })
   @HttpCode(HttpStatus.OK)
   async findAll(@GetUser() user: User, @Query() filter: GetTechnicalPersonDto) {
     return await this.service.findAll(user, filter);
@@ -54,6 +64,10 @@ export class TechnicalPersonController {
   @ApiOperation({ description: 'show technical person by given id' })
   @CheckPermission({ permissionSymbol: 'gs.admin.technicalpersons.getone' })
   @Get('/:id')
+  @ApiJsonResponse({
+    type: GuaranteeAdminTechnicalPersonResponseDto,
+    description: 'Technical person retrieved successfully',
+  })
   @HttpCode(HttpStatus.OK)
   async findById(@GetUser() user: User, @Param('id') entityId: number) {
     return await this.service.findById(user, entityId);
@@ -62,6 +76,11 @@ export class TechnicalPersonController {
   @ApiOperation({ description: 'create technical person' })
   @CheckPermission({ permissionSymbol: 'gs.admin.technicalpersons.create' })
   @Post('/')
+  @ApiJsonResponse({
+    type: GuaranteeAdminTechnicalPersonResponseDto,
+    status: 201,
+    description: 'Technical person created successfully',
+  })
   @HttpCode(HttpStatus.CREATED)
   async create(@GetUser() user: User, @Body() dto: TechnicalPersonDto) {
     return await this.service.create(user, dto);
@@ -70,6 +89,10 @@ export class TechnicalPersonController {
   @ApiOperation({ description: 'update technical person by given id' })
   @CheckPermission({ permissionSymbol: 'gs.admin.technicalpersons.update' })
   @Put('/:id')
+  @ApiJsonResponse({
+    type: GuaranteeAdminTechnicalPersonResponseDto,
+    description: 'Technical person updated successfully',
+  })
   @HttpCode(HttpStatus.OK)
   async updateById(
     @GetUser() user: User,
@@ -82,6 +105,10 @@ export class TechnicalPersonController {
   @ApiOperation({ description: 'delete technical person by id' })
   @CheckPermission({ permissionSymbol: 'gs.admin.technicalpersons.delete' })
   @Delete('/:id')
+  @ApiJsonResponse({
+    type: GuaranteeAdminTechnicalPersonResponseDto,
+    description: 'Technical person deleted successfully',
+  })
   @HttpCode(HttpStatus.OK)
   async deleteById(@GetUser() user: User, @Param('id') entityId: number) {
     return await this.service.deleteById(user, entityId);

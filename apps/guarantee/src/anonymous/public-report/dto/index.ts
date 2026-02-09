@@ -1,1 +1,1 @@
-export * from './get-organization.dto';
+export * from './guarantee-anonymous-public-report-response.dto';

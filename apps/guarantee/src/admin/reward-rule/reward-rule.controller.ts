@@ -21,8 +21,14 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { JwtGuard } from '@rahino/auth';
+import { ApiJsonResponse } from '@rahino/response';
 import { RewardRuleService } from './reward-rule.service';
-import { GetRewardRuleDto, RewardRuleDto } from './dto';
+import {
+  GetRewardRuleDto,
+  RewardRuleDto,
+  GuaranteeAdminRewardRuleListResponseDto,
+  GuaranteeAdminRewardRuleSingleResponseDto,
+} from './dto';
 
 @ApiBearerAuth()
 @UseGuards(JwtGuard, PermissionGuard)
@@ -44,6 +50,7 @@ export class RewardRuleController {
     style: 'deepObject',
     explode: true,
   })
+  @ApiJsonResponse({ type: GuaranteeAdminRewardRuleListResponseDto })
   @HttpCode(HttpStatus.OK)
   async findAll(@Query() filter: GetRewardRuleDto) {
     return await this.service.findAll(filter);
@@ -52,6 +59,7 @@ export class RewardRuleController {
   @ApiOperation({ description: 'show reward rule by given id' })
   @CheckPermission({ permissionSymbol: 'gs.admin.rewardrules.getone' })
   @Get('/:id')
+  @ApiJsonResponse({ type: GuaranteeAdminRewardRuleSingleResponseDto })
   @HttpCode(HttpStatus.OK)
   async findById(@Param('id') entityId: bigint) {
     return await this.service.findById(entityId);
@@ -60,6 +68,10 @@ export class RewardRuleController {
   @ApiOperation({ description: 'create reward rule' })
   @CheckPermission({ permissionSymbol: 'gs.admin.rewardrules.create' })
   @Post('/')
+  @ApiJsonResponse({
+    type: GuaranteeAdminRewardRuleSingleResponseDto,
+    status: 201,
+  })
   @HttpCode(HttpStatus.CREATED)
   async create(@Body() dto: RewardRuleDto) {
     return await this.service.create(dto);
@@ -68,6 +80,7 @@ export class RewardRuleController {
   @ApiOperation({ description: 'delete reward rule by id' })
   @CheckPermission({ permissionSymbol: 'gs.admin.rewardrules.delete' })
   @Delete('/:id')
+  @ApiJsonResponse({ type: GuaranteeAdminRewardRuleSingleResponseDto })
   @HttpCode(HttpStatus.OK)
   async deleteById(@Param('id') entityId: bigint) {
     return await this.service.deleteById(entityId);

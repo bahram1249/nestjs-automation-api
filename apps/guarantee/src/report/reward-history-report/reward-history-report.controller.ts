@@ -20,8 +20,10 @@ import {
 import { Response } from 'express';
 
 import { JwtGuard } from '@rahino/auth';
+import { ApiJsonResponse } from '@rahino/response';
 import { RewardHistoryReportService } from './reward-history-report.service';
-import { GetRewardHistoryReportDto } from './dto/reward-history-report.dto';
+import { GetRewardHistoryReportDto } from './dto';
+import { GuaranteeReportRewardHistoryListResponseDto } from './dto';
 
 @ApiTags('GSReport-RewardHistoryReport')
 @UseGuards(JwtGuard, PermissionGuard)
@@ -45,6 +47,7 @@ export class RewardHistoryReportController {
     style: 'deepObject',
     explode: true,
   })
+  @ApiJsonResponse({ type: GuaranteeReportRewardHistoryListResponseDto })
   @HttpCode(HttpStatus.OK)
   async findAll(@Query() filter: GetRewardHistoryReportDto) {
     return await this.service.findAll(filter);

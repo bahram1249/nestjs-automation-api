@@ -26,6 +26,11 @@ import {
 import { GetUser, JwtGuard } from '@rahino/auth';
 import { RequestAttachmentService } from './request-attachment.service';
 import { GSRequestAttachmentDto } from './dto';
+import { ApiJsonResponse } from '@rahino/response';
+import {
+  GuaranteeCartableRequestAttachmentListResponseDto,
+  GuaranteeCartableUploadImageResponseDto,
+} from './dto';
 import { User } from '@rahino/database';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { imageOptions } from './file-options';
@@ -42,6 +47,7 @@ export class RequestAttachmentController {
   constructor(private service: RequestAttachmentService) {}
 
   @ApiOperation({ description: 'show all attachments for a request. ' })
+  @ApiJsonResponse({ type: GuaranteeCartableRequestAttachmentListResponseDto })
   @Get('/requestId/:requestId')
   @ApiQuery({
     name: 'filter',
@@ -70,6 +76,7 @@ export class RequestAttachmentController {
       },
     },
   })
+  @ApiJsonResponse({ type: GuaranteeCartableUploadImageResponseDto })
   @Post('/image')
   @HttpCode(HttpStatus.OK)
   async uploadImage(

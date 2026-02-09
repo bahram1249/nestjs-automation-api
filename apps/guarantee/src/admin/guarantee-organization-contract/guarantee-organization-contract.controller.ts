@@ -15,6 +15,7 @@ import {
 import { CheckPermission } from '@rahino/permission-checker/decorator';
 import { PermissionGuard } from '@rahino/permission-checker/guard';
 import { JsonResponseTransformInterceptor } from '@rahino/response/interceptor';
+import { ApiJsonResponse } from '@rahino/response';
 import {
   ApiBearerAuth,
   ApiOperation,
@@ -26,6 +27,7 @@ import { GuaranteeOrganizationContractService } from './guarantee-organization-c
 import {
   GetGuaranteeOrganizationContractDto,
   GuaranteeOrganizationContractDto,
+  GuaranteeAdminGuaranteeOrganizationContractResponseDto,
 } from './dto';
 
 @ApiBearerAuth()
@@ -50,6 +52,10 @@ export class GuaranteeOrganizationContractController {
     style: 'deepObject',
     explode: true,
   })
+  @ApiJsonResponse({
+    type: GuaranteeAdminGuaranteeOrganizationContractResponseDto,
+    isArray: true,
+  })
   @HttpCode(HttpStatus.OK)
   async findAll(@Query() filter: GetGuaranteeOrganizationContractDto) {
     return await this.service.findAll(filter);
@@ -60,6 +66,9 @@ export class GuaranteeOrganizationContractController {
     permissionSymbol: 'gs.admin.guaranteeorganizationcontracts.getone',
   })
   @Get('/:id')
+  @ApiJsonResponse({
+    type: GuaranteeAdminGuaranteeOrganizationContractResponseDto,
+  })
   @HttpCode(HttpStatus.OK)
   async findById(@Param('id') entityId: bigint) {
     return await this.service.findById(entityId);
@@ -70,6 +79,10 @@ export class GuaranteeOrganizationContractController {
     permissionSymbol: 'gs.admin.guaranteeorganizationcontracts.create',
   })
   @Post('/')
+  @ApiJsonResponse({
+    type: GuaranteeAdminGuaranteeOrganizationContractResponseDto,
+    status: 201,
+  })
   @HttpCode(HttpStatus.CREATED)
   async create(@Body() dto: GuaranteeOrganizationContractDto) {
     return await this.service.create(dto);
@@ -82,6 +95,9 @@ export class GuaranteeOrganizationContractController {
     permissionSymbol: 'gs.admin.guaranteeorganizationcontracts.update',
   })
   @Put('/:id')
+  @ApiJsonResponse({
+    type: GuaranteeAdminGuaranteeOrganizationContractResponseDto,
+  })
   @HttpCode(HttpStatus.OK)
   async updateById(
     @Param('id') id: bigint,
@@ -95,6 +111,9 @@ export class GuaranteeOrganizationContractController {
     permissionSymbol: 'gs.admin.guaranteeorganizationcontracts.delete',
   })
   @Delete('/:id')
+  @ApiJsonResponse({
+    type: GuaranteeAdminGuaranteeOrganizationContractResponseDto,
+  })
   @HttpCode(HttpStatus.OK)
   async deleteById(@Param('id') entityId: bigint) {
     return await this.service.deleteById(entityId);

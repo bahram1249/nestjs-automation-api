@@ -8,7 +8,9 @@ import {
 } from '@nestjs/common';
 import { JsonResponseTransformInterceptor } from '@rahino/response/interceptor';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiJsonResponse } from '@rahino/response';
 import { GuaranteeCheckService } from './guarantee-check.service';
+import { GuaranteeAnonymousGuaranteeCheckResponseDto } from './dto';
 
 @ApiTags('Anonymous-GuaranteeCheck')
 @UseInterceptors(JsonResponseTransformInterceptor)
@@ -22,6 +24,7 @@ export class GuaranteeCheckController {
   @ApiOperation({ description: 'get guarantee detail by serialNumber' })
   @Get('/serialNumber/:serialNumber')
   @HttpCode(HttpStatus.OK)
+  @ApiJsonResponse({ type: GuaranteeAnonymousGuaranteeCheckResponseDto })
   async getDetail(@Param('serialNumber') serialNumber: string) {
     return await this.service.getDetail(serialNumber);
   }

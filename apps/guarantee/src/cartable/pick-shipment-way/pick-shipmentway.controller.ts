@@ -10,9 +10,13 @@ import {
 import { JsonResponseTransformInterceptor } from '@rahino/response/interceptor';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { GetUser, JwtGuard } from '@rahino/auth';
-import { PickShipmentWayDto } from './dto';
+import {
+  PickShipmentWayDto,
+  GuaranteeCartablePickShipmentWayResponseDto,
+} from './dto';
 import { User } from '@rahino/database';
 import { PickShipmentWayService } from './pick-shipmentway.service';
+import { ApiJsonResponse } from '@rahino/response';
 
 @ApiBearerAuth()
 @UseGuards(JwtGuard)
@@ -28,6 +32,7 @@ export class PickShipmentWayController {
   @ApiOperation({ description: 'pick client shipmentway request' })
   @Post('/')
   @HttpCode(HttpStatus.OK)
+  @ApiJsonResponse({ type: GuaranteeCartablePickShipmentWayResponseDto })
   async traverse(@GetUser() user: User, @Body() dto: PickShipmentWayDto) {
     return await this.service.traverse(user, dto);
   }

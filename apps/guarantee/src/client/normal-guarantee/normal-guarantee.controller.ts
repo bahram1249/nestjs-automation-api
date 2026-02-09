@@ -11,6 +11,7 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { JsonResponseTransformInterceptor } from '@rahino/response/interceptor';
+import { ApiJsonResponse } from '@rahino/response';
 import {
   ApiBearerAuth,
   ApiOperation,
@@ -22,7 +23,10 @@ import { GetUser } from '@rahino/auth';
 import { User } from '@rahino/database';
 import { ListFilter } from '@rahino/query-filter';
 import { NormalGuaranteeService } from './normal-guarantee.service';
-import { NormalGuaranteeDto } from './dto';
+import {
+  NormalGuaranteeDto,
+  GuaranteeClientNormalGuaranteeResponseDto,
+} from './dto';
 
 @ApiTags('Client-NormalGuarantee')
 @UseGuards(JwtGuard)
@@ -44,6 +48,10 @@ export class NormalGuaranteeController {
     style: 'deepObject',
     explode: true,
   })
+  @ApiJsonResponse({
+    type: GuaranteeClientNormalGuaranteeResponseDto,
+    isArray: true,
+  })
   @HttpCode(HttpStatus.OK)
   async findAll(@GetUser() user: User, @Query() filter: ListFilter) {
     return await this.service.findAll(user, filter);
@@ -51,6 +59,7 @@ export class NormalGuaranteeController {
 
   @ApiOperation({ description: 'show guarantee by given id' })
   @Get('/myGuarantees/:id')
+  @ApiJsonResponse({ type: GuaranteeClientNormalGuaranteeResponseDto })
   @HttpCode(HttpStatus.OK)
   async findById(@GetUser() user: User, @Param('id') entityId: bigint) {
     return await this.service.findById(user, entityId);
@@ -58,6 +67,10 @@ export class NormalGuaranteeController {
 
   @ApiOperation({ description: 'add guarantee card to my user' })
   @Post('/')
+  @ApiJsonResponse({
+    type: GuaranteeClientNormalGuaranteeResponseDto,
+    status: 201,
+  })
   @HttpCode(HttpStatus.CREATED)
   async addGuaranteeCard(
     @GetUser() user: User,
@@ -68,6 +81,7 @@ export class NormalGuaranteeController {
 
   @ApiOperation({ description: 'get guarantee avaialiablity card' })
   @Get('/availability/:serialNumber')
+  @ApiJsonResponse({ type: GuaranteeClientNormalGuaranteeResponseDto })
   @HttpCode(HttpStatus.OK)
   async getAvailability(
     @Param('serialNumber') serialNumber: string,

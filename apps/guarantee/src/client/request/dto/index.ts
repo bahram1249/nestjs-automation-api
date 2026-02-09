@@ -3,3 +3,4 @@ export * from './get-request-filter.dto';
 export * from './out-of-warranty-request.dto';
 export * from './vip-guarantee.dto';
 export * from './request-item.dto';
+export * from './request-response.dto';

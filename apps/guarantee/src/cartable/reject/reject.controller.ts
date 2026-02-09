@@ -10,9 +10,10 @@ import {
 import { JsonResponseTransformInterceptor } from '@rahino/response/interceptor';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { GetUser, JwtGuard } from '@rahino/auth';
-import { RejectDto } from './dto';
+import { RejectDto, GuaranteeCartableRejectResponseDto } from './dto';
 import { User } from '@rahino/database';
 import { RejectService } from './reject.service';
+import { ApiJsonResponse } from '@rahino/response';
 
 @ApiBearerAuth()
 @UseGuards(JwtGuard)
@@ -28,6 +29,7 @@ export class PickOrganizationController {
   @ApiOperation({ description: 'reject request' })
   @Post('/')
   @HttpCode(HttpStatus.OK)
+  @ApiJsonResponse({ type: GuaranteeCartableRejectResponseDto })
   async traverse(@GetUser() user: User, @Body() dto: RejectDto) {
     return await this.service.traverse(user, dto);
   }

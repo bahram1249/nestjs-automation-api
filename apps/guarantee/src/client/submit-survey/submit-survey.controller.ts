@@ -8,9 +8,10 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { JsonResponseTransformInterceptor } from '@rahino/response/interceptor';
+import { ApiJsonResponse } from '@rahino/response';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { GetUser, JwtGuard } from '@rahino/auth';
-import { SubmitSurveyDto } from './dto';
+import { SubmitSurveyDto, GuaranteeClientSubmitSurveyResponseDto } from './dto';
 import { User } from '@rahino/database';
 import { SubmitSurveyService } from './submit-survey.service';
 
@@ -27,6 +28,10 @@ export class SubmitSurveyController {
 
   @ApiOperation({ description: 'submit survey' })
   @Post('/')
+  @ApiJsonResponse({
+    type: GuaranteeClientSubmitSurveyResponseDto,
+    description: 'Survey submitted successfully',
+  })
   @HttpCode(HttpStatus.OK)
   async traverse(@GetUser() user: User, @Body() dto: SubmitSurveyDto) {
     return await this.service.traverse(user, dto);

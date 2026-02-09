@@ -20,8 +20,10 @@ import {
 import { Response } from 'express';
 
 import { JwtGuard } from '@rahino/auth';
+import { ApiJsonResponse } from '@rahino/response';
 import { ActivityReportService } from './activity-report.service';
-import { GetActivityReportDto } from './dto/get-activity-report.dto';
+import { GetActivityReportDto } from './dto';
+import { GuaranteeReportActivityListResponseDto } from './dto';
 
 @ApiTags('GSReport-ActivityReport')
 @UseGuards(JwtGuard, PermissionGuard)
@@ -45,6 +47,7 @@ export class ActivityReportController {
     style: 'deepObject',
     explode: true,
   })
+  @ApiJsonResponse({ type: GuaranteeReportActivityListResponseDto })
   @HttpCode(HttpStatus.OK)
   async findAll(@Query() filter: GetActivityReportDto) {
     return await this.service.findAll(filter);

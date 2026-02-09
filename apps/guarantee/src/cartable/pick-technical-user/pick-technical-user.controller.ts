@@ -10,9 +10,13 @@ import {
 import { JsonResponseTransformInterceptor } from '@rahino/response/interceptor';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { GetUser, JwtGuard } from '@rahino/auth';
-import { PickTechnicalUserDto } from './dto';
+import {
+  PickTechnicalUserDto,
+  GuaranteeCartablePickTechnicalUserResponseDto,
+} from './dto';
 import { User } from '@rahino/database';
 import { PickTechnicalUserService } from './pick-technical-user.service';
+import { ApiJsonResponse } from '@rahino/response';
 
 @ApiBearerAuth()
 @UseGuards(JwtGuard)
@@ -28,6 +32,7 @@ export class PickTechnicalUserController {
   @ApiOperation({ description: 'pick TechnicalUser request' })
   @Post('/')
   @HttpCode(HttpStatus.OK)
+  @ApiJsonResponse({ type: GuaranteeCartablePickTechnicalUserResponseDto })
   async traverse(@GetUser() user: User, @Body() dto: PickTechnicalUserDto) {
     return await this.service.traverse(user, dto);
   }

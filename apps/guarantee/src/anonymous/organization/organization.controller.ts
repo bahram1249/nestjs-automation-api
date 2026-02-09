@@ -9,8 +9,13 @@ import {
 } from '@nestjs/common';
 import { JsonResponseTransformInterceptor } from '@rahino/response/interceptor';
 import { ApiOperation, ApiQuery, ApiTags } from '@nestjs/swagger';
+import { ApiJsonResponse } from '@rahino/response';
 import { AnonymousOrganizationService } from './organization.service';
-import { GetOrganizationDto } from './dto';
+import {
+  GetOrganizationDto,
+  GuaranteeAnonymousOrganizationListResponseDto,
+  GuaranteeAnonymousOrganizationResponseDto,
+} from './dto';
 
 @ApiTags('GS-Anonymous-Organization')
 @Controller({
@@ -30,6 +35,7 @@ export class OrganizationController {
     explode: true,
   })
   @HttpCode(HttpStatus.OK)
+  @ApiJsonResponse({ type: GuaranteeAnonymousOrganizationListResponseDto })
   async findAll(@Query() filter: GetOrganizationDto) {
     return await this.service.findAll(filter);
   }
@@ -37,6 +43,7 @@ export class OrganizationController {
   @ApiOperation({ description: 'show organization details by given id' })
   @Get('/:id')
   @HttpCode(HttpStatus.OK)
+  @ApiJsonResponse({ type: GuaranteeAnonymousOrganizationResponseDto })
   async findById(@Param('id') entityId: number) {
     return await this.service.findById(entityId);
   }

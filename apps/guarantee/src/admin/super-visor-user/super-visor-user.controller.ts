@@ -15,6 +15,7 @@ import {
 import { CheckPermission } from '@rahino/permission-checker/decorator';
 import { PermissionGuard } from '@rahino/permission-checker/guard';
 import { JsonResponseTransformInterceptor } from '@rahino/response/interceptor';
+import { ApiJsonResponse } from '@rahino/response';
 import {
   ApiBearerAuth,
   ApiOperation,
@@ -22,7 +23,11 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { GetUser, JwtGuard } from '@rahino/auth';
-import { GetSuperVisorDto, SuperVisorUserDto } from './dto';
+import {
+  GetSuperVisorDto,
+  SuperVisorUserDto,
+  GuaranteeAdminSuperVisorUserResponseDto,
+} from './dto';
 import { SuperVisorUserService } from './super-visor-user.service';
 import { User } from '@rahino/database';
 
@@ -46,6 +51,10 @@ export class SuperVisorController {
     style: 'deepObject',
     explode: true,
   })
+  @ApiJsonResponse({
+    type: GuaranteeAdminSuperVisorUserResponseDto,
+    isArray: true,
+  })
   @HttpCode(HttpStatus.OK)
   async findAll(@GetUser() user: User, @Query() filter: GetSuperVisorDto) {
     return await this.service.findAll(user, filter);
@@ -54,6 +63,7 @@ export class SuperVisorController {
   @ApiOperation({ description: 'show super visor user by given id' })
   @CheckPermission({ permissionSymbol: 'gs.admin.supervisorusers.getone' })
   @Get('/:id')
+  @ApiJsonResponse({ type: GuaranteeAdminSuperVisorUserResponseDto })
   @HttpCode(HttpStatus.OK)
   async findById(@GetUser() user: User, @Param('id') entityId: number) {
     return await this.service.findById(user, entityId);
@@ -62,6 +72,10 @@ export class SuperVisorController {
   @ApiOperation({ description: 'create super visor user' })
   @CheckPermission({ permissionSymbol: 'gs.admin.supervisorusers.create' })
   @Post('/')
+  @ApiJsonResponse({
+    type: GuaranteeAdminSuperVisorUserResponseDto,
+    status: 201,
+  })
   @HttpCode(HttpStatus.CREATED)
   async create(@GetUser() user: User, @Body() dto: SuperVisorUserDto) {
     return await this.service.create(user, dto);
@@ -70,6 +84,7 @@ export class SuperVisorController {
   @ApiOperation({ description: 'update super visor user by given id' })
   @CheckPermission({ permissionSymbol: 'gs.admin.supervisorusers.update' })
   @Put('/:id')
+  @ApiJsonResponse({ type: GuaranteeAdminSuperVisorUserResponseDto })
   @HttpCode(HttpStatus.OK)
   async updateById(
     @GetUser() user: User,
@@ -82,6 +97,7 @@ export class SuperVisorController {
   @ApiOperation({ description: 'delete super visor user by id' })
   @CheckPermission({ permissionSymbol: 'gs.admin.supervisorusers.delete' })
   @Delete('/:id')
+  @ApiJsonResponse({ type: GuaranteeAdminSuperVisorUserResponseDto })
   @HttpCode(HttpStatus.OK)
   async deleteById(@GetUser() user: User, @Param('id') entityId: number) {
     return await this.service.deleteById(user, entityId);

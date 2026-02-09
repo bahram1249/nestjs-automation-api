@@ -8,6 +8,7 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { JsonResponseTransformInterceptor } from '@rahino/response/interceptor';
+import { ApiJsonResponse } from '@rahino/response';
 import {
   ApiBearerAuth,
   ApiOperation,
@@ -16,7 +17,10 @@ import {
 } from '@nestjs/swagger';
 import { GetUser, JwtGuard } from '@rahino/auth';
 import { CartableService } from './need-action.service';
-import { GetCartableDto } from './dto';
+import {
+  GetCartableDto,
+  GuaranteeClientNeedActionListResponseDto,
+} from './dto';
 import { User } from '@rahino/database';
 
 @ApiBearerAuth()
@@ -37,6 +41,10 @@ export class CartableController {
     type: GetCartableDto,
     style: 'deepObject',
     explode: true,
+  })
+  @ApiJsonResponse({
+    type: GuaranteeClientNeedActionListResponseDto,
+    description: 'List of need actions retrieved successfully',
   })
   @HttpCode(HttpStatus.OK)
   async findAll(@GetUser() user: User, @Query() filter: GetCartableDto) {

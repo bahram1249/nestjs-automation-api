@@ -8,6 +8,7 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { JsonResponseTransformInterceptor } from '@rahino/response/interceptor';
+import { ApiJsonResponse } from '@rahino/response';
 import {
   ApiBearerAuth,
   ApiOperation,
@@ -16,7 +17,10 @@ import {
 } from '@nestjs/swagger';
 import { JwtGuard } from '@rahino/auth';
 import { OnlinePaymentGatewayService } from './online-payment-gateway.service';
-import { GetOnlinePaymentGatewayDto } from './dto';
+import {
+  GetOnlinePaymentGatewayDto,
+  GuaranteeClientOnlinePaymentGatewayListResponseDto,
+} from './dto';
 
 @ApiBearerAuth()
 @UseGuards(JwtGuard)
@@ -36,6 +40,10 @@ export class OnlinePaymentGatewayController {
     type: GetOnlinePaymentGatewayDto,
     style: 'deepObject',
     explode: true,
+  })
+  @ApiJsonResponse({
+    type: GuaranteeClientOnlinePaymentGatewayListResponseDto,
+    description: 'List of online payment gateways retrieved successfully',
   })
   @HttpCode(HttpStatus.OK)
   async findAll(@Query() filter: GetOnlinePaymentGatewayDto) {

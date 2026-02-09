@@ -15,6 +15,7 @@ import {
 import { CheckPermission } from '@rahino/permission-checker/decorator';
 import { PermissionGuard } from '@rahino/permission-checker/guard';
 import { JsonResponseTransformInterceptor } from '@rahino/response/interceptor';
+import { ApiJsonResponse } from '@rahino/response';
 import {
   ApiBearerAuth,
   ApiOperation,
@@ -24,7 +25,11 @@ import {
 
 import { JwtGuard } from '@rahino/auth';
 import { VariantService } from './variant.service';
-import { GetVariantDto, VaraintDto } from './dto';
+import {
+  GetVariantDto,
+  VaraintDto,
+  GuaranteeAdminVariantResponseDto,
+} from './dto';
 
 @ApiBearerAuth()
 @UseGuards(JwtGuard, PermissionGuard)
@@ -46,6 +51,11 @@ export class VariantController {
     style: 'deepObject',
     explode: true,
   })
+  @ApiJsonResponse({
+    type: GuaranteeAdminVariantResponseDto,
+    isArray: true,
+    description: 'List of variants retrieved successfully',
+  })
   @HttpCode(HttpStatus.OK)
   async findAll(@Query() filter: GetVariantDto) {
     return await this.service.findAll(filter);
@@ -54,6 +64,10 @@ export class VariantController {
   @ApiOperation({ description: 'show variant by given id' })
   @CheckPermission({ permissionSymbol: 'gs.admin.variants.getone' })
   @Get('/:id')
+  @ApiJsonResponse({
+    type: GuaranteeAdminVariantResponseDto,
+    description: 'Variant retrieved successfully',
+  })
   @HttpCode(HttpStatus.OK)
   async findById(@Param('id') entityId: number) {
     return await this.service.findById(entityId);
@@ -62,6 +76,11 @@ export class VariantController {
   @ApiOperation({ description: 'create variant' })
   @CheckPermission({ permissionSymbol: 'gs.admin.variants.create' })
   @Post('/')
+  @ApiJsonResponse({
+    type: GuaranteeAdminVariantResponseDto,
+    status: 201,
+    description: 'Variant created successfully',
+  })
   @HttpCode(HttpStatus.CREATED)
   async create(@Body() dto: VaraintDto) {
     return await this.service.create(dto);
@@ -70,6 +89,10 @@ export class VariantController {
   @ApiOperation({ description: 'update variant by given id' })
   @CheckPermission({ permissionSymbol: 'gs.admin.variants.update' })
   @Put('/:id')
+  @ApiJsonResponse({
+    type: GuaranteeAdminVariantResponseDto,
+    description: 'Variant updated successfully',
+  })
   @HttpCode(HttpStatus.OK)
   async updateById(@Param('id') id: number, @Body() dto: VaraintDto) {
     return await this.service.updateById(id, dto);
@@ -78,6 +101,10 @@ export class VariantController {
   @ApiOperation({ description: 'delete variant by id' })
   @CheckPermission({ permissionSymbol: 'gs.admin.variants.delete' })
   @Delete('/:id')
+  @ApiJsonResponse({
+    type: GuaranteeAdminVariantResponseDto,
+    description: 'Variant deleted successfully',
+  })
   @HttpCode(HttpStatus.OK)
   async deleteById(@Param('id') entityId: number) {
     return await this.service.deleteById(entityId);

@@ -8,9 +8,11 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { JsonResponseTransformInterceptor } from '@rahino/response/interceptor';
+import { ApiJsonResponse } from '@rahino/response';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { GetUser, JwtGuard } from '@rahino/auth';
 import { OrganizationAddressService } from './organization-address.service';
+import { GuaranteeClientOrganizationAddressResponseDto } from './dto';
 import { User } from '@rahino/database';
 
 @ApiBearerAuth()
@@ -26,6 +28,10 @@ export class OrganizationAddressController {
 
   @ApiOperation({ description: 'show organization address by requestId' })
   @Get('/request/:requestId')
+  @ApiJsonResponse({
+    type: GuaranteeClientOrganizationAddressResponseDto,
+    description: 'Organization address retrieved successfully',
+  })
   @HttpCode(HttpStatus.OK)
   async findAddress(
     @GetUser() user: User,

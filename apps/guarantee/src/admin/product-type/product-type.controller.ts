@@ -15,6 +15,7 @@ import {
 import { CheckPermission } from '@rahino/permission-checker/decorator';
 import { PermissionGuard } from '@rahino/permission-checker/guard';
 import { JsonResponseTransformInterceptor } from '@rahino/response/interceptor';
+import { ApiJsonResponse } from '@rahino/response';
 import {
   ApiBearerAuth,
   ApiOperation,
@@ -24,7 +25,11 @@ import {
 
 import { JwtGuard } from '@rahino/auth';
 import { ProductTypeService } from './product-type.service';
-import { GetProductTypeDto, ProductTypeDto } from './dto';
+import {
+  GetProductTypeDto,
+  ProductTypeDto,
+  GuaranteeAdminProductTypeResponseDto,
+} from './dto';
 
 @ApiBearerAuth()
 @UseGuards(JwtGuard, PermissionGuard)
@@ -46,6 +51,11 @@ export class ProductTypeController {
     style: 'deepObject',
     explode: true,
   })
+  @ApiJsonResponse({
+    type: GuaranteeAdminProductTypeResponseDto,
+    isArray: true,
+    description: 'List of product types retrieved successfully',
+  })
   @HttpCode(HttpStatus.OK)
   async findAll(@Query() filter: GetProductTypeDto) {
     return await this.service.findAll(filter);
@@ -54,6 +64,10 @@ export class ProductTypeController {
   @ApiOperation({ description: 'show product type by given id' })
   @CheckPermission({ permissionSymbol: 'gs.admin.producttypes.getone' })
   @Get('/:id')
+  @ApiJsonResponse({
+    type: GuaranteeAdminProductTypeResponseDto,
+    description: 'Product type retrieved successfully',
+  })
   @HttpCode(HttpStatus.OK)
   async findById(@Param('id') entityId: number) {
     return await this.service.findById(entityId);
@@ -62,6 +76,11 @@ export class ProductTypeController {
   @ApiOperation({ description: 'create product type' })
   @CheckPermission({ permissionSymbol: 'gs.admin.producttypes.create' })
   @Post('/')
+  @ApiJsonResponse({
+    type: GuaranteeAdminProductTypeResponseDto,
+    status: 201,
+    description: 'Product type created successfully',
+  })
   @HttpCode(HttpStatus.CREATED)
   async create(@Body() dto: ProductTypeDto) {
     return await this.service.create(dto);
@@ -70,6 +89,10 @@ export class ProductTypeController {
   @ApiOperation({ description: 'update product type by id' })
   @CheckPermission({ permissionSymbol: 'gs.admin.producttypes.update' })
   @Put('/:id')
+  @ApiJsonResponse({
+    type: GuaranteeAdminProductTypeResponseDto,
+    description: 'Product type updated successfully',
+  })
   @HttpCode(HttpStatus.OK)
   async updateById(@Param('id') id: number, @Body() dto: ProductTypeDto) {
     return await this.service.updateById(id, dto);
@@ -78,6 +101,10 @@ export class ProductTypeController {
   @ApiOperation({ description: 'delete product type by id' })
   @CheckPermission({ permissionSymbol: 'gs.admin.producttypes.delete' })
   @Delete('/:id')
+  @ApiJsonResponse({
+    type: GuaranteeAdminProductTypeResponseDto,
+    description: 'Product type deleted successfully',
+  })
   @HttpCode(HttpStatus.OK)
   async deleteById(@Param('id') entityId: number) {
     return await this.service.deleteById(entityId);

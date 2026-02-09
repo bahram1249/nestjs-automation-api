@@ -8,8 +8,12 @@ import {
 } from '@nestjs/common';
 import { JsonResponseTransformInterceptor } from '@rahino/response/interceptor';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiJsonResponse } from '@rahino/response';
 import { PreRegistrationOrganizationService } from './pre-registration-organization.service';
-import { PreRegistrationOrganizationDto } from './dto';
+import {
+  PreRegistrationOrganizationDto,
+  GuaranteeAnonymousPreRegistrationOrganizationResponseDto,
+} from './dto';
 
 @ApiTags('GS-AnonymousPreRegistrationOrganization')
 @Controller({
@@ -23,6 +27,9 @@ export class PreRegistrationOrganizationController {
   @ApiOperation({ description: 'create pre registration organization' })
   @Post('/')
   @HttpCode(HttpStatus.CREATED)
+  @ApiJsonResponse({
+    type: GuaranteeAnonymousPreRegistrationOrganizationResponseDto,
+  })
   async create(@Body() dto: PreRegistrationOrganizationDto) {
     return await this.service.create(dto);
   }

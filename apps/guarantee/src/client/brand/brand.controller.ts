@@ -16,8 +16,9 @@ import {
 } from '@nestjs/swagger';
 
 import { JwtGuard } from '@rahino/auth';
+import { ApiJsonResponse } from '@rahino/response';
 import { BrandService } from './brand.service';
-import { GetBrandDto } from './dto';
+import { GetBrandDto, GuaranteeClientBrandListResponseDto } from './dto';
 
 @ApiBearerAuth()
 @UseGuards(JwtGuard)
@@ -39,6 +40,7 @@ export class BrandController {
     explode: true,
   })
   @HttpCode(HttpStatus.OK)
+  @ApiJsonResponse({ type: GuaranteeClientBrandListResponseDto })
   async findAll(@Query() filter: GetBrandDto) {
     return await this.service.findAll(filter);
   }
