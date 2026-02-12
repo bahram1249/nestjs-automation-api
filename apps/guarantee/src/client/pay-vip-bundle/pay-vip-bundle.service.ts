@@ -314,6 +314,7 @@ export class PayVipBundleService {
       await transaction.commit();
       return result;
     } catch (error) {
+      console.log(error);
       await transaction.rollback();
       throw new BadRequestException(error.message);
     }

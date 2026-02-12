@@ -146,7 +146,7 @@ export class DiscountCodeValidationService {
         factorId,
         discountAmount: discountAmount,
         maxDiscountAmount: discountCode.maxDiscountAmount,
-        usedAt: new Date(),
+        usedAt: Sequelize.fn('getdate'),
       },
       {
         transaction: transaction,

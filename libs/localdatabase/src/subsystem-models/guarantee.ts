@@ -61,6 +61,7 @@ import {
   GSRewardRule,
   GSDiscountCodeUsage,
   GSRequestItem,
+  GSRewardHistory,
 } from '../models';
 
 export const guaranteeModels = [
@@ -126,4 +127,5 @@ export const guaranteeModels = [
   GSDiscountCode,
   GSRewardRule,
   GSDiscountCodeUsage,
+  GSRewardHistory,
 ];

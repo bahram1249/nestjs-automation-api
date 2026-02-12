@@ -60,13 +60,13 @@ export class GSDiscountCodeUsage extends Model {
   })
   usedAt: Date;
 
-  @Column({
-    type: DataType.BOOLEAN,
-    allowNull: false,
-    defaultValue: false,
-  })
-  @AutoMap()
-  isDeleted?: boolean;
+  // @Column({
+  //   type: DataType.BOOLEAN,
+  //   allowNull: false,
+  //   defaultValue: false,
+  // })
+  // @AutoMap()
+  // isDeleted?: boolean;
 
   @BelongsTo(() => GSDiscountCode, {
     as: 'discountCode',
