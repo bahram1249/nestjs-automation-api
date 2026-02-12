@@ -20,11 +20,6 @@ export class RewardRuleDto {
   @AutoMap()
   @IsOptional()
   @IsNumber()
-  public vipBundleTypeId?: bigint;
-
-  @AutoMap()
-  @IsOptional()
-  @IsNumber()
   public monthPeriod?: number;
 
   @AutoMap()
