@@ -44,10 +44,12 @@ export class CoreModule implements NestModule {
       .setVersion('1.0')
       .addBearerAuth()
       .build();
+
     const coreDocument = SwaggerModule.createDocument(this.app, coreConfig, {
       include: [CoreModule],
       deepScanRoutes: true,
     });
+
     SwaggerModule.setup('api/core', this.app, coreDocument);
   }
 }

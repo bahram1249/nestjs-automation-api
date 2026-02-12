@@ -28,7 +28,13 @@ import {
   EditReceiptPostDto,
 } from 'apps/e-commerce/src/admin/order-section/totalOrders/dto';
 import { LogisticTotalOrderService } from './logistic-total-order.service';
-import { ChangeShipmentWayDto } from './dto';
+import {
+  ChangeShipmentWayDto,
+  LogisticTotalOrderResponseDto,
+  LogisticOrderDeleteResponseDto,
+  LogisticOrderGroupedChangeResponseDto,
+} from './dto';
+import { ApiJsonResponse } from '@rahino/response';
 
 @ApiTags('Logistic-Total-Orders')
 @UseGuards(JwtGuard, PermissionGuard)
@@ -52,6 +58,10 @@ export class LogisticTotalOrderController {
     style: 'deepObject',
     explode: true,
   })
+  @ApiJsonResponse({
+    type: LogisticTotalOrderResponseDto,
+    isArray: true,
+  })
   @HttpCode(HttpStatus.OK)
   async findAll(
     @GetUser() user: User,
@@ -65,6 +75,9 @@ export class LogisticTotalOrderController {
   })
   @CheckPermission({ permissionSymbol: 'ecommerce.admin.totalorders.getone' })
   @Get('/:id')
+  @ApiJsonResponse({
+    type: LogisticTotalOrderResponseDto,
+  })
   @HttpCode(HttpStatus.OK)
   async findById(@Param('id') entityId: bigint, @GetUser() user: User) {
     return await this.service.findById(entityId, user);
@@ -78,6 +91,9 @@ export class LogisticTotalOrderController {
     permissionSymbol: 'ecommerce.admin.totalorders.removedetail',
   })
   @Delete('/removeDetail/:id')
+  @ApiJsonResponse({
+    type: LogisticOrderDeleteResponseDto,
+  })
   @HttpCode(HttpStatus.OK)
   async removeDetail(@Param('id') detailId: bigint, @GetUser() user: User) {
     return await this.service.removeDetail(detailId, user);
@@ -91,6 +107,9 @@ export class LogisticTotalOrderController {
     permissionSymbol: 'ecommerce.admin.totalorders.decreasedetail',
   })
   @Delete('/decreaseDetail/:id')
+  @ApiJsonResponse({
+    type: LogisticOrderDeleteResponseDto,
+  })
   @HttpCode(HttpStatus.OK)
   async decreaseDetail(@Param('id') detailId: bigint, @GetUser() user: User) {
     return await this.service.decreaseDetail(detailId, user);
@@ -101,6 +120,9 @@ export class LogisticTotalOrderController {
   })
   @CheckPermission({ permissionSymbol: 'ecommerce.admin.totalorders.delete' })
   @Delete('/:id')
+  @ApiJsonResponse({
+    type: LogisticOrderDeleteResponseDto,
+  })
   @HttpCode(HttpStatus.OK)
   async removeById(@Param('id') id: bigint, @GetUser() user: User) {
     return await this.service.removeById(id);
@@ -115,6 +137,9 @@ export class LogisticTotalOrderController {
     permissionSymbol: 'ecommerce.admin.totalorders.changeshipmentway',
   })
   @Patch('/changeShipmentWay/:id')
+  @ApiJsonResponse({
+    type: LogisticOrderGroupedChangeResponseDto,
+  })
   @HttpCode(HttpStatus.OK)
   async changeShipmentWay(
     @Param('id') id: bigint,
@@ -132,6 +157,9 @@ export class LogisticTotalOrderController {
     permissionSymbol: 'ecommerce.admin.totalorders.changeorderstatus',
   })
   @Patch('/changeOrderStatus/:id')
+  @ApiJsonResponse({
+    type: LogisticOrderGroupedChangeResponseDto,
+  })
   @HttpCode(HttpStatus.OK)
   async changeOrderStatus(
     @Param('id') id: bigint,
@@ -149,6 +177,9 @@ export class LogisticTotalOrderController {
     permissionSymbol: 'ecommerce.admin.totalorders.editreceiptpost',
   })
   @Patch('/editReceiptPost/:id')
+  @ApiJsonResponse({
+    type: LogisticOrderGroupedChangeResponseDto,
+  })
   @HttpCode(HttpStatus.OK)
   async editReceiptPost(
     @Param('id') id: bigint,

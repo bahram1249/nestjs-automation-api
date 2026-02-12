@@ -25,8 +25,15 @@ import { CheckPermission } from '@rahino/permission-checker/decorator';
 import { GetUser } from '@rahino/auth';
 import { User } from '@rahino/database';
 import { CourierService } from './courier.service';
-import { CourierDto, CourierV2Dto, GetCourierDto } from './dto';
-import { UserCourierV2Dto } from './dto/user-courier-v2-dto';
+import {
+  CourierDto,
+  CourierV2Dto,
+  GetCourierDto,
+  CourierResponseDto,
+  CourierV2ResponseDto,
+} from './dto';
+import { ApiJsonResponse } from '@rahino/response';
+import { AdminOrderUserResponseDto, AdminOrderVendorResponseDto } from '../dto';
 
 @ApiTags('Admin-Couriers')
 @ApiBearerAuth()
@@ -49,6 +56,11 @@ export class CourierController {
     explode: true,
   })
   @CheckPermission({ permissionSymbol: 'ecommerce.admin.couriers.getall' })
+  @ApiJsonResponse({
+    type: CourierResponseDto,
+    isArray: true,
+    extraModels: [AdminOrderUserResponseDto],
+  })
   @HttpCode(HttpStatus.OK)
   async findAll(@Query() filter: GetCourierDto, @GetUser() user: User) {
     return await this.service.findAll(user, filter);
@@ -64,6 +76,11 @@ export class CourierController {
     explode: true,
   })
   @CheckPermission({ permissionSymbol: 'ecommerce.admin.couriers.getall' })
+  @ApiJsonResponse({
+    type: CourierV2ResponseDto,
+    isArray: true,
+    extraModels: [AdminOrderUserResponseDto, AdminOrderVendorResponseDto],
+  })
   @HttpCode(HttpStatus.OK)
   async findAllV2(@Query() filter: GetCourierDto, @GetUser() user: User) {
     return await this.service.findAllV2(user, filter);
@@ -74,6 +91,10 @@ export class CourierController {
   @ApiOperation({ description: 'show courier by given id' })
   @CheckPermission({ permissionSymbol: 'ecommerce.admin.couriers.getone' })
   @Get('/:id')
+  @ApiJsonResponse({
+    type: CourierResponseDto,
+    extraModels: [AdminOrderUserResponseDto],
+  })
   @HttpCode(HttpStatus.OK)
   async findById(@Param('id') entityId: number, @GetUser() user: User) {
     return await this.service.findById(entityId, user);
@@ -85,6 +106,10 @@ export class CourierController {
   @ApiOperation({ description: 'show courier by given id' })
   @CheckPermission({ permissionSymbol: 'ecommerce.admin.couriers.getone' })
   @Get('/:id')
+  @ApiJsonResponse({
+    type: CourierV2ResponseDto,
+    extraModels: [AdminOrderUserResponseDto, AdminOrderVendorResponseDto],
+  })
   @HttpCode(HttpStatus.OK)
   async findByIdV2(@Param('id') entityId: number, @GetUser() user: User) {
     return await this.service.findByIdV2(entityId, user);
@@ -95,6 +120,7 @@ export class CourierController {
   @ApiOperation({ description: 'create courier by admin' })
   @CheckPermission({ permissionSymbol: 'ecommerce.admin.couriers.create' })
   @Post('/')
+  @ApiJsonResponse({ type: CourierResponseDto })
   @HttpCode(HttpStatus.CREATED)
   async create(@GetUser() user: User, @Body() dto: CourierDto) {
     return await this.service.create(user, dto);
@@ -106,6 +132,7 @@ export class CourierController {
   @ApiOperation({ description: 'create courier by admin' })
   @CheckPermission({ permissionSymbol: 'ecommerce.admin.couriers.create' })
   @Post('/')
+  @ApiJsonResponse({ type: CourierV2ResponseDto })
   @HttpCode(HttpStatus.CREATED)
   async createV2(@GetUser() user: User, @Body() dto: CourierV2Dto) {
     return await this.service.createV2(user, dto);
@@ -116,6 +143,10 @@ export class CourierController {
   @ApiOperation({ description: 'delete courier by admin' })
   @Delete('/:id')
   @CheckPermission({ permissionSymbol: 'ecommerce.admin.couriers.delete' })
+  @ApiJsonResponse({
+    type: CourierResponseDto,
+    extraModels: [AdminOrderUserResponseDto],
+  })
   @HttpCode(HttpStatus.OK)
   async deleteById(@Param('id') entityId: number) {
     return await this.service.deleteById(entityId);

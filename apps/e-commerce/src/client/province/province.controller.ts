@@ -10,8 +10,10 @@ import {
 import { JsonResponseTransformInterceptor } from '@rahino/response/interceptor';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { ProvinceService } from './province.service';
+import { ProvinceResponseDto } from './dto';
 import { OptionalJwtGuard } from '@rahino/auth';
 import { OptionalSessionGuard } from '../../user/session/guard';
+import { ApiJsonResponse } from '@rahino/response';
 
 @ApiTags('Provinces')
 @Controller({
@@ -25,6 +27,7 @@ export class ProvinceController {
   // public url
   @UseGuards(OptionalJwtGuard, OptionalSessionGuard)
   @ApiOperation({ description: 'show all provinces' })
+  @ApiJsonResponse({ type: ProvinceResponseDto, isArray: true })
   @Get('/')
   @HttpCode(HttpStatus.OK)
   async findAll() {

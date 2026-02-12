@@ -7,8 +7,10 @@ import {
 } from '@nestjs/common';
 
 import { JsonResponseTransformInterceptor } from '@rahino/response/interceptor';
+import { ApiJsonResponse } from '@rahino/response';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { QuestionService } from './question.service';
+import { GuaranteeClientQuestionListResponseDto } from './dto';
 
 @ApiTags('GS-Client-Questions')
 @Controller({
@@ -22,6 +24,7 @@ export class QuestionController {
   @ApiOperation({ description: 'show all questions' })
   @Get('/')
   @HttpCode(HttpStatus.OK)
+  @ApiJsonResponse({ type: GuaranteeClientQuestionListResponseDto })
   async findAll() {
     return await this.service.findAll();
   }

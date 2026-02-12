@@ -11,6 +11,8 @@ import { JsonResponseTransformInterceptor } from '@rahino/response/interceptor';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { DiscountActionTypeService } from './discount-action-type.service';
 import { JwtGuard } from '@rahino/auth';
+import { ApiJsonResponse } from '@rahino/response';
+import { DiscountActionTypeResponseDto } from './dto';
 
 @ApiTags('Admin-DiscountActionTypes')
 @ApiBearerAuth()
@@ -25,6 +27,7 @@ export class DiscountActionTypeController {
 
   // public url
   @ApiOperation({ description: 'show all discount Action types' })
+  @ApiJsonResponse({ type: DiscountActionTypeResponseDto, isArray: true })
   @Get('/')
   @HttpCode(HttpStatus.OK)
   async findAll() {

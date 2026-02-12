@@ -20,8 +20,10 @@ import {
 import { Response } from 'express';
 
 import { JwtGuard } from '@rahino/auth';
+import { ApiJsonResponse } from '@rahino/response';
 import { TechnicalPersonReportService } from './technical-person-report.service';
 import { GetTechnicalPersonReportDto } from './dto';
+import { GuaranteeReportTechnicalPersonListResponseDto } from './dto';
 
 @ApiTags('GSReport-TechnicalPersonReport')
 @UseGuards(JwtGuard, PermissionGuard)
@@ -45,6 +47,7 @@ export class TechnicalPersonReportController {
     style: 'deepObject',
     explode: true,
   })
+  @ApiJsonResponse({ type: GuaranteeReportTechnicalPersonListResponseDto })
   @HttpCode(HttpStatus.OK)
   async findAll(@Query() filter: GetTechnicalPersonReportDto) {
     return await this.service.findAll(filter);

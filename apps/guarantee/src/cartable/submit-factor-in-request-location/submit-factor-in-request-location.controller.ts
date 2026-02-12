@@ -15,6 +15,8 @@ import { GetUser, JwtGuard } from '@rahino/auth';
 import { User } from '@rahino/database';
 import { SubmitFactorInRequestLocationService } from './submit-factor-in-request-location.service';
 import { SubmitFactorInRequestLocationDto } from './dto';
+import { ApiJsonResponse } from '@rahino/response';
+import { GuaranteeCartableSubmitFactorInRequestLocationResponseDto } from './dto';
 
 @ApiBearerAuth()
 @UseGuards(JwtGuard)
@@ -28,6 +30,9 @@ export class SubmitFactorInRequestLocationController {
   constructor(private service: SubmitFactorInRequestLocationService) {}
 
   @ApiOperation({ description: 'submit factor in request location' })
+  @ApiJsonResponse({
+    type: GuaranteeCartableSubmitFactorInRequestLocationResponseDto,
+  })
   @Post('/')
   @HttpCode(HttpStatus.OK)
   @UsePipes(new ValidationPipe({ transform: true }))

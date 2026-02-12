@@ -61,7 +61,7 @@ export class CartablePdfService {
     this.printer = new (PdfPrinter as any)(fonts);
   }
 
-  async generateRequestPdf(user: User, requestId: bigint): Promise<Buffer> {
+  async generateRequestPdf(user: User, requestId: number): Promise<Buffer> {
     const trackingFilter = new GetTrackingRequestExternalDto();
     (trackingFilter as any).requestId = requestId;
     (trackingFilter as any).limit = 1;
@@ -85,7 +85,7 @@ export class CartablePdfService {
     (historyFilter as any).sortOrder = 'ASC';
 
     const historyResponse = await this.historyService.findAll(
-      requestId,
+      BigInt(requestId),
       historyFilter as any,
     );
     const histories: HistoryOutputDto[] = historyResponse?.result ?? [];
@@ -94,7 +94,7 @@ export class CartablePdfService {
     try {
       const factorResponse =
         await this.factorRemainingService.findFactorDeatilAndRemainingAmount(
-          requestId,
+          Number(requestId),
         );
       if (factorResponse && factorResponse.result) {
         factorBlock = factorResponse.result;

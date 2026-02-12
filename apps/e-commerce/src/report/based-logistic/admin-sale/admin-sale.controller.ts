@@ -10,6 +10,7 @@ import {
 import { CheckPermission } from '@rahino/permission-checker/decorator';
 import { PermissionGuard } from '@rahino/permission-checker/guard';
 import { JsonResponseTransformInterceptor } from '@rahino/response/interceptor';
+import { ApiJsonResponse } from '@rahino/response';
 import {
   ApiBearerAuth,
   ApiOperation,
@@ -19,6 +20,10 @@ import {
 import { JwtGuard } from '@rahino/auth';
 import { BasedAdminSaleService } from './admin-sale.service';
 import { GetAdminSaleDto } from '../../admin-sale/dto';
+import {
+  BasedAdminSaleResponseDto,
+  BasedAdminSaleTotalResponseDto,
+} from './dto';
 
 @ApiTags('Report-AdminSales-BasedLogistic')
 @UseGuards(JwtGuard, PermissionGuard)
@@ -32,6 +37,10 @@ export class BasedAdminSaleController {
   constructor(private service: BasedAdminSaleService) {}
 
   @ApiOperation({ description: 'show all admin sales (based-logistic)' })
+  @ApiJsonResponse({
+    type: BasedAdminSaleResponseDto,
+    isArray: true,
+  })
   @CheckPermission({ permissionSymbol: 'ecommerce.report.adminsales.getall' })
   @Get('/')
   @ApiQuery({
@@ -46,6 +55,9 @@ export class BasedAdminSaleController {
   }
 
   @ApiOperation({ description: 'show total admin sales (based-logistic)' })
+  @ApiJsonResponse({
+    type: BasedAdminSaleTotalResponseDto,
+  })
   @CheckPermission({ permissionSymbol: 'ecommerce.report.adminsales.getall' })
   @Get('/total')
   @ApiQuery({

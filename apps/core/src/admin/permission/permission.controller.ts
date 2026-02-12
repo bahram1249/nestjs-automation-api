@@ -18,8 +18,13 @@ import {
   ApiQuery,
   ApiTags,
 } from '@nestjs/swagger';
-import { PermissionGetDto } from './dto';
+import {
+  PermissionGetDto,
+  AdminPermissionResponseDto,
+  PermissionGroupInfoResponseDto,
+} from './dto';
 import { JwtGuard } from '@rahino/auth';
+import { ApiJsonResponse } from '@rahino/response';
 
 @ApiTags('Admin-Permissions')
 @ApiBearerAuth()
@@ -32,6 +37,11 @@ import { JwtGuard } from '@rahino/auth';
 export class PermissionController {
   constructor(private service: PermissionService) {}
   @ApiOperation({ description: 'show all permissions' })
+  @ApiJsonResponse({
+    type: AdminPermissionResponseDto,
+    isArray: true,
+    extraModels: [PermissionGroupInfoResponseDto],
+  })
   @ApiQuery({
     type: PermissionGetDto,
   })
@@ -43,6 +53,10 @@ export class PermissionController {
   }
 
   @ApiOperation({ description: 'show permission by given id' })
+  @ApiJsonResponse({
+    type: AdminPermissionResponseDto,
+    extraModels: [PermissionGroupInfoResponseDto],
+  })
   @CheckPermission({ permissionSymbol: 'core.admin.permissions.getone' })
   @Get('/:id')
   @HttpCode(HttpStatus.OK)

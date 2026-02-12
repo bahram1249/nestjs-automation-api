@@ -24,7 +24,8 @@ import {
 
 import { JwtGuard, OptionalJwtGuard } from '@rahino/auth';
 import { ColorService } from './color.service';
-import { ColorDto, GetColorDto } from './dto';
+import { ColorDto, GetColorDto, ColorResponseDto } from './dto';
+import { ApiJsonResponse } from '@rahino/response';
 import { OptionalSessionGuard } from '../../user/session/guard';
 import { GetECSession } from 'apps/main/src/decorator';
 import { ECUserSession } from '@rahino/localdatabase/models';
@@ -41,6 +42,7 @@ export class ColorController {
   // public url
   @UseGuards(OptionalJwtGuard, OptionalSessionGuard)
   @ApiOperation({ description: 'show all colors' })
+  @ApiJsonResponse({ type: ColorResponseDto, isArray: true })
   @Get('/')
   @ApiQuery({
     name: 'filter',
@@ -60,6 +62,7 @@ export class ColorController {
   @ApiBearerAuth()
   @ApiOperation({ description: 'show color by given id' })
   @CheckPermission({ permissionSymbol: 'ecommerce.colors.getone' })
+  @ApiJsonResponse({ type: ColorResponseDto })
   @Get('/:id')
   @HttpCode(HttpStatus.OK)
   async findById(@Param('id') entityId: number) {
@@ -70,6 +73,7 @@ export class ColorController {
   @ApiBearerAuth()
   @ApiOperation({ description: 'create color by admin' })
   @CheckPermission({ permissionSymbol: 'ecommerce.colors.create' })
+  @ApiJsonResponse({ type: ColorResponseDto, status: 201 })
   @Post('/')
   @HttpCode(HttpStatus.CREATED)
   async create(@Body() dto: ColorDto) {
@@ -79,6 +83,7 @@ export class ColorController {
   @UseGuards(JwtGuard, PermissionGuard)
   @ApiBearerAuth()
   @ApiOperation({ description: 'update color by admin' })
+  @ApiJsonResponse({ type: ColorResponseDto })
   @Put('/:id')
   @CheckPermission({ permissionSymbol: 'ecommerce.colors.update' })
   @HttpCode(HttpStatus.OK)
@@ -89,6 +94,7 @@ export class ColorController {
   @UseGuards(JwtGuard, PermissionGuard)
   @ApiBearerAuth()
   @ApiOperation({ description: 'delete color by admin' })
+  @ApiJsonResponse({ type: ColorResponseDto })
   @Delete('/:id')
   @CheckPermission({ permissionSymbol: 'ecommerce.colors.delete' })
   @HttpCode(HttpStatus.OK)

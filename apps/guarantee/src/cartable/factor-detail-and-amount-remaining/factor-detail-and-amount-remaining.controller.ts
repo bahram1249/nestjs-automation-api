@@ -11,6 +11,8 @@ import { JsonResponseTransformInterceptor } from '@rahino/response/interceptor';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { JwtGuard } from '@rahino/auth';
 import { GSFactorDeatilAndRemainingAmountService } from './factor-detail-and-amount-remaining.service';
+import { ApiJsonResponse } from '@rahino/response';
+import { GuaranteeCartableFactorDetailAndAmountRemainingResponseDto } from './dto';
 
 @ApiBearerAuth()
 @UseGuards(JwtGuard)
@@ -24,9 +26,12 @@ export class GsFactorDetailAndReaminingAmountController {
   constructor(private service: GSFactorDeatilAndRemainingAmountService) {}
 
   @ApiOperation({ description: 'find remaining amount for a given request' })
+  @ApiJsonResponse({
+    type: GuaranteeCartableFactorDetailAndAmountRemainingResponseDto,
+  })
   @Get('/request/:requestId')
   @HttpCode(HttpStatus.OK)
-  async findRemainingAmount(@Param('requestId') requestId: bigint) {
+  async findRemainingAmount(@Param('requestId') requestId: number) {
     return await this.service.findFactorDeatilAndRemainingAmount(requestId);
   }
 }

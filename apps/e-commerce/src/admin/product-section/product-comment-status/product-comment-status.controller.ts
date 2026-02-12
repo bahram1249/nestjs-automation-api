@@ -22,6 +22,8 @@ import { JsonResponseTransformInterceptor } from '@rahino/response/interceptor';
 import { PermissionGuard } from '@rahino/permission-checker/guard';
 import { CheckPermission } from '@rahino/permission-checker/decorator';
 import { ProductCommentStatusService } from './product-comment-status.service';
+import { ApiJsonResponse } from '@rahino/response';
+import { ProductCommentStatusResponseDto } from './dto';
 
 @ApiTags('product comment status')
 @UseGuards(JwtGuard, PermissionGuard)
@@ -46,6 +48,10 @@ export class ProductCommentStatusController {
     style: 'deepObject',
     explode: true,
   })
+  @ApiJsonResponse({
+    type: ProductCommentStatusResponseDto,
+    isArray: true,
+  })
   @HttpCode(HttpStatus.OK)
   async findAll(@GetUser() user: User, @Query() filter: ListFilter) {
     return await this.service.findAll(user, filter);
@@ -56,6 +62,9 @@ export class ProductCommentStatusController {
   })
   @ApiOperation({ description: 'show product comment status by given id' })
   @Get('/:id')
+  @ApiJsonResponse({
+    type: ProductCommentStatusResponseDto,
+  })
   @HttpCode(HttpStatus.OK)
   async findById(@GetUser() user: User, @Param('id') entityId: number) {
     return await this.service.findById(user, entityId);

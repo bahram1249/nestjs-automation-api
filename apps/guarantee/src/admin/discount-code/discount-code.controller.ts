@@ -22,8 +22,14 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { JwtGuard } from '@rahino/auth';
+import { ApiJsonResponse } from '@rahino/response';
 import { DiscountCodeService } from './discount-code.service';
-import { GetDiscountCodeDto, DiscountCodeDto } from './dto';
+import {
+  GetDiscountCodeDto,
+  DiscountCodeDto,
+  GuaranteeAdminDiscountCodeListResponseDto,
+  GuaranteeAdminDiscountCodeSingleResponseDto,
+} from './dto';
 
 @ApiBearerAuth()
 @UseGuards(JwtGuard, PermissionGuard)
@@ -45,6 +51,7 @@ export class DiscountCodeController {
     style: 'deepObject',
     explode: true,
   })
+  @ApiJsonResponse({ type: GuaranteeAdminDiscountCodeListResponseDto })
   @HttpCode(HttpStatus.OK)
   async findAll(@Query() filter: GetDiscountCodeDto) {
     return await this.service.findAll(filter);
@@ -53,6 +60,7 @@ export class DiscountCodeController {
   @ApiOperation({ description: 'show discount code by given id' })
   @CheckPermission({ permissionSymbol: 'gs.admin.discountcodes.getone' })
   @Get('/:id')
+  @ApiJsonResponse({ type: GuaranteeAdminDiscountCodeSingleResponseDto })
   @HttpCode(HttpStatus.OK)
   async findById(@Param('id') entityId: bigint) {
     return await this.service.findById(entityId);
@@ -61,6 +69,10 @@ export class DiscountCodeController {
   @ApiOperation({ description: 'create discount code' })
   @CheckPermission({ permissionSymbol: 'gs.admin.discountcodes.create' })
   @Post('/')
+  @ApiJsonResponse({
+    type: GuaranteeAdminDiscountCodeSingleResponseDto,
+    status: 201,
+  })
   @HttpCode(HttpStatus.CREATED)
   async create(@Body() dto: DiscountCodeDto) {
     return await this.service.create(dto);
@@ -69,6 +81,7 @@ export class DiscountCodeController {
   @ApiOperation({ description: 'update discount code by given id' })
   @CheckPermission({ permissionSymbol: 'gs.admin.discountcodes.update' })
   @Put('/:id')
+  @ApiJsonResponse({ type: GuaranteeAdminDiscountCodeSingleResponseDto })
   @HttpCode(HttpStatus.OK)
   async updateById(@Param('id') id: bigint, @Body() dto: DiscountCodeDto) {
     return await this.service.updateById(id, dto);
@@ -77,6 +90,7 @@ export class DiscountCodeController {
   @ApiOperation({ description: 'delete discount code by id' })
   @CheckPermission({ permissionSymbol: 'gs.admin.discountcodes.delete' })
   @Delete('/:id')
+  @ApiJsonResponse({ type: GuaranteeAdminDiscountCodeSingleResponseDto })
   @HttpCode(HttpStatus.OK)
   async deleteById(@Param('id') entityId: bigint) {
     return await this.service.deleteById(entityId);

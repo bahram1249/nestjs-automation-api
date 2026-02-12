@@ -16,8 +16,9 @@ import {
 } from '@nestjs/swagger';
 
 import { JwtGuard } from '@rahino/auth';
+import { ApiJsonResponse } from '@rahino/response';
 import { VariantService } from './variant.service';
-import { GetVariantDto } from './dto';
+import { GetVariantDto, GuaranteeClientVariantListResponseDto } from './dto';
 
 @ApiBearerAuth()
 @UseGuards(JwtGuard)
@@ -30,7 +31,7 @@ import { GetVariantDto } from './dto';
 export class VariantController {
   constructor(private service: VariantService) {}
 
-  @ApiOperation({ description: 'show all brands' })
+  @ApiOperation({ description: 'show all variants' })
   @Get('/')
   @ApiQuery({
     name: 'filter',
@@ -39,6 +40,7 @@ export class VariantController {
     explode: true,
   })
   @HttpCode(HttpStatus.OK)
+  @ApiJsonResponse({ type: GuaranteeClientVariantListResponseDto })
   async findAll(@Query() filter: GetVariantDto) {
     return await this.service.findAll(filter);
   }

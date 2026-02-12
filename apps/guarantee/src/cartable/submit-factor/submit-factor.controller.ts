@@ -10,11 +10,15 @@ import {
   ValidationPipe,
 } from '@nestjs/common';
 import { JsonResponseTransformInterceptor } from '@rahino/response/interceptor';
+import { ApiJsonResponse } from '@rahino/response';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { GetUser, JwtGuard } from '@rahino/auth';
 import { User } from '@rahino/database';
 import { SubmitFactorService } from './submit-factor.service';
-import { SubmitFactorDto } from './dto';
+import {
+  SubmitFactorDto,
+  GuaranteeCartableSubmitFactorResponseDto,
+} from './dto';
 
 @ApiBearerAuth()
 @UseGuards(JwtGuard)
@@ -29,6 +33,7 @@ export class SubmitFactorController {
 
   @ApiOperation({ description: 'submit factor' })
   @Post('/')
+  @ApiJsonResponse({ type: GuaranteeCartableSubmitFactorResponseDto })
   @HttpCode(HttpStatus.OK)
   @UsePipes(new ValidationPipe({ transform: true }))
   async traverse(@GetUser() user: User, @Body() dto: SubmitFactorDto) {

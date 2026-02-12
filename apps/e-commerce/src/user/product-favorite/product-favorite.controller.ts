@@ -21,8 +21,15 @@ import {
 } from '@nestjs/swagger';
 import { JwtGuard } from '@rahino/auth';
 import { ProductFavoriteService } from './product-favorite.service';
-import { ProductFavoriteDto, GetProductFavoriteDto } from './dto';
+import {
+  ProductFavoriteDto,
+  GetProductFavoriteDto,
+  ProductFavoriteResponseDto,
+  ProductFavoriteStatusResponseDto,
+  ProductFavoriteActionResponseDto,
+} from './dto';
 import { GetUser } from '@rahino/auth';
+import { ApiJsonResponse } from '@rahino/response';
 import { User } from '@rahino/database';
 import { OptionalSessionGuard } from '../session/guard';
 
@@ -38,6 +45,7 @@ export class FavoriteController {
   constructor(private service: ProductFavoriteService) {}
 
   @ApiOperation({ description: 'show favorite by given id' })
+  @ApiJsonResponse({ type: ProductFavoriteStatusResponseDto })
   @Get('/status/:productId')
   @HttpCode(HttpStatus.OK)
   async statusByProductId(
@@ -49,6 +57,7 @@ export class FavoriteController {
 
   // public url
   @ApiOperation({ description: 'show all my favorites' })
+  @ApiJsonResponse({ type: ProductFavoriteResponseDto, isArray: true })
   @Get('/')
   @ApiQuery({
     name: 'filter',
@@ -62,6 +71,7 @@ export class FavoriteController {
   }
 
   @ApiOperation({ description: 'create favorite by user' })
+  @ApiJsonResponse({ type: ProductFavoriteActionResponseDto, status: 201 })
   @Post('/')
   @HttpCode(HttpStatus.CREATED)
   async create(@GetUser() user: User, @Body() dto: ProductFavoriteDto) {
@@ -69,6 +79,7 @@ export class FavoriteController {
   }
 
   @ApiOperation({ description: 'remove favorite by user' })
+  @ApiJsonResponse({ type: ProductFavoriteActionResponseDto })
   @Delete('/product/:productId')
   @HttpCode(HttpStatus.OK)
   async deleteById(

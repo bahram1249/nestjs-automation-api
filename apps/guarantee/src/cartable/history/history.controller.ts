@@ -17,7 +17,8 @@ import {
 } from '@nestjs/swagger';
 import { JwtGuard } from '@rahino/auth';
 import { HistoryService } from './history.service';
-import { GetHistoryDto } from './dto';
+import { GetHistoryDto, GuaranteeCartableHistoryListResponseDto } from './dto';
+import { ApiJsonResponse } from '@rahino/response';
 
 @ApiBearerAuth()
 @UseGuards(JwtGuard)
@@ -39,6 +40,7 @@ export class HistoryController {
     explode: true,
   })
   @HttpCode(HttpStatus.OK)
+  @ApiJsonResponse({ type: GuaranteeCartableHistoryListResponseDto })
   async findAll(
     @Param('requestId') requestId: bigint,
     @Query() filter: GetHistoryDto,

@@ -11,6 +11,8 @@ import { JsonResponseTransformInterceptor } from '@rahino/response/interceptor';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { EntityTypeSortService } from './entity-type-sort.service';
 import { JwtGuard } from '@rahino/auth';
+import { ApiJsonResponse } from '@rahino/response';
+import { EntityTypeSortResponseDto } from './dto';
 
 @ApiTags('Admin-EntityTypeSorts')
 @ApiBearerAuth()
@@ -26,6 +28,10 @@ export class EntityTypeSortController {
   // public url
   @ApiOperation({ description: 'show all entity type sorts' })
   @Get('/')
+  @ApiJsonResponse({
+    type: EntityTypeSortResponseDto,
+    isArray: true,
+  })
   @HttpCode(HttpStatus.OK)
   async findAll() {
     return await this.service.findAll();

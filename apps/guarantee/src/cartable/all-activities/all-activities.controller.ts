@@ -4,6 +4,8 @@ import { User } from '@rahino/database';
 import { AllActivitiesService } from './all-activities.service';
 import { GetUser, JwtGuard } from '@rahino/auth';
 import { JsonResponseTransformInterceptor } from '@rahino/response/interceptor';
+import { ApiJsonResponse } from '@rahino/response';
+import { GuaranteeCartableAllActivitiesResponseDto } from './dto';
 
 @UseGuards(JwtGuard)
 @ApiTags('GS-AllActivities')
@@ -18,6 +20,7 @@ export class AllActivitiesController {
   constructor(private readonly allActivitiesService: AllActivitiesService) {}
 
   @ApiOperation({ summary: 'Get all activities' })
+  @ApiJsonResponse({ type: GuaranteeCartableAllActivitiesResponseDto })
   @Get('/')
   async findAll(@GetUser() user: User) {
     return await this.allActivitiesService.findAll(user);

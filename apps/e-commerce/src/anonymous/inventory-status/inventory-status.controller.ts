@@ -19,6 +19,8 @@ import { User } from '@rahino/database';
 import { ListFilter } from '@rahino/query-filter';
 import { JsonResponseTransformInterceptor } from '@rahino/response/interceptor';
 import { InventoryStatusService } from './inventory-status.service';
+import { ApiJsonResponse } from '@rahino/response';
+import { InventoryStatusResponseDto } from './dto';
 
 @ApiTags('anonymousInventoryStatuses')
 @ApiBearerAuth()
@@ -33,6 +35,7 @@ export class InventoryStatusController {
   // public url
 
   @ApiOperation({ description: 'show all inventory statuses' })
+  @ApiJsonResponse({ type: InventoryStatusResponseDto, isArray: true })
   @Get('/')
   @ApiQuery({
     name: 'filter',
@@ -46,6 +49,7 @@ export class InventoryStatusController {
   }
 
   @ApiOperation({ description: 'show inventory status by given id' })
+  @ApiJsonResponse({ type: InventoryStatusResponseDto, isArray: true })
   @Get('/:id')
   @HttpCode(HttpStatus.OK)
   async findById(@Param('id') entityId: number) {

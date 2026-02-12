@@ -16,6 +16,7 @@ import {
   UnprocessableEntityException,
 } from '@nestjs/common';
 import { JsonResponseTransformInterceptor } from '@rahino/response/interceptor';
+import { ApiJsonResponse } from '@rahino/response';
 import {
   ApiBearerAuth,
   ApiBody,
@@ -31,6 +32,9 @@ import {
   NormalRequestDto,
   OutOfWarrantyRequestDto,
   VipRequestDto,
+  GuaranteeClientRequestResponseDto,
+  GuaranteeClientRequestCreateResponseDto,
+  GuaranteeClientRequestImageUploadResponseDto,
 } from './dto';
 import { GetUser } from '@rahino/auth';
 import { User } from '@rahino/database';
@@ -57,6 +61,10 @@ export class RequestController {
     style: 'deepObject',
     explode: true,
   })
+  @ApiJsonResponse({
+    type: GuaranteeClientRequestResponseDto,
+    isArray: true,
+  })
   @HttpCode(HttpStatus.OK)
   async findAll(@GetUser() user: User, @Query() filter: GetRequestFilterDto) {
     return await this.service.findAll(user, filter);
@@ -65,6 +73,10 @@ export class RequestController {
   @UseInterceptors(JsonResponseTransformInterceptor)
   @ApiOperation({ description: 'create normal guarantee request' })
   @Post('/normalRequest')
+  @ApiJsonResponse({
+    type: GuaranteeClientRequestCreateResponseDto,
+    status: 201,
+  })
   @HttpCode(HttpStatus.CREATED)
   async createNormalGuaranteeRequest(
     @GetUser() user: User,
@@ -76,6 +88,10 @@ export class RequestController {
   @UseInterceptors(JsonResponseTransformInterceptor)
   @ApiOperation({ description: 'create vip guarantee request' })
   @Post('/vipRequest')
+  @ApiJsonResponse({
+    type: GuaranteeClientRequestCreateResponseDto,
+    status: 201,
+  })
   @HttpCode(HttpStatus.CREATED)
   async createVipGuaranteeRequest(
     @GetUser() user: User,
@@ -87,6 +103,10 @@ export class RequestController {
   @UseInterceptors(JsonResponseTransformInterceptor)
   @ApiOperation({ description: 'create out of warranty request' })
   @Post('/outOfWarrantyRequest')
+  @ApiJsonResponse({
+    type: GuaranteeClientRequestCreateResponseDto,
+    status: 201,
+  })
   @HttpCode(HttpStatus.CREATED)
   async createOutOfWarrantyRequest(
     @GetUser() user: User,
@@ -110,6 +130,7 @@ export class RequestController {
     },
   })
   @Post('/image')
+  @ApiJsonResponse({ type: GuaranteeClientRequestImageUploadResponseDto })
   @HttpCode(HttpStatus.OK)
   async uploadImage(
     @GetUser() user: User,

@@ -23,7 +23,12 @@ import {
 } from '@nestjs/swagger';
 import { JwtGuard } from '@rahino/auth';
 import { SelectedProductItemService } from './selected-product-item.service';
-import { SelectedProductItemDto, GetSelectedProductItemDto } from './dto';
+import {
+  SelectedProductItemDto,
+  GetSelectedProductItemDto,
+  SelectedProductItemResponseDto,
+} from './dto';
+import { ApiJsonResponse } from '@rahino/response';
 
 @ApiTags('Admin-SelectedProductItems')
 @Controller({
@@ -47,6 +52,10 @@ export class SelectedProductItemController {
     style: 'deepObject',
     explode: true,
   })
+  @ApiJsonResponse({
+    type: SelectedProductItemResponseDto,
+    isArray: true,
+  })
   @HttpCode(HttpStatus.OK)
   async findAll(@Query() filter: GetSelectedProductItemDto) {
     return await this.service.findAll(filter);
@@ -61,6 +70,10 @@ export class SelectedProductItemController {
   })
   @UsePipes(new ValidationPipe({ transform: true }))
   @Post('/')
+  @ApiJsonResponse({
+    type: SelectedProductItemResponseDto,
+    status: 201,
+  })
   @HttpCode(HttpStatus.CREATED)
   async create(@Body() dto: SelectedProductItemDto) {
     return await this.service.create(dto);
@@ -73,6 +86,9 @@ export class SelectedProductItemController {
   @Delete('/')
   @CheckPermission({
     permissionSymbol: 'ecommerce.selectedproductsitems.delete',
+  })
+  @ApiJsonResponse({
+    type: SelectedProductItemResponseDto,
   })
   @HttpCode(HttpStatus.OK)
   async deleteById(@Body() dto: SelectedProductItemDto) {

@@ -8,8 +8,9 @@ import {
 } from '@nestjs/common';
 import { JsonResponseTransformInterceptor } from '@rahino/response/interceptor';
 import { ApiOperation, ApiQuery, ApiTags } from '@nestjs/swagger';
+import { ApiJsonResponse } from '@rahino/response';
 import { FaqService } from './faq.service';
-import { GetFaqDto } from './dto';
+import { GetFaqDto, GuaranteeAnonymousFaqListResponseDto } from './dto';
 
 @ApiTags('GS-Faqs')
 @Controller({
@@ -29,6 +30,7 @@ export class FaqController {
     explode: true,
   })
   @HttpCode(HttpStatus.OK)
+  @ApiJsonResponse({ type: GuaranteeAnonymousFaqListResponseDto })
   async findAll(@Query() filter: GetFaqDto) {
     return await this.service.findAll(filter);
   }

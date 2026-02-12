@@ -20,6 +20,34 @@ import { User } from '@rahino/database';
 import { ListFilter } from '@rahino/query-filter';
 import { JsonResponseTransformInterceptor } from '@rahino/response/interceptor';
 import { ClientOrderService } from './client-order.service';
+import {
+  LogisticOrderResponseDto,
+  OrderStatusResponseDto,
+  PaymentResponseDto,
+  UserResponseDto,
+  AddressResponseDto,
+  ProvinceResponseDto,
+  CityResponseDto,
+  NeighborhoodResponseDto,
+  LogisticOrderGroupedResponseDto,
+  LogisticOrderGroupedDetailResponseDto,
+  LogisticResponseDto,
+  LogisticShipmentWayResponseDto,
+  OrderShipmentWayResponseDto,
+  LogisticSendingPeriodResponseDto,
+  ScheduleSendingTypeResponseDto,
+  LogisticWeeklyPeriodResponseDto,
+  LogisticWeeklyPeriodTimeResponseDto,
+  ClientOrderProductResponseDto,
+  InventoryResponseDto,
+  ColorResponseDto,
+  GuaranteeResponseDto,
+  GuaranteeMonthResponseDto,
+  ClientOrderVendorResponseDto,
+  DiscountResponseDto,
+  AttachmentResponseDto,
+} from './dto';
+import { ApiJsonResponse } from '@rahino/response';
 
 @ApiTags('Logistic-User-Orders')
 @UseGuards(JwtGuard)
@@ -34,6 +62,36 @@ export class ClientOrderController {
 
   // public url
   @ApiOperation({ description: 'show all orders' })
+  @ApiJsonResponse({
+    type: LogisticOrderResponseDto,
+    isArray: true,
+    extraModels: [
+      OrderStatusResponseDto,
+      PaymentResponseDto,
+      UserResponseDto,
+      AddressResponseDto,
+      ProvinceResponseDto,
+      CityResponseDto,
+      NeighborhoodResponseDto,
+      LogisticOrderGroupedResponseDto,
+      LogisticOrderGroupedDetailResponseDto,
+      LogisticResponseDto,
+      LogisticShipmentWayResponseDto,
+      OrderShipmentWayResponseDto,
+      LogisticSendingPeriodResponseDto,
+      ScheduleSendingTypeResponseDto,
+      LogisticWeeklyPeriodResponseDto,
+      LogisticWeeklyPeriodTimeResponseDto,
+      ClientOrderProductResponseDto,
+      InventoryResponseDto,
+      ColorResponseDto,
+      GuaranteeResponseDto,
+      GuaranteeMonthResponseDto,
+      ClientOrderVendorResponseDto,
+      DiscountResponseDto,
+      AttachmentResponseDto,
+    ],
+  })
   @Get('/')
   @ApiQuery({
     name: 'filter',
@@ -47,6 +105,35 @@ export class ClientOrderController {
   }
 
   @ApiOperation({ description: 'show order by given id' })
+  @ApiJsonResponse({
+    type: LogisticOrderResponseDto,
+    extraModels: [
+      OrderStatusResponseDto,
+      PaymentResponseDto,
+      UserResponseDto,
+      AddressResponseDto,
+      ProvinceResponseDto,
+      CityResponseDto,
+      NeighborhoodResponseDto,
+      LogisticOrderGroupedResponseDto,
+      LogisticOrderGroupedDetailResponseDto,
+      LogisticResponseDto,
+      LogisticShipmentWayResponseDto,
+      OrderShipmentWayResponseDto,
+      LogisticSendingPeriodResponseDto,
+      ScheduleSendingTypeResponseDto,
+      LogisticWeeklyPeriodResponseDto,
+      LogisticWeeklyPeriodTimeResponseDto,
+      ClientOrderProductResponseDto,
+      InventoryResponseDto,
+      ColorResponseDto,
+      GuaranteeResponseDto,
+      GuaranteeMonthResponseDto,
+      ClientOrderVendorResponseDto,
+      DiscountResponseDto,
+      AttachmentResponseDto,
+    ],
+  })
   @Get('/:id')
   @HttpCode(HttpStatus.OK)
   async findById(@GetUser() user: User, @Param('id') entityId: bigint) {

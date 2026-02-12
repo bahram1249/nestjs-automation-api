@@ -22,6 +22,8 @@ import { JsonResponseTransformInterceptor } from '@rahino/response/interceptor';
 import { PermissionGuard } from '@rahino/permission-checker/guard';
 import { CheckPermission } from '@rahino/permission-checker/decorator';
 import { OrderStatusService } from './order-status.service';
+import { ApiJsonResponse } from '@rahino/response';
+import { OrderStatusResponseDto } from './dto';
 
 @ApiTags('order statuses')
 @UseGuards(JwtGuard, PermissionGuard)
@@ -46,6 +48,7 @@ export class OrderStatusController {
     style: 'deepObject',
     explode: true,
   })
+  @ApiJsonResponse({ type: OrderStatusResponseDto, isArray: true })
   @HttpCode(HttpStatus.OK)
   async findAll(@GetUser() user: User, @Query() filter: ListFilter) {
     return await this.service.findAll(user, filter);
@@ -56,6 +59,7 @@ export class OrderStatusController {
   })
   @ApiOperation({ description: 'show order status by given id' })
   @Get('/:id')
+  @ApiJsonResponse({ type: OrderStatusResponseDto, isArray: true })
   @HttpCode(HttpStatus.OK)
   async findById(@GetUser() user: User, @Param('id') entityId: number) {
     return await this.service.findById(user, entityId);

@@ -9,6 +9,8 @@ import {
 import { JsonResponseTransformInterceptor } from '@rahino/response/interceptor';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { PublishStatusService } from './publish-status.service';
+import { ApiJsonResponse } from '@rahino/response';
+import { PublishStatusResponseDto } from './dto';
 
 @ApiTags('PublishStatuses')
 @Controller({
@@ -21,6 +23,7 @@ export class PublishStatusController {
 
   // public url
   @ApiOperation({ description: 'show all publish statuses' })
+  @ApiJsonResponse({ type: PublishStatusResponseDto, isArray: true })
   @Get('/')
   @HttpCode(HttpStatus.OK)
   async findAll() {

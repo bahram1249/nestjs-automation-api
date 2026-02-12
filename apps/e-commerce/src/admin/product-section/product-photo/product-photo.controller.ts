@@ -30,6 +30,8 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { imageOptions } from './file-options';
 import { GetUser } from '@rahino/auth';
 import { User } from '@rahino/database';
+import { ApiJsonResponse } from '@rahino/response';
+import { PhotoUploadResponseDto } from './dto';
 
 @ApiTags('ProductPhotos')
 @Controller({
@@ -43,6 +45,7 @@ export class ProductPhotoController {
   @UseGuards(JwtGuard, PermissionGuard)
   @ApiBearerAuth()
   @CheckPermission({ permissionSymbol: 'ecommerce.productphotos.uploadImage' })
+  @ApiJsonResponse({ type: PhotoUploadResponseDto })
   @UseInterceptors(FileInterceptor('file', imageOptions()))
   @ApiConsumes('multipart/form-data')
   @ApiBody({

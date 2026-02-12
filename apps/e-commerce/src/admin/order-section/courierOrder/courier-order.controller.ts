@@ -26,6 +26,27 @@ import { PermissionGuard } from '@rahino/permission-checker/guard';
 import { CheckPermission } from '@rahino/permission-checker/decorator';
 import { ListFilter } from '@rahino/query-filter';
 import { CourierProcessDto } from './dto';
+import { ApiJsonResponse } from '@rahino/response';
+import {
+  OrderResponseDto,
+  OrderDetailResponseDto,
+  AdminOrderUserResponseDto,
+  OrderStatusResponseDto,
+  OrderShipmentWayResponseDto,
+  AdminOrderAddressResponseDto,
+  AdminOrderVendorResponseDto,
+  AdminOrderProductResponseDto,
+  OrderDetailStatusResponseDto,
+  DiscountResponseDto,
+  ProvinceResponseDto,
+  CityResponseDto,
+  NeighborhoodResponseDto,
+  ColorResponseDto,
+  GuaranteeResponseDto,
+  GuaranteeMonthResponseDto,
+  InventoryResponseDto,
+  AttachmentResponseDto,
+} from '../dto';
 
 @ApiTags('Courier-Orders')
 @UseGuards(JwtGuard, PermissionGuard)
@@ -47,6 +68,29 @@ export class CourierOrderController {
     style: 'deepObject',
     explode: true,
   })
+  @ApiJsonResponse({
+    type: OrderResponseDto,
+    isArray: true,
+    extraModels: [
+      OrderDetailResponseDto,
+      AdminOrderUserResponseDto,
+      OrderStatusResponseDto,
+      OrderShipmentWayResponseDto,
+      AdminOrderAddressResponseDto,
+      AdminOrderVendorResponseDto,
+      AdminOrderProductResponseDto,
+      OrderDetailStatusResponseDto,
+      DiscountResponseDto,
+      ProvinceResponseDto,
+      CityResponseDto,
+      NeighborhoodResponseDto,
+      ColorResponseDto,
+      GuaranteeResponseDto,
+      GuaranteeMonthResponseDto,
+      InventoryResponseDto,
+      AttachmentResponseDto,
+    ],
+  })
   @HttpCode(HttpStatus.OK)
   async findAll(@GetUser() user: User, @Query() filter: ListFilter) {
     return await this.service.findAll(user, filter);
@@ -62,6 +106,29 @@ export class CourierOrderController {
     style: 'deepObject',
     explode: true,
   })
+  @ApiJsonResponse({
+    type: OrderResponseDto,
+    isArray: true,
+    extraModels: [
+      OrderDetailResponseDto,
+      AdminOrderUserResponseDto,
+      OrderStatusResponseDto,
+      OrderShipmentWayResponseDto,
+      AdminOrderAddressResponseDto,
+      AdminOrderVendorResponseDto,
+      AdminOrderProductResponseDto,
+      OrderDetailStatusResponseDto,
+      DiscountResponseDto,
+      ProvinceResponseDto,
+      CityResponseDto,
+      NeighborhoodResponseDto,
+      ColorResponseDto,
+      GuaranteeResponseDto,
+      GuaranteeMonthResponseDto,
+      InventoryResponseDto,
+      AttachmentResponseDto,
+    ],
+  })
   @HttpCode(HttpStatus.OK)
   async findAllV2(@GetUser() user: User, @Query() filter: ListFilter) {
     return await this.service.findAllV2(user, filter);
@@ -70,6 +137,28 @@ export class CourierOrderController {
   @ApiOperation({ description: 'show courier orders by given id' })
   @CheckPermission({ permissionSymbol: 'ecommerce.admin.courierorders.getone' })
   @Get('/:id')
+  @ApiJsonResponse({
+    type: OrderResponseDto,
+    extraModels: [
+      OrderDetailResponseDto,
+      AdminOrderUserResponseDto,
+      OrderStatusResponseDto,
+      OrderShipmentWayResponseDto,
+      AdminOrderAddressResponseDto,
+      AdminOrderVendorResponseDto,
+      AdminOrderProductResponseDto,
+      OrderDetailStatusResponseDto,
+      DiscountResponseDto,
+      ProvinceResponseDto,
+      CityResponseDto,
+      NeighborhoodResponseDto,
+      ColorResponseDto,
+      GuaranteeResponseDto,
+      GuaranteeMonthResponseDto,
+      InventoryResponseDto,
+      AttachmentResponseDto,
+    ],
+  })
   @HttpCode(HttpStatus.OK)
   async findById(@Param('id') entityId: bigint, @GetUser() user: User) {
     return await this.service.findById(entityId, user);
@@ -79,6 +168,28 @@ export class CourierOrderController {
   @ApiOperation({ description: 'show courier orders by given id' })
   @CheckPermission({ permissionSymbol: 'ecommerce.admin.courierorders.getone' })
   @Get('/:id')
+  @ApiJsonResponse({
+    type: OrderResponseDto,
+    extraModels: [
+      OrderDetailResponseDto,
+      AdminOrderUserResponseDto,
+      OrderStatusResponseDto,
+      OrderShipmentWayResponseDto,
+      AdminOrderAddressResponseDto,
+      AdminOrderVendorResponseDto,
+      AdminOrderProductResponseDto,
+      OrderDetailStatusResponseDto,
+      DiscountResponseDto,
+      ProvinceResponseDto,
+      CityResponseDto,
+      NeighborhoodResponseDto,
+      ColorResponseDto,
+      GuaranteeResponseDto,
+      GuaranteeMonthResponseDto,
+      InventoryResponseDto,
+      AttachmentResponseDto,
+    ],
+  })
   @HttpCode(HttpStatus.OK)
   async findByIdV2(@Param('id') entityId: bigint, @GetUser() user: User) {
     return await this.service.findByIdV2(entityId, user);
@@ -89,6 +200,15 @@ export class CourierOrderController {
     permissionSymbol: 'ecommerce.admin.courierorders.processcourier',
   })
   @Patch('/processCourier/:id')
+  @ApiJsonResponse({
+    type: OrderResponseDto,
+    extraModels: [
+      AdminOrderUserResponseDto,
+      OrderStatusResponseDto,
+      OrderShipmentWayResponseDto,
+      AdminOrderAddressResponseDto,
+    ],
+  })
   @HttpCode(HttpStatus.OK)
   async processCourier(
     @Param('id') orderId: bigint,
@@ -104,6 +224,15 @@ export class CourierOrderController {
     permissionSymbol: 'ecommerce.admin.courierorders.processcourier',
   })
   @Patch('/processCourier/:id')
+  @ApiJsonResponse({
+    type: OrderResponseDto,
+    extraModels: [
+      AdminOrderUserResponseDto,
+      OrderStatusResponseDto,
+      OrderShipmentWayResponseDto,
+      AdminOrderAddressResponseDto,
+    ],
+  })
   @HttpCode(HttpStatus.OK)
   async processCourierV2(
     @Param('id') orderId: bigint,

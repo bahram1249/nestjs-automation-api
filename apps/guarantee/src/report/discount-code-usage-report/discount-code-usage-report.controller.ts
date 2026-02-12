@@ -20,8 +20,10 @@ import {
 import { Response } from 'express';
 
 import { JwtGuard } from '@rahino/auth';
+import { ApiJsonResponse } from '@rahino/response';
 import { DiscountCodeUsageReportService } from './discount-code-usage-report.service';
-import { GetDiscountCodeUsageReportDto } from './dto/discount-code-usage-report.dto';
+import { GetDiscountCodeUsageReportDto } from './dto';
+import { GuaranteeReportDiscountCodeUsageListResponseDto } from './dto';
 
 @ApiTags('GSReport-DiscountCodeUsageReport')
 @UseGuards(JwtGuard, PermissionGuard)
@@ -45,6 +47,7 @@ export class DiscountCodeUsageReportController {
     style: 'deepObject',
     explode: true,
   })
+  @ApiJsonResponse({ type: GuaranteeReportDiscountCodeUsageListResponseDto })
   @HttpCode(HttpStatus.OK)
   async findAll(@Query() filter: GetDiscountCodeUsageReportDto) {
     return await this.service.findAll(filter);

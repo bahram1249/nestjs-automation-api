@@ -19,9 +19,14 @@ import {
 
 import { JwtGuard } from '@rahino/auth';
 import { VendorSaleService } from './vendor-sale.service';
-import { GetVendorSaleDto } from './dto';
+import {
+  GetVendorSaleDto,
+  VendorSaleResponseDto,
+  VendorSaleTotalResponseDto,
+} from './dto';
 import { GetUser } from '@rahino/auth';
 import { User } from '@rahino/database';
+import { ApiJsonResponse } from '@rahino/response';
 
 @ApiTags('Report-VendorSales')
 @UseGuards(JwtGuard, PermissionGuard)
@@ -35,6 +40,10 @@ export class VendorSaleController {
   constructor(private service: VendorSaleService) {}
 
   @ApiOperation({ description: 'show all vendor sales' })
+  @ApiJsonResponse({
+    type: VendorSaleResponseDto,
+    isArray: true,
+  })
   @CheckPermission({ permissionSymbol: 'ecommerce.report.vendorsales.getall' })
   @Get('/')
   @ApiQuery({
@@ -49,6 +58,9 @@ export class VendorSaleController {
   }
 
   @ApiOperation({ description: 'show total vendor sales' })
+  @ApiJsonResponse({
+    type: VendorSaleTotalResponseDto,
+  })
   @CheckPermission({ permissionSymbol: 'ecommerce.report.vendorsales.getall' })
   @Get('/total')
   @ApiQuery({

@@ -22,9 +22,14 @@ import { JwtGuard } from '@rahino/auth';
 import { OptionalSessionGuard } from '../../user/session/guard';
 import { ProductCommentService } from './product-comment.service';
 import { ListFilter } from '@rahino/query-filter';
-import { ProductCommentDto } from './dto';
+import {
+  ProductCommentDto,
+  ProductCommentResponseDto,
+  EntityTypeFactorListResponseDto,
+} from './dto';
 import { GetUser } from '@rahino/auth';
 import { User } from '@rahino/database';
+import { ApiJsonResponse } from '@rahino/response';
 
 @ApiTags('Product-Comment')
 @UseInterceptors(JsonResponseTransformInterceptor)
@@ -39,6 +44,7 @@ export class ProductCommentController {
   // public url
 
   @ApiOperation({ description: 'show all possible factors' })
+  @ApiJsonResponse({ type: EntityTypeFactorListResponseDto, isArray: true })
   @Get('/possibleFactor/:productId')
   @HttpCode(HttpStatus.OK)
   async possibleFactors(@Param('productId') productId: bigint) {
@@ -47,6 +53,7 @@ export class ProductCommentController {
 
   // public url
   @ApiOperation({ description: 'show all product comments' })
+  @ApiJsonResponse({ type: ProductCommentResponseDto, isArray: true })
   @Get('/product/:id')
   @ApiQuery({
     name: 'filter',
@@ -62,6 +69,7 @@ export class ProductCommentController {
   @ApiBearerAuth()
   @UseGuards(JwtGuard)
   @ApiOperation({ description: 'create comment by user' })
+  @ApiJsonResponse({ type: ProductCommentResponseDto, status: 201 })
   @Post('/')
   @HttpCode(HttpStatus.CREATED)
   async create(@GetUser() user: User, @Body() dto: ProductCommentDto) {

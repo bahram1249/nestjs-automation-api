@@ -22,13 +22,18 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { diskStorage } from 'multer';
+import { ApiJsonResponse } from '@rahino/response';
 import { IrangsImportDataService } from './irangs-import-data.service';
 import { GetUser, JwtGuard } from '@rahino/auth';
 import { PermissionGuard } from '@rahino/permission-checker/guard';
 import { JsonResponseTransformInterceptor } from '@rahino/response/interceptor';
 import { CheckPermission } from '@rahino/permission-checker/decorator';
 import { User } from '@rahino/database';
-import { IrangsImportDataGetDto } from './dto';
+import {
+  IrangsImportDataGetDto,
+  GuaranteeAdminIrangsImportDataListResponseDto,
+  GuaranteeAdminIrangsImportDataUploadResponseDto,
+} from './dto';
 import { Response } from 'express';
 
 @ApiBearerAuth()
@@ -46,6 +51,7 @@ export class IrangsImportDataController {
     permissionSymbol: 'guarantee.admin.irangs-import-data.getall',
   })
   @Get()
+  @ApiJsonResponse({ type: GuaranteeAdminIrangsImportDataListResponseDto })
   async findAll(@Query() dto: IrangsImportDataGetDto) {
     return this.service.findAll(dto);
   }
@@ -74,6 +80,7 @@ export class IrangsImportDataController {
     }),
   )
   @Post('/upload')
+  @ApiJsonResponse({ type: GuaranteeAdminIrangsImportDataUploadResponseDto })
   async uploadFile(
     @UploadedFile(
       new ParseFilePipe({

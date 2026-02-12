@@ -15,9 +15,13 @@ import {
   ApiQuery,
   ApiTags,
 } from '@nestjs/swagger';
+import { ApiJsonResponse } from '@rahino/response';
 import { JwtGuard } from '@rahino/auth';
 import { CartableOrganizationService } from './organization.service';
-import { GetOrganizationDto } from './dto';
+import {
+  GetOrganizationDto,
+  GuaranteeCartableOrganizationResponseDto,
+} from './dto';
 
 @ApiBearerAuth()
 @UseGuards(JwtGuard)
@@ -38,6 +42,7 @@ export class OrganizationController {
     style: 'deepObject',
     explode: true,
   })
+  @ApiJsonResponse({ type: GuaranteeCartableOrganizationResponseDto })
   @HttpCode(HttpStatus.OK)
   async findAll(
     @Param('requestId') requestId: bigint,

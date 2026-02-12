@@ -6,7 +6,6 @@ import {
   IsDateString,
   IsBoolean,
 } from 'class-validator';
-import { Type } from 'class-transformer';
 
 export class RewardRuleDto {
   @AutoMap()
@@ -24,15 +23,13 @@ export class RewardRuleDto {
 
   @AutoMap()
   @IsOptional()
-  @Type(() => Date)
   @IsDateString()
-  public validFrom?: Date;
+  public validFrom?: string;
 
   @AutoMap()
   @IsOptional()
-  @Type(() => Date)
   @IsDateString()
-  public validUntil?: Date;
+  public validUntil?: string;
 
   @AutoMap()
   @IsBoolean()

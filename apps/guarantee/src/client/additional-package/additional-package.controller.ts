@@ -9,6 +9,7 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { JsonResponseTransformInterceptor } from '@rahino/response/interceptor';
+import { ApiJsonResponse } from '@rahino/response';
 import {
   ApiBearerAuth,
   ApiOperation,
@@ -17,7 +18,10 @@ import {
 } from '@nestjs/swagger';
 import { JwtGuard } from '@rahino/auth';
 import { AdditionalPackageService } from './additional-package.service';
-import { GetAdditionalPackageDto } from './dto';
+import {
+  GetAdditionalPackageDto,
+  GuaranteeClientAdditionalPackageResponseDto,
+} from './dto';
 
 @ApiBearerAuth()
 @UseGuards(JwtGuard)
@@ -38,6 +42,10 @@ export class AdditionalPackageController {
     style: 'deepObject',
     explode: true,
   })
+  @ApiJsonResponse({
+    type: GuaranteeClientAdditionalPackageResponseDto,
+    isArray: true,
+  })
   @HttpCode(HttpStatus.OK)
   async findAll(@Query() filter: GetAdditionalPackageDto) {
     return await this.service.findAll(filter);
@@ -45,6 +53,7 @@ export class AdditionalPackageController {
 
   @ApiOperation({ description: 'show additional package by given id' })
   @Get('/:id')
+  @ApiJsonResponse({ type: GuaranteeClientAdditionalPackageResponseDto })
   @HttpCode(HttpStatus.OK)
   async findById(@Param('id') entityId: number) {
     return await this.service.findById(entityId);

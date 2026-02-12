@@ -15,6 +15,7 @@ import {
 import { CheckPermission } from '@rahino/permission-checker/decorator';
 import { PermissionGuard } from '@rahino/permission-checker/guard';
 import { JsonResponseTransformInterceptor } from '@rahino/response/interceptor';
+import { ApiJsonResponse } from '@rahino/response';
 import {
   ApiBearerAuth,
   ApiOperation,
@@ -24,7 +25,7 @@ import {
 
 import { JwtGuard } from '@rahino/auth';
 import { FaqService } from './faq.service';
-import { GetFaqDto, FaqDto } from './dto';
+import { GetFaqDto, FaqDto, GuaranteeAdminFaqResponseDto } from './dto';
 
 @ApiBearerAuth()
 @UseGuards(JwtGuard, PermissionGuard)
@@ -46,6 +47,11 @@ export class FaqController {
     style: 'deepObject',
     explode: true,
   })
+  @ApiJsonResponse({
+    type: GuaranteeAdminFaqResponseDto,
+    isArray: true,
+    description: 'List of FAQs retrieved successfully',
+  })
   @HttpCode(HttpStatus.OK)
   async findAll(@Query() filter: GetFaqDto) {
     return await this.service.findAll(filter);
@@ -54,6 +60,10 @@ export class FaqController {
   @ApiOperation({ description: 'show faq by given id' })
   @CheckPermission({ permissionSymbol: 'gs.admin.faqs.getone' })
   @Get('/:id')
+  @ApiJsonResponse({
+    type: GuaranteeAdminFaqResponseDto,
+    description: 'FAQ retrieved successfully',
+  })
   @HttpCode(HttpStatus.OK)
   async findById(@Param('id') entityId: number) {
     return await this.service.findById(entityId);
@@ -62,6 +72,11 @@ export class FaqController {
   @ApiOperation({ description: 'create faq' })
   @CheckPermission({ permissionSymbol: 'gs.admin.faqs.create' })
   @Post('/')
+  @ApiJsonResponse({
+    type: GuaranteeAdminFaqResponseDto,
+    status: 201,
+    description: 'FAQ created successfully',
+  })
   @HttpCode(HttpStatus.CREATED)
   async create(@Body() dto: FaqDto) {
     return await this.service.create(dto);
@@ -70,6 +85,10 @@ export class FaqController {
   @ApiOperation({ description: 'update faq by given id' })
   @CheckPermission({ permissionSymbol: 'gs.admin.faqs.update' })
   @Put('/:id')
+  @ApiJsonResponse({
+    type: GuaranteeAdminFaqResponseDto,
+    description: 'FAQ updated successfully',
+  })
   @HttpCode(HttpStatus.OK)
   async updateById(@Param('id') id: number, @Body() dto: FaqDto) {
     return await this.service.updateById(id, dto);
@@ -78,6 +97,10 @@ export class FaqController {
   @ApiOperation({ description: 'delete faq by id' })
   @CheckPermission({ permissionSymbol: 'gs.admin.faqs.delete' })
   @Delete('/:id')
+  @ApiJsonResponse({
+    type: GuaranteeAdminFaqResponseDto,
+    description: 'FAQ deleted successfully',
+  })
   @HttpCode(HttpStatus.OK)
   async deleteById(@Param('id') entityId: number) {
     return await this.service.deleteById(entityId);

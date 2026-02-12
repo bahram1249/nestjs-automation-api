@@ -22,8 +22,9 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { ListFilter } from '@rahino/query-filter/types';
-import { UserDto } from './dto';
+import { UserDto, UserResponseDto, UserRoleResponseDto } from './dto';
 import { JwtGuard } from '@rahino/auth';
+import { ApiJsonResponse } from '@rahino/response';
 
 @ApiTags('Admin-Users')
 @ApiBearerAuth()
@@ -36,6 +37,11 @@ import { JwtGuard } from '@rahino/auth';
 export class UserController {
   constructor(private service: UserService) {}
   @ApiOperation({ description: 'show all users' })
+  @ApiJsonResponse({
+    type: UserResponseDto,
+    isArray: true,
+    extraModels: [UserRoleResponseDto],
+  })
   @ApiQuery({
     type: ListFilter,
   })
@@ -47,6 +53,10 @@ export class UserController {
   }
 
   @ApiOperation({ description: 'show user by given id' })
+  @ApiJsonResponse({
+    type: UserResponseDto,
+    extraModels: [UserRoleResponseDto],
+  })
   @CheckPermission({ permissionSymbol: 'core.admin.users.getone' })
   @Get('/:id')
   @HttpCode(HttpStatus.OK)
@@ -54,6 +64,11 @@ export class UserController {
     return await this.service.findById(userId);
   }
   @ApiOperation({ description: 'create user by admin' })
+  @ApiJsonResponse({
+    type: UserResponseDto,
+    status: 201,
+    extraModels: [UserRoleResponseDto],
+  })
   @CheckPermission({ permissionSymbol: 'core.admin.users.create' })
   @Post('/')
   @HttpCode(HttpStatus.CREATED)
@@ -62,6 +77,10 @@ export class UserController {
   }
 
   @ApiOperation({ description: 'update user by admin' })
+  @ApiJsonResponse({
+    type: UserResponseDto,
+    extraModels: [UserRoleResponseDto],
+  })
   @Put('/:id')
   @CheckPermission({ permissionSymbol: 'core.admin.users.update' })
   @HttpCode(HttpStatus.OK)

@@ -12,6 +12,7 @@ import {
 import { CheckPermission } from '@rahino/permission-checker/decorator';
 import { PermissionGuard } from '@rahino/permission-checker/guard';
 import { JsonResponseTransformInterceptor } from '@rahino/response/interceptor';
+import { ApiJsonResponse } from '@rahino/response';
 import {
   ApiBearerAuth,
   ApiOperation,
@@ -20,7 +21,10 @@ import {
 } from '@nestjs/swagger';
 import { JwtGuard } from '@rahino/auth';
 import { SubscriptionService } from './subscription.service';
-import { GetSubscriptionDto } from './dto';
+import {
+  GetSubscriptionDto,
+  GuaranteeAdminSubscriptionResponseDto,
+} from './dto';
 import { Response } from 'express';
 
 @ApiBearerAuth()
@@ -43,6 +47,10 @@ export class SubscriptionController {
     style: 'deepObject',
     explode: true,
   })
+  @ApiJsonResponse({
+    type: GuaranteeAdminSubscriptionResponseDto,
+    isArray: true,
+  })
   @HttpCode(HttpStatus.OK)
   async findAll(@Query() filter: GetSubscriptionDto) {
     return await this.service.findAll(filter);
@@ -60,6 +68,7 @@ export class SubscriptionController {
   @ApiOperation({ description: 'show subscription by given id' })
   @CheckPermission({ permissionSymbol: 'gs.admin.subscriptions.getone' })
   @Get('/:id')
+  @ApiJsonResponse({ type: GuaranteeAdminSubscriptionResponseDto })
   @HttpCode(HttpStatus.OK)
   async findById(@Param('id') entityId: number) {
     return await this.service.findById(entityId);

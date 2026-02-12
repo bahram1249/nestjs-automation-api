@@ -15,10 +15,15 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { JsonResponseTransformInterceptor } from '@rahino/response/interceptor';
+import { ApiJsonResponse } from '@rahino/response';
 import { JwtGuard } from '@rahino/auth';
 import { Request } from 'express';
 import { BasedCourierReportService } from './courier-report.service';
 import { GetCourierReportDto } from '../../courier/dto';
+import {
+  BasedCourierReportResponseDto,
+  BasedCourierReportTotalResponseDto,
+} from './dto';
 
 @ApiTags('Report-Couriers-BasedLogistic')
 @UseGuards(JwtGuard)
@@ -32,6 +37,10 @@ export class BasedCourierReportController {
   constructor(private readonly service: BasedCourierReportService) {}
 
   @ApiOperation({ description: 'show all couriers report (based-logistic)' })
+  @ApiJsonResponse({
+    type: BasedCourierReportResponseDto,
+    isArray: true,
+  })
   @Get('/')
   @ApiQuery({
     name: 'filter',
@@ -45,6 +54,9 @@ export class BasedCourierReportController {
   }
 
   @ApiOperation({ description: 'show total courier report (based-logistic)' })
+  @ApiJsonResponse({
+    type: BasedCourierReportTotalResponseDto,
+  })
   @Get('/total')
   @ApiQuery({
     name: 'filter',

@@ -10,9 +10,13 @@ import {
 import { JsonResponseTransformInterceptor } from '@rahino/response/interceptor';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { GetUser, JwtGuard } from '@rahino/auth';
-import { PickOrganizationDto } from './dto';
+import {
+  PickOrganizationDto,
+  GuaranteeCartablePickOrganizationResponseDto,
+} from './dto';
 import { User } from '@rahino/database';
 import { PickOrganizationService } from './pick-organization.service';
+import { ApiJsonResponse } from '@rahino/response';
 
 @ApiBearerAuth()
 @UseGuards(JwtGuard)
@@ -28,6 +32,7 @@ export class PickOrganizationController {
   @ApiOperation({ description: 'set an organization to request' })
   @Post('/')
   @HttpCode(HttpStatus.OK)
+  @ApiJsonResponse({ type: GuaranteeCartablePickOrganizationResponseDto })
   async traverse(@GetUser() user: User, @Body() dto: PickOrganizationDto) {
     return await this.service.traverse(user, dto);
   }

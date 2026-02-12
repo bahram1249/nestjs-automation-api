@@ -13,6 +13,8 @@ import { PermissionService } from './permission.service';
 import { User } from '@rahino/database';
 import { JwtGuard } from '@rahino/auth';
 import { GetUser } from '@rahino/auth';
+import { PermissionAccessResponseDto } from './dto';
+import { ApiJsonResponse } from '@rahino/response';
 
 @ApiTags('User-Permissions')
 @ApiBearerAuth()
@@ -26,6 +28,7 @@ export class PermissionController {
   constructor(private service: PermissionService) {}
 
   @ApiOperation({ description: 'isAccess to this permissions' })
+  @ApiJsonResponse({ type: PermissionAccessResponseDto })
   @Get('/isAccess/:permissionSymbol')
   @HttpCode(HttpStatus.OK)
   async findOne(

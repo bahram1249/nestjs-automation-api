@@ -18,6 +18,8 @@ import {
 import { JwtGuard } from '@rahino/auth';
 import { NotificationService } from './notification.service';
 import { ListFilter } from '@rahino/query-filter';
+import { ApiJsonResponse } from '@rahino/response';
+import { NotificationResponseDto } from './dto';
 
 @ApiTags('User-Notifications')
 @UseGuards(JwtGuard)
@@ -31,6 +33,7 @@ export class NotificationController {
 
   @UseInterceptors(JsonResponseTransformInterceptor)
   @ApiOperation({ description: 'show all notifications' })
+  @ApiJsonResponse({ type: NotificationResponseDto, isArray: true })
   @Get('/')
   @ApiQuery({
     name: 'filter',
@@ -45,6 +48,7 @@ export class NotificationController {
 
   @UseInterceptors(JsonResponseTransformInterceptor)
   @ApiOperation({ description: 'show notification by given id' })
+  @ApiJsonResponse({ type: NotificationResponseDto })
   @Get('/:id')
   @HttpCode(HttpStatus.OK)
   async findById(@Param('id') entityId: bigint) {

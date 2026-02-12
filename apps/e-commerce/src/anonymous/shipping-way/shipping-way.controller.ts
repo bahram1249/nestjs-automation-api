@@ -14,6 +14,8 @@ import { ShippingWayService } from './shipping-way.service';
 import { OptionalJwtGuard } from '@rahino/auth';
 import { OptionalSessionGuard } from '@rahino/ecommerce/user/session/guard';
 import { ListFilter } from '@rahino/query-filter';
+import { ApiJsonResponse } from '@rahino/response';
+import { ShippingWayResponseDto } from './dto';
 
 @ApiTags('AnonymousShippingWays')
 @Controller({
@@ -27,6 +29,7 @@ export class ShippingWayController {
   // public url
   @UseGuards(OptionalJwtGuard, OptionalSessionGuard)
   @ApiOperation({ description: 'show all shipping ways' })
+  @ApiJsonResponse({ type: ShippingWayResponseDto, isArray: true })
   @Get('/')
   @ApiQuery({
     name: 'filter',

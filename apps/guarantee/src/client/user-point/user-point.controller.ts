@@ -8,6 +8,7 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { JsonResponseTransformInterceptor } from '@rahino/response/interceptor';
+import { ApiJsonResponse } from '@rahino/response';
 import {
   ApiBearerAuth,
   ApiOperation,
@@ -16,7 +17,7 @@ import {
 } from '@nestjs/swagger';
 import { GetUser, JwtGuard } from '@rahino/auth';
 import { UserPointService } from './user-point.service';
-import { GetUserPointDto } from './dto';
+import { GetUserPointDto, GuaranteeClientUserPointResponseDto } from './dto';
 import { User } from '@rahino/database';
 
 @ApiBearerAuth()
@@ -38,12 +39,18 @@ export class UserPointControler {
     style: 'deepObject',
     explode: true,
   })
+  @ApiJsonResponse({
+    type: GuaranteeClientUserPointResponseDto,
+    isArray: true,
+  })
   @HttpCode(HttpStatus.OK)
   async findAll(@GetUser() user: User, @Query() filter: GetUserPointDto) {
     return await this.service.findAll(user, filter);
   }
 
+  @ApiOperation({ description: 'get total user score' })
   @Get('/totalScore')
+  @ApiJsonResponse({ type: Number })
   @HttpCode(HttpStatus.OK)
   async totalScore(@GetUser() user: User) {
     return await this.service.totalScore(user);

@@ -11,7 +11,7 @@ export class IsOnlinePaymentService implements ConditionServiceImp {
   async check(dto: CheckConditionsDto): Promise<boolean> {
     const { result } =
       await this.factorDetailAndRemainingAmountService.getFactorDetailAndRemainingAmount(
-        dto.request.id,
+        Number(dto.request.id),
         dto.transaction,
       );
 

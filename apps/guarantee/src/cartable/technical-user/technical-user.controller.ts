@@ -15,9 +15,13 @@ import {
   ApiQuery,
   ApiTags,
 } from '@nestjs/swagger';
+import { ApiJsonResponse } from '@rahino/response';
 import { JwtGuard } from '@rahino/auth';
 import { CartableTechnicalUserService } from './technical-user.service';
-import { GetTechnicalUserDto } from './dto';
+import {
+  GetTechnicalUserDto,
+  GuaranteeCartableTechnicalUserResponseDto,
+} from './dto';
 
 @ApiBearerAuth()
 @UseGuards(JwtGuard)
@@ -38,6 +42,7 @@ export class TechnicalUserController {
     style: 'deepObject',
     explode: true,
   })
+  @ApiJsonResponse({ type: GuaranteeCartableTechnicalUserResponseDto })
   @HttpCode(HttpStatus.OK)
   async findAll(
     @Param('requestId') requestId: bigint,

@@ -28,7 +28,11 @@ import {
   GetShoppingCartDto,
   GetShoppingPriceDto,
   RemoveShoppingCartDto,
+  ShoppingCartResponseDto,
+  ShoppingCartPriceResponseDto,
+  ShoppingCartSuccessResponseDto,
 } from './dto';
+import { ApiJsonResponse } from '@rahino/response';
 
 @ApiTags('shoppingCarts')
 @ApiBearerAuth()
@@ -43,6 +47,11 @@ export class ShoppingCartController {
 
   @UseGuards(OptionalJwtGuard, SessionGuard)
   @ApiOperation({ description: 'show all shoppingCarts' })
+  @ApiJsonResponse({
+    type: ShoppingCartResponseDto,
+    isArray: true,
+    extraModels: [ShoppingCartResponseDto],
+  })
   @ApiQuery({
     name: 'filter',
     type: GetShoppingCartDto,
@@ -57,6 +66,7 @@ export class ShoppingCartController {
 
   @UseGuards(OptionalJwtGuard, SessionGuard)
   @ApiOperation({ description: 'get price of shoppingCart' })
+  @ApiJsonResponse({ type: ShoppingCartPriceResponseDto })
   @Post('/price')
   @HttpCode(HttpStatus.OK)
   async getShoppingCartPrice(
@@ -68,6 +78,7 @@ export class ShoppingCartController {
 
   @UseGuards(OptionalJwtGuard, SessionGuard)
   @ApiOperation({ description: 'add product to shoppingCart' })
+  @ApiJsonResponse({ type: ShoppingCartSuccessResponseDto })
   @Post('/')
   @HttpCode(HttpStatus.OK)
   async addProductShoppingCart(
@@ -79,6 +90,7 @@ export class ShoppingCartController {
 
   @UseGuards(OptionalJwtGuard, SessionGuard)
   @ApiOperation({ description: 'remove shoppingCart product' })
+  @ApiJsonResponse({ type: ShoppingCartSuccessResponseDto })
   @Delete('/shoppingCartProduct/:id')
   @HttpCode(HttpStatus.OK)
   async removeShoppingCartProduct(
@@ -93,6 +105,7 @@ export class ShoppingCartController {
 
   @UseGuards(OptionalJwtGuard, SessionGuard)
   @ApiOperation({ description: 'remove shoppingCart' })
+  @ApiJsonResponse({ type: ShoppingCartSuccessResponseDto })
   @Delete('/:id')
   @HttpCode(HttpStatus.OK)
   async removeShoppingCart(

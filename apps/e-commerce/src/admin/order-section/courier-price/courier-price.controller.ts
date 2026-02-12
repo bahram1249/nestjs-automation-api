@@ -13,8 +13,9 @@ import { JwtGuard } from '@rahino/auth';
 import { PermissionGuard } from '@rahino/permission-checker/guard';
 import { JsonResponseTransformInterceptor } from '@rahino/response/interceptor';
 import { CheckPermission } from '@rahino/permission-checker/decorator';
-import { CourierPriceDto } from './dto';
+import { CourierPriceDto, CourierPriceResponseDto } from './dto';
 import { CourierPriceService } from './courier-price.service';
+import { ApiJsonResponse } from '@rahino/response';
 
 @ApiTags('Admin-CourierPrices')
 @ApiBearerAuth()
@@ -31,6 +32,7 @@ export class CourierPriceController {
   @ApiOperation({ description: 'show all courier prices' })
   @Get('/price')
   @CheckPermission({ permissionSymbol: 'ecommerce.admin.courierprices.getone' })
+  @ApiJsonResponse({ type: CourierPriceResponseDto })
   @HttpCode(HttpStatus.OK)
   async findOne() {
     return await this.service.findOne();
@@ -41,6 +43,7 @@ export class CourierPriceController {
   @ApiOperation({ description: 'create courier price by admin' })
   @CheckPermission({ permissionSymbol: 'ecommerce.admin.courierprices.update' })
   @Put('/price')
+  @ApiJsonResponse({ type: CourierPriceResponseDto })
   @HttpCode(HttpStatus.OK)
   async create(@Body() dto: CourierPriceDto) {
     return await this.service.update(dto);

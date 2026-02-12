@@ -11,7 +11,12 @@ import { JsonResponseTransformInterceptor } from '@rahino/response/interceptor';
 import { ApiOperation, ApiQuery, ApiTags } from '@nestjs/swagger';
 
 import { SelectedProductService } from './selected-product.service';
-import { GetSelectedProductDto } from './dto';
+import {
+  GetSelectedProductDto,
+  SelectedProductResponseDto,
+  SelectedProductDetailResponseDto,
+} from './dto';
+import { ApiJsonResponse } from '@rahino/response';
 @ApiTags('User-SelectedProducts')
 @Controller({
   path: '/api/ecommerce/user/selectedProducts',
@@ -22,6 +27,7 @@ export class SelectedProductController {
 
   @UseInterceptors(JsonResponseTransformInterceptor)
   @ApiOperation({ description: 'show all selected products' })
+  @ApiJsonResponse({ type: SelectedProductResponseDto, isArray: true })
   @Get('/')
   @ApiQuery({
     name: 'filter',
@@ -36,6 +42,7 @@ export class SelectedProductController {
 
   @UseInterceptors(JsonResponseTransformInterceptor)
   @ApiOperation({ description: 'show selected products by given slug' })
+  @ApiJsonResponse({ type: SelectedProductDetailResponseDto })
   @Get('/slug/:slug')
   @HttpCode(HttpStatus.OK)
   async findBySlug(@Param('slug') slug: string) {

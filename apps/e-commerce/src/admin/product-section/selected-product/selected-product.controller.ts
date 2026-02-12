@@ -33,7 +33,14 @@ import {
 import { Response } from 'express';
 import { JwtGuard, OptionalJwtGuard } from '@rahino/auth';
 import { SelectedProductService } from './selected-product.service';
-import { SelectedProductDto, GetSelectedProductDto } from './dto';
+import {
+  SelectedProductDto,
+  GetSelectedProductDto,
+  SelectedProductResponseDto,
+  SelectedProductDeleteResponseDto,
+  SelectedProductImageResponseDto,
+} from './dto';
+import { ApiJsonResponse } from '@rahino/response';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { imageOptions } from './file-options';
 import { GetUser } from '@rahino/auth';
@@ -59,6 +66,10 @@ export class SelectedProductController {
     style: 'deepObject',
     explode: true,
   })
+  @ApiJsonResponse({
+    type: SelectedProductResponseDto,
+    isArray: true,
+  })
   @HttpCode(HttpStatus.OK)
   async findAll(@Query() filter: GetSelectedProductDto) {
     return await this.service.findAll(filter);
@@ -70,6 +81,9 @@ export class SelectedProductController {
   @ApiOperation({ description: 'show selected products by given id' })
   @CheckPermission({ permissionSymbol: 'ecommerce.selectedproducts.getone' })
   @Get('/:id')
+  @ApiJsonResponse({
+    type: SelectedProductResponseDto,
+  })
   @HttpCode(HttpStatus.OK)
   async findById(@Param('id') entityId: number) {
     return await this.service.findById(entityId);
@@ -82,6 +96,10 @@ export class SelectedProductController {
   @CheckPermission({ permissionSymbol: 'ecommerce.selectedproducts.create' })
   @UsePipes(new ValidationPipe({ transform: true }))
   @Post('/')
+  @ApiJsonResponse({
+    type: SelectedProductResponseDto,
+    status: 201,
+  })
   @HttpCode(HttpStatus.CREATED)
   async create(@Body() dto: SelectedProductDto) {
     return await this.service.create(dto);
@@ -94,6 +112,9 @@ export class SelectedProductController {
   @UsePipes(new ValidationPipe({ transform: true }))
   @Put('/:id')
   @CheckPermission({ permissionSymbol: 'ecommerce.selectedproducts.update' })
+  @ApiJsonResponse({
+    type: SelectedProductResponseDto,
+  })
   @HttpCode(HttpStatus.OK)
   async update(@Param('id') entityId: number, @Body() dto: SelectedProductDto) {
     return await this.service.update(entityId, dto);
@@ -105,6 +126,9 @@ export class SelectedProductController {
   @ApiOperation({ description: 'delete selected product by admin' })
   @Delete('/:id')
   @CheckPermission({ permissionSymbol: 'ecommerce.selectedproducts.delete' })
+  @ApiJsonResponse({
+    type: SelectedProductDeleteResponseDto,
+  })
   @HttpCode(HttpStatus.OK)
   async deleteById(@Param('id') entityId: number) {
     return await this.service.deleteById(entityId);
@@ -130,6 +154,9 @@ export class SelectedProductController {
     },
   })
   @Post('/image/:id')
+  @ApiJsonResponse({
+    type: SelectedProductImageResponseDto,
+  })
   @HttpCode(HttpStatus.OK)
   async uploadImage(
     @Param('id') id: number,

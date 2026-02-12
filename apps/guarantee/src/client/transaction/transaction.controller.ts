@@ -9,6 +9,7 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { JsonResponseTransformInterceptor } from '@rahino/response/interceptor';
+import { ApiJsonResponse } from '@rahino/response';
 import {
   ApiBearerAuth,
   ApiOperation,
@@ -18,7 +19,10 @@ import {
 
 import { GetUser, JwtGuard } from '@rahino/auth';
 import { GSTransactionService } from './transaction.service';
-import { GetTransactionDto } from './dto';
+import {
+  GetTransactionDto,
+  GuaranteeClientTransactionResponseDto,
+} from './dto';
 import { User } from '@rahino/database';
 
 @ApiBearerAuth()
@@ -40,13 +44,18 @@ export class TransactionController {
     style: 'deepObject',
     explode: true,
   })
+  @ApiJsonResponse({
+    type: GuaranteeClientTransactionResponseDto,
+    isArray: true,
+  })
   @HttpCode(HttpStatus.OK)
   async findAll(@GetUser() user: User, @Query() filter: GetTransactionDto) {
     return await this.service.findAll(user, filter);
   }
 
-  @ApiOperation({ description: 'show all transactions' })
+  @ApiOperation({ description: 'show transaction by given id' })
   @Get('/:id')
+  @ApiJsonResponse({ type: GuaranteeClientTransactionResponseDto })
   @HttpCode(HttpStatus.OK)
   async findOne(@Param('id') id: bigint, @GetUser() user: User) {
     return await this.service.findOne(user, id);

@@ -137,7 +137,7 @@ export class PayVipBundleService {
       };
     }
 
-    let discountAmountInRial =
+    const discountAmountInRial =
       await this.discountCodeValidationService.calculateDiscount(
         validation.discountCode,
         bundlePriceInRial,
@@ -215,7 +215,7 @@ export class PayVipBundleService {
       unitPriceId: vipBundleType.unitPriceId,
     });
 
-    let discountAmountInRial =
+    const discountAmountInRial =
       await this.discountCodeValidationService.calculateDiscount(
         validation.discountCode,
         originalPriceInRial,

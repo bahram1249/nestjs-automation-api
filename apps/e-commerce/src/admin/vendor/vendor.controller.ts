@@ -32,12 +32,25 @@ import {
 
 import { JwtGuard, OptionalJwtGuard } from '@rahino/auth';
 import { VendorService } from './vendor.service';
-import { VendorDto, GetVendorDto, VendorV2Dto } from './dto';
+import {
+  VendorDto,
+  GetVendorDto,
+  VendorV2Dto,
+  AdminVendorResponseDto,
+  VendorUserResponseDto,
+  AdminVendorAttachmentResponseDto,
+  AdminVendorUserResponseDto,
+  VendorCommissionResponseDto,
+  VariationPriceResponseDto,
+  VendorCommissionTypeResponseDto,
+  VendorLogisticResponseDto,
+} from './dto';
 import { GetUser } from '@rahino/auth';
 import { User } from '@rahino/database';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { imageOptions } from './file-options';
 import { OptionalSessionGuard } from '../../user/session/guard';
+import { ApiJsonResponse } from '@rahino/response';
 
 @ApiTags('Vendors')
 @Controller({
@@ -51,6 +64,19 @@ export class VendorController {
   @UseInterceptors(JsonResponseTransformInterceptor)
   @ApiBearerAuth()
   @ApiOperation({ description: 'show all vendors' })
+  @ApiJsonResponse({
+    type: AdminVendorResponseDto,
+    isArray: true,
+    extraModels: [
+      VendorUserResponseDto,
+      AdminVendorAttachmentResponseDto,
+      AdminVendorUserResponseDto,
+      VendorCommissionResponseDto,
+      VariationPriceResponseDto,
+      VendorCommissionTypeResponseDto,
+      VendorLogisticResponseDto,
+    ],
+  })
   @CheckPermission({ permissionSymbol: 'ecommerce.vendors.getall' })
   @Get('/')
   @ApiQuery({
@@ -69,6 +95,19 @@ export class VendorController {
   @UseInterceptors(JsonResponseTransformInterceptor)
   @ApiBearerAuth()
   @ApiOperation({ description: 'show all vendors' })
+  @ApiJsonResponse({
+    type: AdminVendorResponseDto,
+    isArray: true,
+    extraModels: [
+      VendorUserResponseDto,
+      AdminVendorAttachmentResponseDto,
+      AdminVendorUserResponseDto,
+      VendorCommissionResponseDto,
+      VariationPriceResponseDto,
+      VendorCommissionTypeResponseDto,
+      VendorLogisticResponseDto,
+    ],
+  })
   @CheckPermission({ permissionSymbol: 'ecommerce.vendors.getall' })
   @Get('/')
   @ApiQuery({
@@ -86,6 +125,18 @@ export class VendorController {
   @UseInterceptors(JsonResponseTransformInterceptor)
   @ApiBearerAuth()
   @ApiOperation({ description: 'show vendor by given id' })
+  @ApiJsonResponse({
+    type: AdminVendorResponseDto,
+    extraModels: [
+      VendorUserResponseDto,
+      AdminVendorAttachmentResponseDto,
+      AdminVendorUserResponseDto,
+      VendorCommissionResponseDto,
+      VariationPriceResponseDto,
+      VendorCommissionTypeResponseDto,
+      VendorLogisticResponseDto,
+    ],
+  })
   @CheckPermission({ permissionSymbol: 'ecommerce.vendors.getone' })
   @Get('/:id')
   @HttpCode(HttpStatus.OK)
@@ -98,6 +149,18 @@ export class VendorController {
   @UseInterceptors(JsonResponseTransformInterceptor)
   @ApiBearerAuth()
   @ApiOperation({ description: 'show vendor by given id' })
+  @ApiJsonResponse({
+    type: AdminVendorResponseDto,
+    extraModels: [
+      VendorUserResponseDto,
+      AdminVendorAttachmentResponseDto,
+      AdminVendorUserResponseDto,
+      VendorCommissionResponseDto,
+      VariationPriceResponseDto,
+      VendorCommissionTypeResponseDto,
+      VendorLogisticResponseDto,
+    ],
+  })
   @CheckPermission({ permissionSymbol: 'ecommerce.vendors.getone' })
   @Get('/:id')
   @HttpCode(HttpStatus.OK)
@@ -108,7 +171,20 @@ export class VendorController {
   @UseGuards(JwtGuard, PermissionGuard)
   @UseInterceptors(JsonResponseTransformInterceptor)
   @ApiBearerAuth()
-  @ApiOperation({ description: 'create color by admin' })
+  @ApiOperation({ description: 'create vendor by admin' })
+  @ApiJsonResponse({
+    type: AdminVendorResponseDto,
+    status: 201,
+    extraModels: [
+      VendorUserResponseDto,
+      AdminVendorAttachmentResponseDto,
+      AdminVendorUserResponseDto,
+      VendorCommissionResponseDto,
+      VariationPriceResponseDto,
+      VendorCommissionTypeResponseDto,
+      VendorLogisticResponseDto,
+    ],
+  })
   @CheckPermission({ permissionSymbol: 'ecommerce.vendors.create' })
   @Post('/')
   @HttpCode(HttpStatus.CREATED)
@@ -120,7 +196,20 @@ export class VendorController {
   @UseGuards(JwtGuard, PermissionGuard)
   @UseInterceptors(JsonResponseTransformInterceptor)
   @ApiBearerAuth()
-  @ApiOperation({ description: 'create color by admin' })
+  @ApiOperation({ description: 'create vendor by admin' })
+  @ApiJsonResponse({
+    type: AdminVendorResponseDto,
+    status: 201,
+    extraModels: [
+      VendorUserResponseDto,
+      AdminVendorAttachmentResponseDto,
+      AdminVendorUserResponseDto,
+      VendorCommissionResponseDto,
+      VariationPriceResponseDto,
+      VendorCommissionTypeResponseDto,
+      VendorLogisticResponseDto,
+    ],
+  })
   @CheckPermission({ permissionSymbol: 'ecommerce.vendors.create' })
   @Post('/')
   @HttpCode(HttpStatus.CREATED)
@@ -132,6 +221,18 @@ export class VendorController {
   @UseInterceptors(JsonResponseTransformInterceptor)
   @ApiBearerAuth()
   @ApiOperation({ description: 'update vendor by admin' })
+  @ApiJsonResponse({
+    type: AdminVendorResponseDto,
+    extraModels: [
+      VendorUserResponseDto,
+      AdminVendorAttachmentResponseDto,
+      AdminVendorUserResponseDto,
+      VendorCommissionResponseDto,
+      VariationPriceResponseDto,
+      VendorCommissionTypeResponseDto,
+      VendorLogisticResponseDto,
+    ],
+  })
   @Put('/:id')
   @CheckPermission({ permissionSymbol: 'ecommerce.vendors.update' })
   @HttpCode(HttpStatus.OK)
@@ -144,6 +245,18 @@ export class VendorController {
   @UseInterceptors(JsonResponseTransformInterceptor)
   @ApiBearerAuth()
   @ApiOperation({ description: 'update vendor by admin' })
+  @ApiJsonResponse({
+    type: AdminVendorResponseDto,
+    extraModels: [
+      VendorUserResponseDto,
+      AdminVendorAttachmentResponseDto,
+      AdminVendorUserResponseDto,
+      VendorCommissionResponseDto,
+      VariationPriceResponseDto,
+      VendorCommissionTypeResponseDto,
+      VendorLogisticResponseDto,
+    ],
+  })
   @Put('/:id')
   @CheckPermission({ permissionSymbol: 'ecommerce.vendors.update' })
   @HttpCode(HttpStatus.OK)
@@ -155,6 +268,9 @@ export class VendorController {
   @UseInterceptors(JsonResponseTransformInterceptor)
   @ApiBearerAuth()
   @ApiOperation({ description: 'delete vendor by admin' })
+  @ApiJsonResponse({
+    type: AdminVendorResponseDto,
+  })
   @Delete('/:id')
   @CheckPermission({ permissionSymbol: 'ecommerce.vendors.delete' })
   @HttpCode(HttpStatus.OK)
@@ -164,7 +280,11 @@ export class VendorController {
 
   @UseGuards(OptionalJwtGuard, OptionalSessionGuard)
   @UseInterceptors(JsonResponseTransformInterceptor)
-  @ApiOperation({ description: 'delete vendor by admin' })
+  @ApiOperation({ description: 'show vendor by given slug' })
+  @ApiJsonResponse({
+    type: AdminVendorResponseDto,
+    extraModels: [AdminVendorAttachmentResponseDto, VendorLogisticResponseDto],
+  })
   @Get('/slug/:slug')
   @HttpCode(HttpStatus.OK)
   async findBySlug(@Param('slug') slug: string) {
@@ -175,6 +295,18 @@ export class VendorController {
   @UseGuards(JwtGuard, PermissionGuard)
   @ApiBearerAuth()
   @CheckPermission({ permissionSymbol: 'ecommerce.vendors.uploadImage' })
+  @ApiJsonResponse({
+    type: AdminVendorResponseDto,
+    extraModels: [
+      VendorUserResponseDto,
+      AdminVendorAttachmentResponseDto,
+      AdminVendorUserResponseDto,
+      VendorCommissionResponseDto,
+      VariationPriceResponseDto,
+      VendorCommissionTypeResponseDto,
+      VendorLogisticResponseDto,
+    ],
+  })
   @UseInterceptors(FileInterceptor('file', imageOptions()))
   @ApiConsumes('multipart/form-data')
   @ApiBody({

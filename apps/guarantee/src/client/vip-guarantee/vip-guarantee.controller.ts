@@ -11,6 +11,7 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { JsonResponseTransformInterceptor } from '@rahino/response/interceptor';
+import { ApiJsonResponse } from '@rahino/response';
 import {
   ApiBearerAuth,
   ApiOperation,
@@ -22,7 +23,7 @@ import { GetUser } from '@rahino/auth';
 import { User } from '@rahino/database';
 import { ListFilter } from '@rahino/query-filter';
 import { VipGuaranteeService } from './vip-guarantee.service';
-import { VipGuaranteeDto } from './dto';
+import { VipGuaranteeDto, GuaranteeClientVipGuaranteeResponseDto } from './dto';
 
 @ApiTags('Client-VipGuarnatee')
 @UseGuards(JwtGuard)
@@ -44,6 +45,10 @@ export class VipGuaranteeController {
     style: 'deepObject',
     explode: true,
   })
+  @ApiJsonResponse({
+    type: GuaranteeClientVipGuaranteeResponseDto,
+    isArray: true,
+  })
   @HttpCode(HttpStatus.OK)
   async findAll(@GetUser() user: User, @Query() filter: ListFilter) {
     return await this.service.findAll(user, filter);
@@ -51,6 +56,7 @@ export class VipGuaranteeController {
 
   @ApiOperation({ description: 'show guarantee by given id' })
   @Get('/myGuarantees/:id')
+  @ApiJsonResponse({ type: GuaranteeClientVipGuaranteeResponseDto })
   @HttpCode(HttpStatus.OK)
   async findById(@GetUser() user: User, @Param('id') entityId: bigint) {
     return await this.service.findById(user, entityId);
@@ -58,6 +64,10 @@ export class VipGuaranteeController {
 
   @ApiOperation({ description: 'add guarantee card to my user' })
   @Post('/')
+  @ApiJsonResponse({
+    type: GuaranteeClientVipGuaranteeResponseDto,
+    status: 201,
+  })
   @HttpCode(HttpStatus.CREATED)
   async addGuaranteeCard(@GetUser() user: User, @Body() dto: VipGuaranteeDto) {
     return await this.service.create(user, dto);
@@ -65,6 +75,7 @@ export class VipGuaranteeController {
 
   @ApiOperation({ description: 'get guarantee avaialiablity card' })
   @Get('/availability/:serialNumber')
+  @ApiJsonResponse({ type: GuaranteeClientVipGuaranteeResponseDto })
   @HttpCode(HttpStatus.OK)
   async getAvailability(
     @Param('serialNumber') serialNumber: string,

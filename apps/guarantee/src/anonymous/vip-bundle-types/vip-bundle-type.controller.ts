@@ -9,8 +9,13 @@ import {
 } from '@nestjs/common';
 import { JsonResponseTransformInterceptor } from '@rahino/response/interceptor';
 import { ApiOperation, ApiQuery, ApiTags } from '@nestjs/swagger';
+import { ApiJsonResponse } from '@rahino/response';
 import { VipBundleTypeService } from './vip-bundle-type.service';
-import { GetVipBundleTypeDto } from './dto';
+import {
+  GetVipBundleTypeDto,
+  GuaranteeAnonymousVipBundleTypeListResponseDto,
+  GuaranteeAnonymousVipBundleTypeResponseDto,
+} from './dto';
 
 @ApiTags('GS-Anonymous-VIPBundleType')
 @Controller({
@@ -30,6 +35,7 @@ export class VipBundleTypeController {
     explode: true,
   })
   @HttpCode(HttpStatus.OK)
+  @ApiJsonResponse({ type: GuaranteeAnonymousVipBundleTypeListResponseDto })
   async findAll(@Query() filter: GetVipBundleTypeDto) {
     return await this.service.findAll(filter);
   }
@@ -39,6 +45,7 @@ export class VipBundleTypeController {
   })
   @Get('/:id')
   @HttpCode(HttpStatus.OK)
+  @ApiJsonResponse({ type: GuaranteeAnonymousVipBundleTypeResponseDto })
   async findById(@Param('id') entityId: number) {
     return await this.service.findById(entityId);
   }

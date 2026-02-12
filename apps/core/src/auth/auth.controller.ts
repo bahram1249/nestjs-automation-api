@@ -7,9 +7,15 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { AuthDto, UsernameDto } from './dto';
+import {
+  AuthDto,
+  UsernameDto,
+  AuthResponseDto,
+  FindUserResponseDto,
+} from './dto';
 import { JsonResponseTransformInterceptor } from '@rahino/response/interceptor';
 import { ApiTags } from '@nestjs/swagger';
+import { ApiJsonResponse } from '@rahino/response';
 
 @ApiTags('Auth')
 @Controller({
@@ -20,6 +26,7 @@ import { ApiTags } from '@nestjs/swagger';
 export class AuthController {
   constructor(private authService: AuthService) {}
 
+  @ApiJsonResponse({ type: AuthResponseDto, status: 201 })
   @Post('signup')
   @HttpCode(HttpStatus.CREATED)
   async signup(@Body() dto: AuthDto) {
@@ -29,6 +36,7 @@ export class AuthController {
     };
   }
 
+  @ApiJsonResponse({ type: AuthResponseDto })
   @HttpCode(HttpStatus.OK)
   @Post('signin')
   async signin(@Body() dto: AuthDto) {
@@ -37,6 +45,7 @@ export class AuthController {
     };
   }
 
+  @ApiJsonResponse({ type: FindUserResponseDto })
   @HttpCode(HttpStatus.OK)
   @Post('findUser')
   async findUser(@Body() dto: UsernameDto) {

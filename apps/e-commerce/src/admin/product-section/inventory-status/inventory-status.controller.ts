@@ -22,6 +22,8 @@ import { JsonResponseTransformInterceptor } from '@rahino/response/interceptor';
 import { PermissionGuard } from '@rahino/permission-checker/guard';
 import { CheckPermission } from '@rahino/permission-checker/decorator';
 import { InventoryStatusService } from './inventory-status.service';
+import { ApiJsonResponse } from '@rahino/response';
+import { InventoryStatusResponseDto } from './dto';
 
 @ApiTags('variation prices')
 @UseGuards(JwtGuard, PermissionGuard)
@@ -34,11 +36,11 @@ import { InventoryStatusService } from './inventory-status.service';
 export class InventoryStatusController {
   constructor(private readonly service: InventoryStatusService) {}
 
-  // public url
   @CheckPermission({
     permissionSymbol: 'ecommerce.admin.inventorystatuses.getall',
   })
   @ApiOperation({ description: 'show all inventory statuses' })
+  @ApiJsonResponse({ type: InventoryStatusResponseDto, isArray: true })
   @Get('/')
   @ApiQuery({
     name: 'filter',
@@ -55,6 +57,7 @@ export class InventoryStatusController {
     permissionSymbol: 'ecommerce.admin.inventorystatuses.getone',
   })
   @ApiOperation({ description: 'show inventory status by given id' })
+  @ApiJsonResponse({ type: InventoryStatusResponseDto })
   @Get('/:id')
   @HttpCode(HttpStatus.OK)
   async findById(@GetUser() user: User, @Param('id') entityId: number) {

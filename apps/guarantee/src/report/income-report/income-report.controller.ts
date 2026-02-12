@@ -20,8 +20,13 @@ import {
 import { Response } from 'express';
 
 import { JwtGuard } from '@rahino/auth';
+import { ApiJsonResponse } from '@rahino/response';
 import { IncomeReportService } from './income-report.service';
 import { GetIncomeReportDto } from './dto';
+import {
+  GuaranteeReportIncomeListResponseDto,
+  GuaranteeReportIncomeTotalWrapperResponseDto,
+} from './dto';
 
 @ApiTags('GSReport-IncomeReport')
 @UseGuards(JwtGuard, PermissionGuard)
@@ -45,6 +50,7 @@ export class IncomeReportController {
     style: 'deepObject',
     explode: true,
   })
+  @ApiJsonResponse({ type: GuaranteeReportIncomeListResponseDto })
   @HttpCode(HttpStatus.OK)
   async findAll(@Query() filter: GetIncomeReportDto) {
     return await this.service.findAll(filter);
@@ -61,6 +67,7 @@ export class IncomeReportController {
     style: 'deepObject',
     explode: true,
   })
+  @ApiJsonResponse({ type: GuaranteeReportIncomeTotalWrapperResponseDto })
   @HttpCode(HttpStatus.OK)
   async total(@Query() filter: GetIncomeReportDto) {
     return await this.service.total(filter);

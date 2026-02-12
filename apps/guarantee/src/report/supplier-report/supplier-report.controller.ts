@@ -20,8 +20,10 @@ import {
 import { Response } from 'express';
 
 import { JwtGuard } from '@rahino/auth';
+import { ApiJsonResponse } from '@rahino/response';
 import { SupplierReportService } from './supplier-report.service';
 import { GetSupplierReportDto } from './dto';
+import { GuaranteeReportSupplierListResponseDto } from './dto';
 
 @ApiTags('GSReport-SupplierReport')
 @UseGuards(JwtGuard, PermissionGuard)
@@ -45,6 +47,7 @@ export class SupplierReportController {
     style: 'deepObject',
     explode: true,
   })
+  @ApiJsonResponse({ type: GuaranteeReportSupplierListResponseDto })
   @HttpCode(HttpStatus.OK)
   async findAll(@Query() filter: GetSupplierReportDto) {
     return await this.service.findAll(filter);

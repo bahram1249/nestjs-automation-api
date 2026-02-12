@@ -25,7 +25,12 @@ import { CheckPermission } from '@rahino/permission-checker/decorator';
 import { GetUser } from '@rahino/auth';
 import { User } from '@rahino/database';
 import { EntityTypeFactorService } from './entity-type-factor.service';
-import { EntityTypeFactorDto, GetEntityTypeFactorDto } from './dto';
+import {
+  EntityTypeFactorDto,
+  GetEntityTypeFactorDto,
+  EntityTypeFactorResponseDto,
+} from './dto';
+import { ApiJsonResponse } from '@rahino/response';
 
 @ApiTags('Admin-EntityType-Factors')
 @ApiBearerAuth()
@@ -50,6 +55,10 @@ export class EntityTypeFactorController {
   @CheckPermission({
     permissionSymbol: 'ecommerce.admin.entitytypefactors.getall',
   })
+  @ApiJsonResponse({
+    type: EntityTypeFactorResponseDto,
+    isArray: true,
+  })
   @HttpCode(HttpStatus.OK)
   async findAll(
     @Query() filter: GetEntityTypeFactorDto,
@@ -65,6 +74,9 @@ export class EntityTypeFactorController {
     permissionSymbol: 'ecommerce.admin.entitytypefactors.getone',
   })
   @Get('/:id')
+  @ApiJsonResponse({
+    type: EntityTypeFactorResponseDto,
+  })
   @HttpCode(HttpStatus.OK)
   async findById(@Param('id') entityId: number, @GetUser() user: User) {
     return await this.service.findById(entityId, user);
@@ -77,6 +89,9 @@ export class EntityTypeFactorController {
     permissionSymbol: 'ecommerce.admin.entitytypefactors.create',
   })
   @Post('/')
+  @ApiJsonResponse({
+    type: EntityTypeFactorResponseDto,
+  })
   @HttpCode(HttpStatus.CREATED)
   async create(@GetUser() user: User, @Body() dto: EntityTypeFactorDto) {
     return await this.service.create(user, dto);
@@ -88,6 +103,9 @@ export class EntityTypeFactorController {
   @Put('/:id')
   @CheckPermission({
     permissionSymbol: 'ecommerce.admin.entitytypefactors.update',
+  })
+  @ApiJsonResponse({
+    type: EntityTypeFactorResponseDto,
   })
   @HttpCode(HttpStatus.OK)
   async update(
@@ -104,6 +122,9 @@ export class EntityTypeFactorController {
   @Delete('/:id')
   @CheckPermission({
     permissionSymbol: 'ecommerce.admin.entitytypefactors.delete',
+  })
+  @ApiJsonResponse({
+    type: EntityTypeFactorResponseDto,
   })
   @HttpCode(HttpStatus.OK)
   async deleteById(@Param('id') entityId: number) {

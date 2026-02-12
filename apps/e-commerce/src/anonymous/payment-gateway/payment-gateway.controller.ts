@@ -10,6 +10,8 @@ import { ApiOperation, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { ListFilter } from '@rahino/query-filter';
 import { JsonResponseTransformInterceptor } from '@rahino/response/interceptor';
 import { PaymentGatewayService } from './payment-gateway.service';
+import { ApiJsonResponse } from '@rahino/response';
+import { PaymentGatewayResponseDto } from './dto';
 
 @ApiTags('payment-gateway')
 @UseInterceptors(JsonResponseTransformInterceptor)
@@ -21,6 +23,7 @@ export class PaymentGatewayController {
   constructor(private readonly service: PaymentGatewayService) {}
 
   @ApiOperation({ description: 'show all payment gateways' })
+  @ApiJsonResponse({ type: PaymentGatewayResponseDto, isArray: true })
   @Get('/')
   @ApiQuery({
     name: 'filter',

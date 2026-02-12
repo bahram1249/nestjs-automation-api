@@ -9,10 +9,14 @@ import {
   ValidationPipe,
 } from '@nestjs/common';
 import { ApiOperation, ApiQuery, ApiTags } from '@nestjs/swagger';
-import { ProductFeedFilter } from './dto';
+import { ProductFeedFilter, ProductFeedResponseDto } from './dto';
 import { ProductFeedService } from './product-feed.service';
+import { ApiJsonResponse } from '@rahino/response';
+import { JsonResponseTransformInterceptor } from '@rahino/response/interceptor';
+import { UseInterceptors } from '@nestjs/common';
 
 @ApiTags('ProductFeeds')
+@UseInterceptors(JsonResponseTransformInterceptor)
 @Controller({
   path: '/api/ecommerce/client/productFeeds',
   version: ['1'],
@@ -24,6 +28,7 @@ export class ProductFeedController {
   // public url
 
   @ApiOperation({ description: 'show all products' })
+  @ApiJsonResponse({ type: ProductFeedResponseDto, isArray: true })
   @Get('/')
   @ApiQuery({
     name: 'filter',
@@ -39,6 +44,7 @@ export class ProductFeedController {
   }
 
   @ApiOperation({ description: 'show product by given slug' })
+  @ApiJsonResponse({ type: ProductFeedResponseDto })
   @Get('/slug/:slug')
   @HttpCode(HttpStatus.OK)
   async findBySlug(
@@ -48,7 +54,8 @@ export class ProductFeedController {
     return await this.service.findBySlug(filter, slug);
   }
 
-  @ApiOperation({ description: 'show product by given slug' })
+  @ApiOperation({ description: 'show product by given id' })
+  @ApiJsonResponse({ type: ProductFeedResponseDto })
   @Get('/id/:id')
   @HttpCode(HttpStatus.OK)
   async findById(

@@ -17,13 +17,15 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { GetUser, JwtGuard } from '@rahino/auth';
+import { ApiJsonResponse } from '@rahino/response';
 import { TrackingRequestService } from './tracking-request.service';
 import { User } from '@rahino/database';
-import { GetTrackingRequestExternalDto } from './dto';
 import {
-  RequestCurrentStateFilterDto,
-  RequestCurrentStateOutputDto,
-} from '@rahino/guarantee/shared/cartable-filtering/dto';
+  GetTrackingRequestExternalDto,
+  GuaranteeAdminTrackingRequestListResponseDto,
+  GuaranteeAdminTrackingRequestCurrentStateListResponseDto,
+} from './dto';
+import { RequestCurrentStateFilterDto } from '@rahino/guarantee/shared/cartable-filtering/dto';
 
 @ApiBearerAuth()
 @UseGuards(JwtGuard, PermissionGuard)
@@ -45,6 +47,7 @@ export class TrackingRequestController {
     style: 'deepObject',
     explode: true,
   })
+  @ApiJsonResponse({ type: GuaranteeAdminTrackingRequestListResponseDto })
   @HttpCode(HttpStatus.OK)
   async findAll(
     @GetUser() user: User,
@@ -62,11 +65,14 @@ export class TrackingRequestController {
     style: 'deepObject',
     explode: true,
   })
+  @ApiJsonResponse({
+    type: GuaranteeAdminTrackingRequestCurrentStateListResponseDto,
+  })
   @HttpCode(HttpStatus.OK)
   async findCurrentStates(
     @GetUser() user: User,
     @Query() filter: RequestCurrentStateFilterDto,
-  ): Promise<{ result: RequestCurrentStateOutputDto[] }> {
+  ) {
     return await this.service.findCurrentStates(user, filter);
   }
 }

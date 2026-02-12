@@ -15,50 +15,6 @@ import {
 } from 'class-validator';
 import { Type } from 'class-transformer';
 
-export class LogisticStockPaymentDto {
-  // Selected variation price context and payment gateway
-  @ApiProperty()
-  @IsNotEmpty()
-  @Type(() => Number)
-  @IsNumber()
-  variationPriceId!: bigint;
-
-  @ApiProperty()
-  @IsNotEmpty()
-  @Type(() => Number)
-  @IsNumber()
-  paymentId!: bigint;
-
-  // Address and optional note
-  @ApiProperty()
-  @IsNotEmpty()
-  @Type(() => Number)
-  @IsNumber()
-  addressId!: bigint;
-
-  @ApiPropertyOptional()
-  @IsOptional()
-  @IsString()
-  noteDescription?: string;
-
-  // Optional coupon
-  @ApiPropertyOptional()
-  @IsOptional()
-  @IsString()
-  couponCode?: string;
-
-  // Groups selected by FE (must cover all session stocks)
-  @ApiProperty({ type: () => [LogisticShipmentSelectionGroupInput] })
-  @IsArray()
-  @ValidateNested({ each: true })
-  @Type(() => LogisticShipmentSelectionGroupInput)
-  groups!: LogisticShipmentSelectionGroupInput[];
-}
-
-export interface LogisticPaymentRequestResult {
-  redirectUrl: string;
-}
-
 // Minimal group payload expected from client for logistics payment
 export class LogisticShipmentSelectionGroupInput {
   @ApiProperty()
@@ -112,4 +68,48 @@ export class LogisticShipmentSelectionGroupInput {
   @Type(() => Number)
   @IsNumber({}, { each: true })
   stockIds!: Array<number>;
+}
+
+export interface LogisticPaymentRequestResult {
+  redirectUrl: string;
+}
+
+export class LogisticStockPaymentDto {
+  // Selected variation price context and payment gateway
+  @ApiProperty()
+  @IsNotEmpty()
+  @Type(() => Number)
+  @IsNumber()
+  variationPriceId!: bigint;
+
+  @ApiProperty()
+  @IsNotEmpty()
+  @Type(() => Number)
+  @IsNumber()
+  paymentId!: bigint;
+
+  // Address and optional note
+  @ApiProperty()
+  @IsNotEmpty()
+  @Type(() => Number)
+  @IsNumber()
+  addressId!: bigint;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
+  noteDescription?: string;
+
+  // Optional coupon
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
+  couponCode?: string;
+
+  // Groups selected by FE (must cover all session stocks)
+  @ApiProperty({ type: () => [LogisticShipmentSelectionGroupInput] })
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => LogisticShipmentSelectionGroupInput)
+  groups!: LogisticShipmentSelectionGroupInput[];
 }

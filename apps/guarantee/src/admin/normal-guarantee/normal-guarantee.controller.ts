@@ -15,6 +15,7 @@ import {
 import { CheckPermission } from '@rahino/permission-checker/decorator';
 import { PermissionGuard } from '@rahino/permission-checker/guard';
 import { JsonResponseTransformInterceptor } from '@rahino/response/interceptor';
+import { ApiJsonResponse } from '@rahino/response';
 import {
   ApiBearerAuth,
   ApiOperation,
@@ -23,7 +24,11 @@ import {
 } from '@nestjs/swagger';
 import { JwtGuard } from '@rahino/auth';
 import { NormalGuaranteeService } from './normal-guarantee.service';
-import { GetNoramlGuaranteeDto, NoramlGuaranteeDto } from './dto';
+import {
+  GetNoramlGuaranteeDto,
+  NoramlGuaranteeDto,
+  GuaranteeAdminNormalGuaranteeResponseDto,
+} from './dto';
 
 @ApiBearerAuth()
 @UseGuards(JwtGuard, PermissionGuard)
@@ -45,6 +50,10 @@ export class NormalGuaranteeController {
     style: 'deepObject',
     explode: true,
   })
+  @ApiJsonResponse({
+    type: GuaranteeAdminNormalGuaranteeResponseDto,
+    isArray: true,
+  })
   @HttpCode(HttpStatus.OK)
   async findAll(@Query() filter: GetNoramlGuaranteeDto) {
     return await this.service.findAll(filter);
@@ -53,6 +62,7 @@ export class NormalGuaranteeController {
   @ApiOperation({ description: 'show guarantee by given id' })
   @CheckPermission({ permissionSymbol: 'gs.admin.noramlguarantees.getone' })
   @Get('/:id')
+  @ApiJsonResponse({ type: GuaranteeAdminNormalGuaranteeResponseDto })
   @HttpCode(HttpStatus.OK)
   async findById(@Param('id') entityId: number) {
     return await this.service.findById(entityId);
@@ -61,6 +71,10 @@ export class NormalGuaranteeController {
   @ApiOperation({ description: 'create guarantee' })
   @CheckPermission({ permissionSymbol: 'gs.admin.noramlguarantees.create' })
   @Post('/')
+  @ApiJsonResponse({
+    type: GuaranteeAdminNormalGuaranteeResponseDto,
+    status: 201,
+  })
   @HttpCode(HttpStatus.CREATED)
   async create(@Body() dto: NoramlGuaranteeDto) {
     return await this.service.create(dto);
@@ -69,6 +83,7 @@ export class NormalGuaranteeController {
   @ApiOperation({ description: 'update guarantee by given id' })
   @CheckPermission({ permissionSymbol: 'gs.admin.noramlguarantees.update' })
   @Put('/:id')
+  @ApiJsonResponse({ type: GuaranteeAdminNormalGuaranteeResponseDto })
   @HttpCode(HttpStatus.OK)
   async updateById(@Param('id') id: number, @Body() dto: NoramlGuaranteeDto) {
     return await this.service.updateById(id, dto);
@@ -77,6 +92,7 @@ export class NormalGuaranteeController {
   @ApiOperation({ description: 'delete guarantee by id' })
   @CheckPermission({ permissionSymbol: 'gs.admin.noramlguarantees.delete' })
   @Delete('/:id')
+  @ApiJsonResponse({ type: GuaranteeAdminNormalGuaranteeResponseDto })
   @HttpCode(HttpStatus.OK)
   async deleteById(@Param('id') entityId: number) {
     return await this.service.deleteById(entityId);

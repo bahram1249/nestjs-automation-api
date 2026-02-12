@@ -15,6 +15,8 @@ import { GetUser, JwtGuard } from '@rahino/auth';
 import { User } from '@rahino/database';
 import { SubmitSolutionItemInRequestLocationService } from './submit-solution-item-in-request-location.service';
 import { SubmitSolutionItemDto } from '@rahino/guarantee/shared/request-factor/dto/submit-solution-item.dto';
+import { ApiJsonResponse } from '@rahino/response';
+import { GuaranteeCartableSubmitSolutionItemInRequestLocationResponseDto } from './dto';
 
 @ApiBearerAuth()
 @UseGuards(JwtGuard)
@@ -28,6 +30,9 @@ export class SubmitSolutionItemInRequestLocationController {
   constructor(private service: SubmitSolutionItemInRequestLocationService) {}
 
   @ApiOperation({ description: 'submit solution to request' })
+  @ApiJsonResponse({
+    type: GuaranteeCartableSubmitSolutionItemInRequestLocationResponseDto,
+  })
   @Post('/')
   @HttpCode(HttpStatus.OK)
   @UsePipes(new ValidationPipe({ transform: true }))

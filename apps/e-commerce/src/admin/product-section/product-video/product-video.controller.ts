@@ -30,6 +30,8 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { imageOptions } from './file-options';
 import { GetUser } from '@rahino/auth';
 import { User } from '@rahino/database';
+import { ApiJsonResponse } from '@rahino/response';
+import { VideoUploadResponseDto } from './dto';
 
 @ApiTags('ProductVideos')
 @Controller({
@@ -43,6 +45,7 @@ export class ProductVideoController {
   @UseGuards(JwtGuard, PermissionGuard)
   @ApiBearerAuth()
   @CheckPermission({ permissionSymbol: 'ecommerce.productvideos.uploadVideo' })
+  @ApiJsonResponse({ type: VideoUploadResponseDto })
   @UseInterceptors(FileInterceptor('file', imageOptions()))
   @ApiConsumes('multipart/form-data')
   @ApiBody({

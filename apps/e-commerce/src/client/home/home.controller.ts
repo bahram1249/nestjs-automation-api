@@ -8,9 +8,10 @@ import {
 } from '@nestjs/common';
 
 import { JsonResponseTransformInterceptor } from '@rahino/response/interceptor';
+import { ApiJsonResponse } from '@rahino/response';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { HomePageService } from './home.service';
-import { ProcessHomeByLatLonDto } from './dto';
+import { ProcessHomeByLatLonDto, HomeResponseDto } from './dto';
 
 @ApiTags('Home')
 @Controller({
@@ -24,6 +25,7 @@ export class HomePageController {
   // public url
 
   @ApiOperation({ description: 'show all home sections v2' })
+  @ApiJsonResponse({ type: HomeResponseDto })
   @Get('/byNearbyVendor')
   @HttpCode(HttpStatus.OK)
   async findByLatLon(@Query() query: ProcessHomeByLatLonDto) {
@@ -31,6 +33,7 @@ export class HomePageController {
   }
 
   @ApiOperation({ description: 'show all home sections' })
+  @ApiJsonResponse({ type: HomeResponseDto })
   @Get('/')
   @HttpCode(HttpStatus.OK)
   async findAll() {

@@ -17,7 +17,11 @@ import {
 } from '@nestjs/swagger';
 import { JwtGuard } from '@rahino/auth';
 import { ScheduleSendingTypeService } from './schedule-sending-type.service';
-import { GetScheduleSendingTypeDto } from './dto';
+import {
+  GetScheduleSendingTypeDto,
+  ScheduleSendingTypeResponseDto,
+} from './dto';
+import { ApiJsonResponse } from '@rahino/response';
 
 @ApiTags('Admin Schedule Sending Type')
 @UseGuards(JwtGuard, PermissionGuard)
@@ -37,6 +41,10 @@ export class ScheduleSendingTypeController {
     type: GetScheduleSendingTypeDto,
     style: 'deepObject',
     explode: true,
+  })
+  @ApiJsonResponse({
+    type: ScheduleSendingTypeResponseDto,
+    isArray: true,
   })
   @HttpCode(HttpStatus.OK)
   async findAll(@Query() filter: GetScheduleSendingTypeDto) {

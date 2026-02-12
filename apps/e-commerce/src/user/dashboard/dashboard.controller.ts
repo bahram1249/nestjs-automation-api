@@ -12,6 +12,12 @@ import { JwtGuard } from '@rahino/auth';
 import { User } from '@rahino/database';
 import { JsonResponseTransformInterceptor } from '@rahino/response/interceptor';
 import { DashboardService } from './dashboard.service';
+import { ApiJsonResponse } from '@rahino/response';
+import {
+  DashboardTotalOrdersResponseDto,
+  DashboardTotalCommentsResponseDto,
+  DashboardTotalWalletAmountsResponseDto,
+} from './dto';
 
 @ApiTags('User-Dashboards')
 @UseGuards(JwtGuard)
@@ -25,6 +31,7 @@ export class DashaboardController {
   constructor(private readonly service: DashboardService) {}
 
   @ApiOperation({ description: 'show total order of current user' })
+  @ApiJsonResponse({ type: DashboardTotalOrdersResponseDto })
   @Get('/totalOrders')
   @HttpCode(HttpStatus.OK)
   async totalOrders(@GetUser() user: User) {
@@ -32,6 +39,7 @@ export class DashaboardController {
   }
 
   @ApiOperation({ description: 'show total comments of current user' })
+  @ApiJsonResponse({ type: DashboardTotalCommentsResponseDto })
   @Get('/totalComments')
   @HttpCode(HttpStatus.OK)
   async totalComments(@GetUser() user: User) {
@@ -39,6 +47,7 @@ export class DashaboardController {
   }
 
   @ApiOperation({ description: 'show total wallet amounts of current user' })
+  @ApiJsonResponse({ type: DashboardTotalWalletAmountsResponseDto })
   @Get('/totalWalletAmounts')
   @HttpCode(HttpStatus.OK)
   async totalWalletAmounts(@GetUser() user: User) {

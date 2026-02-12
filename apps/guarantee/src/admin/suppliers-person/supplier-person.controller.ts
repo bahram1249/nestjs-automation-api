@@ -15,6 +15,7 @@ import {
 import { CheckPermission } from '@rahino/permission-checker/decorator';
 import { PermissionGuard } from '@rahino/permission-checker/guard';
 import { JsonResponseTransformInterceptor } from '@rahino/response/interceptor';
+import { ApiJsonResponse } from '@rahino/response';
 import {
   ApiBearerAuth,
   ApiOperation,
@@ -22,7 +23,11 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { GetUser, JwtGuard } from '@rahino/auth';
-import { GetSupplierPersonDto, SupplierPersonDto } from './dto';
+import {
+  GetSupplierPersonDto,
+  SupplierPersonDto,
+  GuaranteeAdminSupplierPersonResponseDto,
+} from './dto';
 import { SupplierPersonService } from './supplier-person.service';
 import { User } from '@rahino/database';
 
@@ -46,6 +51,11 @@ export class SupplierPersonController {
     style: 'deepObject',
     explode: true,
   })
+  @ApiJsonResponse({
+    type: GuaranteeAdminSupplierPersonResponseDto,
+    isArray: true,
+    description: 'List of supplier persons retrieved successfully',
+  })
   @HttpCode(HttpStatus.OK)
   async findAll(@GetUser() user: User, @Query() filter: GetSupplierPersonDto) {
     return await this.service.findAll(user, filter);
@@ -54,6 +64,10 @@ export class SupplierPersonController {
   @ApiOperation({ description: 'show supplier person by given id' })
   @CheckPermission({ permissionSymbol: 'gs.admin.supplierpersons.getone' })
   @Get('/:id')
+  @ApiJsonResponse({
+    type: GuaranteeAdminSupplierPersonResponseDto,
+    description: 'Supplier person retrieved successfully',
+  })
   @HttpCode(HttpStatus.OK)
   async findById(@GetUser() user: User, @Param('id') entityId: number) {
     return await this.service.findById(user, entityId);
@@ -62,6 +76,11 @@ export class SupplierPersonController {
   @ApiOperation({ description: 'create supplier person' })
   @CheckPermission({ permissionSymbol: 'gs.admin.supplierpersons.create' })
   @Post('/')
+  @ApiJsonResponse({
+    type: GuaranteeAdminSupplierPersonResponseDto,
+    status: 201,
+    description: 'Supplier person created successfully',
+  })
   @HttpCode(HttpStatus.CREATED)
   async create(@GetUser() user: User, @Body() dto: SupplierPersonDto) {
     return await this.service.create(user, dto);
@@ -70,6 +89,10 @@ export class SupplierPersonController {
   @ApiOperation({ description: 'update supplier person by given id' })
   @CheckPermission({ permissionSymbol: 'gs.admin.supplierpersons.update' })
   @Put('/:id')
+  @ApiJsonResponse({
+    type: GuaranteeAdminSupplierPersonResponseDto,
+    description: 'Supplier person updated successfully',
+  })
   @HttpCode(HttpStatus.OK)
   async updateById(
     @GetUser() user: User,
@@ -82,6 +105,10 @@ export class SupplierPersonController {
   @ApiOperation({ description: 'delete supplier person by id' })
   @CheckPermission({ permissionSymbol: 'gs.admin.supplierpersons.delete' })
   @Delete('/:id')
+  @ApiJsonResponse({
+    type: GuaranteeAdminSupplierPersonResponseDto,
+    description: 'Supplier person deleted successfully',
+  })
   @HttpCode(HttpStatus.OK)
   async deleteById(@GetUser() user: User, @Param('id') entityId: number) {
     return await this.service.deleteById(user, entityId);

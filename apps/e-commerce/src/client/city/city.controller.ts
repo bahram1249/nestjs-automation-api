@@ -11,9 +11,10 @@ import {
 import { JsonResponseTransformInterceptor } from '@rahino/response/interceptor';
 import { ApiOperation, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { CityService } from './city.service';
-import { GetCityDto } from './dto';
+import { GetCityDto, CityResponseDto } from './dto';
 import { OptionalJwtGuard } from '@rahino/auth';
 import { OptionalSessionGuard } from '../../user/session/guard';
+import { ApiJsonResponse } from '@rahino/response';
 
 @ApiTags('Cities')
 @Controller({
@@ -27,6 +28,7 @@ export class CityController {
   // public url
   @UseGuards(OptionalJwtGuard, OptionalSessionGuard)
   @ApiOperation({ description: 'show all cities' })
+  @ApiJsonResponse({ type: CityResponseDto, isArray: true })
   @Get('/')
   @ApiQuery({
     name: 'filter',

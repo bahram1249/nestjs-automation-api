@@ -22,7 +22,15 @@ import {
 } from '@nestjs/swagger';
 import { JwtGuard } from '@rahino/auth';
 import { AdminLogisticShipmentWayService } from './admin-logistic-shipmentway.service';
-import { CreateLogisticShipmentWayDto, GetLogisticShipmentWayDto } from './dto';
+import {
+  CreateLogisticShipmentWayDto,
+  GetLogisticShipmentWayDto,
+  LogisticShipmentWayResponseDto,
+  ProvinceResponseDto,
+  OrderShipmentWayResponseDto,
+  LogisticInfoResponseDto,
+} from './dto';
+import { ApiJsonResponse } from '@rahino/response';
 import { GetUser } from '@rahino/auth';
 import { User } from '@rahino/database';
 
@@ -48,6 +56,15 @@ export class AdminLogisticShipmentWayController {
     style: 'deepObject',
     explode: true,
   })
+  @ApiJsonResponse({
+    type: LogisticShipmentWayResponseDto,
+    isArray: true,
+    extraModels: [
+      ProvinceResponseDto,
+      OrderShipmentWayResponseDto,
+      LogisticInfoResponseDto,
+    ],
+  })
   @HttpCode(HttpStatus.OK)
   async findAll(
     @Query() filter: GetLogisticShipmentWayDto,
@@ -63,6 +80,7 @@ export class AdminLogisticShipmentWayController {
     permissionSymbol: 'ecommerce.logisticshipmentways.create',
   })
   @Post('/')
+  @ApiJsonResponse({ type: String, status: 201 })
   @HttpCode(HttpStatus.CREATED)
   async create(
     @GetUser() user: User,

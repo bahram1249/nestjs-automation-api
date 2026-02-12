@@ -21,9 +21,17 @@ import {
   ApiQuery,
   ApiTags,
 } from '@nestjs/swagger';
+import { ApiJsonResponse } from '@rahino/response';
 import { JwtGuard } from '@rahino/auth';
 import { LogisticService } from './admin-logistic.service';
-import { LogisticDto, GetLogisticDto } from './dto';
+import {
+  LogisticDto,
+  GetLogisticDto,
+  LogisticResponseDto,
+  LogisticUserResponseDto,
+  UserInfoResponseDto,
+  LogisticDeleteResponseDto,
+} from './dto';
 import { GetUser } from '@rahino/auth';
 import { User } from '@rahino/database';
 
@@ -47,6 +55,11 @@ export class AdminLogisticController {
     style: 'deepObject',
     explode: true,
   })
+  @ApiJsonResponse({
+    type: LogisticResponseDto,
+    isArray: true,
+    extraModels: [LogisticUserResponseDto, UserInfoResponseDto],
+  })
   @HttpCode(HttpStatus.OK)
   async findAll(@Query() filter: GetLogisticDto) {
     return await this.service.findAll(filter);
@@ -55,6 +68,10 @@ export class AdminLogisticController {
   @ApiOperation({ description: 'show logistic by given id' })
   @CheckPermission({ permissionSymbol: 'ecommerce.logistics.getone' })
   @Get('/:id')
+  @ApiJsonResponse({
+    type: LogisticResponseDto,
+    extraModels: [LogisticUserResponseDto, UserInfoResponseDto],
+  })
   @HttpCode(HttpStatus.OK)
   async findById(@Param('id') entityId: bigint) {
     return await this.service.findById(entityId);
@@ -63,6 +80,11 @@ export class AdminLogisticController {
   @ApiOperation({ description: 'create logistic by admin' })
   @CheckPermission({ permissionSymbol: 'ecommerce.logistics.create' })
   @Post('/')
+  @ApiJsonResponse({
+    type: LogisticResponseDto,
+    status: 201,
+    extraModels: [LogisticUserResponseDto, UserInfoResponseDto],
+  })
   @HttpCode(HttpStatus.CREATED)
   async create(@GetUser() user: User, @Body() dto: LogisticDto) {
     return await this.service.create(user, dto);
@@ -71,6 +93,10 @@ export class AdminLogisticController {
   @ApiOperation({ description: 'update logistics by admin' })
   @Put('/:id')
   @CheckPermission({ permissionSymbol: 'ecommerce.logistics.update' })
+  @ApiJsonResponse({
+    type: LogisticResponseDto,
+    extraModels: [LogisticUserResponseDto, UserInfoResponseDto],
+  })
   @HttpCode(HttpStatus.OK)
   async update(@Param('id') entityId: bigint, @Body() dto: LogisticDto) {
     return await this.service.update(entityId, dto);
@@ -79,6 +105,7 @@ export class AdminLogisticController {
   @ApiOperation({ description: 'delete vendor by admin' })
   @Delete('/:id')
   @CheckPermission({ permissionSymbol: 'ecommerce.logistics.delete' })
+  @ApiJsonResponse({ type: LogisticDeleteResponseDto })
   @HttpCode(HttpStatus.OK)
   async deleteById(@Param('id') entityId: bigint) {
     return await this.service.deleteById(entityId);

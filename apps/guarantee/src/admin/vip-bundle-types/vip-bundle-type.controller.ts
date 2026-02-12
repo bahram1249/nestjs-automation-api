@@ -15,6 +15,7 @@ import {
 import { CheckPermission } from '@rahino/permission-checker/decorator';
 import { PermissionGuard } from '@rahino/permission-checker/guard';
 import { JsonResponseTransformInterceptor } from '@rahino/response/interceptor';
+import { ApiJsonResponse } from '@rahino/response';
 import {
   ApiBearerAuth,
   ApiOperation,
@@ -23,7 +24,11 @@ import {
 } from '@nestjs/swagger';
 import { JwtGuard } from '@rahino/auth';
 import { VipBundleTypeService } from './vip-bundle-type.service';
-import { GetVipBundleTypeDto, VipBundleTypeDto } from './dto';
+import {
+  GetVipBundleTypeDto,
+  VipBundleTypeDto,
+  GuaranteeAdminVipBundleTypeResponseDto,
+} from './dto';
 
 @ApiBearerAuth()
 @UseGuards(JwtGuard, PermissionGuard)
@@ -45,6 +50,10 @@ export class VipBundleTypeController {
     style: 'deepObject',
     explode: true,
   })
+  @ApiJsonResponse({
+    type: GuaranteeAdminVipBundleTypeResponseDto,
+    isArray: true,
+  })
   @HttpCode(HttpStatus.OK)
   async findAll(@Query() filter: GetVipBundleTypeDto) {
     return await this.service.findAll(filter);
@@ -53,6 +62,7 @@ export class VipBundleTypeController {
   @ApiOperation({ description: 'show vip bundle types by given id' })
   @CheckPermission({ permissionSymbol: 'gs.admin.vipbundletypes.getone' })
   @Get('/:id')
+  @ApiJsonResponse({ type: GuaranteeAdminVipBundleTypeResponseDto })
   @HttpCode(HttpStatus.OK)
   async findById(@Param('id') entityId: number) {
     return await this.service.findById(entityId);
@@ -61,6 +71,10 @@ export class VipBundleTypeController {
   @ApiOperation({ description: 'create vip bundle types' })
   @CheckPermission({ permissionSymbol: 'gs.admin.vipbundletypes.create' })
   @Post('/')
+  @ApiJsonResponse({
+    type: GuaranteeAdminVipBundleTypeResponseDto,
+    status: 201,
+  })
   @HttpCode(HttpStatus.CREATED)
   async create(@Body() dto: VipBundleTypeDto) {
     return await this.service.create(dto);
@@ -69,6 +83,7 @@ export class VipBundleTypeController {
   @ApiOperation({ description: 'update vip bundle types by given id' })
   @CheckPermission({ permissionSymbol: 'gs.admin.vipbundletypes.update' })
   @Put('/:id')
+  @ApiJsonResponse({ type: GuaranteeAdminVipBundleTypeResponseDto })
   @HttpCode(HttpStatus.OK)
   async updateById(@Param('id') id: number, @Body() dto: VipBundleTypeDto) {
     return await this.service.updateById(id, dto);
@@ -77,6 +92,7 @@ export class VipBundleTypeController {
   @ApiOperation({ description: 'delete vip bundle types by id' })
   @CheckPermission({ permissionSymbol: 'gs.admin.vipbundletypes.delete' })
   @Delete('/:id')
+  @ApiJsonResponse({ type: GuaranteeAdminVipBundleTypeResponseDto })
   @HttpCode(HttpStatus.OK)
   async deleteById(@Param('id') entityId: number) {
     return await this.service.deleteById(entityId);

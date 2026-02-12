@@ -19,7 +19,16 @@ import {
 } from '@nestjs/swagger';
 import { JwtGuard } from '@rahino/auth';
 import { AdminAddressService } from './address.service';
-import { AddressDto, GetAddressDto } from './dto';
+import {
+  AddressDto,
+  GetAddressDto,
+  AddressResponseDto,
+  ProvinceResponseDto,
+  CityResponseDto,
+  NeighborhoodResponseDto,
+  AdminAddressUserResponseDto,
+} from './dto';
+import { ApiJsonResponse } from '@rahino/response';
 import { GetUser } from '@rahino/auth';
 import { User } from '@rahino/database';
 import { PermissionGuard } from '@rahino/permission-checker/guard';
@@ -38,6 +47,16 @@ export class AdminAddressController {
 
   // public url
   @ApiOperation({ description: 'show all addresses' })
+  @ApiJsonResponse({
+    type: AddressResponseDto,
+    isArray: true,
+    extraModels: [
+      ProvinceResponseDto,
+      CityResponseDto,
+      NeighborhoodResponseDto,
+      AdminAddressUserResponseDto,
+    ],
+  })
   @CheckPermission({ permissionSymbol: 'ecommerce.admin.addresses.getall' })
   @Get('/user/:id')
   @ApiQuery({
@@ -56,6 +75,15 @@ export class AdminAddressController {
   }
 
   @ApiOperation({ description: 'show address by given id' })
+  @ApiJsonResponse({
+    type: AddressResponseDto,
+    extraModels: [
+      ProvinceResponseDto,
+      CityResponseDto,
+      NeighborhoodResponseDto,
+      AdminAddressUserResponseDto,
+    ],
+  })
   @CheckPermission({ permissionSymbol: 'ecommerce.admin.addresses.getone' })
   @Get('/:id')
   @HttpCode(HttpStatus.OK)
@@ -64,6 +92,7 @@ export class AdminAddressController {
   }
 
   @ApiOperation({ description: 'update address by admin' })
+  @ApiJsonResponse({ type: AddressResponseDto })
   @Put('/:id')
   @CheckPermission({ permissionSymbol: 'ecommerce.admin.addresses.update' })
   @HttpCode(HttpStatus.OK)

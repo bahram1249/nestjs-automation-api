@@ -1,4 +1,4 @@
-﻿import {
+import {
   Body,
   Controller,
   Delete,
@@ -15,6 +15,7 @@
 import { JwtGuard } from '@rahino/auth';
 import { PermissionGuard } from '@rahino/permission-checker/guard';
 import { JsonResponseTransformInterceptor } from '@rahino/response/interceptor';
+import { ApiJsonResponse } from '@rahino/response';
 import {
   ApiBearerAuth,
   ApiOperation,
@@ -28,6 +29,7 @@ import { VendorAddressService } from './vendor-address.service';
 import {
   GetVendorAddressDto,
   VendorAddressDto,
+  VendorAddressResponseDto,
 } from '@rahino/ecommerce/vendor-address/dto';
 
 @ApiTags('VendorAddresses')
@@ -50,6 +52,7 @@ export class VendorAddressController {
     style: 'deepObject',
     explode: true,
   })
+  @ApiJsonResponse({ type: VendorAddressResponseDto, isArray: true })
   @HttpCode(HttpStatus.OK)
   async findAll(@GetUser() user: User, @Query() filter: GetVendorAddressDto) {
     return await this.service.findAll(user, filter);
@@ -58,6 +61,7 @@ export class VendorAddressController {
   @ApiOperation({ description: 'show vendor by given id' })
   @CheckPermission({ permissionSymbol: 'ecommerce.vendoraddresses.getone' })
   @Get('/:id')
+  @ApiJsonResponse({ type: VendorAddressResponseDto })
   @HttpCode(HttpStatus.OK)
   async findById(@GetUser() user: User, @Param('id') entityId: bigint) {
     return await this.service.findById(user, entityId);
@@ -66,6 +70,7 @@ export class VendorAddressController {
   @ApiOperation({ description: 'create color by admin' })
   @CheckPermission({ permissionSymbol: 'ecommerce.vendoraddresses.create' })
   @Post('/')
+  @ApiJsonResponse({ type: VendorAddressResponseDto, status: 201 })
   @HttpCode(HttpStatus.CREATED)
   async create(@GetUser() user: User, @Body() dto: VendorAddressDto) {
     return await this.service.create(user, dto);
@@ -74,6 +79,7 @@ export class VendorAddressController {
   @ApiOperation({ description: 'update vendor by admin' })
   @Put('/:id')
   @CheckPermission({ permissionSymbol: 'ecommerce.vendoraddresses.update' })
+  @ApiJsonResponse({ type: VendorAddressResponseDto })
   @HttpCode(HttpStatus.OK)
   async update(
     @GetUser() user: User,
@@ -86,6 +92,7 @@ export class VendorAddressController {
   @ApiOperation({ description: 'delete vendor by admin' })
   @Delete('/:id')
   @CheckPermission({ permissionSymbol: 'ecommerce.vendoraddresses.delete' })
+  @ApiJsonResponse({ type: VendorAddressResponseDto })
   @HttpCode(HttpStatus.OK)
   async deleteById(@GetUser() user: User, @Param('id') entityId: bigint) {
     return await this.service.deleteById(user, entityId);

@@ -14,9 +14,13 @@ import {
   ApiQuery,
   ApiTags,
 } from '@nestjs/swagger';
+import { ApiJsonResponse } from '@rahino/response';
 import { JwtGuard } from '@rahino/auth';
 import { CartableRequestTypeService } from './request-type.service';
-import { GetRequestTypeDto } from './dto';
+import {
+  GetRequestTypeDto,
+  GuaranteeCartableRequestTypeResponseDto,
+} from './dto';
 
 @ApiBearerAuth()
 @UseGuards(JwtGuard)
@@ -37,6 +41,7 @@ export class CartableRequestTypeController {
     style: 'deepObject',
     explode: true,
   })
+  @ApiJsonResponse({ type: GuaranteeCartableRequestTypeResponseDto })
   @HttpCode(HttpStatus.OK)
   async findAll(@Query() filter: GetRequestTypeDto) {
     return await this.service.findAll(filter);

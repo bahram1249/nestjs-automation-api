@@ -15,6 +15,8 @@ import { GetUser, JwtGuard } from '@rahino/auth';
 import { User } from '@rahino/database';
 import { RevertToTechnicalUserService } from './revert-to-technical-user.service';
 import { RevertToTechncialUserDto } from './dto';
+import { ApiJsonResponse } from '@rahino/response';
+import { GuaranteeCartableRevertToTechnicalUserResponseDto } from './dto';
 
 @ApiBearerAuth()
 @UseGuards(JwtGuard)
@@ -28,6 +30,7 @@ export class RevertToTechnicalUserController {
   constructor(private service: RevertToTechnicalUserService) {}
 
   @ApiOperation({ description: 'revert to technical user' })
+  @ApiJsonResponse({ type: GuaranteeCartableRevertToTechnicalUserResponseDto })
   @Post('/')
   @HttpCode(HttpStatus.OK)
   @UsePipes(new ValidationPipe({ transform: true }))

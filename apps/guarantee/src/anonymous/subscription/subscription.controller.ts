@@ -8,8 +8,12 @@ import {
 } from '@nestjs/common';
 import { JsonResponseTransformInterceptor } from '@rahino/response/interceptor';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiJsonResponse } from '@rahino/response';
 import { SubscriptionService } from './subscription.service';
-import { SubscriptionDto } from './dto';
+import {
+  SubscriptionDto,
+  GuaranteeAnonymousSubscriptionResponseDto,
+} from './dto';
 
 @ApiTags('GS-Anonymous-Subscription')
 @Controller({
@@ -23,6 +27,7 @@ export class SubscriptionController {
   @ApiOperation({ description: 'joined to subscription' })
   @Post('/')
   @HttpCode(HttpStatus.CREATED)
+  @ApiJsonResponse({ type: GuaranteeAnonymousSubscriptionResponseDto })
   async create(@Body() dto: SubscriptionDto) {
     return await this.service.create(dto);
   }

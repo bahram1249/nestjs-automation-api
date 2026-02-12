@@ -8,7 +8,9 @@ import {
 } from '@nestjs/common';
 import { JsonResponseTransformInterceptor } from '@rahino/response/interceptor';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiJsonResponse } from '@rahino/response';
 import { GoldPriceService } from './gold-price.service';
+import { GoldPriceItemResponseDto, GoldCurrentPriceResponseDto } from './dto';
 
 @ApiTags('GoldPrices')
 @Controller({
@@ -20,6 +22,7 @@ export class GoldPriceController {
 
   @UseInterceptors(JsonResponseTransformInterceptor)
   @ApiOperation({ description: 'get all prices' })
+  @ApiJsonResponse({ type: GoldPriceItemResponseDto, isArray: true })
   @Get('/')
   @HttpCode(HttpStatus.OK)
   async findAll() {
@@ -28,6 +31,7 @@ export class GoldPriceController {
 
   @UseInterceptors(JsonResponseTransformInterceptor)
   @ApiOperation({ description: 'gold current price' })
+  @ApiJsonResponse({ type: GoldCurrentPriceResponseDto })
   @Get('/goldCurrentPrice')
   @HttpCode(HttpStatus.OK)
   async findOne() {

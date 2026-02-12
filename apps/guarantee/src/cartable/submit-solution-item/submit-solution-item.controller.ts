@@ -15,6 +15,8 @@ import { GetUser, JwtGuard } from '@rahino/auth';
 import { User } from '@rahino/database';
 import { SubmitSolutionItemService } from './submit-solution-item.service';
 import { SubmitSolutionItemDto } from '@rahino/guarantee/shared/request-factor/dto/submit-solution-item.dto';
+import { ApiJsonResponse } from '@rahino/response';
+import { GuaranteeCartableSuccessMessageResponseDto } from './dto';
 
 @ApiBearerAuth()
 @UseGuards(JwtGuard)
@@ -28,6 +30,7 @@ export class SubmitSolutionItemController {
   constructor(private service: SubmitSolutionItemService) {}
 
   @ApiOperation({ description: 'submit solution to request' })
+  @ApiJsonResponse({ type: GuaranteeCartableSuccessMessageResponseDto })
   @Post('/')
   @HttpCode(HttpStatus.OK)
   @UsePipes(new ValidationPipe({ transform: true }))

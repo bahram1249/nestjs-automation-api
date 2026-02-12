@@ -20,6 +20,8 @@ import { GetUser } from '@rahino/auth';
 import { User } from '@rahino/database';
 import { OptionalSessionGuard } from '../session/guard';
 import { ListFilter } from '@rahino/query-filter';
+import { ApiJsonResponse } from '@rahino/response';
+import { CommentResponseDto } from './dto';
 
 @ApiTags('Addresses')
 @UseGuards(JwtGuard, OptionalSessionGuard)
@@ -34,6 +36,7 @@ export class CommentController {
 
   // public url
   @ApiOperation({ description: 'show all comments' })
+  @ApiJsonResponse({ type: CommentResponseDto, isArray: true })
   @Get('/')
   @ApiQuery({
     name: 'filter',

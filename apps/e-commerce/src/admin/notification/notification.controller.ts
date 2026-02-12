@@ -23,10 +23,11 @@ import {
 } from '@nestjs/swagger';
 import { JwtGuard } from '@rahino/auth';
 import { NotificationService } from './notification.service';
-import { NotificationDto } from './dto';
+import { NotificationDto, NotificationResponseDto } from './dto';
 import { GetUser } from '@rahino/auth';
 import { User } from '@rahino/database';
 import { ListFilter } from '@rahino/query-filter';
+import { ApiJsonResponse } from '@rahino/response';
 
 @ApiTags('Admin-Notifications')
 @UseGuards(JwtGuard, PermissionGuard)
@@ -41,6 +42,7 @@ export class NotificationController {
   @UseInterceptors(JsonResponseTransformInterceptor)
   @CheckPermission({ permissionSymbol: 'ecommerce.admin.notifications.getall' })
   @ApiOperation({ description: 'show all notifications' })
+  @ApiJsonResponse({ type: NotificationResponseDto, isArray: true })
   @Get('/')
   @ApiQuery({
     name: 'filter',
@@ -55,6 +57,7 @@ export class NotificationController {
 
   @UseInterceptors(JsonResponseTransformInterceptor)
   @ApiOperation({ description: 'show notification by given id' })
+  @ApiJsonResponse({ type: NotificationResponseDto })
   @CheckPermission({ permissionSymbol: 'ecommerce.admin.notifications.getone' })
   @Get('/:id')
   @HttpCode(HttpStatus.OK)
@@ -64,6 +67,7 @@ export class NotificationController {
 
   @UseInterceptors(JsonResponseTransformInterceptor)
   @ApiOperation({ description: 'create notification by admin' })
+  @ApiJsonResponse({ type: NotificationResponseDto, status: 201 })
   @CheckPermission({ permissionSymbol: 'ecommerce.admin.notifications.create' })
   @Post('/')
   @HttpCode(HttpStatus.CREATED)
@@ -73,6 +77,7 @@ export class NotificationController {
 
   @UseInterceptors(JsonResponseTransformInterceptor)
   @ApiOperation({ description: 'update notifications by admin' })
+  @ApiJsonResponse({ type: NotificationResponseDto })
   @Put('/:id')
   @CheckPermission({ permissionSymbol: 'ecommerce.admin.notifications.update' })
   @HttpCode(HttpStatus.OK)
@@ -86,6 +91,7 @@ export class NotificationController {
 
   @UseInterceptors(JsonResponseTransformInterceptor)
   @ApiOperation({ description: 'delete notification by admin' })
+  @ApiJsonResponse({ type: NotificationResponseDto })
   @Delete('/:id')
   @CheckPermission({ permissionSymbol: 'ecommerce.admin.notifications.delete' })
   @HttpCode(HttpStatus.OK)

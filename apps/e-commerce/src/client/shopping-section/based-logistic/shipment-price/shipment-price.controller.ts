@@ -9,6 +9,7 @@ import {
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { JsonResponseTransformInterceptor } from '@rahino/response/interceptor';
+import { ApiJsonResponse } from '@rahino/response';
 import { GetECSession } from 'apps/main/src/decorator';
 import { ECUserSession } from '@rahino/localdatabase/models';
 import { GetUser, JwtGuard, OptionalJwtGuard } from '@rahino/auth';
@@ -16,8 +17,8 @@ import { SessionGuard } from '@rahino/ecommerce/user/session/guard';
 import { ClientShipmentPriceService } from './shipment-price.service';
 import {
   SelectionsShipmentPriceInput,
-  SelectionsShipmentPriceResult,
-} from './dto/shipment-price.dto';
+  SelectionsShipmentPriceResultDto,
+} from './dto';
 import { User } from '@rahino/database';
 
 @ApiTags('Client Shipment Price')
@@ -36,13 +37,14 @@ export class ClientShipmentPriceController {
     description:
       'Calculate shipping for frontend-provided grouped selections (pre-payment validation)',
   })
+  @ApiJsonResponse({ type: SelectionsShipmentPriceResultDto })
   @Post('/selections')
   @HttpCode(HttpStatus.OK)
   async priceBySelections(
     @GetECSession() _session: ECUserSession,
     @Body() body: SelectionsShipmentPriceInput,
     @GetUser() _user: User,
-  ): Promise<SelectionsShipmentPriceResult> {
+  ): Promise<SelectionsShipmentPriceResultDto> {
     const addressId =
       body.addressId != null ? BigInt(body.addressId) : undefined;
     // couponCode is ignored here because discount logic is handled inside services based on current rules

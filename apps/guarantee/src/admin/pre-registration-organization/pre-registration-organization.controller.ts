@@ -15,6 +15,7 @@ import {
 import { CheckPermission } from '@rahino/permission-checker/decorator';
 import { PermissionGuard } from '@rahino/permission-checker/guard';
 import { JsonResponseTransformInterceptor } from '@rahino/response/interceptor';
+import { ApiJsonResponse } from '@rahino/response';
 import {
   ApiBearerAuth,
   ApiOperation,
@@ -24,7 +25,12 @@ import {
 
 import { JwtGuard } from '@rahino/auth';
 import { PreRegistrationOrganizationService } from './pre-registration-organization.service';
-import { ConfirmDto, DeleteDto, GetPreRegistrationOrganization } from './dto';
+import {
+  ConfirmDto,
+  DeleteDto,
+  GetPreRegistrationOrganization,
+  GuaranteeAdminPreRegistrationOrganizationResponseDto,
+} from './dto';
 
 @ApiBearerAuth()
 @UseGuards(JwtGuard, PermissionGuard)
@@ -48,6 +54,10 @@ export class PreRegistrationOrganizationController {
     style: 'deepObject',
     explode: true,
   })
+  @ApiJsonResponse({
+    type: GuaranteeAdminPreRegistrationOrganizationResponseDto,
+    isArray: true,
+  })
   @HttpCode(HttpStatus.OK)
   async findAll(@Query() filter: GetPreRegistrationOrganization) {
     return await this.service.findAll(filter);
@@ -60,6 +70,9 @@ export class PreRegistrationOrganizationController {
     permissionSymbol: 'gs.admin.preregistrationorganizations.getone',
   })
   @Get('/:id')
+  @ApiJsonResponse({
+    type: GuaranteeAdminPreRegistrationOrganizationResponseDto,
+  })
   @HttpCode(HttpStatus.OK)
   async findById(@Param('id') entityId: number) {
     return await this.service.findById(entityId);
@@ -72,6 +85,7 @@ export class PreRegistrationOrganizationController {
     permissionSymbol: 'gs.admin.preregistrationorganizations.confirm',
   })
   @Patch('/:id')
+  @ApiJsonResponse({ type: Object })
   @HttpCode(HttpStatus.OK)
   async updateById(@Param('id') id: number, @Body() confirmDto: ConfirmDto) {
     return await this.service.confirmById(id, confirmDto);
@@ -82,6 +96,9 @@ export class PreRegistrationOrganizationController {
     permissionSymbol: 'gs.admin.preregistrationorganizations.delete',
   })
   @Delete('/:id')
+  @ApiJsonResponse({
+    type: GuaranteeAdminPreRegistrationOrganizationResponseDto,
+  })
   @HttpCode(HttpStatus.OK)
   async deleteById(
     @Param('id') entityId: number,
