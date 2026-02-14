@@ -36,7 +36,7 @@ export class GSRewardRuleSharedService {
   async checkAndGrantReward(
     user: User,
     guarantee: GSGuarantee,
-  ): Promise<GSAssignedGuarantee | undefined> {
+  ): Promise<GSGuarantee | undefined> {
     const rewardRule = await this.findActiveRewardRule();
 
     if (!rewardRule) {
@@ -76,7 +76,7 @@ export class GSRewardRuleSharedService {
     user: User,
     rewardRule: GSRewardRule,
     originalGuarantee: GSGuarantee,
-  ): Promise<GSAssignedGuarantee> {
+  ): Promise<GSGuarantee> {
     const uid = new ShortUniqueId({ length: 10 });
     const currentDate = new Date();
     const momentEndDate = moment(currentDate).add(
@@ -124,6 +124,6 @@ export class GSRewardRuleSharedService {
       rewardDate: currentDate,
     });
 
-    return assignedGuarantee;
+    return guarantee;
   }
 }

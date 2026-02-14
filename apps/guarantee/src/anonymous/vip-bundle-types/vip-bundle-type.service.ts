@@ -31,7 +31,8 @@ export class VipBundleTypeService {
             [Op.eq]: 0,
           },
         ),
-      );
+      )
+      .filter({ isSystemGenerated: false });
 
     const count = await this.repository.count(query.build());
 

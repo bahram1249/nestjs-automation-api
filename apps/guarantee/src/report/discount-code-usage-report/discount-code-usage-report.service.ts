@@ -21,11 +21,8 @@ export class DiscountCodeUsageReportService {
 
   private _buildQuery(dto: GetDiscountCodeUsageReportDto) {
     const queryBuilder = new QueryOptionsBuilder()
-      .filter({
-        usedAt: {
-          [Op.between]: [dto.startDate, dto.endDate],
-        },
-      })
+      .filterIf(dto.startDate != null, { usedAt: { [Op.gte]: dto.startDate } })
+      .filterIf(dto.endDate != null, { usedAt: { [Op.lte]: dto.endDate } })
       .filterIf(dto.discountCode != null, {
         '$discountCode.code$': {
           [Op.like]: `%${dto.discountCode}%`,

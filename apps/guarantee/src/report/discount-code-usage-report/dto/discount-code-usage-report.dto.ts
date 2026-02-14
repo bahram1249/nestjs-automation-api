@@ -7,10 +7,12 @@ import { ListFilter } from '@rahino/query-filter';
 
 export class DiscountCodeUsageReportDto {
   @IsDateString()
-  startDate: Date;
+  @IsOptional()
+  startDate?: Date;
 
   @IsDateString()
-  endDate: Date;
+  @IsOptional()
+  endDate?: Date;
 
   @ApiProperty({
     required: false,

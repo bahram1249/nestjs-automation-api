@@ -209,7 +209,7 @@ export class NormalGuaranteeService {
         firstname: user.firstname,
         lastname: user.lastname,
         phoneNumber: user.phoneNumber,
-        rewardAmount: reward.guarantee.totalCredit,
+        rewardAmount: reward.totalCredit,
       });
     }
 
