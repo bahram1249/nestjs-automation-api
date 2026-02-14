@@ -126,6 +126,7 @@ import { ConfirmReceiveDeviceInOrganizationModule } from './cartable/confirm-rec
 import { ThankfullSuccessPaymentSmsSenderModule } from './job/thankfull-success-payment-sms-sender';
 import { ClientRewardSmsSenderModule } from './job/client-reward-sms-sender';
 import { GSDiscountTypeModule } from './admin/discount-type';
+import { ClientRequestAttachmentModule } from './client/client-request-attachment';
 
 @Module({
   imports: [
@@ -180,6 +181,7 @@ import { GSDiscountTypeModule } from './admin/discount-type';
     ClientOrganizationAddressModule,
     GSClientShippingWayModule,
     PickClientShipmentWayModule,
+    ClientRequestAttachmentModule,
 
     GSPayAdditionalPackageModule,
     GSClientOnlinePaymentGatewayModule,
