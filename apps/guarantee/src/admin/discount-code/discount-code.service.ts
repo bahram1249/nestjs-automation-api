@@ -5,7 +5,11 @@ import {
 } from '@nestjs/common';
 import { GetDiscountCodeDto, DiscountCodeDto } from './dto';
 import { InjectModel } from '@nestjs/sequelize';
-import { GSDiscountCode, GSUnitPrice } from '@rahino/localdatabase/models';
+import {
+  GSDiscountCode,
+  GSDiscountType,
+  GSUnitPrice,
+} from '@rahino/localdatabase/models';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import { Op, Sequelize } from 'sequelize';
 import { InjectMapper } from 'automapper-nestjs';
@@ -61,6 +65,7 @@ export class DiscountCodeService {
         'updatedAt',
       ])
       .include([{ model: GSUnitPrice, as: 'unitPrice' }])
+      .thenInclude({ model: GSDiscountType, as: 'discountType' })
       .limit(filter.limit)
       .offset(filter.offset)
       .order({ orderBy: filter.orderBy, sortOrder: filter.sortOrder });
@@ -94,6 +99,7 @@ export class DiscountCodeService {
           'updatedAt',
         ])
         .include([{ model: GSUnitPrice, as: 'unitPrice' }])
+        .thenInclude({ model: GSDiscountType, as: 'discountType' })
         .filter(
           Sequelize.where(
             Sequelize.fn(
