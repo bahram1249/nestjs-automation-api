@@ -19,12 +19,14 @@ export class RequestAttachmentService {
 
   async findAll(requestId: bigint, user: User, filter: GSRequestAttachmentDto) {
     let query = new QueryOptionsBuilder()
-      .include({
-        model: GSRequest,
-        as: 'request',
-        required: true,
-        attributes: ['id', 'userId'],
-      })
+      .include([
+        {
+          model: GSRequest,
+          as: 'request',
+          required: true,
+          attributes: ['id', 'userId'],
+        },
+      ])
       .filter({ '$request.userId$': user.id })
       .filter({ requestId: requestId });
 
