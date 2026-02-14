@@ -14,7 +14,7 @@ export class ClientRewardSmsSenderProcessor extends WorkerHost {
     try {
       // Format amount with Persian numerals and comma separators
       const formattedAmount = formatPersianAmount(job.data.rewardAmount);
-      const template = `جناب آقای/خانم ${job.data.firstname} ${job.data.lastname}، تبریک! به مناسبت ثبت کارت گارانتی، کارت VIP با اعتبار ${formattedAmount} تومان برای شما ایجاد گردید.`;
+      const template = `جناب آقای/خانم ${job.data.firstname} ${job.data.lastname}، تبریک! به مناسبت ثبت کارت گارانتی، کارت VIP با اعتبار ${formattedAmount} ریال برای شما ایجاد گردید.`;
 
       await this.smsSenderService.sendSms({
         phoneNumber: job.data.phoneNumber,
