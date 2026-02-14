@@ -60,10 +60,12 @@ export class RewardRuleService {
         'validUntil',
         'isActive',
         'description',
+        [Sequelize.col('vipBundleType.monthPeriod'), 'monthPeriod'],
         'createdAt',
         'updatedAt',
       ])
       .include([{ model: GSUnitPrice, as: 'unitPrice' }])
+      .thenInclude({ model: GSVipBundleType, as: 'vipBundleType' })
       .limit(filter.limit)
       .offset(filter.offset)
       .order({ orderBy: filter.orderBy, sortOrder: filter.sortOrder });
@@ -88,10 +90,12 @@ export class RewardRuleService {
           'validUntil',
           'isActive',
           'description',
+          [Sequelize.col('vipBundleType.monthPeriod'), 'monthPeriod'],
           'createdAt',
           'updatedAt',
         ])
         .include([{ model: GSUnitPrice, as: 'unitPrice' }])
+        .thenInclude({ model: GSVipBundleType, as: 'vipBundleType' })
         .filter(
           Sequelize.where(
             Sequelize.fn('isnull', Sequelize.col('GSRewardRule.isDeleted'), 0),
@@ -123,7 +127,7 @@ export class RewardRuleService {
     const vipBundleType = await this.vipBundleTypeRepository.create({
       title: `${mappedItem.title} - VIP Bundle`,
       price: mappedItem.rewardAmount,
-      fee: 0n,
+      fee: mappedItem.rewardAmount,
       monthPeriod: mappedItem.monthPeriod || 12,
       cardColor: '#1ec700ff',
       unitPriceId: GSUnitPriceEnum.Toman,
