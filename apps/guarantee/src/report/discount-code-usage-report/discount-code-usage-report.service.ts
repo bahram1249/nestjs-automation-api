@@ -29,9 +29,11 @@ export class DiscountCodeUsageReportService {
         },
       })
       .filterIf(dto.userFullName != null, {
-        '$user.firstname$': {
-          [Op.or]: [{ [Op.like]: `%${dto.userFullName}%` }],
-        },
+        [Op.or]: [
+          { '$user.firstname$': [{ [Op.like]: `%${dto.userFullName}%` }] },
+          { '$user.lastname$': [{ [Op.like]: `%${dto.userFullName}%` }] },
+          { '$user.phoneNumber$': [{ [Op.like]: `%${dto.userFullName}%` }] },
+        ],
       })
       .include([
         {
