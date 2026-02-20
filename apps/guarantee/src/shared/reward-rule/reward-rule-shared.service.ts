@@ -49,25 +49,33 @@ export class GSRewardRuleSharedService {
   private async findActiveRewardRule(): Promise<GSRewardRule | null> {
     const now = new Date();
 
-    const rewardRule = await this.rewardRuleRepository.findOne({
-      where: {
-        isActive: true,
-        [Op.or]: [
-          { validFrom: null, validUntil: null },
+    const rewardRule = await this.rewardRuleRepository.findOne(
+      new QueryOptionsBuilder()
+        .filter({ isActive: true })
+        .filter({
+          [Op.or]: [
+            { validFrom: null, validUntil: null },
+            {
+              validFrom: { [Op.lte]: now },
+              validUntil: { [Op.gte]: now },
+            },
+          ],
+        })
+        .filter(
+          Sequelize.where(
+            Sequelize.fn('isnull', Sequelize.col('GSRewardRule.isDeleted'), 0),
+            { [Op.eq]: 0 },
+          ),
+        )
+        .include([
           {
-            validFrom: { [Op.lte]: now },
-            validUntil: { [Op.gte]: now },
+            model: GSVipBundleType,
+            as: 'vipBundleType',
           },
-        ],
-      },
-      include: [
-        {
-          model: GSVipBundleType,
-          as: 'vipBundleType',
-        },
-      ],
-      order: [['createdAt', 'DESC']],
-    });
+        ])
+        .order({ orderBy: 'createdAt', sortOrder: 'DESC' })
+        .build(),
+    );
 
     return rewardRule;
   }
