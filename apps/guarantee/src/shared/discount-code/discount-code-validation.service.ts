@@ -177,7 +177,10 @@ export class DiscountCodeValidationService {
     originalPriceInRial: number,
   ) {
     if (discountCode.discountTypeId == GSDiscountTypeEnum.Percentage) {
-      const discountValue = Number(discountCode.discountValue);
+      const discountValue = this.rialPriceService.getRialPrice({
+        price: Number(discountCode.discountValue),
+        unitPriceId: discountCode.unitPriceId,
+      });
       const discountPercentage = discountValue / 100;
       return (
         (originalPriceInRial * Math.floor(discountPercentage * 100)) / 10000
