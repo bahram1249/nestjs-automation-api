@@ -127,6 +127,7 @@ import { ThankfullSuccessPaymentSmsSenderModule } from './job/thankfull-success-
 import { ClientRewardSmsSenderModule } from './job/client-reward-sms-sender';
 import { GSDiscountTypeModule } from './admin/discount-type';
 import { ClientRequestAttachmentModule } from './client/client-request-attachment';
+import { ClientFactorGenerateSmsSenderModule } from './job/client-factor-generate-sms-sender';
 
 @Module({
   imports: [
@@ -200,6 +201,7 @@ import { ClientRequestAttachmentModule } from './client/client-request-attachmen
     ClientOnlinePaymentRequestSmsSenderModule,
     ClientSurveyRequestSmsSenderModule,
     ClientReceivingDeviceSmsSenderModule,
+    ClientFactorGenerateSmsSenderModule,
     SubscriptionSmsSenderModule,
     PreRegistrationInitSmsSenderModule,
     PreRegistrationSucessSmsSenderModule,

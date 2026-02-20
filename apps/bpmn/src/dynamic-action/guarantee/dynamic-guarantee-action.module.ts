@@ -17,6 +17,7 @@ import { NotificationSenderForClientSupplierStateRequestActionModule } from './n
 import { NotificationSenderForClientReceivingDeviceActionModule } from './notification-sender-for-client-receiving-device-action';
 import { RemoveCashTransactionActionModule } from './remove-cash-transaction-action';
 import { NotificationSenderForThankfullSuccessPaymentActionModule } from './thankfull-success-payment-sms-sender-action';
+import { NotificationSenderForClientFactorGenerateActionModule } from './notification-sender-for-client-factor-generate-action';
 
 @Module({
   imports: [
@@ -37,6 +38,7 @@ import { NotificationSenderForThankfullSuccessPaymentActionModule } from './than
     NotificationSenderForClientTechnicalStateRequestActionModule,
     NotificationSenderForClientSupplierStateRequestActionModule,
     NotificationSenderForClientReceivingDeviceActionModule,
+    NotificationSenderForClientFactorGenerateActionModule,
     RemoveCashTransactionActionModule,
   ],
   exports: [
@@ -57,6 +59,7 @@ import { NotificationSenderForThankfullSuccessPaymentActionModule } from './than
     NotificationSenderForClientSupplierStateRequestActionModule,
     NotificationSenderForClientReceivingDeviceActionModule,
     NotificationSenderForThankfullSuccessPaymentActionModule,
+    NotificationSenderForClientFactorGenerateActionModule,
     RemoveCashTransactionActionModule,
   ],
 })
