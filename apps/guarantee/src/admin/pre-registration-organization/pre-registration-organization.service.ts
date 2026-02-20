@@ -44,24 +44,23 @@ export class PreRegistrationOrganizationService {
   ) {}
 
   async findAll(filter: GetPreRegistrationOrganization) {
-    let query = new QueryOptionsBuilder()
-      .filter({
-        title: {
-          [Op.like]: filter.search,
-        },
-      })
-      .filter(
-        Sequelize.where(
-          Sequelize.fn(
-            'isnull',
-            Sequelize.col('GSPreRegistrationOrganization.isDeleted'),
-            0,
-          ),
-          {
-            [Op.eq]: 0,
-          },
-        ),
-      );
+    let query = new QueryOptionsBuilder().filter({
+      title: {
+        [Op.like]: filter.search,
+      },
+    });
+    // .filter(
+    //   Sequelize.where(
+    //     Sequelize.fn(
+    //       'isnull',
+    //       Sequelize.col('GSPreRegistrationOrganization.isDeleted'),
+    //       0,
+    //     ),
+    //     {
+    //       [Op.eq]: 0,
+    //     },
+    //   ),
+    // );
 
     const count = await this.repository.count(query.build());
 
