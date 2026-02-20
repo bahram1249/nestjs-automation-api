@@ -38,7 +38,7 @@ import { Attachment } from '@rahino/database';
 export class ClientRequestAttachmentModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
     consumer.apply(ReverseProxyGuaranteeRequestMiddleware).forRoutes({
-      path: '/v1/api/guarantee/cartable/requestAttachments/image/*',
+      path: '/v1/api/guarantee/client/requestAttachments/image/*',
       method: RequestMethod.GET,
     });
   }
