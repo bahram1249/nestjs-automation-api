@@ -48,7 +48,7 @@ export class SequelizeHelpService {
     defaultColumnValue: any,
   ): Where {
     return Sequelize.where(this.isnullColumn(columnName, defaultColumnValue), {
-      [Op.eq]: 0,
+      [Op.ne]: 0,
     });
   }
 
