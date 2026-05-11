@@ -290,15 +290,9 @@ export class LogisticService {
           .filter({ logisticId: item.id })
           .filter({ isDefault: true })
           .filter(
-            Sequelize.where(
-              Sequelize.fn(
-                'isnull',
-                Sequelize.col('ECLogisticUser.isDeleted'),
-                0,
-              ),
-              {
-                [Op.eq]: 0,
-              },
+            this.seqHelp.whereIsNullColumnEqualToZero(
+              'ECLogisticUser.isDeleted',
+              0,
             ),
           )
           .transaction(transaction)

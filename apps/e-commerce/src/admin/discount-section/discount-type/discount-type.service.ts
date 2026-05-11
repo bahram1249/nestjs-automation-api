@@ -3,8 +3,6 @@ import { InjectModel } from '@nestjs/sequelize';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import * as _ from 'lodash';
 import { ECDiscountType } from '@rahino/localdatabase/models';
-import { Sequelize } from 'sequelize';
-import { Op } from 'sequelize';
 import { SequelizeHelpService } from '@rahino/commontools/sequelize-help/sequelize-help.service';
 
 @Injectable()
@@ -23,15 +21,10 @@ export class DiscountTypeService {
         ),
       )
       .filter(
-        Sequelize.where(
-          Sequelize.fn(
-            'isnull',
-            Sequelize.col('ECDiscountType.isFactorBased'),
-            0,
-          ),
-          {
-            [Op.ne]: 1,
-          },
+        this.seqHelp.whereIsNullColumnNotEqualToValue(
+          'ECDiscountType.isFactorBased',
+          0,
+          1,
         ),
       );
     const count = await this.repository.count(queryBuilder.build());

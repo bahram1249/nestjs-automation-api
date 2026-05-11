@@ -89,15 +89,9 @@ export class LogisticUserRoleHandlerService {
           .filter({ logisticId: dto.logisticId })
           .filter({ isDefault: true })
           .filter(
-            Sequelize.where(
-              Sequelize.fn(
-                'isnull',
-                Sequelize.col('ECLogisticUser.isDeleted'),
-                0,
-              ),
-              {
-                [Op.eq]: 0,
-              },
+            this.seqHelp.whereIsNullColumnEqualToZero(
+              'ECLogisticUser.isDeleted',
+              0,
             ),
           )
           .transaction(dto.transaction)
