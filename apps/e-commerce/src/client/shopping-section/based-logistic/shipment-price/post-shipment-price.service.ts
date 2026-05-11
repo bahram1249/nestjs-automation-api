@@ -7,6 +7,7 @@ import {
   ECDiscount,
   ECDiscountType,
 } from '@rahino/localdatabase/models';
+import { SequelizeHelpService } from '@rahino/commontools/sequelize-help/sequelize-help.service';
 import { OrderShipmentwayEnum } from '@rahino/ecommerce/shared/enum';
 import {
   ShipmentPriceResult,
@@ -22,6 +23,7 @@ export class PostShipmentPriceService {
     @InjectModel(ECDiscount)
     private readonly discountRepository: typeof ECDiscount,
     private readonly localizationService: LocalizationService,
+    private readonly seqHelp: SequelizeHelpService,
   ) {}
 
   async cal(stocks: ShipmentStockInput[]): Promise<ShipmentPriceResult> {
@@ -84,21 +86,23 @@ export class PostShipmentPriceService {
       const discount = await this.discountRepository.findOne(
         new QueryOptionsBuilder()
           .filter(
-            Seq.where(Seq.fn('isnull', Seq.col('ECDiscount.isDeleted'), 0), {
-              [Op.eq]: 0,
-            }),
+            this.seqHelp.whereIsNullColumnEqualToZero(
+              'ECDiscount.isDeleted',
+              0,
+            ),
           )
           .filter(
-            Seq.where(Seq.fn('isnull', Seq.col('ECDiscount.isActive'), 0), {
-              [Op.eq]: 1,
-            }),
+            this.seqHelp.whereIsNullColumnEqualToValue(
+              'ECDiscount.isActive',
+              0,
+              1,
+            ),
           )
           .filter(
-            Seq.where(
-              Seq.fn('isnull', Seq.col('discountType.isFactorBased'), 0),
-              {
-                [Op.eq]: 1,
-              },
+            this.seqHelp.whereIsNullColumnEqualToValue(
+              'discountType.isFactorBased',
+              0,
+              1,
             ),
           )
           .filter(

@@ -15,6 +15,7 @@ import {
   ShipmentPriceResult,
   ShipmentStockInput,
 } from './dto/shipment-price.dto';
+import { SequelizeHelpService } from '@rahino/commontools/sequelize-help/sequelize-help.service';
 import { LocalizationService } from 'apps/main/src/common/localization';
 
 @Injectable()
@@ -29,6 +30,7 @@ export class DeliveryShipmentPriceService {
     @InjectConnection()
     private readonly sequelize: Sequelize,
     private readonly localizationService: LocalizationService,
+    private readonly seqHelp: SequelizeHelpService,
   ) {}
 
   async cal(
@@ -84,21 +86,23 @@ export class DeliveryShipmentPriceService {
       const discount = await this.discountRepository.findOne(
         new QueryOptionsBuilder()
           .filter(
-            Seq.where(Seq.fn('isnull', Seq.col('ECDiscount.isDeleted'), 0), {
-              [Op.eq]: 0,
-            }),
+            this.seqHelp.whereIsNullColumnEqualToZero(
+              'ECDiscount.isDeleted',
+              0,
+            ),
           )
           .filter(
-            Seq.where(Seq.fn('isnull', Seq.col('ECDiscount.isActive'), 0), {
-              [Op.eq]: 1,
-            }),
+            this.seqHelp.whereIsNullColumnEqualToValue(
+              'ECDiscount.isActive',
+              0,
+              1,
+            ),
           )
           .filter(
-            Seq.where(
-              Seq.fn('isnull', Seq.col('discountType.isFactorBased'), 0),
-              {
-                [Op.eq]: 1,
-              },
+            this.seqHelp.whereIsNullColumnEqualToValue(
+              'discountType.isFactorBased',
+              0,
+              1,
             ),
           )
           .filter(

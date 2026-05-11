@@ -23,10 +23,7 @@ export class NodeService {
   async findAll(filter: GetNodeDto) {
     let qb = new QueryOptionsBuilder()
       .filter(
-        this.seqHelp.whereIsNullColumnEqualToZero(
-           'BPMNNode.isDeleted',
-            0,
-          ),
+        this.seqHelp.whereIsNullColumnEqualToZero('BPMNNode.isDeleted', 0),
       )
       .filterIf(!!filter.fromActivityId, {
         fromActivityId: filter.fromActivityId,
