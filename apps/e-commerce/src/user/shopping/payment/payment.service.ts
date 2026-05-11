@@ -330,15 +330,9 @@ export class PaymentService {
           .filter({ vendorId: stock.vendorId })
           .filter({ variationPriceId: inventoryPrice.variationPriceId })
           .filter(
-            Sequelize.where(
-              Sequelize.fn(
-                'isnull',
-                Sequelize.col('ECVendorCommission.isDeleted'),
-                0,
-              ),
-              {
-                [Op.eq]: 0,
-              },
+            this.seqHelp.whereIsNullColumnEqualToZero(
+              'ECVendorCommission.isDeleted',
+              0,
             ),
           )
           .transaction(transaction)

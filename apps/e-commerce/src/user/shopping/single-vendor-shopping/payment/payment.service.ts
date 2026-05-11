@@ -27,6 +27,7 @@ import { ECOMMERCE_SINGLE_VENDOR_PAYMENT_PROVIDER_TOKEN } from '../payment-provi
 import { SingleVendorPayInterface } from '../payment-provider/interface';
 import { AddressService } from '@rahino/ecommerce/user/address/address.service';
 import { FormatShoppingCartProductOutputDto } from '../shopping-cart/dto';
+import { SequelizeHelpService } from '@rahino/commontools/sequelize-help/sequelize-help.service';
 import { InjectConnection, InjectModel } from '@nestjs/sequelize';
 import { Op, QueryTypes, Sequelize, Transaction } from 'sequelize';
 import { NEARBY_SHOPPING_KM } from '@rahino/ecommerce/shared/constants';
@@ -75,6 +76,7 @@ export class SingleVendorPaymentService {
     private readonly decreaseInventoryService: DecreaseInventoryService,
     @InjectQueue(REVERT_INVENTORY_QTY_QUEUE)
     private readonly revertInventoryQueue: Queue,
+    private readonly seqHelp: SequelizeHelpService,
   ) {}
 
   async shoppingPayment(
@@ -272,15 +274,9 @@ export class SingleVendorPaymentService {
           .filter({ vendorId: shoppingCartProduct.vendorId })
           .filter({ variationPriceId: inventoryPrice.variationPriceId })
           .filter(
-            Sequelize.where(
-              Sequelize.fn(
-                'isnull',
-                Sequelize.col('ECVendorCommission.isDeleted'),
-                0,
-              ),
-              {
-                [Op.eq]: 0,
-              },
+            this.seqHelp.whereIsNullColumnEqualToZero(
+              'ECVendorCommission.isDeleted',
+              0,
             ),
           )
           .transaction(dto.transaction)
