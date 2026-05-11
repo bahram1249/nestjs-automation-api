@@ -58,10 +58,7 @@ export class LogisticRevertPaymentQtyService {
         new QueryOptionsBuilder()
           .filter({ userId: payment.userId })
           .filter(
-            Sequelize.where(
-              Sequelize.fn('isnull', Sequelize.col('ECWallet.isDeleted'), 0),
-              { [Op.eq]: 0 },
-            ),
+            this.seqHelp.whereIsNullColumnEqualToZero('ECWallet.isDeleted', 0),
           )
           .build(),
       );

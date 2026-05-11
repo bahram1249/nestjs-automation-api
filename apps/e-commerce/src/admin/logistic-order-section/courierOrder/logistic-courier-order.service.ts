@@ -173,10 +173,7 @@ export class LogisticCourierOrderService {
         new QueryOptionsBuilder()
           .filter({ userId: dto.userId })
           .filter(
-            Sequelize.where(
-              Sequelize.fn('isnull', Sequelize.col('ECCourier.isDeleted'), 0),
-              { [Op.eq]: 0 },
-            ),
+            this.seqHelp.whereIsNullColumnEqualToZero('ECCourier.isDeleted', 0),
           )
           .include([{ model: User, as: 'user' }])
           .transaction(transaction)

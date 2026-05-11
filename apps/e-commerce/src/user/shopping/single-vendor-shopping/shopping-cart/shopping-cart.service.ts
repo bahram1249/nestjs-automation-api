@@ -20,6 +20,7 @@ import { emptyListFilter } from '@rahino/query-filter/provider/constants';
 import { ProductRepositoryService } from '@rahino/ecommerce/client/product/service/product-repository.service';
 import { LocalizationService } from 'apps/main/src/common/localization';
 import { InventoryService } from '@rahino/ecommerce/shared/inventory/services';
+import { SequelizeHelpService } from '@rahino/commontools/sequelize-help/sequelize-help.service';
 import { addDays, isNotNullOrEmpty, sumProperty } from '@rahino/commontools';
 import { InventoryStatusEnum } from '@rahino/ecommerce/shared/inventory/enum';
 import { ApplyDiscountService } from '@rahino/ecommerce/client/product/service';
@@ -67,6 +68,7 @@ export class SingleVendorShoppingCartService {
     private readonly inventoryService: InventoryService,
     private readonly config: ConfigService,
     private readonly applyDiscountService: ApplyDiscountService,
+    private readonly seqHelp: SequelizeHelpService,
   ) {}
 
   // ==================== PUBLIC METHODS ====================
@@ -222,16 +224,16 @@ export class SingleVendorShoppingCartService {
   }
 
   private notDeletedFilter() {
-    return Sequelize.where(
-      Sequelize.fn('isnull', Sequelize.col('ECShoppingCart.isDeleted'), 0),
-      { [Op.eq]: 0 },
+    return this.seqHelp.whereIsNullColumnEqualToZero(
+      'ECShoppingCart.isDeleted',
+      0,
     );
   }
 
   private notPurchasedFilter() {
-    return Sequelize.where(
-      Sequelize.fn('isnull', Sequelize.col('ECShoppingCart.isPurchase'), 0),
-      { [Op.eq]: 0 },
+    return this.seqHelp.whereIsNullColumnEqualToZero(
+      'ECShoppingCart.isPurchase',
+      0,
     );
   }
 
@@ -697,13 +699,9 @@ export class SingleVendorShoppingCartService {
   }
 
   private notDeletedShoppingCartProductFilter() {
-    return Sequelize.where(
-      Sequelize.fn(
-        'isnull',
-        Sequelize.col('ECShoppingCartProduct.isDeleted'),
-        0,
-      ),
-      { [Op.eq]: 0 },
+    return this.seqHelp.whereIsNullColumnEqualToZero(
+      'ECShoppingCartProduct.isDeleted',
+      0,
     );
   }
 

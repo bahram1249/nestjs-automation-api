@@ -5,7 +5,7 @@ import { InjectModel } from '@nestjs/sequelize';
 import { ECPayment } from '@rahino/localdatabase/models';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import { PaymentStatusEnum } from '@rahino/ecommerce/shared/enum';
-import { Op, Sequelize } from 'sequelize';
+import { SequelizeHelpService } from '@rahino/commontools/sequelize-help/sequelize-help.service';
 import { LOGISTIC_REVERT_PAYMENT_QUEUE } from './revert-payment.constants';
 import { LogisticRevertPaymentQtyService } from '../../inventory/services/logistic-revert-payment-qty.service';
 
@@ -16,6 +16,7 @@ export class LogisticRevertPaymentProcessor extends WorkerHost {
     @InjectModel(ECPayment)
     private readonly paymentRepository: typeof ECPayment,
     private readonly revertPaymentQtyService: LogisticRevertPaymentQtyService,
+    private readonly seqHelp: SequelizeHelpService,
   ) {
     super();
   }
@@ -31,10 +32,7 @@ export class LogisticRevertPaymentProcessor extends WorkerHost {
           .filter({ id: paymentId })
           .filter({ paymentStatusId: PaymentStatusEnum.WaitingForPayment })
           .filter(
-            Sequelize.where(
-              Sequelize.fn('isnull', Sequelize.col('ECPayment.isDeleted'), 0),
-              { [Op.eq]: 0 },
-            ),
+            this.seqHelp.whereIsNullColumnEqualToZero('ECPayment.isDeleted', 0),
           )
           .build(),
       );

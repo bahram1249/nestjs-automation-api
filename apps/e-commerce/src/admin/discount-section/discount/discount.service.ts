@@ -54,11 +54,10 @@ export class DiscountService {
         this.seqHelp.whereIsNullColumnEqualToZero('ECDiscount.isDeleted', 0),
       )
       .filter(
-        Sequelize.where(
-          Sequelize.fn('isnull', Sequelize.col('ECDiscount.discountTypeId'), 0),
-          {
-            [Op.ne]: 5,
-          },
+        this.seqHelp.whereIsNullColumnNotEqualToValue(
+          'ECDiscount.discountTypeId',
+          0,
+          5,
         ),
       )
       .filter(
@@ -161,11 +160,10 @@ export class DiscountService {
         this.seqHelp.whereIsNullColumnEqualToZero('ECDiscount.isDeleted', 0),
       )
       .filter(
-        Sequelize.where(
-          Sequelize.fn('isnull', Sequelize.col('ECDiscount.discountTypeId'), 0),
-          {
-            [Op.ne]: 5,
-          },
+        this.seqHelp.whereIsNullColumnNotEqualToValue(
+          'ECDiscount.discountTypeId',
+          0,
+          5,
         ),
       )
       .filter(

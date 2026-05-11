@@ -42,11 +42,10 @@ export class DiscountService {
         this.seqHelp.whereIsNullColumnEqualToZero('ECDiscount.isDeleted', 0),
       )
       .filter(
-        Sequelize.where(
-          Sequelize.fn('isnull', Sequelize.col('ECDiscount.discountTypeId'), 0),
-          {
-            [Op.eq]: 5,
-          },
+        this.seqHelp.whereIsNullColumnEqualToValue(
+          'ECDiscount.discountTypeId',
+          0,
+          5,
         ),
       );
     const count = await this.repository.count(queryBuilder.build());
@@ -131,11 +130,10 @@ export class DiscountService {
         this.seqHelp.whereIsNullColumnEqualToZero('ECDiscount.isDeleted', 0),
       )
       .filter(
-        Sequelize.where(
-          Sequelize.fn('isnull', Sequelize.col('ECDiscount.discountTypeId'), 0),
-          {
-            [Op.eq]: 5,
-          },
+        this.seqHelp.whereIsNullColumnEqualToValue(
+          'ECDiscount.discountTypeId',
+          0,
+          5,
         ),
       );
     return {
@@ -182,11 +180,10 @@ export class DiscountService {
         this.seqHelp.whereIsNullColumnEqualToZero('ECDiscount.isDeleted', 0),
       )
       .filter(
-        Sequelize.where(
-          Sequelize.fn('isnull', Sequelize.col('ECDiscount.discountTypeId'), 0),
-          {
-            [Op.eq]: 5,
-          },
+        this.seqHelp.whereIsNullColumnEqualToValue(
+          'ECDiscount.discountTypeId',
+          0,
+          5,
         ),
       );
 
@@ -219,11 +216,10 @@ export class DiscountService {
         this.seqHelp.whereIsNullColumnEqualToZero('ECDiscount.isDeleted', 0),
       )
       .filter(
-        Sequelize.where(
-          Sequelize.fn('isnull', Sequelize.col('ECDiscount.discountTypeId'), 0),
-          {
-            [Op.eq]: 5,
-          },
+        this.seqHelp.whereIsNullColumnEqualToValue(
+          'ECDiscount.discountTypeId',
+          0,
+          5,
         ),
       );
     let item = await this.repository.findOne(queryBuilder.build());

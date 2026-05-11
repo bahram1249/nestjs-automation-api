@@ -1,4 +1,4 @@
-﻿import { BadRequestException, Inject, Injectable } from '@nestjs/common';
+import { BadRequestException, Inject, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { InventoryDto, RequiredProductFieldDto } from '../dto';
 import { ECVariationPrice } from '@rahino/localdatabase/models';
@@ -129,12 +129,7 @@ export class InventoryValidationService {
         const color = await this.colorRepository.findOne(
           new QueryOptionsBuilder()
             .filter(
-              Sequelize.where(
-                Sequelize.fn('isnull', Sequelize.col('ECColor.isDeleted'), 0),
-                {
-                  [Op.eq]: 0,
-                },
-              ),
+              this.seqHelp.whereIsNullColumnEqualToZero('ECColor.isDeleted', 0),
             )
             .build(),
         );

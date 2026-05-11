@@ -47,12 +47,7 @@ export class OrderQueryBuilder {
 
   deletedOrder() {
     this.builder = this.builder.filter(
-      Sequelize.where(
-        Sequelize.fn('isnull', Sequelize.col('ECOrder.isDeleted'), 0),
-        {
-          [Op.eq]: 1,
-        },
-      ),
+      this.seqHelp.whereIsNullColumnEqualToValue('ECOrder.isDeleted', 0, 1),
     );
     return this;
   }

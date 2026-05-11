@@ -11,6 +11,7 @@ import {
 } from '@rahino/localdatabase/models';
 import { LogisticOrderQueryBuilder } from '../../../client/order-section/utilLogisticOrder/logistic-order-query-builder.service';
 import { LogisticOrderUtilService } from '../../../client/order-section/utilLogisticOrder/logistic-order-util.service';
+import { SequelizeHelpService } from '@rahino/commontools/sequelize-help/sequelize-help.service';
 import { Sequelize, Op } from 'sequelize';
 import { OrderStatusEnum } from '@rahino/ecommerce/shared/enum';
 import { LogisticUserRoleHandlerService } from 'apps/e-commerce/src/admin/logistic-section/logistic-user-role-handler/logistic-user-role-handler.service';
@@ -34,6 +35,7 @@ export class LogisticCancellOrderService {
     private readonly builder: LogisticOrderQueryBuilder,
     private readonly utilService: LogisticOrderUtilService,
     private readonly logisticAccess: LogisticUserRoleHandlerService,
+    private readonly seqHelp: SequelizeHelpService,
   ) {}
 
   async findAll(user: User, filter: GetTotalOrderFilterDto) {
@@ -45,9 +47,10 @@ export class LogisticCancellOrderService {
     qb = qb
       // cancelled (deleted) orders only
       .filter(
-        Sequelize.where(
-          Sequelize.fn('isnull', Sequelize.col('ECLogisticOrder.isDeleted'), 0),
-          { [Op.eq]: 1 },
+        this.seqHelp.whereIsNullColumnEqualToValue(
+          'ECLogisticOrder.isDeleted',
+          0,
+          1,
         ),
       )
       .search(filter.search)
@@ -106,9 +109,10 @@ export class LogisticCancellOrderService {
     let qb = this.builder;
     qb = qb
       .filter(
-        Sequelize.where(
-          Sequelize.fn('isnull', Sequelize.col('ECLogisticOrder.isDeleted'), 0),
-          { [Op.eq]: 1 },
+        this.seqHelp.whereIsNullColumnEqualToValue(
+          'ECLogisticOrder.isDeleted',
+          0,
+          1,
         ),
       )
       .addOrderId(id)
