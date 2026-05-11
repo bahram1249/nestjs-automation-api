@@ -960,13 +960,9 @@ export class ProductService {
             new QueryOptionsBuilder()
               .filter({ vendorId: vendorId })
               .filter(
-                Sequelize.where(
-                  Sequelize.fn(
-                    'isnull',
-                    Sequelize.col('ECVendorAddress.isDeleted'),
-                    0,
-                  ),
-                  { [Op.eq]: 0 },
+                this.seqHelp.whereIsNullColumnEqualToZero(
+                  'ECVendorAddress.isDeleted',
+                  0,
                 ),
               )
               .build(),
