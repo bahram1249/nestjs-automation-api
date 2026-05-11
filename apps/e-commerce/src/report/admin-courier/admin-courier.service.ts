@@ -12,6 +12,7 @@ import {
   OrderStatusEnum,
 } from '@rahino/ecommerce/shared/enum';
 import { Sequelize } from 'sequelize';
+import { SequelizeHelpService } from '@rahino/commontools/sequelize-help/sequelize-help.service';
 
 @Injectable()
 export class AdminCourierService {
@@ -21,6 +22,7 @@ export class AdminCourierService {
     @InjectModel(PersianDate)
     private readonly persianDateRepository: typeof PersianDate,
     private readonly i18n: I18nService<I18nTranslations>,
+    private readonly seqHelp: SequelizeHelpService,
     private readonly shipmentQueryBuilder: OrderQueryBuilderService,
   ) {}
 
@@ -67,15 +69,11 @@ export class AdminCourierService {
         'sendToCustomerDate',
         'postReceipt',
         [
-          Sequelize.fn('isnull', Sequelize.col('ECOrder.realShipmentPrice'), 0),
+          this.seqHelp.isnullColumn('ECOrder.realShipmentPrice', 0),
           'realShipmentPrice',
         ],
         [
-          Sequelize.fn(
-            'isnull',
-            Sequelize.col('ECOrder.totalShipmentPrice'),
-            0,
-          ),
+          this.seqHelp.isnullColumn('ECOrder.totalShipmentPrice', 0),
           'totalShipmentPrice',
         ],
         [

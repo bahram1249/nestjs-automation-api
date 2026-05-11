@@ -60,6 +60,10 @@ export class SequelizeHelpService {
     return this.isnullGlobal(Sequelize.col(columnName), defaultColumnValue);
   }
 
+  isnull(expression: any, defaultValue: any): Fn {
+    return this.isnullGlobal(expression, defaultValue);
+  }
+
   private isnullGlobal(...args: unknown[]): Fn {
     return Sequelize.fn(this._isnullKey, args);
   }

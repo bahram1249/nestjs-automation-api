@@ -468,7 +468,7 @@ export class LogisticTotalOrderService {
     const qbShipment = new QueryOptionsBuilder()
       .attributes([
         [
-          Sequelize.fn('isnull', this.seqHelp.sumColumn('shipmentPrice'), 0),
+          this.seqHelp.isnull(this.seqHelp.sumColumn('shipmentPrice'), 0),
           'shipmentPrice',
         ],
       ])

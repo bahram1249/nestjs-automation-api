@@ -149,7 +149,7 @@ export class IncomeReportService {
           'atLeastPayFromCustomerForOutOfWarranty',
         ],
         [
-          Sequelize.fn('isnull', this.seqHelp.sumColumn('givenCashPayment'), 0),
+          this.seqHelp.isnull(this.seqHelp.sumColumn('givenCashPayment'), 0),
           'givenCashPayment',
         ],
         [

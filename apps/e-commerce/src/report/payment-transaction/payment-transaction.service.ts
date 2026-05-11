@@ -9,6 +9,7 @@ import { I18nTranslations } from 'apps/main/src/generated/i18n.generated';
 import { OrderQueryBuilderService } from '../order-query-builder/order-query-builder.service';
 import { OrderStatusEnum } from '@rahino/ecommerce/shared/enum';
 import { Sequelize } from 'sequelize';
+import { SequelizeHelpService } from '@rahino/commontools/sequelize-help/sequelize-help.service';
 
 @Injectable()
 export class PaymentTransactionService {
@@ -18,6 +19,7 @@ export class PaymentTransactionService {
     @InjectModel(PersianDate)
     private readonly persianDateRepository: typeof PersianDate,
     private readonly i18n: I18nService<I18nTranslations>,
+    private readonly seqHelp: SequelizeHelpService,
     private readonly orderQueryBuilder: OrderQueryBuilderService,
   ) {}
 
@@ -63,23 +65,19 @@ export class PaymentTransactionService {
         'orderShipmentwayId',
         'transactionId',
         [
-          Sequelize.fn('isnull', Sequelize.col('ECOrder.realShipmentPrice'), 0),
+          this.seqHelp.isnullColumn('ECOrder.realShipmentPrice', 0),
           'realShipmentPrice',
         ],
         [
-          Sequelize.fn('isnull', Sequelize.col('ECOrder.totalDiscountFee'), 0),
+          this.seqHelp.isnullColumn('ECOrder.totalDiscountFee', 0),
           'totalDiscountFee',
         ],
         [
-          Sequelize.fn('isnull', Sequelize.col('ECOrder.totalPrice'), 0),
+          this.seqHelp.isnullColumn('ECOrder.totalPrice', 0),
           'totalPrice',
         ],
         [
-          Sequelize.fn(
-            'isnull',
-            Sequelize.col('ECOrder.paymentCommissionAmount'),
-            0,
-          ),
+          this.seqHelp.isnullColumn('ECOrder.paymentCommissionAmount', 0),
           'paymentCommissionAmount',
         ],
         [

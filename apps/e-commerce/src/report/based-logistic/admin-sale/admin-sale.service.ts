@@ -6,6 +6,7 @@ import { I18nContext, I18nService } from 'nestjs-i18n';
 import { I18nTranslations } from 'apps/main/src/generated/i18n.generated';
 import { ECLogisticOrderGroupedDetail } from '@rahino/localdatabase/models';
 import { Sequelize } from 'sequelize';
+import { SequelizeHelpService } from '@rahino/commontools/sequelize-help/sequelize-help.service';
 import { LogisticSaleQueryBuilderService } from '../sale-query-builder/logistic-sale-query-builder.service';
 import { GetAdminSaleDto } from '../../admin-sale/dto';
 
@@ -17,6 +18,7 @@ export class BasedAdminSaleService {
     @InjectModel(ECLogisticOrderGroupedDetail)
     private readonly groupedDetailRepository: typeof ECLogisticOrderGroupedDetail,
     private readonly i18n: I18nService<I18nTranslations>,
+    private readonly seqHelp: SequelizeHelpService,
     private readonly saleQueryBuilder: LogisticSaleQueryBuilderService,
   ) {}
 
@@ -48,15 +50,11 @@ export class BasedAdminSaleService {
         'inventoryId',
         'qty',
         [
-          Sequelize.fn('isnull', Sequelize.col('inventoryPrice.buyPrice'), 0),
+          this.seqHelp.isnullColumn('inventoryPrice.buyPrice', 0),
           'buyPrice',
         ],
         [
-          Sequelize.fn(
-            'isnull',
-            Sequelize.col('ECLogisticOrderGroupedDetail.productPrice'),
-            0,
-          ),
+          this.seqHelp.isnullColumn('ECLogisticOrderGroupedDetail.productPrice', 0),
           'unitPrice',
         ],
         [

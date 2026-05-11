@@ -6,6 +6,7 @@ import { PersianDate } from '@rahino/database';
 import { I18nContext, I18nService } from 'nestjs-i18n';
 import { I18nTranslations } from 'apps/main/src/generated/i18n.generated';
 import { Sequelize } from 'sequelize';
+import { SequelizeHelpService } from '@rahino/commontools/sequelize-help/sequelize-help.service';
 import { GetPaymentTransactionDto } from './dto/get-payment-transaction.dto';
 import { LogisticPaymentQueryBuilderService } from '../payment-query-builder/logistic-payment-query-builder.service';
 
@@ -17,6 +18,7 @@ export class BasedPaymentTransactionService {
     @InjectModel(PersianDate)
     private readonly persianDateRepository: typeof PersianDate,
     private readonly i18n: I18nService<I18nTranslations>,
+    private readonly seqHelp: SequelizeHelpService,
     private readonly paymentQueryBuilder: LogisticPaymentQueryBuilderService,
   ) {}
 
@@ -44,31 +46,19 @@ export class BasedPaymentTransactionService {
       .attributes([
         'id',
         [
-          Sequelize.fn(
-            'isnull',
-            Sequelize.col('ECLogisticOrder.shipmentPrice'),
-            0,
-          ),
+          this.seqHelp.isnullColumn('ECLogisticOrder.shipmentPrice', 0),
           'realShipmentPrice',
         ],
         [
-          Sequelize.fn(
-            'isnull',
-            Sequelize.col('ECLogisticOrder.discountFee'),
-            0,
-          ),
+          this.seqHelp.isnullColumn('ECLogisticOrder.discountFee', 0),
           'totalDiscountFee',
         ],
         [
-          Sequelize.fn(
-            'isnull',
-            Sequelize.col('ECLogisticOrder.totalPrice'),
-            0,
-          ),
+          this.seqHelp.isnullColumn('ECLogisticOrder.totalPrice', 0),
           'totalPrice',
         ],
         [
-          Sequelize.fn('isnull', Sequelize.col('payment.commissionAmount'), 0),
+          this.seqHelp.isnullColumn('payment.commissionAmount', 0),
           'paymentCommissionAmount',
         ],
         [
