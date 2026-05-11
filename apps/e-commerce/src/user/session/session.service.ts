@@ -6,7 +6,6 @@ import { ECUserSession } from '@rahino/localdatabase/models';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import * as randomstring from 'randomstring';
 import { SequelizeHelpService } from '@rahino/commontools/sequelize-help/sequelize-help.service';
-import { Op, Sequelize } from 'sequelize';
 import * as _ from 'lodash';
 
 @Injectable()
@@ -24,18 +23,14 @@ export class SessionService {
         new QueryOptionsBuilder()
           .filter(
             this.seqHelp.whereIsNullColumnEqualToZero(
-                'ECUserSession.isDeleted',
-                0,
-              ),
+              'ECUserSession.isDeleted',
+              0,
+            ),
           )
           .filter({
             userId: user.id,
           })
-          .filter(
-            Sequelize.where(Sequelize.fn('getdate'), {
-              [Op.lt]: Sequelize.col('expireAt'),
-            }),
-          )
+          .filter(this.seqHelp.whereCurrentDateLessThanColumn('expireAt'))
           .build(),
       );
       if (!session) {
@@ -59,9 +54,9 @@ export class SessionService {
           .filter({ id: random })
           .filter(
             this.seqHelp.whereIsNullColumnEqualToZero(
-                'ECUserSession.isDeleted',
-                0,
-              ),
+              'ECUserSession.isDeleted',
+              0,
+            ),
           )
           .build(),
       );
@@ -73,12 +68,7 @@ export class SessionService {
     session = await this.userSessionRepository.create({
       id: random,
       userId: userId,
-      expireAt: Sequelize.fn(
-        'dateadd',
-        Sequelize.literal('day'),
-        sessionLimitDay,
-        Sequelize.fn('getdate'),
-      ),
+      expireAt: this.seqHelp.dateAdd(sessionLimitDay, 'day'),
     });
     return session;
   }

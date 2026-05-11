@@ -138,19 +138,19 @@ export class LogisticSendingPeriodService {
               Sequelize.fn(
                 'isnull',
                 Sequelize.literal(dto.startDate ? `'${dto.startDate}'` : null),
-                Sequelize.fn('getdate'),
+                this.seqHelp.getDate(),
               ),
               {
                 [Op.between]: [
                   Sequelize.fn(
                     'isnull',
                     Sequelize.col('ECLogisticSendingPeriod.startDate'),
-                    Sequelize.fn('getdate'),
+                    this.seqHelp.getDate(),
                   ),
                   Sequelize.fn(
                     'isnull',
                     Sequelize.col('ECLogisticSendingPeriod.endDate'),
-                    Sequelize.fn('getdate'),
+                    this.seqHelp.getDate(),
                   ),
                 ],
               },
@@ -159,19 +159,19 @@ export class LogisticSendingPeriodService {
               Sequelize.fn(
                 'isnull',
                 Sequelize.literal(dto.endDate ? `'${dto.endDate}'` : null),
-                Sequelize.fn('getdate'),
+                this.seqHelp.getDate(),
               ),
               {
                 [Op.between]: [
                   Sequelize.fn(
                     'isnull',
                     Sequelize.col('ECLogisticSendingPeriod.startDate'),
-                    Sequelize.fn('getdate'),
+                    this.seqHelp.getDate(),
                   ),
                   Sequelize.fn(
                     'isnull',
                     Sequelize.col('ECLogisticSendingPeriod.endDate'),
-                    Sequelize.fn('getdate'),
+                    this.seqHelp.getDate(),
                   ),
                 ],
               },
@@ -217,19 +217,19 @@ export class LogisticSendingPeriodService {
               Sequelize.fn(
                 'isnull',
                 Sequelize.literal(dto.startDate ? `'${dto.startDate}'` : null),
-                Sequelize.fn('getdate'),
+                this.seqHelp.getDate(),
               ),
               {
                 [Op.between]: [
                   Sequelize.fn(
                     'isnull',
                     Sequelize.col('ECLogisticSendingPeriod.startDate'),
-                    Sequelize.fn('getdate'),
+                    this.seqHelp.getDate(),
                   ),
                   Sequelize.fn(
                     'isnull',
                     Sequelize.col('ECLogisticSendingPeriod.endDate'),
-                    Sequelize.fn('getdate'),
+                    this.seqHelp.getDate(),
                   ),
                 ],
               },
@@ -238,19 +238,19 @@ export class LogisticSendingPeriodService {
               Sequelize.fn(
                 'isnull',
                 Sequelize.literal(dto.endDate ? `'${dto.endDate}'` : null),
-                Sequelize.fn('getdate'),
+                this.seqHelp.getDate(),
               ),
               {
                 [Op.between]: [
                   Sequelize.fn(
                     'isnull',
                     Sequelize.col('ECLogisticSendingPeriod.startDate'),
-                    Sequelize.fn('getdate'),
+                    this.seqHelp.getDate(),
                   ),
                   Sequelize.fn(
                     'isnull',
                     Sequelize.col('ECLogisticSendingPeriod.endDate'),
-                    Sequelize.fn('getdate'),
+                    this.seqHelp.getDate(),
                   ),
                 ],
               },

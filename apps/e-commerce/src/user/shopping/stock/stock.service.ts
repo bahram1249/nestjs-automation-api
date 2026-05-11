@@ -82,7 +82,7 @@ export class StockService {
         )
         .filter({
           expire: {
-            [Op.gt]: Sequelize.fn('getdate'),
+            [Op.gt]: this.seqHelp.getDate(),
           },
         })
         .filter(
@@ -171,7 +171,7 @@ export class StockService {
         )
         .filter({
           expire: {
-            [Op.gt]: Sequelize.fn('getdate'),
+            [Op.gt]: this.seqHelp.getDate(),
           },
         })
         .filter(
@@ -315,7 +315,7 @@ export class StockService {
         )
         .filter({
           expire: {
-            [Op.gt]: Sequelize.fn('getdate'),
+            [Op.gt]: this.seqHelp.getDate(),
           },
         })
         .filter(
@@ -385,7 +385,7 @@ export class StockService {
         )
         .filter({
           expire: {
-            [Op.gt]: Sequelize.fn('getdate'),
+            [Op.gt]: this.seqHelp.getDate(),
           },
         })
         .filter(
@@ -413,7 +413,7 @@ export class StockService {
         )
         .filter({
           expire: {
-            [Op.gt]: Sequelize.fn('getdate'),
+            [Op.gt]: this.seqHelp.getDate(),
           },
         })
         .filter(

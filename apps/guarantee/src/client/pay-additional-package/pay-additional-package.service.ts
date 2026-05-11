@@ -106,12 +106,7 @@ export class PayAdditionalPackageService {
           factorStatusId: GSFactorStatusEnum.WaitingForPayment,
           factorTypeId: GSFactorTypeEnum.BuyAdditionalPackage,
           userId: user.id,
-          expireDate: Sequelize.fn(
-            'dateadd',
-            Sequelize.literal('day'),
-            7,
-            Sequelize.fn('getdate'),
-          ),
+          expireDate: this.seqHelp.dateAdd(7, 'day'),
           guaranteeId: guaranteeId,
         },
         { transaction: transaction },

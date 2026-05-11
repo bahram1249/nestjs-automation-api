@@ -4,7 +4,7 @@ import { SequelizeHelpService } from '@rahino/commontools/sequelize-help/sequeli
 import { ECUserSession } from '@rahino/localdatabase/models';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import { RedisRepository } from '@rahino/redis-client';
-import { Op, Sequelize } from 'sequelize';
+import { Op } from 'sequelize';
 
 @Injectable({})
 export class ValidateSessionService {
@@ -29,11 +29,7 @@ export class ValidateSessionService {
       .filter(
         this.seqHelp.whereIsNullColumnEqualToZero('ECUserSession.isDeleted', 0),
       )
-      .filter(
-        Sequelize.where(Sequelize.fn('getdate'), {
-          [Op.lt]: Sequelize.col('expireAt'),
-        }),
-      );
+      .filter(this.seqHelp.whereCurrentDateLessThanColumn('expireAt'));
     // if user provided
     if (request.user) {
       queryBuilder = queryBuilder.filter({
@@ -96,11 +92,7 @@ export class ValidateSessionService {
       .filter(
         this.seqHelp.whereIsNullColumnEqualToZero('ECUserSession.isDeleted', 0),
       )
-      .filter(
-        Sequelize.where(Sequelize.fn('getdate'), {
-          [Op.lt]: Sequelize.col('expireAt'),
-        }),
-      );
+      .filter(this.seqHelp.whereCurrentDateLessThanColumn('expireAt'));
 
     // find the valid session
     const findSession = await this.userSessionRepository.findOne(

@@ -765,7 +765,7 @@ export class SingleVendorShoppingCartService {
         .filter({ sessionId: session.id })
         .filter(this.notDeletedFilter())
         .filter(this.notPurchasedFilter())
-        .filter({ expire: { [Op.gt]: Sequelize.fn('getdate') } })
+        .filter({ expire: { [Op.gt]: this.seqHelp.getDate() } })
         .build(),
     );
   }

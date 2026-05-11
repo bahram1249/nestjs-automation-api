@@ -60,12 +60,7 @@ export class LogisticOrderQueryBuilderService {
   addEndDate(endDate: string) {
     this.builder = this.builder.filter({
       '$logisticOrder.gregorianAtPersian$': {
-        [Op.lt]: Sequelize.fn(
-          'dateadd',
-          Sequelize.literal('day'),
-          Sequelize.literal('1'),
-          endDate,
-        ),
+        [Op.lt]: this.seqHelp.dateAdd(Sequelize.literal('1'), 'day', endDate),
       },
     });
     return this;

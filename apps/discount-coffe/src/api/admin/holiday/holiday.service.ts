@@ -85,12 +85,7 @@ export class HolidayService {
             YearMonthDay: dto.ignoreDate,
           },
           Sequelize.where(Sequelize.col('GregorianDate'), {
-            [Op.lte]: Sequelize.fn(
-              'dateadd',
-              Sequelize.literal('day'),
-              increase,
-              Sequelize.fn('getdate'),
-            ),
+            [Op.lte]: this.seqHelp.dateAdd(increase, 'day'),
           }),
         ],
       },

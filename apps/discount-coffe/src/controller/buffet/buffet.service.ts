@@ -169,12 +169,7 @@ export class BuffetService {
               [Op.eq]: Sequelize.fn(
                 'convert',
                 Sequelize.literal('date'),
-                Sequelize.fn(
-                  'dateadd',
-                  Sequelize.literal('day'),
-                  attempt,
-                  Sequelize.fn('getdate'),
-                ),
+                this.seqHelp.dateAdd(attempt, 'day'),
                 convertDateFormat,
               ),
             }),
@@ -198,12 +193,7 @@ export class BuffetService {
         [Op.eq]: Sequelize.fn(
           'convert',
           Sequelize.literal('date'),
-          Sequelize.fn(
-            'dateadd',
-            Sequelize.literal('day'),
-            increase,
-            Sequelize.fn('getdate'),
-          ),
+          this.seqHelp.dateAdd(increase, 'day'),
           convertDateFormat,
         ),
       }),
@@ -263,12 +253,7 @@ export class BuffetService {
             YearMonthDay: dto.reserveDate,
           },
           Sequelize.where(Sequelize.col('GregorianDate'), {
-            [Op.lte]: Sequelize.fn(
-              'dateadd',
-              Sequelize.literal('day'),
-              increase,
-              Sequelize.fn('getdate'),
-            ),
+            [Op.lte]: this.seqHelp.dateAdd(increase, 'day'),
           }),
         ],
       },

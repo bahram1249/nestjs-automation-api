@@ -11,7 +11,7 @@ import { InventoryService } from '@rahino/ecommerce/shared/inventory/services';
 import { InjectMapper } from 'automapper-nestjs';
 import { Mapper } from 'automapper-core';
 import * as _ from 'lodash';
-import { Op, Sequelize } from 'sequelize';
+import { Op } from 'sequelize';
 import { ConfigService } from '@nestjs/config';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import { LocalizationService } from 'apps/main/src/common/localization';
@@ -46,7 +46,7 @@ export class StockAvailabilityInventoryService {
         .filter({ inventoryId: inventory.id })
         .filter({
           expire: {
-            [Op.gt]: Sequelize.fn('getdate'),
+            [Op.gt]: this.seqHelp.getDate(),
           },
         })
         .filter(
@@ -79,12 +79,7 @@ export class StockAvailabilityInventoryService {
     const insertedItem = _.omit(mappedItem.toJSON(), ['id']);
     insertedItem.productId = inventory.productId;
     insertedItem.sessionId = session.id;
-    insertedItem.expire = Sequelize.fn(
-      'dateadd',
-      Sequelize.literal('day'),
-      increase,
-      Sequelize.fn('getdate'),
-    );
+    insertedItem.expire = this.seqHelp.dateAdd(increase, 'day');
     if (findItem) {
       findItem = (
         await this.repository.update(insertedItem, {
@@ -126,7 +121,7 @@ export class StockAvailabilityInventoryService {
         )
         .filter({
           expire: {
-            [Op.gt]: Sequelize.fn('getdate'),
+            [Op.gt]: this.seqHelp.getDate(),
           },
         })
         .build(),
@@ -154,12 +149,7 @@ export class StockAvailabilityInventoryService {
     const insertedItem = _.omit(mappedItem.toJSON(), ['id']);
     insertedItem.productId = inventory.productId;
     insertedItem.sessionId = session.id;
-    insertedItem.expire = Sequelize.fn(
-      'dateadd',
-      Sequelize.literal('day'),
-      increase,
-      Sequelize.fn('getdate'),
-    );
+    insertedItem.expire = this.seqHelp.dateAdd(increase, 'day');
 
     findItem = (
       await this.repository.update(insertedItem, {

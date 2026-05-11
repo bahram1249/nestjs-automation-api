@@ -6,6 +6,7 @@ import { BuffetReserve } from '@rahino/localdatabase/models';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import { Buffet } from '@rahino/localdatabase/models';
 import { Sequelize } from 'sequelize';
+import { SequelizeHelpService } from '@rahino/commontools/sequelize-help/sequelize-help.service';
 
 @Injectable()
 export class QrScanService {
@@ -14,6 +15,7 @@ export class QrScanService {
     private readonly reserveRepository: typeof BuffetReserve,
     @InjectModel(Buffet)
     private readonly buffetRepository: typeof Buffet,
+    private readonly seqHelp: SequelizeHelpService,
   ) {}
 
   async confirmReserve(user: User, dto: QrScanDto) {
@@ -40,7 +42,7 @@ export class QrScanService {
     const reserveUpdate = await this.reserveRepository.update(
       {
         isQrScan: true,
-        qrScanDate: Sequelize.fn('getdate'),
+        qrScanDate: this.seqHelp.getDate(),
         qrScanBy: user.id,
       },
       { where: { id: reserve.id }, returning: true },

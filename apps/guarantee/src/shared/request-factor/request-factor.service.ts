@@ -168,12 +168,7 @@ export class RequestFactorService {
         factorStatusId: GSFactorStatusEnum.WaitingForPayment,
         factorTypeId: GSFactorTypeEnum.PayRequestFactor,
         userId: validateAndReturnCartableItem.request.userId,
-        expireDate: Sequelize.fn(
-          'dateadd',
-          Sequelize.literal('day'),
-          increaseDay,
-          Sequelize.fn('getdate'),
-        ),
+        expireDate: this.seqHelp.dateAdd(increaseDay, 'day'),
         requestId: validateAndReturnCartableItem.request.id,
         guaranteeId: guaranteeRequest.guaranteeId,
         representativeShareOfSolution:
@@ -457,7 +452,7 @@ export class RequestFactorService {
           as: 'organizationContracts',
           where: {
             [Op.and]: [
-              Sequelize.where(Sequelize.fn('getdate'), {
+              Sequelize.where(this.seqHelp.getDate(), {
                 [Op.between]: [
                   Sequelize.col('organizationContracts.startDate'),
                   Sequelize.col('organizationContracts.endDate'),

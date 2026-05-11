@@ -247,12 +247,7 @@ export class PayVipBundleService {
           factorStatusId: GSFactorStatusEnum.WaitingForPayment,
           factorTypeId: GSFactorTypeEnum.BuyVipCard,
           userId: user.id,
-          expireDate: Sequelize.fn(
-            'dateadd',
-            Sequelize.literal('day'),
-            7,
-            Sequelize.fn('getdate'),
-          ),
+          expireDate: this.seqHelp.dateAdd(7, 'day'),
         },
         { transaction: transaction },
       );

@@ -344,7 +344,7 @@ export class LogisticPeriodService {
         .filter(
           this.seqHelp.whereIsNullColumnEqualToZero('ECStock.isDeleted', 0),
         )
-        .filter({ expire: { [Op.gt]: Sequelize.fn('getdate') } })
+        .filter(this.seqHelp.whereCurrentDateLessThanColumn('expire'))
         .filter(
           this.seqHelp.whereIsNullColumnEqualToZero('ECStock.isPurchase', 0),
         )
@@ -533,14 +533,9 @@ export class LogisticPeriodService {
                 ),
                 { [Op.eq]: 0 },
               ),
-              Sequelize.where(Sequelize.fn('getdate'), {
+              Sequelize.where(this.seqHelp.getDate(), {
                 [Op.between]: [
-                  Sequelize.fn(
-                    'dateadd',
-                    Sequelize.literal('day'),
-                    -7,
-                    Sequelize.col('sendingPeriods.startDate'),
-                  ),
+                  this.seqHelp.dateAdd(-7, 'day', Sequelize.col('sendingPeriods.startDate')),
                   Sequelize.col('sendingPeriods.endDate'),
                 ],
               }),

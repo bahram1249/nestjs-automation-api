@@ -444,7 +444,7 @@ export class ApplyDiscountService {
             Sequelize.fn(
               'isnull',
               Sequelize.col('ECDiscount.startDate'),
-              Sequelize.fn('getdate'),
+              this.seqHelp.getDate(),
             ),
             'startDate',
           ],
@@ -452,12 +452,7 @@ export class ApplyDiscountService {
             Sequelize.fn(
               'isnull',
               Sequelize.col('ECDiscount.endDate'),
-              Sequelize.fn(
-                'dateadd',
-                Sequelize.literal('day'),
-                Sequelize.literal('1'),
-                Sequelize.fn('getdate'),
-              ),
+              this.seqHelp.dateAdd(Sequelize.literal('1'), 'day'),
             ),
             'endDate',
           ],
@@ -483,22 +478,13 @@ export class ApplyDiscountService {
           },
         ])
         .filter(
-          Sequelize.where(Sequelize.fn('getdate'), {
+          Sequelize.where(this.seqHelp.getDate(), {
             [Op.between]: [
-              Sequelize.fn(
-                'dateadd',
-                Sequelize.literal('minute'),
-                Sequelize.literal('-16'),
-                Sequelize.fn(
-                  'isnull',
-                  Sequelize.col('ECDiscount.startDate'),
-                  Sequelize.fn('getdate'),
-                ),
-              ),
+              this.seqHelp.dateAdd(Sequelize.literal('-16'), 'minute', Sequelize.fn('isnull', Sequelize.col('ECDiscount.startDate'), this.seqHelp.getDate())),
               Sequelize.fn(
                 'isnull',
                 Sequelize.col('ECDiscount.endDate'),
-                Sequelize.fn('getdate'),
+                this.seqHelp.getDate(),
               ),
             ],
           }),
@@ -688,23 +674,14 @@ export class ApplyDiscountService {
           },
         ])
         .filter(
-          Sequelize.where(Sequelize.fn('getdate'), {
+          Sequelize.where(this.seqHelp.getDate(), {
             [Op.between]: [
               Sequelize.fn(
                 'isnull',
                 Sequelize.col('ECDiscount.startDate'),
-                Sequelize.fn('getdate'),
+                this.seqHelp.getDate(),
               ),
-              Sequelize.fn(
-                'dateadd',
-                Sequelize.literal('minute'),
-                Sequelize.literal('15'),
-                Sequelize.fn(
-                  'isnull',
-                  Sequelize.col('ECDiscount.endDate'),
-                  Sequelize.fn('getdate'),
-                ),
-              ),
+              this.seqHelp.dateAdd(Sequelize.literal('15'), 'minute', Sequelize.fn('isnull', Sequelize.col('ECDiscount.endDate'), this.seqHelp.getDate())),
             ],
           }),
         )

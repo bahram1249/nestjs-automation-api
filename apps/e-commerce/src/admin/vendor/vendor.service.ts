@@ -172,10 +172,10 @@ export class VendorService {
           where: {
             [Op.and]: [
               { isDefault: true },
-               this.seqHelp.whereIsNullColumnEqualToZero(
-                 'vendorLogistic.isDeleted',
-                 0,
-               ),
+              this.seqHelp.whereIsNullColumnEqualToZero(
+                'vendorLogistic.isDeleted',
+                0,
+              ),
             ],
           },
         },
@@ -289,10 +289,10 @@ export class VendorService {
           where: {
             [Op.and]: [
               { isDefault: true },
-               this.seqHelp.whereIsNullColumnEqualToZero(
-                 'vendorLogistic.isDeleted',
-                 0,
-               ),
+              this.seqHelp.whereIsNullColumnEqualToZero(
+                'vendorLogistic.isDeleted',
+                0,
+              ),
             ],
           },
         },

@@ -33,12 +33,7 @@ export class ProductVideoRemovalProcessor extends WorkerHost {
         .filter(this.seqHelp.whereIsNullColumnEqualToZero('isDeleted', 0))
         .filter(
           Sequelize.where(Sequelize.col('createdAt'), {
-            [Op.lt]: Sequelize.fn(
-              'dateadd',
-              Sequelize.literal('day'),
-              decrease,
-              Sequelize.fn('getdate'),
-            ),
+            [Op.lt]: this.seqHelp.dateAdd(decrease, 'day'),
           }),
         )
         .build(),

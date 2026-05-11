@@ -10,7 +10,6 @@ import { AttachmentType } from '@rahino/database';
 import { User } from '@rahino/database';
 import * as path from 'path';
 import * as fs from 'fs';
-import { Sequelize } from 'sequelize';
 import { Op } from 'sequelize';
 import type { Response } from 'express';
 import { FileService } from '@rahino/file/file.service';
@@ -86,7 +85,7 @@ export class ProfileService {
       await this.repository.update(
         {
           isDeleted: true,
-          deletedDate: Sequelize.fn('getdate'),
+          deletedDate: this.seqHelp.getDate(),
           deletedBy: userId,
         },
         {
