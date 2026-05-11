@@ -21,6 +21,7 @@ import { User } from '@rahino/database';
 import * as fs from 'fs';
 import { ThumbnailService } from '@rahino/thumbnail';
 import { LocalizationService } from 'apps/main/src/common/localization';
+import { SequelizeHelpService } from '@rahino/commontools/sequelize-help/sequelize-help.service';
 
 @Injectable()
 export class EntityTypeService {
@@ -39,6 +40,7 @@ export class EntityTypeService {
     private readonly mapper: Mapper,
     private readonly thumbnailService: ThumbnailService,
     private readonly localizationService: LocalizationService,
+    private readonly seqHelp: SequelizeHelpService,
   ) {}
 
   async findAll(filter: GetEntityTypeDto) {
@@ -49,12 +51,7 @@ export class EntityTypeService {
         },
       })
       .filter(
-        Sequelize.where(
-          Sequelize.fn('isnull', Sequelize.col('EAVEntityType.isDeleted'), 0),
-          {
-            [Op.eq]: 0,
-          },
-        ),
+        this.seqHelp.whereIsNullColumnEqualToZero('EAVEntityType.isDeleted', 0),
       );
     if (filter.entityModelId) {
       builder = builder.filter({
@@ -106,15 +103,9 @@ export class EntityTypeService {
           model: EAVEntityType,
           as: 'subEntityTypes',
           required: false,
-          where: Sequelize.where(
-            Sequelize.fn(
-              'isnull',
-              Sequelize.col('subEntityTypes.isDeleted'),
-              0,
-            ),
-            {
-              [Op.eq]: 0,
-            },
+          where: this.seqHelp.whereIsNullColumnEqualToZero(
+            'subEntityTypes.isDeleted',
+            0,
           ),
           include: [
             {
@@ -122,15 +113,9 @@ export class EntityTypeService {
               model: EAVEntityType,
               as: 'subEntityTypes',
               required: false,
-              where: Sequelize.where(
-                Sequelize.fn(
-                  'isnull',
-                  Sequelize.col('subEntityTypes.subEntityTypes.isDeleted'),
-                  0,
-                ),
-                {
-                  [Op.eq]: 0,
-                },
+              where: this.seqHelp.whereIsNullColumnEqualToZero(
+                'subEntityTypes.subEntityTypes.isDeleted',
+                0,
               ),
               include: [
                 {
@@ -179,12 +164,7 @@ export class EntityTypeService {
         },
       })
       .filter(
-        Sequelize.where(
-          Sequelize.fn('isnull', Sequelize.col('EAVEntityType.isDeleted'), 0),
-          {
-            [Op.eq]: 0,
-          },
-        ),
+        this.seqHelp.whereIsNullColumnEqualToZero('EAVEntityType.isDeleted', 0),
       );
     if (filter.entityModelId) {
       builder = builder.filter({
@@ -236,15 +216,9 @@ export class EntityTypeService {
           model: EAVEntityType,
           as: 'subEntityTypes',
           required: false,
-          where: Sequelize.where(
-            Sequelize.fn(
-              'isnull',
-              Sequelize.col('subEntityTypes.isDeleted'),
-              0,
-            ),
-            {
-              [Op.eq]: 0,
-            },
+          where: this.seqHelp.whereIsNullColumnEqualToZero(
+            'subEntityTypes.isDeleted',
+            0,
           ),
           include: [
             {
@@ -252,15 +226,9 @@ export class EntityTypeService {
               model: EAVEntityType,
               as: 'subEntityTypes',
               required: false,
-              where: Sequelize.where(
-                Sequelize.fn(
-                  'isnull',
-                  Sequelize.col('subEntityTypes.subEntityTypes.isDeleted'),
-                  0,
-                ),
-                {
-                  [Op.eq]: 0,
-                },
+              where: this.seqHelp.whereIsNullColumnEqualToZero(
+                'subEntityTypes.subEntityTypes.isDeleted',
+                0,
               ),
               include: [
                 {
@@ -693,11 +661,9 @@ export class EntityTypeService {
       new QueryOptionsBuilder()
         .filter({ slug: dto.slug })
         .filter(
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('EAVEntityType.isDeleted'), 0),
-            {
-              [Op.eq]: 0,
-            },
+          this.seqHelp.whereIsNullColumnEqualToZero(
+            'EAVEntityType.isDeleted',
+            0,
           ),
         )
         .build(),
@@ -786,11 +752,9 @@ export class EntityTypeService {
       new QueryOptionsBuilder()
         .filter({ slug: dto.slug })
         .filter(
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('EAVEntityType.isDeleted'), 0),
-            {
-              [Op.eq]: 0,
-            },
+          this.seqHelp.whereIsNullColumnEqualToZero(
+            'EAVEntityType.isDeleted',
+            0,
           ),
         )
         .build(),
@@ -873,11 +837,9 @@ export class EntityTypeService {
       new QueryOptionsBuilder()
         .filter({ id })
         .filter(
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('EAVEntityType.isDeleted'), 0),
-            {
-              [Op.eq]: 0,
-            },
+          this.seqHelp.whereIsNullColumnEqualToZero(
+            'EAVEntityType.isDeleted',
+            0,
           ),
         )
         .build(),
@@ -920,11 +882,9 @@ export class EntityTypeService {
           },
         })
         .filter(
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('EAVEntityType.isDeleted'), 0),
-            {
-              [Op.eq]: 0,
-            },
+          this.seqHelp.whereIsNullColumnEqualToZero(
+            'EAVEntityType.isDeleted',
+            0,
           ),
         )
         .build(),
@@ -986,11 +946,9 @@ export class EntityTypeService {
       new QueryOptionsBuilder()
         .filter({ id })
         .filter(
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('EAVEntityType.isDeleted'), 0),
-            {
-              [Op.eq]: 0,
-            },
+          this.seqHelp.whereIsNullColumnEqualToZero(
+            'EAVEntityType.isDeleted',
+            0,
           ),
         )
         .build(),
@@ -1033,11 +991,9 @@ export class EntityTypeService {
           },
         })
         .filter(
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('EAVEntityType.isDeleted'), 0),
-            {
-              [Op.eq]: 0,
-            },
+          this.seqHelp.whereIsNullColumnEqualToZero(
+            'EAVEntityType.isDeleted',
+            0,
           ),
         )
         .build(),
@@ -1113,11 +1069,9 @@ export class EntityTypeService {
       new QueryOptionsBuilder()
         .filter({ id })
         .filter(
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('EAVEntityType.isDeleted'), 0),
-            {
-              [Op.eq]: 0,
-            },
+          this.seqHelp.whereIsNullColumnEqualToZero(
+            'EAVEntityType.isDeleted',
+            0,
           ),
         )
         .build(),
@@ -1141,11 +1095,9 @@ export class EntityTypeService {
       new QueryOptionsBuilder()
         .filter({ id })
         .filter(
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('EAVEntityType.isDeleted'), 0),
-            {
-              [Op.eq]: 0,
-            },
+          this.seqHelp.whereIsNullColumnEqualToZero(
+            'EAVEntityType.isDeleted',
+            0,
           ),
         )
         .build(),
@@ -1174,14 +1126,7 @@ export class EntityTypeService {
       let oldAttachment = await this.attachmentRepository.findOne(
         new QueryOptionsBuilder()
           .filter({ id: item.attachmentId })
-          .filter(
-            Sequelize.where(
-              Sequelize.fn('isnull', Sequelize.col('isDeleted'), 0),
-              {
-                [Op.eq]: 0,
-              },
-            ),
-          )
+          .filter(this.seqHelp.whereIsNullColumnEqualToZero('isDeleted', 0))
           .filter({ attachmentTypeId: this.entityTypeAttachmentType })
           .build(),
       );
@@ -1224,14 +1169,7 @@ export class EntityTypeService {
     const attachment = await this.attachmentRepository.findOne(
       new QueryOptionsBuilder()
         .filter({ fileName: fileName })
-        .filter(
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('isDeleted'), 0),
-            {
-              [Op.eq]: 0,
-            },
-          ),
-        )
+        .filter(this.seqHelp.whereIsNullColumnEqualToZero('isDeleted', 0))
         .filter({ attachmentTypeId: this.entityTypeAttachmentType })
         .build(),
     );

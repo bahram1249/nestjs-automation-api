@@ -20,6 +20,7 @@ import { OrderQueryBuilder } from '../utilOrder/service/order-query-builder.serv
 import { OrderUtilService } from '../utilOrder/service/order-util.service';
 import { ConfigService } from '@nestjs/config';
 import { ECommmerceSmsService } from '@rahino/ecommerce/shared/sms/ecommerce-sms.service';
+import { SequelizeHelpService } from '@rahino/commontools/sequelize-help/sequelize-help.service';
 
 @Injectable()
 export class PendingOrderService {
@@ -35,6 +36,7 @@ export class PendingOrderService {
     private readonly config: ConfigService,
     @InjectModel(User)
     private readonly userRepository: typeof User,
+    private readonly seqHelp: SequelizeHelpService,
   ) {}
 
   async findAll(user: User, filter: GetOrderDto) {
@@ -114,11 +116,9 @@ export class PendingOrderService {
           orderDetailStatusId: OrderDetailStatusEnum.WaitingForProcess,
         })
         .filter(
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('ECOrderDetail.isDeleted'), 0),
-            {
-              [Op.eq]: 0,
-            },
+          this.seqHelp.whereIsNullColumnEqualToZero(
+            'ECOrderDetail.isDeleted',
+            0,
           ),
         )
         .build(),
@@ -146,11 +146,9 @@ export class PendingOrderService {
           },
         })
         .filter(
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('ECOrderDetail.isDeleted'), 0),
-            {
-              [Op.eq]: 0,
-            },
+          this.seqHelp.whereIsNullColumnEqualToZero(
+            'ECOrderDetail.isDeleted',
+            0,
           ),
         )
         .build(),

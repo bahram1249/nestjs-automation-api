@@ -26,6 +26,7 @@ import { UserRole } from '@rahino/database';
 import { BuffetOption } from '@rahino/localdatabase/models';
 import { replaceCharacterSlug } from '@rahino/commontools';
 import { BuffetGallery } from '@rahino/localdatabase/models';
+import { SequelizeHelpService } from '@rahino/commontools/sequelize-help/sequelize-help.service';
 
 @Injectable()
 export class BuffetService {
@@ -48,6 +49,7 @@ export class BuffetService {
     private readonly buffetGalleryRepository: typeof BuffetGallery,
     private readonly fileService: FileService,
     private readonly thumbnailService: ThumbnailService,
+    private readonly seqHelp: SequelizeHelpService,
   ) {}
 
   async findAll(filter: ListFilter) {
@@ -342,12 +344,7 @@ export class BuffetService {
           {
             fileName: fileName,
           },
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('isDeleted'), 0),
-            {
-              [Op.eq]: 0,
-            },
-          ),
+          this.seqHelp.whereIsNullColumnEqualToZero('isDeleted', 0),
           {
             attachmentTypeId: 2,
           },
@@ -416,12 +413,7 @@ export class BuffetService {
           {
             fileName: fileName,
           },
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('isDeleted'), 0),
-            {
-              [Op.eq]: 0,
-            },
-          ),
+          this.seqHelp.whereIsNullColumnEqualToZero('isDeleted', 0),
           {
             attachmentTypeId: 12,
           },

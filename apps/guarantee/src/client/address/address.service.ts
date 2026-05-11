@@ -20,6 +20,7 @@ import { User } from '@rahino/database';
 import { I18nTranslations } from 'apps/main/src/generated/i18n.generated';
 import { I18nContext, I18nService } from 'nestjs-i18n';
 import { LocalizationService } from 'apps/main/src/common/localization';
+import { SequelizeHelpService } from '@rahino/commontools/sequelize-help/sequelize-help.service';
 
 @Injectable()
 export class AddressService {
@@ -34,6 +35,7 @@ export class AddressService {
     @InjectConnection()
     private readonly sequelize: Sequelize,
     private readonly localizationService: LocalizationService,
+    private readonly seqHelp: SequelizeHelpService,
   ) {}
 
   async findAll(user: User, filter: GetAddressDto) {
@@ -47,12 +49,7 @@ export class AddressService {
         },
       })
       .filter(
-        Sequelize.where(
-          Sequelize.fn('isnull', Sequelize.col('GSAddress.isDeleted'), 0),
-          {
-            [Op.eq]: 0,
-          },
-        ),
+        this.seqHelp.whereIsNullColumnEqualToZero('GSAddress.isDeleted', 0),
       );
     const count = await this.repository.count(queryBuilder.build());
     const queryOptions = queryBuilder
@@ -121,12 +118,7 @@ export class AddressService {
         })
         .filter({ id: entityId })
         .filter(
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('GSAddress.isDeleted'), 0),
-            {
-              [Op.eq]: 0,
-            },
-          ),
+          this.seqHelp.whereIsNullColumnEqualToZero('GSAddress.isDeleted', 0),
         )
         .include([
           {
@@ -169,12 +161,7 @@ export class AddressService {
       new QueryOptionsBuilder()
         .filter({ id: dto.provinceId })
         .filter(
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('GSProvince.isDeleted'), 0),
-            {
-              [Op.eq]: 0,
-            },
-          ),
+          this.seqHelp.whereIsNullColumnEqualToZero('GSProvince.isDeleted', 0),
         )
         .build(),
     );
@@ -193,12 +180,7 @@ export class AddressService {
           .filter({ id: dto.cityId })
           .filter({ provinceId: dto.provinceId })
           .filter(
-            Sequelize.where(
-              Sequelize.fn('isnull', Sequelize.col('GSCity.isDeleted'), 0),
-              {
-                [Op.eq]: 0,
-              },
-            ),
+            this.seqHelp.whereIsNullColumnEqualToZero('GSCity.isDeleted', 0),
           )
           .build(),
       );
@@ -306,12 +288,7 @@ export class AddressService {
         })
         .filter({ id: entityId })
         .filter(
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('GSAddress.isDeleted'), 0),
-            {
-              [Op.eq]: 0,
-            },
-          ),
+          this.seqHelp.whereIsNullColumnEqualToZero('GSAddress.isDeleted', 0),
         )
         .build(),
     );
@@ -327,12 +304,7 @@ export class AddressService {
       new QueryOptionsBuilder()
         .filter({ id: dto.provinceId })
         .filter(
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('GSProvince.isDeleted'), 0),
-            {
-              [Op.eq]: 0,
-            },
-          ),
+          this.seqHelp.whereIsNullColumnEqualToZero('GSProvince.isDeleted', 0),
         )
         .build(),
     );
@@ -351,12 +323,7 @@ export class AddressService {
           .filter({ id: dto.cityId })
           .filter({ provinceId: dto.provinceId })
           .filter(
-            Sequelize.where(
-              Sequelize.fn('isnull', Sequelize.col('GSCity.isDeleted'), 0),
-              {
-                [Op.eq]: 0,
-              },
-            ),
+            this.seqHelp.whereIsNullColumnEqualToZero('GSCity.isDeleted', 0),
           )
           .build(),
       );
@@ -479,12 +446,7 @@ export class AddressService {
       new QueryOptionsBuilder()
         .filter({ id: entityId })
         .filter(
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('GSAddress.isDeleted'), 0),
-            {
-              [Op.eq]: 0,
-            },
-          ),
+          this.seqHelp.whereIsNullColumnEqualToZero('GSAddress.isDeleted', 0),
         )
         .build(),
     );
@@ -500,12 +462,7 @@ export class AddressService {
       new QueryOptionsBuilder()
         .filter({ id: dto.provinceId })
         .filter(
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('GSProvince.isDeleted'), 0),
-            {
-              [Op.eq]: 0,
-            },
-          ),
+          this.seqHelp.whereIsNullColumnEqualToZero('GSProvince.isDeleted', 0),
         )
         .build(),
     );
@@ -524,12 +481,7 @@ export class AddressService {
           .filter({ id: dto.cityId })
           .filter({ provinceId: dto.provinceId })
           .filter(
-            Sequelize.where(
-              Sequelize.fn('isnull', Sequelize.col('GSCity.isDeleted'), 0),
-              {
-                [Op.eq]: 0,
-              },
-            ),
+            this.seqHelp.whereIsNullColumnEqualToZero('GSCity.isDeleted', 0),
           )
           .build(),
       );

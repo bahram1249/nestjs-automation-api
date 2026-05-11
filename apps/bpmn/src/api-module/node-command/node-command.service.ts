@@ -8,20 +8,22 @@ import {
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import { Op, Sequelize } from 'sequelize';
 import { GetNodeCommandDto } from './dto/get-node-command.dto';
+import { SequelizeHelpService } from '@rahino/commontools/sequelize-help/sequelize-help.service';
 
 @Injectable()
 export class NodeCommandService {
   constructor(
     @InjectModel(BPMNNodeCommand)
     private readonly repository: typeof BPMNNodeCommand,
+    private readonly seqHelp: SequelizeHelpService,
   ) {}
 
   async findAll(filter: GetNodeCommandDto) {
     let qb = new QueryOptionsBuilder()
       .filter(
-        Sequelize.where(
-          Sequelize.fn('isnull', Sequelize.col('BPMNNodeCommand.isDeleted'), 0),
-          { [Op.eq]: 0 },
+        this.seqHelp.whereIsNullColumnEqualToZero(
+          'BPMNNodeCommand.isDeleted',
+          0,
         ),
       )
       .filterIf(!!filter.search && filter.search !== '%%', {
@@ -61,9 +63,9 @@ export class NodeCommandService {
   async lookup(filter: GetNodeCommandDto) {
     const qbBase = new QueryOptionsBuilder()
       .filter(
-        Sequelize.where(
-          Sequelize.fn('isnull', Sequelize.col('BPMNNodeCommand.isDeleted'), 0),
-          { [Op.eq]: 0 },
+        this.seqHelp.whereIsNullColumnEqualToZero(
+          'BPMNNodeCommand.isDeleted',
+          0,
         ),
       )
       .filterIf(!!filter.search && filter.search !== '%%', {
@@ -78,9 +80,9 @@ export class NodeCommandService {
 
     const qbList = new QueryOptionsBuilder()
       .filter(
-        Sequelize.where(
-          Sequelize.fn('isnull', Sequelize.col('BPMNNodeCommand.isDeleted'), 0),
-          { [Op.eq]: 0 },
+        this.seqHelp.whereIsNullColumnEqualToZero(
+          'BPMNNodeCommand.isDeleted',
+          0,
         ),
       )
       .attributes(['id', 'nodeId', 'name', 'nodeCommandTypeId'])
@@ -119,13 +121,9 @@ export class NodeCommandService {
         .attributes(['id', 'nodeId', 'name', 'nodeCommandTypeId', 'route'])
         .filter({ id })
         .filter(
-          Sequelize.where(
-            Sequelize.fn(
-              'isnull',
-              Sequelize.col('BPMNNodeCommand.isDeleted'),
-              0,
-            ),
-            { [Op.eq]: 0 },
+          this.seqHelp.whereIsNullColumnEqualToZero(
+            'BPMNNodeCommand.isDeleted',
+            0,
           ),
         )
         .include([

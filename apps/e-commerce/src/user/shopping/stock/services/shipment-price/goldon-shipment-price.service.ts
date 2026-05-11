@@ -12,6 +12,7 @@ import { CourierPriceEnum } from '@rahino/ecommerce/admin/order-section/courier-
 import { ECDiscount } from '@rahino/localdatabase/models';
 import { ECDiscountType } from '@rahino/localdatabase/models';
 import { TipaxShipmentPrice } from './tipax.service';
+import { SequelizeHelpService } from '@rahino/commontools/sequelize-help/sequelize-help.service';
 
 @Injectable()
 export class GoldonShipmentPrice implements ShipmentInteface {
@@ -25,6 +26,7 @@ export class GoldonShipmentPrice implements ShipmentInteface {
     private readonly discountRepository: typeof ECDiscount,
     @InjectConnection()
     private readonly sequelize: Sequelize,
+    private readonly seqHelp: SequelizeHelpService,
   ) {}
   async cal(
     stockPrices: StockPriceInterface[],
@@ -78,35 +80,23 @@ export class GoldonShipmentPrice implements ShipmentInteface {
         const discount = await this.discountRepository.findOne(
           new QueryOptionsBuilder()
             .filter(
-              Sequelize.where(
-                Sequelize.fn(
-                  'isnull',
-                  Sequelize.col('ECDiscount.isDeleted'),
-                  0,
-                ),
-                {
-                  [Op.eq]: 0,
-                },
+              this.seqHelp.whereIsNullColumnEqualToZero(
+                'ECDiscount.isDeleted',
+                0,
               ),
             )
             .filter(
-              Sequelize.where(
-                Sequelize.fn('isnull', Sequelize.col('ECDiscount.isActive'), 0),
-                {
-                  [Op.eq]: 1,
-                },
+              this.seqHelp.whereIsNullColumnEqualToValue(
+                'ECDiscount.isActive',
+                0,
+                1,
               ),
             )
             .filter(
-              Sequelize.where(
-                Sequelize.fn(
-                  'isnull',
-                  Sequelize.col('discountType.isFactorBased'),
-                  0,
-                ),
-                {
-                  [Op.eq]: 1,
-                },
+              this.seqHelp.whereIsNullColumnEqualToValue(
+                'discountType.isFactorBased',
+                0,
+                1,
               ),
             )
             .filter(

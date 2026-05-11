@@ -19,6 +19,7 @@ import { Response } from 'express';
 import { ThumbnailService } from '@rahino/thumbnail';
 import { ECSelectedProduct } from '@rahino/localdatabase/models';
 import { ECSelectedProductType } from '@rahino/localdatabase/models';
+import { SequelizeHelpService } from '@rahino/commontools/sequelize-help/sequelize-help.service';
 
 @Injectable()
 export class SelectedProductService {
@@ -30,6 +31,7 @@ export class SelectedProductService {
     @InjectModel(Attachment) private attachmentRepository: typeof Attachment,
     @InjectMapper() private readonly mapper: Mapper,
     private readonly thumbnailService: ThumbnailService,
+    private readonly seqHelp: SequelizeHelpService,
   ) {}
 
   async findAll(filter: GetSelectedProductDto) {
@@ -72,15 +74,9 @@ export class SelectedProductService {
         },
       ])
       .filter(
-        Sequelize.where(
-          Sequelize.fn(
-            'isnull',
-            Sequelize.col('ECSelectedProduct.isDeleted'),
-            0,
-          ),
-          {
-            [Op.eq]: 0,
-          },
+        this.seqHelp.whereIsNullColumnEqualToZero(
+          'ECSelectedProduct.isDeleted',
+          0,
         ),
       )
       .limit(filter.limit, filter.ignorePaging)
@@ -125,15 +121,9 @@ export class SelectedProductService {
           },
         ])
         .filter(
-          Sequelize.where(
-            Sequelize.fn(
-              'isnull',
-              Sequelize.col('ECSelectedProduct.isDeleted'),
-              0,
-            ),
-            {
-              [Op.eq]: 0,
-            },
+          this.seqHelp.whereIsNullColumnEqualToZero(
+            'ECSelectedProduct.isDeleted',
+            0,
           ),
         )
         .filter({ id: entityId })
@@ -152,15 +142,9 @@ export class SelectedProductService {
       new QueryOptionsBuilder()
         .filter({ slug: dto.slug })
         .filter(
-          Sequelize.where(
-            Sequelize.fn(
-              'isnull',
-              Sequelize.col('ECSelectedProduct.isDeleted'),
-              0,
-            ),
-            {
-              [Op.eq]: 0,
-            },
+          this.seqHelp.whereIsNullColumnEqualToZero(
+            'ECSelectedProduct.isDeleted',
+            0,
           ),
         )
         .build(),
@@ -201,15 +185,9 @@ export class SelectedProductService {
       new QueryOptionsBuilder()
         .filter({ id: entityId })
         .filter(
-          Sequelize.where(
-            Sequelize.fn(
-              'isnull',
-              Sequelize.col('ECSelectedProduct.isDeleted'),
-              0,
-            ),
-            {
-              [Op.eq]: 0,
-            },
+          this.seqHelp.whereIsNullColumnEqualToZero(
+            'ECSelectedProduct.isDeleted',
+            0,
           ),
         )
         .build(),
@@ -226,15 +204,9 @@ export class SelectedProductService {
           },
         })
         .filter(
-          Sequelize.where(
-            Sequelize.fn(
-              'isnull',
-              Sequelize.col('ECSelectedProduct.isDeleted'),
-              0,
-            ),
-            {
-              [Op.eq]: 0,
-            },
+          this.seqHelp.whereIsNullColumnEqualToZero(
+            'ECSelectedProduct.isDeleted',
+            0,
           ),
         )
         .build(),
@@ -280,15 +252,9 @@ export class SelectedProductService {
       new QueryOptionsBuilder()
         .filter({ id: entityId })
         .filter(
-          Sequelize.where(
-            Sequelize.fn(
-              'isnull',
-              Sequelize.col('ECSelectedProduct.isDeleted'),
-              0,
-            ),
-            {
-              [Op.eq]: 0,
-            },
+          this.seqHelp.whereIsNullColumnEqualToZero(
+            'ECSelectedProduct.isDeleted',
+            0,
           ),
         )
         .build(),
@@ -320,14 +286,7 @@ export class SelectedProductService {
     let item = await this.repository.findOne(
       new QueryOptionsBuilder()
         .filter({ id })
-        .filter(
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('isDeleted'), 0),
-            {
-              [Op.eq]: 0,
-            },
-          ),
-        )
+        .filter(this.seqHelp.whereIsNullColumnEqualToZero('isDeleted', 0))
         .build(),
     );
     if (!item) {
@@ -352,14 +311,7 @@ export class SelectedProductService {
       let oldAttachment = await this.attachmentRepository.findOne(
         new QueryOptionsBuilder()
           .filter({ id: item.attachmentId })
-          .filter(
-            Sequelize.where(
-              Sequelize.fn('isnull', Sequelize.col('isDeleted'), 0),
-              {
-                [Op.eq]: 0,
-              },
-            ),
-          )
+          .filter(this.seqHelp.whereIsNullColumnEqualToZero('isDeleted', 0))
           .filter({ attachmentTypeId: this.selectedProductAttachmentType })
           .build(),
       );
@@ -402,14 +354,7 @@ export class SelectedProductService {
     const attachment = await this.attachmentRepository.findOne(
       new QueryOptionsBuilder()
         .filter({ fileName: fileName })
-        .filter(
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('isDeleted'), 0),
-            {
-              [Op.eq]: 0,
-            },
-          ),
-        )
+        .filter(this.seqHelp.whereIsNullColumnEqualToZero('isDeleted', 0))
         .filter({ attachmentTypeId: this.selectedProductAttachmentType })
         .build(),
     );

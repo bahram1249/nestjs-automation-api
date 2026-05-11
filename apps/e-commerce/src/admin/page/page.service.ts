@@ -13,23 +13,20 @@ import * as _ from 'lodash';
 import { User } from '@rahino/database';
 import { ECPage } from '@rahino/localdatabase/models';
 import { ListFilter } from '@rahino/query-filter';
+import { SequelizeHelpService } from '@rahino/commontools/sequelize-help/sequelize-help.service';
 
 @Injectable()
 export class PageService {
   constructor(
     @InjectModel(ECPage) private repository: typeof ECPage,
     @InjectMapper() private readonly mapper: Mapper,
+    private readonly seqHelp: SequelizeHelpService,
   ) {}
 
   async findAll(filter: ListFilter) {
     let queryBuilder = new QueryOptionsBuilder();
     queryBuilder = queryBuilder.filter(
-      Sequelize.where(
-        Sequelize.fn('isnull', Sequelize.col('ECPage.isDeleted'), 0),
-        {
-          [Op.eq]: 0,
-        },
-      ),
+      this.seqHelp.whereIsNullColumnEqualToZero('ECPage.isDeleted', 0),
     );
     const count = await this.repository.count(queryBuilder.build());
     const result = await this.repository.findAll(queryBuilder.build());
@@ -42,14 +39,7 @@ export class PageService {
   async findById(entityId: bigint) {
     let queryBuilder = new QueryOptionsBuilder();
     queryBuilder = queryBuilder
-      .filter(
-        Sequelize.where(
-          Sequelize.fn('isnull', Sequelize.col('ECPage.isDeleted'), 0),
-          {
-            [Op.eq]: 0,
-          },
-        ),
-      )
+      .filter(this.seqHelp.whereIsNullColumnEqualToZero('ECPage.isDeleted', 0))
       .filter({ id: entityId });
     const page = await this.repository.findOne(queryBuilder.build());
     if (!page) {
@@ -65,12 +55,7 @@ export class PageService {
       new QueryOptionsBuilder()
         .filter({ slug: dto.slug })
         .filter(
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('ECPage.isDeleted'), 0),
-            {
-              [Op.eq]: 0,
-            },
-          ),
+          this.seqHelp.whereIsNullColumnEqualToZero('ECPage.isDeleted', 0),
         )
         .build(),
     );
@@ -105,12 +90,7 @@ export class PageService {
       new QueryOptionsBuilder()
         .filter({ id: entityId })
         .filter(
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('ECPage.isDeleted'), 0),
-            {
-              [Op.eq]: 0,
-            },
-          ),
+          this.seqHelp.whereIsNullColumnEqualToZero('ECPage.isDeleted', 0),
         )
         .build(),
     );
@@ -126,12 +106,7 @@ export class PageService {
           },
         })
         .filter(
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('ECPage.isDeleted'), 0),
-            {
-              [Op.eq]: 0,
-            },
-          ),
+          this.seqHelp.whereIsNullColumnEqualToZero('ECPage.isDeleted', 0),
         )
         .build(),
     );
@@ -170,12 +145,7 @@ export class PageService {
       new QueryOptionsBuilder()
         .filter({ id: entityId })
         .filter(
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('ECPage.isDeleted'), 0),
-            {
-              [Op.eq]: 0,
-            },
-          ),
+          this.seqHelp.whereIsNullColumnEqualToZero('ECPage.isDeleted', 0),
         )
         .build(),
     );

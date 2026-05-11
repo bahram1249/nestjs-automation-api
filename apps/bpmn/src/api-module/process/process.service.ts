@@ -19,6 +19,7 @@ import {
 import { GetProcessDto, CreateProcessDto, UpdateProcessDto } from './dto';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import { Op, Sequelize } from 'sequelize';
+import { SequelizeHelpService } from '@rahino/commontools/sequelize-help/sequelize-help.service';
 
 @Injectable()
 export class ProcessService {
@@ -41,17 +42,13 @@ export class ProcessService {
     private readonly actionRepo: typeof BPMNAction,
     @InjectModel(BPMNCondition)
     private readonly conditionRepo: typeof BPMNCondition,
+    private readonly seqHelp: SequelizeHelpService,
   ) {}
 
   async findAll(filter: GetProcessDto) {
     let qb = new QueryOptionsBuilder()
       .filter(
-        Sequelize.where(
-          Sequelize.fn('isnull', Sequelize.col('BPMNPROCESS.isDeleted'), 0),
-          {
-            [Op.eq]: 0,
-          },
-        ),
+        this.seqHelp.whereIsNullColumnEqualToZero('BPMNPROCESS.isDeleted', 0),
       )
       .filterIf(!!filter.search && filter.search !== '%%', {
         name: { [Op.like]: filter.search as any },
@@ -73,12 +70,7 @@ export class ProcessService {
     // Count with base filters (no pagination)
     const qbBase = new QueryOptionsBuilder()
       .filter(
-        Sequelize.where(
-          Sequelize.fn('isnull', Sequelize.col('BPMNPROCESS.isDeleted'), 0),
-          {
-            [Op.eq]: 0,
-          },
-        ),
+        this.seqHelp.whereIsNullColumnEqualToZero('BPMNPROCESS.isDeleted', 0),
       )
       .filterIf(!!filter.search && filter.search !== '%%', {
         name: { [Op.like]: filter.search as any },
@@ -88,12 +80,7 @@ export class ProcessService {
     // List with attributes and pagination
     const qbList = new QueryOptionsBuilder()
       .filter(
-        Sequelize.where(
-          Sequelize.fn('isnull', Sequelize.col('BPMNPROCESS.isDeleted'), 0),
-          {
-            [Op.eq]: 0,
-          },
-        ),
+        this.seqHelp.whereIsNullColumnEqualToZero('BPMNPROCESS.isDeleted', 0),
       )
       .attributes(['id', 'name'])
       .filterIf(!!filter.search && filter.search !== '%%', {
@@ -113,12 +100,7 @@ export class ProcessService {
         .attributes(['id', 'name', 'isSubProcess', 'staticId'])
         .filter({ id })
         .filter(
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('BPMNPROCESS.isDeleted'), 0),
-            {
-              [Op.eq]: 0,
-            },
-          ),
+          this.seqHelp.whereIsNullColumnEqualToZero('BPMNPROCESS.isDeleted', 0),
         )
         .build(),
     );
@@ -178,9 +160,9 @@ export class ProcessService {
         .attributes(['id', 'name', 'isStartActivity', 'isEndActivity'])
         .filter({ processId })
         .filter(
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('BPMNActivity.isDeleted'), 0),
-            { [Op.eq]: 0 },
+          this.seqHelp.whereIsNullColumnEqualToZero(
+            'BPMNActivity.isDeleted',
+            0,
           ),
         )
         .order({ orderBy: 'id', sortOrder: 'ASC' })
@@ -209,10 +191,7 @@ export class ProcessService {
         .filter({ fromActivityId: { [Op.in]: activityIds } as any })
         .filter({ toActivityId: { [Op.in]: activityIds } as any })
         .filter(
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('BPMNNode.isDeleted'), 0),
-            { [Op.eq]: 0 },
-          ),
+          this.seqHelp.whereIsNullColumnEqualToZero('BPMNNode.isDeleted', 0),
         )
         .order({ orderBy: 'id', sortOrder: 'ASC' })
         .build(),
@@ -232,13 +211,9 @@ export class ProcessService {
           .attributes(['id', 'activityId', 'priority'])
           .filter({ activityId: { [Op.in]: activityIds } as any })
           .filter(
-            Sequelize.where(
-              Sequelize.fn(
-                'isnull',
-                Sequelize.col('BPMNInboundAction.isDeleted'),
-                0,
-              ),
-              { [Op.eq]: 0 },
+            this.seqHelp.whereIsNullColumnEqualToZero(
+              'BPMNInboundAction.isDeleted',
+              0,
             ),
           )
           .include([
@@ -267,13 +242,9 @@ export class ProcessService {
           .attributes(['id', 'activityId', 'priority'])
           .filter({ activityId: { [Op.in]: activityIds } as any })
           .filter(
-            Sequelize.where(
-              Sequelize.fn(
-                'isnull',
-                Sequelize.col('BPMNOutboundAction.isDeleted'),
-                0,
-              ),
-              { [Op.eq]: 0 },
+            this.seqHelp.whereIsNullColumnEqualToZero(
+              'BPMNOutboundAction.isDeleted',
+              0,
             ),
           )
           .include([

@@ -9,6 +9,7 @@ import { GSFactorTypeEnum } from '@rahino/guarantee/shared/factor-type';
 import { GSFactorStatusEnum } from '@rahino/guarantee/shared/factor-status';
 import * as ExcelJS from 'exceljs';
 import { Buffer as NodeBuffer } from 'buffer';
+import { SequelizeHelpService } from '@rahino/commontools/sequelize-help/sequelize-help.service';
 
 @Injectable()
 export class IncomeReportService {
@@ -16,6 +17,7 @@ export class IncomeReportService {
     @InjectModel(GSFactor)
     private readonly factorRepository: typeof GSFactor,
     private readonly localizationService: LocalizationService,
+    private readonly seqHelp: SequelizeHelpService,
   ) {}
 
   private buildBaseQuery(
@@ -36,12 +38,7 @@ export class IncomeReportService {
         },
       ])
       .filter(
-        Sequelize.where(
-          Sequelize.fn('isnull', Sequelize.col('GSFactor.isDeleted'), 0),
-          {
-            [Op.eq]: 0,
-          },
-        ),
+        this.seqHelp.whereIsNullColumnEqualToZero('GSFactor.isDeleted', 0),
       )
       .filter({
         factorTypeId: GSFactorTypeEnum.PayRequestFactor,

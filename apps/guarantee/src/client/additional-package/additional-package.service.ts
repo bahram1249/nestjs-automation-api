@@ -6,6 +6,7 @@ import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builde
 import { Op, Sequelize } from 'sequelize';
 import { I18nContext, I18nService } from 'nestjs-i18n';
 import { I18nTranslations } from 'apps/main/src/generated/i18n.generated';
+import { SequelizeHelpService } from '@rahino/commontools/sequelize-help/sequelize-help.service';
 
 @Injectable()
 export class AdditionalPackageService {
@@ -13,6 +14,7 @@ export class AdditionalPackageService {
     @InjectModel(GSAdditionalPackage)
     private readonly repository: typeof GSAdditionalPackage,
     private readonly i18n: I18nService<I18nTranslations>,
+    private readonly seqHelp: SequelizeHelpService,
   ) {}
 
   async findAll(filter: GetAdditionalPackageDto) {
@@ -27,15 +29,9 @@ export class AdditionalPackageService {
     query = query
       .attributes(['id', 'title', 'price', 'createdAt', 'updatedAt'])
       .filter(
-        Sequelize.where(
-          Sequelize.fn(
-            'isnull',
-            Sequelize.col('GSAdditionalPackage.isDeleted'),
-            0,
-          ),
-          {
-            [Op.eq]: 0,
-          },
+        this.seqHelp.whereIsNullColumnEqualToZero(
+          'GSAdditionalPackage.isDeleted',
+          0,
         ),
       )
       .limit(filter.limit, filter.ignorePaging)
@@ -55,15 +51,9 @@ export class AdditionalPackageService {
       new QueryOptionsBuilder()
         .attributes(['id', 'title', 'price', 'createdAt', 'updatedAt'])
         .filter(
-          Sequelize.where(
-            Sequelize.fn(
-              'isnull',
-              Sequelize.col('GSAdditionalPackage.isDeleted'),
-              0,
-            ),
-            {
-              [Op.eq]: 0,
-            },
+          this.seqHelp.whereIsNullColumnEqualToZero(
+            'GSAdditionalPackage.isDeleted',
+            0,
           ),
         )
         .filter({ id: entityId })

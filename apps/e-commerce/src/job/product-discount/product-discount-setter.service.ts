@@ -9,6 +9,7 @@ import { ECDiscount } from '@rahino/localdatabase/models';
 import { InjectModel } from '@nestjs/sequelize';
 import { DiscountInterface } from '../../admin/discount-section/discount/interface';
 import { ApplyDiscountService } from '../../client/product/service';
+import { SequelizeHelpService } from '@rahino/commontools/sequelize-help/sequelize-help.service';
 
 export class ProductDiscountSetterService {
   constructor(
@@ -17,6 +18,7 @@ export class ProductDiscountSetterService {
     @InjectModel(ECInventory)
     private readonly inventoryRepository: typeof ECInventory,
     private readonly applyDiscountService: ApplyDiscountService,
+    private readonly seqHelp: SequelizeHelpService,
   ) {}
   async applyProducts(products: ECProduct[]) {
     const promises = [];
@@ -182,11 +184,9 @@ export class ProductDiscountSetterService {
             model: ECDiscountCondition,
             as: 'conditions',
             required: true,
-            where: Sequelize.where(
-              Sequelize.fn('isnull', Sequelize.col('conditions.isDeleted'), 0),
-              {
-                [Op.eq]: 0,
-              },
+            where: this.seqHelp.whereIsNullColumnEqualToZero(
+              'conditions.isDeleted',
+              0,
             ),
           },
           {
@@ -226,43 +226,26 @@ export class ProductDiscountSetterService {
           }),
         )
         .filter(
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('ECDiscount.isDeleted'), 0),
-            {
-              [Op.eq]: 0,
-            },
+          this.seqHelp.whereIsNullColumnEqualToZero('ECDiscount.isDeleted', 0),
+        )
+        .filter(
+          this.seqHelp.whereIsNullColumnEqualToValue(
+            'ECDiscount.isActive',
+            0,
+            1,
           ),
         )
         .filter(
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('ECDiscount.isActive'), 0),
-            {
-              [Op.eq]: 1,
-            },
+          this.seqHelp.whereIsNullColumnEqualToZero(
+            'discountType.isCouponBased',
+            0,
           ),
         )
         .filter(
-          Sequelize.where(
-            Sequelize.fn(
-              'isnull',
-              Sequelize.col('discountType.isCouponBased'),
-              0,
-            ),
-            {
-              [Op.eq]: 0,
-            },
-          ),
-        )
-        .filter(
-          Sequelize.where(
-            Sequelize.fn(
-              'isnull',
-              Sequelize.col('discountType.isFactorBased'),
-              0,
-            ),
-            {
-              [Op.ne]: 1,
-            },
+          this.seqHelp.whereIsNullColumnNotEqualToValue(
+            'discountType.isFactorBased',
+            0,
+            1,
           ),
         )
         // has one releated condition to this given product or inventory

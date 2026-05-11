@@ -18,6 +18,7 @@ import { Attachment } from '@rahino/database';
 import { BannerContentDto } from '../../admin/home-page-section/home-page/dto/content/banner-content.dto';
 import { ProductContentDto } from '../../admin/home-page-section/home-page/dto/content/product-content.dto';
 import { SelectedProductContentDto } from '../../admin/home-page-section/home-page/dto/content/selected-product-content.dto';
+import { SequelizeHelpService } from '@rahino/commontools/sequelize-help/sequelize-help.service';
 
 @Injectable()
 export class ProcessHomeService {
@@ -35,17 +36,13 @@ export class ProcessHomeService {
     @InjectModel(Attachment)
     private readonly attachmentRepository: typeof Attachment,
     private readonly config: ConfigService,
+    private readonly seqHelp: SequelizeHelpService,
   ) {}
 
   async processAll() {
     const queryBuilder = new QueryOptionsBuilder()
       .filter(
-        Sequelize.where(
-          Sequelize.fn('isnull', Sequelize.col('ECHomePage.isDeleted'), 0),
-          {
-            [Op.eq]: 0,
-          },
-        ),
+        this.seqHelp.whereIsNullColumnEqualToZero('ECHomePage.isDeleted', 0),
       )
       .order({ orderBy: 'priority', sortOrder: 'asc' });
     const items = await this.repository.findAll(queryBuilder.build());
@@ -187,11 +184,9 @@ export class ProcessHomeService {
       new QueryOptionsBuilder()
         .filter({ id: input.entityTypeId })
         .filter(
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('EAVEntityType.isDeleted'), 0),
-            {
-              [Op.eq]: 0,
-            },
+          this.seqHelp.whereIsNullColumnEqualToZero(
+            'EAVEntityType.isDeleted',
+            0,
           ),
         )
         .build(),
@@ -225,12 +220,7 @@ export class ProcessHomeService {
       new QueryOptionsBuilder()
         .filter({ id: input.brandId })
         .filter(
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('ECBrand.isDeleted'), 0),
-            {
-              [Op.eq]: 0,
-            },
-          ),
+          this.seqHelp.whereIsNullColumnEqualToZero('ECBrand.isDeleted', 0),
         )
         .build(),
     );
@@ -308,11 +298,9 @@ export class ProcessHomeService {
           .filter({ id: item.imageAttachmentId })
           .filter({ attachmentTypeId: this.homeAttachmentTypeId })
           .filter(
-            Sequelize.where(
-              Sequelize.fn('isnull', Sequelize.col('Attachment.isDeleted'), 0),
-              {
-                [Op.eq]: 0,
-              },
+            this.seqHelp.whereIsNullColumnEqualToZero(
+              'Attachment.isDeleted',
+              0,
             ),
           )
           .build(),
@@ -326,11 +314,9 @@ export class ProcessHomeService {
           .filter({ id: item.mobileImageAttachmentId })
           .filter({ attachmentTypeId: this.homeAttachmentTypeId })
           .filter(
-            Sequelize.where(
-              Sequelize.fn('isnull', Sequelize.col('Attachment.isDeleted'), 0),
-              {
-                [Op.eq]: 0,
-              },
+            this.seqHelp.whereIsNullColumnEqualToZero(
+              'Attachment.isDeleted',
+              0,
             ),
           )
           .build(),
@@ -369,11 +355,9 @@ export class ProcessHomeService {
           .filter({ id: item.imageAttachmentId })
           .filter({ attachmentTypeId: this.homeAttachmentTypeId })
           .filter(
-            Sequelize.where(
-              Sequelize.fn('isnull', Sequelize.col('Attachment.isDeleted'), 0),
-              {
-                [Op.eq]: 0,
-              },
+            this.seqHelp.whereIsNullColumnEqualToZero(
+              'Attachment.isDeleted',
+              0,
             ),
           )
           .build(),

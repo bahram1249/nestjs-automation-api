@@ -10,6 +10,7 @@ import { Attachment } from '@rahino/database';
 import { LocalizationService } from 'apps/main/src/common/localization';
 import { PublishStatusEnum } from '@rahino/ecommerce/client/product/enum';
 import { InventoryStatusEnum } from '@rahino/ecommerce/shared/inventory/enum';
+import { SequelizeHelpService } from '@rahino/commontools/sequelize-help/sequelize-help.service';
 
 @Injectable()
 export class VendorEntityTypeService {
@@ -17,6 +18,7 @@ export class VendorEntityTypeService {
     @InjectModel(EAVEntityType)
     private readonly repository: typeof EAVEntityType,
     private readonly localizationService: LocalizationService,
+    private readonly seqHelp: SequelizeHelpService,
   ) {}
 
   async findAll(filter: GetEntityTypeDto) {
@@ -27,12 +29,7 @@ export class VendorEntityTypeService {
         },
       })
       .filter(
-        Sequelize.where(
-          Sequelize.fn('isnull', Sequelize.col('EAVEntityType.isDeleted'), 0),
-          {
-            [Op.eq]: 0,
-          },
-        ),
+        this.seqHelp.whereIsNullColumnEqualToZero('EAVEntityType.isDeleted', 0),
       )
       .filterIf(filter.entityModelId != null, {
         entityModelId: filter.entityModelId,
@@ -107,15 +104,9 @@ export class VendorEntityTypeService {
           required: false,
           where: {
             [Op.and]: [
-              Sequelize.where(
-                Sequelize.fn(
-                  'isnull',
-                  Sequelize.col('subEntityTypes.isDeleted'),
-                  0,
-                ),
-                {
-                  [Op.eq]: 0,
-                },
+              this.seqHelp.whereIsNullColumnEqualToZero(
+                'subEntityTypes.isDeleted',
+                0,
               ),
               Sequelize.literal(
                 ` EXISTS (

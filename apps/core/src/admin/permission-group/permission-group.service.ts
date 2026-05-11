@@ -5,12 +5,14 @@ import { QueryFilter } from '@rahino/query-filter/sequelize-mapper';
 import { Op, Sequelize } from 'sequelize';
 import { PermissionGroup } from '@rahino/database';
 import { PermissionGroupGetDto } from './dto';
+import { SequelizeHelpService } from '@rahino/commontools/sequelize-help/sequelize-help.service';
 
 @Injectable()
 export class PermissionGroupService {
   constructor(
     @InjectModel(PermissionGroup)
     private readonly repository: typeof PermissionGroup,
+    private readonly seqHelp: SequelizeHelpService,
   ) {}
 
   async findAll(filter: PermissionGroupGetDto) {
@@ -25,15 +27,10 @@ export class PermissionGroupService {
           },
         },
 
-        Sequelize.where(
-          Sequelize.fn(
-            'isnull',
-            Sequelize.col('PermissionGroup.visibility'),
-            1,
-          ),
-          {
-            [Op.eq]: 1,
-          },
+        this.seqHelp.whereIsNullColumnEqualToValue(
+          'PermissionGroup.visibility',
+          1,
+          1,
         ),
       ],
     };
@@ -51,11 +48,10 @@ export class PermissionGroupService {
       {
         model: Permission,
         as: 'permissions',
-        where: Sequelize.where(
-          Sequelize.fn('isnull', Sequelize.col('permissions.visibility'), 1),
-          {
-            [Op.eq]: 1,
-          },
+        where: this.seqHelp.whereIsNullColumnEqualToValue(
+          'permissions.visibility',
+          1,
+          1,
         ),
         attributes: [
           'id',
@@ -100,11 +96,10 @@ export class PermissionGroupService {
             'createdAt',
             'updatedAt',
           ],
-          where: Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('permissions.visibility'), 1),
-            {
-              [Op.eq]: 1,
-            },
+          where: this.seqHelp.whereIsNullColumnEqualToValue(
+            'permissions.visibility',
+            1,
+            1,
           ),
         },
       ],
@@ -113,15 +108,10 @@ export class PermissionGroupService {
           {
             id: id,
           },
-          Sequelize.where(
-            Sequelize.fn(
-              'isnull',
-              Sequelize.col('PermissionGroup.visibility'),
-              1,
-            ),
-            {
-              [Op.eq]: 1,
-            },
+          this.seqHelp.whereIsNullColumnEqualToValue(
+            'PermissionGroup.visibility',
+            1,
+            1,
           ),
         ],
       },

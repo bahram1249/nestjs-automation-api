@@ -53,6 +53,7 @@ import * as moment from 'moment-jalaali';
 import { LocalizationService } from 'apps/main/src/common/localization/localization.service';
 import { LogisticPeriodService } from '../logistic-period/logistic-period.service';
 import { LogisticDecreaseInventoryQtyService } from '../inventory/services/logistic-decrease-inventory-qty.service';
+import { SequelizeHelpService } from '@rahino/commontools/sequelize-help/sequelize-help.service';
 
 @Injectable()
 export class LogisticPaymentService {
@@ -88,6 +89,7 @@ export class LogisticPaymentService {
     private readonly l10n: LocalizationService,
     private readonly logisticPeriodService: LogisticPeriodService,
     private readonly logisticDecreaseInventoryQtyService: LogisticDecreaseInventoryQtyService,
+    private readonly seqHelp: SequelizeHelpService,
   ) {}
 
   async stock(
@@ -369,13 +371,9 @@ export class LogisticPaymentService {
         .filter({ variationPriceId })
         .filter({ id: paymentId })
         .filter(
-          Sequelize.where(
-            Sequelize.fn(
-              'isnull',
-              Sequelize.col('ECPaymentGateway.isDeleted'),
-              0,
-            ),
-            { [Op.eq]: 0 },
+          this.seqHelp.whereIsNullColumnEqualToZero(
+            'ECPaymentGateway.isDeleted',
+            0,
           ),
         )
         .build(),

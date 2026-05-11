@@ -14,6 +14,7 @@ import * as _ from 'lodash';
 import { LocalizationService } from 'apps/main/src/common/localization';
 import { HistoryMapper } from './history.mapper';
 import { Role, User } from '@rahino/database';
+import { SequelizeHelpService } from '@rahino/commontools/sequelize-help/sequelize-help.service';
 
 @Injectable()
 export class HistoryService {
@@ -24,6 +25,7 @@ export class HistoryService {
     private readonly requestRepository: typeof GSRequest,
     private readonly localizationService: LocalizationService,
     private readonly historyMapper: HistoryMapper,
+    private readonly seqHelp: SequelizeHelpService,
   ) {}
 
   async findAll(requestId: bigint, filter: GetHistoryDto) {
@@ -32,12 +34,7 @@ export class HistoryService {
       new QueryOptionsBuilder()
 
         .filter(
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('GSRequest.isDeleted'), 0),
-            {
-              [Op.eq]: 0,
-            },
-          ),
+          this.seqHelp.whereIsNullColumnEqualToZero('GSRequest.isDeleted', 0),
         )
         .filter({ id: requestId })
         .build(),

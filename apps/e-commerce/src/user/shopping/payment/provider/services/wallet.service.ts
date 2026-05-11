@@ -20,6 +20,7 @@ import { ECPayment } from '@rahino/localdatabase/models';
 import { FinalizedPaymentService } from '../../util/finalized-payment/finalized-payment.service';
 import { ConfigService } from '@nestjs/config';
 import { PaymentServiceManualWalletPurposeProviderFactory } from '../factory/payment-service-manual-wallet-purpose-provider.factory';
+import { SequelizeHelpService } from '@rahino/commontools/sequelize-help/sequelize-help.service';
 
 export class WalletService implements PayInterface {
   constructor(
@@ -32,6 +33,7 @@ export class WalletService implements PayInterface {
     private readonly finalizedPaymentService: FinalizedPaymentService,
     private readonly paymentServiceProvider: PaymentServiceManualWalletPurposeProviderFactory,
     private readonly config: ConfigService,
+    private readonly seqHelp: SequelizeHelpService,
   ) {}
   async eligbleToRevert(paymentId: bigint): Promise<boolean> {
     return true;
@@ -49,14 +51,7 @@ export class WalletService implements PayInterface {
     const paymentGateway = await this.paymentGateway.findOne(
       new QueryOptionsBuilder()
         .filter({ serviceName: 'WalletService' })
-        .filter(
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('isDeleted'), 0),
-            {
-              [Op.eq]: 0,
-            },
-          ),
-        )
+        .filter(this.seqHelp.whereIsNullColumnEqualToZero('isDeleted', 0))
         .build(),
     );
     if (!paymentGateway) {
@@ -66,14 +61,7 @@ export class WalletService implements PayInterface {
     const wallet = await this.walletRepository.findOne(
       new QueryOptionsBuilder()
         .filter({ userId: user.id })
-        .filter(
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('isDeleted'), 0),
-            {
-              [Op.eq]: 0,
-            },
-          ),
-        )
+        .filter(this.seqHelp.whereIsNullColumnEqualToZero('isDeleted', 0))
         .transaction(transaction)
         .build(),
     );
@@ -216,14 +204,7 @@ export class WalletService implements PayInterface {
     const wallet = await this.walletRepository.findOne(
       new QueryOptionsBuilder()
         .filter({ userId: user.id })
-        .filter(
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('isDeleted'), 0),
-            {
-              [Op.eq]: 0,
-            },
-          ),
-        )
+        .filter(this.seqHelp.whereIsNullColumnEqualToZero('isDeleted', 0))
         .build(),
     );
     if (!wallet) {

@@ -16,6 +16,7 @@ import { PersianDate } from '@rahino/database';
 import { BuffetReserveDetail } from '@rahino/localdatabase/models';
 import { BuffetMenu } from '@rahino/localdatabase/models';
 import { ReserveDto, ReserveFilterDto } from './dto';
+import { SequelizeHelpService } from '@rahino/commontools/sequelize-help/sequelize-help.service';
 
 @Injectable()
 export class ReserveService {
@@ -28,6 +29,7 @@ export class ReserveService {
     private readonly buffetReserveDetailRepository: typeof BuffetReserveDetail,
     @InjectModel(Buffet)
     private readonly buffetRepository: typeof Buffet,
+    private readonly seqHelp: SequelizeHelpService,
   ) {}
 
   async findAll(user: User, filter: ReserveFilterDto) {
@@ -164,12 +166,7 @@ export class ReserveService {
                 [Op.in]: menusIds,
               },
             },
-            Sequelize.where(
-              Sequelize.fn('isnull', Sequelize.col('isDeleted'), 0),
-              {
-                [Op.eq]: 0,
-              },
-            ),
+            this.seqHelp.whereIsNullColumnEqualToZero('isDeleted', 0),
           ],
         },
       });

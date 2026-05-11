@@ -20,6 +20,7 @@ import * as moment from 'moment-jalaali';
 import { Op, Transaction } from 'sequelize';
 import { Sequelize } from 'sequelize';
 import { LocalizationService } from 'apps/main/src/common/localization/localization.service';
+import { SequelizeHelpService } from '@rahino/commontools/sequelize-help/sequelize-help.service';
 
 @Injectable()
 export class LogisticFinalizedPaymentService {
@@ -39,6 +40,7 @@ export class LogisticFinalizedPaymentService {
     private readonly paymentGatewayCommissionRepository: typeof ECPaymentGatewayCommission,
     private readonly smsService: LogisticEcommerceSmsService,
     private readonly l10n: LocalizationService,
+    private readonly seqHelp: SequelizeHelpService,
   ) {}
 
   async successfulSnapPay(paymentId: bigint) {
@@ -107,10 +109,7 @@ export class LogisticFinalizedPaymentService {
         .filter({ id: paymentId })
         .filter({ paymentStatusId: PaymentStatusEnum.DecreaseAmountOfWallet })
         .filter(
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('ECPayment.isDeleted'), 0),
-            { [Op.eq]: 0 },
-          ),
+          this.seqHelp.whereIsNullColumnEqualToZero('ECPayment.isDeleted', 0),
         )
         .transaction(transaction)
         .build(),
@@ -154,13 +153,9 @@ export class LogisticFinalizedPaymentService {
       new QueryOptionsBuilder()
         .filter({ paymentGatewayId: payment.paymentGatewayId })
         .filter(
-          Sequelize.where(
-            Sequelize.fn(
-              'isnull',
-              Sequelize.col('ECPaymentGatewayCommission.isDeleted'),
-              0,
-            ),
-            { [Op.eq]: 0 },
+          this.seqHelp.whereIsNullColumnEqualToZero(
+            'ECPaymentGatewayCommission.isDeleted',
+            0,
           ),
         )
         .transaction(transaction)

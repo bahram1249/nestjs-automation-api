@@ -16,6 +16,7 @@ import { GSProviderEnum } from '../provider';
 import { GSGuaranteeTypeEnum } from '../gurantee-type';
 import { GSGuaranteeConfirmStatus } from '../guarantee-confirm-status';
 import { RialPriceService } from '../rial-price';
+import { SequelizeHelpService } from '@rahino/commontools/sequelize-help/sequelize-help.service';
 
 @Injectable()
 export class GSRewardRuleSharedService {
@@ -31,6 +32,7 @@ export class GSRewardRuleSharedService {
     @InjectModel(GSRewardHistory)
     private readonly rewardHistoryRepository: typeof GSRewardHistory,
     private readonly rialPriceService: RialPriceService,
+    private readonly seqHelp: SequelizeHelpService,
   ) {}
 
   async checkAndGrantReward(
@@ -62,9 +64,9 @@ export class GSRewardRuleSharedService {
           ],
         })
         .filter(
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('GSRewardRule.isDeleted'), 0),
-            { [Op.eq]: 0 },
+          this.seqHelp.whereIsNullColumnEqualToZero(
+            'GSRewardRule.isDeleted',
+            0,
           ),
         )
         .include([

@@ -15,6 +15,7 @@ import { Response } from 'express';
 import { VideoDto } from './dto';
 import { EAVEntityVideo } from '@rahino/localdatabase/models';
 import * as util from 'util';
+import { SequelizeHelpService } from '@rahino/commontools/sequelize-help/sequelize-help.service';
 const readFileAsync = util.promisify(fs.readFile);
 
 @Injectable()
@@ -27,6 +28,7 @@ export class ProductVideoService {
     private attachmentRepository: typeof Attachment,
     @InjectModel(EAVEntityVideo)
     private readonly entityVideoRepository: typeof EAVEntityVideo,
+    private readonly seqHelp: SequelizeHelpService,
   ) {}
 
   async uploadVideo(user: User, file: Express.Multer.File) {
@@ -71,14 +73,7 @@ export class ProductVideoService {
     const attachment = await this.attachmentRepository.findOne(
       new QueryOptionsBuilder()
         .filter({ fileName: fileName })
-        .filter(
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('isDeleted'), 0),
-            {
-              [Op.eq]: 0,
-            },
-          ),
-        )
+        .filter(this.seqHelp.whereIsNullColumnEqualToZero('isDeleted', 0))
         .filter({
           attachmentTypeId: {
             [Op.in]: photoTypes,
@@ -111,14 +106,7 @@ export class ProductVideoService {
               ],
             },
           })
-          .filter(
-            Sequelize.where(
-              Sequelize.fn('isnull', Sequelize.col('isDeleted'), 0),
-              {
-                [Op.eq]: 0,
-              },
-            ),
-          )
+          .filter(this.seqHelp.whereIsNullColumnEqualToZero('isDeleted', 0))
           .build(),
       );
       if (!findAttachment) {
@@ -146,14 +134,7 @@ export class ProductVideoService {
               ],
             },
           })
-          .filter(
-            Sequelize.where(
-              Sequelize.fn('isnull', Sequelize.col('isDeleted'), 0),
-              {
-                [Op.eq]: 0,
-              },
-            ),
-          )
+          .filter(this.seqHelp.whereIsNullColumnEqualToZero('isDeleted', 0))
           .transaction(transaction)
           .build(),
       );

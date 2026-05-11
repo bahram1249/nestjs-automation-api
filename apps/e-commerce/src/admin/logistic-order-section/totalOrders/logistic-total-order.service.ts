@@ -31,6 +31,7 @@ import { LocalizationService } from 'apps/main/src/common/localization/localizat
 import { LogisticFinalizedPaymentService } from '../../../client/shopping-section/based-logistic/payment/util/finalized-payment/logistic-finalized-payment.service';
 import { LogisticSnapPayService } from '../../../client/shopping-section/based-logistic/payment/provider/services/logistic-snap-pay.service';
 import { ChangeShipmentWayDto } from './dto';
+import { SequelizeHelpService } from '@rahino/commontools/sequelize-help/sequelize-help.service';
 @Injectable()
 export class LogisticTotalOrderService {
   constructor(
@@ -58,6 +59,7 @@ export class LogisticTotalOrderService {
     private readonly snapPayService: LogisticSnapPayService,
     @InjectConnection()
     private readonly sequelize: Sequelize,
+    private readonly seqHelp: SequelizeHelpService,
   ) {}
 
   async findAll(user: User, filter: GetTotalOrderFilterDto) {
@@ -180,13 +182,9 @@ export class LogisticTotalOrderService {
             orderStatusId: { [Op.ne]: OrderStatusEnum.WaitingForPayment },
           })
           .filter(
-            Sequelize.where(
-              Sequelize.fn(
-                'isnull',
-                Sequelize.col('ECLogisticOrder.isDeleted'),
-                0,
-              ),
-              { [Op.eq]: 0 },
+            this.seqHelp.whereIsNullColumnEqualToZero(
+              'ECLogisticOrder.isDeleted',
+              0,
             ),
           )
           .transaction(transaction)
@@ -226,13 +224,9 @@ export class LogisticTotalOrderService {
         new QueryOptionsBuilder()
           .filter({ id: detailId })
           .filter(
-            Sequelize.where(
-              Sequelize.fn(
-                'isnull',
-                Sequelize.col('ECLogisticOrderGroupedDetail.isDeleted'),
-                0,
-              ),
-              { [Op.eq]: 0 },
+            this.seqHelp.whereIsNullColumnEqualToZero(
+              'ECLogisticOrderGroupedDetail.isDeleted',
+              0,
             ),
           )
           .transaction(transaction)
@@ -274,13 +268,9 @@ export class LogisticTotalOrderService {
         new QueryOptionsBuilder()
           .filter({ id: detailId })
           .filter(
-            Sequelize.where(
-              Sequelize.fn(
-                'isnull',
-                Sequelize.col('ECLogisticOrderGroupedDetail.isDeleted'),
-                0,
-              ),
-              { [Op.eq]: 0 },
+            this.seqHelp.whereIsNullColumnEqualToZero(
+              'ECLogisticOrderGroupedDetail.isDeleted',
+              0,
             ),
           )
           .transaction(transaction)
@@ -338,13 +328,9 @@ export class LogisticTotalOrderService {
       new QueryOptionsBuilder()
         .filter({ id })
         .filter(
-          Sequelize.where(
-            Sequelize.fn(
-              'isnull',
-              Sequelize.col('ECLogisticOrderGrouped.isDeleted'),
-              0,
-            ),
-            { [Op.eq]: 0 },
+          this.seqHelp.whereIsNullColumnEqualToZero(
+            'ECLogisticOrderGrouped.isDeleted',
+            0,
           ),
         )
         .build(),
@@ -367,13 +353,9 @@ export class LogisticTotalOrderService {
       new QueryOptionsBuilder()
         .filter({ id: groupId })
         .filter(
-          Sequelize.where(
-            Sequelize.fn(
-              'isnull',
-              Sequelize.col('ECLogisticOrderGrouped.isDeleted'),
-              0,
-            ),
-            { [Op.eq]: 0 },
+          this.seqHelp.whereIsNullColumnEqualToZero(
+            'ECLogisticOrderGrouped.isDeleted',
+            0,
           ),
         )
         .build(),
@@ -398,13 +380,9 @@ export class LogisticTotalOrderService {
       new QueryOptionsBuilder()
         .filter({ id })
         .filter(
-          Sequelize.where(
-            Sequelize.fn(
-              'isnull',
-              Sequelize.col('ECLogisticOrderGrouped.isDeleted'),
-              0,
-            ),
-            { [Op.eq]: 0 },
+          this.seqHelp.whereIsNullColumnEqualToZero(
+            'ECLogisticOrderGrouped.isDeleted',
+            0,
           ),
         )
         .build(),
@@ -470,13 +448,9 @@ export class LogisticTotalOrderService {
         ),
       )
       .filter(
-        Sequelize.where(
-          Sequelize.fn(
-            'isnull',
-            Sequelize.col('ECLogisticOrderGroupedDetail.isDeleted'),
-            0,
-          ),
-          { [Op.eq]: 0 },
+        this.seqHelp.whereIsNullColumnEqualToZero(
+          'ECLogisticOrderGroupedDetail.isDeleted',
+          0,
         ),
       )
       .raw(true)
@@ -504,13 +478,9 @@ export class LogisticTotalOrderService {
       ])
       .filter({ logisticOrderId: orderId })
       .filter(
-        Sequelize.where(
-          Sequelize.fn(
-            'isnull',
-            Sequelize.col('ECLogisticOrderGrouped.isDeleted'),
-            0,
-          ),
-          { [Op.eq]: 0 },
+        this.seqHelp.whereIsNullColumnEqualToZero(
+          'ECLogisticOrderGrouped.isDeleted',
+          0,
         ),
       )
       .raw(true)
@@ -573,13 +543,9 @@ export class LogisticTotalOrderService {
       ])
       .filter({ groupedId: groupId })
       .filter(
-        Sequelize.where(
-          Sequelize.fn(
-            'isnull',
-            Sequelize.col('ECLogisticOrderGroupedDetail.isDeleted'),
-            0,
-          ),
-          { [Op.eq]: 0 },
+        this.seqHelp.whereIsNullColumnEqualToZero(
+          'ECLogisticOrderGroupedDetail.isDeleted',
+          0,
         ),
       )
       .raw(true)
@@ -641,10 +607,7 @@ export class LogisticTotalOrderService {
         .transaction(transaction)
         .filter({ logisticOrderId: order.id })
         .filter(
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('ECPayment.isDeleted'), 0),
-            { [Op.eq]: 0 },
-          ),
+          this.seqHelp.whereIsNullColumnEqualToZero('ECPayment.isDeleted', 0),
         )
         .build(),
     );
@@ -666,13 +629,9 @@ export class LogisticTotalOrderService {
           ),
         )
         .filter(
-          Sequelize.where(
-            Sequelize.fn(
-              'isnull',
-              Sequelize.col('ECLogisticOrderGroupedDetail.isDeleted'),
-              0,
-            ),
-            { [Op.eq]: 0 },
+          this.seqHelp.whereIsNullColumnEqualToZero(
+            'ECLogisticOrderGroupedDetail.isDeleted',
+            0,
           ),
         )
         .transaction(transaction)
@@ -709,10 +668,7 @@ export class LogisticTotalOrderService {
       new QueryOptionsBuilder()
         .filter({ logisticOrderId: orderId })
         .filter(
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('ECPayment.isDeleted'), 0),
-            { [Op.eq]: 0 },
-          ),
+          this.seqHelp.whereIsNullColumnEqualToZero('ECPayment.isDeleted', 0),
         )
         .transaction(transaction)
         .build(),

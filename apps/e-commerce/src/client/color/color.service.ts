@@ -7,12 +7,14 @@ import { InjectMapper } from 'automapper-nestjs';
 import { Mapper } from 'automapper-core';
 import * as _ from 'lodash';
 import { ECColor } from '@rahino/localdatabase/models';
+import { SequelizeHelpService } from '@rahino/commontools/sequelize-help/sequelize-help.service';
 
 @Injectable()
 export class ColorService {
   constructor(
     @InjectModel(ECColor) private repository: typeof ECColor,
     @InjectMapper() private readonly mapper: Mapper,
+    private readonly seqHelp: SequelizeHelpService,
   ) {}
 
   async findAll(filter: GetColorDto) {
@@ -23,12 +25,7 @@ export class ColorService {
         },
       })
       .filter(
-        Sequelize.where(
-          Sequelize.fn('isnull', Sequelize.col('ECColor.isDeleted'), 0),
-          {
-            [Op.eq]: 0,
-          },
-        ),
+        this.seqHelp.whereIsNullColumnEqualToZero('ECColor.isDeleted', 0),
       );
     if (filter.entityTypeId) {
       queryBuilder = queryBuilder.filter(
@@ -63,14 +60,7 @@ export class ColorService {
       new QueryOptionsBuilder()
         .attributes(['id', 'name', 'hexCode'])
         .filter({ id: entityId })
-        .filter(
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('isDeleted'), 0),
-            {
-              [Op.eq]: 0,
-            },
-          ),
-        )
+        .filter(this.seqHelp.whereIsNullColumnEqualToZero('isDeleted', 0))
         .build(),
     );
     if (!color) {
@@ -95,14 +85,7 @@ export class ColorService {
     const item = await this.repository.findOne(
       new QueryOptionsBuilder()
         .filter({ id: entityId })
-        .filter(
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('isDeleted'), 0),
-            {
-              [Op.eq]: 0,
-            },
-          ),
-        )
+        .filter(this.seqHelp.whereIsNullColumnEqualToZero('isDeleted', 0))
         .build(),
     );
     if (!item) {
@@ -128,14 +111,7 @@ export class ColorService {
     const item = await this.repository.findOne(
       new QueryOptionsBuilder()
         .filter({ id: entityId })
-        .filter(
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('isDeleted'), 0),
-            {
-              [Op.eq]: 0,
-            },
-          ),
-        )
+        .filter(this.seqHelp.whereIsNullColumnEqualToZero('isDeleted', 0))
         .build(),
     );
     if (!item) {

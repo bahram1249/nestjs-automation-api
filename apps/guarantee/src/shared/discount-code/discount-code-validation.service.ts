@@ -8,6 +8,7 @@ import { RialPriceService } from '../rial-price/rial-price.service';
 import { GSDiscountTypeEnum } from '../discount-type/enum';
 import { DiscountUsageInfo, DiscountValidationResult } from './interface';
 import { LocalizationService } from 'apps/main/src/common/localization';
+import { SequelizeHelpService } from '@rahino/commontools/sequelize-help/sequelize-help.service';
 
 @Injectable()
 export class DiscountCodeValidationService {
@@ -18,6 +19,7 @@ export class DiscountCodeValidationService {
     private readonly discountCodeUsageRepository: typeof GSDiscountCodeUsage,
     private readonly rialPriceService: RialPriceService,
     private readonly localizationService: LocalizationService,
+    private readonly seqHelp: SequelizeHelpService,
   ) {}
 
   async validateDiscountCode(
@@ -28,15 +30,9 @@ export class DiscountCodeValidationService {
     const discountCodeEntity = await this.discountCodeRepository.findOne(
       new QueryOptionsBuilder()
         .filter(
-          Sequelize.where(
-            Sequelize.fn(
-              'isnull',
-              Sequelize.col('GSDiscountCode.isDeleted'),
-              0,
-            ),
-            {
-              [Op.eq]: 0,
-            },
+          this.seqHelp.whereIsNullColumnEqualToZero(
+            'GSDiscountCode.isDeleted',
+            0,
           ),
         )
         .filter({ code: discountCode, isActive: true })

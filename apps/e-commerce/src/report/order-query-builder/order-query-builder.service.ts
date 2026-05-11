@@ -8,12 +8,13 @@ import {
 } from '@rahino/ecommerce/shared/enum';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import { FindAttributeOptions, Op, Sequelize } from 'sequelize';
+import { SequelizeHelpService } from '@rahino/commontools/sequelize-help/sequelize-help.service';
 
 @Injectable({ scope: Scope.REQUEST })
 export class OrderQueryBuilderService {
   private builder: QueryOptionsBuilder;
   private groupByQuery = false;
-  constructor() {
+  constructor(private readonly seqHelp: SequelizeHelpService) {
     this.builder = new QueryOptionsBuilder();
     this.builder.include([]);
   }
@@ -25,12 +26,7 @@ export class OrderQueryBuilderService {
 
   nonDeleted() {
     this.builder = this.builder.filter(
-      Sequelize.where(
-        Sequelize.fn('isnull', Sequelize.col('ECOrder.isDeleted'), 0),
-        {
-          [Op.eq]: 0,
-        },
-      ),
+      this.seqHelp.whereIsNullColumnEqualToZero('ECOrder.isDeleted', 0),
     );
     return this;
   }

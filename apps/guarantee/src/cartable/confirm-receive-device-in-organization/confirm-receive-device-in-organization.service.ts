@@ -14,6 +14,7 @@ import { RequestItemTypeEnum } from '@rahino/guarantee/shared/request-item-type'
 import { RequestItemDto } from './dto/request-item.dto';
 import { GSRequestAttachmentTypeEnum } from '@rahino/guarantee/shared/request-attachment-type';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
+import { SequelizeHelpService } from '@rahino/commontools/sequelize-help/sequelize-help.service';
 
 @Injectable()
 export class ConfirmReceiveDeviceInOrganizationService {
@@ -31,6 +32,7 @@ export class ConfirmReceiveDeviceInOrganizationService {
     private readonly requestAttachmentRepository: typeof GSRequestAttachment,
     @InjectModel(Attachment)
     private readonly attachmentRepository: typeof Attachment,
+    private readonly seqHelp: SequelizeHelpService,
   ) {}
 
   async traverse(user: User, dto: ConfirmRequestDto) {
@@ -56,15 +58,9 @@ export class ConfirmReceiveDeviceInOrganizationService {
               .filter({ id: attachmentDto.attachmentId })
               .filter({ attachmentTypeId: this.photoTempAttachmentType })
               .filter(
-                Sequelize.where(
-                  Sequelize.fn(
-                    'isnull',
-                    Sequelize.col('Attachment.isDeleted'),
-                    0,
-                  ),
-                  {
-                    [Op.eq]: 0,
-                  },
+                this.seqHelp.whereIsNullColumnEqualToZero(
+                  'Attachment.isDeleted',
+                  0,
                 ),
               )
               .transaction(transaction)

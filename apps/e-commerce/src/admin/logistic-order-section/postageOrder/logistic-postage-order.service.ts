@@ -18,6 +18,7 @@ import {
   OrderShipmentwayEnum,
   OrderStatusEnum,
 } from '@rahino/ecommerce/shared/enum';
+import { SequelizeHelpService } from '@rahino/commontools/sequelize-help/sequelize-help.service';
 
 @Injectable()
 export class LogisticPostageOrderService {
@@ -33,6 +34,7 @@ export class LogisticPostageOrderService {
     private readonly smsService: LogisticEcommerceSmsService,
     private readonly localizationService: LocalizationService,
     private readonly logisticAccess: LogisticUserRoleHandlerService,
+    private readonly seqHelp: SequelizeHelpService,
   ) {}
 
   async findAll(user: User, filter: ListFilter) {
@@ -138,13 +140,9 @@ export class LogisticPostageOrderService {
           .filter({ orderStatusId: OrderStatusEnum.OrderHasBeenProcessed })
           .filter({ orderShipmentWayId: OrderShipmentwayEnum.post as any })
           .filter(
-            Sequelize.where(
-              Sequelize.fn(
-                'isnull',
-                Sequelize.col('ECLogisticOrderGrouped.isDeleted'),
-                0,
-              ),
-              { [Op.eq]: 0 },
+            this.seqHelp.whereIsNullColumnEqualToZero(
+              'ECLogisticOrderGrouped.isDeleted',
+              0,
             ),
           )
           .transaction(transaction)

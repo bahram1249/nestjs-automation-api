@@ -21,6 +21,7 @@ import { Role } from '@rahino/database';
 import { UserCourierV2Dto } from './dto/user-courier-v2-dto';
 import { UserVendorService } from '@rahino/ecommerce/user/user-vendor/user-vendor.service';
 import { LocalizationService } from 'apps/main/src/common/localization';
+import { SequelizeHelpService } from '@rahino/commontools/sequelize-help/sequelize-help.service';
 
 @Injectable()
 export class CourierService {
@@ -38,16 +39,12 @@ export class CourierService {
     private readonly localizationService: LocalizationService,
     @InjectMapper()
     private readonly mapper: Mapper,
+    private readonly seqHelp: SequelizeHelpService,
   ) {}
 
   async findAll(user: User, filter: GetCourierDto) {
     let queryBuilder = new QueryOptionsBuilder().filter(
-      Sequelize.where(
-        Sequelize.fn('isnull', Sequelize.col('ECCourier.isDeleted'), 0),
-        {
-          [Op.eq]: 0,
-        },
-      ),
+      this.seqHelp.whereIsNullColumnEqualToZero('ECCourier.isDeleted', 0),
     );
     const count = await this.repository.count(queryBuilder.build());
     queryBuilder = queryBuilder
@@ -88,12 +85,7 @@ export class CourierService {
 
     let queryBuilder = new QueryOptionsBuilder()
       .filter(
-        Sequelize.where(
-          Sequelize.fn('isnull', Sequelize.col('ECCourier.isDeleted'), 0),
-          {
-            [Op.eq]: 0,
-          },
-        ),
+        this.seqHelp.whereIsNullColumnEqualToZero('ECCourier.isDeleted', 0),
       )
       .filter({
         vendorId: {
@@ -165,12 +157,7 @@ export class CourierService {
         },
       ])
       .filter(
-        Sequelize.where(
-          Sequelize.fn('isnull', Sequelize.col('ECCourier.isDeleted'), 0),
-          {
-            [Op.eq]: 0,
-          },
-        ),
+        this.seqHelp.whereIsNullColumnEqualToZero('ECCourier.isDeleted', 0),
       )
       .filter({ id: entityId });
     const item = await this.repository.findOne(queryBuilder.build());
@@ -218,12 +205,7 @@ export class CourierService {
         },
       ])
       .filter(
-        Sequelize.where(
-          Sequelize.fn('isnull', Sequelize.col('ECCourier.isDeleted'), 0),
-          {
-            [Op.eq]: 0,
-          },
-        ),
+        this.seqHelp.whereIsNullColumnEqualToZero('ECCourier.isDeleted', 0),
       )
       .filter({ id: entityId });
     const item = await this.repository.findOne(queryBuilder.build());
@@ -261,12 +243,7 @@ export class CourierService {
     if (findUser) {
       const queryBuilder = new QueryOptionsBuilder()
         .filter(
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('ECCourier.isDeleted'), 0),
-            {
-              [Op.eq]: 0,
-            },
-          ),
+          this.seqHelp.whereIsNullColumnEqualToZero('ECCourier.isDeleted', 0),
         )
         .filter({ userId: findUser.id });
       const item = await this.repository.findOne(queryBuilder.build());
@@ -321,12 +298,7 @@ export class CourierService {
     if (findUser) {
       const queryBuilder = new QueryOptionsBuilder()
         .filter(
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('ECCourier.isDeleted'), 0),
-            {
-              [Op.eq]: 0,
-            },
-          ),
+          this.seqHelp.whereIsNullColumnEqualToZero('ECCourier.isDeleted', 0),
         )
         .filter({ userId: findUser.id });
       const duplicate = await this.repository.findOne(queryBuilder.build());
@@ -370,12 +342,7 @@ export class CourierService {
     const queryBuilder = new QueryOptionsBuilder()
       .include([{ model: User, as: 'user' }])
       .filter(
-        Sequelize.where(
-          Sequelize.fn('isnull', Sequelize.col('ECCourier.isDeleted'), 0),
-          {
-            [Op.eq]: 0,
-          },
-        ),
+        this.seqHelp.whereIsNullColumnEqualToZero('ECCourier.isDeleted', 0),
       )
       .filter({ id: entityId });
     let item = await this.repository.findOne(queryBuilder.build());
@@ -413,12 +380,7 @@ export class CourierService {
         })
         .filter({ userId: item.userId })
         .filter(
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('ECCourier.isDeleted'), 0),
-            {
-              [Op.eq]: 0,
-            },
-          ),
+          this.seqHelp.whereIsNullColumnEqualToZero('ECCourier.isDeleted', 0),
         )
         .build(),
     );

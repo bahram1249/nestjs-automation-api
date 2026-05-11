@@ -32,11 +32,12 @@ import {
   QueryOptionsBuilder,
 } from '@rahino/query-filter/sequelize-query-builder';
 import { Op, Sequelize } from 'sequelize';
+import { SequelizeHelpService } from '@rahino/commontools/sequelize-help/sequelize-help.service';
 
 @Injectable({ scope: Scope.REQUEST })
 export class LogisticOrderQueryBuilder {
   private builder: QueryOptionsBuilder;
-  constructor() {
+  constructor(private readonly seqHelp: SequelizeHelpService) {
     this.builder = new QueryOptionsBuilder();
     this.builder = this.builder.include([]);
   }
@@ -48,10 +49,7 @@ export class LogisticOrderQueryBuilder {
 
   nonDeletedOrder() {
     this.builder = this.builder.filter(
-      Sequelize.where(
-        Sequelize.fn('isnull', Sequelize.col('ECLogisticOrder.isDeleted'), 0),
-        { [Op.eq]: 0 },
-      ),
+      this.seqHelp.whereIsNullColumnEqualToZero('ECLogisticOrder.isDeleted', 0),
     );
     return this;
   }
@@ -359,12 +357,7 @@ export class LogisticOrderQueryBuilder {
     });
 
     groupsInclude = groupsInclude
-      .filter(
-        Sequelize.where(
-          Sequelize.fn('isnull', Sequelize.col('groups.isDeleted'), 0),
-          { [Op.eq]: 0 },
-        ),
-      )
+      .filter(this.seqHelp.whereIsNullColumnEqualToZero('groups.isDeleted', 0))
       .thenInclude(detailsInclude.build());
 
     this.builder = this.builder.thenInclude(groupsInclude.build());
@@ -569,12 +562,7 @@ export class LogisticOrderQueryBuilder {
     });
 
     groupsInclude = groupsInclude
-      .filter(
-        Sequelize.where(
-          Sequelize.fn('isnull', Sequelize.col('groups.isDeleted'), 0),
-          { [Op.eq]: 0 },
-        ),
-      )
+      .filter(this.seqHelp.whereIsNullColumnEqualToZero('groups.isDeleted', 0))
       .thenInclude(detailsInclude.build());
 
     this.builder = this.builder.thenInclude(groupsInclude.build());
@@ -993,12 +981,7 @@ export class LogisticOrderQueryBuilder {
     });
 
     groupsInclude = groupsInclude
-      .filter(
-        Sequelize.where(
-          Sequelize.fn('isnull', Sequelize.col('groups.isDeleted'), 0),
-          { [Op.eq]: 0 },
-        ),
-      )
+      .filter(this.seqHelp.whereIsNullColumnEqualToZero('groups.isDeleted', 0))
       .thenInclude(detailsInclude.build());
     this.builder = this.builder.thenInclude(groupsInclude.build());
     return this;
@@ -1215,12 +1198,7 @@ export class LogisticOrderQueryBuilder {
     });
 
     groupsInclude = groupsInclude
-      .filter(
-        Sequelize.where(
-          Sequelize.fn('isnull', Sequelize.col('groups.isDeleted'), 0),
-          { [Op.eq]: 0 },
-        ),
-      )
+      .filter(this.seqHelp.whereIsNullColumnEqualToZero('groups.isDeleted', 0))
       .thenInclude(detailsInclude.build());
 
     this.builder = this.builder.thenInclude(groupsInclude.build());

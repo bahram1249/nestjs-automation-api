@@ -24,6 +24,7 @@ import { ConfigService } from '@nestjs/config';
 import { User } from '@rahino/database';
 import { FinalizedPaymentService } from '../../util/finalized-payment/finalized-payment.service';
 import { RevertPaymentQtyService } from '@rahino/ecommerce/shared/inventory/services/revert-payment-qty.service';
+import { SequelizeHelpService } from '@rahino/commontools/sequelize-help/sequelize-help.service';
 
 export class SnapPayService implements PayInterface {
   private baseUrl = '';
@@ -37,6 +38,7 @@ export class SnapPayService implements PayInterface {
     private readonly config: ConfigService,
     private readonly revertInventoryQtyService: RevertPaymentQtyService,
     private readonly finalizedPaymentService: FinalizedPaymentService,
+    private readonly seqHelp: SequelizeHelpService,
   ) {
     this.baseUrl = 'https://api.snapppay.ir';
   }
@@ -54,14 +56,7 @@ export class SnapPayService implements PayInterface {
     const paymentGateway = await this.paymentGateway.findOne(
       new QueryOptionsBuilder()
         .filter({ serviceName: 'SnapPayService' })
-        .filter(
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('isDeleted'), 0),
-            {
-              [Op.eq]: 0,
-            },
-          ),
-        )
+        .filter(this.seqHelp.whereIsNullColumnEqualToZero('isDeleted', 0))
         .build(),
     );
     if (!paymentGateway) {
@@ -206,14 +201,7 @@ export class SnapPayService implements PayInterface {
       const paymentGateway = await this.paymentGateway.findOne(
         new QueryOptionsBuilder()
           .filter({ serviceName: 'SnapPayService' })
-          .filter(
-            Sequelize.where(
-              Sequelize.fn('isnull', Sequelize.col('isDeleted'), 0),
-              {
-                [Op.eq]: 0,
-              },
-            ),
-          )
+          .filter(this.seqHelp.whereIsNullColumnEqualToZero('isDeleted', 0))
           .build(),
       );
       if (!paymentGateway) {
@@ -251,14 +239,7 @@ export class SnapPayService implements PayInterface {
     const paymentGateway = await this.paymentGateway.findOne(
       new QueryOptionsBuilder()
         .filter({ serviceName: 'SnapPayService' })
-        .filter(
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('isDeleted'), 0),
-            {
-              [Op.eq]: 0,
-            },
-          ),
-        )
+        .filter(this.seqHelp.whereIsNullColumnEqualToZero('isDeleted', 0))
         .build(),
     );
     if (!paymentGateway) {
@@ -337,14 +318,7 @@ export class SnapPayService implements PayInterface {
     const paymentGateway = await this.paymentGateway.findOne(
       new QueryOptionsBuilder()
         .filter({ serviceName: 'SnapPayService' })
-        .filter(
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('isDeleted'), 0),
-            {
-              [Op.eq]: 0,
-            },
-          ),
-        )
+        .filter(this.seqHelp.whereIsNullColumnEqualToZero('isDeleted', 0))
         .build(),
     );
     if (!paymentGateway) {
@@ -459,14 +433,7 @@ export class SnapPayService implements PayInterface {
     const paymentGateway = await this.paymentGateway.findOne(
       new QueryOptionsBuilder()
         .filter({ serviceName: 'SnapPayService' })
-        .filter(
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('isDeleted'), 0),
-            {
-              [Op.eq]: 0,
-            },
-          ),
-        )
+        .filter(this.seqHelp.whereIsNullColumnEqualToZero('isDeleted', 0))
         .build(),
     );
     if (!paymentGateway) {
@@ -477,14 +444,7 @@ export class SnapPayService implements PayInterface {
       new QueryOptionsBuilder()
         .filter({ orderId: orderId })
         .filter({ paymentGatewayId: paymentGateway.id })
-        .filter(
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('isDeleted'), 0),
-            {
-              [Op.eq]: 0,
-            },
-          ),
-        )
+        .filter(this.seqHelp.whereIsNullColumnEqualToZero('isDeleted', 0))
         .build(),
     );
 
@@ -561,14 +521,7 @@ export class SnapPayService implements PayInterface {
     const paymentGateway = await this.paymentGateway.findOne(
       new QueryOptionsBuilder()
         .filter({ serviceName: 'SnapPayService' })
-        .filter(
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('isDeleted'), 0),
-            {
-              [Op.eq]: 0,
-            },
-          ),
-        )
+        .filter(this.seqHelp.whereIsNullColumnEqualToZero('isDeleted', 0))
         .build(),
     );
     if (!paymentGateway) {
@@ -580,14 +533,7 @@ export class SnapPayService implements PayInterface {
         .filter({ orderId: orderId })
         .filter({ paymentGatewayId: paymentGateway.id })
         .filter({ paymentStatusId: PaymentStatusEnum.SuccessPayment })
-        .filter(
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('isDeleted'), 0),
-            {
-              [Op.eq]: 0,
-            },
-          ),
-        )
+        .filter(this.seqHelp.whereIsNullColumnEqualToZero('isDeleted', 0))
         .build(),
     );
 

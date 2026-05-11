@@ -35,6 +35,7 @@ import { ECRoleEnum } from '@rahino/ecommerce/shared/enum';
 import { Queue } from 'bullmq';
 import { InjectQueue } from '@nestjs/bullmq';
 import { VENDOR_QUEUE } from '../../job/vendor-inventory/constants';
+import { SequelizeHelpService } from '@rahino/commontools/sequelize-help/sequelize-help.service';
 
 @Injectable()
 export class VendorService {
@@ -73,6 +74,7 @@ export class VendorService {
     private readonly vendorLogisticRepository: typeof ECVendorLogistic,
 
     private readonly localizationService: LocalizationService,
+    private readonly seqHelp: SequelizeHelpService,
   ) {}
 
   async findAll(filter: GetVendorDto) {
@@ -83,12 +85,7 @@ export class VendorService {
         },
       })
       .filter(
-        Sequelize.where(
-          Sequelize.fn('isnull', Sequelize.col('ECVendor.isDeleted'), 0),
-          {
-            [Op.eq]: 0,
-          },
-        ),
+        this.seqHelp.whereIsNullColumnEqualToZero('ECVendor.isDeleted', 0),
       );
     const count = await this.repository.count(queryBuilder.build());
     queryBuilder = queryBuilder
@@ -131,15 +128,9 @@ export class VendorService {
               {
                 isDefault: true,
               },
-              Sequelize.where(
-                Sequelize.fn(
-                  'isnull',
-                  Sequelize.col('vendorUser.isDeleted'),
-                  0,
-                ),
-                {
-                  [Op.eq]: 0,
-                },
+              this.seqHelp.whereIsNullColumnEqualToZero(
+                'vendorUser.isDeleted',
+                0,
               ),
             ],
           },
@@ -155,11 +146,9 @@ export class VendorService {
           ],
           model: ECVendorCommission,
           as: 'commissions',
-          where: Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('commissions.isDeleted'), 0),
-            {
-              [Op.eq]: 0,
-            },
+          where: this.seqHelp.whereIsNullColumnEqualToZero(
+            'commissions.isDeleted',
+            0,
           ),
           include: [
             {
@@ -214,12 +203,7 @@ export class VendorService {
         },
       })
       .filter(
-        Sequelize.where(
-          Sequelize.fn('isnull', Sequelize.col('ECVendor.isDeleted'), 0),
-          {
-            [Op.eq]: 0,
-          },
-        ),
+        this.seqHelp.whereIsNullColumnEqualToZero('ECVendor.isDeleted', 0),
       );
     const count = await this.repository.count(queryBuilder.build());
     queryBuilder = queryBuilder
@@ -267,15 +251,9 @@ export class VendorService {
               {
                 isDefault: true,
               },
-              Sequelize.where(
-                Sequelize.fn(
-                  'isnull',
-                  Sequelize.col('vendorUser.isDeleted'),
-                  0,
-                ),
-                {
-                  [Op.eq]: 0,
-                },
+              this.seqHelp.whereIsNullColumnEqualToZero(
+                'vendorUser.isDeleted',
+                0,
               ),
             ],
           },
@@ -290,11 +268,9 @@ export class VendorService {
           ],
           model: ECVendorCommission,
           as: 'commissions',
-          where: Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('commissions.isDeleted'), 0),
-            {
-              [Op.eq]: 0,
-            },
+          where: this.seqHelp.whereIsNullColumnEqualToZero(
+            'commissions.isDeleted',
+            0,
           ),
           include: [
             {
@@ -383,15 +359,9 @@ export class VendorService {
                 {
                   isDefault: true,
                 },
-                Sequelize.where(
-                  Sequelize.fn(
-                    'isnull',
-                    Sequelize.col('vendorUser.isDeleted'),
-                    0,
-                  ),
-                  {
-                    [Op.eq]: 0,
-                  },
+                this.seqHelp.whereIsNullColumnEqualToZero(
+                  'vendorUser.isDeleted',
+                  0,
                 ),
               ],
             },
@@ -406,11 +376,9 @@ export class VendorService {
             ],
             model: ECVendorCommission,
             as: 'commissions',
-            where: Sequelize.where(
-              Sequelize.fn('isnull', Sequelize.col('commissions.isDeleted'), 0),
-              {
-                [Op.eq]: 0,
-              },
+            where: this.seqHelp.whereIsNullColumnEqualToZero(
+              'commissions.isDeleted',
+              0,
             ),
             include: [
               {
@@ -447,12 +415,7 @@ export class VendorService {
         ])
         .filter({ id: entityId })
         .filter(
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('ECVendor.isDeleted'), 0),
-            {
-              [Op.eq]: 0,
-            },
-          ),
+          this.seqHelp.whereIsNullColumnEqualToZero('ECVendor.isDeleted', 0),
         )
         .build(),
     );
@@ -514,15 +477,9 @@ export class VendorService {
                 {
                   isDefault: true,
                 },
-                Sequelize.where(
-                  Sequelize.fn(
-                    'isnull',
-                    Sequelize.col('vendorUser.isDeleted'),
-                    0,
-                  ),
-                  {
-                    [Op.eq]: 0,
-                  },
+                this.seqHelp.whereIsNullColumnEqualToZero(
+                  'vendorUser.isDeleted',
+                  0,
                 ),
               ],
             },
@@ -537,11 +494,9 @@ export class VendorService {
             ],
             model: ECVendorCommission,
             as: 'commissions',
-            where: Sequelize.where(
-              Sequelize.fn('isnull', Sequelize.col('commissions.isDeleted'), 0),
-              {
-                [Op.eq]: 0,
-              },
+            where: this.seqHelp.whereIsNullColumnEqualToZero(
+              'commissions.isDeleted',
+              0,
             ),
             include: [
               {
@@ -578,12 +533,7 @@ export class VendorService {
         ])
         .filter({ id: entityId })
         .filter(
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('ECVendor.isDeleted'), 0),
-            {
-              [Op.eq]: 0,
-            },
-          ),
+          this.seqHelp.whereIsNullColumnEqualToZero('ECVendor.isDeleted', 0),
         )
         .build(),
     );
@@ -602,14 +552,7 @@ export class VendorService {
     const searchSlug = await this.repository.findOne(
       new QueryOptionsBuilder()
         .filter({ slug: dto.slug })
-        .filter(
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('isDeleted'), 0),
-            {
-              [Op.eq]: 0,
-            },
-          ),
-        )
+        .filter(this.seqHelp.whereIsNullColumnEqualToZero('isDeleted', 0))
         .build(),
     );
     if (searchSlug) {
@@ -782,15 +725,9 @@ export class VendorService {
                 {
                   isDefault: true,
                 },
-                Sequelize.where(
-                  Sequelize.fn(
-                    'isnull',
-                    Sequelize.col('vendorUser.isDeleted'),
-                    0,
-                  ),
-                  {
-                    [Op.eq]: 0,
-                  },
+                this.seqHelp.whereIsNullColumnEqualToZero(
+                  'vendorUser.isDeleted',
+                  0,
                 ),
               ],
             },
@@ -805,11 +742,9 @@ export class VendorService {
             ],
             model: ECVendorCommission,
             as: 'commissions',
-            where: Sequelize.where(
-              Sequelize.fn('isnull', Sequelize.col('commissions.isDeleted'), 0),
-              {
-                [Op.eq]: 0,
-              },
+            where: this.seqHelp.whereIsNullColumnEqualToZero(
+              'commissions.isDeleted',
+              0,
             ),
             include: [
               {
@@ -838,14 +773,7 @@ export class VendorService {
     const searchSlug = await this.repository.findOne(
       new QueryOptionsBuilder()
         .filter({ slug: dto.slug })
-        .filter(
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('isDeleted'), 0),
-            {
-              [Op.eq]: 0,
-            },
-          ),
-        )
+        .filter(this.seqHelp.whereIsNullColumnEqualToZero('isDeleted', 0))
         .build(),
     );
     if (searchSlug) {
@@ -1032,15 +960,9 @@ export class VendorService {
                 {
                   isDefault: true,
                 },
-                Sequelize.where(
-                  Sequelize.fn(
-                    'isnull',
-                    Sequelize.col('vendorUser.isDeleted'),
-                    0,
-                  ),
-                  {
-                    [Op.eq]: 0,
-                  },
+                this.seqHelp.whereIsNullColumnEqualToZero(
+                  'vendorUser.isDeleted',
+                  0,
                 ),
               ],
             },
@@ -1055,11 +977,9 @@ export class VendorService {
             ],
             model: ECVendorCommission,
             as: 'commissions',
-            where: Sequelize.where(
-              Sequelize.fn('isnull', Sequelize.col('commissions.isDeleted'), 0),
-              {
-                [Op.eq]: 0,
-              },
+            where: this.seqHelp.whereIsNullColumnEqualToZero(
+              'commissions.isDeleted',
+              0,
             ),
             include: [
               {
@@ -1088,14 +1008,7 @@ export class VendorService {
     const item = await this.repository.findOne(
       new QueryOptionsBuilder()
         .filter({ id: entityId })
-        .filter(
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('isDeleted'), 0),
-            {
-              [Op.eq]: 0,
-            },
-          ),
-        )
+        .filter(this.seqHelp.whereIsNullColumnEqualToZero('isDeleted', 0))
         .build(),
     );
     if (!item) {
@@ -1108,14 +1021,7 @@ export class VendorService {
     const searchSlug = await this.repository.findOne(
       new QueryOptionsBuilder()
         .filter({ slug: dto.slug })
-        .filter(
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('isDeleted'), 0),
-            {
-              [Op.eq]: 0,
-            },
-          ),
-        )
+        .filter(this.seqHelp.whereIsNullColumnEqualToZero('isDeleted', 0))
         .filter({
           id: {
             [Op.ne]: entityId,
@@ -1159,11 +1065,9 @@ export class VendorService {
         .filter({ vendorId: item.id })
         .filter({ isDefault: true })
         .filter(
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('ECVendorUser.isDeleted'), 0),
-            {
-              [Op.eq]: 0,
-            },
+          this.seqHelp.whereIsNullColumnEqualToZero(
+            'ECVendorUser.isDeleted',
+            0,
           ),
         )
         .build(),
@@ -1193,15 +1097,9 @@ export class VendorService {
           new QueryOptionsBuilder()
             .filter({ userId: defaultVendorUser.user.id })
             .filter(
-              Sequelize.where(
-                Sequelize.fn(
-                  'isnull',
-                  Sequelize.col('ECVendorUser.isDeleted'),
-                  0,
-                ),
-                {
-                  [Op.eq]: 0,
-                },
+              this.seqHelp.whereIsNullColumnEqualToZero(
+                'ECVendorUser.isDeleted',
+                0,
               ),
             )
             .transaction(transaction)
@@ -1374,15 +1272,9 @@ export class VendorService {
                 {
                   isDefault: true,
                 },
-                Sequelize.where(
-                  Sequelize.fn(
-                    'isnull',
-                    Sequelize.col('vendorUser.isDeleted'),
-                    0,
-                  ),
-                  {
-                    [Op.eq]: 0,
-                  },
+                this.seqHelp.whereIsNullColumnEqualToZero(
+                  'vendorUser.isDeleted',
+                  0,
                 ),
               ],
             },
@@ -1397,11 +1289,9 @@ export class VendorService {
             ],
             model: ECVendorCommission,
             as: 'commissions',
-            where: Sequelize.where(
-              Sequelize.fn('isnull', Sequelize.col('commissions.isDeleted'), 0),
-              {
-                [Op.eq]: 0,
-              },
+            where: this.seqHelp.whereIsNullColumnEqualToZero(
+              'commissions.isDeleted',
+              0,
             ),
             include: [
               {
@@ -1430,14 +1320,7 @@ export class VendorService {
     const item = await this.repository.findOne(
       new QueryOptionsBuilder()
         .filter({ id: entityId })
-        .filter(
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('isDeleted'), 0),
-            {
-              [Op.eq]: 0,
-            },
-          ),
-        )
+        .filter(this.seqHelp.whereIsNullColumnEqualToZero('isDeleted', 0))
         .build(),
     );
     if (!item) {
@@ -1450,14 +1333,7 @@ export class VendorService {
     const searchSlug = await this.repository.findOne(
       new QueryOptionsBuilder()
         .filter({ slug: dto.slug })
-        .filter(
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('isDeleted'), 0),
-            {
-              [Op.eq]: 0,
-            },
-          ),
-        )
+        .filter(this.seqHelp.whereIsNullColumnEqualToZero('isDeleted', 0))
         .filter({
           id: {
             [Op.ne]: entityId,
@@ -1521,11 +1397,9 @@ export class VendorService {
         .filter({ vendorId: item.id })
         .filter({ isDefault: true })
         .filter(
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('ECVendorUser.isDeleted'), 0),
-            {
-              [Op.eq]: 0,
-            },
+          this.seqHelp.whereIsNullColumnEqualToZero(
+            'ECVendorUser.isDeleted',
+            0,
           ),
         )
         .build(),
@@ -1555,15 +1429,9 @@ export class VendorService {
           new QueryOptionsBuilder()
             .filter({ userId: defaultVendorUser.user.id })
             .filter(
-              Sequelize.where(
-                Sequelize.fn(
-                  'isnull',
-                  Sequelize.col('ECVendorUser.isDeleted'),
-                  0,
-                ),
-                {
-                  [Op.eq]: 0,
-                },
+              this.seqHelp.whereIsNullColumnEqualToZero(
+                'ECVendorUser.isDeleted',
+                0,
               ),
             )
             .transaction(transaction)
@@ -1741,15 +1609,9 @@ export class VendorService {
                 {
                   isDefault: true,
                 },
-                Sequelize.where(
-                  Sequelize.fn(
-                    'isnull',
-                    Sequelize.col('vendorUser.isDeleted'),
-                    0,
-                  ),
-                  {
-                    [Op.eq]: 0,
-                  },
+                this.seqHelp.whereIsNullColumnEqualToZero(
+                  'vendorUser.isDeleted',
+                  0,
                 ),
               ],
             },
@@ -1764,11 +1626,9 @@ export class VendorService {
             ],
             model: ECVendorCommission,
             as: 'commissions',
-            where: Sequelize.where(
-              Sequelize.fn('isnull', Sequelize.col('commissions.isDeleted'), 0),
-              {
-                [Op.eq]: 0,
-              },
+            where: this.seqHelp.whereIsNullColumnEqualToZero(
+              'commissions.isDeleted',
+              0,
             ),
             include: [
               {
@@ -1796,14 +1656,7 @@ export class VendorService {
     const item = await this.repository.findOne(
       new QueryOptionsBuilder()
         .filter({ id: entityId })
-        .filter(
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('isDeleted'), 0),
-            {
-              [Op.eq]: 0,
-            },
-          ),
-        )
+        .filter(this.seqHelp.whereIsNullColumnEqualToZero('isDeleted', 0))
         .build(),
     );
     if (!item) {
@@ -1883,12 +1736,7 @@ export class VendorService {
         ])
         .filter({ slug })
         .filter(
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('ECVendor.isDeleted'), 0),
-            {
-              [Op.eq]: 0,
-            },
-          ),
+          this.seqHelp.whereIsNullColumnEqualToZero('ECVendor.isDeleted', 0),
         )
         .build(),
     );
@@ -1908,12 +1756,7 @@ export class VendorService {
       new QueryOptionsBuilder()
         .filter({ id })
         .filter(
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('ECVendor.isDeleted'), 0),
-            {
-              [Op.eq]: 0,
-            },
-          ),
+          this.seqHelp.whereIsNullColumnEqualToZero('ECVendor.isDeleted', 0),
         )
         .build(),
     );
@@ -1941,14 +1784,7 @@ export class VendorService {
       let oldAttachment = await this.attachmentRepository.findOne(
         new QueryOptionsBuilder()
           .filter({ id: item.attachmentId })
-          .filter(
-            Sequelize.where(
-              Sequelize.fn('isnull', Sequelize.col('isDeleted'), 0),
-              {
-                [Op.eq]: 0,
-              },
-            ),
-          )
+          .filter(this.seqHelp.whereIsNullColumnEqualToZero('isDeleted', 0))
           .filter({ attachmentTypeId: this.vendorAttachmentType })
           .build(),
       );
@@ -1996,13 +1832,9 @@ export class VendorService {
       [Op.and]: [
         { vendorId: vendor.id },
         { isDefault: true },
-        Sequelize.where(
-          Sequelize.fn(
-            'isnull',
-            Sequelize.col('ECVendorLogistic.isDeleted'),
-            0,
-          ),
-          { [Op.eq]: 0 },
+        this.seqHelp.whereIsNullColumnEqualToZero(
+          'ECVendorLogistic.isDeleted',
+          0,
         ),
       ],
     };

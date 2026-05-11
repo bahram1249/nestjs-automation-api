@@ -14,6 +14,7 @@ import { ECOrder } from '@rahino/localdatabase/models';
 import { ECOrderDetail } from '@rahino/localdatabase/models';
 import { inventoryStatusService } from './inventory-status.service';
 import { InventoryTrackChangeService } from '@rahino/ecommerce/shared/inventory-track-change/inventory-track-change.service';
+import { SequelizeHelpService } from '@rahino/commontools/sequelize-help/sequelize-help.service';
 
 @Injectable()
 export class RevertInventoryQtyService {
@@ -26,6 +27,7 @@ export class RevertInventoryQtyService {
     private readonly orderRepository: typeof ECOrder,
     private readonly inventoryTrackChangeService: InventoryTrackChangeService,
     private readonly inventoryStatusService: inventoryStatusService,
+    private readonly seqHelp: SequelizeHelpService,
   ) {}
 
   async revertQty(paymentId: bigint) {
@@ -34,12 +36,7 @@ export class RevertInventoryQtyService {
         .filter({ id: paymentId })
         .filter({ paymentTypeId: PaymentTypeEnum.ForOrder })
         .filter(
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('ECPayment.isDeleted'), 0),
-            {
-              [Op.eq]: 0,
-            },
-          ),
+          this.seqHelp.whereIsNullColumnEqualToZero('ECPayment.isDeleted', 0),
         )
         .build(),
     );
@@ -57,12 +54,7 @@ export class RevertInventoryQtyService {
         ])
         .filter({ id: payment.orderId })
         .filter(
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('ECOrder.isDeleted'), 0),
-            {
-              [Op.eq]: 0,
-            },
-          ),
+          this.seqHelp.whereIsNullColumnEqualToZero('ECOrder.isDeleted', 0),
         )
         .build(),
     );

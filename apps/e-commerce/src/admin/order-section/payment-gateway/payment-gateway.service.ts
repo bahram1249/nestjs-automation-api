@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
+import { SequelizeHelpService } from '@rahino/commontools/sequelize-help/sequelize-help.service';
 import { User } from '@rahino/database';
 import { ECPaymentGateway } from '@rahino/localdatabase/models';
 import { ListFilter } from '@rahino/query-filter';
@@ -12,14 +13,13 @@ export class PaymentGatewayService {
   constructor(
     @InjectModel(ECPaymentGateway)
     private readonly repository: typeof ECPaymentGateway,
+    private readonly seqHelp: SequelizeHelpService,
   ) {}
   async findAll(user: User, filter: ListFilter) {
     const queryBuilder = new QueryOptionsBuilder().filter(
-      Sequelize.where(
-        Sequelize.fn('isnull', Sequelize.col('ECPaymentGateway.isDeleted'), 0),
-        {
-          [Op.eq]: 0,
-        },
+      this.seqHelp.whereIsNullColumnEqualToZero(
+        'ECPaymentGateway.isDeleted',
+        0,
       ),
     );
     return {
@@ -31,15 +31,9 @@ export class PaymentGatewayService {
     const queryBuilder = new QueryOptionsBuilder()
       .filter({ id: entityId })
       .filter(
-        Sequelize.where(
-          Sequelize.fn(
-            'isnull',
-            Sequelize.col('ECPaymentGateway.isDeleted'),
-            0,
-          ),
-          {
-            [Op.eq]: 0,
-          },
+        this.seqHelp.whereIsNullColumnEqualToZero(
+          'ECPaymentGateway.isDeleted',
+          0,
         ),
       );
     return {

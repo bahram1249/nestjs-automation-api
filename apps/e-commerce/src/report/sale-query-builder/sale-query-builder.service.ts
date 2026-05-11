@@ -12,12 +12,13 @@ import { OrderStatusEnum } from '@rahino/ecommerce/shared/enum';
 import { Order } from '@rahino/query-filter';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import { FindAttributeOptions, GroupOption, Op, Sequelize } from 'sequelize';
+import { SequelizeHelpService } from '@rahino/commontools/sequelize-help/sequelize-help.service';
 
 @Injectable({ scope: Scope.REQUEST })
 export class SaleQueryBuilderService {
   private builder: QueryOptionsBuilder;
   private groupByQuery = false;
-  constructor() {
+  constructor(private readonly seqHelp: SequelizeHelpService) {
     this.builder = new QueryOptionsBuilder();
     this.builder.include([]);
   }
@@ -35,24 +36,14 @@ export class SaleQueryBuilderService {
 
   nonDeleted() {
     this.builder = this.builder.filter(
-      Sequelize.where(
-        Sequelize.fn('isnull', Sequelize.col('ECOrderDetail.isDeleted'), 0),
-        {
-          [Op.eq]: 0,
-        },
-      ),
+      this.seqHelp.whereIsNullColumnEqualToZero('ECOrderDetail.isDeleted', 0),
     );
     return this;
   }
 
   nonDeletedOrder() {
     this.builder = this.builder.filter(
-      Sequelize.where(
-        Sequelize.fn('isnull', Sequelize.col('order.isDeleted'), 0),
-        {
-          [Op.eq]: 0,
-        },
-      ),
+      this.seqHelp.whereIsNullColumnEqualToZero('order.isDeleted', 0),
     );
     return this;
   }

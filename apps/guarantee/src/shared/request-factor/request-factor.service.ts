@@ -32,6 +32,7 @@ import { SolutionService } from '@rahino/guarantee/cartable/solution';
 import { LocalizationService } from 'apps/main/src/common/localization';
 import { GSFactorStatusEnum } from '../factor-status';
 import { GSFactorTypeEnum } from '../factor-type';
+import { SequelizeHelpService } from '@rahino/commontools/sequelize-help/sequelize-help.service';
 
 @Injectable()
 export class RequestFactorService {
@@ -52,6 +53,7 @@ export class RequestFactorService {
     private readonly guaranteeRepository: typeof GSGuarantee,
     private readonly solutionService: SolutionService,
     private readonly localizationService: LocalizationService,
+    private readonly seqHelp: SequelizeHelpService,
   ) {}
 
   public async createFactorAndLocalTransaction(
@@ -307,13 +309,9 @@ export class RequestFactorService {
         })
         .filter({ factorId: factor.id })
         .filter(
-          Sequelize.where(
-            Sequelize.fn(
-              'isnull',
-              Sequelize.col('GSFactorService.isDeleted'),
-              0,
-            ),
-            { [Op.eq]: 0 },
+          this.seqHelp.whereIsNullColumnEqualToZero(
+            'GSFactorService.isDeleted',
+            0,
           ),
         )
         .transaction(transaction)
@@ -358,13 +356,9 @@ export class RequestFactorService {
           warrantyServiceTypeId: GSWarrantyServiceTypeEnum.IncludeWarranty,
         })
         .filter(
-          Sequelize.where(
-            Sequelize.fn(
-              'isnull',
-              Sequelize.col('GSFactorService.isDeleted'),
-              0,
-            ),
-            { [Op.eq]: 0 },
+          this.seqHelp.whereIsNullColumnEqualToZero(
+            'GSFactorService.isDeleted',
+            0,
           ),
         )
         .transaction(transaction)
@@ -469,15 +463,9 @@ export class RequestFactorService {
                   Sequelize.col('organizationContracts.endDate'),
                 ],
               }),
-              Sequelize.where(
-                Sequelize.fn(
-                  'isnull',
-                  Sequelize.col('organizationContracts.isDeleted'),
-                  0,
-                ),
-                {
-                  [Op.eq]: 0,
-                },
+              this.seqHelp.whereIsNullColumnEqualToZero(
+                'organizationContracts.isDeleted',
+                0,
               ),
             ],
           },

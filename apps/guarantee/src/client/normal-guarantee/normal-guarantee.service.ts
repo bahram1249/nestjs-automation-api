@@ -28,6 +28,7 @@ import { CLIENT_SUBMIT_CARD_SMS_SENDER_QUEUE } from '@rahino/guarantee/job/clien
 import { CLIENT_REWARD_SMS_SENDER_QUEUE } from '@rahino/guarantee/job/client-reward-sms-sender/constants';
 import { Queue } from 'bullmq';
 import { GSRewardRuleSharedService } from '@rahino/guarantee/shared/reward-rule';
+import { SequelizeHelpService } from '@rahino/commontools/sequelize-help/sequelize-help.service';
 
 @Injectable()
 export class NormalGuaranteeService {
@@ -42,6 +43,7 @@ export class NormalGuaranteeService {
     @InjectQueue(CLIENT_REWARD_SMS_SENDER_QUEUE)
     private readonly clientRewardSmsSenderQueue: Queue,
     private readonly rewardService: GSRewardRuleSharedService,
+    private readonly seqHelp: SequelizeHelpService,
   ) {}
 
   async findAll(user: User, filter: ListFilter) {
@@ -84,15 +86,9 @@ export class NormalGuaranteeService {
       ])
       .filter({ userId: user.id })
       .filter(
-        Sequelize.where(
-          Sequelize.fn(
-            'isnull',
-            Sequelize.col('GSAssignedGuarantee.isDeleted'),
-            0,
-          ),
-          {
-            [Op.eq]: 0,
-          },
+        this.seqHelp.whereIsNullColumnEqualToZero(
+          'GSAssignedGuarantee.isDeleted',
+          0,
         ),
       );
 
@@ -148,15 +144,9 @@ export class NormalGuaranteeService {
       ])
       .filter({ userId: user.id })
       .filter(
-        Sequelize.where(
-          Sequelize.fn(
-            'isnull',
-            Sequelize.col('GSAssignedGuarantee.isDeleted'),
-            0,
-          ),
-          {
-            [Op.eq]: 0,
-          },
+        this.seqHelp.whereIsNullColumnEqualToZero(
+          'GSAssignedGuarantee.isDeleted',
+          0,
         ),
       );
 
@@ -285,15 +275,9 @@ export class NormalGuaranteeService {
         },
       ])
       .filter(
-        Sequelize.where(
-          Sequelize.fn(
-            'isnull',
-            Sequelize.col('GSAssignedGuarantee.isDeleted'),
-            0,
-          ),
-          {
-            [Op.eq]: 0,
-          },
+        this.seqHelp.whereIsNullColumnEqualToZero(
+          'GSAssignedGuarantee.isDeleted',
+          0,
         ),
       );
 

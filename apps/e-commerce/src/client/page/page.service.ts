@@ -5,22 +5,19 @@ import { Op, Sequelize } from 'sequelize';
 import * as _ from 'lodash';
 import { ECPage } from '@rahino/localdatabase/models';
 import { ListFilter } from '@rahino/query-filter';
+import { SequelizeHelpService } from '@rahino/commontools/sequelize-help/sequelize-help.service';
 
 @Injectable()
 export class PageService {
   constructor(
     @InjectModel(ECPage) private readonly repository: typeof ECPage,
+    private readonly seqHelp: SequelizeHelpService,
   ) {}
 
   async findAll(filter: ListFilter) {
     let queryBuilder = new QueryOptionsBuilder();
     queryBuilder = queryBuilder.filter(
-      Sequelize.where(
-        Sequelize.fn('isnull', Sequelize.col('ECPage.isDeleted'), 0),
-        {
-          [Op.eq]: 0,
-        },
-      ),
+      this.seqHelp.whereIsNullColumnEqualToZero('ECPage.isDeleted', 0),
     );
 
     const count = await this.repository.count(queryBuilder.build());
@@ -62,14 +59,7 @@ export class PageService {
         'createdAt',
         'updatedAt',
       ])
-      .filter(
-        Sequelize.where(
-          Sequelize.fn('isnull', Sequelize.col('ECPage.isDeleted'), 0),
-          {
-            [Op.eq]: 0,
-          },
-        ),
-      )
+      .filter(this.seqHelp.whereIsNullColumnEqualToZero('ECPage.isDeleted', 0))
       .filter({ slug: slug });
     const page = await this.repository.findOne(queryBuilder.build());
     if (!page) {

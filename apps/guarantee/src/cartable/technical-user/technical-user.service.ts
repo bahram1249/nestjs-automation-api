@@ -7,6 +7,7 @@ import { Sequelize, where } from 'sequelize';
 import { Op } from 'sequelize';
 import { LocalizationService } from 'apps/main/src/common/localization';
 import { User } from '@rahino/database';
+import { SequelizeHelpService } from '@rahino/commontools/sequelize-help/sequelize-help.service';
 
 @Injectable()
 export class CartableTechnicalUserService {
@@ -16,6 +17,7 @@ export class CartableTechnicalUserService {
     @InjectModel(GSRequest)
     private readonly requestRepository: typeof GSRequest,
     private readonly localizationService: LocalizationService,
+    private readonly seqHelp: SequelizeHelpService,
   ) {}
 
   async findAll(requestId: bigint, filter: GetTechnicalUserDto) {
@@ -23,12 +25,7 @@ export class CartableTechnicalUserService {
       new QueryOptionsBuilder()
         .filter({ id: requestId })
         .filter(
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('GSRequest.isDeleted'), 0),
-            {
-              [Op.eq]: 0,
-            },
-          ),
+          this.seqHelp.whereIsNullColumnEqualToZero('GSRequest.isDeleted', 0),
         )
         .build(),
     );

@@ -20,6 +20,7 @@ import { ZarinPalDto } from '@rahino/ecommerce/verify-payment/dto';
 import { ECOrder } from '@rahino/localdatabase/models';
 import { FinalizedPaymentService } from '../../util/finalized-payment/finalized-payment.service';
 import { RevertPaymentQtyService } from '@rahino/ecommerce/shared/inventory/services/revert-payment-qty.service';
+import { SequelizeHelpService } from '@rahino/commontools/sequelize-help/sequelize-help.service';
 
 export class ZarinPalService implements PayInterface {
   private baseUrl = '';
@@ -33,6 +34,7 @@ export class ZarinPalService implements PayInterface {
     private readonly orderRepository: typeof ECOrder,
     private readonly revertInventoryQtyService: RevertPaymentQtyService,
     private readonly finalizedPaymentService: FinalizedPaymentService,
+    private readonly seqHelp: SequelizeHelpService,
   ) {
     this.baseUrl = 'https://api.zarinpal.com';
     //this.baseUrl = 'https://sandbox.zarinpal.com';
@@ -53,14 +55,7 @@ export class ZarinPalService implements PayInterface {
     const paymentGateway = await this.paymentGateway.findOne(
       new QueryOptionsBuilder()
         .filter({ serviceName: 'ZarinPalService' })
-        .filter(
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('isDeleted'), 0),
-            {
-              [Op.eq]: 0,
-            },
-          ),
-        )
+        .filter(this.seqHelp.whereIsNullColumnEqualToZero('isDeleted', 0))
         .build(),
     );
     if (!paymentGateway) {
@@ -151,14 +146,7 @@ export class ZarinPalService implements PayInterface {
     const paymentGateway = await this.paymentGateway.findOne(
       new QueryOptionsBuilder()
         .filter({ serviceName: 'ZarinPalService' })
-        .filter(
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('isDeleted'), 0),
-            {
-              [Op.eq]: 0,
-            },
-          ),
-        )
+        .filter(this.seqHelp.whereIsNullColumnEqualToZero('isDeleted', 0))
         .build(),
     );
     if (!paymentGateway) {

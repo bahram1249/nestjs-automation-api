@@ -4,12 +4,14 @@ import { Menu } from '@rahino/database';
 import { Op, Sequelize } from 'sequelize';
 import { GetMenuDto, MenuDto } from './dto';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
+import { SequelizeHelpService } from '@rahino/commontools/sequelize-help/sequelize-help.service';
 
 @Injectable()
 export class MenuService {
   constructor(
     @InjectModel(Menu)
     private readonly menuRepository: typeof Menu,
+    private readonly seqHelp: SequelizeHelpService,
   ) {}
 
   async findAll(filter: GetMenuDto) {
@@ -20,14 +22,7 @@ export class MenuService {
           [Op.like]: filter.search,
         },
       })
-      .filter(
-        Sequelize.where(
-          Sequelize.fn('isnull', Sequelize.col('visibility'), 1),
-          {
-            [Op.eq]: 1,
-          },
-        ),
-      );
+      .filter(this.seqHelp.whereIsNullColumnEqualToValue('visibility', 1, 1));
 
     if (filter.onlyParent == true) {
       builder = builder.filter({
@@ -83,14 +78,7 @@ export class MenuService {
         'updatedAt',
       ])
       .filter({ id })
-      .filter(
-        Sequelize.where(
-          Sequelize.fn('isnull', Sequelize.col('visibility'), 1),
-          {
-            [Op.eq]: 1,
-          },
-        ),
-      )
+      .filter(this.seqHelp.whereIsNullColumnEqualToValue('visibility', 1, 1))
       .build();
     return {
       result: await this.menuRepository.findOne(options),

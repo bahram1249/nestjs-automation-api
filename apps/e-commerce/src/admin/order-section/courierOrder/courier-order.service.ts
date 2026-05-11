@@ -22,6 +22,7 @@ import { I18nTranslations } from 'apps/main/src/generated/i18n.generated';
 import { ECCourier } from '@rahino/localdatabase/models';
 import { ECommmerceSmsService } from '@rahino/ecommerce/shared/sms/ecommerce-sms.service';
 import { UserVendorService } from '@rahino/ecommerce/user/user-vendor/user-vendor.service';
+import { SequelizeHelpService } from '@rahino/commontools/sequelize-help/sequelize-help.service';
 
 @Injectable()
 export class CourierOrderService {
@@ -35,6 +36,7 @@ export class CourierOrderService {
     private readonly userVendorService: UserVendorService,
     private readonly smsService: ECommmerceSmsService,
     private readonly i18n: I18nService<I18nTranslations>,
+    private readonly seqHelp: SequelizeHelpService,
   ) {}
 
   async findAll(user: User, filter: ListFilter) {
@@ -164,12 +166,7 @@ export class CourierOrderService {
         .filter({ orderStatusId: OrderStatusEnum.OrderHasBeenProcessed })
         .filter({ orderShipmentWayId: OrderShipmentwayEnum.delivery })
         .filter(
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('ECOrder.isDeleted'), 0),
-            {
-              [Op.eq]: 0,
-            },
-          ),
+          this.seqHelp.whereIsNullColumnEqualToZero('ECOrder.isDeleted', 0),
         )
         .include([
           {
@@ -190,12 +187,7 @@ export class CourierOrderService {
       new QueryOptionsBuilder()
         .filter({ userId: dto.userId })
         .filter(
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('ECCourier.isDeleted'), 0),
-            {
-              [Op.eq]: 0,
-            },
-          ),
+          this.seqHelp.whereIsNullColumnEqualToZero('ECCourier.isDeleted', 0),
         )
         .include([
           {
@@ -246,12 +238,7 @@ export class CourierOrderService {
           ),
         )
         .filter(
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('ECOrder.isDeleted'), 0),
-            {
-              [Op.eq]: 0,
-            },
-          ),
+          this.seqHelp.whereIsNullColumnEqualToZero('ECOrder.isDeleted', 0),
         )
         .include([
           {
@@ -277,12 +264,7 @@ export class CourierOrderService {
           },
         })
         .filter(
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('ECCourier.isDeleted'), 0),
-            {
-              [Op.eq]: 0,
-            },
-          ),
+          this.seqHelp.whereIsNullColumnEqualToZero('ECCourier.isDeleted', 0),
         )
         .include([
           {

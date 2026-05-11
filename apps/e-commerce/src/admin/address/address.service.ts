@@ -17,6 +17,7 @@ import { ECCity } from '@rahino/localdatabase/models';
 import { ECNeighborhood } from '@rahino/localdatabase/models';
 import { I18nTranslations } from 'apps/main/src/generated/i18n.generated';
 import { I18nContext, I18nService } from 'nestjs-i18n';
+import { SequelizeHelpService } from '@rahino/commontools/sequelize-help/sequelize-help.service';
 
 @Injectable()
 export class AdminAddressService {
@@ -28,6 +29,7 @@ export class AdminAddressService {
     private neighborhoodRepository: typeof ECNeighborhood,
     @InjectMapper() private readonly mapper: Mapper,
     private readonly i18n: I18nService<I18nTranslations>,
+    private readonly seqHelp: SequelizeHelpService,
   ) {}
 
   async findAll(userId: bigint, user: User, filter: GetAddressDto) {
@@ -52,12 +54,7 @@ export class AdminAddressService {
         },
       })
       .filter(
-        Sequelize.where(
-          Sequelize.fn('isnull', Sequelize.col('ECAddress.isDeleted'), 0),
-          {
-            [Op.eq]: 0,
-          },
-        ),
+        this.seqHelp.whereIsNullColumnEqualToZero('ECAddress.isDeleted', 0),
       )
       .filter({ userId: userId });
 
@@ -125,12 +122,7 @@ export class AdminAddressService {
         })
         .filter({ id: entityId })
         .filter(
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('ECAddress.isDeleted'), 0),
-            {
-              [Op.eq]: 0,
-            },
-          ),
+          this.seqHelp.whereIsNullColumnEqualToZero('ECAddress.isDeleted', 0),
         )
         .include([
           {
@@ -175,12 +167,7 @@ export class AdminAddressService {
       new QueryOptionsBuilder()
         .filter({ id: entityId })
         .filter(
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('ECAddress.isDeleted'), 0),
-            {
-              [Op.eq]: 0,
-            },
-          ),
+          this.seqHelp.whereIsNullColumnEqualToZero('ECAddress.isDeleted', 0),
         )
         .build(),
     );
@@ -192,12 +179,7 @@ export class AdminAddressService {
       new QueryOptionsBuilder()
         .filter({ id: dto.provinceId })
         .filter(
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('ECProvince.isDeleted'), 0),
-            {
-              [Op.eq]: 0,
-            },
-          ),
+          this.seqHelp.whereIsNullColumnEqualToZero('ECProvince.isDeleted', 0),
         )
         .build(),
     );
@@ -211,12 +193,7 @@ export class AdminAddressService {
         .filter({ id: dto.cityId })
         .filter({ provinceId: dto.provinceId })
         .filter(
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('ECCity.isDeleted'), 0),
-            {
-              [Op.eq]: 0,
-            },
-          ),
+          this.seqHelp.whereIsNullColumnEqualToZero('ECCity.isDeleted', 0),
         )
         .build(),
     );

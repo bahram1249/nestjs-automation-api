@@ -7,6 +7,7 @@ import { MinioClientService } from '@rahino/minio-client';
 import { DBLogger } from '@rahino/logger';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import { Op, Sequelize } from 'sequelize';
+import { SequelizeHelpService } from '@rahino/commontools/sequelize-help/sequelize-help.service';
 
 @Processor(REMOVE_PRODUCT_PHOTO_QUEUE)
 export class ProductImageRemovalProcessor extends WorkerHost {
@@ -15,6 +16,7 @@ export class ProductImageRemovalProcessor extends WorkerHost {
     @InjectModel(Attachment) private repository: typeof Attachment,
     private minioService: MinioClientService,
     private logger: DBLogger,
+    private readonly seqHelp: SequelizeHelpService,
   ) {
     super();
   }
@@ -28,14 +30,7 @@ export class ProductImageRemovalProcessor extends WorkerHost {
         .filter({
           attachmentTypeId: this.photoTempAttachmentType,
         })
-        .filter(
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('isDeleted'), 0),
-            {
-              [Op.eq]: 0,
-            },
-          ),
-        )
+        .filter(this.seqHelp.whereIsNullColumnEqualToZero('isDeleted', 0))
         .filter(
           Sequelize.where(Sequelize.col('createdAt'), {
             [Op.lt]: Sequelize.fn(

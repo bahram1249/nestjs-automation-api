@@ -17,6 +17,7 @@ import { Mapper } from 'automapper-core';
 import * as _ from 'lodash';
 import { LocalizationService } from 'apps/main/src/common/localization';
 import { GSUnitPriceEnum } from '@rahino/guarantee/shared/unit-price';
+import { SequelizeHelpService } from '@rahino/commontools/sequelize-help/sequelize-help.service';
 
 @Injectable()
 export class DiscountCodeService {
@@ -26,6 +27,7 @@ export class DiscountCodeService {
     private readonly localizationService: LocalizationService,
     @InjectMapper()
     private readonly mapper: Mapper,
+    private readonly seqHelp: SequelizeHelpService,
   ) {}
 
   async findAll(filter: GetDiscountCodeDto) {
@@ -36,11 +38,9 @@ export class DiscountCodeService {
         },
       })
       .filter(
-        Sequelize.where(
-          Sequelize.fn('isnull', Sequelize.col('GSDiscountCode.isDeleted'), 0),
-          {
-            [Op.eq]: 0,
-          },
+        this.seqHelp.whereIsNullColumnEqualToZero(
+          'GSDiscountCode.isDeleted',
+          0,
         ),
       );
 
@@ -101,15 +101,9 @@ export class DiscountCodeService {
         .include([{ model: GSUnitPrice, as: 'unitPrice' }])
         .thenInclude({ model: GSDiscountType, as: 'discountType' })
         .filter(
-          Sequelize.where(
-            Sequelize.fn(
-              'isnull',
-              Sequelize.col('GSDiscountCode.isDeleted'),
-              0,
-            ),
-            {
-              [Op.eq]: 0,
-            },
+          this.seqHelp.whereIsNullColumnEqualToZero(
+            'GSDiscountCode.isDeleted',
+            0,
           ),
         )
         .filter({ id: entityId })
@@ -148,15 +142,9 @@ export class DiscountCodeService {
           'updatedAt',
         ])
         .filter(
-          Sequelize.where(
-            Sequelize.fn(
-              'isnull',
-              Sequelize.col('GSDiscountCode.isDeleted'),
-              0,
-            ),
-            {
-              [Op.eq]: 0,
-            },
+          this.seqHelp.whereIsNullColumnEqualToZero(
+            'GSDiscountCode.isDeleted',
+            0,
           ),
         )
         .filter({ code: dto.code })
@@ -202,15 +190,9 @@ export class DiscountCodeService {
         ])
         .include([{ model: GSUnitPrice, as: 'unitPrice' }])
         .filter(
-          Sequelize.where(
-            Sequelize.fn(
-              'isnull',
-              Sequelize.col('GSDiscountCode.isDeleted'),
-              0,
-            ),
-            {
-              [Op.eq]: 0,
-            },
+          this.seqHelp.whereIsNullColumnEqualToZero(
+            'GSDiscountCode.isDeleted',
+            0,
           ),
         )
         .filter({ id: id })
@@ -226,15 +208,9 @@ export class DiscountCodeService {
     const duplicateItem = await this.repository.findOne(
       new QueryOptionsBuilder()
         .filter(
-          Sequelize.where(
-            Sequelize.fn(
-              'isnull',
-              Sequelize.col('GSDiscountCode.isDeleted'),
-              0,
-            ),
-            {
-              [Op.eq]: 0,
-            },
+          this.seqHelp.whereIsNullColumnEqualToZero(
+            'GSDiscountCode.isDeleted',
+            0,
           ),
         )
         .filter({ code: dto.code })
@@ -265,15 +241,9 @@ export class DiscountCodeService {
     const item = await this.repository.findOne(
       new QueryOptionsBuilder()
         .filter(
-          Sequelize.where(
-            Sequelize.fn(
-              'isnull',
-              Sequelize.col('GSDiscountCode.isDeleted'),
-              0,
-            ),
-            {
-              [Op.eq]: 0,
-            },
+          this.seqHelp.whereIsNullColumnEqualToZero(
+            'GSDiscountCode.isDeleted',
+            0,
           ),
         )
         .filter({ id: entityId })

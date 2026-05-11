@@ -26,6 +26,7 @@ import { PayVipBundleDto } from './dto';
 import { GSTransactionStatusEnum } from '@rahino/guarantee/shared/transaction-status';
 import { isNotNull } from '@rahino/commontools';
 import { GSPaymentWayEnum } from '@rahino/guarantee/shared/payment-way';
+import { SequelizeHelpService } from '@rahino/commontools/sequelize-help/sequelize-help.service';
 
 @Injectable()
 export class PayVipBundleService {
@@ -36,6 +37,7 @@ export class PayVipBundleService {
     private readonly factorRepository: typeof GSFactor,
     @InjectModel(GSVipBundleType)
     private readonly vipBundleTypeRepository: typeof GSVipBundleType,
+    private readonly seqHelp: SequelizeHelpService,
 
     @InjectModel(GSTransaction)
     private readonly transactionRepository: typeof GSTransaction,
@@ -59,13 +61,9 @@ export class PayVipBundleService {
       new QueryOptionsBuilder()
         .filter({ id: vipBundleTypeId })
         .filter(
-          Sequelize.where(
-            Sequelize.fn(
-              'isnull',
-              Sequelize.col('GSVipBundleType.isDeleted'),
-              0,
-            ),
-            { [Op.eq]: 0 },
+          this.seqHelp.whereIsNullColumnEqualToZero(
+            'GSVipBundleType.isDeleted',
+            0,
           ),
         )
         .build(),
@@ -165,13 +163,9 @@ export class PayVipBundleService {
       new QueryOptionsBuilder()
         .filter({ id: dto.vipBundleTypeId })
         .filter(
-          Sequelize.where(
-            Sequelize.fn(
-              'isnull',
-              Sequelize.col('GSVipBundleType.isDeleted'),
-              0,
-            ),
-            { [Op.eq]: 0 },
+          this.seqHelp.whereIsNullColumnEqualToZero(
+            'GSVipBundleType.isDeleted',
+            0,
           ),
         )
         .build(),

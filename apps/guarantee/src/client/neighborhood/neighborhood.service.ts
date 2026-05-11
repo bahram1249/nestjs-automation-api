@@ -5,21 +5,18 @@ import * as _ from 'lodash';
 import { Op, Sequelize } from 'sequelize';
 import { GetNeighborhoodDto } from './dto';
 import { GSCity, GSNeighborhood } from '@rahino/localdatabase/models';
+import { SequelizeHelpService } from '@rahino/commontools/sequelize-help/sequelize-help.service';
 
 @Injectable()
 export class NeighborhoodService {
   constructor(
     @InjectModel(GSNeighborhood) private repository: typeof GSNeighborhood,
+    private readonly seqHelp: SequelizeHelpService,
   ) {}
 
   async findAll(dto: GetNeighborhoodDto) {
     let queryBuilder = new QueryOptionsBuilder().filter(
-      Sequelize.where(
-        Sequelize.fn('isnull', Sequelize.col('GSNeighborhood.isDeleted'), 0),
-        {
-          [Op.eq]: 0,
-        },
-      ),
+      this.seqHelp.whereIsNullColumnEqualToZero('GSNeighborhood.isDeleted', 0),
     );
     if (dto.cityId) {
       queryBuilder = queryBuilder.filter({ cityId: dto.cityId });

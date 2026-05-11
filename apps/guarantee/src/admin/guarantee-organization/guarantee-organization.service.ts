@@ -31,6 +31,7 @@ import * as _ from 'lodash';
 import { GuaranteeStaticRoleEnum } from '@rahino/guarantee/shared/static-role/enum';
 import { AddressService } from '@rahino/guarantee/client/address/address.service';
 import { OrganizationUserService } from '@rahino/bpmn/modules/organization-user/organization-user.service';
+import { SequelizeHelpService } from '@rahino/commontools/sequelize-help/sequelize-help.service';
 
 @Injectable()
 export class GuaranteeOrganizationService {
@@ -54,6 +55,7 @@ export class GuaranteeOrganizationService {
     private readonly sequelize: Sequelize,
 
     private readonly organizationUserService: OrganizationUserService,
+    private readonly seqHelp: SequelizeHelpService,
   ) {}
 
   async findAll(filter: GetGuaranteeOrganizationDto) {
@@ -72,15 +74,9 @@ export class GuaranteeOrganizationService {
         },
       ])
       .filter(
-        Sequelize.where(
-          Sequelize.fn(
-            'isnull',
-            Sequelize.col('GSGuaranteeOrganization.isDeleted'),
-            0,
-          ),
-          {
-            [Op.eq]: 0,
-          },
+        this.seqHelp.whereIsNullColumnEqualToZero(
+          'GSGuaranteeOrganization.isDeleted',
+          0,
         ),
       );
 
@@ -233,15 +229,9 @@ export class GuaranteeOrganizationService {
         required: false,
       })
       .filter(
-        Sequelize.where(
-          Sequelize.fn(
-            'isnull',
-            Sequelize.col('GSGuaranteeOrganization.isDeleted'),
-            0,
-          ),
-          {
-            [Op.eq]: 0,
-          },
+        this.seqHelp.whereIsNullColumnEqualToZero(
+          'GSGuaranteeOrganization.isDeleted',
+          0,
         ),
       )
       .filter({ id: entityId });
@@ -268,15 +258,9 @@ export class GuaranteeOrganizationService {
           },
         })
         .filter(
-          Sequelize.where(
-            Sequelize.fn(
-              'isnull',
-              Sequelize.col('GSGuaranteeOrganization.isDeleted'),
-              0,
-            ),
-            {
-              [Op.eq]: 0,
-            },
+          this.seqHelp.whereIsNullColumnEqualToZero(
+            'GSGuaranteeOrganization.isDeleted',
+            0,
           ),
         )
         .build(),
@@ -350,15 +334,9 @@ export class GuaranteeOrganizationService {
     const guaranteeOrganization = await this.repository.findOne(
       new QueryOptionsBuilder()
         .filter(
-          Sequelize.where(
-            Sequelize.fn(
-              'isnull',
-              Sequelize.col('GSGuaranteeOrganization.isDeleted'),
-              0,
-            ),
-            {
-              [Op.eq]: 0,
-            },
+          this.seqHelp.whereIsNullColumnEqualToZero(
+            'GSGuaranteeOrganization.isDeleted',
+            0,
           ),
         )
         .filter({ id: id })
@@ -448,15 +426,9 @@ export class GuaranteeOrganizationService {
         .include({ model: User, as: 'user' })
         .filter({ id: entityId })
         .filter(
-          Sequelize.where(
-            Sequelize.fn(
-              'isnull',
-              Sequelize.col('GSGuaranteeOrganization.isDeleted'),
-              0,
-            ),
-            {
-              [Op.eq]: 0,
-            },
+          this.seqHelp.whereIsNullColumnEqualToZero(
+            'GSGuaranteeOrganization.isDeleted',
+            0,
           ),
         )
         .build(),

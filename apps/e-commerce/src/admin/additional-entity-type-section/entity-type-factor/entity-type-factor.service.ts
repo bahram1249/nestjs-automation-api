@@ -12,6 +12,7 @@ import { EAVEntityType } from '@rahino/localdatabase/models';
 import { InjectMapper } from 'automapper-nestjs';
 import { Mapper } from 'automapper-core';
 import * as _ from 'lodash';
+import { SequelizeHelpService } from '@rahino/commontools/sequelize-help/sequelize-help.service';
 
 @Injectable()
 export class EntityTypeFactorService {
@@ -23,21 +24,16 @@ export class EntityTypeFactorService {
     private readonly entityTypeRepository: typeof EAVEntityType,
     @InjectMapper()
     private readonly mapper: Mapper,
+    private readonly seqHelp: SequelizeHelpService,
   ) {}
 
   async findAll(user: User, filter: GetEntityTypeFactorDto) {
     const queryBuilder = new QueryOptionsBuilder()
       .filter({ entityTypeId: filter.entityTypeId })
       .filter(
-        Sequelize.where(
-          Sequelize.fn(
-            'isnull',
-            Sequelize.col('ECEntityTypeFactor.isDeleted'),
-            0,
-          ),
-          {
-            [Op.eq]: 0,
-          },
+        this.seqHelp.whereIsNullColumnEqualToZero(
+          'ECEntityTypeFactor.isDeleted',
+          0,
         ),
       );
     const count = await this.repository.count(queryBuilder.build());
@@ -52,15 +48,9 @@ export class EntityTypeFactorService {
     const queryBuilder = new QueryOptionsBuilder()
       .filter({ id: entityId })
       .filter(
-        Sequelize.where(
-          Sequelize.fn(
-            'isnull',
-            Sequelize.col('ECEntityTypeFactor.isDeleted'),
-            0,
-          ),
-          {
-            [Op.eq]: 0,
-          },
+        this.seqHelp.whereIsNullColumnEqualToZero(
+          'ECEntityTypeFactor.isDeleted',
+          0,
         ),
       );
     const result = await this.repository.findOne(queryBuilder.build());
@@ -81,11 +71,9 @@ export class EntityTypeFactorService {
       new QueryOptionsBuilder()
         .filter({ id: dto.entityTypeId })
         .filter(
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('EAVEntityType.isDeleted'), 0),
-            {
-              [Op.eq]: 0,
-            },
+          this.seqHelp.whereIsNullColumnEqualToZero(
+            'EAVEntityType.isDeleted',
+            0,
           ),
         )
         .build(),
@@ -115,15 +103,9 @@ export class EntityTypeFactorService {
       new QueryOptionsBuilder()
         .filter({ id: entityId })
         .filter(
-          Sequelize.where(
-            Sequelize.fn(
-              'isnull',
-              Sequelize.col('ECEntityTypeFactor.isDeleted'),
-              0,
-            ),
-            {
-              [Op.eq]: 0,
-            },
+          this.seqHelp.whereIsNullColumnEqualToZero(
+            'ECEntityTypeFactor.isDeleted',
+            0,
           ),
         )
         .build(),
@@ -165,15 +147,9 @@ export class EntityTypeFactorService {
       new QueryOptionsBuilder()
         .filter({ id: entityId })
         .filter(
-          Sequelize.where(
-            Sequelize.fn(
-              'isnull',
-              Sequelize.col('ECEntityTypeFactor.isDeleted'),
-              0,
-            ),
-            {
-              [Op.eq]: 0,
-            },
+          this.seqHelp.whereIsNullColumnEqualToZero(
+            'ECEntityTypeFactor.isDeleted',
+            0,
           ),
         )
         .build(),

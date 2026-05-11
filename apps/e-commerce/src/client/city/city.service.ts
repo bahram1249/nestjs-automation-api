@@ -6,19 +6,18 @@ import { ECProvince } from '@rahino/localdatabase/models';
 import { Op, Sequelize } from 'sequelize';
 import { GetCityDto } from './dto';
 import { ECCity } from '@rahino/localdatabase/models';
+import { SequelizeHelpService } from '@rahino/commontools/sequelize-help/sequelize-help.service';
 
 @Injectable()
 export class CityService {
-  constructor(@InjectModel(ECCity) private repository: typeof ECCity) {}
+  constructor(
+    @InjectModel(ECCity) private repository: typeof ECCity,
+    private readonly seqHelp: SequelizeHelpService,
+  ) {}
 
   async findAll(dto: GetCityDto) {
     let queryBuilder = new QueryOptionsBuilder().filter(
-      Sequelize.where(
-        Sequelize.fn('isnull', Sequelize.col('ECCity.isDeleted'), 0),
-        {
-          [Op.eq]: 0,
-        },
-      ),
+      this.seqHelp.whereIsNullColumnEqualToZero('ECCity.isDeleted', 0),
     );
     if (dto.provinceId) {
       queryBuilder = queryBuilder.filter({ provinceId: dto.provinceId });

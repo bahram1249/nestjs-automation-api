@@ -19,6 +19,7 @@ import { Op, Sequelize } from 'sequelize';
 import * as _ from 'lodash';
 import { LocalizationService } from 'apps/main/src/common/localization';
 import { User } from '@rahino/database';
+import { SequelizeHelpService } from '@rahino/commontools/sequelize-help/sequelize-help.service';
 
 @Injectable()
 export class OrganizationAddressService {
@@ -32,6 +33,7 @@ export class OrganizationAddressService {
     @InjectModel(GSRequest)
     private readonly requestRepository: typeof GSRequest,
     private readonly localizationService: LocalizationService,
+    private readonly seqHelp: SequelizeHelpService,
   ) {}
 
   async findAddress(user: User, requestId: bigint) {
@@ -83,12 +85,7 @@ export class OrganizationAddressService {
         ])
         .filter({ id: guaranteeOrganization.addressId })
         .filter(
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('GSAddress.isDeleted'), 0),
-            {
-              [Op.eq]: 0,
-            },
-          ),
+          this.seqHelp.whereIsNullColumnEqualToZero('GSAddress.isDeleted', 0),
         )
         .include([
           {

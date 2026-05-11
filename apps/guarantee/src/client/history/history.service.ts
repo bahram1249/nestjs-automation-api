@@ -16,6 +16,7 @@ import { LocalizationService } from 'apps/main/src/common/localization';
 import { HistoryMapper } from './history.mapper';
 import { Role, User } from '@rahino/database';
 import { ListFilterV2Factory } from '@rahino/query-filter/provider/list-filter-v2.factory';
+import { SequelizeHelpService } from '@rahino/commontools/sequelize-help/sequelize-help.service';
 
 @Injectable()
 export class HistoryService {
@@ -27,6 +28,7 @@ export class HistoryService {
     private readonly localizationService: LocalizationService,
     private readonly historyMapper: HistoryMapper,
     private readonly listFilter: ListFilterV2Factory,
+    private readonly seqHelp: SequelizeHelpService,
   ) {}
 
   async findAll(user: User, requestId: bigint, filter: GetHistoryDto) {
@@ -35,12 +37,7 @@ export class HistoryService {
       new QueryOptionsBuilder()
 
         .filter(
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('GSRequest.isDeleted'), 0),
-            {
-              [Op.eq]: 0,
-            },
-          ),
+          this.seqHelp.whereIsNullColumnEqualToZero('GSRequest.isDeleted', 0),
         )
         .filter({ userId: user.id })
         .filter({ id: requestId })
@@ -160,12 +157,7 @@ export class HistoryService {
     const request = await this.requestRepository.findOne(
       new QueryOptionsBuilder()
         .filter(
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('GSRequest.isDeleted'), 0),
-            {
-              [Op.eq]: 0,
-            },
-          ),
+          this.seqHelp.whereIsNullColumnEqualToZero('GSRequest.isDeleted', 0),
         )
         .filter({ userId: user.id })
         .order({ orderBy: 'createdAt', sortOrder: 'desc' })

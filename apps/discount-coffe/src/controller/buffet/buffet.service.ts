@@ -30,6 +30,7 @@ import { BuffetCity } from '@rahino/localdatabase/models';
 import { BuffetOption } from '@rahino/localdatabase/models';
 import { BuffetIgnoreReserve } from '@rahino/localdatabase/models';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
+import { SequelizeHelpService } from '@rahino/commontools/sequelize-help/sequelize-help.service';
 const mkdirAsync = util.promisify(fs.mkdir);
 
 @Injectable()
@@ -59,6 +60,7 @@ export class BuffetService {
     private readonly coffeOptionRepository: typeof CoffeOption,
     @InjectModel(BuffetIgnoreReserve)
     private readonly ignoreReserveRepository: typeof BuffetIgnoreReserve,
+    private readonly seqHelp: SequelizeHelpService,
     private readonly config: ConfigService,
   ) {}
 
@@ -142,12 +144,7 @@ export class BuffetService {
                 {
                   buffetId: buffet.id,
                 },
-                Sequelize.where(
-                  Sequelize.fn('isnull', Sequelize.col('menus.isDeleted'), 0),
-                  {
-                    [Op.eq]: 0,
-                  },
-                ),
+                this.seqHelp.whereIsNullColumnEqualToZero('menus.isDeleted', 0),
               ],
             },
           },
@@ -300,12 +297,7 @@ export class BuffetService {
                 [Op.in]: menusIds,
               },
             },
-            Sequelize.where(
-              Sequelize.fn('isnull', Sequelize.col('isDeleted'), 0),
-              {
-                [Op.eq]: 0,
-              },
-            ),
+            this.seqHelp.whereIsNullColumnEqualToZero('isDeleted', 0),
           ],
         },
       });
@@ -425,12 +417,7 @@ export class BuffetService {
           {
             fileName: fileName,
           },
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('isDeleted'), 0),
-            {
-              [Op.eq]: 0,
-            },
-          ),
+          this.seqHelp.whereIsNullColumnEqualToZero('isDeleted', 0),
           {
             attachmentTypeId: 5,
           },

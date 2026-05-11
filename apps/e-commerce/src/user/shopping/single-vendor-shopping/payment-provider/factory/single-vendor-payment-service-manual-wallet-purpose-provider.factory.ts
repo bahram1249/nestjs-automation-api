@@ -24,15 +24,9 @@ export class SingleVendorPaymentServiceManualWalletPurposeProviderFactory {
       new QueryOptionsBuilder()
         .filter({ id: paymentId })
         .filter(
-          Sequelize.where(
-            Sequelize.fn(
-              'isnull',
-              Sequelize.col('ECPaymentGateway.isDeleted'),
-              0,
-            ),
-            {
-              [Op.eq]: 0,
-            },
+          this.seqHelp.whereIsNullColumnEqualToZero(
+            'ECPaymentGateway.isDeleted',
+            0,
           ),
         )
         .build(),

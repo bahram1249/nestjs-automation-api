@@ -15,6 +15,7 @@ import { Op } from 'sequelize';
 import { InjectQueue } from '@nestjs/bullmq';
 import { Queue } from 'bullmq';
 import { PRE_REGISTRATION_INIT_SMS_SENDER_QUEUE } from '@rahino/guarantee/job/pre-registration-init-sms-sender/constants';
+import { SequelizeHelpService } from '@rahino/commontools/sequelize-help/sequelize-help.service';
 @Injectable()
 @Injectable()
 export class PreRegistrationOrganizationService {
@@ -33,6 +34,7 @@ export class PreRegistrationOrganizationService {
 
     @InjectQueue(PRE_REGISTRATION_INIT_SMS_SENDER_QUEUE)
     private readonly preRegistrationInitSmsSenderQueue: Queue,
+    private readonly seqHelp: SequelizeHelpService,
   ) {}
 
   async create(dto: PreRegistrationOrganizationDto) {
@@ -142,12 +144,7 @@ export class PreRegistrationOrganizationService {
         .filter({ id: attachmentId })
         .filter({ attachmentTypeId: GSAttachmentTypeEnum.TempOrganization })
         .filter(
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('Attachment.isDeleted'), 0),
-            {
-              [Op.eq]: 0,
-            },
-          ),
+          this.seqHelp.whereIsNullColumnEqualToZero('Attachment.isDeleted', 0),
         )
         .build(),
     );

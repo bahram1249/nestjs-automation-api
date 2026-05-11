@@ -14,6 +14,7 @@ import { Op, Sequelize } from 'sequelize';
 import { ECAddress } from '@rahino/localdatabase/models';
 import { ECVendor } from '@rahino/localdatabase/models';
 import { AddressService } from '@rahino/ecommerce/user/address/address.service';
+import { SequelizeHelpService } from '@rahino/commontools/sequelize-help/sequelize-help.service';
 
 @Injectable()
 export class VendorAddressService {
@@ -23,6 +24,7 @@ export class VendorAddressService {
     @InjectModel(ECVendorAddress)
     private readonly vendorAddressRepository: typeof ECVendorAddress,
     private readonly addressService: AddressService,
+    private readonly seqHelp: SequelizeHelpService,
   ) {}
 
   async findAll(user: User, filter: GetVendorAddressDto) {
@@ -31,11 +33,9 @@ export class VendorAddressService {
       new QueryOptionsBuilder()
         .filter({ userId: user.id })
         .filter(
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('ECVendorUser.isDeleted'), 0),
-            {
-              [Op.eq]: 0,
-            },
+          this.seqHelp.whereIsNullColumnEqualToZero(
+            'ECVendorUser.isDeleted',
+            0,
           ),
         )
         .build(),
@@ -43,12 +43,7 @@ export class VendorAddressService {
 
     // all vendor addresses is available
     let queryBuilder = new QueryOptionsBuilder().filter(
-      Sequelize.where(
-        Sequelize.fn('isnull', Sequelize.col('ECVendorAddress.isDeleted'), 0),
-        {
-          [Op.eq]: 0,
-        },
-      ),
+      this.seqHelp.whereIsNullColumnEqualToZero('ECVendorAddress.isDeleted', 0),
     );
 
     const vendorIds = vendors.map((vendor) => vendor.vendorId);
@@ -119,11 +114,9 @@ export class VendorAddressService {
       new QueryOptionsBuilder()
         .filter({ userId: user.id })
         .filter(
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('ECVendorUser.isDeleted'), 0),
-            {
-              [Op.eq]: 0,
-            },
+          this.seqHelp.whereIsNullColumnEqualToZero(
+            'ECVendorUser.isDeleted',
+            0,
           ),
         )
         .build(),
@@ -131,12 +124,7 @@ export class VendorAddressService {
 
     // all vendor addresses is available
     let queryBuilder = new QueryOptionsBuilder().filter(
-      Sequelize.where(
-        Sequelize.fn('isnull', Sequelize.col('ECVendorAddress.isDeleted'), 0),
-        {
-          [Op.eq]: 0,
-        },
-      ),
+      this.seqHelp.whereIsNullColumnEqualToZero('ECVendorAddress.isDeleted', 0),
     );
 
     const vendorIds = vendors.map((vendor) => vendor.vendorId);
@@ -201,11 +189,9 @@ export class VendorAddressService {
         .filter({ userId: user.id })
         .filter({ vendorId: dto.vendorId })
         .filter(
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('ECVendorUser.isDeleted'), 0),
-            {
-              [Op.eq]: 0,
-            },
+          this.seqHelp.whereIsNullColumnEqualToZero(
+            'ECVendorUser.isDeleted',
+            0,
           ),
         )
         .build(),
@@ -266,15 +252,9 @@ export class VendorAddressService {
       new QueryOptionsBuilder()
         .filter({ id: entityId })
         .filter(
-          Sequelize.where(
-            Sequelize.fn(
-              'isnull',
-              Sequelize.col('ECVendorAddress.isDeleted'),
-              0,
-            ),
-            {
-              [Op.eq]: 0,
-            },
+          this.seqHelp.whereIsNullColumnEqualToZero(
+            'ECVendorAddress.isDeleted',
+            0,
           ),
         )
         .build(),
@@ -293,11 +273,9 @@ export class VendorAddressService {
         .filter({ userId: user.id })
         .filter({ vendorId: dto.vendorId })
         .filter(
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('ECVendorUser.isDeleted'), 0),
-            {
-              [Op.eq]: 0,
-            },
+          this.seqHelp.whereIsNullColumnEqualToZero(
+            'ECVendorUser.isDeleted',
+            0,
           ),
         )
         .build(),
@@ -358,11 +336,9 @@ export class VendorAddressService {
       new QueryOptionsBuilder()
         .filter({ userId: user.id })
         .filter(
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('ECVendorUser.isDeleted'), 0),
-            {
-              [Op.eq]: 0,
-            },
+          this.seqHelp.whereIsNullColumnEqualToZero(
+            'ECVendorUser.isDeleted',
+            0,
           ),
         )
         .build(),
@@ -370,12 +346,7 @@ export class VendorAddressService {
 
     // all vendor addresses is available
     let queryBuilder = new QueryOptionsBuilder().filter(
-      Sequelize.where(
-        Sequelize.fn('isnull', Sequelize.col('ECVendorAddress.isDeleted'), 0),
-        {
-          [Op.eq]: 0,
-        },
-      ),
+      this.seqHelp.whereIsNullColumnEqualToZero('ECVendorAddress.isDeleted', 0),
     );
 
     const vendorIds = vendors.map((vendor) => vendor.vendorId);

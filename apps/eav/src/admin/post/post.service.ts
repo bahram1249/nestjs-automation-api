@@ -26,6 +26,7 @@ import { MinioClientService } from '@rahino/minio-client';
 import { ThumbnailService } from '@rahino/thumbnail';
 import * as fs from 'fs';
 import { PostAttachmentDto } from './dto/post-attachment.dto';
+import { SequelizeHelpService } from '@rahino/commontools/sequelize-help/sequelize-help.service';
 
 @Injectable()
 export class PostService {
@@ -47,6 +48,7 @@ export class PostService {
     private readonly entityService: EntityService,
     private readonly minioClientService: MinioClientService,
     private readonly thumbnailService: ThumbnailService,
+    private readonly seqHelp: SequelizeHelpService,
   ) {}
 
   async findAll(filter: GetPostDto) {
@@ -67,12 +69,7 @@ export class PostService {
         ],
       })
       .filter(
-        Sequelize.where(
-          Sequelize.fn('isnull', Sequelize.col('EAVPost.isDeleted'), 0),
-          {
-            [Op.eq]: 0,
-          },
-        ),
+        this.seqHelp.whereIsNullColumnEqualToZero('EAVPost.isDeleted', 0),
       );
 
     const count = await this.repository.count(builder.build());
@@ -156,12 +153,7 @@ export class PostService {
         id: id,
       })
       .filter(
-        Sequelize.where(
-          Sequelize.fn('isnull', Sequelize.col('EAVPost.isDeleted'), 0),
-          {
-            [Op.eq]: 0,
-          },
-        ),
+        this.seqHelp.whereIsNullColumnEqualToZero('EAVPost.isDeleted', 0),
       );
     const blog = await this.repository.findOne(builder.build());
     if (!blog) {
@@ -181,12 +173,7 @@ export class PostService {
     const slugSearch = await this.repository.findOne(
       new QueryOptionsBuilder()
         .filter(
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('EAVPost.isDeleted'), 0),
-            {
-              [Op.eq]: 0,
-            },
-          ),
+          this.seqHelp.whereIsNullColumnEqualToZero('EAVPost.isDeleted', 0),
         )
         .filter({ slug: dto.slug })
         .build(),
@@ -205,11 +192,9 @@ export class PostService {
       new QueryOptionsBuilder()
         .filter({ id: dto.entityTypeId })
         .filter(
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('EAVEntityType.isDeleted'), 0),
-            {
-              [Op.eq]: 0,
-            },
+          this.seqHelp.whereIsNullColumnEqualToZero(
+            'EAVEntityType.isDeleted',
+            0,
           ),
         )
         .filter({
@@ -269,12 +254,7 @@ export class PostService {
       new QueryOptionsBuilder()
         .filter({ id })
         .filter(
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('EAVPost.isDeleted'), 0),
-            {
-              [Op.eq]: 0,
-            },
-          ),
+          this.seqHelp.whereIsNullColumnEqualToZero('EAVPost.isDeleted', 0),
         )
         .build(),
     );
@@ -289,12 +269,7 @@ export class PostService {
     const searchSlug = await this.repository.findOne(
       new QueryOptionsBuilder()
         .filter(
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('EAVPost.isDeleted'), 0),
-            {
-              [Op.eq]: 0,
-            },
-          ),
+          this.seqHelp.whereIsNullColumnEqualToZero('EAVPost.isDeleted', 0),
         )
         .filter({ slug: dto.slug })
         .filter({
@@ -318,11 +293,9 @@ export class PostService {
       new QueryOptionsBuilder()
         .filter({ id: dto.entityTypeId })
         .filter(
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('EAVEntityType.isDeleted'), 0),
-            {
-              [Op.eq]: 0,
-            },
+          this.seqHelp.whereIsNullColumnEqualToZero(
+            'EAVEntityType.isDeleted',
+            0,
           ),
         )
         .filter({
@@ -379,12 +352,7 @@ export class PostService {
       new QueryOptionsBuilder()
         .filter({ id: postId })
         .filter(
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('EAVPost.isDeleted'), 0),
-            {
-              [Op.eq]: 0,
-            },
-          ),
+          this.seqHelp.whereIsNullColumnEqualToZero('EAVPost.isDeleted', 0),
         )
         .build(),
     );
@@ -457,14 +425,7 @@ export class PostService {
               [Op.in]: [this.photoTempAttachmentType, this.postAttachmentType],
             },
           })
-          .filter(
-            Sequelize.where(
-              Sequelize.fn('isnull', Sequelize.col('isDeleted'), 0),
-              {
-                [Op.eq]: 0,
-              },
-            ),
-          )
+          .filter(this.seqHelp.whereIsNullColumnEqualToZero('isDeleted', 0))
           .build(),
       );
       if (!findAttachment) {
@@ -489,14 +450,7 @@ export class PostService {
               [Op.in]: [this.photoTempAttachmentType, this.postAttachmentType],
             },
           })
-          .filter(
-            Sequelize.where(
-              Sequelize.fn('isnull', Sequelize.col('isDeleted'), 0),
-              {
-                [Op.eq]: 0,
-              },
-            ),
-          )
+          .filter(this.seqHelp.whereIsNullColumnEqualToZero('isDeleted', 0))
           .transaction(transaction)
           .build(),
       );

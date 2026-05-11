@@ -7,6 +7,7 @@ import * as _ from 'lodash';
 import { ECVendor } from '@rahino/localdatabase/models';
 import { Attachment } from '@rahino/database';
 import { LocalizationService } from 'apps/main/src/common/localization';
+import { SequelizeHelpService } from '@rahino/commontools/sequelize-help/sequelize-help.service';
 
 @Injectable()
 export class ClientVendorService {
@@ -14,6 +15,7 @@ export class ClientVendorService {
     @InjectModel(ECVendor)
     private readonly repository: typeof ECVendor,
     private readonly localizationService: LocalizationService,
+    private readonly seqHelp: SequelizeHelpService,
   ) {}
 
   async findAll(filter: GetVendorDto) {
@@ -24,12 +26,7 @@ export class ClientVendorService {
         },
       })
       .filter(
-        Sequelize.where(
-          Sequelize.fn('isnull', Sequelize.col('ECVendor.isDeleted'), 0),
-          {
-            [Op.eq]: 0,
-          },
-        ),
+        this.seqHelp.whereIsNullColumnEqualToZero('ECVendor.isDeleted', 0),
       );
     const count = await this.repository.count(queryBuilder.build());
     queryBuilder = queryBuilder
@@ -86,12 +83,7 @@ export class ClientVendorService {
         ])
         .filter({ id: entityId })
         .filter(
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('ECVendor.isDeleted'), 0),
-            {
-              [Op.eq]: 0,
-            },
-          ),
+          this.seqHelp.whereIsNullColumnEqualToZero('ECVendor.isDeleted', 0),
         )
         .build(),
     );
@@ -128,12 +120,7 @@ export class ClientVendorService {
         ])
         .filter({ slug })
         .filter(
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('ECVendor.isDeleted'), 0),
-            {
-              [Op.eq]: 0,
-            },
-          ),
+          this.seqHelp.whereIsNullColumnEqualToZero('ECVendor.isDeleted', 0),
         )
         .build(),
     );

@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
+import { SequelizeHelpService } from '@rahino/commontools/sequelize-help/sequelize-help.service';
 import { User } from '@rahino/database';
 import { GSGuaranteeTypeEnum } from '@rahino/guarantee/shared/gurantee-type';
 import {
@@ -22,20 +23,15 @@ export class AnonymousPublicReportService {
     private readonly guaranteeRepository: typeof GSGuarantee,
     @InjectModel(User)
     private readonly userRepository: typeof User,
+    private readonly seqHelp: SequelizeHelpService,
   ) {}
 
   async findAll() {
     const activeOrganizationQuery = new QueryOptionsBuilder()
       .filter(
-        Sequelize.where(
-          Sequelize.fn(
-            'isnull',
-            Sequelize.col('GSGuaranteeOrganization.isDeleted'),
-            0,
-          ),
-          {
-            [Op.eq]: 0,
-          },
+        this.seqHelp.whereIsNullColumnEqualToZero(
+          'GSGuaranteeOrganization.isDeleted',
+          0,
         ),
       )
       .filter(
@@ -50,12 +46,7 @@ export class AnonymousPublicReportService {
       );
 
     const requestQuery = new QueryOptionsBuilder().filter(
-      Sequelize.where(
-        Sequelize.fn('isnull', Sequelize.col('GSRequest.isDeleted'), 0),
-        {
-          [Op.eq]: 0,
-        },
-      ),
+      this.seqHelp.whereIsNullColumnEqualToZero('GSRequest.isDeleted', 0),
     );
 
     const guaranteeQuery = new QueryOptionsBuilder().filter({

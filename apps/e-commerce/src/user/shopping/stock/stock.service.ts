@@ -39,6 +39,7 @@ import { ShipmentInteface } from './services/shipment-price/interface';
 import { ApplyDiscountService } from '@rahino/ecommerce/client/product/service';
 import { PaymentServiceManualProviderFactory } from '../payment/provider/factory/payment-service-manual-provider.factory';
 import { ValidateAddressService } from '../payment-rule/services/validate-address.service';
+import { SequelizeHelpService } from '@rahino/commontools/sequelize-help/sequelize-help.service';
 
 @Injectable()
 export class StockService {
@@ -68,6 +69,7 @@ export class StockService {
     private readonly applyDiscountService: ApplyDiscountService,
     private readonly paymentServiceProvider: PaymentServiceManualProviderFactory,
     private readonly validateAddressService: ValidateAddressService,
+    private readonly seqHelp: SequelizeHelpService,
   ) {}
 
   async findAll(session: ECUserSession) {
@@ -76,12 +78,7 @@ export class StockService {
         .attributes(['id', 'inventoryId', 'productId', 'qty'])
         .filter({ sessionId: session.id })
         .filter(
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('ECStock.isDeleted'), 0),
-            {
-              [Op.eq]: 0,
-            },
-          ),
+          this.seqHelp.whereIsNullColumnEqualToZero('ECStock.isDeleted', 0),
         )
         .filter({
           expire: {
@@ -89,12 +86,7 @@ export class StockService {
           },
         })
         .filter(
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('ECStock.isPurchase'), 0),
-            {
-              [Op.eq]: 0,
-            },
-          ),
+          this.seqHelp.whereIsNullColumnEqualToZero('ECStock.isPurchase', 0),
         )
         .build(),
     );
@@ -175,12 +167,7 @@ export class StockService {
       new QueryOptionsBuilder()
         .filter({ sessionId: session.id })
         .filter(
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('ECStock.isDeleted'), 0),
-            {
-              [Op.eq]: 0,
-            },
-          ),
+          this.seqHelp.whereIsNullColumnEqualToZero('ECStock.isDeleted', 0),
         )
         .filter({
           expire: {
@@ -188,12 +175,7 @@ export class StockService {
           },
         })
         .filter(
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('ECStock.isPurchase'), 0),
-            {
-              [Op.eq]: 0,
-            },
-          ),
+          this.seqHelp.whereIsNullColumnEqualToZero('ECStock.isPurchase', 0),
         )
         .build(),
     );
@@ -329,12 +311,7 @@ export class StockService {
         .filter({ id: entityId })
         .filter({ sessionId: session.id })
         .filter(
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('ECStock.isDeleted'), 0),
-            {
-              [Op.eq]: 0,
-            },
-          ),
+          this.seqHelp.whereIsNullColumnEqualToZero('ECStock.isDeleted', 0),
         )
         .filter({
           expire: {
@@ -342,12 +319,7 @@ export class StockService {
           },
         })
         .filter(
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('ECStock.isPurchase'), 0),
-            {
-              [Op.eq]: 0,
-            },
-          ),
+          this.seqHelp.whereIsNullColumnEqualToZero('ECStock.isPurchase', 0),
         )
         .build(),
     );
@@ -409,12 +381,7 @@ export class StockService {
         .filter({ id: entityId })
         .filter({ sessionId: session.id })
         .filter(
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('ECStock.isDeleted'), 0),
-            {
-              [Op.eq]: 0,
-            },
-          ),
+          this.seqHelp.whereIsNullColumnEqualToZero('ECStock.isDeleted', 0),
         )
         .filter({
           expire: {
@@ -422,12 +389,7 @@ export class StockService {
           },
         })
         .filter(
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('ECStock.isPurchase'), 0),
-            {
-              [Op.eq]: 0,
-            },
-          ),
+          this.seqHelp.whereIsNullColumnEqualToZero('ECStock.isPurchase', 0),
         )
         .build(),
     );
@@ -447,12 +409,7 @@ export class StockService {
         .attributes(['id', 'inventoryId', 'productId', 'qty'])
         .filter({ sessionId: session.id })
         .filter(
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('ECStock.isDeleted'), 0),
-            {
-              [Op.eq]: 0,
-            },
-          ),
+          this.seqHelp.whereIsNullColumnEqualToZero('ECStock.isDeleted', 0),
         )
         .filter({
           expire: {
@@ -460,12 +417,7 @@ export class StockService {
           },
         })
         .filter(
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('ECStock.isPurchase'), 0),
-            {
-              [Op.eq]: 0,
-            },
-          ),
+          this.seqHelp.whereIsNullColumnEqualToZero('ECStock.isPurchase', 0),
         )
         .build(),
     );

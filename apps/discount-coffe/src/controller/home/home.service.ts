@@ -1,5 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
+import { SequelizeHelpService } from '@rahino/commontools/sequelize-help/sequelize-help.service';
 import { Attachment } from '@rahino/database';
 import { BuffetCost } from '@rahino/localdatabase/models';
 import { BuffetReserve } from '@rahino/localdatabase/models';
@@ -24,6 +25,7 @@ export class HomeService {
     private readonly buffetReserveRepository: typeof BuffetReserve,
     @InjectModel(BuffetCost)
     private readonly buffetCostRepository: typeof BuffetCost,
+    private readonly seqHelp: SequelizeHelpService,
   ) {}
   async index(req: Request) {
     const coffe = 1;
@@ -54,12 +56,7 @@ export class HomeService {
           {
             buffetTypeId: coffe,
           },
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('Buffet.isDeleted'), 0),
-            {
-              [Op.eq]: 0,
-            },
-          ),
+          this.seqHelp.whereIsNullColumnEqualToZero('Buffet.isDeleted', 0),
         ],
       },
       order: [['id', 'desc']],
@@ -87,12 +84,7 @@ export class HomeService {
           {
             buffetTypeId: resturant,
           },
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('Buffet.isDeleted'), 0),
-            {
-              [Op.eq]: 0,
-            },
-          ),
+          this.seqHelp.whereIsNullColumnEqualToZero('Buffet.isDeleted', 0),
         ],
       },
       order: [['id', 'desc']],
@@ -121,12 +113,7 @@ export class HomeService {
           {
             buffetCostId: luxuryCoffeId,
           },
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('Buffet.isDeleted'), 0),
-            {
-              [Op.eq]: 0,
-            },
-          ),
+          this.seqHelp.whereIsNullColumnEqualToZero('Buffet.isDeleted', 0),
         ],
       },
       order: [['id', 'desc']],
@@ -155,12 +142,7 @@ export class HomeService {
           {
             buffetCostId: lowPriceCoffe,
           },
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('Buffet.isDeleted'), 0),
-            {
-              [Op.eq]: 0,
-            },
-          ),
+          this.seqHelp.whereIsNullColumnEqualToZero('Buffet.isDeleted', 0),
         ],
       },
       order: [['id', 'desc']],
@@ -186,18 +168,8 @@ export class HomeService {
       ],
       where: {
         [Op.and]: [
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('Buffet.isDeleted'), 0),
-            {
-              [Op.eq]: 0,
-            },
-          ),
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('Buffet.pin'), 0),
-            {
-              [Op.eq]: 1,
-            },
-          ),
+          this.seqHelp.whereIsNullColumnEqualToZero('Buffet.isDeleted', 0),
+          this.seqHelp.whereIsNullColumnEqualToValue('Buffet.pin', 0, 1),
         ],
       },
       order: [['id', 'desc']],
@@ -220,12 +192,7 @@ export class HomeService {
           {
             buffetTypeId: resturant,
           },
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('isDeleted'), 0),
-            {
-              [Op.eq]: 0,
-            },
-          ),
+          this.seqHelp.whereIsNullColumnEqualToZero('isDeleted', 0),
         ],
       },
     });
@@ -236,12 +203,7 @@ export class HomeService {
           {
             buffetTypeId: coffe,
           },
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('isDeleted'), 0),
-            {
-              [Op.eq]: 0,
-            },
-          ),
+          this.seqHelp.whereIsNullColumnEqualToZero('isDeleted', 0),
         ],
       },
     });

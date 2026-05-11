@@ -26,6 +26,7 @@ import { InjectQueue } from '@nestjs/bullmq';
 import { PRE_REGISTRATION_SUCESS_SMS_SENDER_QUEUE } from '@rahino/guarantee/job/pre-registration-sucess-sms-sender/constants';
 import { Queue } from 'bullmq';
 import { PRE_REGISTRATION_REJECT_SMS_SENDER_QUEUE } from '@rahino/guarantee/job/pre-registration-reject-description-sms-sender/constants';
+import { SequelizeHelpService } from '@rahino/commontools/sequelize-help/sequelize-help.service';
 @Injectable()
 export class PreRegistrationOrganizationService {
   constructor(
@@ -41,6 +42,7 @@ export class PreRegistrationOrganizationService {
     private readonly preRegistrationSucessSmsSenderQueue: Queue,
     @InjectQueue(PRE_REGISTRATION_REJECT_SMS_SENDER_QUEUE)
     private readonly preRegistrationRejectDescriptionSmsSenderQueue: Queue,
+    private readonly seqHelp: SequelizeHelpService,
   ) {}
 
   async findAll(filter: GetPreRegistrationOrganization) {
@@ -212,15 +214,9 @@ export class PreRegistrationOrganizationService {
         })
         .filter({ id: entityId })
         .filter(
-          Sequelize.where(
-            Sequelize.fn(
-              'isnull',
-              Sequelize.col('GSPreRegistrationOrganization.isDeleted'),
-              0,
-            ),
-            {
-              [Op.eq]: 0,
-            },
+          this.seqHelp.whereIsNullColumnEqualToZero(
+            'GSPreRegistrationOrganization.isDeleted',
+            0,
           ),
         )
         .build(),
@@ -288,27 +284,15 @@ export class PreRegistrationOrganizationService {
         })
         .filter({ id: id })
         .filter(
-          Sequelize.where(
-            Sequelize.fn(
-              'isnull',
-              Sequelize.col('GSPreRegistrationOrganization.isDeleted'),
-              0,
-            ),
-            {
-              [Op.eq]: 0,
-            },
+          this.seqHelp.whereIsNullColumnEqualToZero(
+            'GSPreRegistrationOrganization.isDeleted',
+            0,
           ),
         )
         .filter(
-          Sequelize.where(
-            Sequelize.fn(
-              'isnull',
-              Sequelize.col('GSPreRegistrationOrganization.isConfirm'),
-              0,
-            ),
-            {
-              [Op.eq]: 0,
-            },
+          this.seqHelp.whereIsNullColumnEqualToZero(
+            'GSPreRegistrationOrganization.isConfirm',
+            0,
           ),
         )
         .build(),
@@ -365,27 +349,15 @@ export class PreRegistrationOrganizationService {
       new QueryOptionsBuilder()
         .filter({ id: entityId })
         .filter(
-          Sequelize.where(
-            Sequelize.fn(
-              'isnull',
-              Sequelize.col('GSPreRegistrationOrganization.isDeleted'),
-              0,
-            ),
-            {
-              [Op.eq]: 0,
-            },
+          this.seqHelp.whereIsNullColumnEqualToZero(
+            'GSPreRegistrationOrganization.isDeleted',
+            0,
           ),
         )
         .filter(
-          Sequelize.where(
-            Sequelize.fn(
-              'isnull',
-              Sequelize.col('GSPreRegistrationOrganization.isConfirm'),
-              0,
-            ),
-            {
-              [Op.eq]: 0,
-            },
+          this.seqHelp.whereIsNullColumnEqualToZero(
+            'GSPreRegistrationOrganization.isConfirm',
+            0,
           ),
         )
         .build(),

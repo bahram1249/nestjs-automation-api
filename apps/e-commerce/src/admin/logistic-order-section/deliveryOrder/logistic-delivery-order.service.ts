@@ -16,6 +16,7 @@ import {
   OrderStatusEnum,
 } from '@rahino/ecommerce/shared/enum';
 import { RoleUtilService } from '@rahino/core/user/role-util/role-util.service';
+import { SequelizeHelpService } from '@rahino/commontools/sequelize-help/sequelize-help.service';
 
 @Injectable()
 export class LogisticDeliveryOrderService {
@@ -31,6 +32,7 @@ export class LogisticDeliveryOrderService {
     private readonly roleUtilService: RoleUtilService,
     @InjectConnection()
     private readonly sequelize: Sequelize,
+    private readonly seqHelp: SequelizeHelpService,
   ) {}
 
   async findAll(user: User, filter: ListFilter) {
@@ -121,13 +123,9 @@ export class LogisticDeliveryOrderService {
           .filter({ orderStatusId: OrderStatusEnum.SendByCourier })
           .filter({ orderShipmentWayId: OrderShipmentwayEnum.delivery as any })
           .filter(
-            Sequelize.where(
-              Sequelize.fn(
-                'isnull',
-                Sequelize.col('ECLogisticOrderGrouped.isDeleted'),
-                0,
-              ),
-              { [Op.eq]: 0 },
+            this.seqHelp.whereIsNullColumnEqualToZero(
+              'ECLogisticOrderGrouped.isDeleted',
+              0,
             ),
           )
           .transaction(transaction)

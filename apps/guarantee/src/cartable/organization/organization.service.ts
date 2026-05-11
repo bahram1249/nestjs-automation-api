@@ -13,6 +13,7 @@ import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builde
 import { Sequelize } from 'sequelize';
 import { Op } from 'sequelize';
 import { LocalizationService } from 'apps/main/src/common/localization';
+import { SequelizeHelpService } from '@rahino/commontools/sequelize-help/sequelize-help.service';
 
 @Injectable()
 export class CartableOrganizationService {
@@ -22,6 +23,7 @@ export class CartableOrganizationService {
     @InjectModel(GSRequest)
     private readonly requestRepository: typeof GSRequest,
     private readonly localizationService: LocalizationService,
+    private readonly seqHelp: SequelizeHelpService,
   ) {}
 
   async findAll(requestId: bigint, filter: GetOrganizationDto) {
@@ -36,12 +38,7 @@ export class CartableOrganizationService {
         ])
         .filter({ id: requestId })
         .filter(
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('GSRequest.isDeleted'), 0),
-            {
-              [Op.eq]: 0,
-            },
-          ),
+          this.seqHelp.whereIsNullColumnEqualToZero('GSRequest.isDeleted', 0),
         )
         .build(),
     );
@@ -86,15 +83,9 @@ export class CartableOrganizationService {
         },
       })
       .filter(
-        Sequelize.where(
-          Sequelize.fn(
-            'isnull',
-            Sequelize.col('GSGuaranteeOrganization.isDeleted'),
-            0,
-          ),
-          {
-            [Op.eq]: 0,
-          },
+        this.seqHelp.whereIsNullColumnEqualToZero(
+          'GSGuaranteeOrganization.isDeleted',
+          0,
         ),
       )
       .filter({

@@ -11,6 +11,7 @@ import {
 } from '@rahino/localdatabase/models';
 import { LocalizationService } from 'apps/main/src/common/localization';
 import { GetLinkedEntityTypeBrandDto } from './dto';
+import { SequelizeHelpService } from '@rahino/commontools/sequelize-help/sequelize-help.service';
 
 @Injectable()
 export class LinkedEntityTypeBrandService {
@@ -18,6 +19,7 @@ export class LinkedEntityTypeBrandService {
     @InjectModel(ECLinkedEntityTypeBrand)
     private readonly repository: typeof ECLinkedEntityTypeBrand,
     private readonly localizationService: LocalizationService,
+    private readonly seqHelp: SequelizeHelpService,
   ) {}
 
   async findById(filter: GetLinkedEntityTypeBrandDto) {
@@ -60,15 +62,9 @@ export class LinkedEntityTypeBrandService {
         },
       ])
       .filter(
-        Sequelize.where(
-          Sequelize.fn(
-            'isnull',
-            Sequelize.col('ECLinkedEntityTypeBrand.isDeleted'),
-            0,
-          ),
-          {
-            [Op.eq]: 0,
-          },
+        this.seqHelp.whereIsNullColumnEqualToZero(
+          'ECLinkedEntityTypeBrand.isDeleted',
+          0,
         ),
       );
     const item = await this.repository.findOne(queryBuilder.build());

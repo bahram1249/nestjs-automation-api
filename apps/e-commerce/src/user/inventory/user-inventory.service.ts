@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
+import { SequelizeHelpService } from '@rahino/commontools/sequelize-help/sequelize-help.service';
 import { User } from '@rahino/database';
 import { ECAddress } from '@rahino/localdatabase/models';
 import { ECCity } from '@rahino/localdatabase/models';
@@ -27,17 +28,16 @@ export class UserInventoryService {
     private readonly vendorUserRepository: typeof ECVendorUser,
     @InjectModel(ECInventory)
     private readonly inventoryRepository: typeof ECInventory,
+    private readonly seqHelp: SequelizeHelpService,
   ) {}
   async findAll(user: User, filter: ListFilter) {
     const vendorAccess = await this.vendorUserRepository.findAll(
       new QueryOptionsBuilder()
         .filter({ userId: user.id })
         .filter(
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('ECVendorUser.isDeleted'), 0),
-            {
-              [Op.eq]: 0,
-            },
+          this.seqHelp.whereIsNullColumnEqualToZero(
+            'ECVendorUser.isDeleted',
+            0,
           ),
         )
         .include([
@@ -45,11 +45,9 @@ export class UserInventoryService {
             model: ECVendor,
             as: 'vendor',
             required: true,
-            where: Sequelize.where(
-              Sequelize.fn('isnull', Sequelize.col('vendor.isDeleted'), 0),
-              {
-                [Op.eq]: 0,
-              },
+            where: this.seqHelp.whereIsNullColumnEqualToZero(
+              'vendor.isDeleted',
+              0,
             ),
           },
         ])
@@ -85,12 +83,7 @@ export class UserInventoryService {
         ],
       })
       .filter(
-        Sequelize.where(
-          Sequelize.fn('isnull', Sequelize.col('ECInventory.isDeleted'), 0),
-          {
-            [Op.eq]: 0,
-          },
-        ),
+        this.seqHelp.whereIsNullColumnEqualToZero('ECInventory.isDeleted', 0),
       );
 
     const count = await this.inventoryRepository.count(queryBuilder.build());
@@ -211,11 +204,9 @@ export class UserInventoryService {
               as: 'variationPrice',
             },
           ],
-          where: Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('firstPrice.isDeleted'), 0),
-            {
-              [Op.eq]: 0,
-            },
+          where: this.seqHelp.whereIsNullColumnEqualToZero(
+            'firstPrice.isDeleted',
+            0,
           ),
         })
         .thenInclude({
@@ -230,15 +221,9 @@ export class UserInventoryService {
               as: 'variationPrice',
             },
           ],
-          where: Sequelize.where(
-            Sequelize.fn(
-              'isnull',
-              Sequelize.col('secondaryPrice.isDeleted'),
-              0,
-            ),
-            {
-              [Op.eq]: 0,
-            },
+          where: this.seqHelp.whereIsNullColumnEqualToZero(
+            'secondaryPrice.isDeleted',
+            0,
           ),
         })
         .limit(filter.limit)
@@ -257,11 +242,9 @@ export class UserInventoryService {
       new QueryOptionsBuilder()
         .filter({ userId: user.id })
         .filter(
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('ECVendorUser.isDeleted'), 0),
-            {
-              [Op.eq]: 0,
-            },
+          this.seqHelp.whereIsNullColumnEqualToZero(
+            'ECVendorUser.isDeleted',
+            0,
           ),
         )
         .include([
@@ -269,11 +252,9 @@ export class UserInventoryService {
             model: ECVendor,
             as: 'vendor',
             required: true,
-            where: Sequelize.where(
-              Sequelize.fn('isnull', Sequelize.col('vendor.isDeleted'), 0),
-              {
-                [Op.eq]: 0,
-              },
+            where: this.seqHelp.whereIsNullColumnEqualToZero(
+              'vendor.isDeleted',
+              0,
             ),
           },
         ])
@@ -296,12 +277,7 @@ export class UserInventoryService {
         },
       })
       .filter(
-        Sequelize.where(
-          Sequelize.fn('isnull', Sequelize.col('ECInventory.isDeleted'), 0),
-          {
-            [Op.eq]: 0,
-          },
-        ),
+        this.seqHelp.whereIsNullColumnEqualToZero('ECInventory.isDeleted', 0),
       );
 
     const result = await this.inventoryRepository.findOne(
@@ -421,11 +397,9 @@ export class UserInventoryService {
               as: 'variationPrice',
             },
           ],
-          where: Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('firstPrice.isDeleted'), 0),
-            {
-              [Op.eq]: 0,
-            },
+          where: this.seqHelp.whereIsNullColumnEqualToZero(
+            'firstPrice.isDeleted',
+            0,
           ),
         })
         .thenInclude({
@@ -440,15 +414,9 @@ export class UserInventoryService {
               as: 'variationPrice',
             },
           ],
-          where: Sequelize.where(
-            Sequelize.fn(
-              'isnull',
-              Sequelize.col('secondaryPrice.isDeleted'),
-              0,
-            ),
-            {
-              [Op.eq]: 0,
-            },
+          where: this.seqHelp.whereIsNullColumnEqualToZero(
+            'secondaryPrice.isDeleted',
+            0,
           ),
         })
         .build(),
@@ -463,11 +431,9 @@ export class UserInventoryService {
       new QueryOptionsBuilder()
         .filter({ userId: user.id })
         .filter(
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('ECVendorUser.isDeleted'), 0),
-            {
-              [Op.eq]: 0,
-            },
+          this.seqHelp.whereIsNullColumnEqualToZero(
+            'ECVendorUser.isDeleted',
+            0,
           ),
         )
         .include([
@@ -475,11 +441,9 @@ export class UserInventoryService {
             model: ECVendor,
             as: 'vendor',
             required: true,
-            where: Sequelize.where(
-              Sequelize.fn('isnull', Sequelize.col('vendor.isDeleted'), 0),
-              {
-                [Op.eq]: 0,
-              },
+            where: this.seqHelp.whereIsNullColumnEqualToZero(
+              'vendor.isDeleted',
+              0,
             ),
           },
         ])
@@ -619,11 +583,9 @@ export class UserInventoryService {
               as: 'variationPrice',
             },
           ],
-          where: Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('firstPrice.isDeleted'), 0),
-            {
-              [Op.eq]: 0,
-            },
+          where: this.seqHelp.whereIsNullColumnEqualToZero(
+            'firstPrice.isDeleted',
+            0,
           ),
         })
         .thenInclude({
@@ -638,15 +600,9 @@ export class UserInventoryService {
               as: 'variationPrice',
             },
           ],
-          where: Sequelize.where(
-            Sequelize.fn(
-              'isnull',
-              Sequelize.col('secondaryPrice.isDeleted'),
-              0,
-            ),
-            {
-              [Op.eq]: 0,
-            },
+          where: this.seqHelp.whereIsNullColumnEqualToZero(
+            'secondaryPrice.isDeleted',
+            0,
           ),
         })
         .build(),

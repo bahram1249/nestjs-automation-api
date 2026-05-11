@@ -16,12 +16,13 @@ import { OrderStatusEnum } from '@rahino/ecommerce/shared/enum';
 import { Order } from '@rahino/query-filter';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import { FindAttributeOptions, GroupOption, Op, Sequelize } from 'sequelize';
+import { SequelizeHelpService } from '@rahino/commontools/sequelize-help/sequelize-help.service';
 
 @Injectable({ scope: Scope.REQUEST })
 export class LogisticSaleQueryBuilderService {
   private builder: QueryOptionsBuilder;
   private groupByQuery = false;
-  constructor() {
+  constructor(private readonly seqHelp: SequelizeHelpService) {
     this.builder = new QueryOptionsBuilder();
     this.builder.include([]);
   }
@@ -49,13 +50,9 @@ export class LogisticSaleQueryBuilderService {
   // Detail-level non-deleted
   nonDeleted() {
     this.builder = this.builder.filter(
-      Sequelize.where(
-        Sequelize.fn(
-          'isnull',
-          Sequelize.col('ECLogisticOrderGroupedDetail.isDeleted'),
-          0,
-        ),
-        { [Op.eq]: 0 },
+      this.seqHelp.whereIsNullColumnEqualToZero(
+        'ECLogisticOrderGroupedDetail.isDeleted',
+        0,
       ),
     );
     return this;
@@ -64,10 +61,7 @@ export class LogisticSaleQueryBuilderService {
   // Group-level non-deleted
   nonDeletedGroup() {
     this.builder = this.builder.filter(
-      Sequelize.where(
-        Sequelize.fn('isnull', Sequelize.col('grouped.isDeleted'), 0),
-        { [Op.eq]: 0 },
-      ),
+      this.seqHelp.whereIsNullColumnEqualToZero('grouped.isDeleted', 0),
     );
     return this;
   }
@@ -75,13 +69,9 @@ export class LogisticSaleQueryBuilderService {
   // Order-level non-deleted
   nonDeletedOrder() {
     this.builder = this.builder.filter(
-      Sequelize.where(
-        Sequelize.fn(
-          'isnull',
-          Sequelize.col('grouped.logisticOrder.isDeleted'),
-          0,
-        ),
-        { [Op.eq]: 0 },
+      this.seqHelp.whereIsNullColumnEqualToZero(
+        'grouped.logisticOrder.isDeleted',
+        0,
       ),
     );
     return this;

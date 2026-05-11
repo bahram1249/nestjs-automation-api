@@ -14,6 +14,7 @@ import { InjectMapper } from 'automapper-nestjs';
 import { Mapper } from 'automapper-core';
 import * as _ from 'lodash';
 import { GSUnitPriceEnum } from '@rahino/guarantee/shared/unit-price';
+import { SequelizeHelpService } from '@rahino/commontools/sequelize-help/sequelize-help.service';
 
 @Injectable()
 export class AdditionalPackageService {
@@ -23,6 +24,7 @@ export class AdditionalPackageService {
     private readonly i18n: I18nService<I18nTranslations>,
     @InjectMapper()
     private readonly mapper: Mapper,
+    private readonly seqHelp: SequelizeHelpService,
   ) {}
 
   async findAll(filter: GetAdditionalPackageDto) {
@@ -37,15 +39,9 @@ export class AdditionalPackageService {
     query = query
       .attributes(['id', 'title', 'price', 'createdAt', 'updatedAt'])
       .filter(
-        Sequelize.where(
-          Sequelize.fn(
-            'isnull',
-            Sequelize.col('GSAdditionalPackage.isDeleted'),
-            0,
-          ),
-          {
-            [Op.eq]: 0,
-          },
+        this.seqHelp.whereIsNullColumnEqualToZero(
+          'GSAdditionalPackage.isDeleted',
+          0,
         ),
       )
       .limit(filter.limit)
@@ -65,15 +61,9 @@ export class AdditionalPackageService {
       new QueryOptionsBuilder()
         .attributes(['id', 'title', 'price', 'createdAt', 'updatedAt'])
         .filter(
-          Sequelize.where(
-            Sequelize.fn(
-              'isnull',
-              Sequelize.col('GSAdditionalPackage.isDeleted'),
-              0,
-            ),
-            {
-              [Op.eq]: 0,
-            },
+          this.seqHelp.whereIsNullColumnEqualToZero(
+            'GSAdditionalPackage.isDeleted',
+            0,
           ),
         )
         .filter({ id: entityId })
@@ -96,15 +86,9 @@ export class AdditionalPackageService {
     const duplicateItem = await this.repository.findOne(
       new QueryOptionsBuilder()
         .filter(
-          Sequelize.where(
-            Sequelize.fn(
-              'isnull',
-              Sequelize.col('GSAdditionalPackage.isDeleted'),
-              0,
-            ),
-            {
-              [Op.eq]: 0,
-            },
+          this.seqHelp.whereIsNullColumnEqualToZero(
+            'GSAdditionalPackage.isDeleted',
+            0,
           ),
         )
         .filter({ title: dto.title })
@@ -138,15 +122,9 @@ export class AdditionalPackageService {
       new QueryOptionsBuilder()
         .filter({ id: id })
         .filter(
-          Sequelize.where(
-            Sequelize.fn(
-              'isnull',
-              Sequelize.col('GSAdditionalPackage.isDeleted'),
-              0,
-            ),
-            {
-              [Op.eq]: 0,
-            },
+          this.seqHelp.whereIsNullColumnEqualToZero(
+            'GSAdditionalPackage.isDeleted',
+            0,
           ),
         )
         .build(),
@@ -163,15 +141,9 @@ export class AdditionalPackageService {
     const duplicateItem = await this.repository.findOne(
       new QueryOptionsBuilder()
         .filter(
-          Sequelize.where(
-            Sequelize.fn(
-              'isnull',
-              Sequelize.col('GSAdditionalPackage.isDeleted'),
-              0,
-            ),
-            {
-              [Op.eq]: 0,
-            },
+          this.seqHelp.whereIsNullColumnEqualToZero(
+            'GSAdditionalPackage.isDeleted',
+            0,
           ),
         )
         .filter({ title: dto.title })
@@ -211,15 +183,9 @@ export class AdditionalPackageService {
       new QueryOptionsBuilder()
         .filter({ id: entityId })
         .filter(
-          Sequelize.where(
-            Sequelize.fn(
-              'isnull',
-              Sequelize.col('GSAdditionalPackage.isDeleted'),
-              0,
-            ),
-            {
-              [Op.eq]: 0,
-            },
+          this.seqHelp.whereIsNullColumnEqualToZero(
+            'GSAdditionalPackage.isDeleted',
+            0,
           ),
         )
         .build(),

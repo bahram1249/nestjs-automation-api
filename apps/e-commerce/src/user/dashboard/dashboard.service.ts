@@ -11,6 +11,7 @@ import {
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import { Op } from 'sequelize';
 import { Sequelize } from 'sequelize';
+import { SequelizeHelpService } from '@rahino/commontools/sequelize-help/sequelize-help.service';
 
 @Injectable()
 export class DashboardService {
@@ -21,6 +22,7 @@ export class DashboardService {
     private readonly orderRepository: typeof ECOrder,
     @InjectModel(ECWallet)
     private readonly walletRepository: typeof ECWallet,
+    private readonly seqHelp: SequelizeHelpService,
   ) {}
 
   async totalComments(user: User) {
@@ -29,15 +31,9 @@ export class DashboardService {
         .filter({ userId: user.id })
         .filter({ statusId: ProductCommentStatusEnum.confirm })
         .filter(
-          Sequelize.where(
-            Sequelize.fn(
-              'isnull',
-              Sequelize.col('ECProductComment.isDeleted'),
-              0,
-            ),
-            {
-              [Op.eq]: 0,
-            },
+          this.seqHelp.whereIsNullColumnEqualToZero(
+            'ECProductComment.isDeleted',
+            0,
           ),
         )
         .build(),
@@ -57,12 +53,7 @@ export class DashboardService {
         })
         .filter({ userId: user.id })
         .filter(
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('ECOrder.isDeleted'), 0),
-            {
-              [Op.eq]: 0,
-            },
-          ),
+          this.seqHelp.whereIsNullColumnEqualToZero('ECOrder.isDeleted', 0),
         )
         .build(),
     );
@@ -76,12 +67,7 @@ export class DashboardService {
       new QueryOptionsBuilder()
         .filter({ userId: user.id })
         .filter(
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('ECWallet.isDeleted'), 0),
-            {
-              [Op.eq]: 0,
-            },
-          ),
+          this.seqHelp.whereIsNullColumnEqualToZero('ECWallet.isDeleted', 0),
         )
         .build(),
     );

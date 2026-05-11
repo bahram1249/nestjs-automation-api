@@ -17,6 +17,7 @@ import { InjectMapper } from 'automapper-nestjs';
 import * as _ from 'lodash';
 import { User } from '@rahino/database';
 import { DiscountConditionTypeEnum } from '../discount-condition-type/enum';
+import { SequelizeHelpService } from '@rahino/commontools/sequelize-help/sequelize-help.service';
 
 @Injectable()
 export class DiscountService {
@@ -27,6 +28,7 @@ export class DiscountService {
     private readonly mapper: Mapper,
     @InjectConnection()
     private readonly sequelize: Sequelize,
+    private readonly seqHelp: SequelizeHelpService,
   ) {}
 
   async findAll(user: User, filter: GetDiscountDto) {
@@ -37,12 +39,7 @@ export class DiscountService {
         },
       })
       .filter(
-        Sequelize.where(
-          Sequelize.fn('isnull', Sequelize.col('ECDiscount.isDeleted'), 0),
-          {
-            [Op.eq]: 0,
-          },
-        ),
+        this.seqHelp.whereIsNullColumnEqualToZero('ECDiscount.isDeleted', 0),
       )
       .filter(
         Sequelize.where(
@@ -131,12 +128,7 @@ export class DiscountService {
         id: entityId,
       })
       .filter(
-        Sequelize.where(
-          Sequelize.fn('isnull', Sequelize.col('ECDiscount.isDeleted'), 0),
-          {
-            [Op.eq]: 0,
-          },
-        ),
+        this.seqHelp.whereIsNullColumnEqualToZero('ECDiscount.isDeleted', 0),
       )
       .filter(
         Sequelize.where(
@@ -187,12 +179,7 @@ export class DiscountService {
         id: entityId,
       })
       .filter(
-        Sequelize.where(
-          Sequelize.fn('isnull', Sequelize.col('ECDiscount.isDeleted'), 0),
-          {
-            [Op.eq]: 0,
-          },
-        ),
+        this.seqHelp.whereIsNullColumnEqualToZero('ECDiscount.isDeleted', 0),
       )
       .filter(
         Sequelize.where(
@@ -229,12 +216,7 @@ export class DiscountService {
         id: entityId,
       })
       .filter(
-        Sequelize.where(
-          Sequelize.fn('isnull', Sequelize.col('ECDiscount.isDeleted'), 0),
-          {
-            [Op.eq]: 0,
-          },
-        ),
+        this.seqHelp.whereIsNullColumnEqualToZero('ECDiscount.isDeleted', 0),
       )
       .filter(
         Sequelize.where(

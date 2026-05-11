@@ -9,6 +9,7 @@ import { TraverseService } from '@rahino/bpmn/modules/traverse/traverse.service'
 import { LocalizationService } from 'apps/main/src/common/localization';
 import { SubmitFactorInRequestLocationDto } from './dto';
 import { GSRequestAttachmentTypeEnum } from '@rahino/guarantee/shared/request-attachment-type';
+import { SequelizeHelpService } from '@rahino/commontools/sequelize-help/sequelize-help.service';
 
 @Injectable()
 export class SubmitFactorInRequestLocationService {
@@ -25,6 +26,7 @@ export class SubmitFactorInRequestLocationService {
     private readonly requestAttachmentRepository: typeof GSRequestAttachment,
     @InjectModel(Attachment)
     private readonly attachmentRepository: typeof Attachment,
+    private readonly seqHelp: SequelizeHelpService,
   ) {}
 
   async traverse(user: User, dto: SubmitFactorInRequestLocationDto) {
@@ -72,15 +74,9 @@ export class SubmitFactorInRequestLocationService {
               .filter({ id: attachmentDto.attachmentId })
               .filter({ attachmentTypeId: this.photoTempAttachmentType })
               .filter(
-                Sequelize.where(
-                  Sequelize.fn(
-                    'isnull',
-                    Sequelize.col('Attachment.isDeleted'),
-                    0,
-                  ),
-                  {
-                    [Op.eq]: 0,
-                  },
+                this.seqHelp.whereIsNullColumnEqualToZero(
+                  'Attachment.isDeleted',
+                  0,
                 ),
               )
               .transaction(transaction)

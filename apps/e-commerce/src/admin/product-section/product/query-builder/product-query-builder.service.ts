@@ -31,10 +31,11 @@ import {
 } from '@rahino/localdatabase/models';
 import { Attachment } from '@rahino/database';
 import { isNotNull } from '@rahino/commontools';
+import { SequelizeHelpService } from '@rahino/commontools/sequelize-help/sequelize-help.service';
 
 @Injectable()
 export class ProductQueryBuilderService {
-  constructor() {}
+  constructor(private readonly seqHelp: SequelizeHelpService) {}
 
   async findAllAndCount(
     vendorIds: number[],
@@ -48,12 +49,7 @@ export class ProductQueryBuilderService {
 
     queryBuilder = queryBuilder
       .filter(
-        Sequelize.where(
-          Sequelize.fn('isnull', Sequelize.col('ECProduct.isDeleted'), 0),
-          {
-            [Op.eq]: 0,
-          },
-        ),
+        this.seqHelp.whereIsNullColumnEqualToZero('ECProduct.isDeleted', 0),
       )
       .filter({
         title: {
@@ -108,12 +104,7 @@ export class ProductQueryBuilderService {
               [Op.in]: vendorIds,
             },
           },
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('inventories.isDeleted'), 0),
-            {
-              [Op.eq]: 0,
-            },
-          ),
+          this.seqHelp.whereIsNullColumnEqualToZero('inventories.isDeleted', 0),
         ],
       },
       include: [
@@ -223,15 +214,9 @@ export class ProductQueryBuilderService {
               as: 'variationPrice',
             },
           ],
-          where: Sequelize.where(
-            Sequelize.fn(
-              'isnull',
-              Sequelize.col('inventories.firstPrice.isDeleted'),
-              0,
-            ),
-            {
-              [Op.eq]: 0,
-            },
+          where: this.seqHelp.whereIsNullColumnEqualToZero(
+            'inventories.firstPrice.isDeleted',
+            0,
           ),
         },
         {
@@ -246,15 +231,9 @@ export class ProductQueryBuilderService {
               as: 'variationPrice',
             },
           ],
-          where: Sequelize.where(
-            Sequelize.fn(
-              'isnull',
-              Sequelize.col('inventories.secondaryPrice.isDeleted'),
-              0,
-            ),
-            {
-              [Op.eq]: 0,
-            },
+          where: this.seqHelp.whereIsNullColumnEqualToZero(
+            'inventories.secondaryPrice.isDeleted',
+            0,
           ),
         },
       ],

@@ -2,6 +2,7 @@ import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { ExecuteActionDto } from '@rahino/bpmn/modules/action/dto';
 import { ActionServiceImp } from '@rahino/bpmn/modules/action/interface';
+import { SequelizeHelpService } from '@rahino/commontools/sequelize-help/sequelize-help.service';
 import { GSFactorTypeEnum } from '@rahino/guarantee/shared/factor-type';
 import { GSPaymentWayEnum } from '@rahino/guarantee/shared/payment-way';
 import { GSTransactionStatusEnum } from '@rahino/guarantee/shared/transaction-status';
@@ -29,6 +30,7 @@ export class ResetFactorActionService implements ActionServiceImp {
     private readonly requestRepository: typeof GSRequest,
     @InjectModel(GSGuarantee)
     private readonly guaranteeRepository: typeof GSGuarantee,
+    private readonly seqHelp: SequelizeHelpService,
   ) {}
   async executeAction(dto: ExecuteActionDto) {
     const factor = await this.factorRepository.findOne(
@@ -36,12 +38,7 @@ export class ResetFactorActionService implements ActionServiceImp {
         .filter({ requestId: dto.request.id })
         .filter({ factorTypeId: GSFactorTypeEnum.PayRequestFactor })
         .filter(
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('GSFactor.isDeleted'), 0),
-            {
-              [Op.eq]: 0,
-            },
-          ),
+          this.seqHelp.whereIsNullColumnEqualToZero('GSFactor.isDeleted', 0),
         )
         .transaction(dto.transaction)
         .build(),

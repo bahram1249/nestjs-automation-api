@@ -11,25 +11,21 @@ import { ECProductCommentStatus } from '@rahino/localdatabase/models';
 import { ECProduct } from '@rahino/localdatabase/models';
 import { ECProductCommentFactor } from '@rahino/localdatabase/models';
 import { ECEntityTypeFactor } from '@rahino/localdatabase/models';
+import { SequelizeHelpService } from '@rahino/commontools/sequelize-help/sequelize-help.service';
 
 @Injectable()
 export class CommentService {
   constructor(
     @InjectModel(ECProductComment) private repository: typeof ECProductComment,
+    private readonly seqHelp: SequelizeHelpService,
   ) {}
 
   async findAll(user: User, filter: ListFilter) {
     let builder = new QueryOptionsBuilder()
       .filter(
-        Sequelize.where(
-          Sequelize.fn(
-            'isnull',
-            Sequelize.col('ECProductComment.isDeleted'),
-            0,
-          ),
-          {
-            [Op.eq]: 0,
-          },
+        this.seqHelp.whereIsNullColumnEqualToZero(
+          'ECProductComment.isDeleted',
+          0,
         ),
       )
       .filter({ statusId: ProductCommentStatusEnum.confirm })

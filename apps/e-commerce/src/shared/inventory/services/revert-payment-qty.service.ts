@@ -6,6 +6,7 @@ import { PaymentStatusEnum } from '@rahino/ecommerce/shared/enum';
 import { ECWallet } from '@rahino/localdatabase/models';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import { Op, Sequelize } from 'sequelize';
+import { SequelizeHelpService } from '@rahino/commontools/sequelize-help/sequelize-help.service';
 
 @Injectable()
 export class RevertPaymentQtyService {
@@ -15,6 +16,7 @@ export class RevertPaymentQtyService {
     private readonly paymentRepository: typeof ECPayment,
     @InjectModel(ECWallet)
     private readonly walletRepository: typeof ECWallet,
+    private readonly seqHelp: SequelizeHelpService,
   ) {}
 
   async revertPaymentAndQty(paymentId) {
@@ -32,12 +34,7 @@ export class RevertPaymentQtyService {
       new QueryOptionsBuilder()
         .filter({ parentPaymentId: payment.id })
         .filter(
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('ECPayment.isDeleted'), 0),
-            {
-              [Op.eq]: 0,
-            },
-          ),
+          this.seqHelp.whereIsNullColumnEqualToZero('ECPayment.isDeleted', 0),
         )
         .build(),
     );
@@ -60,12 +57,7 @@ export class RevertPaymentQtyService {
         new QueryOptionsBuilder()
           .filter({ userId: payment.userId })
           .filter(
-            Sequelize.where(
-              Sequelize.fn('isnull', Sequelize.col('ECWallet.isDeleted'), 0),
-              {
-                [Op.eq]: 0,
-              },
-            ),
+            this.seqHelp.whereIsNullColumnEqualToZero('ECWallet.isDeleted', 0),
           )
           .build(),
       );

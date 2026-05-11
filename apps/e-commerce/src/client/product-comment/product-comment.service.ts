@@ -21,6 +21,7 @@ import { ECProduct } from '@rahino/localdatabase/models';
 import { PublishStatusEnum } from '../../client/product/enum';
 import { I18nTranslations } from 'apps/main/src/generated/i18n.generated';
 import { I18nContext, I18nService } from 'nestjs-i18n';
+import { SequelizeHelpService } from '@rahino/commontools/sequelize-help/sequelize-help.service';
 
 @Injectable()
 export class ProductCommentService {
@@ -38,6 +39,7 @@ export class ProductCommentService {
     @InjectConnection()
     private readonly sequelize: Sequelize,
     private readonly i18n: I18nService<I18nTranslations>,
+    private readonly seqHelp: SequelizeHelpService,
   ) {}
 
   async possibleFactors(productId: bigint) {
@@ -45,12 +47,7 @@ export class ProductCommentService {
       new QueryOptionsBuilder()
         .filter({ id: productId })
         .filter(
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('ECProduct.isDeleted'), 0),
-            {
-              [Op.eq]: 0,
-            },
-          ),
+          this.seqHelp.whereIsNullColumnEqualToZero('ECProduct.isDeleted', 0),
         )
         .filter({ publishStatusId: PublishStatusEnum.publish })
         .build(),
@@ -66,15 +63,9 @@ export class ProductCommentService {
     const queryOptions = new QueryOptionsBuilder()
       .filter({ entityTypeId: product.entityTypeId })
       .filter(
-        Sequelize.where(
-          Sequelize.fn(
-            'isnull',
-            Sequelize.col('ECEntityTypeFactor.isDeleted'),
-            0,
-          ),
-          {
-            [Op.eq]: 0,
-          },
+        this.seqHelp.whereIsNullColumnEqualToZero(
+          'ECEntityTypeFactor.isDeleted',
+          0,
         ),
       )
       .order({ orderBy: 'priority', sortOrder: 'ASC' })
@@ -91,15 +82,9 @@ export class ProductCommentService {
   async findAll(productId: bigint, filter: ListFilter) {
     let queryBuilder = new QueryOptionsBuilder()
       .filter(
-        Sequelize.where(
-          Sequelize.fn(
-            'isnull',
-            Sequelize.col('ECProductComment.isDeleted'),
-            0,
-          ),
-          {
-            [Op.eq]: 0,
-          },
+        this.seqHelp.whereIsNullColumnEqualToZero(
+          'ECProductComment.isDeleted',
+          0,
         ),
       )
       .filter({ statusId: ProductCommentStatusEnum.confirm })
@@ -177,12 +162,7 @@ export class ProductCommentService {
       new QueryOptionsBuilder()
         .filter({ id: dto.productId })
         .filter(
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('ECProduct.isDeleted'), 0),
-            {
-              [Op.eq]: 0,
-            },
-          ),
+          this.seqHelp.whereIsNullColumnEqualToZero('ECProduct.isDeleted', 0),
         )
         .filter({ publishStatusId: PublishStatusEnum.publish })
         .build(),
@@ -199,11 +179,9 @@ export class ProductCommentService {
       new QueryOptionsBuilder()
         .filter({ id: product.entityTypeId })
         .filter(
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('EAVEntityType.isDeleted'), 0),
-            {
-              [Op.eq]: 0,
-            },
+          this.seqHelp.whereIsNullColumnEqualToZero(
+            'EAVEntityType.isDeleted',
+            0,
           ),
         )
         .build(),
@@ -220,15 +198,9 @@ export class ProductCommentService {
       new QueryOptionsBuilder()
         .filter({ entityTypeId: entityType.id })
         .filter(
-          Sequelize.where(
-            Sequelize.fn(
-              'isnull',
-              Sequelize.col('ECEntityTypeFactor.isDeleted'),
-              0,
-            ),
-            {
-              [Op.eq]: 0,
-            },
+          this.seqHelp.whereIsNullColumnEqualToZero(
+            'ECEntityTypeFactor.isDeleted',
+            0,
           ),
         )
         .build(),

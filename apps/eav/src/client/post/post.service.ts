@@ -11,11 +11,13 @@ import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builde
 import { Op } from 'sequelize';
 import { Sequelize } from 'sequelize';
 import { PublishEnum } from './enum';
+import { SequelizeHelpService } from '@rahino/commontools/sequelize-help/sequelize-help.service';
 
 @Injectable()
 export class PostService {
   constructor(
     @InjectModel(EAVPost) private readonly repository: typeof EAVPost,
+    private readonly seqHelp: SequelizeHelpService,
   ) {}
 
   async findBySlug(slug: string) {
@@ -52,12 +54,7 @@ export class PostService {
         ])
         .filter({ slug: slug })
         .filter(
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('EAVPost.isDeleted'), 0),
-            {
-              [Op.eq]: 0,
-            },
-          ),
+          this.seqHelp.whereIsNullColumnEqualToZero('EAVPost.isDeleted', 0),
         )
         .build(),
     );
@@ -68,14 +65,7 @@ export class PostService {
 
   async findAll(filter: ListFilter) {
     let queryBuilder = new QueryOptionsBuilder()
-      .filter(
-        Sequelize.where(
-          Sequelize.fn('isnull', Sequelize.col('EAVPost.isDeleted'), 0),
-          {
-            [Op.eq]: 0,
-          },
-        ),
-      )
+      .filter(this.seqHelp.whereIsNullColumnEqualToZero('EAVPost.isDeleted', 0))
       .filter({ publishId: PublishEnum.Publish });
 
     const count = await this.repository.count(queryBuilder.build());

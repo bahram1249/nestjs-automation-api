@@ -8,6 +8,7 @@ import { ECLogisticUser } from '@rahino/localdatabase/models';
 import { User } from '@rahino/database';
 import { LocalizationService } from 'apps/main/src/common/localization';
 import { LogisticUserRoleHandlerService } from '../logistic-user-role-handler/logistic-user-role-handler.service';
+import { SequelizeHelpService } from '@rahino/commontools/sequelize-help/sequelize-help.service';
 
 @Injectable()
 export class AdminLogisticUserService {
@@ -19,6 +20,7 @@ export class AdminLogisticUserService {
     private readonly sequelize: Sequelize,
     private readonly localizationService: LocalizationService,
     private readonly logisticUserRoleHandlerService: LogisticUserRoleHandlerService,
+    private readonly seqHelp: SequelizeHelpService,
   ) {}
 
   async findAll(logisticId: bigint, filter: GetLogisticUserDto) {
@@ -52,11 +54,9 @@ export class AdminLogisticUserService {
       })
       .filter({ logisticId: logisticId })
       .filter(
-        Sequelize.where(
-          Sequelize.fn('isnull', Sequelize.col('ECLogisticUser.isDeleted'), 0),
-          {
-            [Op.eq]: 0,
-          },
+        this.seqHelp.whereIsNullColumnEqualToZero(
+          'ECLogisticUser.isDeleted',
+          0,
         ),
       );
 
@@ -103,22 +103,8 @@ export class AdminLogisticUserService {
       new QueryOptionsBuilder()
         .include([{ model: User, as: 'user' }])
         .filter({ id: entityId })
-        .filter(
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('isDeleted'), 0),
-            {
-              [Op.eq]: 0,
-            },
-          ),
-        )
-        .filter(
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('isDefault'), 0),
-            {
-              [Op.eq]: 0,
-            },
-          ),
-        )
+        .filter(this.seqHelp.whereIsNullColumnEqualToZero('isDeleted', 0))
+        .filter(this.seqHelp.whereIsNullColumnEqualToZero('isDefault', 0))
         .build(),
     );
 

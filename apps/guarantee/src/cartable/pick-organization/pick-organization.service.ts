@@ -8,6 +8,7 @@ import { GuaranteeTraverseService } from '../guarantee-traverse/guarantee-traver
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import { TraverseService } from '@rahino/bpmn/modules/traverse/traverse.service';
 import { LocalizationService } from 'apps/main/src/common/localization';
+import { SequelizeHelpService } from '@rahino/commontools/sequelize-help/sequelize-help.service';
 
 @Injectable()
 export class PickOrganizationService {
@@ -20,6 +21,7 @@ export class PickOrganizationService {
     private readonly sequelize: Sequelize,
     private readonly traverseService: TraverseService,
     private readonly localizationService: LocalizationService,
+    private readonly seqHelp: SequelizeHelpService,
   ) {}
 
   async traverse(user: User, dto: PickOrganizationDto) {
@@ -37,12 +39,7 @@ export class PickOrganizationService {
         new QueryOptionsBuilder()
           .filter({ id: dto.requestId })
           .filter(
-            Sequelize.where(
-              Sequelize.fn('isnull', Sequelize.col('GSRequest.isDeleted'), 0),
-              {
-                [Op.eq]: 0,
-              },
-            ),
+            this.seqHelp.whereIsNullColumnEqualToZero('GSRequest.isDeleted', 0),
           )
           .transaction(transaction)
           .build(),

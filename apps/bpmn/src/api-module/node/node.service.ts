@@ -10,23 +10,23 @@ import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builde
 import { Op, Sequelize } from 'sequelize';
 import { CreateNodeDto, GetNodeDto, UpdateNodeDto } from './dto';
 import { Role, User } from '@rahino/database';
+import { SequelizeHelpService } from '@rahino/commontools/sequelize-help/sequelize-help.service';
 
 @Injectable()
 export class NodeService {
   constructor(
     @InjectModel(BPMNNode)
     private readonly repository: typeof BPMNNode,
+    private readonly seqHelp: SequelizeHelpService,
   ) {}
 
   async findAll(filter: GetNodeDto) {
     let qb = new QueryOptionsBuilder()
       .filter(
-        Sequelize.where(
-          Sequelize.fn('isnull', Sequelize.col('BPMNNode.isDeleted'), 0),
-          {
-            [Op.eq]: 0,
-          },
-        ),
+        this.seqHelp.whereIsNullColumnEqualToZero(
+           'BPMNNode.isDeleted',
+            0,
+          ),
       )
       .filterIf(!!filter.fromActivityId, {
         fromActivityId: filter.fromActivityId,
@@ -115,12 +115,7 @@ export class NodeService {
         ])
         .filter({ id })
         .filter(
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('BPMNNode.isDeleted'), 0),
-            {
-              [Op.eq]: 0,
-            },
-          ),
+          this.seqHelp.whereIsNullColumnEqualToZero('BPMNNode.isDeleted', 0),
         )
         .include([
           {

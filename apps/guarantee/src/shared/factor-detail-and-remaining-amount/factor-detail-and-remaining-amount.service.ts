@@ -19,6 +19,7 @@ import { RialPriceService } from '../rial-price';
 import { GSFactorTypeEnum } from '../factor-type';
 import { GSServiceTypeEnum } from '../service-type';
 import { GSFactorServiceOutputDto } from './dto';
+import { SequelizeHelpService } from '@rahino/commontools/sequelize-help/sequelize-help.service';
 
 @Injectable()
 export class GSSharedFactorDetailAndRemainingAmountService {
@@ -35,6 +36,7 @@ export class GSSharedFactorDetailAndRemainingAmountService {
     private readonly rialPriceService: RialPriceService,
     @InjectModel(GSGuaranteeOrganization)
     private readonly guaranteeOrganizationRepository: typeof GSGuaranteeOrganization,
+    private readonly seqHelp: SequelizeHelpService,
   ) {}
 
   async getFactorDetailAndRemainingAmount(
@@ -45,12 +47,7 @@ export class GSSharedFactorDetailAndRemainingAmountService {
       new QueryOptionsBuilder()
         .filter({ id: requestId })
         .filter(
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('GSRequest.isDeleted'), 0),
-            {
-              [Op.eq]: 0,
-            },
-          ),
+          this.seqHelp.whereIsNullColumnEqualToZero('GSRequest.isDeleted', 0),
         )
         .transaction(transaction)
         .build(),
@@ -77,12 +74,7 @@ export class GSSharedFactorDetailAndRemainingAmountService {
         .filter({ requestId: requestId })
         .filter({ factorTypeId: GSFactorTypeEnum.PayRequestFactor })
         .filter(
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('GSFactor.isDeleted'), 0),
-            {
-              [Op.eq]: 0,
-            },
-          ),
+          this.seqHelp.whereIsNullColumnEqualToZero('GSFactor.isDeleted', 0),
         )
         .transaction(transaction)
         .build(),

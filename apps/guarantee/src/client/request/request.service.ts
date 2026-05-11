@@ -46,6 +46,7 @@ import { ThumbnailService } from '@rahino/thumbnail';
 import * as fs from 'fs';
 import { GSRequestAttachmentTypeEnum } from '@rahino/guarantee/shared/request-attachment-type';
 import { RequestItemTypeEnum } from '@rahino/guarantee/shared/request-item-type';
+import { SequelizeHelpService } from '@rahino/commontools/sequelize-help/sequelize-help.service';
 
 @Injectable()
 export class RequestService {
@@ -75,6 +76,7 @@ export class RequestService {
     private readonly requestItemRepository: typeof GSRequestItem,
 
     private readonly thumbnailService: ThumbnailService,
+    private readonly seqHelp: SequelizeHelpService,
   ) {}
 
   private async createRequestItems(
@@ -125,15 +127,9 @@ export class RequestService {
         .filter({ userId: user.id })
         .filter({ guaranteeId: dto.guaranteeId })
         .filter(
-          Sequelize.where(
-            Sequelize.fn(
-              'isnull',
-              Sequelize.col('GSAssignedGuarantee.isDeleted'),
-              0,
-            ),
-            {
-              [Op.eq]: 0,
-            },
+          this.seqHelp.whereIsNullColumnEqualToZero(
+            'GSAssignedGuarantee.isDeleted',
+            0,
           ),
         )
         .build(),
@@ -160,12 +156,7 @@ export class RequestService {
           staticId: GuaranteeProcessEnum.MainProcessId,
         })
         .filter(
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('BPMNPROCESS.isDeleted'), 0),
-            {
-              [Op.eq]: 0,
-            },
-          ),
+          this.seqHelp.whereIsNullColumnEqualToZero('BPMNPROCESS.isDeleted', 0),
         )
         .build(),
     );
@@ -217,15 +208,9 @@ export class RequestService {
             .filter({ id: attachmentDto.attachmentId })
             .filter({ attachmentTypeId: this.photoTempAttachmentType })
             .filter(
-              Sequelize.where(
-                Sequelize.fn(
-                  'isnull',
-                  Sequelize.col('Attachment.isDeleted'),
-                  0,
-                ),
-                {
-                  [Op.eq]: 0,
-                },
+              this.seqHelp.whereIsNullColumnEqualToZero(
+                'Attachment.isDeleted',
+                0,
               ),
             )
             .transaction(transaction)
@@ -289,12 +274,7 @@ export class RequestService {
           staticId: GuaranteeProcessEnum.MainProcessId,
         })
         .filter(
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('BPMNPROCESS.isDeleted'), 0),
-            {
-              [Op.eq]: 0,
-            },
-          ),
+          this.seqHelp.whereIsNullColumnEqualToZero('BPMNPROCESS.isDeleted', 0),
         )
         .build(),
     );
@@ -345,15 +325,9 @@ export class RequestService {
             .filter({ id: attachmentDto.attachmentId })
             .filter({ attachmentTypeId: this.photoTempAttachmentType })
             .filter(
-              Sequelize.where(
-                Sequelize.fn(
-                  'isnull',
-                  Sequelize.col('Attachment.isDeleted'),
-                  0,
-                ),
-                {
-                  [Op.eq]: 0,
-                },
+              this.seqHelp.whereIsNullColumnEqualToZero(
+                'Attachment.isDeleted',
+                0,
               ),
             )
             .transaction(transaction)
@@ -433,15 +407,9 @@ export class RequestService {
         .filter({ userId: user.id })
         .filter({ guaranteeId: dto.guaranteeId })
         .filter(
-          Sequelize.where(
-            Sequelize.fn(
-              'isnull',
-              Sequelize.col('GSAssignedGuarantee.isDeleted'),
-              0,
-            ),
-            {
-              [Op.eq]: 0,
-            },
+          this.seqHelp.whereIsNullColumnEqualToZero(
+            'GSAssignedGuarantee.isDeleted',
+            0,
           ),
         )
         .build(),
@@ -468,12 +436,7 @@ export class RequestService {
           staticId: GuaranteeProcessEnum.MainProcessId,
         })
         .filter(
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('BPMNPROCESS.isDeleted'), 0),
-            {
-              [Op.eq]: 0,
-            },
-          ),
+          this.seqHelp.whereIsNullColumnEqualToZero('BPMNPROCESS.isDeleted', 0),
         )
         .build(),
     );
@@ -525,15 +488,9 @@ export class RequestService {
             .filter({ id: attachmentDto.attachmentId })
             .filter({ attachmentTypeId: this.photoTempAttachmentType })
             .filter(
-              Sequelize.where(
-                Sequelize.fn(
-                  'isnull',
-                  Sequelize.col('Attachment.isDeleted'),
-                  0,
-                ),
-                {
-                  [Op.eq]: 0,
-                },
+              this.seqHelp.whereIsNullColumnEqualToZero(
+                'Attachment.isDeleted',
+                0,
               ),
             )
             .transaction(transaction)
@@ -586,12 +543,7 @@ export class RequestService {
   async findAll(user: User, filter: GetRequestFilterDto) {
     let queryBuilder = new QueryOptionsBuilder()
       .filter(
-        Sequelize.where(
-          Sequelize.fn('isnull', Sequelize.col('GSRequest.isDeleted'), 0),
-          {
-            [Op.eq]: 0,
-          },
-        ),
+        this.seqHelp.whereIsNullColumnEqualToZero('GSRequest.isDeleted', 0),
       )
       .filter({ userId: user.id });
 

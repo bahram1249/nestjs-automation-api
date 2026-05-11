@@ -9,6 +9,7 @@ import * as fs from 'fs';
 import { Attachment } from '@rahino/database';
 import { Response } from 'express';
 import { ThumbnailService } from '@rahino/thumbnail';
+import { SequelizeHelpService } from '@rahino/commontools/sequelize-help/sequelize-help.service';
 
 @Injectable()
 export class PublicPhotoService {
@@ -19,6 +20,7 @@ export class PublicPhotoService {
     private attachmentRepository: typeof Attachment,
 
     private readonly thumbnailService: ThumbnailService,
+    private readonly seqHelp: SequelizeHelpService,
   ) {}
 
   async uploadImage(user: User, file: Express.Multer.File) {
@@ -60,14 +62,7 @@ export class PublicPhotoService {
     const attachment = await this.attachmentRepository.findOne(
       new QueryOptionsBuilder()
         .filter({ fileName: fileName })
-        .filter(
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('isDeleted'), 0),
-            {
-              [Op.eq]: 0,
-            },
-          ),
-        )
+        .filter(this.seqHelp.whereIsNullColumnEqualToZero('isDeleted', 0))
         .filter({
           attachmentTypeId: {
             [Op.in]: photoTypes,

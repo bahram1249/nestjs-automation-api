@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
+import { SequelizeHelpService } from '@rahino/commontools/sequelize-help/sequelize-help.service';
 import { ECUserSession } from '@rahino/localdatabase/models';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import { RedisRepository } from '@rahino/redis-client';
@@ -11,6 +12,7 @@ export class ValidateSessionService {
     @InjectModel(ECUserSession)
     private readonly userSessionRepository: typeof ECUserSession,
     private readonly redisRepository: RedisRepository,
+    private readonly seqHelp: SequelizeHelpService,
   ) {}
 
   async validate(request: any, session: string) {
@@ -25,12 +27,7 @@ export class ValidateSessionService {
     let queryBuilder = new QueryOptionsBuilder()
       .filter({ id: session })
       .filter(
-        Sequelize.where(
-          Sequelize.fn('isnull', Sequelize.col('ECUserSession.isDeleted'), 0),
-          {
-            [Op.eq]: 0,
-          },
-        ),
+        this.seqHelp.whereIsNullColumnEqualToZero('ECUserSession.isDeleted', 0),
       )
       .filter(
         Sequelize.where(Sequelize.fn('getdate'), {
@@ -97,12 +94,7 @@ export class ValidateSessionService {
     const queryBuilder = new QueryOptionsBuilder()
       .filter({ id: session })
       .filter(
-        Sequelize.where(
-          Sequelize.fn('isnull', Sequelize.col('ECUserSession.isDeleted'), 0),
-          {
-            [Op.eq]: 0,
-          },
-        ),
+        this.seqHelp.whereIsNullColumnEqualToZero('ECUserSession.isDeleted', 0),
       )
       .filter(
         Sequelize.where(Sequelize.fn('getdate'), {

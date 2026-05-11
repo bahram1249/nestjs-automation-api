@@ -13,6 +13,7 @@ import { Mapper } from 'automapper-core';
 import * as _ from 'lodash';
 import { GSUnitPriceEnum } from '@rahino/guarantee/shared/unit-price';
 import { LocalizationService } from 'apps/main/src/common/localization';
+import { SequelizeHelpService } from '@rahino/commontools/sequelize-help/sequelize-help.service';
 
 @Injectable()
 export class VipBundleTypeService {
@@ -22,6 +23,7 @@ export class VipBundleTypeService {
     private readonly localizationService: LocalizationService,
     @InjectMapper()
     private readonly mapper: Mapper,
+    private readonly seqHelp: SequelizeHelpService,
   ) {}
 
   async findAll(filter: GetVipBundleTypeDto) {
@@ -32,11 +34,9 @@ export class VipBundleTypeService {
         },
       })
       .filter(
-        Sequelize.where(
-          Sequelize.fn('isnull', Sequelize.col('GSVipBundleType.isDeleted'), 0),
-          {
-            [Op.eq]: 0,
-          },
+        this.seqHelp.whereIsNullColumnEqualToZero(
+          'GSVipBundleType.isDeleted',
+          0,
         ),
       )
       .filter({ isSystemGenerated: false });
@@ -81,15 +81,9 @@ export class VipBundleTypeService {
           'updatedAt',
         ])
         .filter(
-          Sequelize.where(
-            Sequelize.fn(
-              'isnull',
-              Sequelize.col('GSVipBundleType.isDeleted'),
-              0,
-            ),
-            {
-              [Op.eq]: 0,
-            },
+          this.seqHelp.whereIsNullColumnEqualToZero(
+            'GSVipBundleType.isDeleted',
+            0,
           ),
         )
         .filter({ id: entityId })
@@ -111,15 +105,9 @@ export class VipBundleTypeService {
     const duplicateItem = await this.repository.findOne(
       new QueryOptionsBuilder()
         .filter(
-          Sequelize.where(
-            Sequelize.fn(
-              'isnull',
-              Sequelize.col('GSVipBundleType.isDeleted'),
-              0,
-            ),
-            {
-              [Op.eq]: 0,
-            },
+          this.seqHelp.whereIsNullColumnEqualToZero(
+            'GSVipBundleType.isDeleted',
+            0,
           ),
         )
         .filter({ title: dto.title })
@@ -148,15 +136,9 @@ export class VipBundleTypeService {
       new QueryOptionsBuilder()
         .filter({ id: id })
         .filter(
-          Sequelize.where(
-            Sequelize.fn(
-              'isnull',
-              Sequelize.col('GSVipBundleType.isDeleted'),
-              0,
-            ),
-            {
-              [Op.eq]: 0,
-            },
+          this.seqHelp.whereIsNullColumnEqualToZero(
+            'GSVipBundleType.isDeleted',
+            0,
           ),
         )
         .filter({ isSystemGenerated: false })
@@ -172,15 +154,9 @@ export class VipBundleTypeService {
     const duplicateItem = await this.repository.findOne(
       new QueryOptionsBuilder()
         .filter(
-          Sequelize.where(
-            Sequelize.fn(
-              'isnull',
-              Sequelize.col('GSVipBundleType.isDeleted'),
-              0,
-            ),
-            {
-              [Op.eq]: 0,
-            },
+          this.seqHelp.whereIsNullColumnEqualToZero(
+            'GSVipBundleType.isDeleted',
+            0,
           ),
         )
         .filter({ title: dto.title })
@@ -215,15 +191,9 @@ export class VipBundleTypeService {
       new QueryOptionsBuilder()
         .filter({ id: entityId })
         .filter(
-          Sequelize.where(
-            Sequelize.fn(
-              'isnull',
-              Sequelize.col('GSVipBundleType.isDeleted'),
-              0,
-            ),
-            {
-              [Op.eq]: 0,
-            },
+          this.seqHelp.whereIsNullColumnEqualToZero(
+            'GSVipBundleType.isDeleted',
+            0,
           ),
         )
         .filter({ isSystemGenerated: false })

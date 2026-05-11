@@ -20,6 +20,7 @@ import * as _ from 'lodash';
 import { Response } from 'express';
 import * as fs from 'fs';
 import { BuffetMenuCategory } from '@rahino/localdatabase/models';
+import { SequelizeHelpService } from '@rahino/commontools/sequelize-help/sequelize-help.service';
 
 @Injectable()
 export class MenuCategoryService {
@@ -32,6 +33,7 @@ export class MenuCategoryService {
     private readonly attachmentRepository: typeof Attachment,
     private readonly fileService: FileService,
     private readonly thumbnailService: ThumbnailService,
+    private readonly seqHelp: SequelizeHelpService,
   ) {}
 
   async findAll(filter: ListFilter) {
@@ -196,12 +198,7 @@ export class MenuCategoryService {
           {
             fileName: fileName,
           },
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('isDeleted'), 0),
-            {
-              [Op.eq]: 0,
-            },
-          ),
+          this.seqHelp.whereIsNullColumnEqualToZero('isDeleted', 0),
           {
             attachmentTypeId: 3,
           },

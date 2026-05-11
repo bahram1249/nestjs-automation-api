@@ -17,6 +17,7 @@ import { UserRoleService } from '@rahino/core/admin/user-role/user-role.service'
 import { ECRoleEnum } from '@rahino/ecommerce/shared/enum';
 import { LocalizationService } from 'apps/main/src/common/localization';
 import * as _ from 'lodash';
+import { SequelizeHelpService } from '@rahino/commontools/sequelize-help/sequelize-help.service';
 
 @Injectable()
 export class LogisticUserRoleHandlerService {
@@ -29,6 +30,7 @@ export class LogisticUserRoleHandlerService {
     @InjectMapper() private readonly mapper: Mapper,
     private readonly userRoleService: UserRoleService,
     private readonly localizationService: LocalizationService,
+    private readonly seqHelp: SequelizeHelpService,
   ) {}
 
   async addUserToLogistic(dto: AddUserToLogisticDto) {
@@ -164,15 +166,9 @@ export class LogisticUserRoleHandlerService {
           },
         })
         .filter(
-          Sequelize.where(
-            Sequelize.fn(
-              'isnull',
-              Sequelize.col('ECLogisticUser.isDeleted'),
-              0,
-            ),
-            {
-              [Op.eq]: 0,
-            },
+          this.seqHelp.whereIsNullColumnEqualToZero(
+            'ECLogisticUser.isDeleted',
+            0,
           ),
         )
         .transaction(dto.transaction)
@@ -229,15 +225,9 @@ export class LogisticUserRoleHandlerService {
     const logisticUser = await this.logisticUserRepository.findOne(
       new QueryOptionsBuilder()
         .filter(
-          Sequelize.where(
-            Sequelize.fn(
-              'isnull',
-              Sequelize.col('ECLogisticUser.isDeleted'),
-              0,
-            ),
-            {
-              [Op.eq]: 0,
-            },
+          this.seqHelp.whereIsNullColumnEqualToZero(
+            'ECLogisticUser.isDeleted',
+            0,
           ),
         )
         .filter({ userId: dto.user.id })
@@ -259,13 +249,9 @@ export class LogisticUserRoleHandlerService {
       new QueryOptionsBuilder()
         .attributes(['logisticId'])
         .filter(
-          Sequelize.where(
-            Sequelize.fn(
-              'isnull',
-              Sequelize.col('ECLogisticUser.isDeleted'),
-              0,
-            ),
-            { [Op.eq]: 0 },
+          this.seqHelp.whereIsNullColumnEqualToZero(
+            'ECLogisticUser.isDeleted',
+            0,
           ),
         )
         .filter({ userId: user.id })

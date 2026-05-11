@@ -12,6 +12,7 @@ import { InjectMapper } from 'automapper-nestjs';
 import { Mapper } from 'automapper-core';
 import * as _ from 'lodash';
 import { LocalizationService } from 'apps/main/src/common/localization';
+import { SequelizeHelpService } from '@rahino/commontools/sequelize-help/sequelize-help.service';
 
 @Injectable()
 export class FaqService {
@@ -21,6 +22,7 @@ export class FaqService {
     @InjectMapper()
     private readonly mapper: Mapper,
     private readonly localizationService: LocalizationService,
+    private readonly seqHelp: SequelizeHelpService,
   ) {}
 
   async findAll(filter: GetFaqDto) {
@@ -30,14 +32,7 @@ export class FaqService {
           [Op.like]: filter.search,
         },
       })
-      .filter(
-        Sequelize.where(
-          Sequelize.fn('isnull', Sequelize.col('GSFaq.isDeleted'), 0),
-          {
-            [Op.eq]: 0,
-          },
-        ),
-      );
+      .filter(this.seqHelp.whereIsNullColumnEqualToZero('GSFaq.isDeleted', 0));
 
     const count = await this.repository.count(query.build());
 
@@ -73,14 +68,7 @@ export class FaqService {
           'createdAt',
           'updatedAt',
         ])
-        .filter(
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('GSFaq.isDeleted'), 0),
-            {
-              [Op.eq]: 0,
-            },
-          ),
-        )
+        .filter(this.seqHelp.whereIsNullColumnEqualToZero('GSFaq.isDeleted', 0))
         .filter({ id: entityId })
         .build(),
     );
@@ -99,14 +87,7 @@ export class FaqService {
     const duplicateItem = await this.repository.findOne(
       new QueryOptionsBuilder()
         .filter({ question: dto.question })
-        .filter(
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('GSFaq.isDeleted'), 0),
-            {
-              [Op.eq]: 0,
-            },
-          ),
-        )
+        .filter(this.seqHelp.whereIsNullColumnEqualToZero('GSFaq.isDeleted', 0))
         .build(),
     );
     if (duplicateItem) {
@@ -129,14 +110,7 @@ export class FaqService {
     const updatedItem = await this.repository.findOne(
       new QueryOptionsBuilder()
         .filter({ id: id })
-        .filter(
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('GSFaq.isDeleted'), 0),
-            {
-              [Op.eq]: 0,
-            },
-          ),
-        )
+        .filter(this.seqHelp.whereIsNullColumnEqualToZero('GSFaq.isDeleted', 0))
         .build(),
     );
 
@@ -149,14 +123,7 @@ export class FaqService {
     const duplicateItem = await this.repository.findOne(
       new QueryOptionsBuilder()
         .filter({ question: dto.question })
-        .filter(
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('GSFaq.isDeleted'), 0),
-            {
-              [Op.eq]: 0,
-            },
-          ),
-        )
+        .filter(this.seqHelp.whereIsNullColumnEqualToZero('GSFaq.isDeleted', 0))
         .filter({
           id: {
             [Op.ne]: id,
@@ -185,14 +152,7 @@ export class FaqService {
     const item = await this.repository.findOne(
       new QueryOptionsBuilder()
         .filter({ id: entityId })
-        .filter(
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('GSFaq.isDeleted'), 0),
-            {
-              [Op.eq]: 0,
-            },
-          ),
-        )
+        .filter(this.seqHelp.whereIsNullColumnEqualToZero('GSFaq.isDeleted', 0))
         .build(),
     );
 

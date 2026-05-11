@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
+import { SequelizeHelpService } from '@rahino/commontools/sequelize-help/sequelize-help.service';
 import { ECDiscountActionRule } from '@rahino/localdatabase/models';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import * as _ from 'lodash';
@@ -11,19 +12,14 @@ export class DiscountActionRuleService {
   constructor(
     @InjectModel(ECDiscountActionRule)
     private repository: typeof ECDiscountActionRule,
+    private readonly seqHelp: SequelizeHelpService,
   ) {}
 
   async findAll() {
     const queryBuilder = new QueryOptionsBuilder().filter(
-      Sequelize.where(
-        Sequelize.fn(
-          'isnull',
-          Sequelize.col('ECDiscountActionRule.isDeleted'),
-          0,
-        ),
-        {
-          [Op.eq]: 0,
-        },
+      this.seqHelp.whereIsNullColumnEqualToZero(
+        'ECDiscountActionRule.isDeleted',
+        0,
       ),
     );
     const count = await this.repository.count(queryBuilder.build());

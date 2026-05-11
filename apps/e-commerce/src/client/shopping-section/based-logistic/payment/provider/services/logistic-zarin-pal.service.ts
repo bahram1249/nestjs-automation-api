@@ -19,6 +19,7 @@ import { LogisticPayInterface } from '../interface/logistic-pay.interface';
 import { LogisticFinalizedPaymentService } from '../../util/finalized-payment/logistic-finalized-payment.service';
 import { LogisticRevertPaymentQtyService } from '../../../inventory/services/logistic-revert-payment-qty.service';
 import { LocalizationService } from 'apps/main/src/common/localization/localization.service';
+import { SequelizeHelpService } from '@rahino/commontools/sequelize-help/sequelize-help.service';
 
 @Injectable({ scope: Scope.REQUEST })
 export class LogisticZarinPalService implements LogisticPayInterface {
@@ -32,6 +33,7 @@ export class LogisticZarinPalService implements LogisticPayInterface {
     private readonly revertInventoryQtyService: LogisticRevertPaymentQtyService,
     private readonly finalizedPaymentService: LogisticFinalizedPaymentService,
     private readonly l10n: LocalizationService,
+    private readonly seqHelp: SequelizeHelpService,
   ) {}
 
   async eligbleToRevert(paymentId: bigint): Promise<boolean> {
@@ -50,12 +52,7 @@ export class LogisticZarinPalService implements LogisticPayInterface {
     const gateway = await this.paymentGatewayRepo.findOne(
       new QueryOptionsBuilder()
         .filter({ serviceName: 'ZarinPalService' })
-        .filter(
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('isDeleted'), 0),
-            { [Op.eq]: 0 },
-          ),
-        )
+        .filter(this.seqHelp.whereIsNullColumnEqualToZero('isDeleted', 0))
         .build(),
     );
     if (!gateway)
@@ -134,14 +131,7 @@ export class LogisticZarinPalService implements LogisticPayInterface {
     const paymentGateway = await this.paymentGatewayRepo.findOne(
       new QueryOptionsBuilder()
         .filter({ serviceName: 'ZarinPalService' })
-        .filter(
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('isDeleted'), 0),
-            {
-              [Op.eq]: 0,
-            },
-          ),
-        )
+        .filter(this.seqHelp.whereIsNullColumnEqualToZero('isDeleted', 0))
         .build(),
     );
     if (!paymentGateway) {

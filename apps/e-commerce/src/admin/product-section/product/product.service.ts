@@ -61,6 +61,7 @@ import { ListFilterV2Factory } from '@rahino/query-filter/provider/list-filter-v
 import { LocalizationService } from 'apps/main/src/common/localization';
 import { InventoryTrackChangeService } from '@rahino/ecommerce/shared/inventory-track-change/inventory-track-change.service';
 import { InventoryTrackChangeStatusEnum } from '@rahino/ecommerce/shared/enum';
+import { SequelizeHelpService } from '@rahino/commontools/sequelize-help/sequelize-help.service';
 
 @Injectable()
 export class ProductService {
@@ -98,6 +99,7 @@ export class ProductService {
     private readonly productQueryBuilderService: ProductQueryBuilderService,
     private readonly emptyFilter: ListFilterV2Factory,
     private readonly localizationService: LocalizationService,
+    private readonly seqHelp: SequelizeHelpService,
   ) {}
 
   async findAll(user: User, filter: GetProductDto) {
@@ -213,14 +215,7 @@ export class ProductService {
     // find the slug if exists before
     const slugSearch = await this.repository.findOne(
       new QueryOptionsBuilder()
-        .filter(
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('isDeleted'), 0),
-            {
-              [Op.eq]: 0,
-            },
-          ),
-        )
+        .filter(this.seqHelp.whereIsNullColumnEqualToZero('isDeleted', 0))
         .filter({ slug: dto.slug })
         .build(),
     );
@@ -235,14 +230,7 @@ export class ProductService {
     const entityType = await this.entityType.findOne(
       new QueryOptionsBuilder()
         .filter({ id: dto.entityTypeId })
-        .filter(
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('isDeleted'), 0),
-            {
-              [Op.eq]: 0,
-            },
-          ),
-        )
+        .filter(this.seqHelp.whereIsNullColumnEqualToZero('isDeleted', 0))
         .filter({
           entityModelId: eCommerceEntityModel,
         })
@@ -423,12 +411,7 @@ export class ProductService {
           'weight',
         ])
         .filter(
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('ECProduct.isDeleted'), 0),
-            {
-              [Op.eq]: 0,
-            },
-          ),
+          this.seqHelp.whereIsNullColumnEqualToZero('ECProduct.isDeleted', 0),
         )
         .filter({
           id: entityId,
@@ -449,14 +432,7 @@ export class ProductService {
       // find the slug if exists before
       const slugSearch = await this.repository.findOne(
         new QueryOptionsBuilder()
-          .filter(
-            Sequelize.where(
-              Sequelize.fn('isnull', Sequelize.col('isDeleted'), 0),
-              {
-                [Op.eq]: 0,
-              },
-            ),
-          )
+          .filter(this.seqHelp.whereIsNullColumnEqualToZero('isDeleted', 0))
           .filter({
             id: {
               [Op.ne]: entityId,
@@ -476,14 +452,7 @@ export class ProductService {
       const entityType = await this.entityType.findOne(
         new QueryOptionsBuilder()
           .filter({ id: dto.entityTypeId })
-          .filter(
-            Sequelize.where(
-              Sequelize.fn('isnull', Sequelize.col('isDeleted'), 0),
-              {
-                [Op.eq]: 0,
-              },
-            ),
-          )
+          .filter(this.seqHelp.whereIsNullColumnEqualToZero('isDeleted', 0))
           .filter({
             entityModelId: eCommerceEntityModel,
           })
@@ -1194,12 +1163,7 @@ export class ProductService {
           },
         ])
         .filter(
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('ECProduct.isDeleted'), 0),
-            {
-              [Op.eq]: 0,
-            },
-          ),
+          this.seqHelp.whereIsNullColumnEqualToZero('ECProduct.isDeleted', 0),
         )
         .filter({
           id: entityId,

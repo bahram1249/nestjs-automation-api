@@ -5,21 +5,21 @@ import * as _ from 'lodash';
 import { ECDiscountType } from '@rahino/localdatabase/models';
 import { Sequelize } from 'sequelize';
 import { Op } from 'sequelize';
+import { SequelizeHelpService } from '@rahino/commontools/sequelize-help/sequelize-help.service';
 
 @Injectable()
 export class DiscountTypeService {
   constructor(
     @InjectModel(ECDiscountType) private repository: typeof ECDiscountType,
+    private readonly seqHelp: SequelizeHelpService,
   ) {}
 
   async findAll() {
     const queryBuilder = new QueryOptionsBuilder()
       .filter(
-        Sequelize.where(
-          Sequelize.fn('isnull', Sequelize.col('ECDiscountType.isDeleted'), 0),
-          {
-            [Op.eq]: 0,
-          },
+        this.seqHelp.whereIsNullColumnEqualToZero(
+          'ECDiscountType.isDeleted',
+          0,
         ),
       )
       .filter(

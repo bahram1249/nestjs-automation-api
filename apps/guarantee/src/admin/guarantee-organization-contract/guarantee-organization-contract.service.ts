@@ -18,6 +18,7 @@ import { LocalizationService } from 'apps/main/src/common/localization';
 import { InjectMapper } from 'automapper-nestjs';
 import { Mapper } from 'automapper-core';
 import * as _ from 'lodash';
+import { SequelizeHelpService } from '@rahino/commontools/sequelize-help/sequelize-help.service';
 
 @Injectable()
 export class GuaranteeOrganizationContractService {
@@ -27,20 +28,15 @@ export class GuaranteeOrganizationContractService {
     private readonly localizationService: LocalizationService,
     @InjectMapper()
     private readonly mapper: Mapper,
+    private readonly seqHelp: SequelizeHelpService,
   ) {}
 
   async findAll(filter: GetGuaranteeOrganizationContractDto) {
     let query = new QueryOptionsBuilder()
       .filter(
-        Sequelize.where(
-          Sequelize.fn(
-            'isnull',
-            Sequelize.col('GSGuaranteeOrganizationContract.isDeleted'),
-            0,
-          ),
-          {
-            [Op.eq]: 0,
-          },
+        this.seqHelp.whereIsNullColumnEqualToZero(
+          'GSGuaranteeOrganizationContract.isDeleted',
+          0,
         ),
       )
       .filter({ organizationId: filter.organizationId });
@@ -95,15 +91,9 @@ export class GuaranteeOrganizationContractService {
         },
       ])
       .filter(
-        Sequelize.where(
-          Sequelize.fn(
-            'isnull',
-            Sequelize.col('GSGuaranteeOrganizationContract.isDeleted'),
-            0,
-          ),
-          {
-            [Op.eq]: 0,
-          },
+        this.seqHelp.whereIsNullColumnEqualToZero(
+          'GSGuaranteeOrganizationContract.isDeleted',
+          0,
         ),
       )
       .filter({ id: entityId });
@@ -142,15 +132,9 @@ export class GuaranteeOrganizationContractService {
           ],
         })
         .filter(
-          Sequelize.where(
-            Sequelize.fn(
-              'isnull',
-              Sequelize.col('GSGuaranteeOrganizationContract.isDeleted'),
-              0,
-            ),
-            {
-              [Op.eq]: 0,
-            },
+          this.seqHelp.whereIsNullColumnEqualToZero(
+            'GSGuaranteeOrganizationContract.isDeleted',
+            0,
           ),
         )
         .build(),
@@ -195,15 +179,9 @@ export class GuaranteeOrganizationContractService {
           ],
         })
         .filter(
-          Sequelize.where(
-            Sequelize.fn(
-              'isnull',
-              Sequelize.col('GSGuaranteeOrganizationContract.isDeleted'),
-              0,
-            ),
-            {
-              [Op.eq]: 0,
-            },
+          this.seqHelp.whereIsNullColumnEqualToZero(
+            'GSGuaranteeOrganizationContract.isDeleted',
+            0,
           ),
         )
         .filter({
@@ -241,15 +219,9 @@ export class GuaranteeOrganizationContractService {
       new QueryOptionsBuilder()
         .filter({ id: entityId })
         .filter(
-          Sequelize.where(
-            Sequelize.fn(
-              'isnull',
-              Sequelize.col('GSGuaranteeOrganizationContract.isDeleted'),
-              0,
-            ),
-            {
-              [Op.eq]: 0,
-            },
+          this.seqHelp.whereIsNullColumnEqualToZero(
+            'GSGuaranteeOrganizationContract.isDeleted',
+            0,
           ),
         )
         .build(),

@@ -16,6 +16,7 @@ import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builde
 import * as moment from 'moment-jalaali';
 import { Op, Transaction } from 'sequelize';
 import { Sequelize } from 'sequelize';
+import { SequelizeHelpService } from '@rahino/commontools/sequelize-help/sequelize-help.service';
 
 @Injectable()
 export class FinalizedPaymentService {
@@ -32,6 +33,7 @@ export class FinalizedPaymentService {
     @InjectModel(ECPaymentGatewayCommission)
     private readonly paymentGatewayCommissionRepository: typeof ECPaymentGatewayCommission,
     private readonly smsService: ECommmerceSmsService,
+    private readonly seqHelp: SequelizeHelpService,
   ) {}
 
   async successfulSnapPay(paymentId: bigint) {
@@ -87,12 +89,7 @@ export class FinalizedPaymentService {
         new QueryOptionsBuilder()
           .filter({ userId: payment.userId })
           .filter(
-            Sequelize.where(
-              Sequelize.fn('isnull', Sequelize.col('ECWallet.isDeleted'), 0),
-              {
-                [Op.eq]: 0,
-              },
-            ),
+            this.seqHelp.whereIsNullColumnEqualToZero('ECWallet.isDeleted', 0),
           )
           .build(),
       );
@@ -109,12 +106,7 @@ export class FinalizedPaymentService {
         .filter({ id: paymentId })
         .filter({ paymentStatusId: PaymentStatusEnum.DecreaseAmountOfWallet })
         .filter(
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('ECPayment.isDeleted'), 0),
-            {
-              [Op.eq]: 0,
-            },
-          ),
+          this.seqHelp.whereIsNullColumnEqualToZero('ECPayment.isDeleted', 0),
         )
         .transaction(transaction)
         .build(),
@@ -157,15 +149,9 @@ export class FinalizedPaymentService {
           paymentGatewayId: payment.paymentGatewayId,
         })
         .filter(
-          Sequelize.where(
-            Sequelize.fn(
-              'isnull',
-              Sequelize.col('ECPaymentGatewayCommission.isDeleted'),
-              0,
-            ),
-            {
-              [Op.eq]: 0,
-            },
+          this.seqHelp.whereIsNullColumnEqualToZero(
+            'ECPaymentGatewayCommission.isDeleted',
+            0,
           ),
         )
         .transaction(transaction)

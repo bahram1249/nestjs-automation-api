@@ -13,6 +13,7 @@ import { User } from '@rahino/database';
 import * as _ from 'lodash';
 import { BuffetIgnoreReserve } from '@rahino/localdatabase/models';
 import { PersianDate } from '@rahino/database';
+import { SequelizeHelpService } from '@rahino/commontools/sequelize-help/sequelize-help.service';
 
 @Injectable()
 export class HolidayService {
@@ -23,6 +24,7 @@ export class HolidayService {
     private readonly buffetRepository: typeof Buffet,
     @InjectModel(PersianDate)
     private readonly persianDateRepository: typeof PersianDate,
+    private readonly seqHelp: SequelizeHelpService,
   ) {}
 
   async findAll(user: User, filter: ListFilter) {
@@ -30,12 +32,7 @@ export class HolidayService {
       new QueryOptionsBuilder()
         .filter({ ownerId: user.id })
         .filter(
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('Buffet.isDeleted'), 0),
-            {
-              [Op.eq]: 0,
-            },
-          ),
+          this.seqHelp.whereIsNullColumnEqualToZero('Buffet.isDeleted', 0),
         )
         .build(),
     );
@@ -72,12 +69,7 @@ export class HolidayService {
       new QueryOptionsBuilder()
         .filter({ ownerId: user.id })
         .filter(
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('Buffet.isDeleted'), 0),
-            {
-              [Op.eq]: 0,
-            },
-          ),
+          this.seqHelp.whereIsNullColumnEqualToZero('Buffet.isDeleted', 0),
         )
         .build(),
     );
@@ -121,12 +113,7 @@ export class HolidayService {
       new QueryOptionsBuilder()
         .filter({ ownerId: user.id })
         .filter(
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('Buffet.isDeleted'), 0),
-            {
-              [Op.eq]: 0,
-            },
-          ),
+          this.seqHelp.whereIsNullColumnEqualToZero('Buffet.isDeleted', 0),
         )
         .build(),
     );

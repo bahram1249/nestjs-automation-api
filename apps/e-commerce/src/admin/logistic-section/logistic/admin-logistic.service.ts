@@ -14,6 +14,7 @@ import { ECLogistic, ECLogisticUser } from '@rahino/localdatabase/models';
 import { User } from '@rahino/database';
 import { LocalizationService } from 'apps/main/src/common/localization';
 import { LogisticUserRoleHandlerService } from '../logistic-user-role-handler/logistic-user-role-handler.service';
+import { SequelizeHelpService } from '@rahino/commontools/sequelize-help/sequelize-help.service';
 
 @Injectable()
 export class LogisticService {
@@ -29,6 +30,7 @@ export class LogisticService {
     private readonly sequelize: Sequelize,
     private readonly localizationService: LocalizationService,
     private readonly logisticUserRoleHandlerService: LogisticUserRoleHandlerService,
+    private readonly seqHelp: SequelizeHelpService,
   ) {}
 
   async findAll(filter: GetLogisticDto) {
@@ -39,12 +41,7 @@ export class LogisticService {
         },
       })
       .filter(
-        Sequelize.where(
-          Sequelize.fn('isnull', Sequelize.col('ECLogistic.isDeleted'), 0),
-          {
-            [Op.eq]: 0,
-          },
-        ),
+        this.seqHelp.whereIsNullColumnEqualToZero('ECLogistic.isDeleted', 0),
       );
 
     const count = await this.repository.count(queryBuilder.build());
@@ -73,15 +70,9 @@ export class LogisticService {
               {
                 isDefault: true,
               },
-              Sequelize.where(
-                Sequelize.fn(
-                  'isnull',
-                  Sequelize.col('logisticUser.isDeleted'),
-                  0,
-                ),
-                {
-                  [Op.eq]: 0,
-                },
+              this.seqHelp.whereIsNullColumnEqualToZero(
+                'logisticUser.isDeleted',
+                0,
               ),
             ],
           },
@@ -124,15 +115,9 @@ export class LogisticService {
                 {
                   isDefault: true,
                 },
-                Sequelize.where(
-                  Sequelize.fn(
-                    'isnull',
-                    Sequelize.col('logisticUser.isDeleted'),
-                    0,
-                  ),
-                  {
-                    [Op.eq]: 0,
-                  },
+                this.seqHelp.whereIsNullColumnEqualToZero(
+                  'logisticUser.isDeleted',
+                  0,
                 ),
               ],
             },
@@ -140,12 +125,7 @@ export class LogisticService {
         ])
         .filter({ id: entityId })
         .filter(
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('ECLogistic.isDeleted'), 0),
-            {
-              [Op.eq]: 0,
-            },
-          ),
+          this.seqHelp.whereIsNullColumnEqualToZero('ECLogistic.isDeleted', 0),
         )
         .build(),
     );
@@ -164,14 +144,7 @@ export class LogisticService {
     const duplicate = await this.repository.findOne(
       new QueryOptionsBuilder()
         .filter({ title: dto.title })
-        .filter(
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('isDeleted'), 0),
-            {
-              [Op.eq]: 0,
-            },
-          ),
-        )
+        .filter(this.seqHelp.whereIsNullColumnEqualToZero('isDeleted', 0))
         .build(),
     );
     if (duplicate) {
@@ -215,14 +188,7 @@ export class LogisticService {
     const item = await this.repository.findOne(
       new QueryOptionsBuilder()
         .filter({ id: entityId })
-        .filter(
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('isDeleted'), 0),
-            {
-              [Op.eq]: 0,
-            },
-          ),
-        )
+        .filter(this.seqHelp.whereIsNullColumnEqualToZero('isDeleted', 0))
         .build(),
     );
     if (!item) {
@@ -235,14 +201,7 @@ export class LogisticService {
     const duplicate = await this.repository.findOne(
       new QueryOptionsBuilder()
         .filter({ title: dto.title })
-        .filter(
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('isDeleted'), 0),
-            {
-              [Op.eq]: 0,
-            },
-          ),
-        )
+        .filter(this.seqHelp.whereIsNullColumnEqualToZero('isDeleted', 0))
         .filter({
           id: {
             [Op.ne]: entityId,
@@ -296,14 +255,7 @@ export class LogisticService {
     const item = await this.repository.findOne(
       new QueryOptionsBuilder()
         .filter({ id: entityId })
-        .filter(
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('isDeleted'), 0),
-            {
-              [Op.eq]: 0,
-            },
-          ),
-        )
+        .filter(this.seqHelp.whereIsNullColumnEqualToZero('isDeleted', 0))
         .build(),
     );
 

@@ -5,19 +5,18 @@ import * as _ from 'lodash';
 import { GSCity, GSProvince } from '@rahino/localdatabase/models';
 import { Op, Sequelize } from 'sequelize';
 import { GetCityDto } from './dto';
+import { SequelizeHelpService } from '@rahino/commontools/sequelize-help/sequelize-help.service';
 
 @Injectable()
 export class CityService {
-  constructor(@InjectModel(GSCity) private repository: typeof GSCity) {}
+  constructor(
+    @InjectModel(GSCity) private repository: typeof GSCity,
+    private readonly seqHelp: SequelizeHelpService,
+  ) {}
 
   async findAll(dto: GetCityDto) {
     let queryBuilder = new QueryOptionsBuilder().filter(
-      Sequelize.where(
-        Sequelize.fn('isnull', Sequelize.col('GSCity.isDeleted'), 0),
-        {
-          [Op.eq]: 0,
-        },
-      ),
+      this.seqHelp.whereIsNullColumnEqualToZero('GSCity.isDeleted', 0),
     );
     if (dto.provinceId) {
       queryBuilder = queryBuilder.filter({ provinceId: dto.provinceId });

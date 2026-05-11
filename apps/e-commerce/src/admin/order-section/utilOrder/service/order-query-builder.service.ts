@@ -28,23 +28,19 @@ import {
   QueryOptionsBuilder,
 } from '@rahino/query-filter/sequelize-query-builder';
 import { Op, Sequelize } from 'sequelize';
+import { SequelizeHelpService } from '@rahino/commontools/sequelize-help/sequelize-help.service';
 
 @Injectable({ scope: Scope.REQUEST })
 export class OrderQueryBuilder {
   private builder: QueryOptionsBuilder;
-  constructor() {
+  constructor(private readonly seqHelp: SequelizeHelpService) {
     this.builder = new QueryOptionsBuilder();
     this.builder = this.builder.include([]);
   }
 
   nonDeletedOrder() {
     this.builder = this.builder.filter(
-      Sequelize.where(
-        Sequelize.fn('isnull', Sequelize.col('ECOrder.isDeleted'), 0),
-        {
-          [Op.eq]: 0,
-        },
-      ),
+      this.seqHelp.whereIsNullColumnEqualToZero('ECOrder.isDeleted', 0),
     );
     return this;
   }
@@ -248,12 +244,7 @@ export class OrderQueryBuilder {
       ],
     });
     includeBuilder = includeBuilder.filter(
-      Sequelize.where(
-        Sequelize.fn('isnull', Sequelize.col('details.isDeleted'), 0),
-        {
-          [Op.eq]: 0,
-        },
-      ),
+      this.seqHelp.whereIsNullColumnEqualToZero('details.isDeleted', 0),
     );
     if (vendors) {
       includeBuilder = includeBuilder.filter({
@@ -344,12 +335,7 @@ export class OrderQueryBuilder {
       ],
     });
     includeBuilder = includeBuilder.filter(
-      Sequelize.where(
-        Sequelize.fn('isnull', Sequelize.col('details.isDeleted'), 0),
-        {
-          [Op.eq]: 0,
-        },
-      ),
+      this.seqHelp.whereIsNullColumnEqualToZero('details.isDeleted', 0),
     );
 
     this.builder = this.builder.thenInclude(includeBuilder.build());

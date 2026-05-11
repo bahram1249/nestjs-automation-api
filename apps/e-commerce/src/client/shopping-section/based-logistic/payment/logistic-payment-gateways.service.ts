@@ -11,6 +11,7 @@ import { StockService } from '@rahino/ecommerce/user/shopping/stock/stock.servic
 import { StockPriceService } from '@rahino/ecommerce/user/shopping/stock/services/price';
 import { InventoryStatusEnum } from '@rahino/ecommerce/shared/inventory/enum';
 import { LocalizationService } from 'apps/main/src/common/localization/localization.service';
+import { SequelizeHelpService } from '@rahino/commontools/sequelize-help/sequelize-help.service';
 
 @Injectable()
 export class LogisticPaymentGatewaysService {
@@ -22,6 +23,7 @@ export class LogisticPaymentGatewaysService {
     @InjectModel(ECVariationPrice)
     private readonly variationPriceRepo: typeof ECVariationPrice,
     private readonly l10n: LocalizationService,
+    private readonly seqHelp: SequelizeHelpService,
   ) {}
 
   async list(
@@ -75,13 +77,9 @@ export class LogisticPaymentGatewaysService {
           .attributes(['id', 'name', 'imageUrl', 'variationPriceId'])
           .filter({ variationPriceId: vps.variationPrice.id })
           .filter(
-            Sequelize.where(
-              Sequelize.fn(
-                'isnull',
-                Sequelize.col('ECPaymentGateway.isDeleted'),
-                0,
-              ),
-              { [Op.eq]: 0 },
+            this.seqHelp.whereIsNullColumnEqualToZero(
+              'ECPaymentGateway.isDeleted',
+              0,
             ),
           )
           .build(),

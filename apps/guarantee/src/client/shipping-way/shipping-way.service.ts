@@ -5,22 +5,19 @@ import * as _ from 'lodash';
 import { GSShippingWay } from '@rahino/localdatabase/models';
 import { Op, Sequelize } from 'sequelize';
 import { ListFilter } from '@rahino/query-filter';
+import { SequelizeHelpService } from '@rahino/commontools/sequelize-help/sequelize-help.service';
 
 @Injectable()
 export class ShippingWayService {
   constructor(
     @InjectModel(GSShippingWay) private repository: typeof GSShippingWay,
+    private readonly seqHelp: SequelizeHelpService,
   ) {}
 
   async findAll(requestId: bigint, dto: ListFilter) {
     const queryBuilder = new QueryOptionsBuilder()
       .filter(
-        Sequelize.where(
-          Sequelize.fn('isnull', Sequelize.col('GSShippingWay.isDeleted'), 0),
-          {
-            [Op.eq]: 0,
-          },
-        ),
+        this.seqHelp.whereIsNullColumnEqualToZero('GSShippingWay.isDeleted', 0),
       )
       .filter({ isClientSide: true });
 

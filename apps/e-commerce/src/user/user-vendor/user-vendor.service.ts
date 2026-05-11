@@ -11,6 +11,7 @@ import { Attachment } from '@rahino/database';
 import { ECVendorCommission } from '@rahino/localdatabase/models';
 import { ECVariationPrice } from '@rahino/localdatabase/models';
 import { ECVendorCommissionType } from '@rahino/localdatabase/models';
+import { SequelizeHelpService } from '@rahino/commontools/sequelize-help/sequelize-help.service';
 
 @Injectable()
 export class UserVendorService {
@@ -19,6 +20,7 @@ export class UserVendorService {
     private repository: typeof ECVendor,
     @InjectModel(ECVendorUser)
     private vendorUserRepository: typeof ECVendorUser,
+    private readonly seqHelp: SequelizeHelpService,
   ) {}
 
   async findAll(user: User, filter: ListFilter) {
@@ -26,11 +28,9 @@ export class UserVendorService {
       new QueryOptionsBuilder()
         .filter({ userId: user.id })
         .filter(
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('ECVendorUser.isDeleted'), 0),
-            {
-              [Op.eq]: 0,
-            },
+          this.seqHelp.whereIsNullColumnEqualToZero(
+            'ECVendorUser.isDeleted',
+            0,
           ),
         )
         .include([
@@ -38,11 +38,9 @@ export class UserVendorService {
             model: ECVendor,
             as: 'vendor',
             required: true,
-            where: Sequelize.where(
-              Sequelize.fn('isnull', Sequelize.col('vendor.isDeleted'), 0),
-              {
-                [Op.eq]: 0,
-              },
+            where: this.seqHelp.whereIsNullColumnEqualToZero(
+              'vendor.isDeleted',
+              0,
             ),
           },
         ])
@@ -57,12 +55,7 @@ export class UserVendorService {
         },
       })
       .filter(
-        Sequelize.where(
-          Sequelize.fn('isnull', Sequelize.col('ECVendor.isDeleted'), 0),
-          {
-            [Op.eq]: 0,
-          },
-        ),
+        this.seqHelp.whereIsNullColumnEqualToZero('ECVendor.isDeleted', 0),
       );
 
     if (vendorIds.length > 0) {
@@ -99,11 +92,9 @@ export class UserVendorService {
           model: ECVendorCommission,
           as: 'commissions',
           required: false,
-          where: Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('commissions.isDeleted'), 0),
-            {
-              [Op.eq]: 0,
-            },
+          where: this.seqHelp.whereIsNullColumnEqualToZero(
+            'commissions.isDeleted',
+            0,
           ),
           include: [
             {
@@ -137,11 +128,9 @@ export class UserVendorService {
         .filter({ userId: user.id })
         .filter({ vendorId: vendorId })
         .filter(
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('ECVendorUser.isDeleted'), 0),
-            {
-              [Op.eq]: 0,
-            },
+          this.seqHelp.whereIsNullColumnEqualToZero(
+            'ECVendorUser.isDeleted',
+            0,
           ),
         )
         .include([
@@ -149,11 +138,9 @@ export class UserVendorService {
             model: ECVendor,
             as: 'vendor',
             required: true,
-            where: Sequelize.where(
-              Sequelize.fn('isnull', Sequelize.col('vendor.isDeleted'), 0),
-              {
-                [Op.eq]: 0,
-              },
+            where: this.seqHelp.whereIsNullColumnEqualToZero(
+              'vendor.isDeleted',
+              0,
             ),
           },
         ])
@@ -185,11 +172,9 @@ export class UserVendorService {
       new QueryOptionsBuilder()
         .filter({ userId: user.id })
         .filter(
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('ECVendorUser.isDeleted'), 0),
-            {
-              [Op.eq]: 0,
-            },
+          this.seqHelp.whereIsNullColumnEqualToZero(
+            'ECVendorUser.isDeleted',
+            0,
           ),
         )
         .include([
@@ -197,11 +182,9 @@ export class UserVendorService {
             model: ECVendor,
             as: 'vendor',
             required: true,
-            where: Sequelize.where(
-              Sequelize.fn('isnull', Sequelize.col('vendor.isDeleted'), 0),
-              {
-                [Op.eq]: 0,
-              },
+            where: this.seqHelp.whereIsNullColumnEqualToZero(
+              'vendor.isDeleted',
+              0,
             ),
           },
         ])

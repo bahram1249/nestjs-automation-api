@@ -20,6 +20,7 @@ import { MinioClientService } from '@rahino/minio-client';
 import { ThumbnailService } from '@rahino/thumbnail';
 import { I18nContext, I18nService } from 'nestjs-i18n';
 import { I18nTranslations } from 'apps/main/src/generated/i18n.generated';
+import { SequelizeHelpService } from '@rahino/commontools/sequelize-help/sequelize-help.service';
 
 @Injectable()
 export class GuaranteeService {
@@ -32,6 +33,7 @@ export class GuaranteeService {
     private readonly mapper: Mapper,
     private readonly thumbnailService: ThumbnailService,
     private readonly i18n: I18nService<I18nTranslations>,
+    private readonly seqHelp: SequelizeHelpService,
   ) {}
 
   async findAll(filter: GetGuaranteeDto) {
@@ -42,12 +44,7 @@ export class GuaranteeService {
         },
       })
       .filter(
-        Sequelize.where(
-          Sequelize.fn('isnull', Sequelize.col('ECGuarantee.isDeleted'), 0),
-          {
-            [Op.eq]: 0,
-          },
-        ),
+        this.seqHelp.whereIsNullColumnEqualToZero('ECGuarantee.isDeleted', 0),
       );
     const count = await this.repository.count(queryBuilder.build());
     const queryOptions = queryBuilder
@@ -101,12 +98,7 @@ export class GuaranteeService {
         ])
         .filter({ id: entityId })
         .filter(
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('ECGuarantee.isDeleted'), 0),
-            {
-              [Op.eq]: 0,
-            },
-          ),
+          this.seqHelp.whereIsNullColumnEqualToZero('ECGuarantee.isDeleted', 0),
         )
         .build(),
     );
@@ -127,12 +119,7 @@ export class GuaranteeService {
       new QueryOptionsBuilder()
         .filter({ slug: dto.slug })
         .filter(
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('ECGuarantee.isDeleted'), 0),
-            {
-              [Op.eq]: 0,
-            },
-          ),
+          this.seqHelp.whereIsNullColumnEqualToZero('ECGuarantee.isDeleted', 0),
         )
         .build(),
     );
@@ -166,12 +153,7 @@ export class GuaranteeService {
       new QueryOptionsBuilder()
         .filter({ id: entityId })
         .filter(
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('ECGuarantee.isDeleted'), 0),
-            {
-              [Op.eq]: 0,
-            },
-          ),
+          this.seqHelp.whereIsNullColumnEqualToZero('ECGuarantee.isDeleted', 0),
         )
         .build(),
     );
@@ -191,12 +173,7 @@ export class GuaranteeService {
           },
         })
         .filter(
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('ECGuarantee.isDeleted'), 0),
-            {
-              [Op.eq]: 0,
-            },
-          ),
+          this.seqHelp.whereIsNullColumnEqualToZero('ECGuarantee.isDeleted', 0),
         )
         .build(),
     );
@@ -235,12 +212,7 @@ export class GuaranteeService {
       new QueryOptionsBuilder()
         .filter({ id: entityId })
         .filter(
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('ECGuarantee.isDeleted'), 0),
-            {
-              [Op.eq]: 0,
-            },
-          ),
+          this.seqHelp.whereIsNullColumnEqualToZero('ECGuarantee.isDeleted', 0),
         )
         .build(),
     );
@@ -280,12 +252,7 @@ export class GuaranteeService {
         ])
         .filter({ slug: slug })
         .filter(
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('ECGuarantee.isDeleted'), 0),
-            {
-              [Op.eq]: 0,
-            },
-          ),
+          this.seqHelp.whereIsNullColumnEqualToZero('ECGuarantee.isDeleted', 0),
         )
         .build(),
     );
@@ -307,12 +274,7 @@ export class GuaranteeService {
       new QueryOptionsBuilder()
         .filter({ id })
         .filter(
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('ECGuarantee.isDeleted'), 0),
-            {
-              [Op.eq]: 0,
-            },
-          ),
+          this.seqHelp.whereIsNullColumnEqualToZero('ECGuarantee.isDeleted', 0),
         )
         .build(),
     );
@@ -340,14 +302,7 @@ export class GuaranteeService {
       let oldAttachment = await this.attachmentRepository.findOne(
         new QueryOptionsBuilder()
           .filter({ id: item.attachmentId })
-          .filter(
-            Sequelize.where(
-              Sequelize.fn('isnull', Sequelize.col('isDeleted'), 0),
-              {
-                [Op.eq]: 0,
-              },
-            ),
-          )
+          .filter(this.seqHelp.whereIsNullColumnEqualToZero('isDeleted', 0))
           .filter({ attachmentTypeId: this.guaranteeAttachmentType })
           .build(),
       );
@@ -390,14 +345,7 @@ export class GuaranteeService {
     const attachment = await this.attachmentRepository.findOne(
       new QueryOptionsBuilder()
         .filter({ fileName: fileName })
-        .filter(
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('isDeleted'), 0),
-            {
-              [Op.eq]: 0,
-            },
-          ),
-        )
+        .filter(this.seqHelp.whereIsNullColumnEqualToZero('isDeleted', 0))
         .filter({ attachmentTypeId: this.guaranteeAttachmentType })
         .build(),
     );

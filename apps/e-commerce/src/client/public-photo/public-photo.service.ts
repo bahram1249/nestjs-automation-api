@@ -6,6 +6,7 @@ import * as _ from 'lodash';
 import { MinioClientService } from '@rahino/minio-client';
 import { Attachment } from '@rahino/database';
 import { Response } from 'express';
+import { SequelizeHelpService } from '@rahino/commontools/sequelize-help/sequelize-help.service';
 
 @Injectable()
 export class PublicPhotoService {
@@ -14,6 +15,7 @@ export class PublicPhotoService {
     private minioClientService: MinioClientService,
     @InjectModel(Attachment)
     private attachmentRepository: typeof Attachment,
+    private readonly seqHelp: SequelizeHelpService,
   ) {}
 
   async getPhoto(res: Response, fileName: string) {
@@ -21,14 +23,7 @@ export class PublicPhotoService {
     const attachment = await this.attachmentRepository.findOne(
       new QueryOptionsBuilder()
         .filter({ fileName: fileName })
-        .filter(
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('isDeleted'), 0),
-            {
-              [Op.eq]: 0,
-            },
-          ),
-        )
+        .filter(this.seqHelp.whereIsNullColumnEqualToZero('isDeleted', 0))
         .filter({
           attachmentTypeId: {
             [Op.in]: photoTypes,

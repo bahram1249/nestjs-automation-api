@@ -15,6 +15,7 @@ import { RedirectException } from '@rahino/ecommerce/shared/exception';
 import { SlugVersionTypeEnum } from '@rahino/ecommerce/shared/enum';
 import { ListFilterV2Factory } from '@rahino/query-filter/provider/list-filter-v2.factory';
 import { LocalizationService } from 'apps/main/src/common/localization';
+import { SequelizeHelpService } from '@rahino/commontools/sequelize-help/sequelize-help.service';
 
 export class ProductRepositoryService {
   constructor(
@@ -32,6 +33,7 @@ export class ProductRepositoryService {
 
     private readonly config: ConfigService,
     private readonly localizationService: LocalizationService,
+    private readonly seqHelp: SequelizeHelpService,
   ) {}
 
   async findBySlug(filter: GetProductDto, slug: string) {
@@ -226,12 +228,7 @@ export class ProductRepositoryService {
       })
 
       .filter(
-        Sequelize.where(
-          Sequelize.fn('isnull', Sequelize.col('ECVendor.isDeleted'), 0),
-          {
-            [Op.eq]: 0,
-          },
-        ),
+        this.seqHelp.whereIsNullColumnEqualToZero('ECVendor.isDeleted', 0),
       )
       .order([
         Sequelize.literal(

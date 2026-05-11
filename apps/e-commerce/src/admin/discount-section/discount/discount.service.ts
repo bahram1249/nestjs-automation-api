@@ -21,6 +21,7 @@ import { ECDiscountCondition } from '@rahino/localdatabase/models';
 import { DiscountConditionTypeEnum } from '../discount-condition-type/enum';
 import { PermissionService } from '@rahino/core/user/permission/permission.service';
 import { PERMISSION_SUPEREDIT_DISCOUNTS } from '@rahino/ecommerce/shared/constants';
+import { SequelizeHelpService } from '@rahino/commontools/sequelize-help/sequelize-help.service';
 
 @Injectable()
 export class DiscountService {
@@ -37,6 +38,7 @@ export class DiscountService {
     private readonly sequelize: Sequelize,
     private readonly userVendorService: UserVendorService,
     private readonly permissionService: PermissionService,
+    private readonly seqHelp: SequelizeHelpService,
   ) {}
 
   async findAll(user: User, filter: GetDiscountDto) {
@@ -49,12 +51,7 @@ export class DiscountService {
         },
       })
       .filter(
-        Sequelize.where(
-          Sequelize.fn('isnull', Sequelize.col('ECDiscount.isDeleted'), 0),
-          {
-            [Op.eq]: 0,
-          },
-        ),
+        this.seqHelp.whereIsNullColumnEqualToZero('ECDiscount.isDeleted', 0),
       )
       .filter(
         Sequelize.where(
@@ -161,12 +158,7 @@ export class DiscountService {
         id: entityId,
       })
       .filter(
-        Sequelize.where(
-          Sequelize.fn('isnull', Sequelize.col('ECDiscount.isDeleted'), 0),
-          {
-            [Op.eq]: 0,
-          },
-        ),
+        this.seqHelp.whereIsNullColumnEqualToZero('ECDiscount.isDeleted', 0),
       )
       .filter(
         Sequelize.where(
@@ -264,12 +256,7 @@ export class DiscountService {
         id: entityId,
       })
       .filter(
-        Sequelize.where(
-          Sequelize.fn('isnull', Sequelize.col('ECDiscount.isDeleted'), 0),
-          {
-            [Op.eq]: 0,
-          },
-        ),
+        this.seqHelp.whereIsNullColumnEqualToZero('ECDiscount.isDeleted', 0),
       )
       .filter(
         Sequelize.literal(` EXISTS (
@@ -331,12 +318,7 @@ export class DiscountService {
         id: entityId,
       })
       .filter(
-        Sequelize.where(
-          Sequelize.fn('isnull', Sequelize.col('ECDiscount.isDeleted'), 0),
-          {
-            [Op.eq]: 0,
-          },
-        ),
+        this.seqHelp.whereIsNullColumnEqualToZero('ECDiscount.isDeleted', 0),
       );
     let item = await this.repository.findOne(queryBuilder.build());
     if (!item) {

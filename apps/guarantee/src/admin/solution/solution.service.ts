@@ -16,6 +16,7 @@ import { Mapper } from 'automapper-core';
 import * as _ from 'lodash';
 import { GSUnitPriceEnum } from '@rahino/guarantee/shared/unit-price';
 import { ChildSolutionDto } from './dto/child-solution.dto';
+import { SequelizeHelpService } from '@rahino/commontools/sequelize-help/sequelize-help.service';
 
 @Injectable()
 export class SolutionService {
@@ -27,6 +28,7 @@ export class SolutionService {
     private readonly mapper: Mapper,
     @InjectConnection()
     private readonly sequelize: Sequelize,
+    private readonly seqHelp: SequelizeHelpService,
   ) {}
 
   async findAll(filter: GetSolutionDto) {
@@ -37,12 +39,7 @@ export class SolutionService {
         },
       })
       .filter(
-        Sequelize.where(
-          Sequelize.fn('isnull', Sequelize.col('GSSolution.isDeleted'), 0),
-          {
-            [Op.eq]: 0,
-          },
-        ),
+        this.seqHelp.whereIsNullColumnEqualToZero('GSSolution.isDeleted', 0),
       );
 
     const count = await this.repository.count(query.build());
@@ -86,12 +83,7 @@ export class SolutionService {
       new QueryOptionsBuilder()
         .attributes(['id', 'title', 'fee', 'createdAt', 'updatedAt'])
         .filter(
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('GSSolution.isDeleted'), 0),
-            {
-              [Op.eq]: 0,
-            },
-          ),
+          this.seqHelp.whereIsNullColumnEqualToZero('GSSolution.isDeleted', 0),
         )
         .include([
           {
@@ -133,12 +125,7 @@ export class SolutionService {
     const duplicateItem = await this.repository.findOne(
       new QueryOptionsBuilder()
         .filter(
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('GSSolution.isDeleted'), 0),
-            {
-              [Op.eq]: 0,
-            },
-          ),
+          this.seqHelp.whereIsNullColumnEqualToZero('GSSolution.isDeleted', 0),
         )
         .filter({ title: dto.title })
         .build(),
@@ -183,12 +170,7 @@ export class SolutionService {
       new QueryOptionsBuilder()
         .filter({ id: id })
         .filter(
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('GSSolution.isDeleted'), 0),
-            {
-              [Op.eq]: 0,
-            },
-          ),
+          this.seqHelp.whereIsNullColumnEqualToZero('GSSolution.isDeleted', 0),
         )
         .build(),
     );
@@ -204,12 +186,7 @@ export class SolutionService {
     const duplicateItem = await this.repository.findOne(
       new QueryOptionsBuilder()
         .filter(
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('GSSolution.isDeleted'), 0),
-            {
-              [Op.eq]: 0,
-            },
-          ),
+          this.seqHelp.whereIsNullColumnEqualToZero('GSSolution.isDeleted', 0),
         )
         .filter({ title: dto.title })
         .filter({
@@ -260,12 +237,7 @@ export class SolutionService {
       new QueryOptionsBuilder()
         .filter({ id: entityId })
         .filter(
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('GSSolution.isDeleted'), 0),
-            {
-              [Op.eq]: 0,
-            },
-          ),
+          this.seqHelp.whereIsNullColumnEqualToZero('GSSolution.isDeleted', 0),
         )
         .build(),
     );
@@ -325,11 +297,9 @@ export class SolutionService {
           .filter({ parentId: solutionId })
           .filter({ provinceId: solutionProvince.provinceId })
           .filter(
-            Sequelize.where(
-              Sequelize.fn('isnull', Sequelize.col('GSSolution.isDeleted'), 0),
-              {
-                [Op.eq]: 0,
-              },
+            this.seqHelp.whereIsNullColumnEqualToZero(
+              'GSSolution.isDeleted',
+              0,
             ),
           )
           .transaction(transaction)

@@ -38,6 +38,7 @@ import { PublishStatusEnum } from '../enum';
 import { InjectConnection, InjectModel } from '@nestjs/sequelize';
 import * as _ from 'lodash';
 import { isNotNull } from '@rahino/commontools';
+import { SequelizeHelpService } from '@rahino/commontools/sequelize-help/sequelize-help.service';
 
 @Injectable()
 export class ProductQueryBuilderService {
@@ -46,6 +47,7 @@ export class ProductQueryBuilderService {
     private readonly entityTypeRepository: typeof EAVEntityType,
     @InjectConnection()
     private readonly sequelize: Sequelize,
+    private readonly seqHelp: SequelizeHelpService,
   ) {}
   async findAllAndCountQuery(
     filter: GetProductDto,
@@ -60,12 +62,7 @@ export class ProductQueryBuilderService {
     let queryBuilder = new QueryOptionsBuilder();
     queryBuilder = queryBuilder
       .filter(
-        Sequelize.where(
-          Sequelize.fn('isnull', Sequelize.col('ECProduct.isDeleted'), 0),
-          {
-            [Op.eq]: 0,
-          },
-        ),
+        this.seqHelp.whereIsNullColumnEqualToZero('ECProduct.isDeleted', 0),
       )
       .filter({ publishStatusId: PublishStatusEnum.publish })
       .filter({
@@ -271,24 +268,13 @@ export class ProductQueryBuilderService {
             as: 'variationPrice',
           },
         ],
-        where: Sequelize.where(
-          Sequelize.fn(
-            'isnull',
-            Sequelize.col('inventories.secondaryPrice.isDeleted'),
-            0,
-          ),
-          {
-            [Op.eq]: 0,
-          },
+        where: this.seqHelp.whereIsNullColumnEqualToZero(
+          'inventories.secondaryPrice.isDeleted',
+          0,
         ),
       })
       .filter(
-        Sequelize.where(
-          Sequelize.fn('isnull', Sequelize.col('inventories.isDeleted'), 0),
-          {
-            [Op.eq]: 0,
-          },
-        ),
+        this.seqHelp.whereIsNullColumnEqualToZero('inventories.isDeleted', 0),
       )
       .filter({
         inventoryStatusId: InventoryStatusEnum.available,
@@ -781,11 +767,9 @@ export class ProductQueryBuilderService {
       new QueryOptionsBuilder()
         .filter({ id: entityTypeId })
         .filter(
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('EAVEntityType.isDeleted'), 0),
-            {
-              [Op.eq]: 0,
-            },
+          this.seqHelp.whereIsNullColumnEqualToZero(
+            'EAVEntityType.isDeleted',
+            0,
           ),
         )
         .include([

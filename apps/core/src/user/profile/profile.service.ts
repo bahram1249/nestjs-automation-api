@@ -17,6 +17,7 @@ import { FileService } from '@rahino/file/file.service';
 import { ThumbnailService } from '@rahino/thumbnail';
 import { EditProfileDto } from './dto';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
+import { SequelizeHelpService } from '@rahino/commontools/sequelize-help/sequelize-help.service';
 
 @Injectable()
 export class ProfileService {
@@ -29,6 +30,7 @@ export class ProfileService {
     private readonly userRepoisitory: typeof User,
     private readonly fileService: FileService,
     private readonly thumbnailService: ThumbnailService,
+    private readonly seqHelp: SequelizeHelpService,
   ) {}
 
   async editProfile(user: User, dto: EditProfileDto) {
@@ -158,12 +160,7 @@ export class ProfileService {
           {
             fileName: fileName,
           },
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('isDeleted'), 0),
-            {
-              [Op.eq]: 0,
-            },
-          ),
+          this.seqHelp.whereIsNullColumnEqualToZero('isDeleted', 0),
           {
             attachmentTypeId: 1,
           },

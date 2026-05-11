@@ -20,6 +20,7 @@ import { LocalizationService } from 'apps/main/src/common/localization';
 import { isNotNull } from '@rahino/commontools';
 import { LogisticWeeklyPeriodDetailDto } from './dto/logistic-weekly-period-detail.dto';
 import { LogisticWeeklyPeriodTimeDto } from './dto/logistic-weekly-period-time.dto';
+import { SequelizeHelpService } from '@rahino/commontools/sequelize-help/sequelize-help.service';
 
 @Injectable()
 export class LogisticWeeklyPeriodService {
@@ -35,6 +36,7 @@ export class LogisticWeeklyPeriodService {
     private readonly localizationService: LocalizationService,
     @InjectConnection()
     private readonly sequelize: Sequelize,
+    private readonly seqHelp: SequelizeHelpService,
   ) {}
 
   async findAll(user: User, filter: GetLogistiWeeklyPeriodDto) {
@@ -43,15 +45,9 @@ export class LogisticWeeklyPeriodService {
         logisticSendingPeriodId: filter.logisticSendingPeriodId,
       })
       .filter(
-        Sequelize.where(
-          Sequelize.fn(
-            'isnull',
-            Sequelize.col('ECLogisticWeeklyPeriod.isDeleted'),
-            0,
-          ),
-          {
-            [Op.eq]: 0,
-          },
+        this.seqHelp.whereIsNullColumnEqualToZero(
+          'ECLogisticWeeklyPeriod.isDeleted',
+          0,
         ),
       );
     const count = await this.logisticWeeklyPeriodRepository.count(
@@ -98,15 +94,9 @@ export class LogisticWeeklyPeriodService {
         id: entityId,
       })
       .filter(
-        Sequelize.where(
-          Sequelize.fn(
-            'isnull',
-            Sequelize.col('ECLogisticWeeklyPeriod.isDeleted'),
-            0,
-          ),
-          {
-            [Op.eq]: 0,
-          },
+        this.seqHelp.whereIsNullColumnEqualToZero(
+          'ECLogisticWeeklyPeriod.isDeleted',
+          0,
         ),
       );
 
@@ -135,15 +125,9 @@ export class LogisticWeeklyPeriodService {
               id: dto.logisticSendingPeriodId,
             })
             .filter(
-              Sequelize.where(
-                Sequelize.fn(
-                  'isnull',
-                  Sequelize.col('ECLogisticSendingPeriod.isDeleted'),
-                  0,
-                ),
-                {
-                  [Op.eq]: 0,
-                },
+              this.seqHelp.whereIsNullColumnEqualToZero(
+                'ECLogisticSendingPeriod.isDeleted',
+                0,
               ),
             )
             .transaction(transaction)
@@ -167,15 +151,9 @@ export class LogisticWeeklyPeriodService {
               logisticSendingPeriodId: dto.logisticSendingPeriodId,
             })
             .filter(
-              Sequelize.where(
-                Sequelize.fn(
-                  'isnull',
-                  Sequelize.col('ECLogisticWeeklyPeriod.isDeleted'),
-                  0,
-                ),
-                {
-                  [Op.eq]: 0,
-                },
+              this.seqHelp.whereIsNullColumnEqualToZero(
+                'ECLogisticWeeklyPeriod.isDeleted',
+                0,
               ),
             )
             .filter({

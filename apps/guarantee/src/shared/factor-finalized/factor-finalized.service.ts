@@ -26,6 +26,7 @@ import { GSGuaranteeTypeEnum } from '../gurantee-type';
 import { GSGuaranteeConfirmStatus } from '../guarantee-confirm-status';
 import { RialPriceService } from '../rial-price';
 import { GSPointEnum } from '../gs-point';
+import { SequelizeHelpService } from '@rahino/commontools/sequelize-help/sequelize-help.service';
 
 @Injectable()
 export class FactorFinalizedService {
@@ -53,6 +54,7 @@ export class FactorFinalizedService {
     @InjectConnection()
     private readonly sequelize: Sequelize,
     private readonly guaranteeTraverseService: GuaranteeTraverseService,
+    private readonly seqHelp: SequelizeHelpService,
   ) {}
 
   async finalized(user: User, factorId: bigint) {
@@ -147,15 +149,9 @@ export class FactorFinalizedService {
       new QueryOptionsBuilder()
         .filter({ guaranteeId: factor.guaranteeId })
         .filter(
-          Sequelize.where(
-            Sequelize.fn(
-              'isnull',
-              Sequelize.col('GSAssignedGuarantee.isDeleted'),
-              0,
-            ),
-            {
-              [Op.eq]: 0,
-            },
+          this.seqHelp.whereIsNullColumnEqualToZero(
+            'GSAssignedGuarantee.isDeleted',
+            0,
           ),
         )
         .build(),

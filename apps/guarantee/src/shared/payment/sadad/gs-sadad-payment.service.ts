@@ -26,6 +26,7 @@ import { GSRequestPaymentOutputDto } from '../dto/gs-request-payment-output.dto'
 import { GSRequestPaymentOutputTypeEnum } from '../dto/gs-request-payment-output-type.dto';
 import { Op, Sequelize } from 'sequelize';
 import { RialPriceService } from '@rahino/guarantee/shared/rial-price';
+import { SequelizeHelpService } from '@rahino/commontools/sequelize-help/sequelize-help.service';
 
 @Injectable()
 export class GSSadadPaymentService implements GSPaymentInterface {
@@ -38,6 +39,7 @@ export class GSSadadPaymentService implements GSPaymentInterface {
     private readonly paymentGatewayRepository: typeof GSPaymentGateway,
     private readonly configService: ConfigService,
     private readonly rialPriceService: RialPriceService,
+    private readonly seqHelp: SequelizeHelpService,
   ) {}
   async requestPayment(
     dto: GSRequestPaymentDto,
@@ -47,12 +49,7 @@ export class GSSadadPaymentService implements GSPaymentInterface {
         .filter({ id: dto.factorId })
         .filter({ factorStatusId: GSFactorStatusEnum.WaitingForPayment })
         .filter(
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('GSFactor.isDeleted'), 0),
-            {
-              [Op.eq]: 0,
-            },
-          ),
+          this.seqHelp.whereIsNullColumnEqualToZero('GSFactor.isDeleted', 0),
         )
         .transaction(dto.transaction)
         .build(),

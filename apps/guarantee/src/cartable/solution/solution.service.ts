@@ -18,6 +18,7 @@ import * as _ from 'lodash';
 import { LocalizationService } from 'apps/main/src/common/localization';
 import { SolutionProveinceMapper } from './solution-province.mapper';
 import { GetSolutionRequestFilterDto } from './dto/get-solution-request-filter.dto';
+import { SequelizeHelpService } from '@rahino/commontools/sequelize-help/sequelize-help.service';
 
 @Injectable()
 export class SolutionService {
@@ -28,6 +29,7 @@ export class SolutionService {
     private readonly requestRepository: typeof GSRequest,
     private readonly localizationService: LocalizationService,
     private readonly solutionProvinceMapper: SolutionProveinceMapper,
+    private readonly seqHelp: SequelizeHelpService,
   ) {}
 
   async findAll(filter: GetSolutionDto) {
@@ -42,12 +44,7 @@ export class SolutionService {
           },
         ])
         .filter(
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('GSRequest.isDeleted'), 0),
-            {
-              [Op.eq]: 0,
-            },
-          ),
+          this.seqHelp.whereIsNullColumnEqualToZero('GSRequest.isDeleted', 0),
         )
         .filter({ id: filter.requestId })
         .build(),
@@ -69,12 +66,7 @@ export class SolutionService {
       })
 
       .filter(
-        Sequelize.where(
-          Sequelize.fn('isnull', Sequelize.col('GSSolution.isDeleted'), 0),
-          {
-            [Op.eq]: 0,
-          },
-        ),
+        this.seqHelp.whereIsNullColumnEqualToZero('GSSolution.isDeleted', 0),
       );
 
     const count = await this.repository.count(query.build());
@@ -119,12 +111,7 @@ export class SolutionService {
           },
         ])
         .filter(
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('GSRequest.isDeleted'), 0),
-            {
-              [Op.eq]: 0,
-            },
-          ),
+          this.seqHelp.whereIsNullColumnEqualToZero('GSRequest.isDeleted', 0),
         )
         .filter({ id: filter.requestId })
         .build(),
@@ -142,12 +129,7 @@ export class SolutionService {
       new QueryOptionsBuilder()
         .attributes(['id', 'title', 'fee', 'createdAt', 'updatedAt'])
         .filter(
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('GSSolution.isDeleted'), 0),
-            {
-              [Op.eq]: 0,
-            },
-          ),
+          this.seqHelp.whereIsNullColumnEqualToZero('GSSolution.isDeleted', 0),
         )
         .include([
           {

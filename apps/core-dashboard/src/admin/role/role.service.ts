@@ -6,6 +6,7 @@ import { PermissionGroup } from '@rahino/database';
 import { Op, Sequelize } from 'sequelize';
 import { Permission } from '@rahino/database';
 import { RolePermission } from '@rahino/database';
+import { SequelizeHelpService } from '@rahino/commontools/sequelize-help/sequelize-help.service';
 
 @Injectable()
 export class RoleService {
@@ -16,6 +17,7 @@ export class RoleService {
     private readonly permissionGroupRepository: typeof PermissionGroup,
     @InjectModel(RolePermission)
     private readonly rolePermissionRepository: typeof RolePermission,
+    private readonly seqHelp: SequelizeHelpService,
   ) {}
 
   async edit(roleId: number) {
@@ -33,19 +35,17 @@ export class RoleService {
             'createdAt',
             'updatedAt',
           ],
-          where: Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('permissions.visibility'), 1),
-            {
-              [Op.eq]: 1,
-            },
+          where: this.seqHelp.whereIsNullColumnEqualToValue(
+            'permissions.visibility',
+            1,
+            1,
           ),
         },
       ],
-      where: Sequelize.where(
-        Sequelize.fn('isnull', Sequelize.col('PermissionGroup.visibility'), 1),
-        {
-          [Op.eq]: 1,
-        },
+      where: this.seqHelp.whereIsNullColumnNotEqualToValue(
+        'PermissionGroup.visibility',
+        1,
+        1,
       ),
     });
     const role = await this.repository.findOne({
@@ -84,19 +84,17 @@ export class RoleService {
             'createdAt',
             'updatedAt',
           ],
-          where: Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('permissions.visibility'), 1),
-            {
-              [Op.eq]: 1,
-            },
+          where: this.seqHelp.whereIsNullColumnEqualToValue(
+            'permissions.visibility',
+            1,
+            1,
           ),
         },
       ],
-      where: Sequelize.where(
-        Sequelize.fn('isnull', Sequelize.col('PermissionGroup.visibility'), 1),
-        {
-          [Op.eq]: 1,
-        },
+      where: this.seqHelp.whereIsNullColumnNotEqualToValue(
+        'PermissionGroup.visibility',
+        1,
+        1,
       ),
     });
     return {

@@ -6,21 +6,20 @@ import { GetConditionDto } from './dto/get-condition.dto';
 import { Op, Sequelize } from 'sequelize';
 import { CreateConditionDto } from './dto/create-condition.dto';
 import { UpdateConditionDto } from './dto/update-condition.dto';
+import { SequelizeHelpService } from '@rahino/commontools/sequelize-help/sequelize-help.service';
 
 @Injectable()
 export class ConditionService {
   constructor(
     @InjectModel(BPMNCondition)
     private readonly repository: typeof BPMNCondition,
+    private readonly seqHelp: SequelizeHelpService,
   ) {}
 
   async findAll(filter: GetConditionDto) {
     let qb = new QueryOptionsBuilder()
       .filter(
-        Sequelize.where(
-          Sequelize.fn('isnull', Sequelize.col('BPMNCondition.isDeleted'), 0),
-          { [Op.eq]: 0 },
-        ),
+        this.seqHelp.whereIsNullColumnEqualToZero('BPMNCondition.isDeleted', 0),
       )
       .filterIf(!!filter.search && filter.search !== '%%', {
         name: { [Op.like]: filter.search as any },
@@ -59,10 +58,7 @@ export class ConditionService {
     // count with filters
     const qbBase = new QueryOptionsBuilder()
       .filter(
-        Sequelize.where(
-          Sequelize.fn('isnull', Sequelize.col('BPMNCondition.isDeleted'), 0),
-          { [Op.eq]: 0 },
-        ),
+        this.seqHelp.whereIsNullColumnEqualToZero('BPMNCondition.isDeleted', 0),
       )
       .filterIf(!!filter.search && filter.search !== '%%', {
         name: { [Op.like]: filter.search as any },
@@ -75,10 +71,7 @@ export class ConditionService {
 
     const qbList = new QueryOptionsBuilder()
       .filter(
-        Sequelize.where(
-          Sequelize.fn('isnull', Sequelize.col('BPMNCondition.isDeleted'), 0),
-          { [Op.eq]: 0 },
-        ),
+        this.seqHelp.whereIsNullColumnEqualToZero('BPMNCondition.isDeleted', 0),
       )
       .attributes(['id', 'name', 'conditionTypeId'])
       .filterIf(!!filter.search && filter.search !== '%%', {
@@ -115,9 +108,9 @@ export class ConditionService {
         ])
         .filter({ id })
         .filter(
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('BPMNCondition.isDeleted'), 0),
-            { [Op.eq]: 0 },
+          this.seqHelp.whereIsNullColumnEqualToZero(
+            'BPMNCondition.isDeleted',
+            0,
           ),
         )
         .include([

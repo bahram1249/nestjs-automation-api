@@ -21,6 +21,7 @@ import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builde
 import { Op, Sequelize } from 'sequelize';
 import { NodeCommandTypeEnum } from '@rahino/bpmn/modules/node-command-type';
 import { SharedCartableFilteringService } from '@rahino/guarantee/shared/cartable-filtering/cartable-filtering.service';
+import { SequelizeHelpService } from '@rahino/commontools/sequelize-help/sequelize-help.service';
 
 export class GuaranteeTraverseService {
   constructor(
@@ -35,6 +36,7 @@ export class GuaranteeTraverseService {
     private readonly nodeRepository: typeof BPMNNode,
     @InjectModel(BPMNNodeCommand)
     private readonly nodeCommandRepository: typeof BPMNNodeCommand,
+    private readonly seqHelp: SequelizeHelpService,
   ) {}
 
   async validateAndReturnCartableItem(
@@ -85,15 +87,9 @@ export class GuaranteeTraverseService {
                 {
                   id: dto.nodeCommandId,
                 },
-                Sequelize.where(
-                  Sequelize.fn(
-                    'isnull',
-                    Sequelize.col('nodeCommands.isDeleted'),
-                    0,
-                  ),
-                  {
-                    [Op.eq]: 0,
-                  },
+                this.seqHelp.whereIsNullColumnEqualToZero(
+                  'nodeCommands.isDeleted',
+                  0,
                 ),
               ],
             },
@@ -126,12 +122,7 @@ export class GuaranteeTraverseService {
           },
         ])
         .filter(
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('BPMNNode.isDeleted'), 0),
-            {
-              [Op.eq]: 0,
-            },
-          ),
+          this.seqHelp.whereIsNullColumnEqualToZero('BPMNNode.isDeleted', 0),
         )
         .filter({ id: node.id })
 

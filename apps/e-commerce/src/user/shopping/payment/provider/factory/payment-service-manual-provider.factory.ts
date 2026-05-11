@@ -9,6 +9,7 @@ import { ECPaymentGateway } from '@rahino/localdatabase/models';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import { Sequelize } from 'sequelize';
 import { Op } from 'sequelize';
+import { SequelizeHelpService } from '@rahino/commontools/sequelize-help/sequelize-help.service';
 
 @Injectable()
 export class PaymentServiceManualProviderFactory {
@@ -18,6 +19,7 @@ export class PaymentServiceManualProviderFactory {
     private snapPayService: SnapPayService,
     private zarinPalService: ZarinPalService,
     private walletService: WalletService,
+    private readonly seqHelp: SequelizeHelpService,
   ) {}
 
   async create(paymentServiceId: number) {
@@ -26,15 +28,9 @@ export class PaymentServiceManualProviderFactory {
       new QueryOptionsBuilder()
         .filter({ id: paymentId })
         .filter(
-          Sequelize.where(
-            Sequelize.fn(
-              'isnull',
-              Sequelize.col('ECPaymentGateway.isDeleted'),
-              0,
-            ),
-            {
-              [Op.eq]: 0,
-            },
+          this.seqHelp.whereIsNullColumnEqualToZero(
+            'ECPaymentGateway.isDeleted',
+            0,
           ),
         )
         .build(),

@@ -1,5 +1,6 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
+import { SequelizeHelpService } from '@rahino/commontools/sequelize-help/sequelize-help.service';
 import { Menu } from '@rahino/database';
 import { User } from '@rahino/database';
 import { Buffet } from '@rahino/localdatabase/models';
@@ -16,18 +17,14 @@ export class FactorReportService {
     private readonly buffetRepository: typeof Buffet,
     @InjectModel(VW_BuffetReservers)
     private readonly buffetReservesRepository: typeof VW_BuffetReservers,
+    private readonly seqHelp: SequelizeHelpService,
   ) {}
   async factorReport(req: Request, user: User, menus: Menu[]) {
     const buffet = await this.buffetRepository.findOne(
       new QueryOptionsBuilder()
         .filter({ ownerId: user.id })
         .filter(
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('Buffet.isDeleted'), 0),
-            {
-              [Op.eq]: 0,
-            },
-          ),
+          this.seqHelp.whereIsNullColumnEqualToZero('Buffet.isDeleted', 0),
         )
         .build(),
     );

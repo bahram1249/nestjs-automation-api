@@ -37,6 +37,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { HistoryService } from '../history';
 import { ReverseDto } from './dto/reverse.dto';
 import { NodeService } from '../node';
+import { SequelizeHelpService } from '@rahino/commontools/sequelize-help/sequelize-help.service';
 
 @Injectable()
 export class TraverseService {
@@ -57,6 +58,7 @@ export class TraverseService {
     private readonly historyService: HistoryService,
     private readonly nodeService: NodeService,
     private readonly i18n: I18nService<I18nTranslations>,
+    private readonly seqHelp: SequelizeHelpService,
   ) {}
 
   async traverse(dto: TraverseDto) {
@@ -148,15 +150,9 @@ export class TraverseService {
                 {
                   nodeCommandTypeId: NodeCommandTypeEnum.Submit,
                 },
-                Sequelize.where(
-                  Sequelize.fn(
-                    'isnull',
-                    Sequelize.col('nodeCommands.isDeleted'),
-                    0,
-                  ),
-                  {
-                    [Op.eq]: 0,
-                  },
+                this.seqHelp.whereIsNullColumnEqualToZero(
+                  'nodeCommands.isDeleted',
+                  0,
                 ),
               ],
             },
@@ -191,12 +187,7 @@ export class TraverseService {
         .filter({ fromActivityId: dto.requestState.activityId })
         .filter({ autoIterate: true })
         .filter(
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('BPMNNode.isDeleted'), 0),
-            {
-              [Op.eq]: 0,
-            },
-          ),
+          this.seqHelp.whereIsNullColumnEqualToZero('BPMNNode.isDeleted', 0),
         )
         .build(),
     );

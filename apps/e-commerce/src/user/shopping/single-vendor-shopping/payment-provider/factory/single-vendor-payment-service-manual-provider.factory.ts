@@ -10,6 +10,7 @@ import { Sequelize } from 'sequelize';
 import { Op } from 'sequelize';
 import { VariationPriceEnum } from '../../../stock/enum';
 import { SingleVendorZarinPalService } from '../zarinpal/zarin-pal.service';
+import { SequelizeHelpService } from '@rahino/commontools/sequelize-help/sequelize-help.service';
 
 @Injectable()
 export class SingleVendorPaymentServiceManualProviderFactory {
@@ -17,6 +18,7 @@ export class SingleVendorPaymentServiceManualProviderFactory {
     @InjectModel(ECPaymentGateway)
     private readonly paymentRepository: typeof ECPaymentGateway,
     private zarinPalService: SingleVendorZarinPalService,
+    private readonly seqHelp: SequelizeHelpService,
   ) {}
 
   async create(paymentServiceId: number) {
@@ -25,15 +27,9 @@ export class SingleVendorPaymentServiceManualProviderFactory {
       new QueryOptionsBuilder()
         .filter({ id: paymentId })
         .filter(
-          Sequelize.where(
-            Sequelize.fn(
-              'isnull',
-              Sequelize.col('ECPaymentGateway.isDeleted'),
-              0,
-            ),
-            {
-              [Op.eq]: 0,
-            },
+          this.seqHelp.whereIsNullColumnEqualToZero(
+            'ECPaymentGateway.isDeleted',
+            0,
           ),
         )
         .filter({ variationPriceId: VariationPriceEnum.firstPrice })

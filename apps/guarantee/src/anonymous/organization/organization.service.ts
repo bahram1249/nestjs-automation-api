@@ -21,6 +21,7 @@ import { Sequelize } from 'sequelize';
 import { Op } from 'sequelize';
 import { User } from '@rahino/database';
 import { LocalizationService } from 'apps/main/src/common/localization';
+import { SequelizeHelpService } from '@rahino/commontools/sequelize-help/sequelize-help.service';
 
 @Injectable()
 export class AnonymousOrganizationService {
@@ -35,6 +36,7 @@ export class AnonymousOrganizationService {
     private readonly requestRepository: typeof GSRequest,
     @InjectModel(GSResponse)
     private readonly responseRepository: typeof GSResponse,
+    private readonly seqHelp: SequelizeHelpService,
   ) {}
 
   async findAll(filter: GetOrganizationDto) {
@@ -76,15 +78,9 @@ export class AnonymousOrganizationService {
         as: 'user',
       })
       .filter(
-        Sequelize.where(
-          Sequelize.fn(
-            'isnull',
-            Sequelize.col('GSGuaranteeOrganization.isDeleted'),
-            0,
-          ),
-          {
-            [Op.eq]: 0,
-          },
+        this.seqHelp.whereIsNullColumnEqualToZero(
+          'GSGuaranteeOrganization.isDeleted',
+          0,
         ),
       )
       .filterIf(filter.provinceId != null, {
@@ -162,15 +158,9 @@ export class AnonymousOrganizationService {
         as: 'user',
       })
       .filter(
-        Sequelize.where(
-          Sequelize.fn(
-            'isnull',
-            Sequelize.col('GSGuaranteeOrganization.isDeleted'),
-            0,
-          ),
-          {
-            [Op.eq]: 0,
-          },
+        this.seqHelp.whereIsNullColumnEqualToZero(
+          'GSGuaranteeOrganization.isDeleted',
+          0,
         ),
       )
       .filter({ id: entityId })
@@ -197,12 +187,7 @@ export class AnonymousOrganizationService {
       new QueryOptionsBuilder()
         .filter({ organizationId: result.id })
         .filter(
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('GSRequest.isDeleted'), 0),
-            {
-              [Op.eq]: 0,
-            },
-          ),
+          this.seqHelp.whereIsNullColumnEqualToZero('GSRequest.isDeleted', 0),
         )
         .build(),
     );

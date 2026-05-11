@@ -10,11 +10,13 @@ import {
 } from '@rahino/localdatabase/models';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import { Op, Sequelize } from 'sequelize';
+import { SequelizeHelpService } from '@rahino/commontools/sequelize-help/sequelize-help.service';
 
 @Injectable()
 export class NodeService {
   constructor(
     @InjectModel(BPMNNode) private readonly nodeRepository: typeof BPMNNode,
+    private readonly seqHelp: SequelizeHelpService,
   ) {}
 
   async filterNode(dto: NodeFilterDto) {
@@ -30,15 +32,9 @@ export class NodeService {
                 {
                   id: dto.nodeCommandId,
                 },
-                Sequelize.where(
-                  Sequelize.fn(
-                    'isnull',
-                    Sequelize.col('nodeCommands.isDeleted'),
-                    0,
-                  ),
-                  {
-                    [Op.eq]: 0,
-                  },
+                this.seqHelp.whereIsNullColumnEqualToZero(
+                  'nodeCommands.isDeleted',
+                  0,
                 ),
               ],
             },
@@ -71,12 +67,7 @@ export class NodeService {
           },
         ])
         .filter(
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('BPMNNode.isDeleted'), 0),
-            {
-              [Op.eq]: 0,
-            },
-          ),
+          this.seqHelp.whereIsNullColumnEqualToZero('BPMNNode.isDeleted', 0),
         )
         .filter({ id: dto.id })
         .build(),

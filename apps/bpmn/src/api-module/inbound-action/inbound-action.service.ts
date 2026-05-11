@@ -8,24 +8,22 @@ import {
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import { GetInboundActionDto } from './dto/get-inbound-action.dto';
 import { Op, Sequelize } from 'sequelize';
+import { SequelizeHelpService } from '@rahino/commontools/sequelize-help/sequelize-help.service';
 
 @Injectable()
 export class InboundActionService {
   constructor(
     @InjectModel(BPMNInboundAction)
     private readonly repository: typeof BPMNInboundAction,
+    private readonly seqHelp: SequelizeHelpService,
   ) {}
 
   async findAll(filter: GetInboundActionDto) {
     let qb = new QueryOptionsBuilder()
       .filter(
-        Sequelize.where(
-          Sequelize.fn(
-            'isnull',
-            Sequelize.col('BPMNInboundAction.isDeleted'),
-            0,
-          ),
-          { [Op.eq]: 0 },
+        this.seqHelp.whereIsNullColumnEqualToZero(
+          'BPMNInboundAction.isDeleted',
+          0,
         ),
       )
       .filterIf(!!filter.activityId, { activityId: filter.activityId })
@@ -60,13 +58,9 @@ export class InboundActionService {
   async lookup(filter: GetInboundActionDto) {
     const qbBase = new QueryOptionsBuilder()
       .filter(
-        Sequelize.where(
-          Sequelize.fn(
-            'isnull',
-            Sequelize.col('BPMNInboundAction.isDeleted'),
-            0,
-          ),
-          { [Op.eq]: 0 },
+        this.seqHelp.whereIsNullColumnEqualToZero(
+          'BPMNInboundAction.isDeleted',
+          0,
         ),
       )
       .filterIf(!!filter.activityId, { activityId: filter.activityId })
@@ -76,13 +70,9 @@ export class InboundActionService {
 
     const qbList = new QueryOptionsBuilder()
       .filter(
-        Sequelize.where(
-          Sequelize.fn(
-            'isnull',
-            Sequelize.col('BPMNInboundAction.isDeleted'),
-            0,
-          ),
-          { [Op.eq]: 0 },
+        this.seqHelp.whereIsNullColumnEqualToZero(
+          'BPMNInboundAction.isDeleted',
+          0,
         ),
       )
       .attributes(['id', 'activityId', 'actionId', 'priority'])
@@ -116,13 +106,9 @@ export class InboundActionService {
         .attributes(['id', 'activityId', 'actionId', 'priority'])
         .filter({ id })
         .filter(
-          Sequelize.where(
-            Sequelize.fn(
-              'isnull',
-              Sequelize.col('BPMNInboundAction.isDeleted'),
-              0,
-            ),
-            { [Op.eq]: 0 },
+          this.seqHelp.whereIsNullColumnEqualToZero(
+            'BPMNInboundAction.isDeleted',
+            0,
           ),
         )
         .include([

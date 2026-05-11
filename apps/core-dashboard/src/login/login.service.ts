@@ -12,6 +12,7 @@ import { RolePermission } from '@rahino/database';
 import { PermissionMenu } from '@rahino/database';
 import { Menu } from '@rahino/database';
 import { Op, Sequelize } from 'sequelize';
+import { SequelizeHelpService } from '@rahino/commontools/sequelize-help/sequelize-help.service';
 
 @Injectable()
 export class LoginService {
@@ -27,6 +28,7 @@ export class LoginService {
     private authService: AuthService,
     private jwt: JwtService,
     private config: ConfigService,
+    private readonly seqHelp: SequelizeHelpService,
   ) {}
 
   get() {
@@ -98,11 +100,10 @@ export class LoginService {
               [Op.is]: null,
             },
           },
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('subMenus.visibility'), 1),
-            {
-              [Op.eq]: 1,
-            },
+          this.seqHelp.whereIsNullColumnEqualToValue(
+            'subMenus.visibility',
+            1,
+            1,
           ),
         ],
       },

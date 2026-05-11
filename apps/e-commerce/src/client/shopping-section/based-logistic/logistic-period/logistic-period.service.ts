@@ -31,6 +31,7 @@ import {
   ProvinceEnum,
 } from '@rahino/ecommerce/shared/enum';
 import { CityEnum } from '@rahino/ecommerce/shared/enum/city.enum';
+import { SequelizeHelpService } from '@rahino/commontools/sequelize-help/sequelize-help.service';
 
 @Injectable()
 export class LogisticPeriodService {
@@ -46,6 +47,7 @@ export class LogisticPeriodService {
     private readonly addressService: AddressService,
     private readonly clientValidateAddressService: ClientValidateAddressService,
     private readonly clientShipmentPriceService: ClientShipmentPriceService,
+    private readonly seqHelp: SequelizeHelpService,
   ) {}
 
   private readonly locale = 'fa-IR';
@@ -340,17 +342,11 @@ export class LogisticPeriodService {
         .attributes(['id', 'inventoryId', 'productId', 'qty'])
         .filter({ sessionId: session.id })
         .filter(
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('ECStock.isDeleted'), 0),
-            { [Op.eq]: 0 },
-          ),
+          this.seqHelp.whereIsNullColumnEqualToZero('ECStock.isDeleted', 0),
         )
         .filter({ expire: { [Op.gt]: Sequelize.fn('getdate') } })
         .filter(
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('ECStock.isPurchase'), 0),
-            { [Op.eq]: 0 },
-          ),
+          this.seqHelp.whereIsNullColumnEqualToZero('ECStock.isPurchase', 0),
         )
         .include([
           {
@@ -470,13 +466,9 @@ export class LogisticPeriodService {
       new QueryOptionsBuilder()
         .filter({
           [Op.and]: [
-            Sequelize.where(
-              Sequelize.fn(
-                'isnull',
-                Sequelize.col('ECLogisticShipmentWay.isDeleted'),
-                0,
-              ),
-              { [Op.eq]: 0 },
+            this.seqHelp.whereIsNullColumnEqualToZero(
+              'ECLogisticShipmentWay.isDeleted',
+              0,
             ),
             { provinceId: userAddress.provinceId },
             { logisticId: { [Op.in]: logisticIds } },

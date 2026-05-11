@@ -13,6 +13,7 @@ import { ECProduct } from '@rahino/localdatabase/models';
 import { ECColor } from '@rahino/localdatabase/models';
 import { ECGuarantee } from '@rahino/localdatabase/models';
 import { ECInventoryStatus } from '@rahino/localdatabase/models';
+import { SequelizeHelpService } from '@rahino/commontools/sequelize-help/sequelize-help.service';
 
 @Injectable({})
 export class InventoryReportService {
@@ -21,6 +22,7 @@ export class InventoryReportService {
     private readonly inventoryRepository: typeof ECInventory,
     private readonly userVendorService: UserVendorService,
     private readonly i18n: I18nService<I18nTranslations>,
+    private readonly seqHelp: SequelizeHelpService,
   ) {}
   async findAll(user: User, filter: GetInventoryDto) {
     const isAccess = await this.userVendorService.isAccessToVendor(
@@ -36,12 +38,7 @@ export class InventoryReportService {
     }
     let queryBuilder = new QueryOptionsBuilder()
       .filter(
-        Sequelize.where(
-          Sequelize.fn('isnull', Sequelize.col('ECInventory.isDeleted'), 0),
-          {
-            [Op.eq]: 0,
-          },
-        ),
+        this.seqHelp.whereIsNullColumnEqualToZero('ECInventory.isDeleted', 0),
       )
       .filter({
         vendorId: filter.vendorId,

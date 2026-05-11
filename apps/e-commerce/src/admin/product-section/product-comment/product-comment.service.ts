@@ -16,6 +16,7 @@ import { SCORE_COMMENT_JOB, SCORE_COMMENT_QUEUE } from './constants';
 import { InjectQueue } from '@nestjs/bullmq';
 import { Queue } from 'bullmq';
 import { ECProduct } from '@rahino/localdatabase/models';
+import { SequelizeHelpService } from '@rahino/commontools/sequelize-help/sequelize-help.service';
 
 @Injectable()
 export class ProductCommentService {
@@ -26,15 +27,14 @@ export class ProductCommentService {
 
     @InjectQueue(SCORE_COMMENT_QUEUE)
     private scoreCommentQueue: Queue,
+    private readonly seqHelp: SequelizeHelpService,
   ) {}
 
   async findAll(user: User, filter: GetProductCommentDto) {
     let builder = new QueryOptionsBuilder().filter(
-      Sequelize.where(
-        Sequelize.fn('isnull', Sequelize.col('ECProductComment.isDeleted'), 0),
-        {
-          [Op.eq]: 0,
-        },
+      this.seqHelp.whereIsNullColumnEqualToZero(
+        'ECProductComment.isDeleted',
+        0,
       ),
     );
     if (filter.commentStatusId) {
@@ -107,15 +107,9 @@ export class ProductCommentService {
   async findById(id: bigint, user: User) {
     const builder = new QueryOptionsBuilder()
       .filter(
-        Sequelize.where(
-          Sequelize.fn(
-            'isnull',
-            Sequelize.col('ECProductComment.isDeleted'),
-            0,
-          ),
-          {
-            [Op.eq]: 0,
-          },
+        this.seqHelp.whereIsNullColumnEqualToZero(
+          'ECProductComment.isDeleted',
+          0,
         ),
       )
       .filter({ id: id })
@@ -189,15 +183,9 @@ export class ProductCommentService {
       new QueryOptionsBuilder()
         .filter({ id: commentId })
         .filter(
-          Sequelize.where(
-            Sequelize.fn(
-              'isnull',
-              Sequelize.col('ECProductComment.isDeleted'),
-              0,
-            ),
-            {
-              [Op.eq]: 0,
-            },
+          this.seqHelp.whereIsNullColumnEqualToZero(
+            'ECProductComment.isDeleted',
+            0,
           ),
         )
         .build(),
@@ -232,15 +220,9 @@ export class ProductCommentService {
       new QueryOptionsBuilder()
         .filter({ id: commentId })
         .filter(
-          Sequelize.where(
-            Sequelize.fn(
-              'isnull',
-              Sequelize.col('ECProductComment.isDeleted'),
-              0,
-            ),
-            {
-              [Op.eq]: 0,
-            },
+          this.seqHelp.whereIsNullColumnEqualToZero(
+            'ECProductComment.isDeleted',
+            0,
           ),
         )
         .build(),

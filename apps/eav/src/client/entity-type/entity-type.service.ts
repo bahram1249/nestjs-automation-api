@@ -8,6 +8,7 @@ import { EAVEntityModel } from '@rahino/localdatabase/models';
 import * as _ from 'lodash';
 import { Attachment } from '@rahino/database';
 import { LocalizationService } from 'apps/main/src/common/localization';
+import { SequelizeHelpService } from '@rahino/commontools/sequelize-help/sequelize-help.service';
 
 @Injectable()
 export class EntityTypeService {
@@ -15,6 +16,7 @@ export class EntityTypeService {
     @InjectModel(EAVEntityType)
     private readonly repository: typeof EAVEntityType,
     private readonly localizationService: LocalizationService,
+    private readonly seqHelp: SequelizeHelpService,
   ) {}
 
   async findAll(filter: GetEntityTypeDto) {
@@ -25,12 +27,7 @@ export class EntityTypeService {
         },
       })
       .filter(
-        Sequelize.where(
-          Sequelize.fn('isnull', Sequelize.col('EAVEntityType.isDeleted'), 0),
-          {
-            [Op.eq]: 0,
-          },
-        ),
+        this.seqHelp.whereIsNullColumnEqualToZero('EAVEntityType.isDeleted', 0),
       )
       .filterIf(filter.entityModelId != null, {
         entityModelId: filter.entityModelId,
@@ -78,15 +75,9 @@ export class EntityTypeService {
           model: EAVEntityType,
           as: 'subEntityTypes',
           required: false,
-          where: Sequelize.where(
-            Sequelize.fn(
-              'isnull',
-              Sequelize.col('subEntityTypes.isDeleted'),
-              0,
-            ),
-            {
-              [Op.eq]: 0,
-            },
+          where: this.seqHelp.whereIsNullColumnEqualToZero(
+            'subEntityTypes.isDeleted',
+            0,
           ),
           include: [
             {
@@ -94,15 +85,9 @@ export class EntityTypeService {
               model: EAVEntityType,
               as: 'subEntityTypes',
               required: false,
-              where: Sequelize.where(
-                Sequelize.fn(
-                  'isnull',
-                  Sequelize.col('subEntityTypes.subEntityTypes.isDeleted'),
-                  0,
-                ),
-                {
-                  [Op.eq]: 0,
-                },
+              where: this.seqHelp.whereIsNullColumnEqualToZero(
+                'subEntityTypes.subEntityTypes.isDeleted',
+                0,
               ),
               include: [
                 {

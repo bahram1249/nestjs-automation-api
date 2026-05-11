@@ -1,5 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
+import { SequelizeHelpService } from '@rahino/commontools/sequelize-help/sequelize-help.service';
 import { User } from '@rahino/database';
 import { ECPayment } from '@rahino/localdatabase/models';
 import { ECPaymentGateway } from '@rahino/localdatabase/models';
@@ -15,6 +16,7 @@ export class TransactionService {
   constructor(
     @InjectModel(ECPayment)
     private readonly repository: typeof ECPayment,
+    private readonly seqHelp: SequelizeHelpService,
   ) {}
 
   async findAll(user: User, filter: ListFilter) {
@@ -27,12 +29,7 @@ export class TransactionService {
         },
       ])
       .filter(
-        Sequelize.where(
-          Sequelize.fn('isnull', Sequelize.col('ECPayment.isDeleted'), 0),
-          {
-            [Op.eq]: 0,
-          },
-        ),
+        this.seqHelp.whereIsNullColumnEqualToZero('ECPayment.isDeleted', 0),
       )
       .filter({
         [Op.or]: [
@@ -126,12 +123,7 @@ export class TransactionService {
         ])
         .filter({ id: entityId })
         .filter(
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('ECPayment.isDeleted'), 0),
-            {
-              [Op.eq]: 0,
-            },
-          ),
+          this.seqHelp.whereIsNullColumnEqualToZero('ECPayment.isDeleted', 0),
         )
         .build(),
     );

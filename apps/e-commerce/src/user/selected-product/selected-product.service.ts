@@ -8,12 +8,14 @@ import {
   ECSelectedProductType,
 } from '@rahino/localdatabase/models';
 import { Attachment } from '@rahino/database';
+import { SequelizeHelpService } from '@rahino/commontools/sequelize-help/sequelize-help.service';
 
 @Injectable()
 export class SelectedProductService {
   constructor(
     @InjectModel(ECSelectedProduct)
     private readonly repository: typeof ECSelectedProduct,
+    private readonly seqHelp: SequelizeHelpService,
   ) {}
 
   async findAll(filter: GetSelectedProductDto) {
@@ -51,15 +53,9 @@ export class SelectedProductService {
         },
       ])
       .filter(
-        Sequelize.where(
-          Sequelize.fn(
-            'isnull',
-            Sequelize.col('ECSelectedProduct.isDeleted'),
-            0,
-          ),
-          {
-            [Op.eq]: 0,
-          },
+        this.seqHelp.whereIsNullColumnEqualToZero(
+          'ECSelectedProduct.isDeleted',
+          0,
         ),
       )
       .limit(filter.limit, filter.ignorePaging)
@@ -104,15 +100,9 @@ export class SelectedProductService {
           },
         ])
         .filter(
-          Sequelize.where(
-            Sequelize.fn(
-              'isnull',
-              Sequelize.col('ECSelectedProduct.isDeleted'),
-              0,
-            ),
-            {
-              [Op.eq]: 0,
-            },
+          this.seqHelp.whereIsNullColumnEqualToZero(
+            'ECSelectedProduct.isDeleted',
+            0,
           ),
         )
         .filter({ slug: slug })

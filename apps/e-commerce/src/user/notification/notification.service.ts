@@ -8,23 +8,20 @@ import * as _ from 'lodash';
 import { User } from '@rahino/database';
 import { ListFilter } from '@rahino/query-filter';
 import { ECNotification } from '@rahino/localdatabase/models';
+import { SequelizeHelpService } from '@rahino/commontools/sequelize-help/sequelize-help.service';
 
 @Injectable()
 export class NotificationService {
   constructor(
     @InjectModel(ECNotification) private repository: typeof ECNotification,
     @InjectMapper() private readonly mapper: Mapper,
+    private readonly seqHelp: SequelizeHelpService,
   ) {}
 
   async findAll(filter: ListFilter) {
     let queryBuilder = new QueryOptionsBuilder();
     queryBuilder = queryBuilder.filter(
-      Sequelize.where(
-        Sequelize.fn('isnull', Sequelize.col('ECNotification.isDeleted'), 0),
-        {
-          [Op.eq]: 0,
-        },
-      ),
+      this.seqHelp.whereIsNullColumnEqualToZero('ECNotification.isDeleted', 0),
     );
 
     const count = await this.repository.count(queryBuilder.build());
@@ -45,11 +42,9 @@ export class NotificationService {
     let queryBuilder = new QueryOptionsBuilder();
     queryBuilder = queryBuilder
       .filter(
-        Sequelize.where(
-          Sequelize.fn('isnull', Sequelize.col('ECNotification.isDeleted'), 0),
-          {
-            [Op.eq]: 0,
-          },
+        this.seqHelp.whereIsNullColumnEqualToZero(
+          'ECNotification.isDeleted',
+          0,
         ),
       )
       .filter({ id: entityId });

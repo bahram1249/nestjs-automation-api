@@ -6,6 +6,7 @@ import { Op, Sequelize } from 'sequelize';
 import { RolePermission } from '@rahino/database';
 import { PermissionGroup } from '@rahino/database';
 import { PermissionGetDto } from './dto';
+import { SequelizeHelpService } from '@rahino/commontools/sequelize-help/sequelize-help.service';
 
 @Injectable()
 export class PermissionService {
@@ -14,6 +15,7 @@ export class PermissionService {
     private readonly permissionRepository: typeof Permission,
     @InjectModel(RolePermission)
     private readonly rolePermissionRepository: typeof RolePermission,
+    private readonly seqHelp: SequelizeHelpService,
   ) {}
 
   async findAll(filter: PermissionGetDto) {
@@ -36,11 +38,10 @@ export class PermissionService {
             },
           ],
         },
-        Sequelize.where(
-          Sequelize.fn('isnull', Sequelize.col('permission.visibility'), 1),
-          {
-            [Op.eq]: 1,
-          },
+        this.seqHelp.whereIsNullColumnEqualToValue(
+          'permission.visibility',
+          1,
+          1,
         ),
       ],
     };

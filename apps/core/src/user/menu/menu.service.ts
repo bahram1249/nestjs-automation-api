@@ -8,6 +8,7 @@ import { UserRole } from '@rahino/database';
 import { RolePermission } from '@rahino/database';
 import { PermissionMenu } from '@rahino/database';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
+import { SequelizeHelpService } from '@rahino/commontools/sequelize-help/sequelize-help.service';
 
 @Injectable()
 export class MenuService {
@@ -20,6 +21,7 @@ export class MenuService {
     private readonly rolePermissionRepository: typeof RolePermission,
     @InjectModel(PermissionMenu)
     private readonly permissionMenuRepository: typeof PermissionMenu,
+    private readonly seqHelp: SequelizeHelpService,
   ) {}
 
   async findAll(user: User, filter: MenuGetDto) {
@@ -60,12 +62,7 @@ export class MenuService {
     }
 
     builder = builder.filter(
-      Sequelize.where(
-        Sequelize.fn('isnull', Sequelize.col('Menu.visibility'), 1),
-        {
-          [Op.eq]: 1,
-        },
-      ),
+      this.seqHelp.whereIsNullColumnNotEqualToValue('Menu.visibility', 1, 1),
     );
 
     builder = builder
@@ -95,11 +92,10 @@ export class MenuService {
                   [Op.in]: menuIds,
                 },
               },
-              Sequelize.where(
-                Sequelize.fn('isnull', Sequelize.col('subMenus.visibility'), 1),
-                {
-                  [Op.eq]: 1,
-                },
+              this.seqHelp.whereIsNullColumnNotEqualToValue(
+                'subMenus.visibility',
+                1,
+                1,
               ),
             ],
           },

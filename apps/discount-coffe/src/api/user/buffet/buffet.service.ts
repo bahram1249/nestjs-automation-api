@@ -7,22 +7,20 @@ import { CoffeOption } from '@rahino/localdatabase/models';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import { Op, Sequelize } from 'sequelize';
 import { BuffetFilterDto } from './dto';
+import { SequelizeHelpService } from '@rahino/commontools/sequelize-help/sequelize-help.service';
 
 @Injectable()
 export class BuffetService {
   constructor(
     @InjectModel(Buffet)
     private readonly buffetRepository: typeof Buffet,
+    private readonly seqHelp: SequelizeHelpService,
   ) {}
 
   async findAll(dto: BuffetFilterDto) {
     let queryBuilder = new QueryOptionsBuilder();
     queryBuilder = queryBuilder
-      .filter(
-        Sequelize.where(Sequelize.fn('isnull', Sequelize.col('isDeleted'), 0), {
-          [Op.eq]: 0,
-        }),
-      )
+      .filter(this.seqHelp.whereIsNullColumnEqualToZero('isDeleted', 0))
       .filter({
         title: {
           [Op.like]: dto.search,

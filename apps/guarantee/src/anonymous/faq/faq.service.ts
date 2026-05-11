@@ -5,12 +5,14 @@ import { GSFaq } from '@rahino/localdatabase/models';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import { Op, Sequelize } from 'sequelize';
 import * as _ from 'lodash';
+import { SequelizeHelpService } from '@rahino/commontools/sequelize-help/sequelize-help.service';
 
 @Injectable()
 export class FaqService {
   constructor(
     @InjectModel(GSFaq)
     private readonly repository: typeof GSFaq,
+    private readonly seqHelp: SequelizeHelpService,
   ) {}
 
   async findAll(filter: GetFaqDto) {
@@ -20,14 +22,7 @@ export class FaqService {
           [Op.like]: filter.search,
         },
       })
-      .filter(
-        Sequelize.where(
-          Sequelize.fn('isnull', Sequelize.col('GSFaq.isDeleted'), 0),
-          {
-            [Op.eq]: 0,
-          },
-        ),
-      );
+      .filter(this.seqHelp.whereIsNullColumnEqualToZero('GSFaq.isDeleted', 0));
 
     const count = await this.repository.count(query.build());
 

@@ -7,6 +7,7 @@ import { ProductCommentStatusEnum } from '@rahino/ecommerce/shared/enum';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import { Op } from 'sequelize';
 import { Sequelize } from 'sequelize';
+import { SequelizeHelpService } from '@rahino/commontools/sequelize-help/sequelize-help.service';
 
 @Injectable()
 export class CalculateCommentScoreService {
@@ -17,6 +18,7 @@ export class CalculateCommentScoreService {
     private readonly factorRepository: typeof ECProductCommentFactor,
     @InjectModel(ECProduct)
     private readonly productRepository: typeof ECProduct,
+    private readonly seqHelp: SequelizeHelpService,
   ) {}
 
   async calculateCommentScore(commentId: bigint) {
@@ -83,15 +85,9 @@ export class CalculateCommentScoreService {
         .filter({ entityId: product.id })
         .filter({ statusId: ProductCommentStatusEnum.confirm })
         .filter(
-          Sequelize.where(
-            Sequelize.fn(
-              'isnull',
-              Sequelize.col('ECProductComment.isDeleted'),
-              0,
-            ),
-            {
-              [Op.eq]: 0,
-            },
+          this.seqHelp.whereIsNullColumnEqualToZero(
+            'ECProductComment.isDeleted',
+            0,
           ),
         )
         .raw(true)

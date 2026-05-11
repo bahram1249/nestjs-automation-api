@@ -10,6 +10,7 @@ import { Op, Sequelize } from 'sequelize';
 import { LogisticZarinPalService } from '../services/logistic-zarin-pal.service';
 import { LogisticSnapPayService } from '../services/logistic-snap-pay.service';
 import { LocalizationService } from 'apps/main/src/common/localization/localization.service';
+import { SequelizeHelpService } from '@rahino/commontools/sequelize-help/sequelize-help.service';
 
 @Injectable()
 export class LogisticPaymentServiceManualWalletPurposeProviderFactory {
@@ -19,6 +20,7 @@ export class LogisticPaymentServiceManualWalletPurposeProviderFactory {
     private readonly zarinPalService: LogisticZarinPalService,
     private readonly snapPayService: LogisticSnapPayService,
     private readonly l10n: LocalizationService,
+    private readonly seqHelp: SequelizeHelpService,
   ) {}
 
   async create(paymentServiceId: number) {
@@ -26,13 +28,9 @@ export class LogisticPaymentServiceManualWalletPurposeProviderFactory {
       new QueryOptionsBuilder()
         .filter({ id: paymentServiceId })
         .filter(
-          Sequelize.where(
-            Sequelize.fn(
-              'isnull',
-              Sequelize.col('ECPaymentGateway.isDeleted'),
-              0,
-            ),
-            { [Op.eq]: 0 },
+          this.seqHelp.whereIsNullColumnEqualToZero(
+            'ECPaymentGateway.isDeleted',
+            0,
           ),
         )
         .build(),

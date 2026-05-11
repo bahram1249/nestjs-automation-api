@@ -6,21 +6,20 @@ import { GetActionDto } from './dto/get-action.dto';
 import { Op, Sequelize } from 'sequelize';
 import { CreateActionDto } from './dto/create-action.dto';
 import { UpdateActionDto } from './dto/update-action.dto';
+import { SequelizeHelpService } from '@rahino/commontools/sequelize-help/sequelize-help.service';
 
 @Injectable()
 export class ActionService {
   constructor(
     @InjectModel(BPMNAction)
     private readonly repository: typeof BPMNAction,
+    private readonly seqHelp: SequelizeHelpService,
   ) {}
 
   async findAll(filter: GetActionDto) {
     let qb = new QueryOptionsBuilder()
       .filter(
-        Sequelize.where(
-          Sequelize.fn('isnull', Sequelize.col('BPMNAction.isDeleted'), 0),
-          { [Op.eq]: 0 },
-        ),
+        this.seqHelp.whereIsNullColumnEqualToZero('BPMNAction.isDeleted', 0),
       )
       .filterIf(!!filter.search && filter.search !== '%%', {
         name: { [Op.like]: filter.search as any },
@@ -51,10 +50,7 @@ export class ActionService {
     // count with filters
     const qbBase = new QueryOptionsBuilder()
       .filter(
-        Sequelize.where(
-          Sequelize.fn('isnull', Sequelize.col('BPMNAction.isDeleted'), 0),
-          { [Op.eq]: 0 },
-        ),
+        this.seqHelp.whereIsNullColumnEqualToZero('BPMNAction.isDeleted', 0),
       )
       .filterIf(!!filter.search && filter.search !== '%%', {
         name: { [Op.like]: filter.search as any },
@@ -65,10 +61,7 @@ export class ActionService {
 
     const qbList = new QueryOptionsBuilder()
       .filter(
-        Sequelize.where(
-          Sequelize.fn('isnull', Sequelize.col('BPMNAction.isDeleted'), 0),
-          { [Op.eq]: 0 },
-        ),
+        this.seqHelp.whereIsNullColumnEqualToZero('BPMNAction.isDeleted', 0),
       )
       .attributes(['id', 'name', 'actionTypeId'])
       .filterIf(!!filter.search && filter.search !== '%%', {
@@ -103,10 +96,7 @@ export class ActionService {
         ])
         .filter({ id })
         .filter(
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('BPMNAction.isDeleted'), 0),
-            { [Op.eq]: 0 },
-          ),
+          this.seqHelp.whereIsNullColumnEqualToZero('BPMNAction.isDeleted', 0),
         )
         .include([
           {

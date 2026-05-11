@@ -4,19 +4,18 @@ import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builde
 import * as _ from 'lodash';
 import { GSAnswerOption, GSQuestion } from '@rahino/localdatabase/models';
 import { Op, Sequelize } from 'sequelize';
+import { SequelizeHelpService } from '@rahino/commontools/sequelize-help/sequelize-help.service';
 
 @Injectable()
 export class QuestionService {
-  constructor(@InjectModel(GSQuestion) private repository: typeof GSQuestion) {}
+  constructor(
+    @InjectModel(GSQuestion) private repository: typeof GSQuestion,
+    private readonly seqHelp: SequelizeHelpService,
+  ) {}
 
   async findAll() {
     const queryBuilder = new QueryOptionsBuilder().filter(
-      Sequelize.where(
-        Sequelize.fn('isnull', Sequelize.col('GSQuestion.isDeleted'), 0),
-        {
-          [Op.eq]: 0,
-        },
-      ),
+      this.seqHelp.whereIsNullColumnEqualToZero('GSQuestion.isDeleted', 0),
     );
 
     const count = await this.repository.count(queryBuilder.build());

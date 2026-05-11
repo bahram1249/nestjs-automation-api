@@ -5,6 +5,7 @@ import { PaymentStatusEnum } from '@rahino/ecommerce/shared/enum';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import { Op, Sequelize } from 'sequelize';
 import { LogisticRevertInventoryQtyService } from './logistic-revert-inventory-qty.service';
+import { SequelizeHelpService } from '@rahino/commontools/sequelize-help/sequelize-help.service';
 
 @Injectable()
 export class LogisticRevertPaymentQtyService {
@@ -14,6 +15,7 @@ export class LogisticRevertPaymentQtyService {
     private readonly paymentRepository: typeof ECPayment,
     @InjectModel(ECWallet)
     private readonly walletRepository: typeof ECWallet,
+    private readonly seqHelp: SequelizeHelpService,
   ) {}
 
   async revertPaymentAndQty(paymentId: bigint) {
@@ -33,10 +35,7 @@ export class LogisticRevertPaymentQtyService {
       new QueryOptionsBuilder()
         .filter({ parentPaymentId: payment.id })
         .filter(
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('ECPayment.isDeleted'), 0),
-            { [Op.eq]: 0 },
-          ),
+          this.seqHelp.whereIsNullColumnEqualToZero('ECPayment.isDeleted', 0),
         )
         .build(),
     );

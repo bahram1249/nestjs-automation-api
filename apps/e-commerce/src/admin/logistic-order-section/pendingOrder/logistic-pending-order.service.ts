@@ -21,6 +21,7 @@ import {
 } from '@rahino/ecommerce/shared/enum';
 import { UserVendorService } from '@rahino/ecommerce/user/user-vendor/user-vendor.service';
 import { LocalizationService } from 'apps/main/src/common/localization/localization.service';
+import { SequelizeHelpService } from '@rahino/commontools/sequelize-help/sequelize-help.service';
 
 @Injectable()
 export class LogisticPendingOrderService {
@@ -37,6 +38,7 @@ export class LogisticPendingOrderService {
     private readonly utilService: LogisticOrderUtilService,
     private readonly userVendorService: UserVendorService,
     private readonly localizationService: LocalizationService,
+    private readonly seqHelp: SequelizeHelpService,
   ) {}
 
   async findAll(user: User, filter: GetOrderDto) {
@@ -149,13 +151,9 @@ export class LogisticPendingOrderService {
           orderDetailStatusId: OrderDetailStatusEnum.WaitingForProcess,
         })
         .filter(
-          Sequelize.where(
-            Sequelize.fn(
-              'isnull',
-              Sequelize.col('ECLogisticOrderGroupedDetail.isDeleted'),
-              0,
-            ),
-            { [Op.eq]: 0 },
+          this.seqHelp.whereIsNullColumnEqualToZero(
+            'ECLogisticOrderGroupedDetail.isDeleted',
+            0,
           ),
         )
         .build(),
@@ -195,13 +193,9 @@ export class LogisticPendingOrderService {
             orderDetailStatusId: { [Op.ne]: OrderDetailStatusEnum.Processed },
           })
           .filter(
-            Sequelize.where(
-              Sequelize.fn(
-                'isnull',
-                Sequelize.col('ECLogisticOrderGroupedDetail.isDeleted'),
-                0,
-              ),
-              { [Op.eq]: 0 },
+            this.seqHelp.whereIsNullColumnEqualToZero(
+              'ECLogisticOrderGroupedDetail.isDeleted',
+              0,
             ),
           )
           .transaction(transaction)

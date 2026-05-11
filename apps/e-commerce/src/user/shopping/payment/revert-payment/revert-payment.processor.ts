@@ -7,6 +7,7 @@ import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builde
 import { PaymentStatusEnum } from '@rahino/ecommerce/shared/enum';
 import { Op, Sequelize } from 'sequelize';
 import { REVERT_PAYMENT_QUEUE } from './revert-payment.constants';
+import { SequelizeHelpService } from '@rahino/commontools/sequelize-help/sequelize-help.service';
 
 @Processor(REVERT_PAYMENT_QUEUE)
 export class RevertPaymentProcessor extends WorkerHost {
@@ -14,6 +15,7 @@ export class RevertPaymentProcessor extends WorkerHost {
     private readonly logger: DBLogger,
     @InjectModel(ECPayment)
     private readonly paymentRepository: typeof ECPayment,
+    private readonly seqHelp: SequelizeHelpService,
   ) {
     super();
   }
@@ -29,12 +31,7 @@ export class RevertPaymentProcessor extends WorkerHost {
           .filter({ id: paymentId })
           .filter({ paymentStatusId: PaymentStatusEnum.WaitingForPayment })
           .filter(
-            Sequelize.where(
-              Sequelize.fn('isnull', Sequelize.col('ECPayment.isDeleted'), 0),
-              {
-                [Op.eq]: 0,
-              },
-            ),
+            this.seqHelp.whereIsNullColumnEqualToZero('ECPayment.isDeleted', 0),
           )
           .build(),
       );

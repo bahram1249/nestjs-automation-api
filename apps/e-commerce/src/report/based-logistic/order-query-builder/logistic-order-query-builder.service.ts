@@ -8,13 +8,14 @@ import {
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import { FindAttributeOptions, Op, Sequelize } from 'sequelize';
 import { Order } from '@rahino/query-filter';
+import { SequelizeHelpService } from '@rahino/commontools/sequelize-help/sequelize-help.service';
 
 @Injectable({ scope: Scope.REQUEST })
 export class LogisticOrderQueryBuilderService {
   private builder: QueryOptionsBuilder;
   private groupByQuery = false;
 
-  constructor() {
+  constructor(private readonly seqHelp: SequelizeHelpService) {
     this.builder = new QueryOptionsBuilder();
     this.builder.include([]);
   }
@@ -34,13 +35,9 @@ export class LogisticOrderQueryBuilderService {
 
   nonDeletedGroup() {
     this.builder = this.builder.filter(
-      Sequelize.where(
-        Sequelize.fn(
-          'isnull',
-          Sequelize.col('ECLogisticOrderGrouped.isDeleted'),
-          0,
-        ),
-        { [Op.eq]: 0 },
+      this.seqHelp.whereIsNullColumnEqualToZero(
+        'ECLogisticOrderGrouped.isDeleted',
+        0,
       ),
     );
     return this;
@@ -48,10 +45,7 @@ export class LogisticOrderQueryBuilderService {
 
   nonDeletedOrder() {
     this.builder = this.builder.filter(
-      Sequelize.where(
-        Sequelize.fn('isnull', Sequelize.col('logisticOrder.isDeleted'), 0),
-        { [Op.eq]: 0 },
-      ),
+      this.seqHelp.whereIsNullColumnEqualToZero('logisticOrder.isDeleted', 0),
     );
     return this;
   }

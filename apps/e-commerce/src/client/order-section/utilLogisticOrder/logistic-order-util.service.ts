@@ -7,6 +7,7 @@ import {
   ECLogisticOrderGrouped,
 } from '@rahino/localdatabase/models';
 import { OrderStatusEnum } from '@rahino/ecommerce/shared/enum';
+import { SequelizeHelpService } from '@rahino/commontools/sequelize-help/sequelize-help.service';
 
 @Injectable()
 export class LogisticOrderUtilService {
@@ -15,6 +16,7 @@ export class LogisticOrderUtilService {
     private readonly orderRepository: typeof ECLogisticOrder,
     @InjectModel(ECLogisticOrderGrouped)
     private readonly groupRepository: typeof ECLogisticOrderGrouped,
+    private readonly seqHelp: SequelizeHelpService,
   ) {}
   async recalculateOrdersPrices(orders: ECLogisticOrder[]) {
     const promises = [] as Promise<ECLogisticOrder>[];
@@ -70,13 +72,9 @@ export class LogisticOrderUtilService {
         .attributes(['orderStatusId'])
         .filter({ logisticOrderId })
         .filter(
-          Sequelize.where(
-            Sequelize.fn(
-              'isnull',
-              Sequelize.col('ECLogisticOrderGrouped.isDeleted'),
-              0,
-            ),
-            { [Op.eq]: 0 },
+          this.seqHelp.whereIsNullColumnEqualToZero(
+            'ECLogisticOrderGrouped.isDeleted',
+            0,
           ),
         )
         .transaction(transaction)

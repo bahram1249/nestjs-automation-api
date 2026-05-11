@@ -6,6 +6,7 @@ import { Op } from 'sequelize';
 import { Sequelize, Transaction } from 'sequelize';
 import { InventoryStatusEnum } from '../enum';
 import { ECProduct } from '@rahino/localdatabase/models';
+import { SequelizeHelpService } from '@rahino/commontools/sequelize-help/sequelize-help.service';
 
 @Injectable()
 export class inventoryStatusService {
@@ -14,6 +15,7 @@ export class inventoryStatusService {
     private readonly inventoryRepository: typeof ECInventory,
     @InjectModel(ECProduct)
     private readonly productRepository: typeof ECProduct,
+    private readonly seqHelp: SequelizeHelpService,
   ) {}
 
   async productInventoryStatusUpdate(
@@ -24,12 +26,7 @@ export class inventoryStatusService {
       new QueryOptionsBuilder()
         .filter({ productId: productId })
         .filter(
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('ECInventory.isDeleted'), 0),
-            {
-              [Op.eq]: 0,
-            },
-          ),
+          this.seqHelp.whereIsNullColumnEqualToZero('ECInventory.isDeleted', 0),
         )
         .filter({ inventoryStatusId: InventoryStatusEnum.available })
         .transaction(transaction)

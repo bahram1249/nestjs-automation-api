@@ -14,6 +14,7 @@ import { Op, Sequelize } from 'sequelize';
 import { PaymentServiceManualProviderFactory } from '@rahino/ecommerce/user/shopping/payment/provider/factory/payment-service-manual-provider.factory';
 import { ECWallet } from '@rahino/localdatabase/models';
 import { RevertPaymentQtyService } from '../services/revert-payment-qty.service';
+import { SequelizeHelpService } from '@rahino/commontools/sequelize-help/sequelize-help.service';
 
 @Processor(REVERT_INVENTORY_QTY_QUEUE)
 export class RevertInventoryQtyProcessor extends WorkerHost {
@@ -25,6 +26,7 @@ export class RevertInventoryQtyProcessor extends WorkerHost {
     private readonly walletRepository: typeof ECWallet,
     private readonly revertInventoryQtyService: RevertPaymentQtyService,
     private readonly paymentServiceManualProviderFactory: PaymentServiceManualProviderFactory,
+    private readonly seqHelp: SequelizeHelpService,
   ) {
     super();
   }
@@ -41,12 +43,7 @@ export class RevertInventoryQtyProcessor extends WorkerHost {
           .filter({ paymentStatusId: PaymentStatusEnum.WaitingForPayment })
           .filter({ paymentTypeId: PaymentTypeEnum.ForOrder })
           .filter(
-            Sequelize.where(
-              Sequelize.fn('isnull', Sequelize.col('ECPayment.isDeleted'), 0),
-              {
-                [Op.eq]: 0,
-              },
-            ),
+            this.seqHelp.whereIsNullColumnEqualToZero('ECPayment.isDeleted', 0),
           )
           .build(),
       );

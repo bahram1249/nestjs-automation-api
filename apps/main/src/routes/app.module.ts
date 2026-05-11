@@ -43,6 +43,7 @@ import {
 } from '@rahino/localdatabase/subsystem-models';
 import { ModuleInitializerModule } from '../module-initializer/module-initializer.module';
 import { ModuleInitializerServiceInterface } from '../module-initializer/interface';
+import { SequelizeHelpModule } from '@rahino/commontools/sequelize-help';
 
 @Module({
   imports: [
@@ -75,6 +76,7 @@ import { ModuleInitializerServiceInterface } from '../module-initializer/interfa
         },
       ],
     }),
+    SequelizeHelpModule,
     DatabaseModule.forRootAsync({
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => ({

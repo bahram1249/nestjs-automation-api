@@ -19,6 +19,7 @@ import {
 } from '@rahino/localdatabase/models';
 import { ListFilter } from '@rahino/query-filter';
 import { LocalizationService } from 'apps/main/src/common/localization';
+import { SequelizeHelpService } from '@rahino/commontools/sequelize-help/sequelize-help.service';
 
 @Injectable()
 export class LinkedEntityTypeBrandService {
@@ -27,19 +28,14 @@ export class LinkedEntityTypeBrandService {
     private readonly repository: typeof ECLinkedEntityTypeBrand,
     @InjectMapper() private readonly mapper: Mapper,
     private readonly localizationService: LocalizationService,
+    private readonly seqHelp: SequelizeHelpService,
   ) {}
 
   async findAll(filter: ListFilter) {
     let queryBuilder = new QueryOptionsBuilder().filter(
-      Sequelize.where(
-        Sequelize.fn(
-          'isnull',
-          Sequelize.col('ECLinkedEntityTypeBrand.isDeleted'),
-          0,
-        ),
-        {
-          [Op.eq]: 0,
-        },
+      this.seqHelp.whereIsNullColumnEqualToZero(
+        'ECLinkedEntityTypeBrand.isDeleted',
+        0,
       ),
     );
 
@@ -94,15 +90,9 @@ export class LinkedEntityTypeBrandService {
         },
       ])
       .filter(
-        Sequelize.where(
-          Sequelize.fn(
-            'isnull',
-            Sequelize.col('ECLinkedEntityTypeBrand.isDeleted'),
-            0,
-          ),
-          {
-            [Op.eq]: 0,
-          },
+        this.seqHelp.whereIsNullColumnEqualToZero(
+          'ECLinkedEntityTypeBrand.isDeleted',
+          0,
         ),
       )
       .filter({ id: entityId });
@@ -123,15 +113,9 @@ export class LinkedEntityTypeBrandService {
         .filter({ brandId: dto.brandId })
         .filter({ entityTypeId: dto.entityTypeId })
         .filter(
-          Sequelize.where(
-            Sequelize.fn(
-              'isnull',
-              Sequelize.col('ECLinkedEntityTypeBrand.isDeleted'),
-              0,
-            ),
-            {
-              [Op.eq]: 0,
-            },
+          this.seqHelp.whereIsNullColumnEqualToZero(
+            'ECLinkedEntityTypeBrand.isDeleted',
+            0,
           ),
         )
         .build(),
@@ -159,15 +143,9 @@ export class LinkedEntityTypeBrandService {
       new QueryOptionsBuilder()
         .filter({ id: entityId })
         .filter(
-          Sequelize.where(
-            Sequelize.fn(
-              'isnull',
-              Sequelize.col('ECLinkedEntityTypeBrand.isDeleted'),
-              0,
-            ),
-            {
-              [Op.eq]: 0,
-            },
+          this.seqHelp.whereIsNullColumnEqualToZero(
+            'ECLinkedEntityTypeBrand.isDeleted',
+            0,
           ),
         )
         .build(),
@@ -187,15 +165,9 @@ export class LinkedEntityTypeBrandService {
           },
         })
         .filter(
-          Sequelize.where(
-            Sequelize.fn(
-              'isnull',
-              Sequelize.col('ECLinkedEntityTypeBrand.isDeleted'),
-              0,
-            ),
-            {
-              [Op.eq]: 0,
-            },
+          this.seqHelp.whereIsNullColumnEqualToZero(
+            'ECLinkedEntityTypeBrand.isDeleted',
+            0,
           ),
         )
         .build(),
@@ -227,15 +199,9 @@ export class LinkedEntityTypeBrandService {
       new QueryOptionsBuilder()
         .filter({ id: entityId })
         .filter(
-          Sequelize.where(
-            Sequelize.fn(
-              'isnull',
-              Sequelize.col('ECLinkedEntityTypeBrand.isDeleted'),
-              0,
-            ),
-            {
-              [Op.eq]: 0,
-            },
+          this.seqHelp.whereIsNullColumnEqualToZero(
+            'ECLinkedEntityTypeBrand.isDeleted',
+            0,
           ),
         )
         .build(),

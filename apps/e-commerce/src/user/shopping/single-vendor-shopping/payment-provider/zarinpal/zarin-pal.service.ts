@@ -13,6 +13,7 @@ import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builde
 import { Op, Sequelize } from 'sequelize';
 import { PaymentStatusEnum } from '@rahino/ecommerce/shared/enum';
 import axios from 'axios';
+import { SequelizeHelpService } from '@rahino/commontools/sequelize-help/sequelize-help.service';
 
 @Injectable()
 export class SingleVendorZarinPalService implements SingleVendorPayInterface {
@@ -23,6 +24,7 @@ export class SingleVendorZarinPalService implements SingleVendorPayInterface {
     @InjectModel(ECPayment)
     private readonly paymentRepository: typeof ECPayment,
     private readonly config: ConfigService,
+    private readonly seqHelp: SequelizeHelpService,
   ) {
     this.baseUrl = 'https://api.zarinpal.com';
     //this.baseUrl = 'https://sandbox.zarinpal.com';
@@ -120,14 +122,7 @@ export class SingleVendorZarinPalService implements SingleVendorPayInterface {
     const paymentGateway = await this.paymentGateway.findOne(
       new QueryOptionsBuilder()
         .filter({ serviceName: 'ZarinPalService' })
-        .filter(
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('isDeleted'), 0),
-            {
-              [Op.eq]: 0,
-            },
-          ),
-        )
+        .filter(this.seqHelp.whereIsNullColumnEqualToZero('isDeleted', 0))
         .build(),
     );
     if (!paymentGateway) {

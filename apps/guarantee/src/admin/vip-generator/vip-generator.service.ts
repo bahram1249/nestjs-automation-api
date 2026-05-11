@@ -24,6 +24,7 @@ import * as ExcelJS from 'exceljs';
 import * as moment from 'moment-jalaali';
 import { GSGuaranteeTypeEnum } from '@rahino/guarantee/shared/gurantee-type';
 import { numberWithCommas } from '@rahino/commontools';
+import { SequelizeHelpService } from '@rahino/commontools/sequelize-help/sequelize-help.service';
 
 @Injectable()
 export class VipGeneratorService {
@@ -37,6 +38,7 @@ export class VipGeneratorService {
     private readonly localizationService: LocalizationService,
     @InjectQueue(VIP_GENERATOR_QUEUE)
     private readonly vipGeneratorQueue: Queue,
+    private readonly seqHelp: SequelizeHelpService,
   ) {}
 
   async findAll(filter: GetVipGeneratorDto) {
@@ -117,15 +119,9 @@ export class VipGeneratorService {
       new QueryOptionsBuilder()
         .filter({ id: dto.vipBundleTypeId })
         .filter(
-          Sequelize.where(
-            Sequelize.fn(
-              'isnull',
-              Sequelize.col('GSVipBundleType.isDeleted'),
-              0,
-            ),
-            {
-              [Op.eq]: 0,
-            },
+          this.seqHelp.whereIsNullColumnEqualToZero(
+            'GSVipBundleType.isDeleted',
+            0,
           ),
         )
         .build(),

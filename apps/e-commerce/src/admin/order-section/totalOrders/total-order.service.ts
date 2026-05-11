@@ -31,6 +31,7 @@ import {
 import { ECOrderStatus } from '@rahino/localdatabase/models';
 import { ECOrderShipmentWay } from '@rahino/localdatabase/models';
 import { GetTotalOrderFilterDto } from './dto/get-total-order.dto';
+import { SequelizeHelpService } from '@rahino/commontools/sequelize-help/sequelize-help.service';
 
 @Injectable()
 export class TotalOrderService {
@@ -56,6 +57,7 @@ export class TotalOrderService {
     private readonly userVendorService: UserVendorService,
     private readonly orderUtilService: OrderUtilService,
     private readonly finalizedPaymentService: FinalizedPaymentService,
+    private readonly seqHelp: SequelizeHelpService,
   ) {}
 
   async findAll(user: User, filter: GetTotalOrderFilterDto) {
@@ -154,12 +156,7 @@ export class TotalOrderService {
             },
           })
           .filter(
-            Sequelize.where(
-              Sequelize.fn('isnull', Sequelize.col('ECOrder.isDeleted'), 0),
-              {
-                [Op.eq]: 0,
-              },
-            ),
+            this.seqHelp.whereIsNullColumnEqualToZero('ECOrder.isDeleted', 0),
           )
           .build(),
       );
@@ -180,14 +177,7 @@ export class TotalOrderService {
       const payment = await this.paymentRepository.findOne(
         new QueryOptionsBuilder()
           .filter({ orderId: item.id })
-          .filter(
-            Sequelize.where(
-              Sequelize.fn('isnull', Sequelize.col('isDeleted'), 0),
-              {
-                [Op.eq]: 0,
-              },
-            ),
-          )
+          .filter(this.seqHelp.whereIsNullColumnEqualToZero('isDeleted', 0))
           .build(),
       );
       const paymentGateway = await this.paymentGatewayRepository.findOne(
@@ -274,11 +264,9 @@ export class TotalOrderService {
         ])
         .filter({ orderId: detail.orderId })
         .filter(
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('ECOrderDetail.isDeleted'), 0),
-            {
-              [Op.eq]: 0,
-            },
+          this.seqHelp.whereIsNullColumnEqualToZero(
+            'ECOrderDetail.isDeleted',
+            0,
           ),
         )
         .raw(true)
@@ -319,14 +307,7 @@ export class TotalOrderService {
       const payment = await this.paymentRepository.findOne(
         new QueryOptionsBuilder()
           .filter({ orderId: detail.orderId })
-          .filter(
-            Sequelize.where(
-              Sequelize.fn('isnull', Sequelize.col('isDeleted'), 0),
-              {
-                [Op.eq]: 0,
-              },
-            ),
-          )
+          .filter(this.seqHelp.whereIsNullColumnEqualToZero('isDeleted', 0))
           .build(),
       );
       const paymentGateway = await this.paymentGatewayRepository.findOne(
@@ -341,11 +322,9 @@ export class TotalOrderService {
               {
                 model: ECOrderDetail,
                 as: 'details',
-                where: Sequelize.where(
-                  Sequelize.fn('isnull', Sequelize.col('details.isDeleted'), 0),
-                  {
-                    [Op.eq]: 0,
-                  },
+                where: this.seqHelp.whereIsNullColumnEqualToZero(
+                  'details.isDeleted',
+                  0,
                 ),
                 required: false,
                 include: [
@@ -478,11 +457,9 @@ export class TotalOrderService {
         ])
         .filter({ orderId: detail.orderId })
         .filter(
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('ECOrderDetail.isDeleted'), 0),
-            {
-              [Op.eq]: 0,
-            },
+          this.seqHelp.whereIsNullColumnEqualToZero(
+            'ECOrderDetail.isDeleted',
+            0,
           ),
         )
         .raw(true)
@@ -516,14 +493,7 @@ export class TotalOrderService {
       const payment = await this.paymentRepository.findOne(
         new QueryOptionsBuilder()
           .filter({ orderId: detail.orderId })
-          .filter(
-            Sequelize.where(
-              Sequelize.fn('isnull', Sequelize.col('isDeleted'), 0),
-              {
-                [Op.eq]: 0,
-              },
-            ),
-          )
+          .filter(this.seqHelp.whereIsNullColumnEqualToZero('isDeleted', 0))
           .build(),
       );
       const paymentGateway = await this.paymentGatewayRepository.findOne(
@@ -538,11 +508,9 @@ export class TotalOrderService {
               {
                 model: ECOrderDetail,
                 as: 'details',
-                where: Sequelize.where(
-                  Sequelize.fn('isnull', Sequelize.col('details.isDeleted'), 0),
-                  {
-                    [Op.eq]: 0,
-                  },
+                where: this.seqHelp.whereIsNullColumnEqualToZero(
+                  'details.isDeleted',
+                  0,
                 ),
                 required: false,
                 include: [
@@ -609,12 +577,7 @@ export class TotalOrderService {
       new QueryOptionsBuilder()
         .filter({ id: id })
         .filter(
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('ECOrder.isDeleted'), 0),
-            {
-              [Op.eq]: 0,
-            },
-          ),
+          this.seqHelp.whereIsNullColumnEqualToZero('ECOrder.isDeleted', 0),
         )
         .build(),
     );
@@ -641,12 +604,7 @@ export class TotalOrderService {
       new QueryOptionsBuilder()
         .filter({ id: id })
         .filter(
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('ECOrder.isDeleted'), 0),
-            {
-              [Op.eq]: 0,
-            },
-          ),
+          this.seqHelp.whereIsNullColumnEqualToZero('ECOrder.isDeleted', 0),
         )
         .build(),
     );
@@ -665,12 +623,7 @@ export class TotalOrderService {
       new QueryOptionsBuilder()
         .filter({ id: id })
         .filter(
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('ECOrder.isDeleted'), 0),
-            {
-              [Op.eq]: 0,
-            },
-          ),
+          this.seqHelp.whereIsNullColumnEqualToZero('ECOrder.isDeleted', 0),
         )
         .build(),
     );

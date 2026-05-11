@@ -17,6 +17,7 @@ import {
 } from '@rahino/ecommerce/shared/enum';
 import { LocalizationService } from 'apps/main/src/common/localization/localization.service';
 import { InventoryStatusEnum } from '@rahino/ecommerce/shared/inventory/enum';
+import { SequelizeHelpService } from '@rahino/commontools/sequelize-help/sequelize-help.service';
 
 @Injectable()
 export class LogisticRevertInventoryQtyService {
@@ -34,6 +35,7 @@ export class LogisticRevertInventoryQtyService {
     private readonly inventoryTrackChangeService: LogisticInventoryTrackChangeService,
     private readonly inventoryStatusService: inventoryStatusService,
     private readonly l10n: LocalizationService,
+    private readonly seqHelp: SequelizeHelpService,
   ) {}
 
   async revertQty(paymentId: bigint, transaction?: Transaction) {
@@ -42,10 +44,7 @@ export class LogisticRevertInventoryQtyService {
         .filter({ id: paymentId })
         .filter({ paymentTypeId: PaymentTypeEnum.ForOrder })
         .filter(
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('ECPayment.isDeleted'), 0),
-            { [Op.eq]: 0 },
-          ),
+          this.seqHelp.whereIsNullColumnEqualToZero('ECPayment.isDeleted', 0),
         )
         .transaction(transaction)
         .build(),
@@ -63,13 +62,9 @@ export class LogisticRevertInventoryQtyService {
       new QueryOptionsBuilder()
         .filter({ logisticOrderId: payment.logisticOrderId })
         .filter(
-          Sequelize.where(
-            Sequelize.fn(
-              'isnull',
-              Sequelize.col('ECLogisticOrderGrouped.isDeleted'),
-              0,
-            ),
-            { [Op.eq]: 0 },
+          this.seqHelp.whereIsNullColumnEqualToZero(
+            'ECLogisticOrderGrouped.isDeleted',
+            0,
           ),
         )
         .transaction(transaction)

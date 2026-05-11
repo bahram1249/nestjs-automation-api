@@ -19,6 +19,7 @@ import * as fs from 'fs';
 import { Attachment } from '@rahino/database';
 import { Response } from 'express';
 import { ThumbnailService } from '@rahino/thumbnail';
+import { SequelizeHelpService } from '@rahino/commontools/sequelize-help/sequelize-help.service';
 
 @Injectable()
 export class BrandService {
@@ -29,6 +30,7 @@ export class BrandService {
     @InjectModel(Attachment) private attachmentRepository: typeof Attachment,
     @InjectMapper() private readonly mapper: Mapper,
     private readonly thumbnailService: ThumbnailService,
+    private readonly seqHelp: SequelizeHelpService,
   ) {}
 
   async findAll(filter: GetBrandDto) {
@@ -39,12 +41,7 @@ export class BrandService {
         },
       })
       .filter(
-        Sequelize.where(
-          Sequelize.fn('isnull', Sequelize.col('ECBrand.isDeleted'), 0),
-          {
-            [Op.eq]: 0,
-          },
-        ),
+        this.seqHelp.whereIsNullColumnEqualToZero('ECBrand.isDeleted', 0),
       );
     if (filter.entityTypeId) {
       queryBuilder = queryBuilder.filter(
@@ -114,12 +111,7 @@ export class BrandService {
         ])
         .filter({ id: entityId })
         .filter(
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('ECBrand.isDeleted'), 0),
-            {
-              [Op.eq]: 0,
-            },
-          ),
+          this.seqHelp.whereIsNullColumnEqualToZero('ECBrand.isDeleted', 0),
         )
         .build(),
     );
@@ -136,12 +128,7 @@ export class BrandService {
       new QueryOptionsBuilder()
         .filter({ slug: dto.slug })
         .filter(
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('ECBrand.isDeleted'), 0),
-            {
-              [Op.eq]: 0,
-            },
-          ),
+          this.seqHelp.whereIsNullColumnEqualToZero('ECBrand.isDeleted', 0),
         )
         .build(),
     );
@@ -176,12 +163,7 @@ export class BrandService {
       new QueryOptionsBuilder()
         .filter({ id: entityId })
         .filter(
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('ECBrand.isDeleted'), 0),
-            {
-              [Op.eq]: 0,
-            },
-          ),
+          this.seqHelp.whereIsNullColumnEqualToZero('ECBrand.isDeleted', 0),
         )
         .build(),
     );
@@ -197,12 +179,7 @@ export class BrandService {
           },
         })
         .filter(
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('ECBrand.isDeleted'), 0),
-            {
-              [Op.eq]: 0,
-            },
-          ),
+          this.seqHelp.whereIsNullColumnEqualToZero('ECBrand.isDeleted', 0),
         )
         .build(),
     );
@@ -242,12 +219,7 @@ export class BrandService {
       new QueryOptionsBuilder()
         .filter({ id: entityId })
         .filter(
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('ECBrand.isDeleted'), 0),
-            {
-              [Op.eq]: 0,
-            },
-          ),
+          this.seqHelp.whereIsNullColumnEqualToZero('ECBrand.isDeleted', 0),
         )
         .build(),
     );
@@ -297,12 +269,7 @@ export class BrandService {
         ])
         .filter({ slug: slug })
         .filter(
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('ECBrand.isDeleted'), 0),
-            {
-              [Op.eq]: 0,
-            },
-          ),
+          this.seqHelp.whereIsNullColumnEqualToZero('ECBrand.isDeleted', 0),
         )
         .build(),
     );
@@ -319,14 +286,7 @@ export class BrandService {
     let item = await this.repository.findOne(
       new QueryOptionsBuilder()
         .filter({ id })
-        .filter(
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('isDeleted'), 0),
-            {
-              [Op.eq]: 0,
-            },
-          ),
-        )
+        .filter(this.seqHelp.whereIsNullColumnEqualToZero('isDeleted', 0))
         .build(),
     );
     if (!item) {
@@ -351,14 +311,7 @@ export class BrandService {
       let oldAttachment = await this.attachmentRepository.findOne(
         new QueryOptionsBuilder()
           .filter({ id: item.attachmentId })
-          .filter(
-            Sequelize.where(
-              Sequelize.fn('isnull', Sequelize.col('isDeleted'), 0),
-              {
-                [Op.eq]: 0,
-              },
-            ),
-          )
+          .filter(this.seqHelp.whereIsNullColumnEqualToZero('isDeleted', 0))
           .filter({ attachmentTypeId: this.brandAttachmentType })
           .build(),
       );
@@ -401,14 +354,7 @@ export class BrandService {
     const attachment = await this.attachmentRepository.findOne(
       new QueryOptionsBuilder()
         .filter({ fileName: fileName })
-        .filter(
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('isDeleted'), 0),
-            {
-              [Op.eq]: 0,
-            },
-          ),
-        )
+        .filter(this.seqHelp.whereIsNullColumnEqualToZero('isDeleted', 0))
         .filter({ attachmentTypeId: this.brandAttachmentType })
         .build(),
     );

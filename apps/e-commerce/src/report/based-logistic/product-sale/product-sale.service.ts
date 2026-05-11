@@ -13,6 +13,7 @@ import { GetProductSaleDto } from './dto/get-product-sale.dto';
 import { UserVendorService } from '@rahino/ecommerce/user/user-vendor/user-vendor.service';
 import { LogisticSaleQueryBuilderService } from '../sale-query-builder/logistic-sale-query-builder.service';
 import { Sequelize } from 'sequelize';
+import { SequelizeHelpService } from '@rahino/commontools/sequelize-help/sequelize-help.service';
 @Injectable()
 export class BasedProductSaleService {
   constructor(
@@ -23,6 +24,7 @@ export class BasedProductSaleService {
     private readonly i18n: I18nService<I18nTranslations>,
     private readonly saleQueryBuilder: LogisticSaleQueryBuilderService,
     private readonly userVendorService: UserVendorService,
+    private readonly seqHelp: SequelizeHelpService,
   ) {}
 
   async findAll(user: User, filter: GetProductSaleDto) {
@@ -51,7 +53,7 @@ export class BasedProductSaleService {
     if (filter.variationPriceId)
       qb = qb.addVariationPriceId(filter.variationPriceId);
 
-    const countQb = new LogisticSaleQueryBuilderService()
+    const countQb = new LogisticSaleQueryBuilderService(this.seqHelp)
       .init(true)
       .nonDeleted()
       .nonDeletedGroup()

@@ -8,6 +8,7 @@ import { InjectMapper } from 'automapper-nestjs';
 import { Mapper } from 'automapper-core';
 import * as _ from 'lodash';
 import { LocalizationService } from 'apps/main/src/common/localization';
+import { SequelizeHelpService } from '@rahino/commontools/sequelize-help/sequelize-help.service';
 
 @Injectable()
 export class VipBundleTypeService {
@@ -15,6 +16,7 @@ export class VipBundleTypeService {
     @InjectModel(GSVipBundleType)
     private readonly repository: typeof GSVipBundleType,
     private readonly localizationService: LocalizationService,
+    private readonly seqHelp: SequelizeHelpService,
   ) {}
 
   async findAll(filter: GetVipBundleTypeDto) {
@@ -25,11 +27,9 @@ export class VipBundleTypeService {
         },
       })
       .filter(
-        Sequelize.where(
-          Sequelize.fn('isnull', Sequelize.col('GSVipBundleType.isDeleted'), 0),
-          {
-            [Op.eq]: 0,
-          },
+        this.seqHelp.whereIsNullColumnEqualToZero(
+          'GSVipBundleType.isDeleted',
+          0,
         ),
       )
       .filter({ isSystemGenerated: false });
@@ -74,15 +74,9 @@ export class VipBundleTypeService {
           'updatedAt',
         ])
         .filter(
-          Sequelize.where(
-            Sequelize.fn(
-              'isnull',
-              Sequelize.col('GSVipBundleType.isDeleted'),
-              0,
-            ),
-            {
-              [Op.eq]: 0,
-            },
+          this.seqHelp.whereIsNullColumnEqualToZero(
+            'GSVipBundleType.isDeleted',
+            0,
           ),
         )
         .filter({ id: entityId })

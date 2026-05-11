@@ -19,6 +19,7 @@ import { GS_PAYMENT_PROVIDER_TOKEN } from '@rahino/guarantee/shared/payment-prov
 import { GSPaymentInterface } from '@rahino/guarantee/shared/payment/interface/gs-payment.interface';
 import { GSRequestPaymentOutputDto } from '@rahino/guarantee/shared/payment/dto/gs-request-payment-output.dto';
 import { RialPriceService } from '@rahino/guarantee/shared/rial-price';
+import { SequelizeHelpService } from '@rahino/commontools/sequelize-help/sequelize-help.service';
 
 @Injectable()
 export class PayAdditionalPackageService {
@@ -37,6 +38,7 @@ export class PayAdditionalPackageService {
     @Inject(GS_PAYMENT_PROVIDER_TOKEN)
     private readonly paymentService: GSPaymentInterface,
     private readonly rialPriceService: RialPriceService,
+    private readonly seqHelp: SequelizeHelpService,
   ) {}
 
   async create(user: User, dto: PayAdditionalPackageDto) {
@@ -61,15 +63,9 @@ export class PayAdditionalPackageService {
           },
         })
         .filter(
-          Sequelize.where(
-            Sequelize.fn(
-              'isnull',
-              Sequelize.col('GSAdditionalPackage.isDeleted'),
-              0,
-            ),
-            {
-              [Op.eq]: 0,
-            },
+          this.seqHelp.whereIsNullColumnEqualToZero(
+            'GSAdditionalPackage.isDeleted',
+            0,
           ),
         )
         .build(),

@@ -22,6 +22,7 @@ import { InventoryStatusEnum } from '@rahino/ecommerce/shared/inventory/enum';
 import { LogisticInventoryTrackChangeService } from '@rahino/ecommerce/shared/inventory-track-change/logistic-inventory-track-change.service';
 import { inventoryStatusService } from '@rahino/ecommerce/shared/inventory/services/inventory-status.service';
 import { LocalizationService } from 'apps/main/src/common/localization/localization.service';
+import { SequelizeHelpService } from '@rahino/commontools/sequelize-help/sequelize-help.service';
 
 @Injectable()
 export class LogisticDecreaseInventoryQtyService {
@@ -39,6 +40,7 @@ export class LogisticDecreaseInventoryQtyService {
     private readonly inventoryTrackChangeService: LogisticInventoryTrackChangeService,
     private readonly inventoryStatusService: inventoryStatusService,
     private readonly l10n: LocalizationService,
+    private readonly seqHelp: SequelizeHelpService,
   ) {}
 
   async decreaseByPayment(paymentId: bigint, transaction?: Transaction) {
@@ -56,10 +58,7 @@ export class LogisticDecreaseInventoryQtyService {
         })
         .filter({ paymentTypeId: PaymentTypeEnum.ForOrder })
         .filter(
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('ECPayment.isDeleted'), 0),
-            { [Op.eq]: 0 },
-          ),
+          this.seqHelp.whereIsNullColumnEqualToZero('ECPayment.isDeleted', 0),
         )
         .transaction(transaction)
         .build(),
@@ -79,13 +78,9 @@ export class LogisticDecreaseInventoryQtyService {
       new QueryOptionsBuilder()
         .filter({ logisticOrderId: payment.logisticOrderId })
         .filter(
-          Sequelize.where(
-            Sequelize.fn(
-              'isnull',
-              Sequelize.col('ECLogisticOrderGrouped.isDeleted'),
-              0,
-            ),
-            { [Op.eq]: 0 },
+          this.seqHelp.whereIsNullColumnEqualToZero(
+            'ECLogisticOrderGrouped.isDeleted',
+            0,
           ),
         )
         .transaction(transaction)

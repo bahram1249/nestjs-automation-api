@@ -8,23 +8,20 @@ import {
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import { Op, Sequelize } from 'sequelize';
 import { CreateActivityDto, GetActivityDto, UpdateActivityDto } from './dto';
+import { SequelizeHelpService } from '@rahino/commontools/sequelize-help/sequelize-help.service';
 
 @Injectable()
 export class ActivityService {
   constructor(
     @InjectModel(BPMNActivity)
     private readonly repository: typeof BPMNActivity,
+    private readonly seqHelp: SequelizeHelpService,
   ) {}
 
   async findAll(filter: GetActivityDto) {
     let qb = new QueryOptionsBuilder()
       .filter(
-        Sequelize.where(
-          Sequelize.fn('isnull', Sequelize.col('BPMNActivity.isDeleted'), 0),
-          {
-            [Op.eq]: 0,
-          },
-        ),
+        this.seqHelp.whereIsNullColumnEqualToZero('BPMNActivity.isDeleted', 0),
       )
       .filterIf(!!filter.search && filter.search !== '%%', {
         name: { [Op.like]: filter.search },
@@ -70,12 +67,7 @@ export class ActivityService {
     // Base filters (no pagination) for counting
     const qbBase = new QueryOptionsBuilder()
       .filter(
-        Sequelize.where(
-          Sequelize.fn('isnull', Sequelize.col('BPMNActivity.isDeleted'), 0),
-          {
-            [Op.eq]: 0,
-          },
-        ),
+        this.seqHelp.whereIsNullColumnEqualToZero('BPMNActivity.isDeleted', 0),
       )
       .filterIf(!!filter.search && filter.search !== '%%', {
         name: { [Op.like]: filter.search },
@@ -87,12 +79,7 @@ export class ActivityService {
     // List query with attributes, includes and pagination (explicitly rebuild to avoid relying on clone)
     const qbList = new QueryOptionsBuilder()
       .filter(
-        Sequelize.where(
-          Sequelize.fn('isnull', Sequelize.col('BPMNActivity.isDeleted'), 0),
-          {
-            [Op.eq]: 0,
-          },
-        ),
+        this.seqHelp.whereIsNullColumnEqualToZero('BPMNActivity.isDeleted', 0),
       )
       .filterIf(!!filter.search && filter.search !== '%%', {
         name: { [Op.like]: filter.search },
@@ -130,11 +117,9 @@ export class ActivityService {
         ])
         .filter({ id })
         .filter(
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('BPMNActivity.isDeleted'), 0),
-            {
-              [Op.eq]: 0,
-            },
+          this.seqHelp.whereIsNullColumnEqualToZero(
+            'BPMNActivity.isDeleted',
+            0,
           ),
         )
         .build(),

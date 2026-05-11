@@ -19,6 +19,7 @@ import { EntityTypeService } from '@rahino/eav/admin/entity-type/entity-type.ser
 import { ProductService } from '../../product-section/product/product.service';
 import { UserInventoryService } from '@rahino/ecommerce/user/inventory/user-inventory.service';
 import { ECDiscountConditionType } from '@rahino/localdatabase/models';
+import { SequelizeHelpService } from '@rahino/commontools/sequelize-help/sequelize-help.service';
 
 @Injectable()
 export class DiscountConditionService {
@@ -31,6 +32,7 @@ export class DiscountConditionService {
     private readonly entityTypeService: EntityTypeService,
     private readonly productService: ProductService,
     private readonly userInventoryService: UserInventoryService,
+    private readonly seqHelp: SequelizeHelpService,
   ) {}
 
   async findAll(user: User, filter: GetDiscountConditionDto) {
@@ -46,15 +48,9 @@ export class DiscountConditionService {
       ])
       .filter({ discountId: filter.discountId })
       .filter(
-        Sequelize.where(
-          Sequelize.fn(
-            'isnull',
-            Sequelize.col('ECDiscountCondition.isDeleted'),
-            0,
-          ),
-          {
-            [Op.eq]: 0,
-          },
+        this.seqHelp.whereIsNullColumnEqualToZero(
+          'ECDiscountCondition.isDeleted',
+          0,
         ),
       )
       .filter(
@@ -138,15 +134,9 @@ export class DiscountConditionService {
       ])
       .filter({ id: entityId })
       .filter(
-        Sequelize.where(
-          Sequelize.fn(
-            'isnull',
-            Sequelize.col('ECDiscountCondition.isDeleted'),
-            0,
-          ),
-          {
-            [Op.eq]: 0,
-          },
+        this.seqHelp.whereIsNullColumnEqualToZero(
+          'ECDiscountCondition.isDeleted',
+          0,
         ),
       )
       .filter(
@@ -215,15 +205,9 @@ export class DiscountConditionService {
       new QueryOptionsBuilder()
         .filter({ discountId: dto.discountId })
         .filter(
-          Sequelize.where(
-            Sequelize.fn(
-              'isnull',
-              Sequelize.col('ECDiscountCondition.isDeleted'),
-              0,
-            ),
-            {
-              [Op.eq]: 0,
-            },
+          this.seqHelp.whereIsNullColumnEqualToZero(
+            'ECDiscountCondition.isDeleted',
+            0,
           ),
         )
         .filter({ conditionTypeId: DiscountConditionTypeEnum.vendor })
@@ -284,15 +268,9 @@ export class DiscountConditionService {
     const queryBuilder = new QueryOptionsBuilder()
       .filter({ id: entityId })
       .filter(
-        Sequelize.where(
-          Sequelize.fn(
-            'isnull',
-            Sequelize.col('ECDiscountCondition.isDeleted'),
-            0,
-          ),
-          {
-            [Op.eq]: 0,
-          },
+        this.seqHelp.whereIsNullColumnEqualToZero(
+          'ECDiscountCondition.isDeleted',
+          0,
         ),
       )
       .filter(

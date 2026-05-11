@@ -14,6 +14,7 @@ import { ECProvince } from '@rahino/localdatabase/models';
 import { emptyListFilter } from '@rahino/query-filter/provider/constants';
 import { ListFilter } from '@rahino/query-filter';
 import { ECInventory } from '@rahino/localdatabase/models';
+import { SequelizeHelpService } from '@rahino/commontools/sequelize-help/sequelize-help.service';
 
 @Injectable()
 export class InventoryValidationService {
@@ -33,6 +34,7 @@ export class InventoryValidationService {
     private readonly userVendorService: UserVendorService,
     private readonly vendorAddressService: VendorAddressService,
     @Inject(emptyListFilter) private readonly listFilter: ListFilter,
+    private readonly seqHelp: SequelizeHelpService,
   ) {}
 
   async validation(
@@ -57,15 +59,9 @@ export class InventoryValidationService {
           new QueryOptionsBuilder()
             .filter({ id: inventoryDto.id })
             .filter(
-              Sequelize.where(
-                Sequelize.fn(
-                  'isnull',
-                  Sequelize.col('ECInventory.isDeleted'),
-                  0,
-                ),
-                {
-                  [Op.eq]: 0,
-                },
+              this.seqHelp.whereIsNullColumnEqualToZero(
+                'ECInventory.isDeleted',
+                0,
               ),
             )
             .build(),
@@ -180,15 +176,9 @@ export class InventoryValidationService {
           new QueryOptionsBuilder()
             .filter({ id: inventoryDto.guaranteeId })
             .filter(
-              Sequelize.where(
-                Sequelize.fn(
-                  'isnull',
-                  Sequelize.col('ECGuarantee.isDeleted'),
-                  0,
-                ),
-                {
-                  [Op.eq]: 0,
-                },
+              this.seqHelp.whereIsNullColumnEqualToZero(
+                'ECGuarantee.isDeleted',
+                0,
               ),
             )
             .build(),

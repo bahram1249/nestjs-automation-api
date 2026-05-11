@@ -23,6 +23,7 @@ import { ConfigService } from '@nestjs/config';
 import { LogisticPayInterface } from '../interface/logistic-pay.interface';
 import { LogisticPaymentServiceManualWalletPurposeProviderFactory } from '../factory/logistic-payment-service-manual-wallet-purpose-provider.factory';
 import { LocalizationService } from 'apps/main/src/common/localization/localization.service';
+import { SequelizeHelpService } from '@rahino/commontools/sequelize-help/sequelize-help.service';
 
 @Injectable({ scope: Scope.REQUEST })
 export class LogisticWalletService implements LogisticPayInterface {
@@ -37,6 +38,7 @@ export class LogisticWalletService implements LogisticPayInterface {
     private readonly walletPurposeProviderFactory: LogisticPaymentServiceManualWalletPurposeProviderFactory,
     private readonly config: ConfigService,
     private readonly l10n: LocalizationService,
+    private readonly seqHelp: SequelizeHelpService,
   ) {}
 
   async eligbleToRevert(paymentId: bigint): Promise<boolean> {
@@ -55,12 +57,7 @@ export class LogisticWalletService implements LogisticPayInterface {
     const wallet = await this.walletRepo.findOne(
       new QueryOptionsBuilder()
         .filter({ userId: user.id })
-        .filter(
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('isDeleted'), 0),
-            { [Op.eq]: 0 },
-          ),
-        )
+        .filter(this.seqHelp.whereIsNullColumnEqualToZero('isDeleted', 0))
         .transaction(transaction)
         .build(),
     );
@@ -72,12 +69,7 @@ export class LogisticWalletService implements LogisticPayInterface {
     const gateway = await this.gatewayRepo.findOne(
       new QueryOptionsBuilder()
         .filter({ serviceName: 'WalletService' })
-        .filter(
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('isDeleted'), 0),
-            { [Op.eq]: 0 },
-          ),
-        )
+        .filter(this.seqHelp.whereIsNullColumnEqualToZero('isDeleted', 0))
         .build(),
     );
     if (!gateway)
@@ -123,13 +115,9 @@ export class LogisticWalletService implements LogisticPayInterface {
       new QueryOptionsBuilder()
         .filter({ eligibleChargeWallet: true })
         .filter(
-          Sequelize.where(
-            Sequelize.fn(
-              'isnull',
-              Sequelize.col('ECPaymentGateway.isDeleted'),
-              0,
-            ),
-            { [Op.eq]: 0 },
+          this.seqHelp.whereIsNullColumnEqualToZero(
+            'ECPaymentGateway.isDeleted',
+            0,
           ),
         )
         .build(),
@@ -199,12 +187,7 @@ export class LogisticWalletService implements LogisticPayInterface {
     const wallet = await this.walletRepo.findOne(
       new QueryOptionsBuilder()
         .filter({ userId: user.id })
-        .filter(
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('isDeleted'), 0),
-            { [Op.eq]: 0 },
-          ),
-        )
+        .filter(this.seqHelp.whereIsNullColumnEqualToZero('isDeleted', 0))
         .build(),
     );
     if (!wallet)

@@ -13,6 +13,7 @@ import {
 import { User } from '@rahino/database';
 import { LocalizationService } from 'apps/main/src/common/localization';
 import { LogisticUserRoleHandlerService } from '../logistic-user-role-handler/logistic-user-role-handler.service';
+import { SequelizeHelpService } from '@rahino/commontools/sequelize-help/sequelize-help.service';
 
 @Injectable()
 export class AdminLogisticShipmentWayService {
@@ -24,6 +25,7 @@ export class AdminLogisticShipmentWayService {
     private readonly sequelize: Sequelize,
     private readonly localizationService: LocalizationService,
     private readonly logisticUserRoleHandlerService: LogisticUserRoleHandlerService,
+    private readonly seqHelp: SequelizeHelpService,
   ) {}
 
   async findAll(
@@ -39,15 +41,9 @@ export class AdminLogisticShipmentWayService {
     let queryBuilder = new QueryOptionsBuilder()
 
       .filter(
-        Sequelize.where(
-          Sequelize.fn(
-            'isnull',
-            Sequelize.col('ECLogisticShipmentWay.isDeleted'),
-            0,
-          ),
-          {
-            [Op.eq]: 0,
-          },
+        this.seqHelp.whereIsNullColumnEqualToZero(
+          'ECLogisticShipmentWay.isDeleted',
+          0,
         ),
       )
       .filter({ logisticId: logisticId });
@@ -102,15 +98,9 @@ export class AdminLogisticShipmentWayService {
           new QueryOptionsBuilder()
             .filter({ logisticId: dto.logisticId })
             .filter(
-              Sequelize.where(
-                Sequelize.fn(
-                  'isnull',
-                  Sequelize.col('ECLogisticShipmentWay.isDeleted'),
-                  0,
-                ),
-                {
-                  [Op.eq]: 0,
-                },
+              this.seqHelp.whereIsNullColumnEqualToZero(
+                'ECLogisticShipmentWay.isDeleted',
+                0,
               ),
             )
             .filter({
@@ -158,15 +148,9 @@ export class AdminLogisticShipmentWayService {
               orderShipmentWayId: shipmentWayDetail.orderShipmentWayId,
             })
             .filter(
-              Sequelize.where(
-                Sequelize.fn(
-                  'isnull',
-                  Sequelize.col('ECLogisticShipmentWay.isDeleted'),
-                  0,
-                ),
-                {
-                  [Op.eq]: 0,
-                },
+              this.seqHelp.whereIsNullColumnEqualToZero(
+                'ECLogisticShipmentWay.isDeleted',
+                0,
               ),
             )
             .transaction(transaction)

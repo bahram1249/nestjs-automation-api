@@ -15,6 +15,7 @@ import { Op, Sequelize } from 'sequelize';
 import { ConfigService } from '@nestjs/config';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import { LocalizationService } from 'apps/main/src/common/localization';
+import { SequelizeHelpService } from '@rahino/commontools/sequelize-help/sequelize-help.service';
 
 @Injectable()
 export class StockAvailabilityInventoryService {
@@ -25,6 +26,7 @@ export class StockAvailabilityInventoryService {
     @InjectMapper() private readonly mapper: Mapper,
     private readonly config: ConfigService,
     private readonly localizationService: LocalizationService,
+    private readonly seqHelp: SequelizeHelpService,
   ) {}
 
   async insert(session: ECUserSession, dto: StockDto) {
@@ -48,20 +50,10 @@ export class StockAvailabilityInventoryService {
           },
         })
         .filter(
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('ECStock.isDeleted'), 0),
-            {
-              [Op.eq]: 0,
-            },
-          ),
+          this.seqHelp.whereIsNullColumnEqualToZero('ECStock.isDeleted', 0),
         )
         .filter(
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('ECStock.isPurchase'), 0),
-            {
-              [Op.eq]: 0,
-            },
-          ),
+          this.seqHelp.whereIsNullColumnEqualToZero('ECStock.isPurchase', 0),
         )
         .build(),
     );
@@ -127,20 +119,10 @@ export class StockAvailabilityInventoryService {
         .filter({ sessionId: session.id })
         .filter({ inventoryId: inventory.id })
         .filter(
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('ECStock.isPurchase'), 0),
-            {
-              [Op.eq]: 0,
-            },
-          ),
+          this.seqHelp.whereIsNullColumnEqualToZero('ECStock.isPurchase', 0),
         )
         .filter(
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('ECStock.isDeleted'), 0),
-            {
-              [Op.eq]: 0,
-            },
-          ),
+          this.seqHelp.whereIsNullColumnEqualToZero('ECStock.isDeleted', 0),
         )
         .filter({
           expire: {
@@ -202,12 +184,7 @@ export class StockAvailabilityInventoryService {
       new QueryOptionsBuilder()
         .filter({ id: stockId })
         .filter(
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('ECStock.isPurchase'), 0),
-            {
-              [Op.eq]: 0,
-            },
-          ),
+          this.seqHelp.whereIsNullColumnEqualToZero('ECStock.isPurchase', 0),
         )
         .build(),
     );

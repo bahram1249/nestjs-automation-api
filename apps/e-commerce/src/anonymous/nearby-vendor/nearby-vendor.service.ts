@@ -7,6 +7,7 @@ import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builde
 import { Op, QueryTypes, Sequelize } from 'sequelize';
 import { Attachment } from '@rahino/database';
 import { NEARBY_SHOPPING_KM } from '@rahino/ecommerce/shared/constants';
+import { SequelizeHelpService } from '@rahino/commontools/sequelize-help/sequelize-help.service';
 
 @Injectable()
 export class NearbyVendorService {
@@ -16,6 +17,7 @@ export class NearbyVendorService {
     @InjectModel(ECVendor) private repository: typeof ECVendor,
     @InjectConnection()
     private readonly sequelize: Sequelize,
+    private readonly seqHelp: SequelizeHelpService,
   ) {}
 
   async findAll(dto: GetNearbyVendorDto) {
@@ -37,12 +39,7 @@ export class NearbyVendorService {
         ),
       )
       .filter(
-        Sequelize.where(
-          Sequelize.fn('isnull', Sequelize.col('ECVendor.isDeleted'), 0),
-          {
-            [Op.eq]: 0,
-          },
-        ),
+        this.seqHelp.whereIsNullColumnEqualToZero('ECVendor.isDeleted', 0),
       )
 
       .replacements(replacements);

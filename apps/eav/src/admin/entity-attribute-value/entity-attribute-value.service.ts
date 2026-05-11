@@ -8,6 +8,7 @@ import { EAVEntityAttribute } from '@rahino/localdatabase/models';
 import { EAVAttribute } from '@rahino/localdatabase/models';
 import { EAVAttributeValue } from '@rahino/localdatabase/models';
 import { EAVEntityAttributeValue } from '@rahino/localdatabase/models';
+import { SequelizeHelpService } from '@rahino/commontools/sequelize-help/sequelize-help.service';
 
 @Injectable()
 export class EntityAttributeValueService {
@@ -22,6 +23,7 @@ export class EntityAttributeValueService {
     private entityAttributeValueRepository: typeof EAVEntityAttributeValue,
     @InjectModel(EAVAttribute)
     private attributeRepository: typeof EAVAttribute,
+    private readonly seqHelp: SequelizeHelpService,
   ) {}
 
   async validation(
@@ -85,14 +87,7 @@ export class EntityAttributeValueService {
           .filter({
             id: findItem.val,
           })
-          .filter(
-            Sequelize.where(
-              Sequelize.fn('isnull', Sequelize.col('isDeleted'), 0),
-              {
-                [Op.eq]: 0,
-              },
-            ),
-          )
+          .filter(this.seqHelp.whereIsNullColumnEqualToZero('isDeleted', 0))
           .build(),
       );
       if (!attributeValue) {
@@ -143,14 +138,7 @@ export class EntityAttributeValueService {
     const entityType = await this.entityTypeRepository.findOne(
       new QueryOptionsBuilder()
         .filter({ id: entityTypeId })
-        .filter(
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('isDeleted'), 0),
-            {
-              [Op.eq]: 0,
-            },
-          ),
-        )
+        .filter(this.seqHelp.whereIsNullColumnEqualToZero('isDeleted', 0))
         .build(),
     );
     if (!entityType) {
@@ -167,14 +155,7 @@ export class EntityAttributeValueService {
     for (const attribute of entityAttributes) {
       const findAttribute = await this.attributeRepository.findOne(
         new QueryOptionsBuilder()
-          .filter(
-            Sequelize.where(
-              Sequelize.fn('isnull', Sequelize.col('isDeleted'), 0),
-              {
-                [Op.eq]: 0,
-              },
-            ),
-          )
+          .filter(this.seqHelp.whereIsNullColumnEqualToZero('isDeleted', 0))
           .filter({ id: attribute.id })
           .build(),
       );

@@ -12,6 +12,7 @@ import { Op } from 'sequelize';
 import { LocalizationService } from 'apps/main/src/common/localization';
 import { GSRequestCategoryEnum } from '@rahino/guarantee/shared/request-category';
 import { GSWarrantyServiceTypeEnum } from '@rahino/guarantee/shared/warranty-service-type';
+import { SequelizeHelpService } from '@rahino/commontools/sequelize-help/sequelize-help.service';
 
 @Injectable()
 export class CartableWarrantyServiceTypeService {
@@ -21,6 +22,7 @@ export class CartableWarrantyServiceTypeService {
     @InjectModel(GSRequest)
     private readonly requestRepository: typeof GSRequest,
     private readonly localizationService: LocalizationService,
+    private readonly seqHelp: SequelizeHelpService,
   ) {}
 
   async findAll(requestId: bigint, filter: GetWarrantyServiceTypeDto) {
@@ -28,12 +30,7 @@ export class CartableWarrantyServiceTypeService {
       new QueryOptionsBuilder()
         .filter({ id: requestId })
         .filter(
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('GSRequest.isDeleted'), 0),
-            {
-              [Op.eq]: 0,
-            },
-          ),
+          this.seqHelp.whereIsNullColumnEqualToZero('GSRequest.isDeleted', 0),
         )
         .build(),
     );

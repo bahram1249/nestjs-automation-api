@@ -15,6 +15,7 @@ import { Attachment } from '@rahino/database';
 import { Op, Sequelize } from 'sequelize';
 import { BuffetMenu } from '@rahino/localdatabase/models';
 import { BuffetMenuCategory } from '@rahino/localdatabase/models';
+import { SequelizeHelpService } from '@rahino/commontools/sequelize-help/sequelize-help.service';
 
 @Injectable()
 export class ReserveService {
@@ -25,6 +26,7 @@ export class ReserveService {
     private readonly buffetRepository: typeof Buffet,
     @InjectModel(BuffetMenuCategory)
     private readonly buffetMenuCategoryRepository: typeof BuffetMenuCategory,
+    private readonly seqHelp: SequelizeHelpService,
   ) {}
   async addOrder(req: Request, user: User, query: OrderDto) {
     const reserve = await this.repository.findOne(
@@ -65,12 +67,7 @@ export class ReserveService {
                 {
                   buffetId: buffet.id,
                 },
-                Sequelize.where(
-                  Sequelize.fn('isnull', Sequelize.col('menus.isDeleted'), 0),
-                  {
-                    [Op.eq]: 0,
-                  },
-                ),
+                this.seqHelp.whereIsNullColumnEqualToZero('menus.isDeleted', 0),
               ],
             },
           },

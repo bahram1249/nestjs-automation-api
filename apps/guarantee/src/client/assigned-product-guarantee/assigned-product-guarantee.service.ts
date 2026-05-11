@@ -20,6 +20,7 @@ import {
 } from '@rahino/localdatabase/models';
 import { User } from '@rahino/database';
 import { LocalizationService } from 'apps/main/src/common/localization';
+import { SequelizeHelpService } from '@rahino/commontools/sequelize-help/sequelize-help.service';
 
 @Injectable()
 export class AssignedProductGuaranteeService {
@@ -29,6 +30,7 @@ export class AssignedProductGuaranteeService {
     @InjectModel(GSAssignedGuarantee)
     private readonly asssignedGuaranteeRepository: typeof GSAssignedGuarantee,
     private readonly localizationService: LocalizationService,
+    private readonly seqHelp: SequelizeHelpService,
   ) {}
 
   async findAll(user: User, guaranteeId, filter: GetAssignedProductGuarantee) {
@@ -37,15 +39,9 @@ export class AssignedProductGuaranteeService {
         .filter({ guaranteeId: guaranteeId })
         .filter({ userId: user.id })
         .filter(
-          Sequelize.where(
-            Sequelize.fn(
-              'isnull',
-              Sequelize.col('GSAssignedGuarantee.isDeleted'),
-              0,
-            ),
-            {
-              [Op.eq]: 0,
-            },
+          this.seqHelp.whereIsNullColumnEqualToZero(
+            'GSAssignedGuarantee.isDeleted',
+            0,
           ),
         )
         .build(),
@@ -64,15 +60,9 @@ export class AssignedProductGuaranteeService {
         assignedGuaranteeId: assignedGuarantee.id,
       })
       .filter(
-        Sequelize.where(
-          Sequelize.fn(
-            'isnull',
-            Sequelize.col('GSAssignedProductAssignedGuarantee.isDeleted'),
-            0,
-          ),
-          {
-            [Op.eq]: 0,
-          },
+        this.seqHelp.whereIsNullColumnEqualToZero(
+          'GSAssignedProductAssignedGuarantee.isDeleted',
+          0,
         ),
       );
 
@@ -148,15 +138,9 @@ export class AssignedProductGuaranteeService {
         ])
         .filter({ id: entityId })
         .filter(
-          Sequelize.where(
-            Sequelize.fn(
-              'isnull',
-              Sequelize.col('GSAssignedProductAssignedGuarantee.isDeleted'),
-              0,
-            ),
-            {
-              [Op.eq]: 0,
-            },
+          this.seqHelp.whereIsNullColumnEqualToZero(
+            'GSAssignedProductAssignedGuarantee.isDeleted',
+            0,
           ),
         )
         .build(),
@@ -179,15 +163,9 @@ export class AssignedProductGuaranteeService {
         .filter({ userId: user.id })
         .filter({ guaranteeId: dto.guaranteeId })
         .filter(
-          Sequelize.where(
-            Sequelize.fn(
-              'isnull',
-              Sequelize.col('GSAssignedGuarantee.isDeleted'),
-              0,
-            ),
-            {
-              [Op.eq]: 0,
-            },
+          this.seqHelp.whereIsNullColumnEqualToZero(
+            'GSAssignedGuarantee.isDeleted',
+            0,
           ),
         )
         .build(),

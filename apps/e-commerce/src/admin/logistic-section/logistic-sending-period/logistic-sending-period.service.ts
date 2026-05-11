@@ -19,6 +19,7 @@ import { User } from '@rahino/database';
 import { PermissionService } from '@rahino/core/user/permission/permission.service';
 import { LocalizationService } from 'apps/main/src/common/localization';
 import { isNotNull } from '@rahino/commontools';
+import { SequelizeHelpService } from '@rahino/commontools/sequelize-help/sequelize-help.service';
 
 @Injectable()
 export class LogisticSendingPeriodService {
@@ -28,6 +29,7 @@ export class LogisticSendingPeriodService {
     @InjectMapper()
     private readonly mapper: Mapper,
     private readonly localizationService: LocalizationService,
+    private readonly seqHelp: SequelizeHelpService,
   ) {}
 
   async findAll(user: User, filter: GetLogisticSendingPeriodDto) {
@@ -55,15 +57,9 @@ export class LogisticSendingPeriodService {
         },
       ])
       .filter(
-        Sequelize.where(
-          Sequelize.fn(
-            'isnull',
-            Sequelize.col('ECLogisticSendingPeriod.isDeleted'),
-            0,
-          ),
-          {
-            [Op.eq]: 0,
-          },
+        this.seqHelp.whereIsNullColumnEqualToZero(
+          'ECLogisticSendingPeriod.isDeleted',
+          0,
         ),
       )
 
@@ -101,15 +97,9 @@ export class LogisticSendingPeriodService {
         id: entityId,
       })
       .filter(
-        Sequelize.where(
-          Sequelize.fn(
-            'isnull',
-            Sequelize.col('ECLogisticSendingPeriod.isDeleted'),
-            0,
-          ),
-          {
-            [Op.eq]: 0,
-          },
+        this.seqHelp.whereIsNullColumnEqualToZero(
+          'ECLogisticSendingPeriod.isDeleted',
+          0,
         ),
       );
 
@@ -137,15 +127,9 @@ export class LogisticSendingPeriodService {
         })
         .filter({ scheduleSendingTypeId: dto.scheduleSendingTypeId })
         .filter(
-          Sequelize.where(
-            Sequelize.fn(
-              'isnull',
-              Sequelize.col('ECLogisticSendingPeriod.isDeleted'),
-              0,
-            ),
-            {
-              [Op.eq]: 0,
-            },
+          this.seqHelp.whereIsNullColumnEqualToZero(
+            'ECLogisticSendingPeriod.isDeleted',
+            0,
           ),
         )
         .filter({
@@ -222,15 +206,9 @@ export class LogisticSendingPeriodService {
         })
         .filter({ scheduleSendingTypeId: dto.scheduleSendingTypeId })
         .filter(
-          Sequelize.where(
-            Sequelize.fn(
-              'isnull',
-              Sequelize.col('ECLogisticSendingPeriod.isDeleted'),
-              0,
-            ),
-            {
-              [Op.eq]: 0,
-            },
+          this.seqHelp.whereIsNullColumnEqualToZero(
+            'ECLogisticSendingPeriod.isDeleted',
+            0,
           ),
         )
         .filter({
@@ -299,15 +277,9 @@ export class LogisticSendingPeriodService {
       new QueryOptionsBuilder()
         .filter({ id: entityId })
         .filter(
-          Sequelize.where(
-            Sequelize.fn(
-              'isnull',
-              Sequelize.col('ECLogisticSendingPeriod.isDeleted'),
-              0,
-            ),
-            {
-              [Op.eq]: 0,
-            },
+          this.seqHelp.whereIsNullColumnEqualToZero(
+            'ECLogisticSendingPeriod.isDeleted',
+            0,
           ),
         )
         .build(),
@@ -339,13 +311,9 @@ export class LogisticSendingPeriodService {
       new QueryOptionsBuilder()
         .filter({ id: entityId })
         .filter(
-          Sequelize.where(
-            Sequelize.fn(
-              'isnull',
-              Sequelize.col('ECLogisticSendingPeriod.isDeleted'),
-              0,
-            ),
-            { [Op.eq]: 0 },
+          this.seqHelp.whereIsNullColumnEqualToZero(
+            'ECLogisticSendingPeriod.isDeleted',
+            0,
           ),
         )
         .build(),

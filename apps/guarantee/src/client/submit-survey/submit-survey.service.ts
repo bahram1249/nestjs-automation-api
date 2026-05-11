@@ -15,6 +15,7 @@ import {
 import { GuaranteeTraverseService } from '@rahino/guarantee/cartable/guarantee-traverse/guarantee-traverse.service';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import { Op } from 'sequelize';
+import { SequelizeHelpService } from '@rahino/commontools/sequelize-help/sequelize-help.service';
 
 @Injectable()
 export class SubmitSurveyService {
@@ -32,6 +33,7 @@ export class SubmitSurveyService {
     private readonly answerRecordRepository: typeof GSAnswerRecord,
     @InjectModel(GSResponse)
     private readonly responseRepository: typeof GSResponse,
+    private readonly seqHelp: SequelizeHelpService,
   ) {}
 
   async traverse(user: User, dto: SubmitSurveyDto) {
@@ -45,12 +47,7 @@ export class SubmitSurveyService {
     const questions = await this.questionRepository.findAll(
       new QueryOptionsBuilder()
         .filter(
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('GSQuestion.isDeleted'), 0),
-            {
-              [Op.eq]: 0,
-            },
-          ),
+          this.seqHelp.whereIsNullColumnEqualToZero('GSQuestion.isDeleted', 0),
         )
         .include([{ model: GSAnswerOption, as: 'answerOptions' }])
         .build(),

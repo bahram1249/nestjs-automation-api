@@ -18,6 +18,7 @@ import * as _ from 'lodash';
 import { LocalizationService } from 'apps/main/src/common/localization';
 import { GSUnitPriceEnum } from '@rahino/guarantee/shared/unit-price';
 import { VipBundleTypeService } from '../vip-bundle-types/vip-bundle-type.service';
+import { SequelizeHelpService } from '@rahino/commontools/sequelize-help/sequelize-help.service';
 
 @Injectable()
 export class RewardRuleService {
@@ -30,6 +31,7 @@ export class RewardRuleService {
     @InjectMapper()
     private readonly mapper: Mapper,
     private readonly vipBundleTypeService: VipBundleTypeService,
+    private readonly seqHelp: SequelizeHelpService,
   ) {}
 
   async findAll(filter: GetRewardRuleDto) {
@@ -40,12 +42,7 @@ export class RewardRuleService {
         },
       })
       .filter(
-        Sequelize.where(
-          Sequelize.fn('isnull', Sequelize.col('GSRewardRule.isDeleted'), 0),
-          {
-            [Op.eq]: 0,
-          },
-        ),
+        this.seqHelp.whereIsNullColumnEqualToZero('GSRewardRule.isDeleted', 0),
       );
 
     const count = await this.repository.count(query.build());
@@ -97,11 +94,9 @@ export class RewardRuleService {
         .include([{ model: GSUnitPrice, as: 'unitPrice' }])
         .thenInclude({ model: GSVipBundleType, as: 'vipBundleType' })
         .filter(
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('GSRewardRule.isDeleted'), 0),
-            {
-              [Op.eq]: 0,
-            },
+          this.seqHelp.whereIsNullColumnEqualToZero(
+            'GSRewardRule.isDeleted',
+            0,
           ),
         )
         .filter({ id: entityId })
@@ -148,11 +143,9 @@ export class RewardRuleService {
     const item = await this.repository.findOne(
       new QueryOptionsBuilder()
         .filter(
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('GSRewardRule.isDeleted'), 0),
-            {
-              [Op.eq]: 0,
-            },
+          this.seqHelp.whereIsNullColumnEqualToZero(
+            'GSRewardRule.isDeleted',
+            0,
           ),
         )
         .filter({ id: entityId })

@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
+import { SequelizeHelpService } from '@rahino/commontools/sequelize-help/sequelize-help.service';
 import { VariationPriceEnum } from '@rahino/ecommerce/user/shopping/stock/enum';
 import { ECPaymentGateway } from '@rahino/localdatabase/models';
 import { ListFilter } from '@rahino/query-filter';
@@ -12,20 +13,15 @@ export class PaymentGatewayService {
   constructor(
     @InjectModel(ECPaymentGateway)
     private readonly repository: typeof ECPaymentGateway,
+    private readonly seqHelp: SequelizeHelpService,
   ) {}
   async findAll(filter: ListFilter) {
     let queryBuilder = new QueryOptionsBuilder()
 
       .filter(
-        Sequelize.where(
-          Sequelize.fn(
-            'isnull',
-            Sequelize.col('ECPaymentGateway.isDeleted'),
-            0,
-          ),
-          {
-            [Op.eq]: 0,
-          },
+        this.seqHelp.whereIsNullColumnEqualToZero(
+          'ECPaymentGateway.isDeleted',
+          0,
         ),
       )
       .filter({ variationPriceId: VariationPriceEnum.firstPrice });

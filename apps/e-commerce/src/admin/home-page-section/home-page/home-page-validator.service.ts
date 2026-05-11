@@ -17,6 +17,7 @@ import { BrandContentDto } from './dto/content/brand-content.dto';
 import { AmazingContentDto } from './dto/content/amazing-content.dto';
 import { ProductContentDto } from './dto/content/product-content.dto';
 import { SelectedProductDto } from '@rahino/ecommerce/client/product/dto/selected-product.dto';
+import { SequelizeHelpService } from '@rahino/commontools/sequelize-help/sequelize-help.service';
 
 @Injectable()
 export class HomePageValidatorService {
@@ -30,6 +31,7 @@ export class HomePageValidatorService {
     private readonly brandRepository: typeof ECBrand,
     @InjectModel(ECEntityTypeSort)
     private readonly entityTypeSortRepository: typeof ECEntityTypeSort,
+    private readonly seqHelp: SequelizeHelpService,
   ) {}
 
   async bannerValidator(dto: HomePageDataDto) {
@@ -77,11 +79,9 @@ export class HomePageValidatorService {
       new QueryOptionsBuilder()
         .filter({ id: productContent.entityTypeId })
         .filter(
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('EAVEntityType.isDeleted'), 0),
-            {
-              [Op.eq]: 0,
-            },
+          this.seqHelp.whereIsNullColumnEqualToZero(
+            'EAVEntityType.isDeleted',
+            0,
           ),
         )
         .build(),
@@ -121,12 +121,7 @@ export class HomePageValidatorService {
       new QueryOptionsBuilder()
         .filter({ id: productContent.brandId })
         .filter(
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('ECBrand.isDeleted'), 0),
-            {
-              [Op.eq]: 0,
-            },
-          ),
+          this.seqHelp.whereIsNullColumnEqualToZero('ECBrand.isDeleted', 0),
         )
         .build(),
     );
@@ -176,12 +171,7 @@ export class HomePageValidatorService {
         .filter({ id: attachmentId })
         .filter({ attachmentTypeId: this.homePagePhotoAttachmentType })
         .filter(
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('Attachment.isDeleted'), 0),
-            {
-              [Op.eq]: 0,
-            },
-          ),
+          this.seqHelp.whereIsNullColumnEqualToZero('Attachment.isDeleted', 0),
         )
         .build(),
     );

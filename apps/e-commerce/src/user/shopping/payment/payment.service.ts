@@ -54,6 +54,7 @@ import {
 } from './revert-payment/revert-payment.constants';
 import { CityEnum } from '@rahino/ecommerce/shared/enum/city.enum';
 import { ValidateAddressService } from '../payment-rule/services/validate-address.service';
+import { SequelizeHelpService } from '@rahino/commontools/sequelize-help/sequelize-help.service';
 
 @Injectable()
 export class PaymentService {
@@ -93,6 +94,7 @@ export class PaymentService {
     @InjectModel(ECVendorCommission)
     private readonly vendorCommissionRepository: typeof ECVendorCommission,
     private readonly validateAddressService: ValidateAddressService,
+    private readonly seqHelp: SequelizeHelpService,
   ) {}
 
   async stock(session: ECUserSession, body: StockPaymentDto, user: User) {
@@ -158,15 +160,9 @@ export class PaymentService {
         .filter({ variationPriceId: variationPriceStock.variationPrice.id })
         .filter({ id: body.paymentId })
         .filter(
-          Sequelize.where(
-            Sequelize.fn(
-              'isnull',
-              Sequelize.col('ECPaymentGateway.isDeleted'),
-              0,
-            ),
-            {
-              [Op.eq]: 0,
-            },
+          this.seqHelp.whereIsNullColumnEqualToZero(
+            'ECPaymentGateway.isDeleted',
+            0,
           ),
         )
         .build(),

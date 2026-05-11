@@ -27,6 +27,7 @@ import { InventoryTrackChangeStatusEnum } from '@rahino/ecommerce/shared/enum';
 import { CAL_PRICE_PROVIDER_TOKEN } from '@rahino/ecommerce/admin/product-section/product/price-cal-factory/constants';
 import { ICalPrice } from '@rahino/ecommerce/admin/product-section/product/price-cal-factory/interface/cal-price.interface';
 import { ProductDto } from '@rahino/ecommerce/admin/product-section/product/dto';
+import { SequelizeHelpService } from '@rahino/commontools/sequelize-help/sequelize-help.service';
 
 @Injectable()
 export class InventoryService {
@@ -40,6 +41,7 @@ export class InventoryService {
     private readonly calPriceService: ICalPrice,
     @InjectMapper()
     private readonly mapper: Mapper,
+    private readonly seqHelp: SequelizeHelpService,
   ) {}
 
   async findById(id: bigint) {
@@ -107,11 +109,9 @@ export class InventoryService {
                 as: 'variationPrice',
               },
             ],
-            where: Sequelize.where(
-              Sequelize.fn('isnull', Sequelize.col('firstPrice.isDeleted'), 0),
-              {
-                [Op.eq]: 0,
-              },
+            where: this.seqHelp.whereIsNullColumnEqualToZero(
+              'firstPrice.isDeleted',
+              0,
             ),
           },
           {
@@ -151,12 +151,7 @@ export class InventoryService {
           ],
         })
         .filter(
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('ECInventory.isDeleted'), 0),
-            {
-              [Op.eq]: 0,
-            },
-          ),
+          this.seqHelp.whereIsNullColumnEqualToZero('ECInventory.isDeleted', 0),
         )
         .filter({
           inventoryStatusId: InventoryStatusEnum.available,
@@ -321,12 +316,7 @@ export class InventoryService {
           },
         })
         .filter(
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('ECInventory.isDeleted'), 0),
-            {
-              [Op.eq]: 0,
-            },
-          ),
+          this.seqHelp.whereIsNullColumnEqualToZero('ECInventory.isDeleted', 0),
         )
         .filter({
           productId: productId,

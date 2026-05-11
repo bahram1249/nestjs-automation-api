@@ -17,6 +17,7 @@ import { InjectMapper } from 'automapper-nestjs';
 import { Mapper } from 'automapper-core';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import * as _ from 'lodash';
+import { SequelizeHelpService } from '@rahino/commontools/sequelize-help/sequelize-help.service';
 
 @Injectable()
 export class AttributeService {
@@ -30,6 +31,7 @@ export class AttributeService {
     @InjectModel(EAVEntityType)
     private readonly entityTypeRepository: typeof EAVEntityType,
     @InjectMapper() private readonly mapper: Mapper,
+    private readonly seqHelp: SequelizeHelpService,
   ) {}
 
   async findAll(filter: GetAttributeDto) {
@@ -41,12 +43,7 @@ export class AttributeService {
         },
       })
       .filter(
-        Sequelize.where(
-          Sequelize.fn('isnull', Sequelize.col('EAVAttribute.isDeleted'), 0),
-          {
-            [Op.eq]: 0,
-          },
-        ),
+        this.seqHelp.whereIsNullColumnEqualToZero('EAVAttribute.isDeleted', 0),
       );
     if (filter.attributeTypeId) {
       builder = builder.filter({ attributeTypeId: filter.attributeTypeId });
@@ -87,15 +84,9 @@ export class AttributeService {
               model: EAVAttributeValue,
               as: 'attributeValues',
               required: false,
-              where: Sequelize.where(
-                Sequelize.fn(
-                  'isnull',
-                  Sequelize.col('attributeValues.isDeleted'),
-                  0,
-                ),
-                {
-                  [Op.eq]: 0,
-                },
+              where: this.seqHelp.whereIsNullColumnEqualToZero(
+                'attributeValues.isDeleted',
+                0,
               ),
             },
           ])
@@ -127,26 +118,16 @@ export class AttributeService {
           model: EAVAttributeValue,
           as: 'attributeValues',
           required: false,
-          where: Sequelize.where(
-            Sequelize.fn(
-              'isnull',
-              Sequelize.col('attributeValues.isDeleted'),
-              0,
-            ),
-            {
-              [Op.eq]: 0,
-            },
+          where: this.seqHelp.whereIsNullColumnEqualToZero(
+            'attributeValues.isDeleted',
+            0,
           ),
         },
       ])
       .filter({
         id,
       })
-      .filter(
-        Sequelize.where(Sequelize.fn('isnull', Sequelize.col('isDeleted'), 0), {
-          [Op.eq]: 0,
-        }),
-      )
+      .filter(this.seqHelp.whereIsNullColumnEqualToZero('isDeleted', 0))
       .build();
     const attribute = await this.repository.findOne(options);
     if (!attribute) {
@@ -224,14 +205,7 @@ export class AttributeService {
     const item = await this.repository.findOne(
       new QueryOptionsBuilder()
         .filter({ id })
-        .filter(
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('isDeleted'), 0),
-            {
-              [Op.eq]: 0,
-            },
-          ),
-        )
+        .filter(this.seqHelp.whereIsNullColumnEqualToZero('isDeleted', 0))
         .build(),
     );
     if (!item) {
@@ -296,14 +270,7 @@ export class AttributeService {
     let item = await this.repository.findOne(
       new QueryOptionsBuilder()
         .filter({ id: entityId })
-        .filter(
-          Sequelize.where(
-            Sequelize.fn('isnull', Sequelize.col('isDeleted'), 0),
-            {
-              [Op.eq]: 0,
-            },
-          ),
-        )
+        .filter(this.seqHelp.whereIsNullColumnEqualToZero('isDeleted', 0))
         .build(),
     );
     if (!item) {

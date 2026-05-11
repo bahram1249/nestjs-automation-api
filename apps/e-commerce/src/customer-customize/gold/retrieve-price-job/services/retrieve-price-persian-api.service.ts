@@ -23,6 +23,7 @@ import { InjectQueue } from '@nestjs/bullmq';
 import { Queue } from 'bullmq';
 import * as _ from 'lodash';
 import { DBLogger } from '@rahino/logger';
+import { SequelizeHelpService } from '@rahino/commontools/sequelize-help/sequelize-help.service';
 
 @Injectable()
 export class RetrievePricePersianApiService {
@@ -55,6 +56,7 @@ export class RetrievePricePersianApiService {
     private listFilterFactory: ListFilterV2Factory,
     private readonly config: ConfigService,
     private readonly logger: DBLogger,
+    private readonly seqHelp: SequelizeHelpService,
   ) {}
 
   private async callApiToGetNewPrice() {
@@ -240,12 +242,7 @@ export class RetrievePricePersianApiService {
     const problem = goldCurrentPriceJobProblem.value == 'true';
 
     let queryBuilder = new QueryOptionsBuilder().filter(
-      Sequelize.where(
-        Sequelize.fn('isnull', Sequelize.col('ECInventory.isDeleted'), 0),
-        {
-          [Op.eq]: 0,
-        },
-      ),
+      this.seqHelp.whereIsNullColumnEqualToZero('ECInventory.isDeleted', 0),
     );
 
     const listFilter = await this.listFilterFactory.create();
@@ -262,15 +259,9 @@ export class RetrievePricePersianApiService {
             .limit(listFilter.limit)
             .offset((page - 1) * listFilter.limit)
             .filter(
-              Sequelize.where(
-                Sequelize.fn(
-                  'isnull',
-                  Sequelize.col('ECInventory.isDeleted'),
-                  0,
-                ),
-                {
-                  [Op.eq]: 0,
-                },
+              this.seqHelp.whereIsNullColumnEqualToZero(
+                'ECInventory.isDeleted',
+                0,
               ),
             )
             .build(),
@@ -300,15 +291,9 @@ export class RetrievePricePersianApiService {
         const inventories = await this.inventoryRepository.findAll(
           queryBuilder
             .filter(
-              Sequelize.where(
-                Sequelize.fn(
-                  'isnull',
-                  Sequelize.col('ECInventory.isDeleted'),
-                  0,
-                ),
-                {
-                  [Op.eq]: 0,
-                },
+              this.seqHelp.whereIsNullColumnEqualToZero(
+                'ECInventory.isDeleted',
+                0,
               ),
             )
             .limit(listFilter.limit)
@@ -327,15 +312,9 @@ export class RetrievePricePersianApiService {
           const oldInventoryPrice = await this.inventoryPriceRepository.findOne(
             new QueryOptionsBuilder()
               .filter(
-                Sequelize.where(
-                  Sequelize.fn(
-                    'isnull',
-                    Sequelize.col('ECInventoryPrice.isDeleted'),
-                    0,
-                  ),
-                  {
-                    [Op.eq]: 0,
-                  },
+                this.seqHelp.whereIsNullColumnEqualToZero(
+                  'ECInventoryPrice.isDeleted',
+                  0,
                 ),
               )
               .filter({
