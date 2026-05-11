@@ -97,15 +97,9 @@ export class ProductQueryBuilderService {
         new QueryOptionsBuilder()
           .filter({ id: filter.entityTypeId })
           .filter(
-            Sequelize.where(
-              Sequelize.fn(
-                'isnull',
-                Sequelize.col('EAVEntityType.isDeleted'),
-                0,
-              ),
-              {
-                [Op.eq]: 0,
-              },
+            this.seqHelp.whereIsNullColumnEqualToZero(
+              'EAVEntityType.isDeleted',
+              0,
             ),
           )
           .include([

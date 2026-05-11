@@ -72,10 +72,7 @@ export class PaymentTransactionService {
           this.seqHelp.isnullColumn('ECOrder.totalDiscountFee', 0),
           'totalDiscountFee',
         ],
-        [
-          this.seqHelp.isnullColumn('ECOrder.totalPrice', 0),
-          'totalPrice',
-        ],
+        [this.seqHelp.isnullColumn('ECOrder.totalPrice', 0), 'totalPrice'],
         [
           this.seqHelp.isnullColumn('ECOrder.paymentCommissionAmount', 0),
           'paymentCommissionAmount',

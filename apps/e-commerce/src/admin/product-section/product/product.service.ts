@@ -1049,13 +1049,9 @@ export class ProductService {
                   variationPriceId: VariationPriceIdEnum.firstPrice,
                 })
                 .filter(
-                  Sequelize.where(
-                    Sequelize.fn(
-                      'isnull',
-                      Sequelize.col('ECInventoryPrice.isDeleted'),
-                      0,
-                    ),
-                    { [Op.eq]: 0 },
+                  this.seqHelp.whereIsNullColumnEqualToZero(
+                    'ECInventoryPrice.isDeleted',
+                    0,
                   ),
                 )
                 .transaction(transaction)

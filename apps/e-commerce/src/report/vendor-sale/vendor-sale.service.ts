@@ -86,10 +86,7 @@ export class VendorSaleService {
         'productId',
         'inventoryId',
         'qty',
-        [
-          this.seqHelp.isnullColumn('inventoryPrice.buyPrice', 0),
-          'buyPrice',
-        ],
+        [this.seqHelp.isnullColumn('inventoryPrice.buyPrice', 0), 'buyPrice'],
         [
           Sequelize.fn(
             'isnull',

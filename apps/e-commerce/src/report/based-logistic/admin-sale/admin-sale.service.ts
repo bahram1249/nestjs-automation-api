@@ -49,12 +49,12 @@ export class BasedAdminSaleService {
         'productId',
         'inventoryId',
         'qty',
+        [this.seqHelp.isnullColumn('inventoryPrice.buyPrice', 0), 'buyPrice'],
         [
-          this.seqHelp.isnullColumn('inventoryPrice.buyPrice', 0),
-          'buyPrice',
-        ],
-        [
-          this.seqHelp.isnullColumn('ECLogisticOrderGroupedDetail.productPrice', 0),
+          this.seqHelp.isnullColumn(
+            'ECLogisticOrderGroupedDetail.productPrice',
+            0,
+          ),
           'unitPrice',
         ],
         [

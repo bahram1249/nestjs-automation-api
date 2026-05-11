@@ -140,15 +140,9 @@ export class VendorEntityTypeService {
               required: false,
               where: {
                 [Op.and]: [
-                  Sequelize.where(
-                    Sequelize.fn(
-                      'isnull',
-                      Sequelize.col('subEntityTypes.subEntityTypes.isDeleted'),
-                      0,
-                    ),
-                    {
-                      [Op.eq]: 0,
-                    },
+                  this.seqHelp.whereIsNullColumnEqualToZero(
+                    'subEntityTypes.subEntityTypes.isDeleted',
+                    0,
                   ),
                   Sequelize.literal(
                     ` EXISTS (

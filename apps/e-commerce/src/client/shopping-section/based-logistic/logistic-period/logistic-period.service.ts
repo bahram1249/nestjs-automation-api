@@ -389,15 +389,9 @@ export class LogisticPeriodService {
                     where: {
                       isDefault: true,
                       [Op.and]: [
-                        Sequelize.where(
-                          Sequelize.fn(
-                            'isnull',
-                            Sequelize.col(
-                              'inventory.vendor.vendorLogistic.isDeleted',
-                            ),
-                            0,
-                          ),
-                          { [Op.eq]: 0 },
+                        this.seqHelp.whereIsNullColumnEqualToZero(
+                          'inventory.vendor.vendorLogistic.isDeleted',
+                          0,
                         ),
                       ],
                     },
@@ -491,13 +485,9 @@ export class LogisticPeriodService {
                 model: ECLogisticWeeklyPeriod,
                 as: 'weeklyPeriods',
                 where: [
-                  Sequelize.where(
-                    Sequelize.fn(
-                      'isnull',
-                      Sequelize.col('sendingPeriods.weeklyPeriods.isDeleted'),
-                      0,
-                    ),
-                    { [Op.eq]: 0 },
+                  this.seqHelp.whereIsNullColumnEqualToZero(
+                    'sendingPeriods.weeklyPeriods.isDeleted',
+                    0,
                   ),
                 ],
                 attributes: ['id', 'weekNumber'],
@@ -506,15 +496,9 @@ export class LogisticPeriodService {
                     model: ECLogisticWeeklyPeriodTime,
                     as: 'weeklyPeriodTimes',
                     where: [
-                      Sequelize.where(
-                        Sequelize.fn(
-                          'isnull',
-                          Sequelize.col(
-                            'sendingPeriods.weeklyPeriods.weeklyPeriodTimes.isDeleted',
-                          ),
-                          0,
-                        ),
-                        { [Op.eq]: 0 },
+                      this.seqHelp.whereIsNullColumnEqualToZero(
+                        'sendingPeriods.weeklyPeriods.weeklyPeriodTimes.isDeleted',
+                        0,
                       ),
                     ],
                     required: false,
@@ -525,13 +509,9 @@ export class LogisticPeriodService {
               },
             ],
             where: [
-              Sequelize.where(
-                Sequelize.fn(
-                  'isnull',
-                  Sequelize.col('sendingPeriods.isDeleted'),
-                  0,
-                ),
-                { [Op.eq]: 0 },
+              this.seqHelp.whereIsNullColumnEqualToZero(
+                'sendingPeriods.isDeleted',
+                0,
               ),
               Sequelize.where(this.seqHelp.getDate(), {
                 [Op.between]: [

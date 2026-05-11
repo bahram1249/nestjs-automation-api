@@ -126,15 +126,9 @@ export class InventoryService {
                 as: 'variationPrice',
               },
             ],
-            where: Sequelize.where(
-              Sequelize.fn(
-                'isnull',
-                Sequelize.col('secondaryPrice.isDeleted'),
-                0,
-              ),
-              {
-                [Op.eq]: 0,
-              },
+            where: this.seqHelp.whereIsNullColumnEqualToZero(
+              'secondaryPrice.isDeleted',
+              0,
             ),
           },
         ])

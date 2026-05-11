@@ -393,13 +393,9 @@ export class VendorService {
             where: {
               [Op.and]: [
                 { isDefault: true },
-                Sequelize.where(
-                  Sequelize.fn(
-                    'isnull',
-                    Sequelize.col('vendorLogistic.isDeleted'),
-                    0,
-                  ),
-                  { [Op.eq]: 0 },
+                this.seqHelp.whereIsNullColumnEqualToZero(
+                  'vendorLogistic.isDeleted',
+                  0,
                 ),
               ],
             },
@@ -511,13 +507,9 @@ export class VendorService {
             where: {
               [Op.and]: [
                 { isDefault: true },
-                Sequelize.where(
-                  Sequelize.fn(
-                    'isnull',
-                    Sequelize.col('vendorLogistic.isDeleted'),
-                    0,
-                  ),
-                  { [Op.eq]: 0 },
+                this.seqHelp.whereIsNullColumnEqualToZero(
+                  'vendorLogistic.isDeleted',
+                  0,
                 ),
               ],
             },
@@ -1714,13 +1706,9 @@ export class VendorService {
             where: {
               [Op.and]: [
                 { isDefault: true },
-                Sequelize.where(
-                  Sequelize.fn(
-                    'isnull',
-                    Sequelize.col('vendorLogistic.isDeleted'),
-                    0,
-                  ),
-                  { [Op.eq]: 0 },
+                this.seqHelp.whereIsNullColumnEqualToZero(
+                  'vendorLogistic.isDeleted',
+                  0,
                 ),
               ],
             },

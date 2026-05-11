@@ -245,15 +245,9 @@ export class StockService {
           .attributes(['id', 'name', 'imageUrl'])
           .filter({ variationPriceId: variationPriceStock.variationPrice.id })
           .filter(
-            Sequelize.where(
-              Sequelize.fn(
-                'isnull',
-                Sequelize.col('ECPaymentGateway.isDeleted'),
-                0,
-              ),
-              {
-                [Op.eq]: 0,
-              },
+            this.seqHelp.whereIsNullColumnEqualToZero(
+              'ECPaymentGateway.isDeleted',
+              0,
             ),
           )
           .build(),

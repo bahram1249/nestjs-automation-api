@@ -112,15 +112,9 @@ export class WalletService implements PayInterface {
         new QueryOptionsBuilder()
           .filter({ eligibleChargeWallet: true })
           .filter(
-            Sequelize.where(
-              Sequelize.fn(
-                'isnull',
-                Sequelize.col('ECPaymentGateway.isDeleted'),
-                0,
-              ),
-              {
-                [Op.eq]: 0,
-              },
+            this.seqHelp.whereIsNullColumnEqualToZero(
+              'ECPaymentGateway.isDeleted',
+              0,
             ),
           )
           .build(),
