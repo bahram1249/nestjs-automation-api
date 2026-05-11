@@ -80,11 +80,20 @@ export class SequelizeHelpService {
     });
   }
 
+  sumColumn(columnName: string): Fn {
+    return Sequelize.fn('SUM', Sequelize.col(columnName));
+  }
+
   dateAdd(amount: number | any, unit: string, dateExpr?: any): any {
     const resolvedDate = dateExpr !== undefined ? dateExpr : this.getDate();
     switch (this._dialect) {
       case 'mssql':
-        return Sequelize.fn('DATEADD', Sequelize.literal(unit), amount, resolvedDate);
+        return Sequelize.fn(
+          'DATEADD',
+          Sequelize.literal(unit),
+          amount,
+          resolvedDate,
+        );
       case 'postgres':
         return this.postgresDateAdd(amount, unit, resolvedDate);
       case 'sqlite':
@@ -94,7 +103,11 @@ export class SequelizeHelpService {
     }
   }
 
-  private postgresDateAdd(amount: number | any, unit: string, dateExpr: any): Literal {
+  private postgresDateAdd(
+    amount: number | any,
+    unit: string,
+    dateExpr: any,
+  ): Literal {
     const amountStr = this.extractAmountValue(amount);
     const dateSql = this.stringifyExpr(dateExpr);
     return Sequelize.literal(`${dateSql} + INTERVAL '${amountStr} ${unit}s'`);
@@ -102,8 +115,14 @@ export class SequelizeHelpService {
 
   private sqliteDateAdd(amount: number | any, unit: string, dateExpr: any): Fn {
     const amountStr = this.extractAmountValue(amount);
-    const signedAmount = amountStr.startsWith('-') ? amountStr : `+${amountStr}`;
-    return Sequelize.fn('datetime', dateExpr, Sequelize.literal(`'${signedAmount} ${unit}s'`));
+    const signedAmount = amountStr.startsWith('-')
+      ? amountStr
+      : `+${amountStr}`;
+    return Sequelize.fn(
+      'datetime',
+      dateExpr,
+      Sequelize.literal(`'${signedAmount} ${unit}s'`),
+    );
   }
 
   private extractAmountValue(amount: number | any): string {
@@ -116,7 +135,8 @@ export class SequelizeHelpService {
   private stringifyExpr(expr: any): string {
     if (expr === null || expr === undefined) return 'NULL';
     if (typeof expr === 'string') return `'${expr.replace(/'/g, "''")}'`;
-    if (typeof expr === 'number' || typeof expr === 'boolean') return String(expr);
+    if (typeof expr === 'number' || typeof expr === 'boolean')
+      return String(expr);
     if (typeof expr === 'object') {
       if ('fn' in expr) {
         const fn = expr as any;
@@ -125,7 +145,9 @@ export class SequelizeHelpService {
           fn.fn.toUpperCase() === 'GETDATE'
             ? 'NOW'
             : fn.fn;
-        const args = (fn.args || []).map((a: any) => this.stringifyExpr(a)).join(', ');
+        const args = (fn.args || [])
+          .map((a: any) => this.stringifyExpr(a))
+          .join(', ');
         return `${fnName}(${args})`;
       }
       if ('col' in expr) {

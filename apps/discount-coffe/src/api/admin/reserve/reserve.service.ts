@@ -186,9 +186,7 @@ export class ReserveService {
         });
       }
       const totalPrice: any = await this.buffetReserveDetailRepository.findOne({
-        attributes: [
-          [Sequelize.fn('sum', Sequelize.col('totalPrice')), 'totalPrice'],
-        ],
+        attributes: [[this.seqHelp.sumColumn('totalPrice'), 'totalPrice']],
         group: ['reserveId'],
         where: {
           reserveId: dto.reserveId,

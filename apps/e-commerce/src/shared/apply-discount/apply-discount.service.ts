@@ -480,7 +480,15 @@ export class ApplyDiscountService {
         .filter(
           Sequelize.where(this.seqHelp.getDate(), {
             [Op.between]: [
-              this.seqHelp.dateAdd(Sequelize.literal('-16'), 'minute', Sequelize.fn('isnull', Sequelize.col('ECDiscount.startDate'), this.seqHelp.getDate())),
+              this.seqHelp.dateAdd(
+                Sequelize.literal('-16'),
+                'minute',
+                Sequelize.fn(
+                  'isnull',
+                  Sequelize.col('ECDiscount.startDate'),
+                  this.seqHelp.getDate(),
+                ),
+              ),
               Sequelize.fn(
                 'isnull',
                 Sequelize.col('ECDiscount.endDate'),
@@ -681,7 +689,15 @@ export class ApplyDiscountService {
                 Sequelize.col('ECDiscount.startDate'),
                 this.seqHelp.getDate(),
               ),
-              this.seqHelp.dateAdd(Sequelize.literal('15'), 'minute', Sequelize.fn('isnull', Sequelize.col('ECDiscount.endDate'), this.seqHelp.getDate())),
+              this.seqHelp.dateAdd(
+                Sequelize.literal('15'),
+                'minute',
+                Sequelize.fn(
+                  'isnull',
+                  Sequelize.col('ECDiscount.endDate'),
+                  this.seqHelp.getDate(),
+                ),
+              ),
             ],
           }),
         )

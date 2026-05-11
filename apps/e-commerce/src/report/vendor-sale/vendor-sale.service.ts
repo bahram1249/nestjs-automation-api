@@ -14,6 +14,7 @@ import { ECOrderDetail } from '@rahino/localdatabase/models';
 import { Sequelize } from 'sequelize';
 import { User } from '@rahino/database';
 import { UserVendorService } from '@rahino/ecommerce/user/user-vendor/user-vendor.service';
+import { SequelizeHelpService } from '@rahino/commontools/sequelize-help/sequelize-help.service';
 
 @Injectable()
 export class VendorSaleService {
@@ -25,6 +26,7 @@ export class VendorSaleService {
     private readonly i18n: I18nService<I18nTranslations>,
     private readonly adminSaleQueryBuilder: SaleQueryBuilderService,
     private readonly userVendorService: UserVendorService,
+    private readonly seqHelp: SequelizeHelpService,
   ) {}
 
   async findAll(user: User, filter: GetVendorSaleDto) {
@@ -184,7 +186,7 @@ export class VendorSaleService {
         [
           Sequelize.fn(
             'isnull',
-            Sequelize.fn('sum', Sequelize.col('ECOrderDetail.qty')),
+            this.seqHelp.sumColumn('ECOrderDetail.qty'),
             0,
           ),
           'qty',
@@ -214,7 +216,7 @@ export class VendorSaleService {
         [
           Sequelize.fn(
             'isnull',
-            Sequelize.fn('sum', Sequelize.col('ECOrderDetail.discountFee')),
+            this.seqHelp.sumColumn('ECOrderDetail.discountFee'),
             0,
           ),
           'discountFee',
@@ -222,7 +224,7 @@ export class VendorSaleService {
         [
           Sequelize.fn(
             'isnull',
-            Sequelize.fn('sum', Sequelize.col('ECOrderDetail.totalPrice')),
+            this.seqHelp.sumColumn('ECOrderDetail.totalPrice'),
             0,
           ),
           'totalPrice',
@@ -230,10 +232,7 @@ export class VendorSaleService {
         [
           Sequelize.fn(
             'isnull',
-            Sequelize.fn(
-              'sum',
-              Sequelize.col('ECOrderDetail.commissionAmount'),
-            ),
+            this.seqHelp.sumColumn('ECOrderDetail.commissionAmount'),
             0,
           ),
           'commissionAmount',

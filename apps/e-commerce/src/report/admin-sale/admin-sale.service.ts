@@ -8,6 +8,7 @@ import { I18nTranslations } from 'apps/main/src/generated/i18n.generated';
 import { SaleQueryBuilderService } from '../sale-query-builder/sale-query-builder.service';
 import { ECOrderDetail } from '@rahino/localdatabase/models';
 import { Sequelize } from 'sequelize';
+import { SequelizeHelpService } from '@rahino/commontools/sequelize-help/sequelize-help.service';
 
 @Injectable()
 export class AdminSaleService {
@@ -18,6 +19,7 @@ export class AdminSaleService {
     private readonly orderDetailRepository: typeof ECOrderDetail,
     private readonly i18n: I18nService<I18nTranslations>,
     private readonly adminSaleQueryBuilder: SaleQueryBuilderService,
+    private readonly seqHelp: SequelizeHelpService,
   ) {}
 
   async findAll(filter: GetAdminSaleDto) {
@@ -154,7 +156,7 @@ export class AdminSaleService {
         [
           Sequelize.fn(
             'isnull',
-            Sequelize.fn('sum', Sequelize.col('ECOrderDetail.qty')),
+            this.seqHelp.sumColumn('ECOrderDetail.qty'),
             0,
           ),
           'qty',
@@ -184,7 +186,7 @@ export class AdminSaleService {
         [
           Sequelize.fn(
             'isnull',
-            Sequelize.fn('sum', Sequelize.col('ECOrderDetail.discountFee')),
+            this.seqHelp.sumColumn('ECOrderDetail.discountFee'),
             0,
           ),
           'discountFee',
@@ -192,7 +194,7 @@ export class AdminSaleService {
         [
           Sequelize.fn(
             'isnull',
-            Sequelize.fn('sum', Sequelize.col('ECOrderDetail.totalPrice')),
+            this.seqHelp.sumColumn('ECOrderDetail.totalPrice'),
             0,
           ),
           'totalPrice',
@@ -200,10 +202,7 @@ export class AdminSaleService {
         [
           Sequelize.fn(
             'isnull',
-            Sequelize.fn(
-              'sum',
-              Sequelize.col('ECOrderDetail.commissionAmount'),
-            ),
+            this.seqHelp.sumColumn('ECOrderDetail.commissionAmount'),
             0,
           ),
           'commissionAmount',

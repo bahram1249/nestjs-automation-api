@@ -535,7 +535,11 @@ export class LogisticPeriodService {
               ),
               Sequelize.where(this.seqHelp.getDate(), {
                 [Op.between]: [
-                  this.seqHelp.dateAdd(-7, 'day', Sequelize.col('sendingPeriods.startDate')),
+                  this.seqHelp.dateAdd(
+                    -7,
+                    'day',
+                    Sequelize.col('sendingPeriods.startDate'),
+                  ),
                   Sequelize.col('sendingPeriods.endDate'),
                 ],
               }),

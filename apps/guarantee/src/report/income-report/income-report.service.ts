@@ -103,7 +103,7 @@ export class IncomeReportService {
         [
           Sequelize.fn(
             'isnull',
-            Sequelize.fn('sum', Sequelize.col('representativeSharePercent')),
+            this.seqHelp.sumColumn('representativeSharePercent'),
             0,
           ),
           'representativeSharePercent',
@@ -111,7 +111,7 @@ export class IncomeReportService {
         [
           Sequelize.fn(
             'isnull',
-            Sequelize.fn('sum', Sequelize.col('sumOfSolutionIncludeWarranty')),
+            this.seqHelp.sumColumn('sumOfSolutionIncludeWarranty'),
             0,
           ),
           'sumOfSolutionIncludeWarranty',
@@ -119,7 +119,7 @@ export class IncomeReportService {
         [
           Sequelize.fn(
             'isnull',
-            Sequelize.fn('sum', Sequelize.col('sumOfSolutionOutOfWarranty')),
+            this.seqHelp.sumColumn('sumOfSolutionOutOfWarranty'),
             0,
           ),
           'sumOfSolutionOutOfWarranty',
@@ -127,7 +127,7 @@ export class IncomeReportService {
         [
           Sequelize.fn(
             'isnull',
-            Sequelize.fn('sum', Sequelize.col('sumOfPartIncludeWarranty')),
+            this.seqHelp.sumColumn('sumOfPartIncludeWarranty'),
             0,
           ),
           'sumOfPartIncludeWarranty',
@@ -135,7 +135,7 @@ export class IncomeReportService {
         [
           Sequelize.fn(
             'isnull',
-            Sequelize.fn('sum', Sequelize.col('sumOfPartOutOfWarranty')),
+            this.seqHelp.sumColumn('sumOfPartOutOfWarranty'),
             0,
           ),
           'sumOfPartOutOfWarranty',
@@ -143,29 +143,19 @@ export class IncomeReportService {
         [
           Sequelize.fn(
             'isnull',
-            Sequelize.fn(
-              'sum',
-              Sequelize.col('atLeastPayFromCustomerForOutOfWarranty'),
-            ),
+            this.seqHelp.sumColumn('atLeastPayFromCustomerForOutOfWarranty'),
             0,
           ),
           'atLeastPayFromCustomerForOutOfWarranty',
         ],
         [
-          Sequelize.fn(
-            'isnull',
-            Sequelize.fn('sum', Sequelize.col('givenCashPayment')),
-            0,
-          ),
+          Sequelize.fn('isnull', this.seqHelp.sumColumn('givenCashPayment'), 0),
           'givenCashPayment',
         ],
         [
           Sequelize.fn(
             'isnull',
-            Sequelize.fn(
-              'sum',
-              Sequelize.col('extraCashPaymentForUnavailableVip'),
-            ),
+            this.seqHelp.sumColumn('extraCashPaymentForUnavailableVip'),
             0,
           ),
           'extraCashPaymentForUnavailableVip',
@@ -173,7 +163,7 @@ export class IncomeReportService {
         [
           Sequelize.fn(
             'isnull',
-            Sequelize.fn('sum', Sequelize.col('organizationToCompany')),
+            this.seqHelp.sumColumn('organizationToCompany'),
             0,
           ),
           'organizationToCompany',
@@ -181,7 +171,7 @@ export class IncomeReportService {
         [
           Sequelize.fn(
             'isnull',
-            Sequelize.fn('sum', Sequelize.col('companyToOrganization')),
+            this.seqHelp.sumColumn('companyToOrganization'),
             0,
           ),
           'companyToOrganization',
@@ -189,7 +179,7 @@ export class IncomeReportService {
         [
           Sequelize.fn(
             'isnull',
-            Sequelize.fn('sum', Sequelize.col('sumOfOrganizationToCompany')),
+            this.seqHelp.sumColumn('sumOfOrganizationToCompany'),
             0,
           ),
           'sumOfOrganizationToCompany',
@@ -197,7 +187,7 @@ export class IncomeReportService {
         [
           Sequelize.fn(
             'isnull',
-            Sequelize.fn('sum', Sequelize.col('sumOfCompanyToOrganization')),
+            this.seqHelp.sumColumn('sumOfCompanyToOrganization'),
             0,
           ),
           'sumOfCompanyToOrganization',
