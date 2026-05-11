@@ -207,15 +207,9 @@ export class TotalOrderService {
         new QueryOptionsBuilder()
           .filter({ id: detailId })
           .filter(
-            Sequelize.where(
-              Sequelize.fn(
-                'isnull',
-                Sequelize.col('ECOrderDetail.isDeleted'),
-                0,
-              ),
-              {
-                [Op.eq]: 0,
-              },
+            this.seqHelp.whereIsNullColumnEqualToZero(
+              'ECOrderDetail.isDeleted',
+              0,
             ),
           )
           .transaction(transaction)
@@ -389,15 +383,9 @@ export class TotalOrderService {
         new QueryOptionsBuilder()
           .filter({ id: detailId })
           .filter(
-            Sequelize.where(
-              Sequelize.fn(
-                'isnull',
-                Sequelize.col('ECOrderDetail.isDeleted'),
-                0,
-              ),
-              {
-                [Op.eq]: 0,
-              },
+            this.seqHelp.whereIsNullColumnEqualToZero(
+              'ECOrderDetail.isDeleted',
+              0,
             ),
           )
           .transaction(transaction)

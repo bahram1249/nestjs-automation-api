@@ -10,6 +10,7 @@ import { ECVendor } from '@rahino/localdatabase/models';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import { SMS_SERVICE } from '@rahino/sms/contants';
 import { SmsService } from '@rahino/sms/sms.service';
+import { SequelizeHelpService } from '@rahino/commontools/sequelize-help/sequelize-help.service';
 import { Op, Sequelize, Transaction } from 'sequelize';
 import * as moment from 'moment-jalaali';
 
@@ -25,6 +26,7 @@ export class ECommmerceSmsService {
     private readonly orderRepository: typeof ECOrder,
     @InjectModel(ECVendor)
     private readonly vendorRepository: typeof ECVendor,
+    private readonly seqHelp: SequelizeHelpService,
   ) {}
 
   async loginSms(text: string, to: string) {
@@ -162,15 +164,9 @@ export class ECommmerceSmsService {
                   {
                     isDefault: true,
                   },
-                  Sequelize.where(
-                    Sequelize.fn(
-                      'isnull',
-                      Sequelize.col('vendorUser.isDeleted'),
-                      0,
-                    ),
-                    {
-                      [Op.eq]: 0,
-                    },
+                  this.seqHelp.whereIsNullColumnEqualToZero(
+                    'vendorUser.isDeleted',
+                    0,
                   ),
                 ],
               },

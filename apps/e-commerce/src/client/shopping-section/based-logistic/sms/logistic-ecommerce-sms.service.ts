@@ -9,6 +9,7 @@ import { ECLogisticOrderGroupedDetail } from '@rahino/localdatabase/models/ecomm
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import { SMS_SERVICE } from '@rahino/sms/contants';
 import { SmsService } from '@rahino/sms/sms.service';
+import { SequelizeHelpService } from '@rahino/commontools/sequelize-help/sequelize-help.service';
 import { Op, Sequelize, Transaction } from 'sequelize';
 import * as moment from 'moment-jalaali';
 import { ECVendor, ECVendorUser } from '@rahino/localdatabase/models';
@@ -29,6 +30,7 @@ export class LogisticEcommerceSmsService {
     private readonly groupedDetailRepository: typeof ECLogisticOrderGroupedDetail,
     @InjectModel(ECVendor)
     private readonly vendorRepository: typeof ECVendor,
+    private readonly seqHelp: SequelizeHelpService,
   ) {}
 
   async successfulPayment(text: string, to: string) {
@@ -122,13 +124,9 @@ export class LogisticEcommerceSmsService {
             where: {
               [Op.and]: [
                 { isDefault: true },
-                Sequelize.where(
-                  Sequelize.fn(
-                    'isnull',
-                    Sequelize.col('vendorUser.isDeleted'),
-                    0,
-                  ),
-                  { [Op.eq]: 0 },
+                this.seqHelp.whereIsNullColumnEqualToZero(
+                  'vendorUser.isDeleted',
+                  0,
                 ),
               ],
             },

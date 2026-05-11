@@ -903,13 +903,9 @@ export class ProductService {
                   new QueryOptionsBuilder()
                     .filter({ slug: newSlug })
                     .filter(
-                      Sequelize.where(
-                        Sequelize.fn(
-                          'isnull',
-                          Sequelize.col('ECProduct.isDeleted'),
-                          0,
-                        ),
-                        { [Op.eq]: 0 },
+                      this.seqHelp.whereIsNullColumnEqualToZero(
+                        'ECProduct.isDeleted',
+                        0,
                       ),
                     )
                     .filter({ id: { [Op.ne]: productId } })

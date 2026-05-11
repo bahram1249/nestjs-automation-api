@@ -5,6 +5,7 @@ import { User } from '@rahino/database';
 import { ECUserSession } from '@rahino/localdatabase/models';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import * as randomstring from 'randomstring';
+import { SequelizeHelpService } from '@rahino/commontools/sequelize-help/sequelize-help.service';
 import { Op, Sequelize } from 'sequelize';
 import * as _ from 'lodash';
 
@@ -14,6 +15,7 @@ export class SessionService {
     @InjectModel(ECUserSession)
     private readonly userSessionRepository: typeof ECUserSession,
     private readonly config: ConfigService,
+    private readonly seqHelp: SequelizeHelpService,
   ) {}
   async getSession(user?: User) {
     let session: ECUserSession = null;
@@ -21,16 +23,10 @@ export class SessionService {
       session = await this.userSessionRepository.findOne(
         new QueryOptionsBuilder()
           .filter(
-            Sequelize.where(
-              Sequelize.fn(
-                'isnull',
-                Sequelize.col('ECUserSession.isDeleted'),
+            this.seqHelp.whereIsNullColumnEqualToZero(
+                'ECUserSession.isDeleted',
                 0,
               ),
-              {
-                [Op.eq]: 0,
-              },
-            ),
           )
           .filter({
             userId: user.id,
@@ -62,16 +58,10 @@ export class SessionService {
         new QueryOptionsBuilder()
           .filter({ id: random })
           .filter(
-            Sequelize.where(
-              Sequelize.fn(
-                'isnull',
-                Sequelize.col('ECUserSession.isDeleted'),
+            this.seqHelp.whereIsNullColumnEqualToZero(
+                'ECUserSession.isDeleted',
                 0,
               ),
-              {
-                [Op.eq]: 0,
-              },
-            ),
           )
           .build(),
       );
