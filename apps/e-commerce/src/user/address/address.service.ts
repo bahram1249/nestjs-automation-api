@@ -373,15 +373,9 @@ export class AddressService {
           .filter({ id: dto.neighborhoodId })
           .filter({ cityId: dto.cityId })
           .filter(
-            Sequelize.where(
-              Sequelize.fn(
-                'isnull',
-                Sequelize.col('ECNeighborhood.isDeleted'),
-                0,
-              ),
-              {
-                [Op.eq]: 0,
-              },
+            this.seqHelp.whereIsNullColumnEqualToZero(
+              'ECNeighborhood.isDeleted',
+              0,
             ),
           )
           .build(),
@@ -518,15 +512,9 @@ export class AddressService {
           .filter({ id: dto.neighborhoodId })
           .filter({ cityId: dto.cityId })
           .filter(
-            Sequelize.where(
-              Sequelize.fn(
-                'isnull',
-                Sequelize.col('ECNeighborhood.isDeleted'),
-                0,
-              ),
-              {
-                [Op.eq]: 0,
-              },
+            this.seqHelp.whereIsNullColumnEqualToZero(
+              'ECNeighborhood.isDeleted',
+              0,
             ),
           )
           .build(),
@@ -694,7 +682,6 @@ export class AddressService {
         )
         .build(),
     );
-
     if (!province) {
       throw new BadRequestException('the given provinceId not founded!');
     }
@@ -725,15 +712,9 @@ export class AddressService {
           .filter({ id: dto.neighborhoodId })
           .filter({ cityId: dto.cityId })
           .filter(
-            Sequelize.where(
-              Sequelize.fn(
-                'isnull',
-                Sequelize.col('ECNeighborhood.isDeleted'),
-                0,
-              ),
-              {
-                [Op.eq]: 0,
-              },
+            this.seqHelp.whereIsNullColumnEqualToZero(
+              'ECNeighborhood.isDeleted',
+              0,
             ),
           )
           .build(),
@@ -770,4 +751,5 @@ export class AddressService {
       ]),
     };
   }
+
 }

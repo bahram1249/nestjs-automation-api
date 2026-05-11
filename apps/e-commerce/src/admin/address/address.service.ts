@@ -214,15 +214,9 @@ export class AdminAddressService {
           .filter({ id: dto.neighborhoodId })
           .filter({ cityId: dto.cityId })
           .filter(
-            Sequelize.where(
-              Sequelize.fn(
-                'isnull',
-                Sequelize.col('ECNeighborhood.isDeleted'),
-                0,
-              ),
-              {
-                [Op.eq]: 0,
-              },
+            this.seqHelp.whereIsNullColumnEqualToZero(
+              'ECNeighborhood.isDeleted',
+              0,
             ),
           )
           .build(),
