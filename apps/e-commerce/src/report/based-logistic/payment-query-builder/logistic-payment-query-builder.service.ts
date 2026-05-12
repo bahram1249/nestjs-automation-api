@@ -8,11 +8,12 @@ import {
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import { Sequelize, Op, FindAttributeOptions } from 'sequelize';
 import { Order } from '@rahino/query-filter';
+import { SequelizeHelpService } from '@rahino/commontools/sequelize-help/sequelize-help.service';
 
 @Injectable()
 export class LogisticPaymentQueryBuilderService {
   private builder: QueryOptionsBuilder;
-  constructor() {
+  constructor(private readonly seqHelp: SequelizeHelpService) {
     this.builder = new QueryOptionsBuilder();
   }
 
@@ -41,8 +42,7 @@ export class LogisticPaymentQueryBuilderService {
   addBeginDate(beginDate: string) {
     this.builder.filter(
       Sequelize.where(
-        Sequelize.fn(
-          'cast',
+        this.seqHelp.cast(
           Sequelize.col('ECLogisticOrder.createdAt'),
           'date',
         ),
@@ -56,8 +56,7 @@ export class LogisticPaymentQueryBuilderService {
   addEndDate(endDate: string) {
     this.builder.filter(
       Sequelize.where(
-        Sequelize.fn(
-          'cast',
+        this.seqHelp.cast(
           Sequelize.col('ECLogisticOrder.createdAt'),
           'date',
         ),

@@ -60,8 +60,7 @@ export class CourierService {
             'username',
             'phoneNumber',
             [
-              Sequelize.fn(
-                'CONCAT',
+              this.seqHelp.concat(
                 Sequelize.col('user.firstname'),
                 ' ',
                 Sequelize.col('user.lastname'),
@@ -106,8 +105,7 @@ export class CourierService {
             'username',
             'phoneNumber',
             [
-              Sequelize.fn(
-                'CONCAT',
+              this.seqHelp.concat(
                 Sequelize.col('user.firstname'),
                 ' ',
                 Sequelize.col('user.lastname'),
@@ -145,8 +143,7 @@ export class CourierService {
             'username',
             'phoneNumber',
             [
-              Sequelize.fn(
-                'CONCAT',
+              this.seqHelp.concat(
                 Sequelize.col('user.firstname'),
                 ' ',
                 Sequelize.col('user.lastname'),
@@ -187,8 +184,7 @@ export class CourierService {
             'username',
             'phoneNumber',
             [
-              Sequelize.fn(
-                'CONCAT',
+              this.seqHelp.concat(
                 Sequelize.col('user.firstname'),
                 ' ',
                 Sequelize.col('user.lastname'),

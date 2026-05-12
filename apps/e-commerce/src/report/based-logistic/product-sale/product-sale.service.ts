@@ -70,8 +70,7 @@ export class BasedProductSaleService {
       countQb
         .attributes([
           [
-            Sequelize.fn(
-              'COUNT',
+            this.seqHelp.count(
               Sequelize.literal(
                 'DISTINCT ECLogisticOrderGroupedDetail.productId',
               ),
@@ -86,10 +85,7 @@ export class BasedProductSaleService {
     qb = qb
       .attributes([
         [
-          Sequelize.fn(
-            'sum',
-            Sequelize.col('ECLogisticOrderGroupedDetail.qty'),
-          ),
+          this.seqHelp.sumColumn('ECLogisticOrderGroupedDetail.qty'),
           'qty',
         ],
         'vendorId',

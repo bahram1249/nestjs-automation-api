@@ -8,6 +8,7 @@ import { ProductRepositoryService } from '../product/service/product-repository.
 import { GetProductDto } from '../product/dto';
 import { REQUEST } from '@nestjs/core';
 import { Sequelize } from 'sequelize';
+import { SequelizeHelpService } from '@rahino/commontools/sequelize-help/sequelize-help.service';
 
 @Injectable()
 export class ProductViewService {
@@ -17,6 +18,7 @@ export class ProductViewService {
     @InjectModel(ECProductView)
     private readonly productViewRepository: typeof ECProductView,
     private readonly productRepositoryService: ProductRepositoryService,
+    private readonly seqHelp: SequelizeHelpService,
   ) {}
 
   async getRecentProducts(user: User, filter: GetRecentProductDto) {
@@ -25,12 +27,12 @@ export class ProductViewService {
       .attributes([
         'productId',
         [
-          Sequelize.fn('MAX', Sequelize.col('ECProductView.createdAt')),
+          this.seqHelp.maxColumn('ECProductView.createdAt'),
           'lastSeenAt',
         ],
       ])
       .group(['ECProductView.productId'])
-      .order([Sequelize.fn('MAX', Sequelize.col('createdAt')), 'DESC'])
+      .order([this.seqHelp.maxColumn('createdAt'), 'DESC'])
       //.order({ sortOrder: 'DESC', orderBy: 'cnt' })
 
       .limit(filter.limit)

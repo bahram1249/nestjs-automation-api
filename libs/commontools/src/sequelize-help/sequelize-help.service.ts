@@ -105,6 +105,78 @@ export class SequelizeHelpService {
     return Sequelize.fn('SUM', expression);
   }
 
+  countColumn(columnName: string): Fn {
+    return Sequelize.fn('COUNT', Sequelize.col(columnName));
+  }
+
+  count(expression: any): Fn {
+    return Sequelize.fn('COUNT', expression);
+  }
+
+  avgColumn(columnName: string): Fn {
+    return Sequelize.fn('AVG', Sequelize.col(columnName));
+  }
+
+  avg(expression: any): Fn {
+    return Sequelize.fn('AVG', expression);
+  }
+
+  maxColumn(columnName: string): Fn {
+    return Sequelize.fn('MAX', Sequelize.col(columnName));
+  }
+
+  max(expression: any): Fn {
+    return Sequelize.fn('MAX', expression);
+  }
+
+  minColumn(columnName: string): Fn {
+    return Sequelize.fn('MIN', Sequelize.col(columnName));
+  }
+
+  min(expression: any): Fn {
+    return Sequelize.fn('MIN', expression);
+  }
+
+  concat(...args: any[]): Fn {
+    return Sequelize.fn('CONCAT', ...args);
+  }
+
+  cast(expression: any, asType: string): Fn {
+    return Sequelize.fn('CAST', expression, Sequelize.literal(`AS ${asType}`));
+  }
+
+  convert(expression: any, toType: string, style?: number): any {
+    switch (this._dialect) {
+      case 'mssql':
+        if (style !== undefined) {
+          return Sequelize.fn(
+            'CONVERT',
+            Sequelize.literal(toType),
+            expression,
+            style,
+          );
+        }
+        return Sequelize.fn('CONVERT', Sequelize.literal(toType), expression);
+      case 'postgres':
+      case 'sqlite':
+        return this.cast(expression, toType);
+      default:
+        throw new NotImplementedException('dialect not implemented!');
+    }
+  }
+
+  stringAgg(expression: any, delimiter: string): any {
+    switch (this._dialect) {
+      case 'mssql':
+      case 'postgres':
+        return Sequelize.fn('STRING_AGG', expression, Sequelize.literal(`'${delimiter}'`));
+      case 'sqlite':
+        return Sequelize.fn('group_concat', expression, Sequelize.literal(`'${delimiter}'`));
+      default:
+        throw new NotImplementedException('dialect not implemented!');
+    }
+  }
+
   dateAdd(amount: number | any, unit: string, dateExpr?: any): any {
     const resolvedDate = dateExpr !== undefined ? dateExpr : this.getDate();
     switch (this._dialect) {

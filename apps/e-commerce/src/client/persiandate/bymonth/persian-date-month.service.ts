@@ -3,6 +3,7 @@ import { InjectModel } from '@nestjs/sequelize';
 import { PersianDate } from '@rahino/database';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import { Op, Sequelize } from 'sequelize';
+import { SequelizeHelpService } from '@rahino/commontools/sequelize-help/sequelize-help.service';
 import * as moment from 'moment-jalaali';
 
 @Injectable()
@@ -10,6 +11,7 @@ export class PersianDateMonthService {
   constructor(
     @InjectModel(PersianDate)
     private readonly persianDateRepository: typeof PersianDate,
+    private readonly seqHelp: SequelizeHelpService,
   ) {}
 
   async lastDays() {
@@ -25,7 +27,7 @@ export class PersianDateMonthService {
         })
         .attributes([
           [
-            Sequelize.fn('MAX', Sequelize.col('GregorianDate')),
+            this.seqHelp.maxColumn('GregorianDate'),
             'gregorianDate',
           ],
           'yearMonth',
@@ -55,7 +57,7 @@ export class PersianDateMonthService {
         })
         .attributes([
           [
-            Sequelize.fn('MIN', Sequelize.col('GregorianDate')),
+            this.seqHelp.minColumn('GregorianDate'),
             'gregorianDate',
           ],
           'yearMonth',

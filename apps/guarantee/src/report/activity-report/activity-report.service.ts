@@ -12,12 +12,14 @@ import { GetActivityReportDto } from './dto/get-activity-report.dto';
 import { Op, Sequelize } from 'sequelize';
 import { QueryOptionsBuilder } from '@rahino/query-filter/sequelize-query-builder';
 import { ActivityTypeEnum } from '@rahino/bpmn/modules/activity-type';
+import { SequelizeHelpService } from '@rahino/commontools/sequelize-help/sequelize-help.service';
 
 @Injectable()
 export class ActivityReportService {
   constructor(
     @InjectModel(BPMNRequestHistory)
     private readonly requestHistoryRepository: typeof BPMNRequestHistory,
+    private readonly seqHelp: SequelizeHelpService,
   ) {}
 
   private _buildQuery(dto: GetActivityReportDto) {
@@ -65,12 +67,11 @@ export class ActivityReportService {
       .attributes([
         'BPMNRequestHistory.toActivityId',
         [
-          Sequelize.fn('COUNT', Sequelize.col('BPMNRequestHistory.id')),
+          this.seqHelp.countColumn('BPMNRequestHistory.id'),
           'count',
         ],
         [
-          Sequelize.fn(
-            'STRING_AGG',
+          this.seqHelp.stringAgg(
             Sequelize.col('BPMNRequestHistory.requestId'),
             ',',
           ),

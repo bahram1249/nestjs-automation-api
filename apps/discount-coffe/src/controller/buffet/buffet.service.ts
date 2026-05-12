@@ -166,10 +166,9 @@ export class BuffetService {
         new QueryOptionsBuilder()
           .filter(
             Sequelize.where(Sequelize.col('GregorianDate'), {
-              [Op.eq]: Sequelize.fn(
-                'convert',
-                Sequelize.literal('date'),
+              [Op.eq]: this.seqHelp.convert(
                 this.seqHelp.dateAdd(attempt, 'day'),
+                'date',
                 convertDateFormat,
               ),
             }),
@@ -190,10 +189,9 @@ export class BuffetService {
 
     const endDate = await this.persianDateRepository.findOne({
       where: Sequelize.where(Sequelize.col('GregorianDate'), {
-        [Op.eq]: Sequelize.fn(
-          'convert',
-          Sequelize.literal('date'),
+        [Op.eq]:         this.seqHelp.convert(
           this.seqHelp.dateAdd(increase, 'day'),
+          'date',
           convertDateFormat,
         ),
       }),
@@ -203,12 +201,11 @@ export class BuffetService {
       new QueryOptionsBuilder()
         .attributes([
           [
-            Sequelize.fn(
-              'convert',
-              Sequelize.literal('varchar'),
-              Sequelize.col('ignoreDate'),
-              111,
-            ),
+              this.seqHelp.convert(
+                this.seqHelp.dateAdd(attempt, 'day'),
+                'date',
+                convertDateFormat,
+              ),
             'ignoreDate',
           ],
         ])

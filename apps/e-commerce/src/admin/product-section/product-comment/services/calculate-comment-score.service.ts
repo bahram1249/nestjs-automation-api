@@ -39,12 +39,12 @@ export class CalculateCommentScoreService {
         .attributes([
           [
             this.seqHelp.isnull(
-              Sequelize.fn('avg', Sequelize.col('ECProductCommentFactor.score')),
+              this.seqHelp.avgColumn('ECProductCommentFactor.score'),
               5,
             ),
             'score',
           ],
-          [Sequelize.fn('count', '*'), 'cntFactor'],
+          [this.seqHelp.count('*'), 'cntFactor'],
         ])
         .filter({ commentId: comment.id })
         .raw(true)
@@ -70,12 +70,12 @@ export class CalculateCommentScoreService {
         .attributes([
           [
             this.seqHelp.isnull(
-              Sequelize.fn('avg', Sequelize.col('ECProductComment.score')),
+              this.seqHelp.avgColumn('ECProductComment.score'),
               5,
             ),
             'score',
           ],
-          [Sequelize.fn('count', '*'), 'cntComment'],
+          [this.seqHelp.count('*'), 'cntComment'],
         ])
         .filter({ entityId: product.id })
         .filter({ statusId: ProductCommentStatusEnum.confirm })

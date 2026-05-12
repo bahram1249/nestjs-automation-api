@@ -98,7 +98,7 @@ export class BasedCourierReportService {
     qb = qb
       .attributes([
         [
-          Sequelize.fn('count', Sequelize.col('ECLogisticOrderGrouped.id')),
+          this.seqHelp.countColumn('ECLogisticOrderGrouped.id'),
           'cntOrder',
         ],
         [

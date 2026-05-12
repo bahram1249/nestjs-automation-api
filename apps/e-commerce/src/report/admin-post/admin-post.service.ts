@@ -122,7 +122,7 @@ export class AdminPostService {
 
     queryBuilder = queryBuilder
       .attributes([
-        [Sequelize.fn('count', Sequelize.col('ECOrder.id')), 'cntOrder'],
+        [this.seqHelp.countColumn('ECOrder.id'), 'cntOrder'],
         [
           this.seqHelp.isnull(
             Sequelize.literal('sum(isnull(ECOrder.realShipmentPrice, 0))'),

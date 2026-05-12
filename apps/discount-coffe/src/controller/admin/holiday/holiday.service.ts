@@ -17,20 +17,18 @@ export class HolidayService {
     const increase = 14;
     const today = await this.persianDateRepository.findOne({
       where: Sequelize.where(Sequelize.col('GregorianDate'), {
-        [Op.eq]: Sequelize.fn(
-          'convert',
-          Sequelize.literal('date'),
+        [Op.eq]: this.seqHelp.convert(
           this.seqHelp.getDate(),
+          'date',
           convertDateFormat,
         ),
       }),
     });
     const endDate = await this.persianDateRepository.findOne({
       where: Sequelize.where(Sequelize.col('GregorianDate'), {
-        [Op.eq]: Sequelize.fn(
-          'convert',
-          Sequelize.literal('date'),
+        [Op.eq]: this.seqHelp.convert(
           this.seqHelp.dateAdd(increase, 'day'),
+          'date',
           convertDateFormat,
         ),
       }),

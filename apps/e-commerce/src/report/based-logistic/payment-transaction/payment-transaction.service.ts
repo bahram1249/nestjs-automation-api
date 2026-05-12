@@ -100,7 +100,7 @@ export class BasedPaymentTransactionService {
     qb = qb
       .attributes([
         [
-          Sequelize.fn('count', Sequelize.col('ECLogisticOrder.id')),
+          this.seqHelp.countColumn('ECLogisticOrder.id'),
           'cntOrder',
         ],
         [
