@@ -101,48 +101,42 @@ export class IncomeReportService {
     queryBuilder = queryBuilder
       .attributes([
         [
-          Sequelize.fn(
-            'isnull',
+          this.seqHelp.isnull(
             this.seqHelp.sumColumn('representativeSharePercent'),
             0,
           ),
           'representativeSharePercent',
         ],
         [
-          Sequelize.fn(
-            'isnull',
+          this.seqHelp.isnull(
             this.seqHelp.sumColumn('sumOfSolutionIncludeWarranty'),
             0,
           ),
           'sumOfSolutionIncludeWarranty',
         ],
         [
-          Sequelize.fn(
-            'isnull',
+          this.seqHelp.isnull(
             this.seqHelp.sumColumn('sumOfSolutionOutOfWarranty'),
             0,
           ),
           'sumOfSolutionOutOfWarranty',
         ],
         [
-          Sequelize.fn(
-            'isnull',
+          this.seqHelp.isnull(
             this.seqHelp.sumColumn('sumOfPartIncludeWarranty'),
             0,
           ),
           'sumOfPartIncludeWarranty',
         ],
         [
-          Sequelize.fn(
-            'isnull',
+          this.seqHelp.isnull(
             this.seqHelp.sumColumn('sumOfPartOutOfWarranty'),
             0,
           ),
           'sumOfPartOutOfWarranty',
         ],
         [
-          Sequelize.fn(
-            'isnull',
+          this.seqHelp.isnull(
             this.seqHelp.sumColumn('atLeastPayFromCustomerForOutOfWarranty'),
             0,
           ),
@@ -153,40 +147,35 @@ export class IncomeReportService {
           'givenCashPayment',
         ],
         [
-          Sequelize.fn(
-            'isnull',
+          this.seqHelp.isnull(
             this.seqHelp.sumColumn('extraCashPaymentForUnavailableVip'),
             0,
           ),
           'extraCashPaymentForUnavailableVip',
         ],
         [
-          Sequelize.fn(
-            'isnull',
+          this.seqHelp.isnull(
             this.seqHelp.sumColumn('organizationToCompany'),
             0,
           ),
           'organizationToCompany',
         ],
         [
-          Sequelize.fn(
-            'isnull',
+          this.seqHelp.isnull(
             this.seqHelp.sumColumn('companyToOrganization'),
             0,
           ),
           'companyToOrganization',
         ],
         [
-          Sequelize.fn(
-            'isnull',
+          this.seqHelp.isnull(
             this.seqHelp.sumColumn('sumOfOrganizationToCompany'),
             0,
           ),
           'sumOfOrganizationToCompany',
         ],
         [
-          Sequelize.fn(
-            'isnull',
+          this.seqHelp.isnull(
             this.seqHelp.sumColumn('sumOfCompanyToOrganization'),
             0,
           ),

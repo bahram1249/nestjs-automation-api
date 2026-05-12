@@ -441,16 +441,11 @@ export class ApplyDiscountService {
           'isActive',
           'isDeleted',
           [
-            Sequelize.fn(
-              'isnull',
-              Sequelize.col('ECDiscount.startDate'),
-              this.seqHelp.getDate(),
-            ),
+            this.seqHelp.isnullColumnWithCurrentDate('ECDiscount.startDate'),
             'startDate',
           ],
           [
-            Sequelize.fn(
-              'isnull',
+            this.seqHelp.isnull(
               Sequelize.col('ECDiscount.endDate'),
               this.seqHelp.dateAdd(Sequelize.literal('1'), 'day'),
             ),
@@ -483,17 +478,9 @@ export class ApplyDiscountService {
               this.seqHelp.dateAdd(
                 Sequelize.literal('-16'),
                 'minute',
-                Sequelize.fn(
-                  'isnull',
-                  Sequelize.col('ECDiscount.startDate'),
-                  this.seqHelp.getDate(),
-                ),
+                this.seqHelp.isnullColumnWithCurrentDate('ECDiscount.startDate'),
               ),
-              Sequelize.fn(
-                'isnull',
-                Sequelize.col('ECDiscount.endDate'),
-                this.seqHelp.getDate(),
-              ),
+              this.seqHelp.isnullColumnWithCurrentDate('ECDiscount.endDate'),
             ],
           }),
         )
@@ -684,19 +671,11 @@ export class ApplyDiscountService {
         .filter(
           Sequelize.where(this.seqHelp.getDate(), {
             [Op.between]: [
-              Sequelize.fn(
-                'isnull',
-                Sequelize.col('ECDiscount.startDate'),
-                this.seqHelp.getDate(),
-              ),
+              this.seqHelp.isnullColumnWithCurrentDate('ECDiscount.startDate'),
               this.seqHelp.dateAdd(
                 Sequelize.literal('15'),
                 'minute',
-                Sequelize.fn(
-                  'isnull',
-                  Sequelize.col('ECDiscount.endDate'),
-                  this.seqHelp.getDate(),
-                ),
+                this.seqHelp.isnullColumnWithCurrentDate('ECDiscount.endDate'),
               ),
             ],
           }),

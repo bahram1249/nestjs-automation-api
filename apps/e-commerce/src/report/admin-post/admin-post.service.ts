@@ -124,24 +124,21 @@ export class AdminPostService {
       .attributes([
         [Sequelize.fn('count', Sequelize.col('ECOrder.id')), 'cntOrder'],
         [
-          Sequelize.fn(
-            'isnull',
+          this.seqHelp.isnull(
             Sequelize.literal('sum(isnull(ECOrder.realShipmentPrice, 0))'),
             0,
           ),
           'realShipmentPrice',
         ],
         [
-          Sequelize.fn(
-            'isnull',
+          this.seqHelp.isnull(
             Sequelize.literal('sum(isnull(ECOrder.totalShipmentPrice, 0))'),
             0,
           ),
           'totalShipmentPrice',
         ],
         [
-          Sequelize.fn(
-            'isnull',
+          this.seqHelp.isnull(
             Sequelize.literal(
               'SUM(isnull(ECOrder.totalShipmentPrice, 0) - isnull(ECOrder.realShipmentPrice, 0))',
             ),

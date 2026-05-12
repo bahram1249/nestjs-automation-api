@@ -84,8 +84,25 @@ export class SequelizeHelpService {
     });
   }
 
+  isnullColumnWithCurrentDate(columnName: string): Fn {
+    return this.isnull(Sequelize.col(columnName), this.getDate());
+  }
+
+  whereCurrentDateBetween(columnA: string, columnB: string): Where {
+    return Sequelize.where(this.getDate(), {
+      [Op.between]: [
+        this.isnull(Sequelize.col(columnA), this.getDate()),
+        this.isnull(Sequelize.col(columnB), this.getDate()),
+      ],
+    });
+  }
+
   sumColumn(columnName: string): Fn {
     return Sequelize.fn('SUM', Sequelize.col(columnName));
+  }
+
+  sum(expression: any): Fn {
+    return Sequelize.fn('SUM', expression);
   }
 
   dateAdd(amount: number | any, unit: string, dateExpr?: any): any {

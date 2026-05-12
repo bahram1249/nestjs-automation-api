@@ -70,11 +70,7 @@ export class AdminSaleService {
         'qty',
         [this.seqHelp.isnullColumn('inventoryPrice.buyPrice', 0), 'buyPrice'],
         [
-          Sequelize.fn(
-            'isnull',
-            Sequelize.col('ECOrderDetail.productPrice'),
-            0,
-          ),
+          this.seqHelp.isnullColumn('ECOrderDetail.productPrice', 0),
           'unitPrice',
         ],
         [
@@ -151,18 +147,12 @@ export class AdminSaleService {
           'cntOrder',
         ],
         [
-          Sequelize.fn(
-            'isnull',
-            this.seqHelp.sumColumn('ECOrderDetail.qty'),
-            0,
-          ),
+          this.seqHelp.isnull(this.seqHelp.sumColumn('ECOrderDetail.qty'), 0),
           'qty',
         ],
         [
-          Sequelize.fn(
-            'isnull',
-            Sequelize.fn(
-              'sum',
+          this.seqHelp.isnull(
+            this.seqHelp.sum(
               Sequelize.literal('isnull(inventoryPrice.buyPrice, 0) * qty'),
             ),
             0,
@@ -170,10 +160,8 @@ export class AdminSaleService {
           'buyPrice',
         ],
         [
-          Sequelize.fn(
-            'isnull',
-            Sequelize.fn(
-              'sum',
+          this.seqHelp.isnull(
+            this.seqHelp.sum(
               Sequelize.literal('isnull(ECOrderDetail.productPrice, 0) * qty'),
             ),
             0,
@@ -181,32 +169,28 @@ export class AdminSaleService {
           'productPrice',
         ],
         [
-          Sequelize.fn(
-            'isnull',
+          this.seqHelp.isnull(
             this.seqHelp.sumColumn('ECOrderDetail.discountFee'),
             0,
           ),
           'discountFee',
         ],
         [
-          Sequelize.fn(
-            'isnull',
+          this.seqHelp.isnull(
             this.seqHelp.sumColumn('ECOrderDetail.totalPrice'),
             0,
           ),
           'totalPrice',
         ],
         [
-          Sequelize.fn(
-            'isnull',
+          this.seqHelp.isnull(
             this.seqHelp.sumColumn('ECOrderDetail.commissionAmount'),
             0,
           ),
           'commissionAmount',
         ],
         [
-          Sequelize.fn(
-            'isnull',
+          this.seqHelp.isnull(
             Sequelize.literal(
               'sum(isnull(ECOrderDetail.totalPrice, 0) - isnull(ECOrderDetail.commissionAmount, 0))',
             ),
@@ -215,8 +199,7 @@ export class AdminSaleService {
           'vendorRevenue',
         ],
         [
-          Sequelize.fn(
-            'isnull',
+          this.seqHelp.isnull(
             Sequelize.literal(
               'sum(isnull(ECOrderDetail.totalPrice, 0) - isnull(inventoryPrice.buyPrice, 0) * qty - isnull(ECOrderDetail.commissionAmount, 0))',
             ),

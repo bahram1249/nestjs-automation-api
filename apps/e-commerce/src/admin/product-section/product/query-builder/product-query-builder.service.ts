@@ -305,8 +305,7 @@ export class ProductQueryBuilderService {
         attributes: [
           'attributeId',
           [
-            Sequelize.fn(
-              'isnull',
+            this.seqHelp.isnull(
               Sequelize.col('productAttributeValues.val'),
               Sequelize.col('productAttributeValues.attributeValue.value'),
             ),

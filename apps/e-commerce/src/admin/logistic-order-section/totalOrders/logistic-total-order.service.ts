@@ -416,23 +416,12 @@ export class LogisticTotalOrderService {
     const qbDetails = new QueryOptionsBuilder()
       .attributes([
         [
-          Sequelize.fn(
-            'isnull',
-            Sequelize.fn(
-              'sum',
-              Sequelize.literal(
-                'ECLogisticOrderGroupedDetail.productPrice * ECLogisticOrderGroupedDetail.qty',
-              ),
-            ),
-            0,
-          ),
+          this.seqHelp.isnull(this.seqHelp.sum(Sequelize.literal('ECLogisticOrderGroupedDetail.productPrice * ECLogisticOrderGroupedDetail.qty')), 0),
           'productPrice',
         ],
         [
-          Sequelize.fn(
-            'isnull',
-            Sequelize.fn(
-              'sum',
+          this.seqHelp.isnull(
+            this.seqHelp.sum(
               Sequelize.literal(
                 'ECLogisticOrderGroupedDetail.discountFeePerItem * ECLogisticOrderGroupedDetail.qty',
               ),
@@ -511,23 +500,12 @@ export class LogisticTotalOrderService {
     const qbGroupDetails = new QueryOptionsBuilder()
       .attributes([
         [
-          Sequelize.fn(
-            'isnull',
-            Sequelize.fn(
-              'sum',
-              Sequelize.literal(
-                'ECLogisticOrderGroupedDetail.productPrice * ECLogisticOrderGroupedDetail.qty',
-              ),
-            ),
-            0,
-          ),
+          this.seqHelp.isnull(this.seqHelp.sum(Sequelize.literal('ECLogisticOrderGroupedDetail.productPrice * ECLogisticOrderGroupedDetail.qty')), 0),
           'productPrice',
         ],
         [
-          Sequelize.fn(
-            'isnull',
-            Sequelize.fn(
-              'sum',
+          this.seqHelp.isnull(
+            this.seqHelp.sum(
               Sequelize.literal(
                 'ECLogisticOrderGroupedDetail.discountFeePerItem * ECLogisticOrderGroupedDetail.qty',
               ),

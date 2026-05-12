@@ -218,11 +218,7 @@ export class ProductDiscountSetterService {
         // )
         .filter(
           Sequelize.where(this.seqHelp.getDate(), {
-            [Op.lte]: Sequelize.fn(
-              'isnull',
-              Sequelize.col('ECDiscount.endDate'),
-              this.seqHelp.getDate(),
-            ),
+            [Op.lte]: this.seqHelp.isnullColumnWithCurrentDate('ECDiscount.endDate'),
           }),
         )
         .filter(

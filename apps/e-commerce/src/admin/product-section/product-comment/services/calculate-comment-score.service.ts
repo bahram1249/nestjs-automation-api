@@ -38,12 +38,8 @@ export class CalculateCommentScoreService {
       new QueryOptionsBuilder()
         .attributes([
           [
-            Sequelize.fn(
-              'isnull',
-              Sequelize.fn(
-                'avg',
-                Sequelize.col('ECProductCommentFactor.score'),
-              ),
+            this.seqHelp.isnull(
+              Sequelize.fn('avg', Sequelize.col('ECProductCommentFactor.score')),
               5,
             ),
             'score',
@@ -73,8 +69,7 @@ export class CalculateCommentScoreService {
       new QueryOptionsBuilder()
         .attributes([
           [
-            Sequelize.fn(
-              'isnull',
+            this.seqHelp.isnull(
               Sequelize.fn('avg', Sequelize.col('ECProductComment.score')),
               5,
             ),

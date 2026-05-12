@@ -11,6 +11,7 @@ import {
   OrderShipmentwayEnum,
   OrderStatusEnum,
 } from '@rahino/ecommerce/shared/enum';
+import { SequelizeHelpService } from '@rahino/commontools/sequelize-help/sequelize-help.service';
 import { Sequelize } from 'sequelize';
 
 @Injectable()
@@ -22,6 +23,7 @@ export class BasedAdminPostService {
     private readonly persianDateRepository: typeof PersianDate,
     private readonly i18n: I18nService<I18nTranslations>,
     private readonly orderQueryBuilder: LogisticOrderQueryBuilderService,
+    private readonly seqHelp: SequelizeHelpService,
   ) {}
 
   async findAll(filter: GetAdminPostDto) {
@@ -51,19 +53,11 @@ export class BasedAdminPostService {
         'sendToCustomerDate',
         'postReceipt',
         [
-          Sequelize.fn(
-            'isnull',
-            Sequelize.col('ECLogisticOrderGrouped.realShipmentPrice'),
-            0,
-          ),
+          this.seqHelp.isnullColumn('ECLogisticOrderGrouped.realShipmentPrice', 0),
           'realShipmentPrice',
         ],
         [
-          Sequelize.fn(
-            'isnull',
-            Sequelize.col('ECLogisticOrderGrouped.shipmentPrice'),
-            0,
-          ),
+          this.seqHelp.isnullColumn('ECLogisticOrderGrouped.shipmentPrice', 0),
           'totalShipmentPrice',
         ],
         [
@@ -104,30 +98,21 @@ export class BasedAdminPostService {
           'cntOrder',
         ],
         [
-          Sequelize.fn(
-            'isnull',
-            Sequelize.fn(
-              'sum',
-              Sequelize.col('ECLogisticOrderGrouped.realShipmentPrice'),
-            ),
+          this.seqHelp.isnull(
+            this.seqHelp.sumColumn('ECLogisticOrderGrouped.realShipmentPrice'),
             0,
           ),
           'realShipmentPrice',
         ],
         [
-          Sequelize.fn(
-            'isnull',
-            Sequelize.fn(
-              'sum',
-              Sequelize.col('ECLogisticOrderGrouped.shipmentPrice'),
-            ),
+          this.seqHelp.isnull(
+            this.seqHelp.sumColumn('ECLogisticOrderGrouped.shipmentPrice'),
             0,
           ),
           'totalShipmentPrice',
         ],
         [
-          Sequelize.fn(
-            'isnull',
+          this.seqHelp.isnull(
             Sequelize.literal(
               'SUM(isnull(ECLogisticOrderGrouped.shipmentPrice, 0) - isnull(ECLogisticOrderGrouped.realShipmentPrice, 0))',
             ),

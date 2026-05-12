@@ -190,16 +190,14 @@ export class ProductRepositoryService {
     resultQuery.subQuery = false;
     resultQuery.attributes = [
       [
-        Sequelize.fn(
-          'isnull',
+        this.seqHelp.isnull(
           Sequelize.fn('min', Sequelize.col('inventories.firstPrice.price')),
           defaultMin,
         ),
         'minPrice',
       ],
       [
-        Sequelize.fn(
-          'isnull',
+        this.seqHelp.isnull(
           Sequelize.fn('max', Sequelize.col('inventories.firstPrice.price')),
           defaultMax,
         ),

@@ -135,43 +135,33 @@ export class LogisticSendingPeriodService {
         .filter({
           [Op.or]: [
             Sequelize.where(
-              Sequelize.fn(
-                'isnull',
+              this.seqHelp.isnull(
                 Sequelize.literal(dto.startDate ? `'${dto.startDate}'` : null),
                 this.seqHelp.getDate(),
               ),
               {
                 [Op.between]: [
-                  Sequelize.fn(
-                    'isnull',
-                    Sequelize.col('ECLogisticSendingPeriod.startDate'),
-                    this.seqHelp.getDate(),
+                  this.seqHelp.isnullColumnWithCurrentDate(
+                    'ECLogisticSendingPeriod.startDate',
                   ),
-                  Sequelize.fn(
-                    'isnull',
-                    Sequelize.col('ECLogisticSendingPeriod.endDate'),
-                    this.seqHelp.getDate(),
+                  this.seqHelp.isnullColumnWithCurrentDate(
+                    'ECLogisticSendingPeriod.endDate',
                   ),
                 ],
               },
             ),
             Sequelize.where(
-              Sequelize.fn(
-                'isnull',
+              this.seqHelp.isnull(
                 Sequelize.literal(dto.endDate ? `'${dto.endDate}'` : null),
                 this.seqHelp.getDate(),
               ),
               {
                 [Op.between]: [
-                  Sequelize.fn(
-                    'isnull',
-                    Sequelize.col('ECLogisticSendingPeriod.startDate'),
-                    this.seqHelp.getDate(),
+                  this.seqHelp.isnullColumnWithCurrentDate(
+                    'ECLogisticSendingPeriod.startDate',
                   ),
-                  Sequelize.fn(
-                    'isnull',
-                    Sequelize.col('ECLogisticSendingPeriod.endDate'),
-                    this.seqHelp.getDate(),
+                  this.seqHelp.isnullColumnWithCurrentDate(
+                    'ECLogisticSendingPeriod.endDate',
                   ),
                 ],
               },
@@ -214,43 +204,33 @@ export class LogisticSendingPeriodService {
         .filter({
           [Op.or]: [
             Sequelize.where(
-              Sequelize.fn(
-                'isnull',
+              this.seqHelp.isnull(
                 Sequelize.literal(dto.startDate ? `'${dto.startDate}'` : null),
                 this.seqHelp.getDate(),
               ),
               {
                 [Op.between]: [
-                  Sequelize.fn(
-                    'isnull',
-                    Sequelize.col('ECLogisticSendingPeriod.startDate'),
-                    this.seqHelp.getDate(),
+                  this.seqHelp.isnullColumnWithCurrentDate(
+                    'ECLogisticSendingPeriod.startDate',
                   ),
-                  Sequelize.fn(
-                    'isnull',
-                    Sequelize.col('ECLogisticSendingPeriod.endDate'),
-                    this.seqHelp.getDate(),
+                  this.seqHelp.isnullColumnWithCurrentDate(
+                    'ECLogisticSendingPeriod.endDate',
                   ),
                 ],
               },
             ),
             Sequelize.where(
-              Sequelize.fn(
-                'isnull',
+              this.seqHelp.isnull(
                 Sequelize.literal(dto.endDate ? `'${dto.endDate}'` : null),
                 this.seqHelp.getDate(),
               ),
               {
                 [Op.between]: [
-                  Sequelize.fn(
-                    'isnull',
-                    Sequelize.col('ECLogisticSendingPeriod.startDate'),
-                    this.seqHelp.getDate(),
+                  this.seqHelp.isnullColumnWithCurrentDate(
+                    'ECLogisticSendingPeriod.startDate',
                   ),
-                  Sequelize.fn(
-                    'isnull',
-                    Sequelize.col('ECLogisticSendingPeriod.endDate'),
-                    this.seqHelp.getDate(),
+                  this.seqHelp.isnullColumnWithCurrentDate(
+                    'ECLogisticSendingPeriod.endDate',
                   ),
                 ],
               },

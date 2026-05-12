@@ -104,40 +104,35 @@ export class BasedPaymentTransactionService {
           'cntOrder',
         ],
         [
-          Sequelize.fn(
-            'isnull',
+          this.seqHelp.isnull(
             Sequelize.literal('sum(isnull(ECLogisticOrder.shipmentPrice, 0))'),
             0,
           ),
           'realShipmentPrice',
         ],
         [
-          Sequelize.fn(
-            'isnull',
+          this.seqHelp.isnull(
             Sequelize.literal('sum(isnull(ECLogisticOrder.discountFee, 0))'),
             0,
           ),
           'totalDiscountFee',
         ],
         [
-          Sequelize.fn(
-            'isnull',
+          this.seqHelp.isnull(
             Sequelize.literal('sum(isnull(ECLogisticOrder.totalPrice, 0))'),
             0,
           ),
           'totalPrice',
         ],
         [
-          Sequelize.fn(
-            'isnull',
+          this.seqHelp.isnull(
             Sequelize.literal('sum(isnull(payment.commissionAmount, 0))'),
             0,
           ),
           'paymentCommissionAmount',
         ],
         [
-          Sequelize.fn(
-            'isnull',
+          this.seqHelp.isnull(
             Sequelize.literal(
               'SUM(isnull(ECLogisticOrder.totalPrice, 0) - isnull(payment.commissionAmount, 0))',
             ),

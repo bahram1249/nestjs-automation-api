@@ -113,76 +113,34 @@ export class BasedAdminSaleService {
           'cntOrder',
         ],
         [
-          Sequelize.fn(
-            'isnull',
-            Sequelize.fn(
-              'sum',
-              Sequelize.col('ECLogisticOrderGroupedDetail.qty'),
-            ),
-            0,
-          ),
+          this.seqHelp.isnull(this.seqHelp.sumColumn('ECLogisticOrderGroupedDetail.qty'), 0),
           'qty',
         ],
         [
-          Sequelize.fn(
-            'isnull',
-            Sequelize.fn(
-              'sum',
-              Sequelize.literal('isnull(inventoryPrice.buyPrice, 0) * qty'),
-            ),
-            0,
-          ),
+          this.seqHelp.isnull(this.seqHelp.sum(Sequelize.literal('isnull(inventoryPrice.buyPrice, 0) * qty')), 0),
           'buyPrice',
         ],
         [
-          Sequelize.fn(
-            'isnull',
-            Sequelize.fn(
-              'sum',
-              Sequelize.literal(
-                'isnull(ECLogisticOrderGroupedDetail.productPrice, 0) * qty',
-              ),
-            ),
-            0,
-          ),
+          this.seqHelp.isnull(this.seqHelp.sum(Sequelize.literal('isnull(ECLogisticOrderGroupedDetail.productPrice, 0) * qty')), 0),
           'productPrice',
         ],
         [
-          Sequelize.fn(
-            'isnull',
-            Sequelize.fn(
-              'sum',
-              Sequelize.col('ECLogisticOrderGroupedDetail.discountFee'),
-            ),
+          this.seqHelp.isnull(
+            this.seqHelp.sumColumn('ECLogisticOrderGroupedDetail.discountFee'),
             0,
           ),
           'discountFee',
         ],
         [
-          Sequelize.fn(
-            'isnull',
-            Sequelize.fn(
-              'sum',
-              Sequelize.col('ECLogisticOrderGroupedDetail.totalPrice'),
-            ),
-            0,
-          ),
+          this.seqHelp.isnull(this.seqHelp.sumColumn('ECLogisticOrderGroupedDetail.totalPrice'), 0),
           'totalPrice',
         ],
         [
-          Sequelize.fn(
-            'isnull',
-            Sequelize.fn(
-              'sum',
-              Sequelize.col('ECLogisticOrderGroupedDetail.commissionAmount'),
-            ),
-            0,
-          ),
+          this.seqHelp.isnull(this.seqHelp.sumColumn('ECLogisticOrderGroupedDetail.commissionAmount'), 0),
           'commissionAmount',
         ],
         [
-          Sequelize.fn(
-            'isnull',
+          this.seqHelp.isnull(
             Sequelize.literal(
               'sum(isnull(ECLogisticOrderGroupedDetail.totalPrice, 0) - isnull(ECLogisticOrderGroupedDetail.commissionAmount, 0))',
             ),
@@ -191,8 +149,7 @@ export class BasedAdminSaleService {
           'vendorRevenue',
         ],
         [
-          Sequelize.fn(
-            'isnull',
+          this.seqHelp.isnull(
             Sequelize.literal(
               'sum(isnull(ECLogisticOrderGroupedDetail.totalPrice, 0) - isnull(inventoryPrice.buyPrice, 0) * qty - isnull(ECLogisticOrderGroupedDetail.commissionAmount, 0))',
             ),

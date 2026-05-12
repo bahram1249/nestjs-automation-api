@@ -478,20 +478,10 @@ export class ProductQueryBuilderService {
       inventoryIncludeBuilder
         .filter({ discountTypeId: filter.discountTypeId })
         .filter(
-          Sequelize.where(this.seqHelp.getDate(), {
-            [Op.between]: [
-              Sequelize.fn(
-                'isnull',
-                Sequelize.col('inventories.discountStartDate'),
-                this.seqHelp.getDate(),
-              ),
-              Sequelize.fn(
-                'isnull',
-                Sequelize.col('inventories.discountEndDate'),
-                this.seqHelp.getDate(),
-              ),
-            ],
-          }),
+          this.seqHelp.whereCurrentDateBetween(
+            'inventories.discountStartDate',
+            'inventories.discountEndDate',
+          ),
         );
     }
 
@@ -549,8 +539,7 @@ export class ProductQueryBuilderService {
             : [
                 'attributeId',
                 [
-                  Sequelize.fn(
-                    'isnull',
+                  this.seqHelp.isnull(
                     Sequelize.col('productAttributeValues.val'),
                     Sequelize.col(
                       'productAttributeValues.attributeValue.value',

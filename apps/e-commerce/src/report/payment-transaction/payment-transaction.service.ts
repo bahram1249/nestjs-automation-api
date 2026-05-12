@@ -132,32 +132,28 @@ export class PaymentTransactionService {
       .attributes([
         [Sequelize.fn('count', Sequelize.col('ECOrder.id')), 'cntOrder'],
         [
-          Sequelize.fn(
-            'isnull',
+          this.seqHelp.isnull(
             Sequelize.literal('sum(isnull(ECOrder.realShipmentPrice, 0))'),
             0,
           ),
           'realShipmentPrice',
         ],
         [
-          Sequelize.fn(
-            'isnull',
+          this.seqHelp.isnull(
             Sequelize.literal('sum(isnull(ECOrder.totalDiscountFee, 0))'),
             0,
           ),
           'totalDiscountFee',
         ],
         [
-          Sequelize.fn(
-            'isnull',
+          this.seqHelp.isnull(
             Sequelize.literal('sum(isnull(ECOrder.totalPrice, 0))'),
             0,
           ),
           'totalPrice',
         ],
         [
-          Sequelize.fn(
-            'isnull',
+          this.seqHelp.isnull(
             Sequelize.literal(
               'sum(isnull(ECOrder.paymentCommissionAmount, 0))',
             ),
@@ -166,8 +162,7 @@ export class PaymentTransactionService {
           'paymentCommissionAmount',
         ],
         [
-          Sequelize.fn(
-            'isnull',
+          this.seqHelp.isnull(
             Sequelize.literal(
               'SUM(isnull(ECOrder.totalPrice, 0) - isnull(ECOrder.paymentCommissionAmount, 0))',
             ),
