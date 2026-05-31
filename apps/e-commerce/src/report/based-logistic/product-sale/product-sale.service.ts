@@ -84,10 +84,7 @@ export class BasedProductSaleService {
 
     qb = qb
       .attributes([
-        [
-          this.seqHelp.sumColumn('ECLogisticOrderGroupedDetail.qty'),
-          'qty',
-        ],
+        [this.seqHelp.sumColumn('ECLogisticOrderGroupedDetail.qty'), 'qty'],
         'vendorId',
         'productId',
         [Sequelize.col('vendor.name'), 'vendorName'],

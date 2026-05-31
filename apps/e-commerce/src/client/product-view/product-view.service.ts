@@ -26,10 +26,7 @@ export class ProductViewService {
     builder = builder
       .attributes([
         'productId',
-        [
-          this.seqHelp.maxColumn('ECProductView.createdAt'),
-          'lastSeenAt',
-        ],
+        [this.seqHelp.maxColumn('ECProductView.createdAt'), 'lastSeenAt'],
       ])
       .group(['ECProductView.productId'])
       .order([this.seqHelp.maxColumn('createdAt'), 'DESC'])

@@ -66,10 +66,7 @@ export class ActivityReportService {
       ])
       .attributes([
         'BPMNRequestHistory.toActivityId',
-        [
-          this.seqHelp.countColumn('BPMNRequestHistory.id'),
-          'count',
-        ],
+        [this.seqHelp.countColumn('BPMNRequestHistory.id'), 'count'],
         [
           this.seqHelp.stringAgg(
             Sequelize.col('BPMNRequestHistory.requestId'),

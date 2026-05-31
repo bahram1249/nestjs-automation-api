@@ -416,7 +416,14 @@ export class LogisticTotalOrderService {
     const qbDetails = new QueryOptionsBuilder()
       .attributes([
         [
-          this.seqHelp.isnull(this.seqHelp.sum(Sequelize.literal('ECLogisticOrderGroupedDetail.productPrice * ECLogisticOrderGroupedDetail.qty')), 0),
+          this.seqHelp.isnull(
+            this.seqHelp.sum(
+              Sequelize.literal(
+                'ECLogisticOrderGroupedDetail.productPrice * ECLogisticOrderGroupedDetail.qty',
+              ),
+            ),
+            0,
+          ),
           'productPrice',
         ],
         [
@@ -500,7 +507,14 @@ export class LogisticTotalOrderService {
     const qbGroupDetails = new QueryOptionsBuilder()
       .attributes([
         [
-          this.seqHelp.isnull(this.seqHelp.sum(Sequelize.literal('ECLogisticOrderGroupedDetail.productPrice * ECLogisticOrderGroupedDetail.qty')), 0),
+          this.seqHelp.isnull(
+            this.seqHelp.sum(
+              Sequelize.literal(
+                'ECLogisticOrderGroupedDetail.productPrice * ECLogisticOrderGroupedDetail.qty',
+              ),
+            ),
+            0,
+          ),
           'productPrice',
         ],
         [

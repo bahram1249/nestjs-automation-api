@@ -169,9 +169,17 @@ export class SequelizeHelpService {
     switch (this._dialect) {
       case 'mssql':
       case 'postgres':
-        return Sequelize.fn('STRING_AGG', expression, Sequelize.literal(`'${delimiter}'`));
+        return Sequelize.fn(
+          'STRING_AGG',
+          expression,
+          Sequelize.literal(`'${delimiter}'`),
+        );
       case 'sqlite':
-        return Sequelize.fn('group_concat', expression, Sequelize.literal(`'${delimiter}'`));
+        return Sequelize.fn(
+          'group_concat',
+          expression,
+          Sequelize.literal(`'${delimiter}'`),
+        );
       default:
         throw new NotImplementedException('dialect not implemented!');
     }

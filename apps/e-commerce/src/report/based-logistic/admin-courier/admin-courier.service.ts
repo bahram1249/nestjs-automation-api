@@ -56,7 +56,10 @@ export class BasedAdminCourierService {
         'sendToCustomerDate',
         'postReceipt',
         [
-          this.seqHelp.isnullColumn('ECLogisticOrderGrouped.realShipmentPrice', 0),
+          this.seqHelp.isnullColumn(
+            'ECLogisticOrderGrouped.realShipmentPrice',
+            0,
+          ),
           'realShipmentPrice',
         ],
         [
@@ -100,10 +103,7 @@ export class BasedAdminCourierService {
 
     qb = qb
       .attributes([
-        [
-          this.seqHelp.countColumn('ECLogisticOrderGrouped.id'),
-          'cntOrder',
-        ],
+        [this.seqHelp.countColumn('ECLogisticOrderGrouped.id'), 'cntOrder'],
         [
           this.seqHelp.isnull(
             this.seqHelp.sumColumn('ECLogisticOrderGrouped.realShipmentPrice'),

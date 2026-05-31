@@ -478,7 +478,9 @@ export class ApplyDiscountService {
               this.seqHelp.dateAdd(
                 Sequelize.literal('-16'),
                 'minute',
-                this.seqHelp.isnullColumnWithCurrentDate('ECDiscount.startDate'),
+                this.seqHelp.isnullColumnWithCurrentDate(
+                  'ECDiscount.startDate',
+                ),
               ),
               this.seqHelp.isnullColumnWithCurrentDate('ECDiscount.endDate'),
             ],

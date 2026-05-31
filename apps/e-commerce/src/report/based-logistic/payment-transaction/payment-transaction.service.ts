@@ -99,10 +99,7 @@ export class BasedPaymentTransactionService {
 
     qb = qb
       .attributes([
-        [
-          this.seqHelp.countColumn('ECLogisticOrder.id'),
-          'cntOrder',
-        ],
+        [this.seqHelp.countColumn('ECLogisticOrder.id'), 'cntOrder'],
         [
           this.seqHelp.isnull(
             Sequelize.literal('sum(isnull(ECLogisticOrder.shipmentPrice, 0))'),

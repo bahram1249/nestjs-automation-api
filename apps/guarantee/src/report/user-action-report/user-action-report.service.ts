@@ -75,10 +75,7 @@ export class UserActionReportService {
         'BPMNRequestHistory.fromActivityId',
         'BPMNRequestHistory.toActivityId',
         'BPMNRequestHistory.nodeId',
-        [
-          this.seqHelp.countColumn('BPMNRequestHistory.id'),
-          'count',
-        ],
+        [this.seqHelp.countColumn('BPMNRequestHistory.id'), 'count'],
         [
           this.seqHelp.stringAgg(
             Sequelize.col('BPMNRequestHistory.requestId'),

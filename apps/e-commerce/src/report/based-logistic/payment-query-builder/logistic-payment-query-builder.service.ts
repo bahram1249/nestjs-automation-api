@@ -42,10 +42,7 @@ export class LogisticPaymentQueryBuilderService {
   addBeginDate(beginDate: string) {
     this.builder.filter(
       Sequelize.where(
-        this.seqHelp.cast(
-          Sequelize.col('ECLogisticOrder.createdAt'),
-          'date',
-        ),
+        this.seqHelp.cast(Sequelize.col('ECLogisticOrder.createdAt'), 'date'),
         '>=',
         beginDate,
       ),
@@ -56,10 +53,7 @@ export class LogisticPaymentQueryBuilderService {
   addEndDate(endDate: string) {
     this.builder.filter(
       Sequelize.where(
-        this.seqHelp.cast(
-          Sequelize.col('ECLogisticOrder.createdAt'),
-          'date',
-        ),
+        this.seqHelp.cast(Sequelize.col('ECLogisticOrder.createdAt'), 'date'),
         '<=',
         endDate,
       ),

@@ -230,11 +230,25 @@ export class TotalOrderService {
       const queryBulder = new QueryOptionsBuilder()
         .attributes([
           [
-            this.seqHelp.isnull(this.seqHelp.sum(Sequelize.literal('ECOrderDetail.productPrice * ECOrderDetail.qty')), 0),
+            this.seqHelp.isnull(
+              this.seqHelp.sum(
+                Sequelize.literal(
+                  'ECOrderDetail.productPrice * ECOrderDetail.qty',
+                ),
+              ),
+              0,
+            ),
             'productPrice',
           ],
           [
-            this.seqHelp.isnull(this.seqHelp.sum(Sequelize.literal('ECOrderDetail.discountFeePerItem * ECOrderDetail.qty')), 0),
+            this.seqHelp.isnull(
+              this.seqHelp.sum(
+                Sequelize.literal(
+                  'ECOrderDetail.discountFeePerItem * ECOrderDetail.qty',
+                ),
+              ),
+              0,
+            ),
             'discountFee',
           ],
         ])
@@ -399,11 +413,25 @@ export class TotalOrderService {
       const queryBulder = new QueryOptionsBuilder()
         .attributes([
           [
-            this.seqHelp.isnull(this.seqHelp.sum(Sequelize.literal('ECOrderDetail.productPrice * ECOrderDetail.qty')), 0),
+            this.seqHelp.isnull(
+              this.seqHelp.sum(
+                Sequelize.literal(
+                  'ECOrderDetail.productPrice * ECOrderDetail.qty',
+                ),
+              ),
+              0,
+            ),
             'productPrice',
           ],
           [
-            this.seqHelp.isnull(this.seqHelp.sum(Sequelize.literal('ECOrderDetail.discountFeePerItem * ECOrderDetail.qty')), 0),
+            this.seqHelp.isnull(
+              this.seqHelp.sum(
+                Sequelize.literal(
+                  'ECOrderDetail.discountFeePerItem * ECOrderDetail.qty',
+                ),
+              ),
+              0,
+            ),
             'discountFee',
           ],
         ])

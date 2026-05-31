@@ -26,10 +26,7 @@ export class PersianDateMonthService {
           },
         })
         .attributes([
-          [
-            this.seqHelp.maxColumn('GregorianDate'),
-            'gregorianDate',
-          ],
+          [this.seqHelp.maxColumn('GregorianDate'), 'gregorianDate'],
           'yearMonth',
           'persianMonthName',
         ])
@@ -56,10 +53,7 @@ export class PersianDateMonthService {
           },
         })
         .attributes([
-          [
-            this.seqHelp.minColumn('GregorianDate'),
-            'gregorianDate',
-          ],
+          [this.seqHelp.minColumn('GregorianDate'), 'gregorianDate'],
           'yearMonth',
           'persianMonthName',
         ])

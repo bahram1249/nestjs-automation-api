@@ -113,15 +113,30 @@ export class BasedAdminSaleService {
           'cntOrder',
         ],
         [
-          this.seqHelp.isnull(this.seqHelp.sumColumn('ECLogisticOrderGroupedDetail.qty'), 0),
+          this.seqHelp.isnull(
+            this.seqHelp.sumColumn('ECLogisticOrderGroupedDetail.qty'),
+            0,
+          ),
           'qty',
         ],
         [
-          this.seqHelp.isnull(this.seqHelp.sum(Sequelize.literal('isnull(inventoryPrice.buyPrice, 0) * qty')), 0),
+          this.seqHelp.isnull(
+            this.seqHelp.sum(
+              Sequelize.literal('isnull(inventoryPrice.buyPrice, 0) * qty'),
+            ),
+            0,
+          ),
           'buyPrice',
         ],
         [
-          this.seqHelp.isnull(this.seqHelp.sum(Sequelize.literal('isnull(ECLogisticOrderGroupedDetail.productPrice, 0) * qty')), 0),
+          this.seqHelp.isnull(
+            this.seqHelp.sum(
+              Sequelize.literal(
+                'isnull(ECLogisticOrderGroupedDetail.productPrice, 0) * qty',
+              ),
+            ),
+            0,
+          ),
           'productPrice',
         ],
         [
@@ -132,11 +147,19 @@ export class BasedAdminSaleService {
           'discountFee',
         ],
         [
-          this.seqHelp.isnull(this.seqHelp.sumColumn('ECLogisticOrderGroupedDetail.totalPrice'), 0),
+          this.seqHelp.isnull(
+            this.seqHelp.sumColumn('ECLogisticOrderGroupedDetail.totalPrice'),
+            0,
+          ),
           'totalPrice',
         ],
         [
-          this.seqHelp.isnull(this.seqHelp.sumColumn('ECLogisticOrderGroupedDetail.commissionAmount'), 0),
+          this.seqHelp.isnull(
+            this.seqHelp.sumColumn(
+              'ECLogisticOrderGroupedDetail.commissionAmount',
+            ),
+            0,
+          ),
           'commissionAmount',
         ],
         [
