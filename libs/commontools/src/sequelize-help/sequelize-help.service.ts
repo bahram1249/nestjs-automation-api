@@ -65,7 +65,7 @@ export class SequelizeHelpService {
   }
 
   private isnullGlobal(...args: unknown[]): Fn {
-    return Sequelize.fn(this._isnullKey, args);
+    return Sequelize.fn(this._isnullKey, ...args);
   }
 
   getDate(): Fn {

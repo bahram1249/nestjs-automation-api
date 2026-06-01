@@ -42,7 +42,7 @@ export class RoleService {
           ),
         },
       ],
-      where: this.seqHelp.whereIsNullColumnNotEqualToValue(
+      where: this.seqHelp.whereIsNullColumnEqualToValue(
         'PermissionGroup.visibility',
         1,
         1,
@@ -91,7 +91,7 @@ export class RoleService {
           ),
         },
       ],
-      where: this.seqHelp.whereIsNullColumnNotEqualToValue(
+      where: this.seqHelp.whereIsNullColumnEqualToValue(
         'PermissionGroup.visibility',
         1,
         1,

@@ -62,7 +62,7 @@ export class MenuService {
     }
 
     builder = builder.filter(
-      this.seqHelp.whereIsNullColumnNotEqualToValue('Menu.visibility', 1, 1),
+      this.seqHelp.whereIsNullColumnEqualToValue('Menu.visibility', 1, 1),
     );
 
     builder = builder
@@ -92,7 +92,7 @@ export class MenuService {
                   [Op.in]: menuIds,
                 },
               },
-              this.seqHelp.whereIsNullColumnNotEqualToValue(
+              this.seqHelp.whereIsNullColumnEqualToValue(
                 'subMenus.visibility',
                 1,
                 1,
