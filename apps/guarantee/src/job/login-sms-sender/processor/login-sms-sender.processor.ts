@@ -1,11 +1,15 @@
-import { Processor, WorkerHost } from '@nestjs/bullmq';
+import { OnWorkerEvent, Processor, WorkerHost } from '@nestjs/bullmq';
 import { Job } from 'bullmq';
 import { LOGIN_SMS_SENDER_QUEUE } from '../constants';
 import { SmsSenderService } from '@rahino/guarantee/shared/sms-sender';
+import { DBLogger } from '@rahino/logger';
 
 @Processor(LOGIN_SMS_SENDER_QUEUE)
 export class LoginSmsSenderProcessor extends WorkerHost {
-  constructor(private readonly smsSenderService: SmsSenderService) {
+  constructor(
+    private readonly smsSenderService: SmsSenderService,
+    private readonly logger: DBLogger,
+  ) {
     super();
   }
 
@@ -17,8 +21,25 @@ export class LoginSmsSenderProcessor extends WorkerHost {
         message: template,
       });
     } catch (error) {
-      return Promise.reject(error.message);
+      return Promise.reject(error);
     }
     return Promise.resolve(true);
+  }
+
+  @OnWorkerEvent('failed')
+  onFailed(job: Job) {
+    const { id, name, queueName, failedReason } = job;
+    this.logger.error(
+      `Job id: ${id}, name: ${name} failed in queue ${queueName}. Failed reason: ${failedReason}`,
+    );
+  }
+
+  @OnWorkerEvent('completed')
+  onCompleted(job: Job) {
+    const { id, name, queueName, finishedOn, returnvalue } = job;
+    const completionTime = finishedOn ? new Date(finishedOn).toISOString() : '';
+    this.logger.warn(
+      `Job id: ${id}, name: ${name} completed in queue ${queueName} on ${completionTime}. Result: ${returnvalue}`,
+    );
   }
 }

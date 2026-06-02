@@ -3,11 +3,13 @@ import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { LoginSmsSenderProcessor } from './processor';
 import { SmsSenderModule } from '@rahino/guarantee/shared/sms-sender';
+import { DBLoggerModule } from '@rahino/logger';
 import { LOGIN_SMS_SENDER_QUEUE } from './constants';
 
 @Module({
   imports: [
     SmsSenderModule,
+    DBLoggerModule,
     BullModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
