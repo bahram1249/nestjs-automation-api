@@ -21,53 +21,66 @@ export class SmsSenderService {
   }
 
   private normalizeMobile(mobile: string): string {
-    let normalized = mobile.replace(/[^0-9]/g, '');
-    if (normalized.startsWith('0')) {
-      normalized = '98' + normalized.substring(1);
+    let m = mobile.replace(/\D/g, '');
+
+    // same as PHP: independent rules (NOT else-if)
+    if (m.startsWith('0')) {
+      m = '98' + m.substring(1);
     }
-    if (normalized.length === 10) {
-      normalized = '98' + normalized;
+
+    if (m.length === 10) {
+      m = '98' + m;
     }
-    return normalized;
+
+    return m;
   }
 
   async sendSms(dto: SmsSenderDto) {
     const client = await this.getClient();
-    const mobile = this.normalizeMobile(dto.phoneNumber);
-    const text = `${dto.message}\nhttps://club.ariakish.com\nلغو11`;
+    const mobile = dto.phoneNumber;
+
+    const text = dto.message + '\nhttps://club.ariakish.com\nلغو11';
 
     const parameters = {
       username: this.configService.get('RAHYAB_URL_USERNAME'),
       password: this.configService.get('RAHYAB_URL_PASSWORD'),
       from: this.configService.get('RAHYAB_URL_FROM'),
-      to: [mobile],
+      to: { string: [mobile] }, // ← FIX: wrap in <string>
       text,
       isflash: false,
       udh: '',
-      recId: [0],
-      status: [0],
+      recId: { int: [0] }, // ← FIX: wrap in <int>
+      status: { int: [0] }, // ← FIX: wrap in <int>
     };
 
-    const [result] = await client.SendSmsAsync(parameters);
-    const retval = result?.SendSmsResult as number;
+    console.log(parameters);
+    try {
+      const [response] = await client.SendSmsAsync(parameters);
+      console.log('response:', response);
 
-    const statusMessages: Record<number, string> = {
-      0: 'InvalidUserPass',
-      1: 'Successfull',
-      2: 'NoCredit',
-      3: 'DailyLimit',
-      4: 'SendLimit',
-      5: 'InvalidNumber',
-    };
+      const retval = response?.SendSmsResult ?? null;
+      console.log('retval:', retval);
 
-    if (retval !== 1) {
-      const errorMsg =
-        statusMessages[retval] ?? `Unknown error (code: ${retval})`;
-      throw new InternalServerErrorException(`SMS not sent: ${errorMsg}`);
+      const statusMessages: Record<number, string> = {
+        0: 'InvalidUserPass',
+        1: 'Successfull',
+        2: 'NoCredit',
+        3: 'DailyLimit',
+        4: 'SendLimit',
+        5: 'InvalidNumber',
+      };
+
+      if (retval !== 1) {
+        const errorMsg =
+          statusMessages[retval] ?? `Unknown error (code: ${retval})`;
+        throw new Error(`SMS not sent: ${errorMsg}`);
+      }
+
+      const recIds = (response?.recId ?? []) as number[];
+      return '1-' + (recIds[0] ?? '0');
+    } catch (e) {
+      throw e;
     }
-
-    const recIds = result?.recId as number[];
-    return `1-${recIds?.[0] ?? '0'}`;
   }
 
   async sendBulkSms(message: string, mobiles: string[]) {
@@ -79,12 +92,12 @@ export class SmsSenderService {
       username: this.configService.get('RAHYAB_URL_USERNAME'),
       password: this.configService.get('RAHYAB_URL_PASSWORD'),
       from: this.configService.get('RAHYAB_URL_FROM'),
-      to: normalizedMobiles,
+      to: { string: normalizedMobiles }, // ← FIX
       text,
       isflash: false,
       udh: '',
-      recId: normalizedMobiles.map(() => 0),
-      status: normalizedMobiles.map(() => 0),
+      recId: { int: normalizedMobiles.map(() => 0) }, // ← FIX
+      status: { int: normalizedMobiles.map(() => 0) }, // ← FIX
     };
 
     const [result] = await client.SendSmsAsync(parameters);
