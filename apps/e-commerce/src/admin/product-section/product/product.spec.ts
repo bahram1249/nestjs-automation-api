@@ -16,6 +16,7 @@ import {
   ECVariationPrice,
   ECVendorUser,
   ECSlugVersion,
+  ECInventoryHistory,
 } from '@rahino/localdatabase/models';
 import { User } from '@rahino/database';
 import { getModelToken } from '@nestjs/sequelize';
@@ -47,9 +48,12 @@ const hasDbConfig = Boolean(
   let addressId: number;
   let vendorAddressId: number;
   let entityTypeId: number;
+  let createdEntityType = false;
   let productId1: number;
   let productId2: number;
   let inventoryId: number;
+  let inventoryId2: number;
+  let postCreatedProductId: number;
   let productSlugAlpha: string;
   let productSlugBeta: string;
 
@@ -104,6 +108,7 @@ const hasDbConfig = Boolean(
         slug: 'test-product-type',
         entityModelId: 1,
       } as any);
+      createdEntityType = true;
     }
     entityTypeId = Number(entityType.id);
 
@@ -203,6 +208,7 @@ const hasDbConfig = Boolean(
       inventoryStatusId: 1,
       userId: 1,
     } as any);
+    inventoryId2 = Number(inv2.id);
 
     await inventoryPriceModel.create({
       inventoryId: Number(inv2.id),
@@ -213,71 +219,82 @@ const hasDbConfig = Boolean(
   });
 
   afterAll(async () => {
-    // cleanup in reverse dependency order
-    if (app) {
+    if (!app) return;
+    const productIds = [productId1, productId2];
+    if (postCreatedProductId) productIds.push(postCreatedProductId);
+    const errors: string[] = [];
+    const del = async (label: string, fn: () => Promise<any>) => {
       try {
-        await inventoryPriceModel.destroy({
-          where: { inventoryId: [inventoryId] },
-          force: true,
-        });
-      } catch {}
-      try {
-        await inventoryModel.destroy({
-          where: { productId: [productId1, productId2] },
-          force: true,
-        });
-      } catch {}
-      try {
-        await slugVersionModel.destroy({
-          where: { entityId: [productId1, productId2] },
-          force: true,
-        });
-      } catch {}
-      try {
-        await productModel.destroy({
-          where: { id: [productId1, productId2] },
-          force: true,
-        });
-      } catch {}
-      try {
-        await vendorAddressModel.destroy({
-          where: { id: vendorAddressId },
-          force: true,
-        });
-      } catch {}
-      try {
-        await vendorUserModel.destroy({
-          where: { vendorId: vendorId },
-          force: true,
-        });
-      } catch {}
-      try {
-        await vendorModel.destroy({
-          where: { id: vendorId },
-          force: true,
-        });
-      } catch {}
-      try {
-        await addressModel.destroy({
-          where: { id: addressId },
-          force: true,
-        });
-      } catch {}
-      try {
-        await brandModel.destroy({
-          where: { id: brandId },
-          force: true,
-        });
-      } catch {}
-      try {
-        await entityTypeModel.destroy({
-          where: { id: entityTypeId },
-          force: true,
-        });
-      } catch {}
+        await fn();
+      } catch (e) {
+        errors.push(`${label}: ${e.message}`);
+      }
+    };
 
-      await app.close();
+    // resolve all inventory IDs for tracked products
+    const allInventories = await inventoryModel.findAll({
+      where: { productId: productIds },
+    });
+    const allInventoryIds = allInventories.map((i) => Number(i.id));
+
+    await del('inventoryPrice', () =>
+      inventoryPriceModel.destroy({
+        where: { inventoryId: allInventoryIds },
+        force: true,
+      }),
+    );
+    await del('inventoryHistory', () =>
+      ECInventoryHistory.destroy({
+        where: { inventoryId: allInventoryIds },
+        force: true,
+      }),
+    );
+    await del('inventory', () =>
+      inventoryModel.destroy({
+        where: { productId: productIds },
+        force: true,
+      }),
+    );
+    await del('slugVersion', () =>
+      slugVersionModel.destroy({
+        where: { entityId: productIds },
+        force: true,
+      }),
+    );
+    await del('product', () =>
+      productModel.destroy({
+        where: { id: productIds },
+        force: true,
+      }),
+    );
+    await del('vendorAddress', () =>
+      vendorAddressModel.destroy({
+        where: { id: vendorAddressId },
+        force: true,
+      }),
+    );
+    await del('vendorUser', () =>
+      vendorUserModel.destroy({
+        where: { vendorId: vendorId },
+        force: true,
+      }),
+    );
+    await del('vendor', () =>
+      vendorModel.destroy({ where: { id: vendorId }, force: true }),
+    );
+    await del('address', () =>
+      addressModel.destroy({ where: { id: addressId }, force: true }),
+    );
+    await del('brand', () =>
+      brandModel.destroy({ where: { id: brandId }, force: true }),
+    );
+    if (createdEntityType) {
+      await del('entityType', () =>
+        entityTypeModel.destroy({ where: { id: entityTypeId }, force: true }),
+      );
     }
+    await app.close();
+    if (errors.length) throw new Error(errors.join('; '));
   });
 
   // ────────────────────────────────────────────────────────────────
@@ -578,32 +595,8 @@ const hasDbConfig = Boolean(
       expect(res.body.result).toHaveProperty('brand');
       expect(res.body.result.brand.name).toBe('Test Brand');
 
-      // clean up the created product
-      const createdId = res.body.result.id;
-      try {
-        const createdInvs = await inventoryModel.findAll({
-          where: { productId: createdId },
-        });
-        const createdInvIds = createdInvs.map((i) => i.id);
-        if (createdInvIds.length > 0) {
-          await inventoryPriceModel.destroy({
-            where: { inventoryId: createdInvIds },
-            force: true,
-          });
-        }
-        await inventoryModel.destroy({
-          where: { productId: createdId },
-          force: true,
-        });
-        await slugVersionModel.destroy({
-          where: { entityId: createdId },
-          force: true,
-        });
-        await productModel.destroy({
-          where: { id: createdId },
-          force: true,
-        });
-      } catch {}
+      // track for cleanup in afterAll
+      postCreatedProductId = Number(res.body.result.id);
     });
   });
 
@@ -680,6 +673,13 @@ const hasDbConfig = Boolean(
         .delete('/v1/api/ecommerce/admin/products/999999999')
         .set(authHeader())
         .expect(404);
+    });
+
+    afterAll(async () => {
+      await productModel.destroy({
+        where: { id: deleteProductId },
+        force: true,
+      });
     });
   });
 

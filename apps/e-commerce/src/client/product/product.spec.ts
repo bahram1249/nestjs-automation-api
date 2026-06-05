@@ -49,6 +49,7 @@ const hasDbConfig = Boolean(
   let addressId: number;
   let vendorAddressId: number;
   let entityTypeId: number;
+  let createdEntityType = false;
   let productId1: number;
   let productId2: number;
   let productId3: number;
@@ -108,6 +109,7 @@ const hasDbConfig = Boolean(
         slug: 'test-product-type',
         entityModelId: 1,
       } as any);
+      createdEntityType = true;
     }
     entityTypeId = Number(entityType.id);
 
@@ -260,63 +262,69 @@ const hasDbConfig = Boolean(
   });
 
   afterAll(async () => {
-    if (app) {
+    if (!app) return;
+    const errors: string[] = [];
+    const del = async (label: string, fn: () => Promise<any>) => {
       try {
-        await inventoryPriceModel.destroy({
-          where: { inventoryId: [inventoryId1, inventoryId2, inventoryId3] },
-          force: true,
-        });
-      } catch {}
-      try {
-        await inventoryModel.destroy({
-          where: { productId: [productId1, productId2, productId3] },
-          force: true,
-        });
-      } catch {}
-      try {
-        await slugVersionModel.destroy({
-          where: { entityId: [productId1, productId2, productId3] },
-          force: true,
-        });
-      } catch {}
-      try {
-        await productModel.destroy({
-          where: { id: [productId1, productId2, productId3, deletedProductId] },
-          force: true,
-        });
-      } catch {}
-      try {
-        await vendorAddressModel.destroy({
-          where: { id: vendorAddressId },
-          force: true,
-        });
-      } catch {}
-      try {
-        await vendorModel.destroy({
-          where: { id: vendorId },
-          force: true,
-        });
-      } catch {}
-      try {
-        await addressModel.destroy({
-          where: { id: addressId },
-          force: true,
-        });
-      } catch {}
-      try {
-        await brandModel.destroy({
-          where: { id: [brandId, brandId2] },
-          force: true,
-        });
-      } catch {}
-      try {
-        await entityTypeModel.destroy({
+        await fn();
+      } catch (e) {
+        errors.push(`${label}: ${e.message}`);
+      }
+    };
+    await del('inventoryPrice', () =>
+      inventoryPriceModel.destroy({
+        where: { inventoryId: [inventoryId1, inventoryId2, inventoryId3] },
+        force: true,
+      }),
+    );
+    await del('inventory', () =>
+      inventoryModel.destroy({
+        where: { productId: [productId1, productId2, productId3] },
+        force: true,
+      }),
+    );
+    await del('slugVersion', () =>
+      slugVersionModel.destroy({
+        where: { entityId: [productId1, productId2, productId3] },
+        force: true,
+      }),
+    );
+    await del('product', () =>
+      productModel.destroy({
+        where: {
+          id: [productId1, productId2, productId3, deletedProductId],
+        },
+        force: true,
+      }),
+    );
+    await del('vendorAddress', () =>
+      vendorAddressModel.destroy({
+        where: { id: vendorAddressId },
+        force: true,
+      }),
+    );
+    await del('vendor', () =>
+      vendorModel.destroy({ where: { id: vendorId }, force: true }),
+    );
+    await del('address', () =>
+      addressModel.destroy({ where: { id: addressId }, force: true }),
+    );
+    await del('brand', () =>
+      brandModel.destroy({
+        where: { id: [brandId, brandId2] },
+        force: true,
+      }),
+    );
+    if (createdEntityType) {
+      await del('entityType', () =>
+        entityTypeModel.destroy({
           where: { id: entityTypeId },
           force: true,
-        });
-      } catch {}
-      await app.close();
+        }),
+      );
     }
+    await app.close();
+    if (errors.length) throw new Error(errors.join('; '));
   });
 
   describe('GET /v1/api/ecommerce/products', () => {
@@ -573,7 +581,7 @@ const hasDbConfig = Boolean(
   describe('GET /v1/api/ecommerce/products/priceRange', () => {
     it('should return min and max prices', async () => {
       const res = await request(app.getHttpServer())
-        .get('/v1/api/ecommerce/products/priceRange')
+        .get(`/v1/api/ecommerce/products/priceRange?vendorId=${vendorId}`)
         .set(authHeader())
         .expect(200);
 
