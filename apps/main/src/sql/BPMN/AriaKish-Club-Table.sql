@@ -454,6 +454,28 @@ IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'gs-guarantees-v7'
 GO
 
 
+-- gs-guarantees-v8
+IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'gs-guarantees-v8'
+)
+    AND EXISTS (
+        SELECT 1 FROM Settings
+        WHERE ([key] = 'CUSTOMER_NAME' AND [value] IN ('AriaKish'))
+    )
+    BEGIN
+
+
+    ALTER TABLE GSGuarantees
+        ADD sourceUserId bigint null,
+            sourceUserFullname nvarchar(256) null,
+            sourceUserMobile nvarchar(256) null
+
+        INSERT INTO Migrations(version, createdAt, updatedAt)
+        SELECT 'gs-guarantees-v8', GETDATE(), GETDATE()
+    END
+
+GO
+
+
 -- gs-assigned-guarantees-v1
 IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'gs-assigned-guarantees-v1'
 )

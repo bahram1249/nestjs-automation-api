@@ -322,7 +322,14 @@ export class SharedCartableFilteringService {
             required: false,
           },
           {
-            attributes: ['id', 'guaranteePeriodId', 'serialNumber'],
+            attributes: [
+              'id',
+              'guaranteePeriodId',
+              'serialNumber',
+              'sourceUserId',
+              'sourceUserFullname',
+              'sourceUserMobile',
+            ],
             model: GSGuarantee,
             as: 'guarantee',
             include: [

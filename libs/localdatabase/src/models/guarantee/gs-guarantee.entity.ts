@@ -189,6 +189,27 @@ export class GSGuarantee extends Model {
   })
   vipGenerator?: GSVipGenerator;
 
+  @AutoMap()
+  @Column({
+    type: DataType.BIGINT,
+    allowNull: true,
+  })
+  sourceUserId?: bigint;
+
+  @AutoMap()
+  @Column({
+    type: DataType.STRING,
+    allowNull: true,
+  })
+  sourceUserFullname?: string;
+
+  @AutoMap()
+  @Column({
+    type: DataType.STRING,
+    allowNull: true,
+  })
+  sourceUserMobile?: string;
+
   @HasOne(() => GSAssignedGuarantee, {
     foreignKey: 'guaranteeId',
     sourceKey: 'id',

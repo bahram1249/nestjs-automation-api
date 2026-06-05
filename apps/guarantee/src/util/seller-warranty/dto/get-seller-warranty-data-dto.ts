@@ -1,3 +1,9 @@
+export class SellerWarrantyUserDto {
+  id: number;
+  fullname: string;
+  mobile: string;
+}
+
 export class GetSellerWarrantyDataDto {
   id: number;
   prefix_serial: string;
@@ -14,4 +20,5 @@ export class GetSellerWarrantyDataDto {
   status: string;
   created_at: Date;
   updated_at: Date;
+  user: SellerWarrantyUserDto;
 }

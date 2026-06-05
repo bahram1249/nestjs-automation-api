@@ -84,9 +84,8 @@ export class SellerWarrantyProcessor extends WorkerHost {
       const sellerSourceItems = result.data;
       const sellerItemIds = sellerSourceItems.map((item) => item.id);
 
-      // 1. Get existing guarantees providerBaseIds
+      // 1. Get existing guarantees
       const existingGuarantees = await this.guaranteeRepository.findAll({
-        attributes: ['providerBaseId'],
         where: {
           providerId: GSProviderEnum.SELLER,
           providerBaseId: {
@@ -94,17 +93,31 @@ export class SellerWarrantyProcessor extends WorkerHost {
           },
         },
       });
-      const existingProviderBaseIds = new Set(
-        existingGuarantees.map((g) => g.providerBaseId),
+      const existingGuaranteeMap = new Map<number, GSGuarantee>();
+      existingGuarantees.forEach((g) =>
+        existingGuaranteeMap.set(g.providerBaseId, g),
       );
 
-      // 2. Filter out duplicates
+      // 2. Split into new and existing
       const newSellerItems = sellerSourceItems.filter(
-        (item) => !existingProviderBaseIds.has(item.id),
+        (item) => !existingGuaranteeMap.has(item.id),
       );
+      const existingSellerItems = sellerSourceItems.filter((item) =>
+        existingGuaranteeMap.has(item.id),
+      );
+
+      // 3. Update existing items with source user info
+      for (const sellerItem of existingSellerItems) {
+        const guarantee = existingGuaranteeMap.get(sellerItem.id);
+        await guarantee.update({
+          sourceUserId: sellerItem.user?.id,
+          sourceUserFullname: sellerItem.user?.fullname,
+          sourceUserMobile: sellerItem.user?.mobile,
+        });
+      }
 
       if (newSellerItems.length > 0) {
-        // 3. Aggregate names
+        // 4. Aggregate names
         const brandNames = [
           ...new Set(
             newSellerItems.map((item) => item.brand_name).filter(Boolean),
@@ -163,6 +176,9 @@ export class SellerWarrantyProcessor extends WorkerHost {
               startDate: sellerItem.start_date,
               endDate: sellerItem.expire_date,
               description: 'اطلاعات کانورتی از سلر',
+              sourceUserId: sellerItem.user?.id,
+              sourceUserFullname: sellerItem.user?.fullname,
+              sourceUserMobile: sellerItem.user?.mobile,
             });
           }
         }
