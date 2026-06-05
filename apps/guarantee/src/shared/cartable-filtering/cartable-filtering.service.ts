@@ -9,6 +9,7 @@ import {
   BPMNNodeCommandType,
   BPMNOrganization,
   BPMNOrganizationUser,
+  BPMNRequest,
   BPMNRequestState,
   GSAdditionalPackage,
   GSAddress,
@@ -249,6 +250,11 @@ export class SharedCartableFilteringService {
           where: filter.cartableActivityFilter,
         },
       ])
+      .thenInclude({
+        model: BPMNRequest,
+        as: 'request',
+        required: false,
+      })
       .thenInclude({
         attributes: [
           'id',
