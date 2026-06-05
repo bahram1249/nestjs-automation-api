@@ -6,6 +6,7 @@
   "transform": {
     "^.+\\.(t|j)s$": "ts-jest"
   },
+  "verbose": true,
   "testTimeout": 30000,
   "forceExit": true,
   "moduleNameMapper": {

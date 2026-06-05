@@ -139,12 +139,14 @@ export class LogisticFinalizedPaymentService {
         .transaction(transaction)
         .build(),
     );
+    if (!order || !order.paymentId) return;
     const payment = await this.paymentRepository.findOne(
       new QueryOptionsBuilder()
         .filter({ id: order.paymentId })
         .transaction(transaction)
         .build(),
     );
+    if (!payment) return;
     let amount = 0;
     const commisssion = await this.paymentGatewayCommissionRepository.findOne(
       new QueryOptionsBuilder()

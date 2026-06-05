@@ -26,6 +26,10 @@ import { classes } from 'automapper-classes';
 import { CacheModule } from '@nestjs/cache-manager';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { ThrottlerModule } from '@nestjs/throttler';
+import { SequelizeHelpModule } from '@rahino/commontools/sequelize-help';
+import { SMS_SERVICE } from '@rahino/sms/contants';
+import { getQueueToken, BullRegistrar } from '@nestjs/bullmq';
+import { RedisRepository } from '@rahino/redis-client';
 
 // Shared testing JwtGuard: accepts any Bearer token and injects a mock req.user
 
@@ -34,6 +38,11 @@ export async function createE2EApp(options?: {
   controllers?: any[];
   providers?: any[];
   overrideJwt?: boolean; // default: true
+  overrideSms?: boolean; // default: true
+  overrideBullMq?: boolean; // default: false
+  bullMqQueueNames?: string[]; // queue names to mock when overrideBullMq is true
+  overrideRedis?: boolean; // default: false
+  guardOverrides?: { original: any; mock: any }[]; // guards to override
 }): Promise<NestExpressApplication> {
   const builder: TestingModuleBuilder = Test.createTestingModule({
     imports: [
@@ -114,6 +123,7 @@ export async function createE2EApp(options?: {
         isGlobal: true,
         ttl: 60000,
       }),
+      SequelizeHelpModule,
       ...(options?.imports ?? []),
     ],
     controllers: options?.controllers ?? [],
@@ -123,6 +133,69 @@ export async function createE2EApp(options?: {
   if (options?.overrideJwt !== false) {
     builder.overrideGuard(JwtGuard).useClass(TestingJwtGuard);
     builder.overrideGuard(OptionalJwtGuard).useClass(TestingJwtGuard);
+  }
+
+  if (options?.overrideSms !== false) {
+    builder.overrideProvider(SMS_SERVICE).useValue({
+      sendMessage: jest.fn().mockResolvedValue(undefined),
+    });
+  }
+
+  if (options?.overrideBullMq) {
+    builder.overrideProvider(BullRegistrar).useValue({
+      onModuleInit: jest.fn(),
+      register: jest.fn(),
+    });
+    const queueNames = options.bullMqQueueNames ?? [];
+    for (const name of queueNames) {
+      builder.overrideProvider(getQueueToken(name)).useValue({
+        add: jest.fn().mockResolvedValue({
+          id: 'mock-job-id',
+          waitUntilFinished: jest.fn().mockResolvedValue({
+            returnvalue: { id: null },
+          }),
+        }),
+        name: name,
+      });
+    }
+  }
+
+  if (options?.overrideRedis) {
+    builder.overrideProvider('RedisClient').useValue({
+      get: jest.fn().mockResolvedValue(null),
+      set: jest.fn().mockResolvedValue('OK'),
+      del: jest.fn().mockResolvedValue(1),
+      exists: jest.fn().mockResolvedValue(0),
+      hset: jest.fn().mockResolvedValue(1),
+      hget: jest.fn().mockResolvedValue(null),
+      hexists: jest.fn().mockResolvedValue(0),
+      hgetall: jest.fn().mockResolvedValue({}),
+      keys: jest.fn().mockResolvedValue([]),
+      expire: jest.fn().mockResolvedValue(1),
+      pipeline: jest.fn().mockReturnValue({
+        del: jest.fn().mockReturnThis(),
+        exec: jest.fn().mockResolvedValue([]),
+      }),
+      disconnect: jest.fn(),
+    });
+    builder.overrideProvider(RedisRepository).useValue({
+      isExists: jest.fn().mockResolvedValue({ exists: false, result: null }),
+      setWithExpiry: jest.fn().mockResolvedValue(undefined),
+      get: jest.fn().mockResolvedValue(null),
+      set: jest.fn().mockResolvedValue(undefined),
+      delete: jest.fn().mockResolvedValue(undefined),
+      hset: jest.fn().mockResolvedValue(undefined),
+      hget: jest.fn().mockResolvedValue(null),
+      hexists: jest.fn().mockResolvedValue(false),
+      hgetall: jest.fn().mockResolvedValue({}),
+      removeKeysByPattern: jest.fn().mockResolvedValue(undefined),
+    });
+  }
+
+  if (options?.guardOverrides) {
+    for (const { original, mock } of options.guardOverrides) {
+      builder.overrideGuard(original).useClass(mock);
+    }
   }
 
   const moduleRef = await builder.compile();

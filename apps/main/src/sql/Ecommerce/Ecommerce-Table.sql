@@ -592,6 +592,12 @@ IF NOT EXISTS (SELECT 1 FROM Migrations WHERE version = 'ecommerce-vendors-v7'
 		)
 BEGIN
 
+	EXEC sp_configure 'show advanced options', 1;
+	RECONFIGURE;
+
+	EXEC sp_configure 'clr enabled', 1;
+	RECONFIGURE;
+	
 	CREATE SPATIAL INDEX IX_GeoLocation_ECVendors_Coordinates
 	ON ECVendors(coordinates)
 	USING GEOGRAPHY_GRID

@@ -7,6 +7,10 @@ import {
   ECInventoryPrice,
   ECProduct,
   ECVendorAddress,
+  ECBrand,
+  ECVendor,
+  ECAddress,
+  ECVendorUser,
 } from '@rahino/localdatabase/models';
 import { User } from '@rahino/database';
 import { Permission } from '@rahino/database';
@@ -36,6 +40,10 @@ import { InventoryTrackChangeModule } from '@rahino/ecommerce/shared/inventory-t
       ECInventory,
       ECInventoryPrice,
       ECVendorAddress,
+      ECBrand,
+      ECVendor,
+      ECAddress,
+      ECVendorUser,
       User,
       Permission,
       EAVEntityType,
