@@ -286,7 +286,7 @@ const hasDbConfig = Boolean(
   describe('GET /v1/api/ecommerce/admin/products', () => {
     it('should return paginated list with nested related models', async () => {
       const res = await request(app.getHttpServer())
-        .get('/v1/api/ecommerce/admin/products?limit=100')
+        .get(`/v1/api/ecommerce/admin/products?limit=100&brandId=${brandId}`)
         .set(authHeader())
         .expect(200);
 
@@ -402,7 +402,7 @@ const hasDbConfig = Boolean(
 
     it('should include attributes when includeAttribute=true', async () => {
       const res = await request(app.getHttpServer())
-        .get(`/v1/api/ecommerce/admin/products?limit=100&includeAttribute=true`)
+        .get(`/v1/api/ecommerce/admin/products?limit=100&includeAttribute=true&brandId=${brandId}`)
         .set(authHeader())
         .expect(200);
 
@@ -414,7 +414,7 @@ const hasDbConfig = Boolean(
 
     it('should return inventories with nested vendor and pricing', async () => {
       const res = await request(app.getHttpServer())
-        .get(`/v1/api/ecommerce/admin/products?limit=100`)
+        .get(`/v1/api/ecommerce/admin/products?limit=100&brandId=${brandId}`)
         .set(authHeader())
         .expect(200);
 
