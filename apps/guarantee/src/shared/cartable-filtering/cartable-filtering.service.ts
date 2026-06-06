@@ -523,7 +523,10 @@ export class SharedCartableFilteringService {
       const requestFactors = successFactors.filter(
         (factor) => factor.requestId == currentState.requestId,
       );
-      return _.merge(currentState, { successFactors: requestFactors });
+      return {
+        ...currentState.toJSON(),
+        successFactors: requestFactors,
+      };
     });
   }
 }
